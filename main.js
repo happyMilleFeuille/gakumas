@@ -113,14 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
         `;
         updateLanguage(currentLang);
-        // contentArea.style.minHeight = 'auto';  <-- 이 부분을 제거하여 CSS의 400px이 유지되게 합니다.
     }
 
     // 11. 렌더링 함수 - 아이돌 목록
     function renderIdolList() {
         if (!contentArea) return;
-        const currentHeight = contentArea.offsetHeight;
-        contentArea.style.minHeight = `${currentHeight}px`;
         contentArea.innerHTML = '';
         
         const grid = document.createElement('div');
@@ -142,6 +139,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         contentArea.appendChild(grid);
-        setTimeout(() => { contentArea.style.minHeight = 'auto'; }, 100);
     }
 });

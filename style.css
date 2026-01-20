@@ -146,14 +146,15 @@ main {
 
 #idol {
     text-align: center;
-    padding: 4rem 1rem 6rem; /* 하단 패딩을 더 늘림 */
+    padding: 4rem 1rem 6rem;
     background: #fff;
     border-radius: 15px;
     background-size: cover;
     background-position: center;
+    background-attachment: local;
     position: relative;
     overflow: hidden;
-    transition: background-image 0.5s ease-in-out;
+    min-height: 700px; /* 섹션 전체의 최소 높이를 충분히 확보 */
 }
 
 #idol::before {
@@ -170,7 +171,7 @@ main {
 #content-area {
     position: relative;
     z-index: 1;
-    min-height: 600px; /* 최소 높이를 600px로 증가 */
+    min-height: 500px; /* 최소 높이를 500px로 조정 */
 }
 
 h1 {
@@ -185,28 +186,31 @@ h1 {
     justify-content: center;
     align-items: flex-start;
     gap: 0.5rem;
-    max-width: 500px; /* 배경에 맞춰 최대 너비 제한 */
-    margin: 6rem auto 0; /* 배경 공간을 위해 상단 마진 추가 */
+    width: 500px; /* 너비를 명시적으로 고정 */
     height: 120px;
-    position: relative; /* 배경 배치를 위해 필요 */
-    z-index: 2; /* 오버레이보다 위로 */
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    z-index: 1000;
+    padding-bottom: 2rem;
 }
 
-/* 곡선 타원 배경 수정 (위치 내림) */
+/* 곡선 타원 배경 수정 (고정된 버튼 그룹에 맞춰 위치 조정) */
 .button-group.horizontal::before {
     content: "";
     position: absolute;
-    top: -45px; /* 기존 -65px에서 -45px로 내려서 위치 조정 */
+    bottom: 0; /* 하단 기준 */
     left: 50%;
     transform: translateX(-50%);
     width: 115%;
-    height: 120px;
-    background: rgba(255, 255, 255, 0.9);
+    height: 150px; /* 높이 소폭 조정 */
+    background: rgba(255, 255, 255, 0.95); /* 배경 가독성 강화 */
     border: 1px solid #ffe0ea;
-    /* 아래쪽을 둥글게 깎아 그릇 모양으로 설정 */
     border-radius: 50% / 30px 30px 100% 100%;
     z-index: -1;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05); /* 그림자 방향 변경 */
 }
 
 .menu-btn {
@@ -326,17 +330,23 @@ h1 {
     }
 
     .button-group.horizontal {
-        margin: 4rem auto 0;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%; /* 화면 너비의 95% 차지 */
+        margin: 0;
         height: 80px;
         gap: 0.2rem;
-        padding: 0 0.5rem;
+        padding: 0 0.5rem 1rem;
+        z-index: 1000;
     }
 
     .button-group.horizontal::before {
-        width: 110%;
-        height: 85px;
-        top: -25px;
-        border-radius: 50% / 20px 20px 100% 100%;
+        width: 100%; /* 모바일에서는 꽉 차게 */
+        height: 100px;
+        bottom: 0;
+        border-radius: 50% / 15px 15px 100% 100%;
     }
 
     .menu-btn {
