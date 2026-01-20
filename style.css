@@ -1,0 +1,367 @@
+/* style.css - 간결한 버전 */
+:root {
+    --primary-color: #ff4081;
+    --secondary-color: #3f51b5;
+    --text-color: #333;
+    --bg-color: #f4f4f9;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    cursor: pointer; /* 클릭 가능하도록 커서 추가 */
+    user-select: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    position: relative; /* 드롭다운 위치 기준 */
+}
+
+.lang-item {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    background-color: #fcfcfc;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lang-btn {
+    background: none;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.lang-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.nav-links {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    z-index: 9999; /* 메뉴를 가장 위로 올림 */
+}
+
+.nav-links.active {
+    display: block;
+}
+
+.nav-links li {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-links li:last-child {
+    border-bottom: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    padding: 1rem;
+    display: block;
+    text-align: center;
+    transition: background-color 0.2s;
+    font-size: 0.95rem; /* 기본보다 살짝 축소 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 일본어 환경일 때 가챠 시뮬레이션 글자 크기 추가 축소 */
+html[lang="ja"] .nav-links li:nth-child(4) a {
+    font-size: 0.8rem;
+}
+
+.nav-links a:hover {
+    background-color: #fff0f5;
+    color: var(--primary-color);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+#idol {
+    text-align: center;
+    padding: 4rem 1rem 6rem; /* 하단 패딩을 더 늘림 */
+    background: #fff;
+    border-radius: 15px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    transition: background-image 0.5s ease-in-out;
+}
+
+#idol::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* 흰색 반투명 오버레이 */
+    z-index: 0;
+}
+
+#content-area {
+    position: relative;
+    z-index: 1;
+    min-height: 600px; /* 최소 높이를 600px로 증가 */
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.button-group.horizontal {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 500px; /* 배경에 맞춰 최대 너비 제한 */
+    margin: 6rem auto 0; /* 배경 공간을 위해 상단 마진 추가 */
+    height: 120px;
+    position: relative; /* 배경 배치를 위해 필요 */
+    z-index: 2; /* 오버레이보다 위로 */
+}
+
+/* 곡선 타원 배경 수정 (위치 내림) */
+.button-group.horizontal::before {
+    content: "";
+    position: absolute;
+    top: -45px; /* 기존 -65px에서 -45px로 내려서 위치 조정 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 115%;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ffe0ea;
+    /* 아래쪽을 둥글게 깎아 그릇 모양으로 설정 */
+    border-radius: 50% / 30px 30px 100% 100%;
+    z-index: -1;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.menu-btn {
+    background-color: transparent; /* 배경 제거 */
+    color: var(--text-color); /* 글자색을 기본 텍스트색으로 */
+    border: none;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    max-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    transform-origin: center top;
+    transform: rotate(var(--rot)) translateY(var(--ty)) scale(var(--sc, 1));
+}
+
+.btn-icon {
+    width: 35px; /* 아이콘을 조금 더 키움 */
+    height: 35px;
+    object-fit: contain;
+}
+
+/* 부채꼴 배치 값 정의 */
+.menu-btn:nth-child(1) { --rot: 15deg; --ty: -25px; }
+.menu-btn:nth-child(2) { --rot: 7deg; --ty: -5px; }
+.menu-btn:nth-child(3) { --rot: 0deg; --ty: 0px; }
+.menu-btn:nth-child(4) { --rot: -7deg; --ty: -5px; }
+.menu-btn:nth-child(5) { --rot: -15deg; --ty: -25px; }
+
+.menu-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* 호버 시에만 아주 연한 배경 */
+    --sc: 1.1;
+    z-index: 10;
+}
+
+/* Menu Toggle Always Visible */
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10000; /* 메뉴 버튼이 항상 위에 오도록 */
+}
+
+.menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-color);
+    border-radius: 2px;
+}
+
+.idol-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 무조건 4열로 고정 */
+    gap: 1.5rem;
+    padding: 2rem 0;
+    max-width: 600px; /* 4열에 적당한 너비로 조정 */
+    margin: 0 auto;
+}
+
+.idol-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.idol-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #fff;
+    padding: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    object-fit: contain;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.idol-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Mobile Responsive Combined */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .nav-right {
+        position: static;
+    }
+
+    .nav-links {
+        left: 0;
+        right: 0;
+        width: 100vw;
+        border-radius: 0;
+        margin-top: 0;
+        border-top: 1px solid #eee;
+        background: #ffffff;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        z-index: 9999;
+    }
+
+    .nav-links a {
+        padding: 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    .button-group.horizontal {
+        margin: 4rem auto 0;
+        height: 80px;
+        gap: 0.2rem;
+        padding: 0 0.5rem;
+    }
+
+    .button-group.horizontal::before {
+        width: 110%;
+        height: 85px;
+        top: -25px;
+        border-radius: 50% / 20px 20px 100% 100%;
+    }
+
+    .menu-btn {
+        font-size: 0.6rem;
+        padding: 0.4rem 0.1rem;
+    }
+
+    .btn-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .idol-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+    }
+
+    .idol-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+}

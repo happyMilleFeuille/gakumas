@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gakumas - New Project</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16x16.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-left">
+                <div class="logo" data-i18n="logo">Gakumas Project</div>
+            </div>
+            <div class="nav-right">
+                <button class="menu-toggle" aria-label="메뉴 열기">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#idol" data-i18n="nav_idol">아이돌</a></li>
+                    <li><a href="#support" data-i18n="nav_support">서포트 카드</a></li>
+                    <li><a href="#calc" data-i18n="nav_calc">계산기</a></li>
+                    <li><a href="#gacha-sim" data-i18n="nav_gacha_sim">가챠 시뮬레이션</a></li>
+                    <li class="lang-item">
+                        <div class="lang-switch">
+                            <button id="lang-ko" class="lang-btn active">KO</button>
+                            <button id="lang-ja" class="lang-btn">JA</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="idol">
+            <div id="content-area">
+                <h1 data-i18n="hero_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
+                <p data-i18n="hero_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+            </div>
+            <div class="button-group horizontal">
+                <button class="menu-btn">
+                    <img src="icons/idol.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_empty">아이돌</span>
+                </button>
+                <button class="menu-btn">
+                    <img src="icons/card.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_supporter">서포터카드</span>
+                </button>
+                <button class="menu-btn">
+                    <img src="icons/home.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_home">홈</span>
+                </button>
+                <button class="menu-btn">
+                    <img src="icons/caculation.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_calc">계산기</span>
+                </button>
+                <button class="menu-btn">
+                    <img src="icons/gasha.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_gacha">가챠</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p data-i18n="footer">&copy; 2026 Gakumas Project. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
