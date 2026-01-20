@@ -21,10 +21,10 @@
                     <span class="bar"></span>
                 </button>
                 <ul class="nav-links">
-                    <li><a href="#idol" data-i18n="nav_idol">아이돌</a></li>
-                    <li><a href="#support" data-i18n="nav_support">서포트 카드</a></li>
-                    <li><a href="#calc" data-i18n="nav_calc">계산기</a></li>
-                    <li><a href="#gacha-sim" data-i18n="nav_gacha_sim">가챠 시뮬레이션</a></li>
+                    <li><a href="#idol" data-i18n="nav_idol" data-target="idol">아이돌</a></li>
+                    <li><a href="#support" data-i18n="nav_support" data-target="support">서포트 카드</a></li>
+                    <li><a href="#calc" data-i18n="nav_calc" data-target="calc">계산기</a></li>
+                    <li><a href="#gacha-sim" data-i18n="nav_gacha_sim" data-target="gacha">가챠 시뮬레이션</a></li>
                     <li class="lang-item">
                         <div class="lang-switch">
                             <button id="lang-ko" class="lang-btn active">KO</button>
@@ -43,23 +43,23 @@
                 <p data-i18n="hero_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
             </div>
             <div class="button-group horizontal">
-                <button class="menu-btn">
+                <button class="menu-btn" data-target="idol">
                     <img src="icons/idol.png" alt="" class="btn-icon">
                     <span data-i18n="btn_empty">아이돌</span>
                 </button>
-                <button class="menu-btn">
+                <button class="menu-btn" data-target="support">
                     <img src="icons/card.png" alt="" class="btn-icon">
-                    <span data-i18n="btn_supporter">서포터카드</span>
+                    <span data-i18n="btn_supporter">서포트</span>
                 </button>
-                <button class="menu-btn">
+                <button class="menu-btn" data-target="home">
                     <img src="icons/home.png" alt="" class="btn-icon">
                     <span data-i18n="btn_home">홈</span>
                 </button>
-                <button class="menu-btn">
+                <button class="menu-btn" data-target="calc">
                     <img src="icons/caculation.png" alt="" class="btn-icon">
                     <span data-i18n="btn_calc">계산기</span>
                 </button>
-                <button class="menu-btn">
+                <button class="menu-btn" data-target="gacha">
                     <img src="icons/gasha.png" alt="" class="btn-icon">
                     <span data-i18n="btn_gacha">가챠</span>
                 </button>
@@ -72,5 +72,21 @@
     </footer>
 
     <script type="module" src="main.js"></script>
+
+    <!-- Templates for Dynamic Content -->
+    <template id="tpl-home">
+        <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
+        <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+    </template>
+
+    <template id="tpl-idol-grid">
+        <div class="idol-grid"></div>
+    </template>
+
+    <template id="tpl-idol-item">
+        <div class="idol-item">
+            <img src="" alt="" class="idol-icon">
+        </div>
+    </template>
 </body>
 </html>

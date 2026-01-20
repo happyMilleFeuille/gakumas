@@ -1,11 +1,29 @@
-/* style.css - 간결한 버전 */
+/* 
+  style.css - Refactored Version
+  Theme: Gakumas Project
+*/
+
 :root {
+    /* Colors */
     --primary-color: #ff4081;
+    --primary-hover: #e91e63;
     --secondary-color: #3f51b5;
     --text-color: #333;
+    --light-gray: #f0f0f0;
     --bg-color: #f4f4f9;
+    --white: #ffffff;
+    --overlay-bg: rgba(255, 255, 255, 0.7);
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --dropdown-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+    /* Layout */
+    --header-height: 60px;
+    --max-width: 1200px;
+    --idol-min-height: 700px;
+    --content-min-height: 500px;
 }
 
+/* 1. Base Styles */
 * {
     box-sizing: border-box;
 }
@@ -20,9 +38,10 @@ body {
     word-break: break-word;
 }
 
+/* 2. Header & Navigation */
 header {
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--white);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 1rem;
     position: sticky;
     top: 0;
@@ -33,7 +52,7 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: var(--max-width);
     margin: 0 auto;
 }
 
@@ -47,16 +66,17 @@ nav {
     font-size: 1.3rem;
     font-weight: bold;
     color: var(--primary-color);
-    cursor: pointer; /* 클릭 가능하도록 커서 추가 */
+    cursor: pointer;
     user-select: none;
 }
 
 .nav-right {
     display: flex;
     align-items: center;
-    position: relative; /* 드롭다운 위치 기준 */
+    position: relative;
 }
 
+/* Language Switcher */
 .lang-item {
     padding: 1rem;
     display: flex;
@@ -82,7 +102,25 @@ nav {
 
 .lang-btn.active {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--white);
+}
+
+/* Hamburger & Links */
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-color);
+    border-radius: 2px;
 }
 
 .nav-links {
@@ -94,12 +132,12 @@ nav {
     top: 100%;
     right: 0;
     width: 200px;
-    background: white;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    background: var(--white);
+    box-shadow: var(--dropdown-shadow);
     border-radius: 8px;
     margin-top: 0.5rem;
     overflow: hidden;
-    z-index: 9999; /* 메뉴를 가장 위로 올림 */
+    z-index: 9999;
 }
 
 .nav-links.active {
@@ -107,7 +145,7 @@ nav {
 }
 
 .nav-links li {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--light-gray);
 }
 
 .nav-links li:last-child {
@@ -122,13 +160,10 @@ nav {
     display: block;
     text-align: center;
     transition: background-color 0.2s;
-    font-size: 0.95rem; /* 기본보다 살짝 축소 */
+    font-size: 0.95rem;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-/* 일본어 환경일 때 가챠 시뮬레이션 글자 크기 추가 축소 */
 html[lang="ja"] .nav-links li:nth-child(4) a {
     font-size: 0.8rem;
 }
@@ -138,8 +173,9 @@ html[lang="ja"] .nav-links li:nth-child(4) a {
     color: var(--primary-color);
 }
 
+/* 3. Main Sections */
 main {
-    max-width: 1200px;
+    max-width: var(--max-width);
     margin: 2rem auto;
     padding: 0 1rem;
 }
@@ -147,31 +183,30 @@ main {
 #idol {
     text-align: center;
     padding: 4rem 1rem 6rem;
-    background: #fff;
+    background-color: var(--white);
     border-radius: 15px;
     background-size: cover;
     background-position: center;
     background-attachment: local;
     position: relative;
     overflow: hidden;
-    min-height: 700px; /* 섹션 전체의 최소 높이를 충분히 확보 */
+    min-height: var(--idol-min-height);
+    transition: background-image 0.5s ease-in-out;
 }
 
 #idol::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.7); /* 흰색 반투명 오버레이 */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--overlay-bg);
     z-index: 0;
 }
 
 #content-area {
     position: relative;
     z-index: 1;
-    min-height: 500px; /* 최소 높이를 500px로 조정 */
+    min-height: var(--content-min-height);
 }
 
 h1 {
@@ -181,12 +216,13 @@ h1 {
     z-index: 1;
 }
 
+/* 4. Bottom Fan-Menu & Background */
 .button-group.horizontal {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     gap: 0.5rem;
-    width: 500px; /* 너비를 명시적으로 고정 */
+    width: 500px;
     height: 120px;
     position: fixed;
     bottom: 0;
@@ -197,25 +233,24 @@ h1 {
     padding-bottom: 2rem;
 }
 
-/* 곡선 타원 배경 수정 (고정된 버튼 그룹에 맞춰 위치 조정) */
 .button-group.horizontal::before {
     content: "";
     position: absolute;
-    bottom: 0; /* 하단 기준 */
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 115%;
-    height: 150px; /* 높이 소폭 조정 */
-    background: rgba(255, 255, 255, 0.95); /* 배경 가독성 강화 */
+    height: 150px;
+    background: rgba(255, 255, 255, 0.95);
     border: 1px solid #ffe0ea;
     border-radius: 50% / 30px 30px 100% 100%;
     z-index: -1;
-    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05); /* 그림자 방향 변경 */
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .menu-btn {
-    background-color: transparent; /* 배경 제거 */
-    color: var(--text-color); /* 글자색을 기본 텍스트색으로 */
+    background-color: transparent;
+    color: var(--text-color);
     border: none;
     padding: 0.6rem 0.3rem;
     font-size: 0.8rem;
@@ -234,12 +269,12 @@ h1 {
 }
 
 .btn-icon {
-    width: 35px; /* 아이콘을 조금 더 키움 */
+    width: 35px;
     height: 35px;
     object-fit: contain;
 }
 
-/* 부채꼴 배치 값 정의 */
+/* Fan shape placement */
 .menu-btn:nth-child(1) { --rot: 15deg; --ty: -25px; }
 .menu-btn:nth-child(2) { --rot: 7deg; --ty: -5px; }
 .menu-btn:nth-child(3) { --rot: 0deg; --ty: 0px; }
@@ -247,35 +282,18 @@ h1 {
 .menu-btn:nth-child(5) { --rot: -15deg; --ty: -25px; }
 
 .menu-btn:hover {
-    background-color: rgba(0, 0, 0, 0.05); /* 호버 시에만 아주 연한 배경 */
+    background-color: rgba(0, 0, 0, 0.05);
     --sc: 1.1;
     z-index: 10;
 }
 
-/* Menu Toggle Always Visible */
-.menu-toggle {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10000; /* 메뉴 버튼이 항상 위에 오도록 */
-}
-
-.menu-toggle .bar {
-    width: 25px;
-    height: 3px;
-    background-color: var(--text-color);
-    border-radius: 2px;
-}
-
+/* 5. Idol Grid Styles */
 .idol-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 무조건 4열로 고정 */
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
     padding: 2rem 0;
-    max-width: 600px; /* 4열에 적당한 너비로 조정 */
+    max-width: 600px;
     margin: 0 auto;
 }
 
@@ -290,9 +308,9 @@ h1 {
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background: #fff;
+    background: var(--white);
     padding: 5px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
     object-fit: contain;
     transition: transform 0.2s;
     cursor: pointer;
@@ -302,26 +320,25 @@ h1 {
     transform: scale(1.1);
 }
 
-/* Mobile Responsive Combined */
+/* 6. Responsive (Mobile) */
 @media (max-width: 768px) {
     h1 {
         font-size: 1.6rem;
     }
 
+    /* Mobile Nav */
     .nav-right {
         position: static;
     }
 
     .nav-links {
-        left: 0;
-        right: 0;
+        left: 0; right: 0;
         width: 100vw;
         border-radius: 0;
         margin-top: 0;
-        border-top: 1px solid #eee;
-        background: #ffffff;
+        border-top: 1px solid var(--light-gray);
+        background: var(--white);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        z-index: 9999;
     }
 
     .nav-links a {
@@ -329,23 +346,17 @@ h1 {
         font-size: 1.1rem;
     }
 
+    /* Mobile Menu Buttons */
     .button-group.horizontal {
-        position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 95%; /* 화면 너비의 95% 차지 */
-        margin: 0;
+        width: 95%;
         height: 80px;
         gap: 0.2rem;
         padding: 0 0.5rem 1rem;
-        z-index: 1000;
     }
 
     .button-group.horizontal::before {
-        width: 100%; /* 모바일에서는 꽉 차게 */
+        width: 100%;
         height: 100px;
-        bottom: 0;
         border-radius: 50% / 15px 15px 100% 100%;
     }
 
@@ -359,6 +370,7 @@ h1 {
         height: 24px;
     }
 
+    /* Mobile Grid */
     .idol-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 0.8rem;
@@ -373,5 +385,6 @@ h1 {
 footer {
     text-align: center;
     padding: 2rem;
+    padding-bottom: 120px; /* 고정 버튼을 위한 여백 추가 */
     color: #777;
 }
