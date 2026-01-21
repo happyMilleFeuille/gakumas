@@ -1,102 +1,55 @@
 // main.js
-import translations from './i18n.js';
+import { state, setLanguage } from './state.js';
+import { updatePageTranslations, applyBackground, initMobileHeightFix } from './utils.js';
+import { handleNavigation } from './router.js';
+import { renderSupport } from './ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. 요소 선택
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
     const langBtns = document.querySelectorAll('.lang-btn');
-    const idolSection = document.getElementById('idol');
-    const contentArea = document.getElementById('content-area');
-    const menuButtons = document.querySelectorAll('.menu-btn');
+    const idolSection = document.getElementById('idol'); // 배경이 적용될 섹션 (혹은 fixedBg)
     const logo = document.querySelector('.logo');
     
-    // 2. 상태 변수
-    let currentLang = localStorage.getItem('lang') || 'ko';
-    let currentBg = localStorage.getItem('selectedBg') || '';
-    const idolList = [
-        'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 
-        'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
-    ];
-
-    // 3. 초기화 로직
-    updateLanguage(currentLang);
-    if (currentBg && idolSection) {
-        idolSection.style.backgroundImage = `url('images/${currentBg}.png')`;
+    // 2. 초기화
+    updatePageTranslations();
+    if (state.currentBg) {
+        applyBackground(state.currentBg);
     }
+    initMobileHeightFix();
 
-    // 4. 핵심 기능 함수들
-    function updateLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('lang', lang);
-        langBtns.forEach(b => b.classList.toggle('active', b.id === `lang-${lang}`));
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (translations[lang][key]) {
-                if (el.tagName === 'SPAN' || el.children.length === 0) {
-                    el.innerHTML = translations[lang][key];
-                } else {
-                    const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                    if (textNode) textNode.textContent = translations[lang][key];
-                }
-            }
-        });
-        document.documentElement.lang = lang;
-    }
+    // 초기 언어 버튼 활성화 상태 설정
+    langBtns.forEach(b => b.classList.toggle('active', b.id === `lang-${state.currentLang}`));
+    document.documentElement.lang = state.currentLang;
 
-    function setBackground(name) {
-        if (idolSection) {
-            idolSection.style.backgroundImage = `url('images/${name}.png')`;
-            localStorage.setItem('selectedBg', name);
-            currentBg = name;
+    // 3. 이벤트 바인딩
+
+    // 이미지 및 별 우클릭 방지
+    document.addEventListener('contextmenu', (e) => {
+        if (e.target.tagName === 'IMG' || e.target.classList.contains('card-star') || e.target.classList.contains('star')) {
+            e.preventDefault();
         }
-    }
-
-    // 5. 내비게이션 관리
-    function handleNavigation(target) {
-        if (!target) return;
-        switch(target) {
-            case 'home': renderHome(); break;
-            case 'idol': renderIdolList(); break;
-        }
-        if (navLinks) navLinks.classList.remove('active');
-        if (menuToggle) menuToggle.classList.remove('is-active');
-    }
-
-    // 6. 렌더링 함수 (Templates 사용)
-    function renderHome() {
-        if (!contentArea) return;
-        const tpl = document.getElementById('tpl-home');
-        contentArea.innerHTML = '';
-        contentArea.appendChild(tpl.content.cloneNode(true));
-        updateLanguage(currentLang);
-    }
-
-    function renderIdolList() {
-        if (!contentArea) return;
-        contentArea.innerHTML = '';
-        
-        const gridTpl = document.getElementById('tpl-idol-grid');
-        const itemTpl = document.getElementById('tpl-idol-item');
-        const grid = gridTpl.content.cloneNode(true).querySelector('.idol-grid');
-
-        idolList.forEach(name => {
-            const item = itemTpl.content.cloneNode(true);
-            const img = item.querySelector('.idol-icon');
-            img.src = `icons/idolicons/${name}.png`;
-            img.alt = name;
-            img.addEventListener('click', () => setBackground(name));
-            grid.appendChild(item);
-        });
-
-        contentArea.appendChild(grid);
-    }
-
-    // 7. 이벤트 바인딩
-    langBtns.forEach(btn => {
-        btn.addEventListener('click', () => updateLanguage(btn.id.split('-')[1]));
     });
 
+    // 언어 변경
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const newLang = btn.id.split('-')[1];
+            setLanguage(newLang);
+            updatePageTranslations();
+
+            // UI 업데이트 (버튼 활성화 상태)
+            langBtns.forEach(b => b.classList.toggle('active', b.id === `lang-${newLang}`));
+            
+            // 현재 화면이 서포트 카드라면 갱신
+            if (document.querySelector('.support-grid')) {
+                renderSupport();
+            }
+        });
+    });
+
+    // 햄버거 메뉴
     if (menuToggle && navLinks) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
@@ -104,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 네비게이션 링크
     document.querySelectorAll('.nav-links a, .menu-btn').forEach(el => {
         el.addEventListener('click', (e) => {
             if (el.tagName === 'A' && el.getAttribute('href').startsWith('#')) e.preventDefault();
@@ -111,5 +65,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 로고 클릭 -> 홈
     if (logo) logo.addEventListener('click', () => handleNavigation('home'));
+
+    // 모달 닫기
+    const modal = document.getElementById('card-modal');
+    const closeModal = document.querySelector('.close-modal');
+    
+    function hideModal() {
+        if (!modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+            // If the modal was closed manually, we might need to pop the state
+            // But popstate will handle it if we use the back button.
+        }
+    }
+
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            hideModal();
+            if (history.state && history.state.modalOpen) {
+                history.back(); // 상태 제거
+            }
+        });
+    }
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            hideModal();
+            if (history.state && history.state.modalOpen) {
+                history.back(); // 상태 제거
+            }
+        }
+    });
+
+    // 브라우저 뒤로가기 버튼 처리
+    window.addEventListener('popstate', (event) => {
+        if (!modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+        }
+    });
 });
