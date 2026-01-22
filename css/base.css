@@ -235,6 +235,14 @@ footer {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+.primary-btn:disabled {
+    background-color: #ccc;
+    color: #888;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .button-group.horizontal {
     display: flex;
     justify-content: center;
