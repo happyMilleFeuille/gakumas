@@ -153,7 +153,8 @@ export function renderGacha() {
             };
             
             videoMain.onended = () => {
-                // 필요 시 자동 전환 로직 추가 가능
+                // 첫 번째 영상이 끝나면 자동으로 후속 영상으로 전환
+                playSequel();
             };
 
             videoNext.onended = () => {
