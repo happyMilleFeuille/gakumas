@@ -282,8 +282,9 @@ export const cardList = [
     name_ja: "大運動会、開催っ！",     
     type: "vocal", 
     plan: "free", 
-    rarity: "SSR",                
-    extra1: "param", extra2:"ranchange",    
+    rarity: "SSR",
+    gacha: false,                
+    extra1: "param", extra2: "ranchange",    
         abilities: 
         [
             "fixedparam",
@@ -312,5 +313,9 @@ export const cardList = [
             "gift_recovery",
             "event_paraup"
         ]        
-    },               
+    },
+    // 가챠 테스트용 더미 데이터
+    { id: "dummy_ssr", name: "더미 SSR 카드", name_ja: "ダミー SSR", rarity: "SSR", type: "vocal" },
+    { id: "dummy_sr", name: "더미 SR 카드", name_ja: "ダミー SR", rarity: "SR", type: "dance" },
+    { id: "dummy_r", name: "더미 R 카드", name_ja: "ダミー R", rarity: "R", type: "visual" },
 ];
