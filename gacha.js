@@ -126,18 +126,23 @@ export function renderGacha() {
             // 1. Main 비디오 설정 및 재생
             videoMain.src = mainSrc;
             videoMain.muted = false;
-            // hidden 제거는 재생 준비가 된 후에 하는 것이 더 자연스러울 수 있음
-            // 하지만 깜빡임 방지를 위해 일단 유지하되, 재생 시점 조절
-            videoMain.classList.remove('hidden');
+            
+            // 수정: 재생이 실제로 시작될 때까지 숨김 (검은 화면 유지)
+            videoMain.classList.add('hidden'); 
             videoMain.load();
             
-            // 준비되면 재생 (멈춤 현상 완화)
-            videoMain.oncanplay = () => {
+            // 버퍼링이 충분히 되었을 때 재생 시도
+            videoMain.oncanplaythrough = () => {
                 videoMain.play().catch(err => {
                     console.error("Main play failed", err);
                     finishGacha();
                 });
-                videoMain.oncanplay = null; // 이벤트 제거 (중복 실행 방지)
+                videoMain.oncanplaythrough = null; 
+            };
+            
+            // 실제로 재생이 시작되면 화면 표시 (멈춤 현상 제거)
+            videoMain.onplaying = () => {
+                videoMain.classList.remove('hidden');
             };
             
             // 2. Next 비디오 미리 설정 (대기)
