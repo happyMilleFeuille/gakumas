@@ -23,6 +23,7 @@ export function renderGacha() {
     // 상태 변수 선언
     let gachaMode = 0; // 1 or 10
     let videoStep = 0; // 0: 첫영상, 1: 후속영상
+    let canClick = false; // 클릭 가능 여부
 
     // 버튼 비활성화 및 스피너 표시
     if (btn1) btn1.disabled = true;
@@ -103,8 +104,8 @@ export function renderGacha() {
     };
 
     const playSequel = () => {
-        // 이미 후속 영상이 재생 중이면 중단
-        if (videoStep !== 0) return;
+        // 이미 후속 영상이 재생 중이거나 클릭 불가능 상태면 중단
+        if (videoStep !== 0 || !canClick) return;
         
         if (videoNext && videoMain) {
             videoStep = 1; // 상태 변경
@@ -127,6 +128,12 @@ export function renderGacha() {
         if (videoMain && videoNext && videoContainer) {
             videoContainer.classList.remove('hidden');
             videoStep = 0; // 상태 초기화
+            canClick = false; // 클릭 잠금
+
+            // 1초 후 클릭 잠금 해제
+            setTimeout(() => {
+                canClick = true;
+            }, 1000);
             
             // 1. Main 비디오 설정
             videoMain.src = mainSrc;
