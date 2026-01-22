@@ -103,31 +103,31 @@ export function renderGacha() {
         if(videoNext) videoNext.classList.add('hidden');
     };
 
-    const playSequel = () => {
-        // 이미 후속 영상이 재생 중이거나 클릭 불가능 상태면 중단
-        if (videoStep !== 0 || !canClick) return;
+    const playSequel = (isAuto = false) => {
+        // 이미 후속 영상이 재생 중이거나, 수동 클릭인데 잠금 상태면 중단
+        if (videoStep !== 0) return;
+        if (!isAuto && !canClick) return;
+        
+        videoStep = 1; 
+        canClick = false; // 즉시 클릭 잠금
         
         if (videoNext && videoMain) {
-            videoStep = 1; 
-            canClick = false; // 클릭 잠금 시작
-
             // 후속 영상 재생 시작
             videoNext.play().catch(e => {
-                console.error("Sequel play failed", e);
                 finishGacha();
             });
 
-            // 실제로 후속 영상의 화면이 나오기 시작할 때 메인 영상을 숨김 (끊김 방지)
+            // 실제로 후속 영상의 화면이 나오기 시작할 때 메인 영상을 숨김
             videoNext.onplaying = () => {
                 videoMain.classList.add('hidden'); 
                 videoNext.classList.remove('hidden'); 
                 videoMain.pause();
                 videoNext.onplaying = null;
 
-                // 화면이 보이기 시작한 시점부터 0.3초 후에 클릭 해제
+                // 화면이 보이기 시작한 시점부터 0.6초 후에 클릭 해제
                 setTimeout(() => {
                     canClick = true;
-                }, 300);
+                }, 600);
             };
         }
     };
@@ -143,7 +143,10 @@ export function renderGacha() {
             videoStep = 0; 
             canClick = false; 
 
-            setTimeout(() => { canClick = true; }, 1000);
+            // 0.6초 후 클릭 잠금 해제
+            setTimeout(() => {
+                canClick = true;
+            }, 600);
             
             // 1. Main 비디오 설정
             videoMain.src = mainSrc;
@@ -154,13 +157,11 @@ export function renderGacha() {
             videoNext.src = nextSrc;
             videoNext.muted = false;
             videoNext.classList.add('hidden');
-            videoNext.load(); // 미리 로드만 해둠
+            videoNext.load(); 
 
             videoMain.onplaying = () => {
                 videoMain.classList.remove('hidden');
                 
-                // 모바일 최적화: 메인 재생 중에 다음 영상 디코더 웜업(Warming)
-                // 아주 잠깐 틀었다가 0초로 돌려놓아 재생 준비를 마침
                 videoNext.muted = true;
                 videoNext.play().then(() => {
                     videoNext.pause();
@@ -169,14 +170,24 @@ export function renderGacha() {
                 }).catch(e => {});
             };
             
-            videoMain.onclick = playSequel;
-            videoNext.onclick = () => { finishGacha(); };
+            // 클릭 핸들러: canClick 상태 확인 추가
+            videoMain.onclick = () => {
+                if (canClick) playSequel(false);
+            };
             
-            videoMain.onended = () => { playSequel(); };
-            videoNext.onended = () => { finishGacha(); };
+            videoNext.onclick = () => {
+                if (canClick) finishGacha();
+            };
+            
+            videoMain.onended = () => { 
+                playSequel(true); // 자동 전환은 락 무시
+            };
+            
+            videoNext.onended = () => { 
+                finishGacha(); 
+            };
 
             videoMain.play().catch(err => {
-                console.error("Main play failed", err);
                 finishGacha();
             });
         }
