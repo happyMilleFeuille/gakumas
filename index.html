@@ -151,8 +151,8 @@
     <template id="tpl-gacha">
         <div class="gacha-container">
             <div id="gacha-video-container" class="gacha-video-overlay hidden">
-                <video id="gacha-video-main" class="gacha-vid" playsinline></video>
-                <video id="gacha-video-next" class="gacha-vid hidden" playsinline></video>
+                <video id="gacha-video-main" class="gacha-vid hidden" playsinline muted preload="auto"></video>
+                <video id="gacha-video-next" class="gacha-vid hidden" playsinline muted preload="auto"></video>
                 <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
             </div>
             <h2 data-i18n="gacha_title">가챠 시뮬레이션</h2>
