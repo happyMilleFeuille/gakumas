@@ -2,6 +2,7 @@
 import { updatePageTranslations } from './utils.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { state, setJewels, setTotalPulls, addGachaLog, clearGachaLog } from './state.js';
+import { currencyData } from './currency.js';
 
 export function renderGacha() {
     const contentArea = document.getElementById('content-area');
@@ -434,13 +435,26 @@ function openGachaLogModal() {
     });
 
     const getPerc = (c) => ((c / total) * 100).toFixed(1) + '%';
-    const totalPriceYen = Math.round(total * 250 * 1.1951);
+    
+    // 언어 설정에 따른 가격 표시 (1.1951: 1쥬얼당 엔화 계수)
+    const isJa = document.documentElement.lang === 'ja';
+    const yenPerJewel = 1.1951;
+    const totalJewels = total * 250;
+
+    let priceDisplay;
+    if (isJa) {
+         const totalPriceJPY = Math.round(totalJewels * yenPerJewel);
+         priceDisplay = `(￥${totalPriceJPY.toLocaleString()})`;
+    } else {
+         const totalPriceKRW = Math.round(totalJewels * yenPerJewel * currencyData.rate);
+         priceDisplay = `(₩${totalPriceKRW.toLocaleString()})`;
+    }
 
     statsArea.innerHTML = `
         <div class="stat-row-top">
             <div class="stat-item full-width">
                 <span class="stat-label">총 뽑기 횟수 <span class="stat-value" style="margin-left: 5px;">${total}</span></span>
-                <span class="stat-value" style="color: #777; font-weight: normal;">(￥${totalPriceYen.toLocaleString()})</span>
+                <span class="stat-value" style="color: #777; font-weight: normal;">${priceDisplay}</span>
             </div>
             <div class="stat-row-bottom" style="border-top: 1px dashed #ccc; padding-top: 8px;">
                 <div class="stat-item">
