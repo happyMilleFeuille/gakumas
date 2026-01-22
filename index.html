@@ -6,7 +6,11 @@
     <title>Gakumas - New Project</title>
     <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16x16.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/idol.css">
+    <link rel="stylesheet" href="css/support.css">
+    <link rel="stylesheet" href="css/gacha.css">
+    <link rel="stylesheet" href="css/calc.css">
 </head>
 <body>
     <div id="fixed-bg"></div>
@@ -150,6 +154,9 @@
 
     <template id="tpl-gacha">
         <div class="gacha-container">
+            <div class="gacha-header-controls">
+                <button id="gacha-mute-btn" class="mute-toggle-btn">🔊</button>
+            </div>
             <div id="gacha-video-container" class="gacha-video-overlay hidden">
                 <video id="gacha-video-main" class="gacha-vid hidden" playsinline muted preload="auto"></video>
                 <video id="gacha-video-next" class="gacha-vid hidden" playsinline muted preload="auto"></video>

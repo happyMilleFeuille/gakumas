@@ -19,143 +19,222 @@ export function renderGacha() {
     const videoNext = contentArea.querySelector('#gacha-video-next'); 
     const skipBtn = contentArea.querySelector('#skip-button');
     const spinner = contentArea.querySelector('#gacha-spinner');
+    const muteBtn = contentArea.querySelector('#gacha-mute-btn');
     
+    // 오디오 객체 생성
+    const gachaBGM = new Audio();
+    let isMuted = true; // 기본 음소거 상태
+    gachaBGM.muted = true;
+    
+    const toggleMute = () => {
+        isMuted = !isMuted;
+        gachaBGM.muted = isMuted;
+        if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    };
+
+    if (muteBtn) {
+        muteBtn.textContent = '🔇'; // 초기 아이콘 설정
+        muteBtn.onclick = toggleMute;
+    }
+
     // 상태 변수
     let gachaMode = 0; 
     let videoStep = 0; 
     let canClick = false; 
-    let clickTimer = null; // 타이머 관리를 위한 변수
+    let clickTimer = null; 
 
     if (btn1) btn1.disabled = true;
     if (btn10) btn10.disabled = true;
     if (spinner) spinner.classList.add('active');
 
-    const videoAssets = [
-        'gasya/start_ren1.mp4', 
-        'gasya/start_ren10.mp4'
-    ];
+        const assets = [
 
-    const videoBlobs = {}; 
-    let loadedCount = 0;
+            'gasya/start_ren1.mp4', 
 
-    const checkLoadingComplete = () => {
-        if (loadedCount >= videoAssets.length) {
-            if (btn1) btn1.disabled = false;
-            if (btn10) btn10.disabled = false;
-            if (spinner) spinner.classList.remove('active');
-        }
-    };
+            'gasya/start_ren10.mp4',
 
-    videoAssets.forEach(src => {
-        fetch(src)
-            .then(response => response.blob())
-            .then(blob => {
-                const objectURL = URL.createObjectURL(blob);
-                videoBlobs[src] = objectURL;
-                loadedCount++;
-                checkLoadingComplete();
-            })
-            .catch(() => {
-                loadedCount++;
-                checkLoadingComplete();
-            });
-    });
+            'gasya/start_bgmnormal.mp3',
 
-    setTimeout(() => {
-        if (btn1 && btn1.disabled) {
-             btn1.disabled = false;
-             if (btn10) btn10.disabled = false;
-             if (spinner) spinner.classList.remove('active');
-        }
-    }, 10000);
+            'gasya/gasyaclick.mp3',
 
-    const finishGacha = () => {
-        if (clickTimer) clearTimeout(clickTimer); // 가챠 종료 시 타이머 해제
-        if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
-        if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
-        if(videoContainer) videoContainer.classList.add('hidden');
-        document.body.classList.remove('immersive-mode');
-        videoStep = 0;
-    };
+            'gasya/start_click.mp3' // 점프 효과음 추가
 
-    const playSequel = (isAuto = false) => {
-        if (videoStep !== 0 || !canClick) return;
-        
-        videoStep = 1; 
-        canClick = false; 
-        if (clickTimer) clearTimeout(clickTimer);
+        ];
 
-        if (videoNext && videoMain) {
-            videoNext.play().catch(() => finishGacha());
-            videoNext.classList.remove('hidden');
+    
+
+        const assetBlobs = {}; 
+
+        let loadedCount = 0;
+
+    
+
+        const checkLoadingComplete = () => {
+
+            if (loadedCount >= assets.length) {
+
+                if (btn1) btn1.disabled = false;
+
+                if (btn10) btn10.disabled = false;
+
+                if (spinner) spinner.classList.remove('active');
+
+            }
+
+        };
+
+    
+
+        assets.forEach(src => {
+
+            fetch(src)
+
+                .then(response => response.blob())
+
+                .then(blob => {
+
+                    const objectURL = URL.createObjectURL(blob);
+
+                    assetBlobs[src] = objectURL;
+
+                    loadedCount++;
+
+                    checkLoadingComplete();
+
+                })
+
+                .catch(() => {
+
+                    loadedCount++;
+
+                    checkLoadingComplete();
+
+                });
+
+        });
+
+    
+
+        const finishGacha = () => {
+
+            if (clickTimer) clearTimeout(clickTimer);
+
+            gachaBGM.pause();
+
+            gachaBGM.currentTime = 0;
+
+            if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
+
+            if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
+
+            if(videoContainer) videoContainer.classList.add('hidden');
+
+            document.body.classList.remove('immersive-mode');
+
+            videoStep = 0;
+
+        };
+
+    
+
+        const playSequel = () => {
+
+            if (videoStep !== 0 || !canClick) return;
+
             
-            setTimeout(() => {
-                videoMain.classList.add('hidden'); 
-                videoMain.pause();
-            }, 50);
 
-            // 2초 뒤 잠금 해제
-            clickTimer = setTimeout(() => { 
-                canClick = true; 
-            }, 2000);
-        }
-    };
+            const jumpTime = (gachaMode === 1) ? 9.8 : 8.6;
+
+            
+
+            if (videoMain) {
+
+                if (videoMain.currentTime > jumpTime + 0.1) return;
+
+    
+
+                // [추가] 점프 시 효과음 재생
+
+                if (!isMuted && assetBlobs['gasya/start_click.mp3']) {
+
+                    const jumpSfx = new Audio(assetBlobs['gasya/start_click.mp3']);
+
+                    jumpSfx.play().catch(() => {});
+
+                }
+
+    
+
+                videoStep = 1;
+
+                canClick = false;
+
+                if (clickTimer) clearTimeout(clickTimer);
+
+    
+
+                videoMain.currentTime = jumpTime;
+
+                videoMain.play().catch(() => finishGacha());
+
+                
+
+                clickTimer = setTimeout(() => { 
+
+                    canClick = true; 
+
+                }, 2000);
+
+            }
+
+        };
 
     const startGacha = (mode) => {
+        if (!isMuted && assetBlobs['gasya/gasyaclick.mp3']) {
+            const clickSfx = new Audio(assetBlobs['gasya/gasyaclick.mp3']);
+            clickSfx.play().catch(() => {});
+        }
         document.body.classList.add('immersive-mode');
         gachaMode = mode;
         videoStep = 0;
         canClick = false;
         if (clickTimer) clearTimeout(clickTimer);
-
-        // 0.6초 뒤 잠금 해제
-        clickTimer = setTimeout(() => { 
-            canClick = true; 
-        }, 600);
+        clickTimer = setTimeout(() => { canClick = true; }, 600);
         
         const src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
-        const jumpTime = (mode === 1) ? 9.9 : 8.7;
         
-        if (videoMain && videoNext && videoContainer) {
+        if (videoMain && videoContainer) {
             videoContainer.classList.remove('hidden');
-            
-            videoMain.src = videoBlobs[src] || src;
-            videoMain.muted = false;
+            if (assetBlobs['gasya/start_bgmnormal.mp3']) {
+                gachaBGM.src = assetBlobs['gasya/start_bgmnormal.mp3'];
+                gachaBGM.muted = isMuted;
+                gachaBGM.play().catch(() => {});
+            }
+            videoMain.src = assetBlobs[src] || src;
+            videoMain.muted = true; 
             videoMain.classList.remove('hidden'); 
+            videoMain.onclick = () => { if (canClick) playSequel(); };
+            videoMain.onended = () => { finishGacha(); };
 
-            videoNext.src = videoBlobs[src] || src;
-            videoNext.muted = false;
-            videoNext.classList.add('hidden');
-            videoNext.load();
-            
-            videoNext.onloadedmetadata = () => {
-                videoNext.currentTime = jumpTime;
-                videoNext.play().then(() => {
-                    videoNext.pause();
-                }).catch(() => {});
-                videoNext.onloadedmetadata = null;
+            const checkPausePoint = () => {
+                if (videoStep === 0 && videoMain && !videoMain.paused) {
+                    const jumpTime = (gachaMode === 1) ? 9.8 : 8.6;
+                    if (videoMain.currentTime >= jumpTime) {
+                        videoMain.pause();
+                        videoMain.currentTime = jumpTime;
+                        return;
+                    }
+                    requestAnimationFrame(checkPausePoint);
+                }
             };
-
-            videoMain.onclick = () => { if (canClick) playSequel(false); };
-            videoNext.onclick = () => { if (canClick) finishGacha(); };
-            
-            // 영상이 끝까지 재생되면 추가 점프 없이 바로 종료
-            videoMain.onended = () => { 
-                finishGacha(); 
-            };
-            
-            videoNext.onended = () => { 
-                finishGacha(); 
-            };
-
-            videoMain.play().catch(() => finishGacha());
+            videoMain.play().then(() => {
+                requestAnimationFrame(checkPausePoint);
+            }).catch(() => finishGacha());
         }
     };
 
     if (btn1) btn1.onclick = () => startGacha(1);
     if (btn10) btn10.onclick = () => startGacha(10);
-    
-    // 스킵 버튼도 canClick 상태를 확인하도록 수정
     if (skipBtn) {
         skipBtn.onclick = () => {
             if (canClick) finishGacha();
