@@ -139,8 +139,14 @@ export function renderGacha() {
             videoMain.onclick = () => { if (canClick) playSequel(false); };
             videoNext.onclick = () => { if (canClick) finishGacha(); };
             
-            videoMain.onended = () => { playSequel(true); };
-            videoNext.onended = () => { finishGacha(); };
+            // 영상이 끝까지 재생되면 추가 점프 없이 바로 종료
+            videoMain.onended = () => { 
+                finishGacha(); 
+            };
+            
+            videoNext.onended = () => { 
+                finishGacha(); 
+            };
 
             videoMain.play().catch(() => finishGacha());
         }
