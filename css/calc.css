@@ -6,7 +6,7 @@
     justify-content: center;
     height: 100%;
     gap: 2rem;
-    padding-top: 4rem;
+    padding-top: 1.5rem; /* 4rem에서 1.5rem으로 축소 */
 }
 
 .calc-buttons {

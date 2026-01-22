@@ -24,6 +24,8 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+.hidden { display: none !important; }
+
 *:focus {
     outline: none !important;
 }
@@ -167,32 +169,27 @@ nav {
 
 main {
     max-width: var(--max-width);
-    margin: 2rem auto;
+    margin: 1rem auto; /* 2rem에서 1rem으로 축소 */
     padding: 0 1rem;
 }
 
 #idol {
     text-align: center;
-    padding: 4rem 1rem 6rem;
+    padding: 1.5rem 1rem 0; 
     border-radius: 15px;
     position: relative;
-    min-height: var(--idol-min-height);
-}
-
-#idol::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(255, 255, 255, 0.4);
-    z-index: 0;
-    border-radius: 15px;
+    height: 75vh;
+    display: flex; 
+    flex-direction: column;
+    overflow-y: auto;
+    border: 2px solid blue; /* 디버깅용 외곽선 추가 */
 }
 
 #content-area {
     position: relative;
     z-index: 1;
-    min-height: var(--content-min-height);
+    flex: 1; /* 남은 모든 공간(바닥까지)을 차지하게 함 */
+    width: 100%;
 }
 
 h1 {
@@ -314,7 +311,65 @@ footer {
     h1 {
         font-size: 1.6rem;
     }
+    #idol {
+        height: 75vh; 
+        padding: 0; /* 모든 여백 제거 (좌우 패딩 포함) */
+        overflow-y: auto; 
+    }
+    #content-area {
+        min-height: 35vh;
+        height: 100%;
+    }
     .button-group.horizontal { width: 95%; height: 80px; }
     .button-group.horizontal::before { height: 100px; }
     .btn-icon { width: 24px; height: 24px; }
+}
+
+/* Ŀ���� ��ũ�ѹ� ������ */
+#idol::-webkit-scrollbar {
+    width: 6px; /* ��ũ�ѹ� �ʺ� */
+}
+#idol::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05); /* ��� */
+}
+#idol::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2); /* ��ũ�ѹ� ���� */
+    border-radius: 10px; /* �ձ� �𼭸� */
+}
+#idol::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color); /* ���콺 �÷��� �� ����Ʈ ���� */
+}
+
+/* ��í ��� ��ư ��Ÿ�� */
+.log-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 200;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+.log-btn:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+.reset-btn {
+    left: 110px; /* 가챠 기록 버튼 옆에 충분한 여백 확보 */
+}
+@media (max-width: 768px) {
+    .log-btn {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+        top: 5px;
+        left: 5px;
+    }
+    .reset-btn {
+        left: 65px; /* 작은 폰트 크기에 맞춰 간격 재조정 */
+    }
 }

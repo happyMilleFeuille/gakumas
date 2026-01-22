@@ -24,8 +24,21 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-.card-image-wrapper { position: relative; padding-top: 56.25%; background: #f0f0f0; }
-.card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+.card-image-wrapper { 
+    position: relative; 
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 비율 강제 고정 */
+    background: #f0f0f0; 
+    overflow: hidden; /* 이미지가 튀어나오지 않게 차단 */
+}
+
+.card-img { 
+    position: absolute; 
+    top: 0; left: 0; 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* 비율에 맞춰 채우고 나머지는 자름 */
+}
 .card-rarity { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #ffd700; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; }
 .card-plan-icon { position: absolute; top: 6px; left: 6px; width: 24px; height: 24px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.3)); }
 
@@ -59,8 +72,8 @@
     transform: scale(1.2);
 }
 
-.card-name { font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; color: var(--text-color); }
-.card-type { font-size: 0.65rem; font-weight: bold; text-transform: uppercase; color: #777; }
+.card-name { font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; color: var(--text-color); }
+.card-type { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #777; }
 
 /* Type Colors */
 .type-vocal, .highlight-vocal, .title-vocal { color: #f766a4; }
@@ -69,10 +82,125 @@
 .type-assist, .highlight-assist, .title-assist { color: #72da49; }
 
 /* Filter Styles */
-.filter-container { margin-bottom: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; }
-.filter-group { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-.filter-btn { padding: 0.5rem 1rem; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; }
-.filter-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+.filter-container { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center; }
+
+/* 보댄비 필터 전용 (원형 스타일) */
+#filter-attr { 
+    gap: 0.6rem; /* 버튼 사이 간격 복구 */
+}
+#filter-attr .filter-btn { 
+    border-radius: 50%; /* 완전 원형 */
+    width: 3.2rem; /* 고정 너비 (정원 유지) */
+    height: 3.2rem; /* 고정 높이 */
+    padding: 0;
+    margin-left: 0;
+}
+
+.filter-group { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 0; 
+    justify-content: center; 
+    border-radius: 4px;
+    /* overflow: hidden 제거 (버튼을 밖으로 붙이기 위함) */
+}
+
+.filter-toggle-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    margin-left: 5px; /* 약간 띄우기 */
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0 8px;
+    color: #888;
+    transition: all 0.2s;
+}
+
+.filter-toggle-btn:hover { background: #f9f9f9; color: var(--primary-color); }
+.filter-toggle-btn.active { transform: rotate(180deg); color: var(--primary-color); }
+
+.extra-filters-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    width: 100%;
+}
+
+.extra-filters-wrapper.hidden {
+    display: none;
+}
+
+.filter-btn { 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.2rem; /* 세로 높이 고정 */
+    padding: 0 1.2rem; 
+    border: 1px solid #ddd; 
+    margin-left: -1px; 
+    background: #fff; 
+    border-radius: 0; 
+    cursor: pointer; 
+    font-size: 1rem; 
+    color: #666;
+    transition: all 0.2s;
+    line-height: 1; /* 줄 간격 고정 */
+}
+
+/* 첫 번째와 마지막 버튼의 외곽만 살짝 둥글게 (선택사항) */
+.filter-btn:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+.filter-btn:last-child { border-radius: 0 4px 4px 0; }
+
+.filter-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); font-weight: bold; z-index: 1; }
+
+/* 정렬 컨트롤 */
+.sort-controls {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
+}
+
+.sort-select {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.85rem;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+}
+
+.sort-select:hover { border-color: var(--primary-color); }
+
+.filter-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
+}
+
+/* 보댄비 활성화 시 고유 색상 */
+#filter-attr .filter-btn[data-val="vocal"] { color: #f766a4; border-color: #f766a4; }
+#filter-attr .filter-btn[data-val="dance"] { color: #5aa6f0; border-color: #5aa6f0; }
+#filter-attr .filter-btn[data-val="visual"] { color: #fdc361; border-color: #fdc361; }
+
+#filter-attr .filter-btn[data-val="vocal"].active { background: #f766a4; color: #fff; }
+#filter-attr .filter-btn[data-val="dance"].active { background: #5aa6f0; color: #fff; }
+#filter-attr .filter-btn[data-val="visual"].active { background: #fdc361; color: #fff; }
+
+/* 출처 및 등급 필터 크기 추가 축소 */
+#filter-source .filter-btn,
+#filter-rarity .filter-btn {
+    height: 1.8rem; /* 더 작은 고정 높이 */
+    padding: 0 0.7rem;
+    font-size: 0.85rem;
+}
 
 /* Modal Styles */
 .modal { position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; }
@@ -112,11 +240,99 @@
 .border-assist { border-left-color: #72da49 !important; }
 
 @media (max-width: 768px) {
-    .support-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
-    .card-name { font-size: 0.55rem; }
-    .modal-abilities-container { grid-template-columns: 1fr; }
-    .star-rating { font-size: 1.2rem; bottom: 5px; right: 5px; }
-    .ability-text { font-size: 0.65rem !important; }
-    .ability-text.shrink { font-size: 0.55rem !important; }
+    .support-container {
+        padding: 1rem 0.05rem; 
+    }
+    .support-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3px; 
+        row-gap: 10px; /* 위아래 간격 추가 확대 */
+    }
+
+    /* 모바일에서 필터 버튼 크기 다시 축소 */
+    .filter-btn {
+        height: 1.8rem;
+        padding: 0 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* 보댄비 원형 필터 모바일 크기 */
+    #filter-attr .filter-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+    }
+
+    .sort-select {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    #filter-source .filter-btn,
+    #filter-rarity .filter-btn {
+        height: 1.5rem;
+        padding: 0 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .card-info {
+        padding: 3px 4px;
+    }
+
+    .card-name {
+        font-size: 0.55rem;
+        line-height: 1.1;
+    }
+
+    .card-type, .card-rarity {
+        font-size: 0.45rem !important;
+        line-height: 1;
+    }
+
+    .card-plan-icon {
+        width: 16px;
+        height: 16px;
+        top: 4px;
+        left: 4px;
+    }
+
+    /* Mobile Star Sizes */
+    .card-star {
+        font-size: 0.55rem;
+    }
+
+    .star-rating {
+        font-size: 1.2rem;
+        bottom: 5px;
+        right: 5px;
+        gap: 2px;
+    }
+
+    /* Mobile Ability Text Sizes */
+    .ability-text {
+        font-size: 0.65rem !important;
+        line-height: 1.2;
+    }
+
+    .ability-text.shrink {
+        font-size: 0.55rem !important;
+        line-height: 1.1;
+    }
+
+    .modal-extra-box {
+        font-size: 0.65rem !important;
+        padding: 4px 8px;
+        min-height: 28px;
+    }
+
+    .modal-extra-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .modal-abilities-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
 }
 
