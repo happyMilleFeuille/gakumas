@@ -1002,6 +1002,8 @@ footer {
     height: 100%;
     object-fit: contain;
     z-index: 1;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .gacha-vid.hidden {

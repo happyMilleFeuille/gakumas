@@ -20,6 +20,10 @@ export function renderGacha() {
     const skipBtn = contentArea.querySelector('#skip-button');
     const spinner = contentArea.querySelector('#gacha-spinner');
     
+    // 상태 변수 선언
+    let gachaMode = 0; // 1 or 10
+    let videoStep = 0; // 0: 첫영상, 1: 후속영상
+
     // 버튼 비활성화 및 스피너 표시
     if (btn1) btn1.disabled = true;
     if (btn10) btn10.disabled = true;
@@ -99,18 +103,18 @@ export function renderGacha() {
     };
 
     const playSequel = () => {
-        // 끊김 없는 전환: Next 비디오를 보여주고 Main을 숨김
-        console.log("Seamless switching to sequel...");
+        // 이미 후속 영상이 재생 중이면 중단
+        if (videoStep !== 0) return;
         
         if (videoNext && videoMain) {
-            videoMain.classList.add('hidden'); // Main 숨김
-            videoNext.classList.remove('hidden'); // Next 표시
+            videoStep = 1; // 상태 변경
+            videoMain.classList.add('hidden'); 
+            videoNext.classList.remove('hidden'); 
             videoNext.play().catch(e => {
-                console.error("Sequel play failed", e);
                 finishGacha();
             });
-            // Main은 이제 필요 없음 (정지)
             videoMain.pause();
+            videoMain.onclick = null; // 클릭 이벤트 제거
         }
     };
 
@@ -122,6 +126,7 @@ export function renderGacha() {
         
         if (videoMain && videoNext && videoContainer) {
             videoContainer.classList.remove('hidden');
+            videoStep = 0; // 상태 초기화
             
             // 1. Main 비디오 설정
             videoMain.src = mainSrc;
@@ -138,10 +143,15 @@ export function renderGacha() {
             videoMain.onplaying = () => {
                 videoMain.classList.remove('hidden');
                 
-                // 메인 재생 성공 시점에 다음 영상 로드 시작
+                // 메인 재생 성공 시점에 다음 영상 로드 및 웜업(Warming)
                 videoNext.src = nextSrc;
-                videoNext.muted = false;
+                videoNext.muted = true; // 소리 끄고 재생 시도
                 videoNext.load();
+                videoNext.play().then(() => {
+                    videoNext.pause(); // 디코더가 준비되면 즉시 정지
+                    videoNext.muted = false; // 소리 복원
+                    videoNext.currentTime = 0;
+                }).catch(e => console.warn("Warmup deferred"));
             };
             
             videoMain.onclick = () => {
