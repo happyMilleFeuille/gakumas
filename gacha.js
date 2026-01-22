@@ -24,6 +24,7 @@ export function renderGacha() {
     let gachaMode = 0; 
     let videoStep = 0; 
     let canClick = false; 
+    let clickTimer = null; // 타이머 관리를 위한 변수
 
     if (btn1) btn1.disabled = true;
     if (btn10) btn10.disabled = true;
@@ -68,141 +69,90 @@ export function renderGacha() {
         }
     }, 10000);
 
-        const finishGacha = () => {
+    const finishGacha = () => {
+        if (clickTimer) clearTimeout(clickTimer); // 가챠 종료 시 타이머 해제
+        if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
+        if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
+        if(videoContainer) videoContainer.classList.add('hidden');
+        document.body.classList.remove('immersive-mode');
+        videoStep = 0;
+    };
 
-            if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
+    const playSequel = (isAuto = false) => {
+        if (videoStep !== 0 || !canClick) return;
+        
+        videoStep = 1; 
+        canClick = false; 
+        if (clickTimer) clearTimeout(clickTimer);
 
-            if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
-
-            if(videoContainer) videoContainer.classList.add('hidden');
-
-            document.body.classList.remove('immersive-mode');
-
-            videoStep = 0;
-
-        };
-
-    
-
-        const playSequel = (isAuto = false) => {
-
-            if (videoStep !== 0 || !canClick) return;
-
+        if (videoNext && videoMain) {
+            videoNext.play().catch(() => finishGacha());
+            videoNext.classList.remove('hidden');
             
+            setTimeout(() => {
+                videoMain.classList.add('hidden'); 
+                videoMain.pause();
+            }, 50);
 
-            if (videoNext && videoMain) {
+            // 2초 뒤 잠금 해제
+            clickTimer = setTimeout(() => { 
+                canClick = true; 
+            }, 2000);
+        }
+    };
 
-                videoStep = 1; 
+    const startGacha = (mode) => {
+        document.body.classList.add('immersive-mode');
+        gachaMode = mode;
+        videoStep = 0;
+        canClick = false;
+        if (clickTimer) clearTimeout(clickTimer);
 
-                canClick = false; 
-
-    
-
-                // 이미 점프 지점에서 대기 중인 videoNext를 즉시 재생 및 표시
-
-                videoNext.play().catch(() => finishGacha());
-
-    
-
-                videoNext.onplaying = () => {
-
-                    videoMain.classList.add('hidden'); 
-
-                    videoNext.classList.remove('hidden'); 
-
-                    videoMain.pause();
-
-                    videoNext.onplaying = null;
-
-                    setTimeout(() => { canClick = true; }, 600);
-
-                };
-
-            }
-
-        };
-
-    
-
-        const startGacha = (mode) => {
-
-            document.body.classList.add('immersive-mode');
-
-            gachaMode = mode;
-
-            videoStep = 0;
-
-            canClick = false;
-
-            setTimeout(() => { canClick = true; }, 600);
-
+        // 0.6초 뒤 잠금 해제
+        clickTimer = setTimeout(() => { 
+            canClick = true; 
+        }, 600);
+        
+        const src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
+        const jumpTime = (mode === 1) ? 9.9 : 8.7;
+        
+        if (videoMain && videoNext && videoContainer) {
+            videoContainer.classList.remove('hidden');
             
+            videoMain.src = videoBlobs[src] || src;
+            videoMain.muted = false;
+            videoMain.classList.remove('hidden'); 
 
-            const src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
-
-            const jumpTime = (mode === 1) ? 9.8 : 8.6;
-
+            videoNext.src = videoBlobs[src] || src;
+            videoNext.muted = false;
+            videoNext.classList.add('hidden');
+            videoNext.load();
             
+            videoNext.onloadedmetadata = () => {
+                videoNext.currentTime = jumpTime;
+                videoNext.play().then(() => {
+                    videoNext.pause();
+                }).catch(() => {});
+                videoNext.onloadedmetadata = null;
+            };
 
-            if (videoMain && videoNext && videoContainer) {
+            videoMain.onclick = () => { if (canClick) playSequel(false); };
+            videoNext.onclick = () => { if (canClick) finishGacha(); };
+            
+            videoMain.onended = () => { playSequel(true); };
+            videoNext.onended = () => { finishGacha(); };
 
-                videoContainer.classList.remove('hidden');
-
-                
-
-                // 1. Main 비디오: 처음부터 재생
-
-                videoMain.src = videoBlobs[src] || src;
-
-                videoMain.muted = false;
-
-                videoMain.classList.remove('hidden'); 
-
-    
-
-                // 2. Next 비디오: 똑같은 파일을 점프 지점에서 대기
-
-                videoNext.src = videoBlobs[src] || src;
-
-                videoNext.muted = false;
-
-                videoNext.classList.add('hidden');
-
-                videoNext.load();
-
-                
-
-                // 미리 점프 시켜서 디코더를 대기시킴 (Warming)
-
-                videoNext.onloadedmetadata = () => {
-
-                    videoNext.currentTime = jumpTime;
-
-                    videoNext.onloadedmetadata = null;
-
-                };
-
-    
-
-                videoMain.onclick = () => { if (canClick) playSequel(false); };
-
-                videoNext.onclick = () => { if (canClick) finishGacha(); };
-
-                
-
-                videoMain.onended = () => { playSequel(true); };
-
-                videoNext.onended = () => { finishGacha(); };
-
-    
-
-                videoMain.play().catch(() => finishGacha());
-
-            }
-
-        };
+            videoMain.play().catch(() => finishGacha());
+        }
+    };
 
     if (btn1) btn1.onclick = () => startGacha(1);
     if (btn10) btn10.onclick = () => startGacha(10);
-    if (skipBtn) skipBtn.onclick = finishGacha;
+    
+    // 스킵 버튼도 canClick 상태를 확인하도록 수정
+    if (skipBtn) {
+        skipBtn.onclick = () => {
+            if (canClick) finishGacha();
+        };
+    }
 }
