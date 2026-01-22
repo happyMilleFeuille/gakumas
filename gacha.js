@@ -108,14 +108,21 @@ export function renderGacha() {
         if (videoStep !== 0 || !canClick) return;
         
         if (videoNext && videoMain) {
-            videoStep = 1; // 상태 변경
-            videoMain.classList.add('hidden'); 
-            videoNext.classList.remove('hidden'); 
+            videoStep = 1; 
+            
+            // 후속 영상 재생 시작
             videoNext.play().catch(e => {
+                console.error("Sequel play failed", e);
                 finishGacha();
             });
-            videoMain.pause();
-            videoMain.onclick = null; // 클릭 이벤트 제거
+
+            // 실제로 후속 영상의 화면이 나오기 시작할 때 메인 영상을 숨김 (끊김 방지)
+            videoNext.onplaying = () => {
+                videoMain.classList.add('hidden'); 
+                videoNext.classList.remove('hidden'); 
+                videoMain.pause();
+                videoNext.onplaying = null; // 이벤트 한 번만 실행
+            };
         }
     };
 
@@ -127,67 +134,48 @@ export function renderGacha() {
         
         if (videoMain && videoNext && videoContainer) {
             videoContainer.classList.remove('hidden');
-            videoStep = 0; // 상태 초기화
-            canClick = false; // 클릭 잠금
+            videoStep = 0; 
+            canClick = false; 
 
-            // 1초 후 클릭 잠금 해제
-            setTimeout(() => {
-                canClick = true;
-            }, 1000);
+            setTimeout(() => { canClick = true; }, 1000);
             
             // 1. Main 비디오 설정
             videoMain.src = mainSrc;
             videoMain.muted = false;
-            videoMain.classList.add('hidden'); // 실제 재생 전까지 숨김
+            videoMain.classList.add('hidden'); 
             
-            // 2. Next 비디오 초기화 (나중에 로드)
-            videoNext.pause();
-            videoNext.src = ""; 
+            // 2. Next 비디오 미리 설정 (대기 상태)
+            videoNext.src = nextSrc;
+            videoNext.muted = false;
             videoNext.classList.add('hidden');
-            
-            // 3. 이벤트 설정
-            // 실제 재생이 시작되면 화면 표시 및 그제서야 다음 영상 로딩 시작 (모바일 대역폭 확보)
+            videoNext.load(); // 미리 로드만 해둠
+
             videoMain.onplaying = () => {
                 videoMain.classList.remove('hidden');
                 
-                // 메인 재생 성공 시점에 다음 영상 로드 및 웜업(Warming)
-                videoNext.src = nextSrc;
-                videoNext.muted = true; // 소리 끄고 재생 시도
-                videoNext.load();
+                // 모바일 최적화: 메인 재생 중에 다음 영상 디코더 웜업(Warming)
+                // 아주 잠깐 틀었다가 0초로 돌려놓아 재생 준비를 마침
+                videoNext.muted = true;
                 videoNext.play().then(() => {
-                    videoNext.pause(); // 디코더가 준비되면 즉시 정지
-                    videoNext.muted = false; // 소리 복원
+                    videoNext.pause();
+                    videoNext.muted = false;
                     videoNext.currentTime = 0;
-                }).catch(e => console.warn("Warmup deferred"));
+                }).catch(e => {});
             };
             
-            videoMain.onclick = () => {
-                playSequel();
-            };
+            videoMain.onclick = playSequel;
+            videoNext.onclick = () => { finishGacha(); };
             
-            videoNext.onclick = () => {
-                finishGacha();
-            };
-            
-            videoMain.onended = () => {
-                // 첫 번째 영상이 끝나면 자동으로 후속 영상으로 전환
-                playSequel();
-            };
+            videoMain.onended = () => { playSequel(); };
+            videoNext.onended = () => { finishGacha(); };
 
-            videoNext.onended = () => {
+            videoMain.play().catch(err => {
+                console.error("Main play failed", err);
                 finishGacha();
-            };
-
-            // 4. 즉시 재생 시도 (모바일 상호작용 권한 확보)
-            const playPromise = videoMain.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(err => {
-                    console.error("Main play failed", err);
-                    finishGacha();
-                });
-            }
+            });
         }
     };
+
 
     // 버튼 이벤트 연결
     if (btn1) btn1.onclick = () => startGacha(1);
