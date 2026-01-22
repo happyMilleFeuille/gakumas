@@ -123,58 +123,51 @@ export function renderGacha() {
         if (videoMain && videoNext && videoContainer) {
             videoContainer.classList.remove('hidden');
             
-            // 1. Main 비디오 설정 및 재생
+            // 1. Main 비디오 설정
             videoMain.src = mainSrc;
             videoMain.muted = false;
+            videoMain.classList.add('hidden'); // 실제 재생 전까지 숨김
             
-            // 수정: 재생이 실제로 시작될 때까지 숨김 (검은 화면 유지)
-            videoMain.classList.add('hidden'); 
-            videoMain.load();
+            // 2. Next 비디오 초기화 (나중에 로드)
+            videoNext.pause();
+            videoNext.src = ""; 
+            videoNext.classList.add('hidden');
             
-            // 버퍼링이 충분히 되었을 때 재생 시도
-            videoMain.oncanplaythrough = () => {
-                videoMain.play().catch(err => {
-                    console.error("Main play failed", err);
-                    finishGacha();
-                });
-                videoMain.oncanplaythrough = null; 
-            };
-            
-            // 실제로 재생이 시작되면 화면 표시 (멈춤 현상 제거)
+            // 3. 이벤트 설정
+            // 실제 재생이 시작되면 화면 표시 및 그제서야 다음 영상 로딩 시작 (모바일 대역폭 확보)
             videoMain.onplaying = () => {
                 videoMain.classList.remove('hidden');
+                
+                // 메인 재생 성공 시점에 다음 영상 로드 시작
+                videoNext.src = nextSrc;
+                videoNext.muted = false;
+                videoNext.load();
             };
             
-            // 2. Next 비디오 미리 설정 (대기)
-            videoNext.src = nextSrc;
-            videoNext.muted = false;
-            videoNext.classList.add('hidden');
-            videoNext.load(); 
-            // 주의: 미리 play() 하면 소리가 겹칠 수 있으므로 load()만 하거나
-            // 0초에서 일시정지 상태로 두어야 함.
-            
-            // Main 클릭 이벤트 -> Next로 전환
             videoMain.onclick = () => {
                 playSequel();
             };
             
-            // Next 클릭 이벤트 -> 종료
             videoNext.onclick = () => {
                 finishGacha();
             };
             
-            // Main 종료 시 -> 자동 전환 안 함 (클릭 대기) 또는 종료
             videoMain.onended = () => {
-                // 사용자가 클릭 안 하고 멍하니 보고 있으면?
-                // 보통은 루프 돌리거나 멈춰있음. 여기선 일단 멈춤.
-                // 만약 자동으로 넘기고 싶으면 playSequel() 호출
+                // 필요 시 자동 전환 로직 추가 가능
             };
 
-            // Next 종료 시 -> 종료
             videoNext.onended = () => {
                 finishGacha();
             };
 
+            // 4. 즉시 재생 시도 (모바일 상호작용 권한 확보)
+            const playPromise = videoMain.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(err => {
+                    console.error("Main play failed", err);
+                    finishGacha();
+                });
+            }
         }
     };
 
