@@ -1,0 +1,97 @@
+/* gacha.css */
+.gacha-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4rem;
+    gap: 2rem;
+    text-align: center;
+}
+
+.gacha-header-controls {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(100px); /* 중앙에서 오른쪽으로 100px 이동 */
+    z-index: 100;
+}
+
+.mute-toggle-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.mute-toggle-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.gacha-buttons { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+.gacha-btn { min-width: 150px; }
+
+/* Spinner */
+.spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    animation: spin 1s linear infinite;
+    display: none;
+    margin: 20px auto;
+}
+.spinner.active { display: block; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Video Overlay */
+.gacha-video-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    z-index: 20000;
+    display: flex; justify-content: center; align-items: center;
+}
+.gacha-video-overlay.hidden { display: none; }
+
+.gacha-vid {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+.gacha-vid.hidden { display: none !important; }
+
+.skip-btn {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    z-index: 20001;
+}
+
+/* Immersive Mode */
+body.immersive-mode .button-group.horizontal,
+body.immersive-mode #fixed-bg, 
+body.immersive-mode header,
+body.immersive-mode footer {
+    display: none !important;
+}
+body.immersive-mode { background-color: #000 !important; overflow: hidden; }
