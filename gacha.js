@@ -1,6 +1,7 @@
 // gacha.js
 import { updatePageTranslations } from './utils.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
+import { state } from './state.js';
 
 export function renderGacha() {
     const contentArea = document.getElementById('content-area');
@@ -95,7 +96,9 @@ export function renderGacha() {
             const rarity = clone.querySelector('.result-card-rarity');
             const name = clone.querySelector('.result-card-name');
 
-            if (card.id.includes('dummy') || card.id.includes('produce')) {
+            if (card.type === 'produce') {
+                img.src = `idols/${card.id}1.webp`;
+            } else if (card.id.includes('dummy')) {
                 img.src = 'icons/idol.png';
             } else {
                 img.src = `images/support/${card.id}.webp`;
@@ -105,7 +108,16 @@ export function renderGacha() {
             const rarityClass = card.displayRarity.toLowerCase();
             rarity.className = `result-card-rarity rarity-${rarityClass}`;
             cardEl.className = `gacha-result-card ${rarityClass}-border`;
-            name.textContent = card.name;
+            
+            // 서포트 카드는 가로형(landscape) 클래스 추가
+            if (card.type !== 'produce') {
+                cardEl.classList.add('landscape');
+            }
+            
+            // 언어 설정에 따른 이름 표시 (name_ja가 없으면 name으로 대체)
+            const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+            name.textContent = displayName;
+            
             resultsContainer.appendChild(clone);
         });
     };

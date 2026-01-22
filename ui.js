@@ -84,6 +84,9 @@ export function renderSupport() {
 
     // 3. Filter Data
     const filteredList = cardList.filter(card => {
+        // 도감 제외 설정 확인
+        if (card.encyclopedia === false) return false;
+
         const cPlan = (card.plan || 'free').toLowerCase();
         const cType = card.type.toLowerCase();
         const cSource = (card.source || 'normal').toLowerCase();

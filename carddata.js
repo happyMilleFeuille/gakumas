@@ -315,7 +315,25 @@ export const cardList = [
         ]        
     },
     // 가챠 테스트용 더미 데이터
-    { id: "dummy_ssr", name: "더미 SSR 카드", name_ja: "ダミー SSR", rarity: "SSR", type: "vocal" },
-    { id: "dummy_sr", name: "더미 SR 카드", name_ja: "ダミー SR", rarity: "SR", type: "dance" },
-    { id: "dummy_r", name: "더미 R 카드", name_ja: "ダミー R", rarity: "R", type: "visual" },
+    { id: "dummy_sr",  
+    name: "더미 SR 카드", 
+    name_ja: "ダミー SR", 
+    rarity: "SR", 
+    type: "dance" 
+    },
+
+    // --- R 등급 가챠 전용 서포트 카드 ---
+    { id: "rvocal_free1", name: "전력, 그 이후", name_ja: "全力、その後", rarity: "R", type: "vocal", plan: "free", encyclopedia: false },
+    { id: "rvocal_free2", name: "왕자님의 짧은 텀", name_ja: "王子様のひと呼吸", rarity: "R", type: "vocal", plan: "free", encyclopedia: false },
+    { id: "rvocal_free3", name: "이미지 트레이닝", name_ja: "イメージとれーにんぐ", rarity: "R", type: "vocal", plan: "free", encyclopedia: false },
+    { id: "rvocal_free4", name: "제 페이스로", name_ja: "わたしのペースで", rarity: "R", type: "vocal", plan: "free", encyclopedia: false },
+    { id: "rdance_free1", name: "머리카락을 빙글", name_ja: "枝毛をくるり", rarity: "R", type: "dance", plan: "free", encyclopedia: false },
+    { id: "rdance_free2", name: "동경을 목표로", name_ja: "憧れを目指して", rarity: "R", type: "dance", plan: "free", encyclopedia: false },
+    { id: "rdance_free3", name: "스위치 ON!", name_ja: "スイッチ ON!", rarity: "R", type: "dance", plan: "free", encyclopedia: false },
+    { id: "rdance_free4", name: "언니가 가르쳐준 메뉴", name_ja: "お姉ちゃん直伝メニュー", rarity: "R", type: "dance", plan: "free", encyclopedia: false },
+    { id: "rdance_free5", name: "근엄성실", name_ja: "謹厳実直", rarity: "R", type: "dance", plan: "free", encyclopedia: false },
+    { id: "rvisual_free1", name: "철저한 스트레칭", name_ja: "念入りにストレッチ", rarity: "R", type: "visual", plan: "free", encyclopedia: false },
+    { id: "rvisual_free2", name: "한결같이 몰두하는 레슨", name_ja: "ひたむき居残りレッスン", rarity: "R", type: "visual", plan: "free", encyclopedia: false },
+    { id: "rvisual_free3", name: "믿을 만한 선배 언니", name_ja: "頼れる先輩お姉さん", rarity: "R", type: "visual", plan: "free", encyclopedia: false },
+    { id: "rvisual_free4", name: "완전무결의 플래닝", name_ja: "完全無欠のプランニング", rarity: "R", type: "visual", plan: "free", encyclopedia: false },
 ];

@@ -35,10 +35,18 @@ export function getGachaPool() {
         return isSSR && isNormal;
     });
 
-    // 2. 프로듀스 아이돌 풀 (producedata.js에서 등급별 분류)
-    const pssrPool = produceList.filter(p => p.rarity === 'PSSR');
+    // 2. 프로듀스 아이돌 풀 (producedata.js에서 등급별 분류 및 통상 필터링)
+    const pssrPool = produceList.filter(p => {
+        const isPSSR = p.rarity === 'PSSR';
+        const source = p.source || 'normal';
+        const isNormal = !['dist', 'limited', 'limited_f', 'limited_u'].includes(source);
+        return isPSSR && isNormal;
+    });
     const psrPool = produceList.filter(p => p.rarity === 'PSR');
     const prPool = produceList.filter(p => p.rarity === 'PR');
+
+    // 3. 서포트 R 풀 (cardList에서 rarity: 'R' 필터링)
+    const rCardPool = cardList.filter(card => card.rarity === 'R');
 
     return { 
         PSSR: pssrPool,
@@ -46,7 +54,7 @@ export function getGachaPool() {
         PSR: psrPool,
         SR_CARD: dummyData.SR_CARD,
         PR: prPool,
-        R_CARD: dummyData.R_CARD
+        R_CARD: rCardPool.length > 0 ? rCardPool : dummyData.R_CARD
     };
 }
 
