@@ -71,7 +71,7 @@ export function renderGacha() {
             });
     });
 
-    // 안전장치 (10초로 연장 - 다운로드 시간이 걸릴 수 있으므로)
+    // 안전장치 (10초 후 강제 활성화)
     setTimeout(() => {
         if (btn1 && btn1.disabled) {
              btn1.disabled = false;
@@ -80,7 +80,19 @@ export function renderGacha() {
         }
     }, 10000);
 
-    // ... (중략) ...
+    // [중요] 함수 정의 순서 조정 (ReferenceError 방지)
+
+    // 가챠 종료 (초기화)
+    const finishGacha = () => {
+        if(videoMain) { videoMain.pause(); videoMain.src = ""; }
+        if(videoNext) { videoNext.pause(); videoNext.src = ""; }
+        if(videoContainer) videoContainer.classList.add('hidden');
+        document.body.classList.remove('immersive-mode');
+        
+        // 초기 상태로 리셋
+        if(videoMain) videoMain.classList.remove('hidden');
+        if(videoNext) videoNext.classList.add('hidden');
+    };
 
     const playSequel = (isAuto = false) => {
         if (videoStep !== 0) return;
@@ -90,7 +102,6 @@ export function renderGacha() {
         canClick = false; 
         
         if (videoNext && videoMain) {
-            // [중요] 미리 생성된 Blob URL이 있다면 사용
             const sequelSrc = (gachaMode === 1) ? 'gasya/start_ren1_1.mp4' : 'gasya/start_ren10_1.mp4';
             if (videoBlobs[sequelSrc]) {
                 videoNext.src = videoBlobs[sequelSrc];
@@ -115,6 +126,7 @@ export function renderGacha() {
 
     const startGacha = (mode) => {
         document.body.classList.add('immersive-mode');
+        gachaMode = mode;
         
         const mainSrc = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
         const nextSrc = (mode === 1) ? 'gasya/start_ren1_1.mp4' : 'gasya/start_ren10_1.mp4';
@@ -126,7 +138,6 @@ export function renderGacha() {
 
             setTimeout(() => { canClick = true; }, 600);
             
-            // [중요] Blob URL 우선 적용
             videoMain.src = videoBlobs[mainSrc] || mainSrc;
             videoMain.muted = false;
             videoMain.classList.add('hidden'); 
@@ -138,7 +149,6 @@ export function renderGacha() {
 
             videoMain.onplaying = () => {
                 videoMain.classList.remove('hidden');
-                
                 videoNext.muted = true;
                 videoNext.play().then(() => {
                     videoNext.pause();
@@ -169,8 +179,7 @@ export function renderGacha() {
         }
     };
 
-
-    // 버튼 이벤트 연결
+    // [마지막] 버튼 이벤트 연결
     if (btn1) btn1.onclick = () => startGacha(1);
     if (btn10) btn10.onclick = () => startGacha(10);
     if (skipBtn) skipBtn.onclick = finishGacha;
