@@ -1,0 +1,375 @@
+/* base.css */
+:root {
+    /* Colors */
+    --primary-color: #ff4081;
+    --primary-hover: #e91e63;
+    --secondary-color: #3f51b5;
+    --text-color: #333;
+    --light-gray: #f0f0f0;
+    --bg-color: #f4f4f9;
+    --white: #ffffff;
+    --overlay-bg: rgba(255, 255, 255, 0.7);
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --dropdown-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+    /* Layout */
+    --header-height: 60px;
+    --max-width: 1200px;
+    --idol-min-height: 700px;
+    --content-min-height: 500px;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hidden { display: none !important; }
+
+*:focus {
+    outline: none !important;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+header {
+    background-color: var(--white);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.lang-item {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    background-color: #fcfcfc;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lang-btn {
+    background: none;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.lang-btn.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-color);
+    border-radius: 2px;
+}
+
+.nav-links {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background: var(--white);
+    box-shadow: var(--dropdown-shadow);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.nav-links.active {
+    display: block;
+}
+
+.nav-links li {
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.nav-links li:last-child {
+    border-bottom: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    padding: 1rem;
+    display: block;
+    text-align: center;
+    transition: background-color 0.2s;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    background-color: #fff0f5;
+    color: var(--primary-color);
+}
+
+main {
+    max-width: var(--max-width);
+    margin: 1rem auto; /* 2rem에서 1rem으로 축소 */
+    padding: 0 1rem;
+}
+
+#idol {
+    text-align: center;
+    padding: 1.5rem 1rem 0; 
+    border-radius: 15px;
+    position: relative;
+    height: 75vh;
+    display: flex; 
+    flex-direction: column;
+    overflow-y: auto;
+    border: 2px solid blue; /* 디버깅용 외곽선 추가 */
+}
+
+#content-area {
+    position: relative;
+    z-index: 1;
+    flex: 1; /* 남은 모든 공간(바닥까지)을 차지하게 함 */
+    width: 100%;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+#fixed-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100dvh;
+    z-index: -1;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-image 0.5s ease-in-out;
+    pointer-events: none;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    padding-bottom: 120px;
+    color: #777;
+}
+
+.primary-btn {
+    padding: 1rem 2.5rem;
+    min-width: 180px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.primary-btn:disabled {
+    background-color: #ccc;
+    color: #888;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.button-group.horizontal {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 500px;
+    height: 120px;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding-bottom: 2rem;
+}
+
+.button-group.horizontal::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 115%;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ffe0ea;
+    border-radius: 50% / 30px 30px 100% 100%;
+    z-index: -1;
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.menu-btn {
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    max-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    transform-origin: center top;
+    transform: rotate(var(--rot)) translateY(var(--ty)) scale(var(--sc, 1));
+}
+
+.menu-btn:hover {
+    --sc: 1.1;
+    z-index: 10;
+}
+
+.btn-icon {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+.menu-btn:nth-child(1) { --rot: 15deg; --ty: -25px; }
+.menu-btn:nth-child(2) { --rot: 7deg; --ty: -5px; }
+.menu-btn:nth-child(3) { --rot: 0deg; --ty: 0px; }
+.menu-btn:nth-child(4) { --rot: -7deg; --ty: -5px; }
+.menu-btn:nth-child(5) { --rot: -15deg; --ty: -25px; }
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    #idol {
+        height: 75vh; 
+        padding: 0; /* 모든 여백 제거 (좌우 패딩 포함) */
+        overflow-y: auto; 
+    }
+    #content-area {
+        min-height: 35vh;
+        height: 100%;
+    }
+    .button-group.horizontal { width: 95%; height: 80px; }
+    .button-group.horizontal::before { height: 100px; }
+    .btn-icon { width: 24px; height: 24px; }
+}
+
+/* Ŀ���� ��ũ�ѹ� ������ */
+#idol::-webkit-scrollbar {
+    width: 6px; /* ��ũ�ѹ� �ʺ� */
+}
+#idol::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05); /* ��� */
+}
+#idol::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2); /* ��ũ�ѹ� ���� */
+    border-radius: 10px; /* �ձ� �𼭸� */
+}
+#idol::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color); /* ���콺 �÷��� �� ����Ʈ ���� */
+}
+
+/* ��í ��� ��ư ��Ÿ�� */
+.log-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 200;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+.log-btn:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+.reset-btn {
+    left: 110px; /* 가챠 기록 버튼 옆에 충분한 여백 확보 */
+}
+@media (max-width: 768px) {
+    .log-btn {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+        top: 5px;
+        left: 5px;
+    }
+    .reset-btn {
+        left: 65px; /* 작은 폰트 크기에 맞춰 간격 재조정 */
+    }
+}

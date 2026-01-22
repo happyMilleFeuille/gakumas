@@ -1,0 +1,39 @@
+name: Update Currency Rate
+
+on:
+  schedule:
+    # 매일 한국 시간 오전 9시 (UTC 00:00) 실행
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 수동 실행 버튼 활성화
+
+permissions:
+  contents: write
+
+jobs:
+  update-rate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run update script
+        # 저장소 루트에 update_currency.py가 있다고 가정
+        run: |
+          python update_currency.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'Currency Bot'
+          git config --global user.email 'actions@github.com'
+          git add currency.js
+          # 변경사항이 있을 때만 커밋
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update currency rate" && git push)

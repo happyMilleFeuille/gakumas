@@ -1,0 +1,17 @@
+/* calc.css */
+.calc-menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 2rem;
+    padding-top: 1.5rem; /* 4rem에서 1.5rem으로 축소 */
+}
+
+.calc-buttons {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}

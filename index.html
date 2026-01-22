@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gakumas - New Project</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16x16.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/idol.css">
+    <link rel="stylesheet" href="css/support.css">
+    <link rel="stylesheet" href="css/gacha.css">
+    <link rel="stylesheet" href="css/calc.css">
+</head>
+<body>
+    <div id="fixed-bg"></div>
+    <header>
+        <nav>
+            <div class="nav-left">
+                <div class="logo" data-i18n="logo">Gakumas Project</div>
+            </div>
+            <div class="nav-right">
+                <button class="menu-toggle" aria-label="메뉴 열기">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#idol" data-i18n="nav_idol" data-target="idol">아이돌</a></li>
+                    <li><a href="#support" data-i18n="nav_support" data-target="support">서포트 카드</a></li>
+                    <li><a href="#calc" data-i18n="nav_calc" data-target="calc">계산기</a></li>
+                    <li><a href="#gacha-sim" data-i18n="nav_gacha_sim" data-target="gacha">가챠 시뮬레이션</a></li>
+                    <li class="lang-item">
+                        <div class="lang-switch">
+                            <button id="lang-ko" class="lang-btn active">KO</button>
+                            <button id="lang-ja" class="lang-btn">JA</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="idol">
+            <div id="content-area">
+                <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
+                <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+            </div>
+            <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
+            <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
+                <div class="total-pulls-box">
+                    <span id="total-pull-count">0</span>
+                </div>
+                <button class="primary-btn gacha-btn" id="btn-1pull-fixed">1회 뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-10pull-fixed">10회 뽑기</button>
+            </div>
+            <button id="btn-gacha-log" class="log-btn hidden">가챠 기록</button>
+            <button id="btn-gacha-reset" class="log-btn reset-btn hidden">초기화</button>
+            <div id="gacha-header-controls" class="gacha-header-controls hidden">
+                <button id="gacha-mute-btn" class="mute-toggle-btn">🔇</button>
+            </div>
+            <div id="jewel-container" class="jewel-container hidden">
+                <div class="jewel-box">
+                    <span id="jewel-count">0</span>
+                    <button id="btn-add-jewel" class="add-jewel-btn">+</button>
+                </div>
+            </div>
+            <div class="button-group horizontal">
+                <button class="menu-btn" data-target="idol">
+                    <img src="icons/idol.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_empty">아이돌</span>
+                </button>
+                <button class="menu-btn" data-target="support">
+                    <img src="icons/card.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_supporter">서포트</span>
+                </button>
+                <button class="menu-btn" data-target="home">
+                    <img src="icons/home.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_home">홈</span>
+                </button>
+                <button class="menu-btn" data-target="calc">
+                    <img src="icons/caculation.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_calc">계산기</span>
+                </button>
+                <button class="menu-btn" data-target="gacha">
+                    <img src="icons/gasha.png" alt="" class="btn-icon">
+                    <span data-i18n="btn_gacha">가챠</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+
+
+    <div id="card-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img id="modal-img" src="" alt="">
+                    <div id="modal-limit-break" class="star-rating">
+                        <span class="star" data-star="1">★</span>
+                        <span class="star" data-star="2">★</span>
+                        <span class="star" data-star="3">★</span>
+                        <span class="star" data-star="4">★</span>
+                    </div>
+                </div>
+                <h2 id="modal-title"></h2>
+                <div class="modal-extra-outer-container">
+                    <img id="modal-extra-icon" src="" alt="" class="modal-extra-icon">
+                    <div class="modal-extra-container">
+                        <div id="modal-extra-1" class="modal-extra-box"></div>
+                        <div id="modal-extra-2" class="modal-extra-box"></div>
+                    </div>
+                </div>
+                <div id="modal-abilities" class="modal-abilities-container">
+                    <!-- 어빌리티들이 여기에 동적으로 생성됨 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gacha-log-modal" class="modal hidden">
+        <div class="modal-content log-modal-content">
+            <span class="close-log-modal">&times;</span>
+            <div id="gacha-log-stats" class="gacha-log-stats">
+                <!-- 통계 수치가 여기에 들어감 -->
+            </div>
+            <div id="gacha-log-list" class="gacha-log-list">
+                <!-- 가챠 기록이 여기에 동적으로 추가됨 -->
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="main.js"></script>
+
+    <!-- Templates for Dynamic Content -->
+    <template id="tpl-home">
+        <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
+        <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+    </template>
+
+    <template id="tpl-calc">
+        <div class="calc-menu-container">
+            <h2 data-i18n="calc_title">계산기 메뉴</h2>
+            <div class="calc-buttons">
+                <button class="primary-btn" data-i18n="calc_btn_1">계산기 1</button>
+                <button class="primary-btn" data-i18n="calc_btn_2">계산기 2</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-support">
+        <div class="support-container">
+            <div class="filter-container">
+                <div class="filter-group" id="filter-attr">
+                    <button class="filter-btn" data-val="vocal" data-i18n="filter_vocal">Vocal</button>
+                    <button class="filter-btn" data-val="dance" data-i18n="filter_dance">Dance</button>
+                    <button class="filter-btn" data-val="visual" data-i18n="filter_visual">Visual</button>
+                </div>
+                <div class="filter-group" id="filter-plan">
+                    <button class="filter-btn" data-val="free" data-i18n="filter_free">프리</button>
+                    <button class="filter-btn" data-val="sense"><img src="icons/sense.webp" alt="Sense" class="filter-icon"></button>
+                    <button class="filter-btn" data-val="logic"><img src="icons/logic.webp" alt="Logic" class="filter-icon"></button>
+                    <button class="filter-btn" data-val="anomaly"><img src="icons/anomaly.webp" alt="Anomaly" class="filter-icon"></button>
+                    <button id="btn-toggle-extra" class="filter-toggle-btn">▼</button>
+                </div>
+                <div id="extra-filters" class="extra-filters-wrapper hidden">
+                    <div class="filter-group" id="filter-rarity">
+                        <button class="filter-btn" data-val="SSR">SSR</button>
+                        <button class="filter-btn" data-val="SR">SR</button>
+                    </div>
+                    <div class="filter-group" id="filter-source">
+                        <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
+                        <button class="filter-btn" data-val="normal" data-i18n="filter_normal">Normal</button>
+                        <button class="filter-btn" data-val="limited" data-i18n="filter_limited">Limited</button>
+                        <button class="filter-btn" data-val="limited_f" data-i18n="filter_limited_f">Fes</button>
+                        <button class="filter-btn" data-val="limited_u" data-i18n="filter_limited_u">Unit</button>
+                        <button class="filter-btn" data-val="dist" data-i18n="filter_dist">Distribution</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sort-controls">
+                <select id="support-sort" class="sort-select">
+                    <option value="id-desc">최신순</option>
+                    <option value="id-asc">과거순</option>
+                    <option value="lb-desc">돌파순</option>
+                    <option value="name-asc">이름순</option>
+                </select>
+            </div>
+
+            <div class="support-grid"></div>
+        </div>
+    </template>
+
+    <template id="tpl-gacha">
+        <div class="gacha-container">
+            <div id="gacha-video-container" class="gacha-video-overlay hidden">
+                <video id="gacha-video-main" class="gacha-vid" playsinline></video>
+                <video id="gacha-video-next" class="gacha-vid hidden" playsinline></video>
+                <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
+            </div>
+            <div id="gacha-spinner" class="spinner"></div>
+            <div id="gacha-results" class="gacha-results"></div>
+        </div>
+    </template>
+
+    <template id="tpl-support-item">
+        <div class="support-card">
+            <div class="card-image-wrapper">
+                <img src="" alt="" class="card-img">
+                <img src="" alt="" class="card-plan-icon">
+                <span class="card-rarity"></span>
+            </div>
+            <div class="card-info">
+                <div class="card-type-row">
+                    <span class="card-type"></span>
+                    <div class="card-limit-break">
+                        <span class="card-star" data-star="1">★</span>
+                        <span class="card-star" data-star="2">★</span>
+                        <span class="card-star" data-star="3">★</span>
+                        <span class="card-star" data-star="4">★</span>
+                    </div>
+                </div>
+                <h3 class="card-name"></h3>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-idol-grid">
+        <div class="idol-grid"></div>
+    </template>
+
+    <template id="tpl-idol-item">
+        <div class="idol-item">
+            <img src="" alt="" class="idol-icon">
+        </div>
+    </template>
+
+    <template id="tpl-gacha-result-item">
+        <div class="gacha-result-card">
+            <div class="result-card-img-wrapper">
+                <img src="" alt="" class="result-card-img">
+                <span class="result-card-rarity"></span>
+            </div>
+            <div class="result-card-name"></div>
+        </div>
+    </template>
+</body>
+</html>

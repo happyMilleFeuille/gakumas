@@ -1,0 +1,575 @@
+/* gacha.css */
+.gacha-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5rem; 
+    gap: 1.5rem;
+    text-align: center;
+    height: 60%; /* 70%에서 60%로 축소 */
+    min-height: 500px; /* 600px에서 500px로 조정 */
+    position: relative;
+    border: 2px solid red; /* 디버깅용 테두리 추가 */
+}
+
+/* 상단 컨트롤러 (음소거, 뒤로가기) */
+.gacha-header-controls {
+    position: absolute;
+    top: 48px; /* log-btn(10px) + 높이(약 32px) + 여백(6px) */
+    left: 10px;
+    z-index: 150; /* 영상 overlay(20000)보다 한참 낮게 수정 */
+}
+
+@media (max-width: 768px) {
+    .gacha-header-controls {
+        top: 30px; /* 모바일 log-btn(5px) + 높이(약 20px) + 여백(5px) */
+        left: 5px;
+    }
+}
+
+.mute-toggle-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+.mute-toggle-btn:hover { background: #fff; transform: scale(1.1); }
+
+.back-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+}
+.back-btn:hover { background: #000; }
+.back-btn.hidden { display: none; }
+
+/* 가챠 버튼 */
+.gacha-buttons { 
+    display: flex; 
+    column-gap: 1.5rem; /* 가로 간격 유지 */
+    row-gap: 4px;       /* 세로 간격 대폭 축소 */
+    justify-content: center; 
+    flex-wrap: wrap; 
+    position: absolute; /* 절대 위치 고정 */
+    bottom: 0px;        /* 바닥에 완전히 밀착 */
+    left: 0;
+    right: 0;
+    padding: 1rem 0;
+    z-index: 10;
+}
+.gacha-btn { min-width: 150px; }
+
+/* 누적 가챠 횟수 박스 */
+.total-pulls-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2px; /* 아주 약간 띄움 */
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.total-pulls-box span:last-child {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2px 10px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 200px; /* 160px에서 200px로 확장 */
+    text-align: center;
+    font-size: 0.85rem;
+    white-space: pre; /* 여러 개의 공백을 그대로 표시 */
+}
+
+@media (max-width: 768px) {
+    .total-pulls-box span:last-child {
+        width: 150px; /* 130px에서 150px로 확장 */
+        font-size: 0.75rem;
+    }
+}
+
+/* Gacha Results Display */
+.gacha-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin: 3rem auto 2rem; /* PC 기본 위치 */
+}
+
+.gacha-result-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    width: calc(20% - 10px);
+    min-width: 140px;
+}
+
+.result-card-img-wrapper {
+    position: relative;
+    padding-top: 140%; 
+    background: #f8f8f8;
+}
+
+.result-card-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+
+.gacha-result-card.landscape .result-card-img {
+    object-fit: contain;
+    padding: 0;
+}
+
+.result-card-rarity {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.result-card-name {
+    padding: 5px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #fdfdfd;
+    color: #333;
+}
+
+/* 등급별 색상 */
+.rarity-ssr { background: #a335ee !important; }
+.rarity-sr { background: #ffca28 !important; color: #333 !important; }
+.rarity-r { background: #708090 !important; }
+
+.ssr-border { border: 2px solid #a335ee !important; }
+.sr-border { border: 2px solid #ffca28 !important; }
+.r-border { border: 1px solid #708090 !important; }
+
+/* Spinner */
+.spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    animation: spin 1s linear infinite;
+    display: none;
+    margin: 20px auto;
+}
+.spinner.active { display: block; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Video Overlay */
+.gacha-video-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    z-index: 20000;
+    display: flex; justify-content: center; align-items: center;
+}
+.gacha-video-overlay.hidden { display: none; }
+
+.gacha-vid {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+.gacha-vid.hidden { display: none !important; }
+
+.skip-btn {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    z-index: 20001;
+}
+
+/* Immersive Mode */
+body.immersive-mode .button-group.horizontal,
+body.immersive-mode #gacha-fixed-buttons, /* 새로 만든 고정 버튼 숨김 추가 */
+body.immersive-mode #fixed-bg, 
+body.immersive-mode header,
+body.immersive-mode footer {
+    display: none !important;
+}
+body.immersive-mode { background-color: #000 !important; overflow: hidden; }
+
+/* 쥬얼 표시 UI */
+.jewel-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 200;
+}
+
+.jewel-box {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 4px; /* 간격을 4px로 축소 */
+    width: 120px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#jewel-count {
+    text-align: right;
+    margin: 0;
+}
+
+.add-jewel-btn {
+    background: none;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 1.2rem; /* 글자 크기 소폭 키움 */
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    transition: transform 0.1s, opacity 0.1s;
+}
+
+.add-jewel-btn:hover {
+    opacity: 0.8;
+}
+
+.add-jewel-btn:active {
+    transform: scale(0.9);
+}
+
+@media (max-width: 768px) {
+    .jewel-container {
+        top: 5px;
+        right: 5px;
+    }
+    .jewel-box {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+        width: 100px; /* 모바일 고정 너비 100px */
+        gap: 2px; /* 모바일 간격 2px */
+    }
+    .add-jewel-btn {
+        width: 16px;
+        height: 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* 가챠 기록 모달 전용 스타일 */
+.gacha-log-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #eee;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+}
+
+.stat-row-top {
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e0e0e0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.stat-category-header:hover {
+    background: #d0d0d0;
+}
+
+.stat-category-header .toggle-icon {
+    transition: transform 0.3s;
+    font-size: 0.6rem;
+}
+
+.stat-category-header.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.stat-row-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.stat-row-bottom.hidden {
+    display: none;
+}
+
+/* 통계 개별 아이템 스타일 복구 */
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-item.full-width {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.stat-label { font-weight: bold; color: #555; font-size: 0.75rem; }
+.stat-value { font-weight: bold; color: var(--primary-color); }
+.stat-item.full-width .stat-label { font-size: 0.9rem; }
+.stat-item.full-width .stat-value { font-size: 1.1rem; }
+
+#gacha-log-modal .log-modal-content {
+    width: 85%; /* 화면의 85% 차지 */
+    max-width: 1000px;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 15px;
+}
+
+/* 가챠 기록 모달 전용 스타일 (ID 우선순위 사용) */
+#gacha-log-modal .gacha-log-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 5열에서 4열로 변경 */
+    grid-auto-rows: 100px; /* 열이 줄어든 만큼 행 높이도 소폭 상향 (80px -> 100px) */
+    grid-auto-flow: dense;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+#gacha-log-modal .log-item {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* 프로듀스 아이돌: 세로 꽉 채움 */
+#gacha-log-modal .log-item.item-produce {
+    grid-row: span 2;
+}
+#gacha-log-modal .item-produce .log-item-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 서포트 카드: 70% 축소 제거 및 칸 밀착 */
+#gacha-log-modal .log-item.item-support {
+    grid-row: span 1;
+    padding: 0;
+    display: block; /* flex 제거하여 여백 방지 */
+}
+#gacha-log-modal .item-support .log-item-img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; /* 비율 유지하며 꽉 채움 */
+    background: #fff !important;
+    display: block !important;
+}
+
+/* 배지 위치 사수 */
+#gacha-log-modal .log-item-rarity { 
+    position: absolute !important; 
+    top: 0 !important; 
+    left: 0 !important; 
+    z-index: 10;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 0 0 4px 0;
+}
+#gacha-log-modal .log-item-count { 
+    position: absolute !important; 
+    top: 2px !important; 
+    right: 2px !important; 
+    z-index: 10;
+    padding: 1px 5px !important;
+    background: rgba(0, 0, 0, 0.75) !important; /* 어두운 배경 */
+    color: #fff !important; /* 흰색 글자 */
+    font-size: 0.6rem !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+    line-height: 1.2;
+}
+
+/* 이름 표기 */
+#gacha-log-modal .log-item-info {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+    padding: 3px 6px;
+    z-index: 5;
+}
+#gacha-log-modal .log-item-name {
+    color: #fff;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 글로우 효과 유지 */
+#gacha-log-modal .log-item:has(.rarity-ssr) { border-color: #a335ee; box-shadow: 0 0 8px rgba(163, 53, 238, 0.3); }
+#gacha-log-modal .log-item:has(.rarity-sr) { border-color: #ffca28; box-shadow: 0 0 8px rgba(255, 202, 40, 0.3); }
+#gacha-log-modal .log-item:has(.rarity-r) { border-color: #708090; box-shadow: 0 0 5px rgba(112, 128, 144, 0.2); }
+
+@media (min-width: 1000px) {
+    #gacha-log-modal .gacha-log-list {
+        grid-template-columns: repeat(7, 1fr);
+        grid-auto-rows: 100px; /* 행 높이 유지 */
+    }
+}
+
+@media (max-width: 768px) {
+    #gacha-log-modal .gacha-log-list { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    #gacha-log-modal .log-item { min-height: 80px; }
+    #gacha-log-modal .log-item-rarity, #gacha-log-modal .log-item-count { font-size: 0.55rem; }
+    #gacha-log-modal .log-item-name { font-size: 0.45rem; }
+    
+    /* 모바일에서도 서포트 카드 이미지 100% 꽉 채움 */
+    #gacha-log-modal .item-support .log-item-img {
+        width: 100% !important;
+        height: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        position: absolute !important;
+        object-fit: contain !important;
+    }
+}
+
+/* 가챠 기록 모달 닫기 버튼 */
+.close-log-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    z-index: 100;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-log-modal:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .close-log-modal {
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+    }
+}
+
+/* Mobile Optimization (모바일 전용) */
+@media (max-width: 768px) {
+    .gacha-container {
+        padding-top: 0 !important; 
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important; /* 세로 중앙 정렬 강제 */
+        height: 80% !important; /* 90%에서 80%로 축소 */
+        min-height: 45vh !important;
+        width: 100% !important; /* 너비를 100%로 확장 */
+    }
+    .gacha-buttons { 
+        gap: 10px; 
+        bottom: 5px; 
+    }
+    .gacha-btn { min-width: 110px; padding: 0.6rem 0.8rem; font-size: 0.85rem; }
+    .mute-toggle-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    .gacha-results {
+        flex: 0 1 auto; /* 필요한 만큼만 차지하되 중앙 정렬 따름 */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        width: 100%;
+        margin: 0 !important; 
+        padding: 0 5px;
+        justify-content: center;
+    }
+    .gacha-result-card { width: calc(20% - 6px); min-width: 0; }
+    .result-card-name { font-size: 0.45rem; padding: 2px; }
+    .result-card-rarity { font-size: 0.45rem; padding: 1px 2px; }
+}
