@@ -512,6 +512,32 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
     }
 }
 
+/* 가챠 기록 모달 닫기 버튼 */
+.close-log-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    z-index: 100;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-log-modal:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .close-log-modal {
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+    }
+}
+
 /* Mobile Optimization (모바일 전용) */
 @media (max-width: 768px) {
     .gacha-container {
