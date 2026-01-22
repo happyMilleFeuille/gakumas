@@ -11,6 +11,27 @@ export function renderGacha() {
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
 
+    // 0. 비디오 프리로딩 (미리 버퍼링)
+    const preloadContainer = document.createElement('div');
+    preloadContainer.style.display = 'none'; // 화면에 보이지 않음
+    preloadContainer.id = 'video-preloader';
+    
+    const videoAssets = [
+        'gasya/start_ren1.mp4', 
+        'gasya/start_ren1_1.mp4',
+        'gasya/start_ren10.mp4', 
+        'gasya/start_ren10_1.mp4'
+    ];
+
+    videoAssets.forEach(src => {
+        const v = document.createElement('video');
+        v.src = src;
+        v.preload = 'auto'; // 강제 로딩
+        v.muted = true;     // 소리가 켜져 있으면 자동 로딩을 막는 경우가 있어 뮤트 설정
+        preloadContainer.appendChild(v);
+    });
+    contentArea.appendChild(preloadContainer);
+
     // 요소 선택
     const btn1 = contentArea.querySelector('#btn-1pull');
     const btn10 = contentArea.querySelector('#btn-10pull');
