@@ -994,6 +994,22 @@ footer {
     object-fit: contain; /* 영상 비율 유지 */
 }
 
+.gacha-vid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+}
+
+.gacha-vid.hidden {
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
 .skip-btn {
     position: absolute;
     top: 20px;
