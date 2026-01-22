@@ -42,89 +42,70 @@ export function renderGacha() {
         'gasya/start_ren10_1.mp4'
     ];
 
+    const videoBlobs = {}; // 다운로드된 Blob URL 저장소
     let loadedCount = 0;
     const totalVideos = videoAssets.length;
 
     const checkLoadingComplete = () => {
         if (loadedCount >= totalVideos) {
-            // 로딩 완료
             if (btn1) btn1.disabled = false;
             if (btn10) btn10.disabled = false;
             if (spinner) spinner.classList.remove('active');
         }
     };
 
+    // [핵심] 영상을 Blob으로 강제 다운로드
     videoAssets.forEach(src => {
-        const v = document.createElement('video');
-        v.src = src;
-        v.preload = 'auto'; 
-        v.muted = true;
-        
-        // 이미 로딩되어 있는지 확인
-        if (v.readyState >= 3) { 
-            loadedCount++;
-            checkLoadingComplete();
-        } else {
-            v.oncanplaythrough = () => {
+        fetch(src)
+            .then(response => response.blob())
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                videoBlobs[src] = objectURL;
                 loadedCount++;
                 checkLoadingComplete();
-                v.oncanplaythrough = null;
-            };
-            v.onerror = () => {
-                console.warn(`Failed to preload: ${src}`);
-                loadedCount++; 
+            })
+            .catch(err => {
+                console.warn(`Failed to fetch video blob: ${src}`, err);
+                loadedCount++; // 실패 시에도 진행은 시킴
                 checkLoadingComplete();
-            };
-        }
-        preloadContainer.appendChild(v);
+            });
     });
-    contentArea.appendChild(preloadContainer);
-    
-    // 안전장치 (5초 후 강제 활성화)
+
+    // 안전장치 (10초로 연장 - 다운로드 시간이 걸릴 수 있으므로)
     setTimeout(() => {
         if (btn1 && btn1.disabled) {
              btn1.disabled = false;
              if (btn10) btn10.disabled = false;
              if (spinner) spinner.classList.remove('active');
         }
-    }, 5000);
+    }, 10000);
 
-    // ... (이후 더블 버퍼링 로직은 그대로 유지) ...
-
-    // 가챠 종료 (초기화)
-    const finishGacha = () => {
-        if(videoMain) { videoMain.pause(); videoMain.src = ""; }
-        if(videoNext) { videoNext.pause(); videoNext.src = ""; }
-        if(videoContainer) videoContainer.classList.add('hidden');
-        document.body.classList.remove('immersive-mode');
-        
-        // 초기 상태로 리셋
-        if(videoMain) videoMain.classList.remove('hidden');
-        if(videoNext) videoNext.classList.add('hidden');
-    };
+    // ... (중략) ...
 
     const playSequel = (isAuto = false) => {
-        // 이미 후속 영상이 재생 중이거나, 수동 클릭인데 잠금 상태면 중단
         if (videoStep !== 0) return;
         if (!isAuto && !canClick) return;
         
         videoStep = 1; 
-        canClick = false; // 즉시 클릭 잠금
+        canClick = false; 
         
         if (videoNext && videoMain) {
-            // 후속 영상 재생 시작
+            // [중요] 미리 생성된 Blob URL이 있다면 사용
+            const sequelSrc = (gachaMode === 1) ? 'gasya/start_ren1_1.mp4' : 'gasya/start_ren10_1.mp4';
+            if (videoBlobs[sequelSrc]) {
+                videoNext.src = videoBlobs[sequelSrc];
+            }
+
             videoNext.play().catch(e => {
                 finishGacha();
             });
 
-            // 실제로 후속 영상의 화면이 나오기 시작할 때 메인 영상을 숨김
             videoNext.onplaying = () => {
                 videoMain.classList.add('hidden'); 
                 videoNext.classList.remove('hidden'); 
                 videoMain.pause();
                 videoNext.onplaying = null;
 
-                // 화면이 보이기 시작한 시점부터 0.6초 후에 클릭 해제
                 setTimeout(() => {
                     canClick = true;
                 }, 600);
@@ -143,18 +124,14 @@ export function renderGacha() {
             videoStep = 0; 
             canClick = false; 
 
-            // 0.6초 후 클릭 잠금 해제
-            setTimeout(() => {
-                canClick = true;
-            }, 600);
+            setTimeout(() => { canClick = true; }, 600);
             
-            // 1. Main 비디오 설정
-            videoMain.src = mainSrc;
+            // [중요] Blob URL 우선 적용
+            videoMain.src = videoBlobs[mainSrc] || mainSrc;
             videoMain.muted = false;
             videoMain.classList.add('hidden'); 
             
-            // 2. Next 비디오 미리 설정 (대기 상태)
-            videoNext.src = nextSrc;
+            videoNext.src = videoBlobs[nextSrc] || nextSrc;
             videoNext.muted = false;
             videoNext.classList.add('hidden');
             videoNext.load(); 
@@ -170,7 +147,6 @@ export function renderGacha() {
                 }).catch(e => {});
             };
             
-            // 클릭 핸들러: canClick 상태 확인 추가
             videoMain.onclick = () => {
                 if (canClick) playSequel(false);
             };
@@ -180,7 +156,7 @@ export function renderGacha() {
             };
             
             videoMain.onended = () => { 
-                playSequel(true); // 자동 전환은 락 무시
+                playSequel(true); 
             };
             
             videoNext.onended = () => { 
