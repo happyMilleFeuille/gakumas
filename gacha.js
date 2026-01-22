@@ -11,9 +11,22 @@ export function renderGacha() {
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
 
-    // 0. 비디오 프리로딩 (미리 버퍼링)
+    // 요소 선택
+    const btn1 = contentArea.querySelector('#btn-1pull');
+    const btn10 = contentArea.querySelector('#btn-10pull');
+    const videoContainer = contentArea.querySelector('#gacha-video-container');
+    const video = contentArea.querySelector('#gacha-video');
+    const skipBtn = contentArea.querySelector('#skip-button');
+    const spinner = contentArea.querySelector('#gacha-spinner');
+    
+    // 버튼 비활성화 및 스피너 표시
+    if (btn1) btn1.disabled = true;
+    if (btn10) btn10.disabled = true;
+    if (spinner) spinner.classList.add('active');
+
+    // 비디오 로딩 (프리로딩 및 대기)
     const preloadContainer = document.createElement('div');
-    preloadContainer.style.display = 'none'; // 화면에 보이지 않음
+    preloadContainer.style.display = 'none'; 
     preloadContainer.id = 'video-preloader';
     
     const videoAssets = [
@@ -23,22 +36,56 @@ export function renderGacha() {
         'gasya/start_ren10_1.mp4'
     ];
 
+    let loadedCount = 0;
+    const totalVideos = videoAssets.length;
+    const loadedVideos = [];
+
+    const checkLoadingComplete = () => {
+        if (loadedCount >= totalVideos) {
+            // 로딩 완료
+            if (btn1) btn1.disabled = false;
+            if (btn10) btn10.disabled = false;
+            if (spinner) spinner.classList.remove('active');
+        }
+    };
+
     videoAssets.forEach(src => {
         const v = document.createElement('video');
         v.src = src;
-        v.preload = 'auto'; // 강제 로딩
-        v.muted = true;     // 소리가 켜져 있으면 자동 로딩을 막는 경우가 있어 뮤트 설정
+        v.preload = 'auto'; 
+        v.muted = true;
+        
+        // 이미 로딩되어 있는지 확인 (캐시 등)
+        if (v.readyState >= 3) { // HAVE_FUTURE_DATA 이상
+            loadedCount++;
+        } else {
+            v.oncanplaythrough = () => {
+                loadedCount++;
+                checkLoadingComplete();
+                v.oncanplaythrough = null; // 이벤트 제거
+            };
+            v.onerror = () => {
+                console.error(`Failed to preload: ${src}`);
+                loadedCount++; // 실패해도 카운트는 올려서 무한 로딩 방지
+                checkLoadingComplete();
+            };
+        }
+        loadedVideos.push(v);
         preloadContainer.appendChild(v);
     });
     contentArea.appendChild(preloadContainer);
-
-    // 요소 선택
-    const btn1 = contentArea.querySelector('#btn-1pull');
-    const btn10 = contentArea.querySelector('#btn-10pull');
-    const videoContainer = contentArea.querySelector('#gacha-video-container');
-    const video = contentArea.querySelector('#gacha-video');
-    const skipBtn = contentArea.querySelector('#skip-button');
     
+    // 캐시된 비디오 즉시 체크 및 안전장치 (타임아웃 5초)
+    checkLoadingComplete();
+    setTimeout(() => {
+        // 5초 지나면 강제 활성화
+        if (btn1 && btn1.disabled) {
+             btn1.disabled = false;
+             if (btn10) btn10.disabled = false;
+             if (spinner) spinner.classList.remove('active');
+        }
+    }, 5000);
+
     // 상태 변수
     let gachaMode = 0; // 1 or 10
     let videoStep = 0; // 0: 첫영상, 1: 후속영상
