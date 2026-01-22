@@ -47,6 +47,25 @@
                 <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
                 <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
             </div>
+            <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
+            <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
+                <div class="total-pulls-box">
+                    <span id="total-pull-count">0</span>
+                </div>
+                <button class="primary-btn gacha-btn" id="btn-1pull-fixed">1회 뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-10pull-fixed">10회 뽑기</button>
+            </div>
+            <button id="btn-gacha-log" class="log-btn hidden">가챠 기록</button>
+            <button id="btn-gacha-reset" class="log-btn reset-btn hidden">초기화</button>
+            <div id="gacha-header-controls" class="gacha-header-controls hidden">
+                <button id="gacha-mute-btn" class="mute-toggle-btn">🔇</button>
+            </div>
+            <div id="jewel-container" class="jewel-container hidden">
+                <div class="jewel-box">
+                    <span id="jewel-count">0</span>
+                    <button id="btn-add-jewel" class="add-jewel-btn">+</button>
+                </div>
+            </div>
             <div class="button-group horizontal">
                 <button class="menu-btn" data-target="idol">
                     <img src="icons/idol.png" alt="" class="btn-icon">
@@ -72,9 +91,7 @@
         </section>
     </main>
 
-    <footer>
-        <p data-i18n="footer"></p>
-    </footer>
+
 
     <div id="card-modal" class="modal hidden">
         <div class="modal-content">
@@ -103,6 +120,19 @@
             </div>
         </div>
     </div>
+
+    <div id="gacha-log-modal" class="modal hidden">
+        <div class="modal-content log-modal-content">
+            <span class="close-log-modal">&times;</span>
+            <h2 data-i18n="gacha_log_title">가챠 기록</h2>
+            <div id="gacha-log-stats" class="gacha-log-stats">
+                <!-- 통계 수치가 여기에 들어감 -->
+            </div>
+            <div id="gacha-log-list" class="gacha-log-list">
+                <!-- 가챠 기록이 여기에 동적으로 추가됨 -->
+            </div>
+        </div>
+    </div>
     
     <script type="module" src="main.js"></script>
 
@@ -125,27 +155,41 @@
     <template id="tpl-support">
         <div class="support-container">
             <div class="filter-container">
-                <div class="filter-group" id="filter-plan">
-                    <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
-                    <button class="filter-btn" data-val="free" data-i18n="filter_free">Free</button>
-                    <button class="filter-btn" data-val="sense" data-i18n="filter_sense">Sense</button>
-                    <button class="filter-btn" data-val="logic" data-i18n="filter_logic">Logic</button>
-                    <button class="filter-btn" data-val="anomaly" data-i18n="filter_anomaly">Anomaly</button>
-                </div>
                 <div class="filter-group" id="filter-attr">
-                    <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
                     <button class="filter-btn" data-val="vocal" data-i18n="filter_vocal">Vocal</button>
                     <button class="filter-btn" data-val="dance" data-i18n="filter_dance">Dance</button>
                     <button class="filter-btn" data-val="visual" data-i18n="filter_visual">Visual</button>
                 </div>
-                <div class="filter-group" id="filter-source">
-                    <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
-                    <button class="filter-btn" data-val="normal" data-i18n="filter_normal">Normal</button>
-                    <button class="filter-btn" data-val="limited" data-i18n="filter_limited">Limited</button>
-                    <button class="filter-btn" data-val="limited_f" data-i18n="filter_limited_f">Fes</button>
-                    <button class="filter-btn" data-val="limited_u" data-i18n="filter_limited_u">Unit</button>
-                    <button class="filter-btn" data-val="dist" data-i18n="filter_dist">Distribution</button>
+                <div class="filter-group" id="filter-plan">
+                    <button class="filter-btn" data-val="free" data-i18n="filter_free">프리</button>
+                    <button class="filter-btn" data-val="sense"><img src="icons/sense.webp" alt="Sense" class="filter-icon"></button>
+                    <button class="filter-btn" data-val="logic"><img src="icons/logic.webp" alt="Logic" class="filter-icon"></button>
+                    <button class="filter-btn" data-val="anomaly"><img src="icons/anomaly.webp" alt="Anomaly" class="filter-icon"></button>
+                    <button id="btn-toggle-extra" class="filter-toggle-btn">▼</button>
                 </div>
+                <div id="extra-filters" class="extra-filters-wrapper hidden">
+                    <div class="filter-group" id="filter-rarity">
+                        <button class="filter-btn" data-val="SSR">SSR</button>
+                        <button class="filter-btn" data-val="SR">SR</button>
+                    </div>
+                    <div class="filter-group" id="filter-source">
+                        <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
+                        <button class="filter-btn" data-val="normal" data-i18n="filter_normal">Normal</button>
+                        <button class="filter-btn" data-val="limited" data-i18n="filter_limited">Limited</button>
+                        <button class="filter-btn" data-val="limited_f" data-i18n="filter_limited_f">Fes</button>
+                        <button class="filter-btn" data-val="limited_u" data-i18n="filter_limited_u">Unit</button>
+                        <button class="filter-btn" data-val="dist" data-i18n="filter_dist">Distribution</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sort-controls">
+                <select id="support-sort" class="sort-select">
+                    <option value="id-desc">최신순</option>
+                    <option value="id-asc">과거순</option>
+                    <option value="lb-desc">돌파순</option>
+                    <option value="name-asc">이름순</option>
+                </select>
             </div>
 
             <div class="support-grid"></div>
@@ -154,21 +198,13 @@
 
     <template id="tpl-gacha">
         <div class="gacha-container">
-            <div class="gacha-header-controls">
-                <button id="gacha-mute-btn" class="mute-toggle-btn">🔊</button>
-            </div>
             <div id="gacha-video-container" class="gacha-video-overlay hidden">
-                <video id="gacha-video-main" class="gacha-vid hidden" playsinline muted preload="auto"></video>
-                <video id="gacha-video-next" class="gacha-vid hidden" playsinline muted preload="auto"></video>
+                <video id="gacha-video-main" class="gacha-vid" playsinline></video>
+                <video id="gacha-video-next" class="gacha-vid hidden" playsinline></video>
                 <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
             </div>
-            <h2 data-i18n="gacha_title">가챠 시뮬레이션</h2>
             <div id="gacha-spinner" class="spinner"></div>
             <div id="gacha-results" class="gacha-results"></div>
-            <div class="gacha-buttons">
-                <button class="primary-btn gacha-btn" id="btn-1pull" data-i18n="gacha_1pull">1회 뽑기</button>
-                <button class="primary-btn gacha-btn" id="btn-10pull" data-i18n="gacha_10pull">10회 뽑기</button>
-            </div>
         </div>
     </template>
 

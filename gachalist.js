@@ -27,32 +27,27 @@ const dummyData = {
 };
 
 export function getGachaPool() {
-    // 1. 서포트 SSR 풀 (배포, 한정, 페스, 유닛 제외 및 gacha: false 제외)
-    const sssrPool = cardList.filter(card => {
-        const isSSR = card.rarity === 'SSR';
+    // 통상 가챠 포함 여부 공통 체크 로직
+    const isNormal = (card) => {
         const source = card.source || 'normal';
-        const isNormal = !['dist', 'limited', 'limited_f', 'limited_u'].includes(source) && card.gacha !== false;
-        return isSSR && isNormal;
-    });
+        return !['dist', 'limited', 'limited_f', 'limited_u'].includes(source) && card.gacha !== false;
+    };
 
-    // 2. 프로듀스 아이돌 풀 (producedata.js에서 등급별 분류 및 통상 필터링)
-    const pssrPool = produceList.filter(p => {
-        const isPSSR = p.rarity === 'PSSR';
-        const source = p.source || 'normal';
-        const isNormal = !['dist', 'limited', 'limited_f', 'limited_u'].includes(source);
-        return isPSSR && isNormal;
-    });
-    const psrPool = produceList.filter(p => p.rarity === 'PSR');
-    const prPool = produceList.filter(p => p.rarity === 'PR');
+    // 1. 서포트 카드 풀 (모든 등급에 제외 규칙 적용)
+    const sssrPool = cardList.filter(card => card.rarity === 'SSR' && isNormal(card));
+    const srCardPool = cardList.filter(card => card.rarity === 'SR' && isNormal(card));
+    const rCardPool = cardList.filter(card => card.rarity === 'R' && isNormal(card));
 
-    // 3. 서포트 R 풀 (cardList에서 rarity: 'R' 필터링)
-    const rCardPool = cardList.filter(card => card.rarity === 'R');
+    // 2. 프로듀스 아이돌 풀 (모든 등급에 제외 규칙 적용)
+    const pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isNormal(p));
+    const psrPool = produceList.filter(p => p.rarity === 'PSR' && isNormal(p));
+    const prPool = produceList.filter(p => p.rarity === 'PR' && isNormal(p));
 
     return { 
         PSSR: pssrPool,
         SSSR: sssrPool,
         PSR: psrPool,
-        SR_CARD: dummyData.SR_CARD,
+        SR_CARD: srCardPool.length > 0 ? srCardPool : dummyData.SR_CARD,
         PR: prPool,
         R_CARD: rCardPool.length > 0 ? rCardPool : dummyData.R_CARD
     };

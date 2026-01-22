@@ -62,6 +62,14 @@ export const abilityData = {
             "SR": { 1: 2, 2:4 }
         }
     },            
+    "normallesson_param": {
+        format: { ko: "{type} 통상레슨 종료시 {type} 상승+{val}", ja: "{type}通常レッスン終了時、{type}上昇+{val}" },
+        levels: {
+            "SSR": {1: 0, 2: 0 },
+            "SSR_DIST": {1: 0, 2: 0 },
+            "SR": { 1: 7, 2:13 }
+        }
+    },     
     "supportrateup": {
         format: { ko: "해당 서포트 카드의 스킬 카드 서포트 발생률 {val}% 증가", ja: "このサポートカードのスキルカードサポート発生率を{val}%増加" },
         levels: {

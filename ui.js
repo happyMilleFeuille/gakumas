@@ -65,6 +65,7 @@ export function renderSupport() {
     const planBtns = view.querySelectorAll('#filter-plan .filter-btn');
     const attrBtns = view.querySelectorAll('#filter-attr .filter-btn');
     const sourceBtns = view.querySelectorAll('#filter-source .filter-btn');
+    const rarityBtns = view.querySelectorAll('#filter-rarity .filter-btn');
 
     const setupFilterBtn = (btns, type) => {
         btns.forEach(btn => {
@@ -72,7 +73,9 @@ export function renderSupport() {
             else btn.classList.remove('active');
             
             btn.addEventListener('click', () => {
-                setFilter(type, btn.dataset.val);
+                // 이미 활성화된 버튼을 다시 누르면 'all'로 토글
+                const newVal = (state.filters[type] === btn.dataset.val) ? 'all' : btn.dataset.val;
+                setFilter(type, newVal);
                 renderSupport(); 
             });
         });
@@ -81,15 +84,43 @@ export function renderSupport() {
     setupFilterBtn(planBtns, 'plan');
     setupFilterBtn(attrBtns, 'attr');
     setupFilterBtn(sourceBtns, 'source');
+    setupFilterBtn(rarityBtns, 'rarity');
 
-    // 3. Filter Data
-    const filteredList = cardList.filter(card => {
+    // 3. Setup Extra Filters Toggle
+    const toggleBtn = view.querySelector('#btn-toggle-extra');
+    const extraWrapper = view.querySelector('#extra-filters');
+    
+    if (toggleBtn && extraWrapper) {
+        if (state.extraFiltersOpen) {
+            extraWrapper.classList.remove('hidden');
+            toggleBtn.classList.add('active');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            state.extraFiltersOpen = !state.extraFiltersOpen;
+            renderSupport();
+        });
+    }
+
+    // 4. Setup Sort UI
+    const sortSelect = view.querySelector('#support-sort');
+    if (sortSelect) {
+        sortSelect.value = state.sortBy;
+        sortSelect.addEventListener('change', (e) => {
+            state.sortBy = e.target.value;
+            renderSupport();
+        });
+    }
+
+    // 4. Filter Data
+    let filteredList = cardList.filter(card => {
         // 도감 제외 설정 확인
         if (card.encyclopedia === false) return false;
 
         const cPlan = (card.plan || 'free').toLowerCase();
         const cType = card.type.toLowerCase();
         const cSource = (card.source || 'normal').toLowerCase();
+        const cRarity = card.rarity; // SSR, SR 등
 
         // Plan Filter (Free is always included)
         const planMatch = (state.filters.plan === 'all') || 
@@ -104,10 +135,36 @@ export function renderSupport() {
         // Source Filter
         const sourceMatch = (state.filters.source === 'all') || (cSource === state.filters.source);
 
-        return planMatch && attrMatch && sourceMatch;
+        // Rarity Filter
+        const rarityMatch = (state.filters.rarity === 'all') || (cRarity === state.filters.rarity);
+
+        return planMatch && attrMatch && sourceMatch && rarityMatch;
     });
 
-    // 4. Render Grid
+    // 5. Sort Data
+    const getNumericId = (id) => {
+        const match = id.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 0;
+    };
+
+    filteredList.sort((a, b) => {
+        if (state.sortBy === 'id-desc') {
+            return getNumericId(b.id) - getNumericId(a.id) || b.id.localeCompare(a.id);
+        } else if (state.sortBy === 'id-asc') {
+            return getNumericId(a.id) - getNumericId(b.id) || a.id.localeCompare(b.id);
+        } else if (state.sortBy === 'lb-desc') {
+            const lbA = state.supportLB[a.id] || 0;
+            const lbB = state.supportLB[b.id] || 0;
+            return lbB - lbA || getNumericId(b.id) - getNumericId(a.id); // 별점 같으면 최신순
+        } else if (state.sortBy === 'name-asc') {
+            const nameA = (state.currentLang === 'ja' && a.name_ja) ? a.name_ja : a.name;
+            const nameB = (state.currentLang === 'ja' && b.name_ja) ? b.name_ja : b.name;
+            return nameA.localeCompare(nameB);
+        }
+        return 0;
+    });
+
+    // 6. Render Grid
     if (filteredList.length === 0) {
         grid.innerHTML = '<p style="text-align:center; width:100%; grid-column:1/-1; padding:2rem;">No cards found.</p>';
     } else {

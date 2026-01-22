@@ -314,14 +314,134 @@ export const cardList = [
             "event_paraup"
         ]        
     },
-    // 가챠 테스트용 더미 데이터
-    { id: "dummy_sr",  
-    name: "더미 SR 카드", 
-    name_ja: "ダミー SR", 
-    rarity: "SR", 
-    type: "dance" 
+    // SR 등급
+    { 
+    id: "vocal_srfree1", 
+    name: "지금은 등을 돌리고", 
+    name_ja: "今はあえて、背を向けて",     
+    type: "vocal", 
+    plan: "free", 
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "persentdparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "test",
+            "event_paraup"
+        ]        
     },
-
+    { 
+    id: "vocal_srfree2", 
+    name: "애정없는 암기는 어렵다", 
+    name_ja: "愛無き暗記は難しい",     
+    type: "vocal", 
+    plan: "free", 
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "ppoint",
+            "supportrateup", 
+            "normallesson_param",
+            "class",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "vocal_srfree3", 
+    name: "내버려둘 수 없는 클래스메이트", 
+    name_ja: "ほっとけないクラスメイト",     
+    type: "vocal", 
+    plan: "free", 
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "alllesson_ppoint",
+            "supportrateup", 
+            "enhance",
+            "goout",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "vocal_srfree4", 
+    name: "마이페이스, 마이라이프", 
+    name_ja: "マイペース、マイライフ",     
+    type: "vocal", 
+    plan: "free", 
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "ppoint",
+            "supportrateup", 
+            "lesson_param",
+            "advice",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "vocal_srfree5", 
+    name: "느슨하게 확실히", 
+    name_ja: "のらりくらりしっかり",     
+    type: "vocal", 
+    plan: "free", 
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_recovery",
+            "supportrateup", 
+            "lesson_param",
+            "gift",
+            "event_paraup"
+        ]        
+    },       
+    { 
+    id: "vocal_srfree6", 
+    name: "기초＞응용", 
+    name_ja: "基礎＞応用",     
+    type: "vocal", 
+    plan: "free", 
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "hpmax",
+            "get",
+            "event_paraup"
+        ]        
+    },     
+    { 
+    id: "vocal_srunitfree1", 
+    name: "두 분, 안내합니다~♪", 
+    name_ja: "2名様、ご案内~♪",     
+    type: "vocal", 
+    plan: "free", 
+    source:"limited_u",        
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "goout",
+            "supportrateup", 
+            "enhance",
+            "class",
+            "event_paraup"
+        ]        
+    },       
     // --- R 등급 가챠 전용 서포트 카드 ---
     { id: "rvocal_free1", name: "전력, 그 이후", name_ja: "全力、その後", rarity: "R", type: "vocal", plan: "free", encyclopedia: false },
     { id: "rvocal_free2", name: "왕자님의 짧은 텀", name_ja: "王子様のひと呼吸", rarity: "R", type: "vocal", plan: "free", encyclopedia: false },
