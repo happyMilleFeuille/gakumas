@@ -94,6 +94,7 @@ export function renderGacha() {
     const finishGacha = () => {
         if(video) video.pause();
         if(videoContainer) videoContainer.classList.add('hidden');
+        document.body.classList.remove('immersive-mode'); // UI 복구
         gachaMode = 0;
         videoStep = 0;
     };
@@ -120,6 +121,7 @@ export function renderGacha() {
 
     // 비디오 재생 시작 함수
     const startGacha = (mode) => {
+        document.body.classList.add('immersive-mode'); // UI 숨김
         gachaMode = mode;
         videoStep = 0;
         const src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';

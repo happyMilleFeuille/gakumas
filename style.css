@@ -1012,3 +1012,16 @@ footer {
 .skip-btn:hover {
     background: rgba(255, 255, 255, 0.2);
 }
+
+/* Immersive Mode (Video Playing) */
+body.immersive-mode .button-group.horizontal,
+body.immersive-mode #fixed-bg, 
+body.immersive-mode header,
+body.immersive-mode footer {
+    display: none !important;
+}
+
+body.immersive-mode {
+    background-color: #000 !important;
+    overflow: hidden;
+}
