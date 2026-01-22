@@ -109,7 +109,8 @@ export function renderGacha() {
         
         if (videoNext && videoMain) {
             videoStep = 1; 
-            
+            canClick = false; // 클릭 잠금 시작
+
             // 후속 영상 재생 시작
             videoNext.play().catch(e => {
                 console.error("Sequel play failed", e);
@@ -121,7 +122,12 @@ export function renderGacha() {
                 videoMain.classList.add('hidden'); 
                 videoNext.classList.remove('hidden'); 
                 videoMain.pause();
-                videoNext.onplaying = null; // 이벤트 한 번만 실행
+                videoNext.onplaying = null;
+
+                // 화면이 보이기 시작한 시점부터 0.3초 후에 클릭 해제
+                setTimeout(() => {
+                    canClick = true;
+                }, 300);
             };
         }
     };
