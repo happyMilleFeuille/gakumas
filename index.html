@@ -148,6 +148,21 @@
         </div>
     </template>
 
+    <template id="tpl-gacha">
+        <div class="gacha-container">
+            <div id="gacha-video-container" class="gacha-video-overlay hidden">
+                <video id="gacha-video" playsinline></video>
+                <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
+            </div>
+            <h2 data-i18n="gacha_title">가챠 시뮬레이션</h2>
+            <div class="gacha-buttons">
+                <button class="primary-btn gacha-btn" id="btn-1pull" data-i18n="gacha_1pull">1회 뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-10pull" data-i18n="gacha_10pull">10회 뽑기</button>
+            </div>
+            <div id="gacha-results" class="gacha-results"></div>
+        </div>
+    </template>
+
     <template id="tpl-support-item">
         <div class="support-card">
             <div class="card-image-wrapper">
@@ -174,9 +189,13 @@
         <div class="idol-grid"></div>
     </template>
 
-    <template id="tpl-idol-item">
-        <div class="idol-item">
-            <img src="" alt="" class="idol-icon">
+    <template id="tpl-gacha-result-item">
+        <div class="gacha-result-card">
+            <div class="result-card-img-wrapper">
+                <img src="" alt="" class="result-card-img">
+                <span class="result-card-rarity"></span>
+            </div>
+            <div class="result-card-name"></div>
         </div>
     </template>
 </body>

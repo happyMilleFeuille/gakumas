@@ -1,5 +1,6 @@
 // router.js
 import { renderHome, renderIdolList, renderCalc, renderSupport } from './ui.js';
+import { renderGacha } from './gacha.js';
 
 export function handleNavigation(target) {
     if (!target) return;
@@ -15,7 +16,7 @@ export function handleNavigation(target) {
         case 'idol': renderIdolList(); break;
         case 'calc': renderCalc(); break;
         case 'support': renderSupport(); break;
-        // gacha case 등 추가 가능
+        case 'gacha': renderGacha(); break;
         default: console.warn('Unknown navigation target:', target);
     }
 }

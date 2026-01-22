@@ -42,6 +42,10 @@ const translations = {
         extra_ranchange: "이름에 「기본」이 포함된 무작위 스킬 카드를 다른 스킬 카드로 체인지",
         extra_troubledel: "무작위 트러블 카드 삭제",
         extra_param: "{type} 상승+{val}",
+        gacha_title: "가챠 시뮬레이션",
+        gacha_1pull: "1회 뽑기",
+        gacha_10pull: "10회 뽑기",
+        gacha_skip: "스킵",
         footer: ""
     },
     ja: {
@@ -86,6 +90,10 @@ const translations = {
         extra_ranchange: "ランダムな名前に「基本」を含むスキルカードを異なるスキルカードにチェンジ",
         extra_troubledel: "ランダムなトラブルカードを削除",
         extra_param: "{type}上昇+{val}",
+        gacha_title: "ガチャシミュレーション",
+        gacha_1pull: "1回ガチャ",
+        gacha_10pull: "10回ガチャ",
+        gacha_skip: "スキップ",
         footer: ""
     }
 };
