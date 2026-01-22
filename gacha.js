@@ -68,59 +68,139 @@ export function renderGacha() {
         }
     }, 10000);
 
-    const finishGacha = () => {
-        if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
-        if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
-        if(videoContainer) videoContainer.classList.add('hidden');
-        document.body.classList.remove('immersive-mode');
-        videoStep = 0;
-    };
+        const finishGacha = () => {
 
-    // 영상 내 점프 로직 (1연차 & 10연차 공통)
-    const playSequel = (isAuto = false) => {
-        if (videoStep !== 0) return;
-        if (!isAuto && !canClick) return;
-        
-        // 점프 시간 설정 (1연: 9.8초, 10연: 8.6초)
-        const jumpTime = (gachaMode === 1) ? 9.8 : 8.6;
-        
-        if (videoMain && videoMain.duration >= jumpTime) {
-            videoStep = 1;
+            if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
+
+            if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
+
+            if(videoContainer) videoContainer.classList.add('hidden');
+
+            document.body.classList.remove('immersive-mode');
+
+            videoStep = 0;
+
+        };
+
+    
+
+        const playSequel = (isAuto = false) => {
+
+            if (videoStep !== 0 || !canClick) return;
+
+            
+
+            if (videoNext && videoMain) {
+
+                videoStep = 1; 
+
+                canClick = false; 
+
+    
+
+                // 이미 점프 지점에서 대기 중인 videoNext를 즉시 재생 및 표시
+
+                videoNext.play().catch(() => finishGacha());
+
+    
+
+                videoNext.onplaying = () => {
+
+                    videoMain.classList.add('hidden'); 
+
+                    videoNext.classList.remove('hidden'); 
+
+                    videoMain.pause();
+
+                    videoNext.onplaying = null;
+
+                    setTimeout(() => { canClick = true; }, 600);
+
+                };
+
+            }
+
+        };
+
+    
+
+        const startGacha = (mode) => {
+
+            document.body.classList.add('immersive-mode');
+
+            gachaMode = mode;
+
+            videoStep = 0;
+
             canClick = false;
-            videoMain.currentTime = jumpTime;
-            
-            // 점프 후 다시 0.6초간 클릭 방지
+
             setTimeout(() => { canClick = true; }, 600);
-        }
-    };
 
-    const startGacha = (mode) => {
-        document.body.classList.add('immersive-mode');
-        gachaMode = mode;
-        videoStep = 0;
-        canClick = false;
-        
-        // 시작 시 0.6초간 클릭 방지
-        setTimeout(() => { canClick = true; }, 600);
-        
-        const mainSrc = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
-        
-        if (videoMain && videoContainer) {
-            videoContainer.classList.remove('hidden');
             
-            videoMain.src = videoBlobs[mainSrc] || mainSrc;
-            videoMain.muted = false;
-            videoMain.classList.remove('hidden'); 
 
-            // 10연차/1연차 모두 동일하게 단일 비디오 태그 사용
-            if (videoNext) videoNext.classList.add('hidden');
+            const src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
 
-            videoMain.onended = () => { finishGacha(); };
-            videoMain.onclick = () => { if (canClick) playSequel(false); };
+            const jumpTime = (mode === 1) ? 9.8 : 8.6;
 
-            videoMain.play().catch(() => finishGacha());
-        }
-    };
+            
+
+            if (videoMain && videoNext && videoContainer) {
+
+                videoContainer.classList.remove('hidden');
+
+                
+
+                // 1. Main 비디오: 처음부터 재생
+
+                videoMain.src = videoBlobs[src] || src;
+
+                videoMain.muted = false;
+
+                videoMain.classList.remove('hidden'); 
+
+    
+
+                // 2. Next 비디오: 똑같은 파일을 점프 지점에서 대기
+
+                videoNext.src = videoBlobs[src] || src;
+
+                videoNext.muted = false;
+
+                videoNext.classList.add('hidden');
+
+                videoNext.load();
+
+                
+
+                // 미리 점프 시켜서 디코더를 대기시킴 (Warming)
+
+                videoNext.onloadedmetadata = () => {
+
+                    videoNext.currentTime = jumpTime;
+
+                    videoNext.onloadedmetadata = null;
+
+                };
+
+    
+
+                videoMain.onclick = () => { if (canClick) playSequel(false); };
+
+                videoNext.onclick = () => { if (canClick) finishGacha(); };
+
+                
+
+                videoMain.onended = () => { playSequel(true); };
+
+                videoNext.onended = () => { finishGacha(); };
+
+    
+
+                videoMain.play().catch(() => finishGacha());
+
+            }
+
+        };
 
     if (btn1) btn1.onclick = () => startGacha(1);
     if (btn10) btn10.onclick = () => startGacha(10);
