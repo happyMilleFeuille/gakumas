@@ -45,7 +45,11 @@ const translations = {
         gacha_title: "가챠 시뮬레이션",
         gacha_1pull: "1회 뽑기",
         gacha_10pull: "10회 뽑기",
+        gacha_close: "닫기",
         gacha_skip: "스킵",
+        gacha_exchange_pt: "교환pt",
+        gacha_log: "가챠 기록",
+        gacha_reset: "초기화",
         footer: ""
     },
     ja: {
@@ -93,7 +97,11 @@ const translations = {
         gacha_title: "ガチャシミュレーション",
         gacha_1pull: "1回ガチャ",
         gacha_10pull: "10回ガチャ",
+        gacha_close: "閉じる",
         gacha_skip: "スキップ",
+        gacha_exchange_pt: "交換pt",
+        gacha_log: "ガチャ記録",
+        gacha_reset: "リセット",
         footer: ""
     }
 };

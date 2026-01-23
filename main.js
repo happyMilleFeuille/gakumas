@@ -3,6 +3,7 @@ import { state, setLanguage } from './state.js';
 import { updatePageTranslations, applyBackground, initMobileHeightFix } from './utils.js';
 import { handleNavigation } from './router.js';
 import { renderSupport } from './ui.js';
+import { renderGacha } from './gacha.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. 요소 선택
@@ -45,6 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // 현재 화면이 서포트 카드라면 갱신
             if (document.querySelector('.support-grid')) {
                 renderSupport();
+            }
+            // 현재 화면이 가챠라면 갱신
+            if (document.querySelector('.gacha-container')) {
+                renderGacha();
             }
         });
     });

@@ -3,6 +3,7 @@ import { updatePageTranslations } from './utils.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { state, setJewels, setTotalPulls, addGachaLog, clearGachaLog } from './state.js';
 import { currencyData } from './currency.js';
+import translations from './i18n.js';
 
 export function renderGacha() {
     const contentArea = document.getElementById('content-area');
@@ -34,11 +35,14 @@ export function renderGacha() {
 
     const updateTotalPullsUI = (prevCount = null) => {
         if (totalPullCount) {
-            if (prevCount !== null && prevCount !== state.totalPulls) {
-                totalPullCount.textContent = `交換pt    ${prevCount}  →  ${state.totalPulls}`;
-            } else {
-                totalPullCount.textContent = `交換pt    ${state.totalPulls}`;
-            }
+    const lang = document.documentElement.lang || 'ko';
+    const exchangeText = translations[lang]?.gacha_exchange_pt || "교환pt";
+
+    if (prevCount !== null) {
+        totalPullCount.textContent = `${exchangeText}    ${prevCount}  →  ${state.totalPulls}`;
+    } else {
+        totalPullCount.textContent = `${exchangeText}    ${state.totalPulls}`;
+    }
         }
     };
 
@@ -240,7 +244,7 @@ export function renderGacha() {
 
         // 하단 버튼 재설정 (왼쪽: 닫기, 오른쪽: 다시 뽑기)
         if (btn1 && btn10) {
-            btn1.textContent = state.currentLang === 'ko' ? '닫기' : '閉じる';
+            btn1.textContent = translations[state.currentLang].gacha_close;
             btn1.onclick = () => {
                 // 가챠 UI 초기화 및 메뉴 표시 (showMenuUI 로직 활용)
                 document.body.classList.remove('immersive-mode');
@@ -249,9 +253,8 @@ export function renderGacha() {
                 renderGacha(); 
             };
 
-            const retryText = gachaMode === 1 ? 
-                (state.currentLang === 'ko' ? '1회 뽑기' : '1回引く') : 
-                (state.currentLang === 'ko' ? '10회 뽑기' : '10회引く');
+            const is10 = (gachaMode === 10);
+            const retryText = translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull'];
             btn10.textContent = retryText;
             btn10.onclick = () => startGacha(gachaMode);
 
@@ -378,11 +381,11 @@ export function renderGacha() {
     };
 
     if (btn1) {
-        btn1.textContent = state.currentLang === 'ko' ? '1회 뽑기' : '1回引く';
+        btn1.textContent = translations[state.currentLang].gacha_1pull;
         btn1.onclick = () => startGacha(1);
     }
     if (btn10) {
-        btn10.textContent = state.currentLang === 'ko' ? '10회 뽑기' : '10회引く';
+        btn10.textContent = translations[state.currentLang].gacha_10pull;
         btn10.onclick = () => startGacha(10);
     }
     if (skipBtn) {
@@ -453,27 +456,27 @@ function openGachaLogModal() {
     statsArea.innerHTML = `
         <div class="stat-row-top">
             <div class="stat-item full-width">
-                <span class="stat-label">총 뽑기 횟수 <span class="stat-value" style="margin-left: 5px;">${total}</span></span>
+                <span class="stat-label">${isJa ? '総ガチャ回数' : '총 뽑기 횟수'} <span class="stat-value" style="margin-left: 5px;">${total}</span></span>
                 <span class="stat-value" style="color: #777; font-weight: normal;">${priceDisplay}</span>
             </div>
             <div class="stat-row-bottom" style="border-top: 1px dashed #ccc; padding-top: 8px;">
                 <div class="stat-item">
-                    <span class="stat-label">전체 SSR</span>
+                    <span class="stat-label">${isJa ? '全体 SSR' : '전체 SSR'}</span>
                     <span class="stat-value" style="font-size: 0.85rem;">${stats.total.SSR} <span style="color: #777; font-weight: normal;">(${getPerc(stats.total.SSR)})</span></span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">전체 SR</span>
+                    <span class="stat-label">${isJa ? '全体 SR' : '전체 SR'}</span>
                     <span class="stat-value" style="font-size: 0.85rem;">${stats.total.SR} <span style="color: #777; font-weight: normal;">(${getPerc(stats.total.SR)})</span></span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">전체 R</span>
+                    <span class="stat-label">${isJa ? '全体 R' : '전체 R'}</span>
                     <span class="stat-value" style="font-size: 0.85rem;">${stats.total.R} <span style="color: #777; font-weight: normal;">(${getPerc(stats.total.R)})</span></span>
                 </div>
             </div>
         </div>
 
         <div class="stat-category-header" data-target="produce">
-            <span>프로듀스 아이돌 상세</span>
+            <span>${isJa ? 'プロデュースアイドル詳細' : '프로듀스 아이돌 상세'}</span>
             <span class="toggle-icon">▼</span>
         </div>
         <div id="stat-produce-content" class="stat-row-bottom hidden">
@@ -492,7 +495,7 @@ function openGachaLogModal() {
         </div>
 
         <div class="stat-category-header" data-target="support">
-            <span>서포트 카드 상세</span>
+            <span>${isJa ? 'サポートカード詳細' : '서포트 카드 상세'}</span>
             <span class="toggle-icon">▼</span>
         </div>
         <div id="stat-support-content" class="stat-row-bottom hidden">

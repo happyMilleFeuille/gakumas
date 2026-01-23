@@ -346,12 +346,12 @@ footer {
     top: 10px;
     left: 10px;
     z-index: 200;
-    padding: 8px 16px;
+    padding: 5px 10px;
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid #ccc;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: all 0.2s;
 }
@@ -360,7 +360,7 @@ footer {
     transform: scale(1.05);
 }
 .reset-btn {
-    left: 110px; /* 가챠 기록 버튼 옆에 충분한 여백 확보 */
+    left: 110px; /* 원래 간격 유지 */
 }
 @media (max-width: 768px) {
     .log-btn {
@@ -370,6 +370,6 @@ footer {
         left: 5px;
     }
     .reset-btn {
-        left: 65px; /* 작은 폰트 크기에 맞춰 간격 재조정 */
+        left: 75px; /* 모바일에서 버튼 간격을 75px로 조정 */
     }
 }
