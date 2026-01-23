@@ -6,7 +6,7 @@
     padding-top: 1.5rem; 
     gap: 1.5rem;
     text-align: center;
-    height: 60%; /* 70%에서 60%로 축소 */
+    height: 85%; /* 70%에서 60%로 축소 */
     min-height: 500px; /* 600px에서 500px로 조정 */
     position: relative;
     border: 2px solid red; /* 디버깅용 테두리 추가 */
@@ -113,31 +113,36 @@
     margin: 3rem auto 2rem; /* PC 기본 위치 */
 }
 
-/* 1연 결과 중앙 정렬 */
-.gacha-results.single-result {
-    display: flex;
-    justify-content: center;
-}
-.gacha-results.single-result .gacha-result-card {
-    width: 150px;
-}
-
 .gacha-result-card {
-    background: #fff;
-    border-radius: 8px;
+    background: transparent;
+    border-radius: 0; /* 둥근 모서리 제거 */
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: none;
     text-align: center;
-    border: 1px solid #eee;
+    border: none;
     display: flex;
     flex-direction: column;
     width: 100%;
+    /* 애니메이션 기본 상태 */
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.gacha-result-card.animate {
+    animation: cardSlideIn 0.4s ease forwards;
+}
+
+@keyframes cardSlideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .result-card-img-wrapper {
     position: relative;
-    padding-top: 140%; 
-    background: #f8f8f8;
+    padding-top: 170%; 
+    background: transparent;
 }
 
 .result-card-img {
@@ -145,22 +150,50 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     object-fit: cover;
+    border-radius: 0; /* 둥근 모서리 제거 */
 }
 
 .gacha-result-card.landscape .result-card-img {
     padding: 0;
-    transform: rotate(-45deg);
+    object-fit: contain;
+    transform: rotate(-45deg) scale(1.7) translateX(20%);
+    filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5));
+    border-radius: 0;
 }
 
-.result-card-rarity {
+/* 등급별 배경 그라데이션 (중앙 80% 강조, 끝단 투명) */
+.gacha-result-card.r-bg { background: linear-gradient(to bottom, transparent 0%, rgb(224, 240, 240) 15%, rgb(224, 240, 240) 85%, transparent 100%); }
+.gacha-result-card.sr-bg { background: linear-gradient(to bottom, transparent 0%, #fdda6a 15%, #fdda6a 85%, transparent 100%); }
+.gacha-result-card.ssr-bg { background: linear-gradient(to bottom, transparent 0%, #be9fe1 15%, #be9fe1 85%, transparent 100%); }
+
+.result-card-badge-container {
     position: absolute;
-    top: 4px; right: 4px;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    font-size: 0.6rem;
-    padding: 1px 4px;
-    border-radius: 3px;
-    font-weight: bold;
+    bottom: 5px;
+    left: 0;
+    width: 40px; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 4px; 
+    z-index: 10;
+    padding: 0; /* 여백 제거 */
+}
+
+.result-card-rarity-img {
+    width: 100%; /* 40px 영역에 맞춤 */
+    max-width: 60px;
+    height: 25px;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
+}
+
+.result-card-plan-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
 }
 
 .result-card-name {
@@ -175,13 +208,13 @@
 }
 
 /* 등급별 색상 */
-.rarity-ssr { background: #a335ee !important; }
-.rarity-sr { background: #ffca28 !important; color: #333 !important; }
-.rarity-r { background: #708090 !important; }
+.rarity-ssr { color: #a335ee !important; }
+.rarity-sr { color: #ffca28 !important; }
+.rarity-r { color: #708090 !important; }
 
-.ssr-border { border: 2px solid #a335ee !important; }
-.sr-border { border: 2px solid #ffca28 !important; }
-.r-border { border: 1px solid #708090 !important; }
+.ssr-border { border: none !important; }
+.sr-border { border: none !important; }
+.r-border { border: none !important; }
 
 /* Spinner */
 .spinner {
@@ -574,7 +607,7 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important; /* 세로 중앙 정렬 강제 */
-        height: 80% !important; /* 90%에서 80%로 축소 */
+        height: 90% !important; /* 90%에서 80%로 축소 */
         min-height: 45vh !important;
         width: 100% !important; /* 너비를 100%로 확장 */
     }
@@ -595,8 +628,15 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         width: 100%;
         margin: 0 !important; 
         padding: 0 5px;
+        min-height: 60vh;
+        align-content: center;
+        contain: layout; /* 레이아웃 계산을 격리하여 덜컥거림 방지 */
     }
     .gacha-result-card { width: 100%; min-width: 0; }
+    .gacha-results.single-result .gacha-result-card { width: 150px; }
+    .result-card-img-wrapper { padding-top: 300%; }
+    .result-card-badge-container { bottom: 3px; left: -3px !important; width: 30px; gap: 2px; }
+    .result-card-rarity-img { width: 100%; height: 14px; object-position: center bottom; }
+    .result-card-plan-icon { width: 13px; height: 13px; object-position: center bottom; }
     .result-card-name { font-size: 0.45rem; padding: 2px; }
-    .result-card-rarity { font-size: 0.45rem; padding: 1px 2px; }
 }

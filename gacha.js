@@ -1,5 +1,5 @@
 // gacha.js
-import { updatePageTranslations } from './utils.js';
+import { updatePageTranslations, applyBackground } from './utils.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { state, setJewels, setTotalPulls, addGachaLog, clearGachaLog, setGachaType } from './state.js';
 import { currencyData } from './currency.js';
@@ -14,6 +14,20 @@ export function renderGacha() {
     contentArea.innerHTML = '';
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
+
+    // 메뉴로 돌아오면 배경 복구
+    const fixedBg = document.getElementById('fixed-bg');
+    if (fixedBg) fixedBg.style.transition = 'none';
+
+    if (state.currentBg) {
+        applyBackground(state.currentBg);
+    } else {
+        if (fixedBg) {
+            fixedBg.style.backgroundImage = '';
+            fixedBg.style.backgroundSize = 'contain';
+        }
+    }
+    if (fixedBg) fixedBg.style.backgroundSize = 'contain';
 
     // 요소 선택 (외부 고정 버튼 사용)
     const fixedBtnArea = document.getElementById('gacha-fixed-buttons');
@@ -138,10 +152,12 @@ export function renderGacha() {
 
     // 오디오 객체 생성
     const gachaBGM = new Audio();
+    gachaBGM.disableRemotePlayback = true;
     let isMuted = state.gachaMuted; 
     gachaBGM.muted = isMuted;
     
     let currentResults = [];
+    let currentVideoSrc = ""; // 현재 재생 중인 영상 파일명 추적
     let clickTimer = null;
     let videoStep = 0; 
     let gachaMode = 0;
@@ -212,25 +228,41 @@ export function renderGacha() {
             resultsContainer.classList.remove('single-result');
         }
 
-        currentResults.forEach(card => {
+        currentResults.forEach((card, index) => {
             const clone = itemTpl.content.cloneNode(true);
             const cardEl = clone.querySelector('.gacha-result-card');
+            
+            // 애니메이션 클래스 및 지연 시간 추가
+            cardEl.classList.add('animate');
+            cardEl.style.animationDelay = `${index * 0.08}s`;
+
             const img = clone.querySelector('.result-card-img');
-            const rarity = clone.querySelector('.result-card-rarity');
+            const badgeContainer = clone.querySelector('.result-card-badge-container');
+            const planIcon = clone.querySelector('.result-card-plan-icon');
+            const rarityImg = clone.querySelector('.result-card-rarity-img');
             const name = clone.querySelector('.result-card-name');
 
             if (card.type === 'produce') {
                 img.src = `idols/${card.id}1.webp`;
+                if (card.plan && planIcon) {
+                    planIcon.src = `icons/${card.plan}.webp`;
+                    planIcon.classList.remove('hidden');
+                }
             } else if (card.id.includes('dummy')) {
                 img.src = 'icons/idol.png';
             } else {
                 img.src = `images/support/${card.id}.webp`;
             }
 
-            rarity.textContent = card.displayRarity;
-            const rarityClass = card.displayRarity.toLowerCase();
-            rarity.className = `result-card-rarity rarity-${rarityClass}`;
-            cardEl.className = `gacha-result-card ${rarityClass}-border`;
+            // 등급 이미지 설정
+            const rarityKey = card.displayRarity.toLowerCase(); // ssr, sr, r
+            rarityImg.src = `icons/${rarityKey}.png`;
+            
+            // 등급별 배경 클래스 추가
+            cardEl.classList.add(`${rarityKey}-bg`);
+            
+            // 테두리 클래스 등은 제거됨 (스타일에서 border: none 처리함)
+            // cardEl.className = `gacha-result-card ${rarityKey}-border`; // 필요시 유지
             
             if (card.type !== 'produce') {
                 cardEl.classList.add('landscape');
@@ -260,6 +292,11 @@ export function renderGacha() {
         if(videoContainer) videoContainer.classList.add('hidden');
         document.body.classList.remove('immersive-mode');
         videoStep = 0;
+
+        // 미디어 세션 종료
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.playbackState = 'none';
+        }
 
         // 가챠 결과가 나타나면 기록 버튼 및 음소거 버튼 표시
         if (muteControls) {
@@ -292,6 +329,13 @@ export function renderGacha() {
         }
 
         renderResults();
+
+        // 결과 화면 배경 설정
+        const fixedBg = document.getElementById('fixed-bg');
+        if (fixedBg) {
+            fixedBg.style.backgroundImage = "url('gasya/background.jpg')";
+            fixedBg.style.backgroundSize = "cover";
+        }
     };
 
     const playGetAnimation = () => {
@@ -302,6 +346,7 @@ export function renderGacha() {
             videoStep = 2; 
             videoNext.src = assetBlobs[getSrc] || getSrc;
             videoNext.muted = isMuted;
+            videoNext.disableRemotePlayback = true;
             videoNext.load();
             
             videoNext.onplaying = () => {
@@ -320,7 +365,11 @@ export function renderGacha() {
 
     const playSequel = () => {
         if (videoStep !== 0 || !canClick) return;
-        const jumpTime = (gachaMode === 1) ? 9.8 : 8.6;
+        
+        // 현재 영상이 1연차용(ren1)인지 10연차용(ren10)인지에 따라 점프 시간 결정
+        const isRen1 = currentVideoSrc.includes('ren1');
+        const jumpTime = isRen1 ? 9.8 : 8.6;
+
         if (videoMain) {
             if (videoMain.currentTime > jumpTime + 0.1) return;
             if (!isMuted && assetBlobs['gasya/start_click.mp3']) {
@@ -331,6 +380,14 @@ export function renderGacha() {
             canClick = false;
             if (clickTimer) clearTimeout(clickTimer);
             videoMain.currentTime = jumpTime;
+            
+            // BGM 싱크 맞춤 (6.5초 미만일 때만 6.5초로 점프)
+            if (gachaBGM && !gachaBGM.paused) {
+                if (gachaBGM.currentTime < 6.5) {
+                    gachaBGM.currentTime = 6.5;
+                }
+            }
+
             videoMain.play().catch(finishGacha);
             clickTimer = setTimeout(() => { canClick = true; }, 2000);
         }
@@ -338,6 +395,14 @@ export function renderGacha() {
 
     const startGacha = (mode) => {
         const cost = (mode === 1) ? 250 : 2500;
+
+        // 미디어 세션 정보 설정 (상태창에 아무것도 안뜨게 함)
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: '', artist: '', album: '', artwork: []
+            });
+            navigator.mediaSession.playbackState = 'playing';
+        }
 
         if (!isMuted && assetBlobs['gasya/gasyaclick.mp3']) {
             const clickSfx = new Audio(assetBlobs['gasya/gasyaclick.mp3']);
@@ -375,7 +440,13 @@ export function renderGacha() {
             canClick = true; 
         }, 600);
         
-        const src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
+        let src = (mode === 1) ? 'gasya/start_ren1.mp4' : 'gasya/start_ren10.mp4';
+        
+        // 10연차일 때 20% 확률로 1연차 영상(ren1) 깜짝 출현
+        if (mode === 10 && Math.random() < 0.2) {
+            src = 'gasya/start_ren1.mp4';
+        }
+        currentVideoSrc = src; // 현재 영상 경로 저장
         
         if (videoMain && videoContainer) {
             videoContainer.classList.remove('hidden');
@@ -386,13 +457,16 @@ export function renderGacha() {
             }
             videoMain.src = assetBlobs[src] || src;
             videoMain.muted = true; 
+            videoMain.disableRemotePlayback = true; // 원격 재생 방지
+            videoMain.disablePictureInPicture = true; // PIP 방지
             videoMain.classList.remove('hidden'); 
             videoMain.onclick = () => { if (canClick) playSequel(); };
             videoMain.onended = playGetAnimation;
 
             const checkPausePoint = () => {
                 if (videoStep === 0 && videoMain && !videoMain.paused) {
-                    const jt = (gachaMode === 1) ? 9.8 : 8.6;
+                    const isRen1 = currentVideoSrc.includes('ren1');
+                    const jt = isRen1 ? 9.8 : 8.6;
                     if (videoMain.currentTime >= jt) {
                         videoMain.pause();
                         videoMain.currentTime = jt;
