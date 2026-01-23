@@ -126,8 +126,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 브라우저 뒤로가기 버튼 처리
     window.addEventListener('popstate', (event) => {
-        // 모든 모달 닫기
-        hideModal();
-        hideGachaLogModal();
+        const cardModal = document.getElementById('card-modal');
+        const gachaLogModal = document.getElementById('gacha-log-modal');
+        
+        const isCardModalVisible = cardModal && !cardModal.classList.contains('hidden');
+        const isGachaLogVisible = gachaLogModal && !gachaLogModal.classList.contains('hidden');
+
+        if (isCardModalVisible || isGachaLogVisible) {
+            // 모달이 열려있는 상태에서 뒤로가기 발생 -> 모달만 닫기
+            hideModal();
+            hideGachaLogModal();
+        } else {
+            // 모달이 없는 상태에서 뒤로가기 발생 -> 홈으로 이동 (중복 기록 방지 위해 true 전달)
+            handleNavigation('home', true);
+        }
     });
 });
