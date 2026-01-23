@@ -32,6 +32,19 @@
                 <div class="total-pulls-box">
                     <span id="total-pull-count">0</span>
                 </div>
+                <div class="gacha-controls-top">
+                    <button id="btn-prev-gacha" class="type-nav-btn circle-btn"><span></span></button>
+                    <div class="capsule-container">
+                        <div id="current-gacha-type-display" class="current-type-display capsule-box"><span>통상</span></div>
+                        <div id="gacha-type-indicator" class="gacha-type-indicator">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <button id="btn-next-gacha" class="type-nav-btn circle-btn"><span></span></button>
+                </div>
                 <button class="primary-btn gacha-btn" id="btn-1pull-fixed">1회 뽑기</button>
                 <button class="primary-btn gacha-btn" id="btn-10pull-fixed">10회 뽑기</button>
             </div>
@@ -41,12 +54,6 @@
                 <button id="gacha-mute-btn" class="mute-toggle-btn">🔇</button>
             </div>
             <div id="jewel-container" class="jewel-container hidden">
-                <select id="gacha-type-select" class="gacha-type-select">
-                    <option value="normal">통상</option>
-                    <option value="limited">한정</option>
-                    <option value="unit">유닛</option>
-                    <option value="fes">페스</option>
-                </select>
                 <div class="jewel-box">
                     <span id="jewel-count">0</span>
                     <button id="btn-add-jewel" class="add-jewel-btn">+</button>
@@ -235,10 +242,10 @@
         <div class="gacha-result-card">
             <div class="result-card-img-wrapper">
                 <img src="" alt="" class="result-card-img">
-                <div class="result-card-badge-container">
-                    <img src="" alt="" class="result-card-plan-icon hidden">
-                    <img src="" alt="" class="result-card-rarity-img">
-                </div>
+            </div>
+            <div class="result-card-badge-container">
+                <img src="" alt="" class="result-card-plan-icon hidden">
+                <img src="" alt="" class="result-card-rarity-img">
             </div>
             <div class="result-card-name"></div>
         </div>

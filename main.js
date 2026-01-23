@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     langBtns.forEach(b => b.classList.toggle('active', b.id === `lang-${state.currentLang}`));
     document.documentElement.lang = state.currentLang;
 
+    // 새로고침 시 히스토리 상태 초기화 (현재 화면이 홈이므로 상태를 홈으로 맞춤)
+    history.replaceState({ target: 'home' }, "");
+
     // 3. 이벤트 바인딩
 
     // 이미지 및 별 우클릭 방지
@@ -93,33 +96,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
-            hideModal();
             if (history.state && history.state.modalOpen === true) {
-                history.back(); // 상태 제거
+                history.back(); 
+            } else {
+                hideModal();
             }
         });
     }
 
     if (closeGachaLogModal) {
         closeGachaLogModal.addEventListener('click', () => {
-            hideGachaLogModal();
             if (history.state && history.state.modalOpen === 'gachaLog') {
                 history.back();
+            } else {
+                hideGachaLogModal();
             }
         });
     }
 
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
-            hideModal();
             if (history.state && history.state.modalOpen === true) {
                 history.back();
+            } else {
+                hideModal();
             }
         }
         if (event.target === gachaLogModal) {
-            hideGachaLogModal();
             if (history.state && history.state.modalOpen === 'gachaLog') {
                 history.back();
+            } else {
+                hideGachaLogModal();
             }
         }
     });
@@ -128,16 +135,27 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         const cardModal = document.getElementById('card-modal');
         const gachaLogModal = document.getElementById('gacha-log-modal');
+        const resultsContainer = document.querySelector('#gacha-results');
         
         const isCardModalVisible = cardModal && !cardModal.classList.contains('hidden');
         const isGachaLogVisible = gachaLogModal && !gachaLogModal.classList.contains('hidden');
+        const isGachaPlaying = document.body.classList.contains('immersive-mode');
+        const isGachaResultVisible = resultsContainer && resultsContainer.children.length > 0;
+
+        if (isGachaPlaying) {
+            // 영상 재생 중 뒤로가기 시도 -> 히스토리를 다시 쌓아서 현재 페이지 유지 (차단)
+            history.pushState({ target: 'gacha', view: 'playing' }, "");
+            return;
+        }
 
         if (isCardModalVisible || isGachaLogVisible) {
-            // 모달이 열려있는 상태에서 뒤로가기 발생 -> 모달만 닫기
             hideModal();
             hideGachaLogModal();
+        } else if (isGachaResultVisible) {
+            document.body.classList.remove('immersive-mode');
+            if (resultsContainer) resultsContainer.innerHTML = '';
+            renderGacha();
         } else {
-            // 모달이 없는 상태에서 뒤로가기 발생 -> 홈으로 이동 (중복 기록 방지 위해 true 전달)
             handleNavigation('home', true);
         }
     });

@@ -57,20 +57,47 @@
 .back-btn:hover { background: #000; }
 .back-btn.hidden { display: none; }
 
+/* 상단 컨트롤 (콤보박스 등) */
+.gacha-controls-top {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px; /* 위치 상향 조정 */
+    order: 0; /* 항상 최상단 고정 시도 */
+}
+
 /* 가챠 버튼 */
 .gacha-buttons { 
     display: flex; 
-    column-gap: 1.5rem; /* 가로 간격 유지 */
-    row-gap: 4px;       /* 세로 간격 대폭 축소 */
+    column-gap: 1.5rem;
+    row-gap: 4px;
     justify-content: center; 
     flex-wrap: wrap; 
-    position: absolute; /* 절대 위치 고정 */
-    bottom: 0px;        /* 바닥에 완전히 밀착 */
+    position: absolute;
+    bottom: 0px;
     left: 0;
     right: 0;
     padding: 1rem 0;
     z-index: 10;
+    /* 전환 시 위치 이동 과정을 숨기기 위해 투명도 전환 사용 */
+    opacity: 1;
+    transition: opacity 0.15s ease-in-out;
 }
+
+.gacha-buttons.loading-shift {
+    opacity: 0 !important;
+}
+
+/* 메인 탭일 때 순서 변경: 콤보박스(0) -> 버튼(1) -> 교환pt(2) */
+.gacha-buttons.view-main .gacha-controls-top { order: 0; }
+.gacha-buttons.view-main .gacha-btn { order: 1; }
+.gacha-buttons.view-main .total-pulls-box { order: 2; margin-top: 10px; }
+
+/* 결과 화면일 때 순서 변경: 콤보박스(0) -> 교환pt(1) -> 버튼(2) */
+.gacha-buttons.view-result .gacha-controls-top { order: 0; }
+.gacha-buttons.view-result .total-pulls-box { order: 1; margin-bottom: 10px; }
+.gacha-buttons.view-result .gacha-btn { order: 2; }
+
 .gacha-btn { min-width: 150px; }
 
 /* 누적 가챠 횟수 박스 */
@@ -78,29 +105,225 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 2px; /* 아주 약간 띄움 */
+    align-items: center;
+    gap: 8px; /* 요소 간 간격 */
+    margin-bottom: 2px;
     color: #fff;
     font-size: 0.9rem;
     font-weight: bold;
 }
 
-.total-pulls-box span:last-child {
+/* 쥬얼 표시 UI (상단 우측 고정) */
+.jewel-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jewel-box {
     background: rgba(0, 0, 0, 0.6);
-    padding: 2px 10px;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 숫자 오른쪽 정렬 */
+    gap: 4px;
+    width: 120px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.add-jewel-btn {
+    background: none;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+/* 하단 교환pt & 콤보박스 영역 */
+.total-pulls-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+#total-pull-count {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2px 15px;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    width: 200px; /* 160px에서 200px로 확장 */
+    min-width: 160px;
     text-align: center;
     font-size: 0.85rem;
-    white-space: pre; /* 여러 개의 공백을 그대로 표시 */
+    white-space: pre;
+}
+
+/* 메인 탭일 때 교환pt 너비 축소 */
+.view-main #total-pull-count {
+    min-width: 120px;
+}
+
+/* 가챠 타입 셀렉터 (독립 원형 버튼 스타일) */
+.gacha-controls-top {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px; /* 간격 대폭 확장 */
+    margin-bottom: 40px;
+    order: 0;
+}
+
+.type-nav-btn.circle-btn {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /* 버튼 위치를 더 아래로 내림 */
+    transform: translateY(20px);
+    /* 애니메이션 깜빡임 방지 및 성능 최적화 */
+    will-change: transform, width, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.type-nav-btn.circle-btn:hover { transform: translateY(20px); }
+.type-nav-btn.circle-btn:active { transform: translateY(20px); }
+
+.capsule-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px; /* 캡슐과 점 사이 간격 */
+}
+
+.gacha-type-indicator {
+    display: flex;
+    gap: 8px;
+}
+
+.gacha-type-indicator .dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.gacha-type-indicator .dot.active {
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.current-type-display.capsule-box span,
+.type-nav-btn.circle-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.current-type-display.capsule-box {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    min-width: 240px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    user-select: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+/* 박스 자체는 고정, 내부 텍스트만 슬라이드 */
+.slide-out-left span { animation: textOutLeft 0.1s ease-in forwards; }
+.slide-in-right span { animation: textInRight 0.1s ease-out forwards; }
+.slide-out-right span { animation: textOutRight 0.1s ease-in forwards; }
+.slide-in-left span { animation: textInLeft 0.1s ease-out forwards; }
+
+/* 텍스트 전용 슬라이드 애니메이션 키프레임 */
+@keyframes textOutLeft { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-40px); } }
+@keyframes textInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes textOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
+@keyframes textInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+
+/* 이전 박스 애니메이션 클래스들은 기능하지 않도록 정리 */
+.slide-out-left, .slide-in-right, .slide-out-right, .slide-in-left { animation: none; }
+
+.capsule-box { --base-trans: translateY(0); }
+.circle-btn { --base-trans: translateY(20px); }
+
+/* 3D 관련 설정 제거 */
+.gacha-controls-top {
+    perspective: none;
+    transform-style: flat;
 }
 
 @media (max-width: 768px) {
-    .total-pulls-box span:last-child {
-        width: 150px; /* 130px에서 150px로 확장 */
-        font-size: 0.75rem;
+    .gacha-controls-top { gap: 10px; margin-bottom: 25px; }
+    .type-nav-btn.circle-btn { 
+        width: 45px; 
+        height: 45px; 
+        font-size: 0.8rem; 
+        /* 모바일에서도 20px 아래 유지 (또는 비율에 맞춰 10px로 조정 가능) */
+        transform: translateY(20px); 
     }
+    .type-nav-btn.circle-btn:hover { transform: translateY(20px); }
+    .type-nav-btn.circle-btn:active { transform: translateY(20px); }
+    .current-type-display.capsule-box { min-width: 130px; height: 60px; line-height: 60px; font-size: 1.1rem; }
+}
+
+@media (max-width: 768px) {
+    .gacha-type-selector { min-width: 180px; height: 45px; }
+    .current-type-display { font-size: 1rem; }
+    .type-nav-btn { font-size: 1.2rem; }
+}
+.gacha-type-select option { background: #333; color: #fff; }
+
+@media (max-width: 768px) {
+    .jewel-container { top: 5px; right: 5px; }
+    .jewel-box { width: 100px; padding: 3px 8px; font-size: 0.75rem; }
+    .add-jewel-btn { width: 16px; height: 16px; font-size: 0.8rem; }
+    #total-pull-count { min-width: 130px; font-size: 0.75rem; }
+    .gacha-type-select { height: 35px; font-size: 0.85rem; line-height: 35px; }
 }
 
 /* Gacha Results Display */
@@ -111,6 +334,18 @@
     width: 100%;
     max-width: 800px;
     margin: 3rem auto 2rem; /* PC 기본 위치 */
+}
+
+/* 1연차일 때 중앙 정렬 설정 (PC/공통) */
+.gacha-results.single-result {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-content: center; /* 세로 중앙 정렬 추가 */
+    min-height: 50vh; /* 세로 중앙 정렬을 위한 최소 높이 확보 */
+    margin: 0 auto; /* 상단 여백 제거하여 세로 중앙에 집중 */
+}
+.gacha-results.single-result .gacha-result-card {
+    grid-column: 3;
 }
 
 .gacha-result-card {
@@ -143,6 +378,15 @@
     position: relative;
     padding-top: 170%; 
     background: transparent;
+    overflow: hidden;
+}
+
+/* 프로듀스 아이돌 전용: 진짜 투명 마스크 적용 */
+.gacha-result-card.produce-card .result-card-img-wrapper {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 30%, black 70%, transparent 80%);
+    mask-image: linear-gradient(to bottom, transparent 20%, black 30%, black 70%, transparent 80%);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
 }
 
 .result-card-img {
@@ -150,25 +394,53 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    border-radius: 0; /* 둥근 모서리 제거 */
+    border-radius: 0;
+    transition: transform 0.3s ease;
+}
+
+/* 프로듀스 아이돌 이미지 배율 및 위치는 JS에서 동적으로 처리함 */
+.gacha-result-card.produce-card .result-card-img {
+    /* transform 설정 제거 */
 }
 
 .gacha-result-card.landscape .result-card-img {
     padding: 0;
     object-fit: contain;
     transform: rotate(-45deg) scale(1.7) translateX(20%);
-    filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5));
+    /* drop-shadow를 여러 번 겹쳐서 선명한 흰색 테두리 효과를 만듦 */
+    filter: 
+        drop-shadow(1px 0 0 #fff) 
+        drop-shadow(-1px 0 0 #fff) 
+        drop-shadow(0 1px 0 #fff) 
+        drop-shadow(0 -1px 0 #fff)
+        drop-shadow(3px 3px 5px rgba(0,0,0,0.5));
     border-radius: 0;
+    box-shadow: none; /* 이전 box-shadow 제거 */
 }
 
-/* 등급별 배경 그라데이션 (중앙 80% 강조, 끝단 투명) */
-.gacha-result-card.r-bg { background: linear-gradient(to bottom, transparent 0%, rgb(224, 240, 240) 15%, rgb(224, 240, 240) 85%, transparent 100%); }
-.gacha-result-card.sr-bg { background: linear-gradient(to bottom, transparent 0%, #fdda6a 15%, #fdda6a 85%, transparent 100%); }
-.gacha-result-card.ssr-bg { background: linear-gradient(to bottom, transparent 0%, #be9fe1 15%, #be9fe1 85%, transparent 100%); }
+/* 등급별 배경 그라데이션 */
+.gacha-result-card.r-bg { background: linear-gradient(to bottom, transparent 0%, rgb(224, 240, 240) 10%, rgb(224, 240, 240) 90%, transparent 100%); }
+.gacha-result-card.sr-bg { 
+    background-image: url('../images/srbackground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+.gacha-result-card.ssr-bg { 
+    background-image: url('../images/ssrbackground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* 이미지 위아래를 투명하게 깎기 위해 마스크 적용 (10%~90% 구간 유지) */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}
 
 .result-card-badge-container {
     position: absolute;
-    bottom: 5px;
+    bottom: 35px; /* wrapper 내부가 아니므로 위치 상향 조정 */
     left: 0;
     width: 40px; 
     display: flex;
@@ -176,7 +448,13 @@
     align-items: center; 
     gap: 4px; 
     z-index: 10;
-    padding: 0; /* 여백 제거 */
+}
+
+@media (max-width: 768px) {
+    .result-card-badge-container {
+        bottom: 25px;
+        left: -3px;
+    }
 }
 
 .result-card-rarity-img {
@@ -283,24 +561,6 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.gacha-type-select {
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
-    padding: 2px 10px;
-    font-size: 0.85rem;
-    outline: none;
-    cursor: pointer;
-    height: 28px;
-    font-weight: bold;
-}
-
-.gacha-type-select option {
-    background: #333;
-    color: #fff;
 }
 
 .jewel-box {
@@ -633,7 +893,15 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         contain: layout; /* 레이아웃 계산을 격리하여 덜컥거림 방지 */
     }
     .gacha-result-card { width: 100%; min-width: 0; }
-    .gacha-results.single-result .gacha-result-card { width: 150px; }
+    .gacha-results.single-result {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 10연차와 동일한 5열 구조 유지 */
+        justify-content: center;
+    }
+    .gacha-results.single-result .gacha-result-card { 
+        grid-column: 3; /* 5개 칸 중 정확히 가운데(3번째) 칸에 배치 */
+        width: 100%;
+    }
     .result-card-img-wrapper { padding-top: 300%; }
     .result-card-badge-container { bottom: 3px; left: -3px !important; width: 30px; gap: 2px; }
     .result-card-rarity-img { width: 100%; height: 14px; object-position: center bottom; }

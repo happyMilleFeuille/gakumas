@@ -5,9 +5,31 @@ import { state, setJewels, setTotalPulls, addGachaLog, clearGachaLog, setGachaTy
 import { currencyData } from './currency.js';
 import translations from './i18n.js';
 
+// 오디오 객체 고정 (중복 생성 방지)
+const gachaBGM = new Audio();
+gachaBGM.disableRemotePlayback = true;
+
+export const mainBGM = new Audio('bgm/mainbgm.mp3');
+mainBGM.loop = true;
+mainBGM.disableRemotePlayback = true;
+
 export function renderGacha() {
     const contentArea = document.getElementById('content-area');
     if (!contentArea) return;
+
+    // 레이아웃 시프트 방지: 화면을 그리기 전에 버튼 영역 클래스 미리 정리
+    const fixedBtnArea = document.getElementById('gacha-fixed-buttons');
+    if (fixedBtnArea) {
+        fixedBtnArea.classList.add('loading-shift'); // 전환 중 숨김
+        fixedBtnArea.classList.remove('view-result');
+        fixedBtnArea.classList.add('view-main');
+        
+        // 렌더링 후 다시 표시
+        requestAnimationFrame(() => {
+            setTimeout(() => fixedBtnArea.classList.remove('loading-shift'), 50);
+        });
+    }
+
     const tpl = document.getElementById('tpl-gacha');
     if (!tpl) return;
     
@@ -29,8 +51,7 @@ export function renderGacha() {
     }
     if (fixedBg) fixedBg.style.backgroundSize = 'contain';
 
-    // 요소 선택 (외부 고정 버튼 사용)
-    const fixedBtnArea = document.getElementById('gacha-fixed-buttons');
+    // 요소 선택 (변수 재사용, 재선언 제거)
     const logBtn = document.getElementById('btn-gacha-log');
     const resetBtn = document.getElementById('btn-gacha-reset');
     const btn1 = document.getElementById('btn-1pull-fixed');
@@ -62,14 +83,82 @@ export function renderGacha() {
         }
     };
 
-    if (typeSelect) {
-        typeSelect.classList.remove('hidden');
-        typeSelect.value = state.gachaType;
-        typeSelect.onchange = (e) => {
-            setGachaType(e.target.value);
-            updateTotalPullsUI();
+    // 가챠 타입 전환 로직
+    const types = ['normal', 'limited', 'unit', 'fes'];
+    const typeDisplayNames = {
+        normal: state.currentLang === 'ko' ? '통상' : '通常',
+        limited: state.currentLang === 'ko' ? '한정' : '限定',
+        unit: state.currentLang === 'ko' ? '유닛' : 'ユニット',
+        fes: state.currentLang === 'ko' ? '페스' : 'フェス'
+    };
+
+    const typeDisplay = document.getElementById('current-gacha-type-display');
+    const btnPrev = document.getElementById('btn-prev-gacha');
+    const btnNext = document.getElementById('btn-next-gacha');
+
+    const updateTypeUI = () => {
+        const typeSpan = typeDisplay.querySelector('span');
+        if (typeSpan) typeSpan.textContent = typeDisplayNames[state.gachaType];
+        
+        // 인디케이터 업데이트
+        const dots = document.querySelectorAll('.gacha-type-indicator .dot');
+        const currentIdx = types.indexOf(state.gachaType);
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIdx);
+        });
+
+        // 양옆 버튼 <span>에 텍스트 표시
+        if (btnPrev && btnNext) {
+            let idx = types.indexOf(state.gachaType);
+            const prevIdx = (idx - 1 + types.length) % types.length;
+            const nextIdx = (idx + 1) % types.length;
+            
+            const prevSpan = btnPrev.querySelector('span');
+            const nextSpan = btnNext.querySelector('span');
+            if (prevSpan) prevSpan.textContent = typeDisplayNames[types[prevIdx]];
+            if (nextSpan) nextSpan.textContent = typeDisplayNames[types[nextIdx]];
+        }
+        
+        updateTotalPullsUI();
+    };
+
+    if (btnPrev && btnNext) {
+        const animateChange = (direction) => {
+            const outClass = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
+            const inClass = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
+
+            // 다시 박스 자체를 타겟팅 (CSS에서 내부 span까지 제어)
+            const elements = [typeDisplay, btnPrev, btnNext];
+            
+            elements.forEach(el => { if(el) el.classList.add(outClass); });
+            
+            setTimeout(() => {
+                let idx = types.indexOf(state.gachaType);
+                if (direction === 'next') idx = (idx + 1) % types.length;
+                else idx = (idx - 1 + types.length) % types.length;
+                
+                setGachaType(types[idx]);
+                updateTypeUI();
+                
+                elements.forEach(el => {
+                    if(el) {
+                        el.classList.remove(outClass);
+                        void el.offsetWidth;
+                        el.classList.add(inClass);
+                    }
+                });
+                
+                setTimeout(() => {
+                    elements.forEach(el => { if(el) el.classList.remove(inClass); });
+                }, 80);
+            }, 80);
         };
+
+        btnPrev.onclick = () => animateChange('prev');
+        btnNext.onclick = () => animateChange('next');
     }
+
+    updateTypeUI(); // 초기 텍스트 설정
 
     const updateGachaButtonsState = () => {
         // btn1이 '닫기' 상태인 경우 비활성화하지 않음
@@ -91,6 +180,8 @@ export function renderGacha() {
     }
     updateTotalPullsUI();
 
+    // 가챠 타입 셀렉터 다시 보이게 설정
+    const controlsTop = document.querySelector('.gacha-controls-top');
     if (addJewelBtn) {
         addJewelBtn.onclick = (e) => {
             e.stopPropagation();
@@ -150,15 +241,24 @@ export function renderGacha() {
         muteControls.style.display = 'flex';
     }
 
-    // 오디오 객체 생성
-    const gachaBGM = new Audio();
-    gachaBGM.disableRemotePlayback = true;
+    // 상태 동기화
     let isMuted = state.gachaMuted; 
     gachaBGM.muted = isMuted;
+    mainBGM.muted = isMuted;
+
+    // 가챠 탭 진입 시 BGM 재생 시도 (음소거가 아니고, 아직 재생 중이 아닐 때만 처음부터 재생)
+    if (!isMuted && (mainBGM.paused || mainBGM.currentTime === 0)) {
+        mainBGM.currentTime = 0;
+        mainBGM.play().catch(() => {
+            console.log("BGM autoplay blocked. Waiting for interaction.");
+        });
+    }
     
     let currentResults = [];
     let currentVideoSrc = ""; // 현재 재생 중인 영상 파일명 추적
     let clickTimer = null;
+    let screenSfxTimeout = null; // 효과음 지연용 타이머
+    let activeScreenSfx = null;  // 현재 재생 중인 효과음 객체
     let videoStep = 0; 
     let gachaMode = 0;
     let canClick = false;
@@ -167,6 +267,12 @@ export function renderGacha() {
         state.gachaMuted = !state.gachaMuted; 
         isMuted = state.gachaMuted;
         gachaBGM.muted = isMuted;
+        mainBGM.muted = isMuted;
+        
+        if (!isMuted) {
+            mainBGM.play().catch(() => {});
+        }
+
         if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
     };
 
@@ -185,6 +291,7 @@ export function renderGacha() {
         'gasya/start_bgmnormal.mp3',
         'gasya/gasyaclick.mp3',
         'gasya/start_click.mp3',
+        'gasya/screen1.mp3',
         'gasya/get_sr.mp4',
         'gasya/get_r.mp4',
         'gasya/1ren_result.mp3',
@@ -244,7 +351,23 @@ export function renderGacha() {
 
             if (card.type === 'produce') {
                 img.src = `idols/${card.id}1.webp`;
+                cardEl.classList.add('produce-card');
+                
+                // 기본값 설정
+                let scale = card.scale || 1.60;
+                let offsetY = card.offsetY || 55;
+
+                // 모바일 환경일 경우 일괄적으로 0.7배 적용
+                if (window.innerWidth <= 768) {
+                    scale *= 0.7;
+                    offsetY *= 0.7;
+                }
+
+                img.style.transform = `scale(${scale}) translateY(${offsetY}px)`;
+                img.style.transformOrigin = 'center center';
+
                 if (card.plan && planIcon) {
+
                     planIcon.src = `icons/${card.plan}.webp`;
                     planIcon.classList.remove('hidden');
                 }
@@ -277,8 +400,19 @@ export function renderGacha() {
 
     const finishGacha = () => {
         if (clickTimer) clearTimeout(clickTimer);
+        if (screenSfxTimeout) clearTimeout(screenSfxTimeout); // 효과음 타이머 취소
+        if (activeScreenSfx) {
+            activeScreenSfx.pause(); // 재생 중인 효과음 정지
+            activeScreenSfx.currentTime = 0;
+        }
         gachaBGM.pause();
         gachaBGM.currentTime = 0;
+
+        // BGM 다시 재생 (처음부터)
+        if (!isMuted) {
+            mainBGM.currentTime = 0;
+            mainBGM.play().catch(() => {});
+        }
 
         // 결과 효과음 재생
         const resultSound = (gachaMode === 1) ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3';
@@ -303,10 +437,21 @@ export function renderGacha() {
             muteControls.classList.remove('hidden');
             muteControls.style.display = 'flex';
         }
+        
+        // 결과 화면에서 타입 셀렉터 영역 숨김
+        const controlsTop = document.querySelector('.gacha-controls-top');
+        if (controlsTop) controlsTop.classList.add('hidden');
+
         if (logBtn) logBtn.classList.remove('hidden');
         if (resetBtn) resetBtn.classList.remove('hidden');
         if (jewelContainer) jewelContainer.classList.remove('hidden');
         if (typeSelect) typeSelect.classList.add('hidden');
+
+        // 하단 버튼 영역 상태 변경 (결과 화면용)
+        if (fixedBtnArea) {
+            fixedBtnArea.classList.remove('view-main');
+            fixedBtnArea.classList.add('view-result');
+        }
 
         // 하단 버튼 재설정 (왼쪽: 닫기, 오른쪽: 다시 뽑기)
         if (btn1 && btn10) {
@@ -336,6 +481,9 @@ export function renderGacha() {
             fixedBg.style.backgroundImage = "url('gasya/background.jpg')";
             fixedBg.style.backgroundSize = "cover";
         }
+
+        // 결과 화면임을 히스토리에 기록 (뒤로가기 시 가챠 메인으로 복귀용)
+        history.pushState({ target: 'gacha', view: 'result' }, "");
     };
 
     const playGetAnimation = () => {
@@ -366,15 +514,23 @@ export function renderGacha() {
     const playSequel = () => {
         if (videoStep !== 0 || !canClick) return;
         
-        // 현재 영상이 1연차용(ren1)인지 10연차용(ren10)인지에 따라 점프 시간 결정
-        const isRen1 = currentVideoSrc.includes('ren1');
-        const jumpTime = isRen1 ? 9.8 : 8.6;
+        // 'ren10'을 먼저 체크하거나, 'ren1.' 처럼 확장자 앞의 점을 포함하여 정확히 구분
+        const isRen10 = currentVideoSrc.includes('ren10');
+        const jumpTime = isRen10 ? 8.6 : 9.8;
 
         if (videoMain) {
             if (videoMain.currentTime > jumpTime + 0.1) return;
-            if (!isMuted && assetBlobs['gasya/start_click.mp3']) {
-                const jumpSfx = new Audio(assetBlobs['gasya/start_click.mp3']);
-                jumpSfx.play().catch(() => {});
+            if (!isMuted) {
+                if (assetBlobs['gasya/start_click.mp3']) {
+                    const jumpSfx = new Audio(assetBlobs['gasya/start_click.mp3']);
+                    jumpSfx.play().catch(() => {});
+                }
+                if (assetBlobs['gasya/screen1.mp3']) {
+                    screenSfxTimeout = setTimeout(() => {
+                        activeScreenSfx = new Audio(assetBlobs['gasya/screen1.mp3']);
+                        activeScreenSfx.play().catch(() => {});
+                    }, 300); // 0.3초 지연
+                }
             }
             videoStep = 1;
             canClick = false;
@@ -395,6 +551,9 @@ export function renderGacha() {
 
     const startGacha = (mode) => {
         const cost = (mode === 1) ? 250 : 2500;
+
+        // 메인 BGM 일시정지
+        mainBGM.pause();
 
         // 미디어 세션 정보 설정 (상태창에 아무것도 안뜨게 함)
         if ('mediaSession' in navigator) {
@@ -431,6 +590,10 @@ export function renderGacha() {
         if (jewelContainer) jewelContainer.classList.add('hidden');
 
         document.body.classList.add('immersive-mode');
+        
+        // 영상 재생 중임을 히스토리에 기록 (뒤로가기 차단용)
+        history.pushState({ target: 'gacha', view: 'playing' }, "");
+
         gachaMode = mode;
         videoStep = 0;
         canClick = false;

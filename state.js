@@ -70,7 +70,7 @@ export function setTotalPulls(count, type = state.gachaType) {
 export function addGachaLog(results, type = state.gachaType) {
     const currentLog = state.gachaLog[type] || [];
     // 최신 기록이 위로 오도록 앞에 추가
-    const newLog = [...results, ...currentLog].slice(0, 200); // 최근 200개까지만 저장
+    const newLog = [...results, ...currentLog].slice(0, 9999); // 최근 9999개까지만 저장
     state.gachaLog[type] = newLog;
     localStorage.setItem('gachaLogObj', JSON.stringify(state.gachaLog));
 }
