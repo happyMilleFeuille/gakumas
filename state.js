@@ -1,4 +1,21 @@
 // state.js
+const safeParse = (key, def) => {
+    try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
+};
+
+// 초기화 및 마이그레이션 로직
+let storedPulls = safeParse('totalPullsObj', null);
+if (!storedPulls) {
+    const oldVal = parseInt(localStorage.getItem('totalPulls')) || 0;
+    storedPulls = { normal: oldVal, limited: 0, unit: 0, fes: 0 };
+}
+
+let storedLog = safeParse('gachaLogObj', null);
+if (!storedLog) {
+    const oldVal = safeParse('gachaLog', []);
+    storedLog = { normal: oldVal, limited: [], unit: [], fes: [] };
+}
+
 export const state = {
     currentLang: localStorage.getItem('lang') || 'ko',
     currentBg: localStorage.getItem('selectedBg') || '',
@@ -13,14 +30,20 @@ export const state = {
     gachaMuted: true, // 가챠 음소거 상태 (기본값: 음소거)
     supportLB: JSON.parse(localStorage.getItem('supportLB')) || {},
     jewels: parseInt(localStorage.getItem('jewels')) || 0,
-    totalPulls: parseInt(localStorage.getItem('totalPulls')) || 0,
-    gachaLog: JSON.parse(localStorage.getItem('gachaLog')) || []
+    totalPulls: storedPulls,
+    gachaLog: storedLog,
+    gachaType: localStorage.getItem('gachaType') || 'normal'
 };
 
 export function setLanguage(lang) {
     state.currentLang = lang;
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
+}
+
+export function setGachaType(type) {
+    state.gachaType = type;
+    localStorage.setItem('gachaType', type);
 }
 
 export function setBackground(name) {
@@ -39,20 +62,22 @@ export function setSupportLB(cardId, lb) {
     localStorage.setItem('supportLB', JSON.stringify(state.supportLB));
 }
 
-export function setTotalPulls(count) {
-    state.totalPulls = count;
-    localStorage.setItem('totalPulls', count);
+export function setTotalPulls(count, type = state.gachaType) {
+    state.totalPulls[type] = count;
+    localStorage.setItem('totalPullsObj', JSON.stringify(state.totalPulls));
 }
 
-export function addGachaLog(results) {
+export function addGachaLog(results, type = state.gachaType) {
+    const currentLog = state.gachaLog[type] || [];
     // 최신 기록이 위로 오도록 앞에 추가
-    state.gachaLog = [...results, ...state.gachaLog].slice(0, 200); // 최근 200개까지만 저장
-    localStorage.setItem('gachaLog', JSON.stringify(state.gachaLog));
+    const newLog = [...results, ...currentLog].slice(0, 200); // 최근 200개까지만 저장
+    state.gachaLog[type] = newLog;
+    localStorage.setItem('gachaLogObj', JSON.stringify(state.gachaLog));
 }
 
-export function clearGachaLog() {
-    state.gachaLog = [];
-    localStorage.removeItem('gachaLog');
+export function clearGachaLog(type = state.gachaType) {
+    state.gachaLog[type] = [];
+    localStorage.setItem('gachaLogObj', JSON.stringify(state.gachaLog));
 }
 
 export function setJewels(amount) {

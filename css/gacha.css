@@ -113,6 +113,15 @@
     margin: 3rem auto 2rem; /* PC 기본 위치 */
 }
 
+/* 1연 결과 중앙 정렬 */
+.gacha-results.single-result {
+    display: flex;
+    justify-content: center;
+}
+.gacha-results.single-result .gacha-result-card {
+    width: 150px;
+}
+
 .gacha-result-card {
     background: #fff;
     border-radius: 8px;
@@ -139,8 +148,8 @@
 }
 
 .gacha-result-card.landscape .result-card-img {
-    object-fit: contain;
     padding: 0;
+    transform: rotate(-45deg);
 }
 
 .result-card-rarity {
@@ -155,6 +164,7 @@
 }
 
 .result-card-name {
+    display: none;
     padding: 5px;
     font-size: 0.7rem;
     white-space: nowrap;
@@ -237,6 +247,27 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
     top: 10px;
     right: 10px;
     z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gacha-type-select {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2px 10px;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    height: 28px;
+    font-weight: bold;
+}
+
+.gacha-type-select option {
+    background: #333;
+    color: #fff;
 }
 
 .jewel-box {

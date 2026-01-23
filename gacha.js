@@ -1,7 +1,7 @@
 // gacha.js
 import { updatePageTranslations } from './utils.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
-import { state, setJewels, setTotalPulls, addGachaLog, clearGachaLog } from './state.js';
+import { state, setJewels, setTotalPulls, addGachaLog, clearGachaLog, setGachaType } from './state.js';
 import { currencyData } from './currency.js';
 import translations from './i18n.js';
 
@@ -26,6 +26,7 @@ export function renderGacha() {
     const jewelContainer = document.getElementById('jewel-container');
     const jewelCount = document.getElementById('jewel-count');
     const addJewelBtn = document.getElementById('btn-add-jewel');
+    const typeSelect = document.getElementById('gacha-type-select');
     const totalPullCount = document.getElementById('total-pull-count');
 
     const updateJewelUI = () => {
@@ -35,16 +36,26 @@ export function renderGacha() {
 
     const updateTotalPullsUI = (prevCount = null) => {
         if (totalPullCount) {
-    const lang = document.documentElement.lang || 'ko';
-    const exchangeText = translations[lang]?.gacha_exchange_pt || "교환pt";
+            const lang = document.documentElement.lang || 'ko';
+            const exchangeText = translations[lang]?.gacha_exchange_pt || "교환pt";
+            const currentPulls = state.totalPulls[state.gachaType] || 0;
 
-    if (prevCount !== null) {
-        totalPullCount.textContent = `${exchangeText}    ${prevCount}  →  ${state.totalPulls}`;
-    } else {
-        totalPullCount.textContent = `${exchangeText}    ${state.totalPulls}`;
-    }
+            if (prevCount !== null) {
+                totalPullCount.textContent = `${exchangeText}    ${prevCount}  →  ${currentPulls}`;
+            } else {
+                totalPullCount.textContent = `${exchangeText}    ${currentPulls}`;
+            }
         }
     };
+
+    if (typeSelect) {
+        typeSelect.classList.remove('hidden');
+        typeSelect.value = state.gachaType;
+        typeSelect.onchange = (e) => {
+            setGachaType(e.target.value);
+            updateTotalPullsUI();
+        };
+    }
 
     const updateGachaButtonsState = () => {
         // btn1이 '닫기' 상태인 경우 비활성화하지 않음
@@ -89,10 +100,10 @@ export function renderGacha() {
     if (resetBtn) {
         resetBtn.classList.remove('hidden');
         resetBtn.onclick = () => {
-            if (confirm(state.currentLang === 'ko' ? '쥬얼과 가챠 기록을 초기화하시겠습니까?' : 'ジュエルとガチャ記録を初期化합니다까？')) {
+            if (confirm(state.currentLang === 'ko' ? '쥬얼과 가챠 기록을 초기화하시겠습니까?' : 'ジュエルとガチャ記録を初期化しますか？')) {
                 setJewels(0);
-                setTotalPulls(0);
-                clearGachaLog();
+                setTotalPulls(0, state.gachaType);
+                clearGachaLog(state.gachaType);
                 updateJewelUI();
                 updateTotalPullsUI();
                 if (resultsContainer) resultsContainer.innerHTML = '';
@@ -159,7 +170,9 @@ export function renderGacha() {
         'gasya/gasyaclick.mp3',
         'gasya/start_click.mp3',
         'gasya/get_sr.mp4',
-        'gasya/get_r.mp4'
+        'gasya/get_r.mp4',
+        'gasya/1ren_result.mp3',
+        'gasya/10ren_result.mp3'
     ];
 
     const assetBlobs = {}; 
@@ -192,6 +205,13 @@ export function renderGacha() {
         resultsContainer.innerHTML = '';
         const itemTpl = document.getElementById('tpl-gacha-result-item');
         
+        // 1연일 때 중앙 정렬을 위한 클래스 추가
+        if (currentResults.length === 1) {
+            resultsContainer.classList.add('single-result');
+        } else {
+            resultsContainer.classList.remove('single-result');
+        }
+
         currentResults.forEach(card => {
             const clone = itemTpl.content.cloneNode(true);
             const cardEl = clone.querySelector('.gacha-result-card');
@@ -227,6 +247,14 @@ export function renderGacha() {
         if (clickTimer) clearTimeout(clickTimer);
         gachaBGM.pause();
         gachaBGM.currentTime = 0;
+
+        // 결과 효과음 재생
+        const resultSound = (gachaMode === 1) ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3';
+        if (!isMuted && assetBlobs[resultSound]) {
+            const sfx = new Audio(assetBlobs[resultSound]);
+            sfx.play().catch(() => {});
+        }
+
         if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
         if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
         if(videoContainer) videoContainer.classList.add('hidden');
@@ -241,6 +269,7 @@ export function renderGacha() {
         if (logBtn) logBtn.classList.remove('hidden');
         if (resetBtn) resetBtn.classList.remove('hidden');
         if (jewelContainer) jewelContainer.classList.remove('hidden');
+        if (typeSelect) typeSelect.classList.add('hidden');
 
         // 하단 버튼 재설정 (왼쪽: 닫기, 오른쪽: 다시 뽑기)
         if (btn1 && btn10) {
@@ -320,12 +349,13 @@ export function renderGacha() {
         updateJewelUI();
 
         // 누적 가챠 횟수 증가 및 UI 갱신
-        const prevPulls = state.totalPulls;
-        setTotalPulls(state.totalPulls + mode);
+        const currentPulls = state.totalPulls[state.gachaType] || 0;
+        const prevPulls = currentPulls;
+        setTotalPulls(currentPulls + mode, state.gachaType);
         updateTotalPullsUI(prevPulls);
 
-        currentResults = pickGacha(mode);
-        addGachaLog(currentResults); // 가챠 기록 저장
+        currentResults = pickGacha(mode, state.gachaType);
+        addGachaLog(currentResults, state.gachaType); // 가챠 기록 저장
 
         if (resultsContainer) resultsContainer.innerHTML = '';
         
@@ -406,13 +436,15 @@ function openGachaLogModal() {
     list.innerHTML = '';
     statsArea.innerHTML = '';
 
-    if (state.gachaLog.length === 0) {
+    const currentLog = state.gachaLog[state.gachaType] || [];
+
+    if (currentLog.length === 0) {
         list.innerHTML = '<p style="text-align:center; padding: 2rem;">기록이 없습니다.</p>';
         return;
     }
 
     // 1. 통계 계산
-    const total = state.gachaLog.length;
+    const total = currentLog.length;
     const stats = {
         total: { SSR: 0, SR: 0, R: 0 },
         produce: { SSR: 0, SR: 0, R: 0 },
@@ -420,7 +452,7 @@ function openGachaLogModal() {
     };
     const grouped = new Map();
 
-    state.gachaLog.forEach(item => {
+    currentLog.forEach(item => {
         const isProduce = item.type === 'produce';
         const rarity = item.displayRarity;
         
@@ -573,21 +605,4 @@ function openGachaLogModal() {
     
     // Add state to history for back button support
     history.pushState({ modalOpen: 'gachaLog' }, "");
-
-    if (closeBtn) {
-        closeBtn.onclick = () => {
-            modal.classList.add('hidden');
-            if (history.state && history.state.modalOpen === 'gachaLog') {
-                history.back();
-            }
-        };
-    }
-    window.onclick = (e) => { 
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-            if (history.state && history.state.modalOpen === 'gachaLog') {
-                history.back();
-            }
-        }
-    };
 }

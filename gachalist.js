@@ -26,22 +26,28 @@ const dummyData = {
     R_CARD: [{ id: "rcard_dummy", name: "더미 서포트 R", rarity: "R", type: "visual" }]
 };
 
-export function getGachaPool() {
-    // 통상 가챠 포함 여부 공통 체크 로직
-    const isNormal = (card) => {
+export function getGachaPool(poolType = 'normal') {
+    // 풀 타입에 따른 포함 가능한 소스 목록 정의
+    const validSources = ['normal']; // 통상은 기본 포함
+    if (poolType === 'limited') validSources.push('limited');
+    if (poolType === 'unit') validSources.push('limited_u');
+    if (poolType === 'fes') validSources.push('limited_f');
+
+    // 카드 포함 여부 체크 로직
+    const isInPool = (card) => {
         const source = card.source || 'normal';
-        return !['dist', 'limited', 'limited_f', 'limited_u'].includes(source) && card.gacha !== false;
+        return validSources.includes(source) && card.gacha !== false;
     };
 
     // 1. 서포트 카드 풀 (모든 등급에 제외 규칙 적용)
-    const sssrPool = cardList.filter(card => card.rarity === 'SSR' && isNormal(card));
-    const srCardPool = cardList.filter(card => card.rarity === 'SR' && isNormal(card));
-    const rCardPool = cardList.filter(card => card.rarity === 'R' && isNormal(card));
+    const sssrPool = cardList.filter(card => card.rarity === 'SSR' && isInPool(card));
+    const srCardPool = cardList.filter(card => card.rarity === 'SR' && isInPool(card));
+    const rCardPool = cardList.filter(card => card.rarity === 'R' && isInPool(card));
 
     // 2. 프로듀스 아이돌 풀 (모든 등급에 제외 규칙 적용)
-    const pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isNormal(p));
-    const psrPool = produceList.filter(p => p.rarity === 'PSR' && isNormal(p));
-    const prPool = produceList.filter(p => p.rarity === 'PR' && isNormal(p));
+    const pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isInPool(p));
+    const psrPool = produceList.filter(p => p.rarity === 'PSR' && isInPool(p));
+    const prPool = produceList.filter(p => p.rarity === 'PR' && isInPool(p));
 
     return { 
         PSSR: pssrPool,
@@ -53,8 +59,8 @@ export function getGachaPool() {
     };
 }
 
-export function pickGacha(count = 1) {
-    const pool = getGachaPool();
+export function pickGacha(count = 1, poolType = 'normal') {
+    const pool = getGachaPool(poolType);
     const results = [];
 
     for (let i = 0; i < count; i++) {
