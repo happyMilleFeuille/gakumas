@@ -571,6 +571,23 @@ function openGachaLogModal() {
 
     modal.classList.remove('hidden');
     
-    if (closeBtn) closeBtn.onclick = () => modal.classList.add('hidden');
-    window.onclick = (e) => { if (e.target === modal) modal.classList.add('hidden'); };
+    // Add state to history for back button support
+    history.pushState({ modalOpen: 'gachaLog' }, "");
+
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            modal.classList.add('hidden');
+            if (history.state && history.state.modalOpen === 'gachaLog') {
+                history.back();
+            }
+        };
+    }
+    window.onclick = (e) => { 
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+            if (history.state && history.state.modalOpen === 'gachaLog') {
+                history.back();
+            }
+        }
+    };
 }

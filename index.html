@@ -14,38 +14,18 @@
 </head>
 <body>
     <div id="fixed-bg"></div>
-    <header>
-        <nav>
-            <div class="nav-left">
-                <div class="logo" data-i18n="logo">Gakumas Project</div>
-            </div>
-            <div class="nav-right">
-                <button class="menu-toggle" aria-label="메뉴 열기">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </button>
-                <ul class="nav-links">
-                    <li><a href="#idol" data-i18n="nav_idol" data-target="idol">아이돌</a></li>
-                    <li><a href="#support" data-i18n="nav_support" data-target="support">서포트 카드</a></li>
-                    <li><a href="#calc" data-i18n="nav_calc" data-target="calc">계산기</a></li>
-                    <li><a href="#gacha-sim" data-i18n="nav_gacha_sim" data-target="gacha">가챠 시뮬레이션</a></li>
-                    <li class="lang-item">
-                        <div class="lang-switch">
-                            <button id="lang-ko" class="lang-btn active">KO</button>
-                            <button id="lang-ja" class="lang-btn">JA</button>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
 
     <main>
         <section id="idol">
             <div id="content-area">
                 <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
                 <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+                <div class="lang-switch-container">
+                    <div class="lang-switch">
+                        <button id="lang-ko" class="lang-btn active">KO</button>
+                        <button id="lang-ja" class="lang-btn">JA</button>
+                    </div>
+                </div>
             </div>
             <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
             <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
@@ -139,6 +119,12 @@
     <template id="tpl-home">
         <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
         <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+        <div class="lang-switch-container">
+            <div class="lang-switch">
+                <button id="lang-ko" class="lang-btn active">KO</button>
+                <button id="lang-ja" class="lang-btn">JA</button>
+            </div>
+        </div>
     </template>
 
     <template id="tpl-calc">

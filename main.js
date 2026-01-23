@@ -75,21 +75,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 모달 닫기
     const modal = document.getElementById('card-modal');
+    const gachaLogModal = document.getElementById('gacha-log-modal');
     const closeModal = document.querySelector('.close-modal');
+    const closeGachaLogModal = document.querySelector('.close-log-modal');
     
     function hideModal() {
         if (!modal.classList.contains('hidden')) {
             modal.classList.add('hidden');
-            // If the modal was closed manually, we might need to pop the state
-            // But popstate will handle it if we use the back button.
+        }
+    }
+
+    function hideGachaLogModal() {
+        if (gachaLogModal && !gachaLogModal.classList.contains('hidden')) {
+            gachaLogModal.classList.add('hidden');
         }
     }
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
             hideModal();
-            if (history.state && history.state.modalOpen) {
+            if (history.state && history.state.modalOpen === true) {
                 history.back(); // 상태 제거
+            }
+        });
+    }
+
+    if (closeGachaLogModal) {
+        closeGachaLogModal.addEventListener('click', () => {
+            hideGachaLogModal();
+            if (history.state && history.state.modalOpen === 'gachaLog') {
+                history.back();
             }
         });
     }
@@ -97,16 +112,22 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
             hideModal();
-            if (history.state && history.state.modalOpen) {
-                history.back(); // 상태 제거
+            if (history.state && history.state.modalOpen === true) {
+                history.back();
+            }
+        }
+        if (event.target === gachaLogModal) {
+            hideGachaLogModal();
+            if (history.state && history.state.modalOpen === 'gachaLog') {
+                history.back();
             }
         }
     });
 
     // 브라우저 뒤로가기 버튼 처리
     window.addEventListener('popstate', (event) => {
-        if (!modal.classList.contains('hidden')) {
-            modal.classList.add('hidden');
-        }
+        // 모든 모달 닫기
+        hideModal();
+        hideGachaLogModal();
     });
 });
