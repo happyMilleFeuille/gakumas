@@ -266,8 +266,8 @@ export function renderGacha() {
     let prevPulls = 0; // 이전 포인트 저장용 변수
 
     const animation = setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, {
-        onStart: (mode) => {
-            prevPulls = state.totalPulls[state.gachaType] || 0; // 시작 전 포인트 저장
+        onStart: (mode, actualPrevPulls) => {
+            prevPulls = actualPrevPulls; // 전달받은 정확한 이전 포인트 저장
             if (muteControls) muteControls.style.display = 'none';
             if (logBtn) logBtn.classList.add('hidden');
             if (resetBtn) resetBtn.classList.add('hidden');

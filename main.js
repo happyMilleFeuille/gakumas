@@ -37,11 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
     syncGlobalUI();
     document.documentElement.lang = state.currentLang;
 
+    // 초기 화면 렌더링 (홈)
+    handleNavigation('home');
+
     // 화면 전환 이벤트 발생 시 동기화
     window.addEventListener('viewChanged', syncGlobalUI);
-
-    // 새로고침 시 히스토리 상태 초기화 (현재 화면이 홈이므로 상태를 홈으로 맞춤)
-    history.replaceState({ target: 'home' }, "");
 
     // 3. 이벤트 바인딩
 
@@ -80,6 +80,38 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('click', (e) => {
             handleNavigation(el.dataset.target);
         });
+    });
+
+    // Idol Grid Drag-to-Scroll Implementation
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    document.addEventListener('mousedown', (e) => {
+        const grid = e.target.closest('.idol-grid');
+        if (!grid) return;
+        isDown = true;
+        grid.classList.add('active');
+        startX = e.pageX - grid.offsetLeft;
+        scrollLeft = grid.scrollLeft;
+    });
+
+    document.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const grid = document.querySelector('.idol-grid');
+        if (!grid) return;
+        e.preventDefault();
+        const x = e.pageX - grid.offsetLeft;
+        const walk = (x - startX) * 2; // 스크롤 속도 조절
+        grid.scrollLeft = scrollLeft - walk;
     });
 
     // 로고 클릭 -> 홈

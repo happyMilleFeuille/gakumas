@@ -1,7 +1,8 @@
 // ui.js
-import { state, setFilter, setBackground, setSupportLB } from './state.js';
+import { state, setFilter, setBackground, setSupportLB, setPSSRIndex } from './state.js';
 import { updatePageTranslations, applyBackground } from './utils.js';
 import { cardList } from './carddata.js';
+import { produceList } from './producedata.js';
 import { abilityData } from './abilitydata.js';
 import translations from './i18n.js';
 
@@ -11,6 +12,22 @@ const idolList = [
     'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
 ];
+
+const idolColors = {
+    saki: "#E30F25",
+    temari: "#0C7BBB",
+    kotone: "#F8C112",
+    mao: "#7F1184",
+    lilja: "#EAFDFF",
+    china: "#F68B1F",
+    sumika: "#7CFC00",
+    hiro: "#00AFCC",
+    rinami: "#F6ADC6",
+    ume: "#EA533A",
+    misuzu: "#7A99CF",
+    sena: "#F6AE54",
+    tsubame: "#7B68E8"
+};
 
 export function renderHome() {
     if (!contentArea) return;
@@ -34,128 +51,316 @@ export function renderIdolList() {
     
     const gridTpl = document.getElementById('tpl-idol-grid');
     const itemTpl = document.getElementById('tpl-idol-item');
-    const grid = gridTpl.content.cloneNode(true).querySelector('.idol-grid');
+    const view = gridTpl.content.cloneNode(true);
+    const grid = view.querySelector('.idol-grid');
+    
+    // PSSR 컨테이너 추가
+    const pssrArea = document.createElement('div');
+    pssrArea.className = 'pssr-container';
+    pssrArea.innerHTML = '<div class="pssr-grid"></div>';
+    const pssrGrid = pssrArea.querySelector('.pssr-grid');
 
     idolList.forEach(name => {
         const item = itemTpl.content.cloneNode(true);
         const img = item.querySelector('.idol-icon');
         img.src = `icons/idolicons/${name}.png`;
         img.alt = name;
-        img.addEventListener('click', () => {
+        img.addEventListener('click', (e) => {
             setBackground(name);
             applyBackground(name);
+
+            // Center the clicked icon
+            const clickedItem = e.currentTarget.parentElement;
+            const gridContainer = clickedItem.parentElement;
+            if (gridContainer) {
+                const containerWidth = gridContainer.offsetWidth;
+                const itemOffsetLeft = clickedItem.offsetLeft;
+                const itemWidth = clickedItem.offsetWidth;
+                const scrollPos = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
+                gridContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
+            }
+
+            // Render Produce Cards for this idol
+            renderProduceCards(name, pssrGrid);
         });
         grid.appendChild(item);
     });
 
-    contentArea.appendChild(grid);
+    contentArea.appendChild(view);
+    contentArea.appendChild(pssrArea);
+}
+
+function renderProduceCards(idolName, container) {
+    container.innerHTML = '';
+    const itemTpl = document.getElementById('tpl-pssr-item');
+    if (!itemTpl) return;
+
+    // 해당 아이돌의 PSSR 및 PSR (어나더 제외) 필터링
+    const produceCards = produceList.filter(p => 
+        p.id.includes(idolName) && 
+        (p.rarity === 'PSSR' || p.rarity === 'PSR') && 
+        p.another !== true
+    );
+
+    // 등급순 정렬 (PSSR -> PSR)
+    produceCards.sort((a, b) => {
+        if (a.rarity === b.rarity) return 0;
+        return a.rarity === 'PSSR' ? -1 : 1;
+    });
+
+    if (produceCards.length === 0) {
+        container.innerHTML = `<p style="color:#999; padding:2rem; width:100%; text-align:center;">No cards found for ${idolName}.</p>`;
+        return;
+    }
+
+    produceCards.forEach((card, index) => {
+        const item = itemTpl.content.cloneNode(true);
+        const cardEl = item.querySelector('.pssr-card');
+        const img = item.querySelector('.pssr-img');
+        const imgWrapper = item.querySelector('.pssr-img-wrapper');
+        const planIcon = item.querySelector('.pssr-plan-icon');
+        const rarityIcon = item.querySelector('.pssr-rarity-icon');
+        const name = item.querySelector('.pssr-name');
+
+        const personalColor = idolColors[idolName] || "#ffffff";
+        
+        // 카드 스타일링: 정보창 배경색을 아주 연하게 적용 (15% 투명도)
+        const infoBox = item.querySelector('.pssr-info');
+        infoBox.style.backgroundColor = personalColor + "26"; 
+        name.style.color = '#333'; 
+        
+        imgWrapper.style.backgroundColor = personalColor + "11"; 
+
+        // 이미지 순환 리스트 구성
+        const imageList = [
+            `idols/${card.id}1.webp`,
+            `idols/${card.id}2.webp`
+        ];
+        
+        // 해당 카드의 어나더 버전들 추가
+        const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
+        anothers.forEach(a => {
+            imageList.push(`idols/${a.id}1.webp`);
+        });
+
+        // 저장된 인덱스 불러오기
+        let currentIndex = state.pssrIndex[card.id] || 0;
+        if (currentIndex >= imageList.length) currentIndex = 0;
+        
+        img.src = imageList[currentIndex];
+
+        cardEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            img.classList.add('slide-out');
+            imgWrapper.style.backgroundColor = personalColor; // 전환 중 색상 강조
+            
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % imageList.length;
+                setPSSRIndex(card.id, currentIndex);
+                
+                img.style.transition = 'none';
+                img.classList.remove('slide-out');
+                img.classList.add('slide-prepare');
+                img.src = imageList[currentIndex];
+                
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        img.style.transition = '';
+                        img.classList.remove('slide-prepare');
+                        setTimeout(() => {
+                            imgWrapper.style.backgroundColor = personalColor + "11";
+                        }, 200);
+                    });
+                });
+            }, 100);
+        });
+
+        // 존재하지 않는 이미지 자동 건너뛰기
+        let retryCount = 0;
+        img.onerror = () => {
+            if (retryCount < imageList.length) {
+                retryCount++;
+                currentIndex = (currentIndex + 1) % imageList.length;
+                img.src = imageList[currentIndex];
+            } else {
+                img.onerror = null;
+            }
+        };
+        
+        if (card.plan) {
+            planIcon.src = `icons/${card.plan}.webp`;
+            planIcon.style.display = 'block';
+        } else {
+            planIcon.style.display = 'none';
+        }
+
+        // 등급 아이콘 설정 (PSSR -> ssr.png, PSR -> sr.png)
+        const rarityKey = card.rarity.toLowerCase().replace('p', ''); // pssr -> ssr, psr -> sr
+        rarityIcon.src = `icons/${rarityKey}.png`;
+        name.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        
+        container.appendChild(item);
+    });
 }
 
 export function renderSupport() {
     if (!contentArea) return;
-    
-    // 1. Setup Template
-    const tpl = document.getElementById('tpl-support');
-    contentArea.innerHTML = '';
-    const view = tpl.content.cloneNode(true);
-    const grid = view.querySelector('.support-grid');
-    const itemTpl = document.getElementById('tpl-support-item');
 
-    // 2. Setup Filter UI State
-    const planBtns = view.querySelectorAll('#filter-plan .filter-btn');
-    const attrBtns = view.querySelectorAll('#filter-attr .filter-btn');
-    const sourceBtns = view.querySelectorAll('#filter-source .filter-btn');
-    const rarityBtns = view.querySelectorAll('#filter-rarity .filter-btn');
+    // 1. Initial Shell Setup (Only once)
+    let container = contentArea.querySelector('.support-container');
+    if (!container) {
+        contentArea.innerHTML = '';
+        const tpl = document.getElementById('tpl-support');
+        contentArea.appendChild(tpl.content.cloneNode(true));
+        container = contentArea.querySelector('.support-container');
 
-    const setupFilterBtn = (btns, type) => {
-        btns.forEach(btn => {
-            if(btn.dataset.val === state.filters[type]) btn.classList.add('active');
-            else btn.classList.remove('active');
-            
-            btn.addEventListener('click', () => {
-                // 이미 활성화된 버튼을 다시 누르면 'all'로 토글
-                const newVal = (state.filters[type] === btn.dataset.val) ? 'all' : btn.dataset.val;
-                setFilter(type, newVal);
-                renderSupport(); 
-            });
+        // Setup Static Listeners (Filters, Sort, Toggle)
+        setupStaticListeners(container);
+    }
+
+    // 2. Sync Filter UI State
+    syncFilterUI(container);
+
+    // 3. Render/Update the Grid
+    updateSupportGrid(container);
+}
+
+function setupStaticListeners(container) {
+    // Filter Buttons
+    const filterGroups = ['plan', 'attr', 'source', 'rarity'];
+    filterGroups.forEach(type => {
+        const group = container.querySelector(`#filter-${type}`);
+        if (!group) return;
+        group.addEventListener('click', (e) => {
+            const btn = e.target.closest('.filter-btn');
+            if (!btn) return;
+            setFilter(type, btn.dataset.val);
+            renderSupport(); 
         });
-    };
+    });
 
-    setupFilterBtn(planBtns, 'plan');
-    setupFilterBtn(attrBtns, 'attr');
-    setupFilterBtn(sourceBtns, 'source');
-    setupFilterBtn(rarityBtns, 'rarity');
-
-    // 3. Setup Extra Filters Toggle
-    const toggleBtn = view.querySelector('#btn-toggle-extra');
-    const extraWrapper = view.querySelector('#extra-filters');
-    
+    // Toggle Extra
+    const toggleBtn = container.querySelector('#btn-toggle-extra');
+    const extraWrapper = container.querySelector('#extra-filters');
     if (toggleBtn && extraWrapper) {
-        if (state.extraFiltersOpen) {
-            extraWrapper.classList.remove('hidden');
-            toggleBtn.classList.add('active');
-        }
-
         toggleBtn.addEventListener('click', () => {
             state.extraFiltersOpen = !state.extraFiltersOpen;
-            renderSupport();
+            if (state.extraFiltersOpen) {
+                extraWrapper.classList.remove('hidden');
+                toggleBtn.classList.add('active');
+            } else {
+                extraWrapper.classList.add('hidden');
+                toggleBtn.classList.remove('active');
+            }
         });
     }
 
-    // 4. Setup Sort UI
-    const sortSelect = view.querySelector('#support-sort');
+    // Sort Select
+    const sortSelect = container.querySelector('#support-sort');
     if (sortSelect) {
-        sortSelect.value = state.sortBy;
         sortSelect.addEventListener('change', (e) => {
             state.sortBy = e.target.value;
             renderSupport();
         });
     }
 
-    // 4. Filter Data
-    let filteredList = cardList.filter(card => {
-        // 도감 제외 설정 확인
-        if (card.encyclopedia === false) return false;
+    // Event Delegation for Grid (Stars and Card Click)
+    const grid = container.querySelector('.support-grid');
+    grid.addEventListener('click', (e) => {
+        const star = e.target.closest('.card-star');
+        const cardEl = e.target.closest('.support-card');
+        
+        if (star && cardEl) {
+            e.stopPropagation();
+            const cardId = cardEl.dataset.id;
+            const starIdx = parseInt(star.dataset.star, 10);
+            const currentLB = state.supportLB[cardId] || 0;
+            const newLB = (starIdx === currentLB) ? 0 : starIdx;
+            
+            setSupportLB(cardId, newLB);
+            
+            // Update UI for this card's stars only
+            const stars = cardEl.querySelectorAll('.card-star');
+            stars.forEach((s, idx) => {
+                s.classList.toggle('active', idx < newLB);
+            });
+            return;
+        }
 
+        if (cardEl) {
+            const cardId = cardEl.dataset.id;
+            const card = cardList.find(c => c.id === cardId);
+            if (card) {
+                const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+                const imgSrc = card.image || `images/support/${cardId}.webp`;
+                showCardModal(card, displayName, imgSrc);
+            }
+        }
+    });
+}
+
+function syncFilterUI(container) {
+    const filterGroups = ['plan', 'attr', 'source', 'rarity'];
+    filterGroups.forEach(type => {
+        const btns = container.querySelectorAll(`#filter-${type} .filter-btn`);
+        btns.forEach(btn => {
+            const isActive = Array.isArray(state.filters[type]) 
+                ? state.filters[type].includes(btn.dataset.val)
+                : state.filters[type] === btn.dataset.val;
+            btn.classList.toggle('active', isActive);
+        });
+    });
+
+    const toggleBtn = container.querySelector('#btn-toggle-extra');
+    const extraWrapper = container.querySelector('#extra-filters');
+    if (state.extraFiltersOpen) {
+        extraWrapper?.classList.remove('hidden');
+        toggleBtn?.classList.add('active');
+    }
+
+    const sortSelect = container.querySelector('#support-sort');
+    if (sortSelect) sortSelect.value = state.sortBy;
+}
+
+function updateSupportGrid(container) {
+    const grid = container.querySelector('.support-grid');
+    const itemTpl = document.getElementById('tpl-support-item');
+    
+    // 1. Filter Data
+    let filteredList = cardList.filter(card => {
+        if (card.encyclopedia === false) return false;
         const cPlan = (card.plan || 'free').toLowerCase();
         const cType = card.type.toLowerCase();
         const cSource = (card.source || 'normal').toLowerCase();
-        const cRarity = card.rarity; // SSR, SR 등
+        const cRarity = card.rarity;
 
-        // Plan Filter (Free is always included)
-        const planMatch = (state.filters.plan === 'all') || 
-                          (cPlan === state.filters.plan) || 
-                          (cPlan === 'free');
-
-        // Attribute Filter (Assist is always included)
-        const attrMatch = (state.filters.attr === 'all') || 
-                          (cType === state.filters.attr) || 
-                          (cType === 'assist');
-
-        // Source Filter
+        const planMatch = (state.filters.plan.length === 0) || (state.filters.plan.includes(cPlan));
+        const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
         const sourceMatch = (state.filters.source === 'all') || (cSource === state.filters.source);
-
-        // Rarity Filter
         const rarityMatch = (state.filters.rarity === 'all') || (cRarity === state.filters.rarity);
 
         return planMatch && attrMatch && sourceMatch && rarityMatch;
     });
 
-    // 5. Sort Data
+    // 2. Sort Data
     const getNumericId = (id) => {
         const match = id.match(/\d+/);
         return match ? parseInt(match[0], 10) : 0;
     };
 
     filteredList.sort((a, b) => {
+        const dateA = a.releasedAt || "";
+        const dateB = b.releasedAt || "";
         if (state.sortBy === 'id-desc') {
+            if (dateA !== dateB) return dateB.localeCompare(dateA);
             return getNumericId(b.id) - getNumericId(a.id) || b.id.localeCompare(a.id);
         } else if (state.sortBy === 'id-asc') {
+            if (dateA !== dateB) return dateA.localeCompare(dateB);
             return getNumericId(a.id) - getNumericId(b.id) || a.id.localeCompare(b.id);
         } else if (state.sortBy === 'lb-desc') {
             const lbA = state.supportLB[a.id] || 0;
             const lbB = state.supportLB[b.id] || 0;
-            return lbB - lbA || getNumericId(b.id) - getNumericId(a.id); // 별점 같으면 최신순
+            return lbB - lbA || getNumericId(b.id) - getNumericId(a.id);
         } else if (state.sortBy === 'name-asc') {
             const nameA = (state.currentLang === 'ja' && a.name_ja) ? a.name_ja : a.name;
             const nameB = (state.currentLang === 'ja' && b.name_ja) ? b.name_ja : b.name;
@@ -164,74 +369,43 @@ export function renderSupport() {
         return 0;
     });
 
-    // 6. Render Grid
+    // 3. Batch DOM updates using Fragment
+    grid.innerHTML = '';
     if (filteredList.length === 0) {
         grid.innerHTML = '<p style="text-align:center; width:100%; grid-column:1/-1; padding:2rem;">No cards found.</p>';
     } else {
+        const fragment = document.createDocumentFragment();
         filteredList.forEach(card => {
             const item = itemTpl.content.cloneNode(true);
+            const cardEl = item.querySelector('.support-card');
             const cardId = card.id;
             const currentLB = state.supportLB[cardId] || 0;
             
-            // Set Image
+            cardEl.dataset.id = cardId;
+            cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
+            
             const imgSrc = card.image || `images/support/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
             
-            item.querySelector('.card-rarity').textContent = card.rarity;
-            
-            // Stars (Limit Break)
             const cardStars = item.querySelectorAll('.card-star');
-            const updateCardStars = (lb) => {
-                cardStars.forEach((s, idx) => {
-                    s.classList.toggle('active', idx < lb);
-                });
-            };
-            updateCardStars(currentLB);
-
             cardStars.forEach((s, idx) => {
-                s.addEventListener('click', (e) => {
-                    e.stopPropagation(); // 모달 열기 방지
-                    const newLB = (idx + 1 === (state.supportLB[cardId] || 0)) ? 0 : idx + 1;
-                    setSupportLB(cardId, newLB);
-                    updateCardStars(newLB);
-                });
+                s.classList.toggle('active', idx < currentLB);
             });
             
-            // Plan Icon
             const planIcon = item.querySelector('.card-plan-icon');
             const plan = (card.plan || 'free').toLowerCase();
-            if (plan === 'free') {
-                planIcon.style.display = 'none';
-            } else {
-                planIcon.src = `icons/${plan}.webp`;
-                planIcon.alt = plan;
-            }
-            
-            // Type Class
-            const typeEl = item.querySelector('.card-type');
-            const type = card.type.toLowerCase();
-            typeEl.textContent = card.type;
-            
-            if (type === 'vocal') typeEl.classList.add('type-vocal');
-            else if (type === 'dance') typeEl.classList.add('type-dance');
-            else if (type === 'visual') typeEl.classList.add('type-visual');
-            else if (type === 'assist') typeEl.classList.add('type-assist');
+            planIcon.src = `icons/${plan}.webp`;
+            planIcon.alt = plan;
 
-            // Name Translation
-            const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
-            item.querySelector('.card-name').textContent = displayName;
+            const typeIcon = item.querySelector('.card-type-icon');
+            typeIcon.src = `icons/${card.type.toLowerCase()}.png`;
+            typeIcon.alt = card.type;
 
-            // Click Event for Modal
-            item.querySelector('.support-card').addEventListener('click', () => {
-                showCardModal(card, displayName, imgSrc);
-            });
-
-            grid.appendChild(item);
+            fragment.appendChild(item);
         });
+        grid.appendChild(fragment);
     }
-
-    contentArea.appendChild(view);
-    updatePageTranslations();
+    updatePageTranslations(container);
 }
 
 // 모달 표시 함수
@@ -239,6 +413,9 @@ function showCardModal(card, displayName, imgSrc) {
     const modal = document.getElementById('card-modal');
     const mImg = document.getElementById('modal-img');
     const mTitle = document.getElementById('modal-title');
+    const mRarity = document.getElementById('modal-rarity');
+    const mPlan = document.getElementById('modal-plan');
+    const mType = document.getElementById('modal-type');
     const mExtraIcon = document.getElementById('modal-extra-icon');
     const mExtra1 = document.getElementById('modal-extra-1');
     const mExtra2 = document.getElementById('modal-extra-2');
@@ -247,6 +424,11 @@ function showCardModal(card, displayName, imgSrc) {
 
     mImg.src = imgSrc;
     mTitle.textContent = displayName;
+
+    // 등급 및 속성 아이콘 설정
+    mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
+    mPlan.src = `icons/${(card.plan || 'free').toLowerCase()}.webp`;
+    mType.src = `icons/${card.type.toLowerCase()}.png`;
 
     // 제목 색상 변경 (기존 속성 클래스 제거 후 추가)
     mTitle.classList.remove('title-vocal', 'title-dance', 'title-visual', 'title-assist');
@@ -287,7 +469,15 @@ function showCardModal(card, displayName, imgSrc) {
         };
     
         mExtra1.innerHTML = getExtraText(card.extra1);
-        mExtra2.innerHTML = getExtraText(card.extra2);
+        
+        // SSR일 때만 extra2 표시, SR 등 그 외에는 숨김
+        if (card.rarity === 'SSR') {
+            mExtra2.innerHTML = getExtraText(card.extra2);
+            mExtra2.classList.remove('hidden');
+        } else {
+            mExtra2.innerHTML = '';
+            mExtra2.classList.add('hidden');
+        }
     
         let currentLB = state.supportLB[card.id] || 0; // 저장된 돌파 상태 가져오기
     
@@ -391,21 +581,14 @@ function showCardModal(card, displayName, imgSrc) {
             setSupportLB(card.id, currentLB); // 모달에서의 변경사항도 전역 상태에 저장
             updateStars(currentLB);
             
-            // 서포트 카드 목록의 해당 카드 별점 즉시 업데이트
-            const mainCards = document.querySelectorAll('.support-card');
-            mainCards.forEach(mc => {
-                // 클릭 이벤트를 통해 카드 데이터를 식별하기 위해 
-                // renderSupport에서 ID를 저장해두거나 데이터를 비교해야 함.
-                // 여기서는 간단하게 모든 카드를 다시 그리지 않고 
-                // 해당 ID를 가진 카드의 별점만 찾아 업데이트함.
-                const nameEl = mc.querySelector('.card-name');
-                if (nameEl && nameEl.textContent === displayName) {
-                    const cardStars = mc.querySelectorAll('.card-star');
-                    cardStars.forEach((cs, cIdx) => {
-                        cs.classList.toggle('active', cIdx < currentLB);
-                    });
-                }
-            });
+            // 서포트 카드 목록의 해당 카드 별점 즉시 업데이트 (ID 기반 최적화)
+            const cardInGrid = document.querySelector(`.support-card[data-id="${card.id}"]`);
+            if (cardInGrid) {
+                const cardStars = cardInGrid.querySelectorAll('.card-star');
+                cardStars.forEach((cs, cIdx) => {
+                    cs.classList.toggle('active', cIdx < currentLB);
+                });
+            }
         };
     });
 

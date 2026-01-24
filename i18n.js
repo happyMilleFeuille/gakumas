@@ -50,6 +50,8 @@ const translations = {
         gacha_exchange_pt: "교환pt",
         gacha_log: "가챠 기록",
         gacha_reset: "초기화",
+        disclaimer_1: "이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.",
+        disclaimer_2: "사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.",
         footer: ""
     },
     ja: {
@@ -102,6 +104,8 @@ const translations = {
         gacha_exchange_pt: "交換pt",
         gacha_log: "ガチャ記録",
         gacha_reset: "リセット",
+        disclaimer_1: "このサイトは、学園アイドルマスター（Gakuen Idolmaster）のファンが運営する非営리サイトです。",
+        disclaimer_2: "サイトで使用されているすべてのゲーム画像、データ、キャラクター等の権利は、©Bandai Namco Entertainment Inc.および関連する権利者に帰属します。",
         footer: ""
     }
 };

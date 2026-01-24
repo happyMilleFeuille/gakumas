@@ -44,14 +44,18 @@ export function openGachaLogModal() {
     // 가장 많이 나온 아이돌 캐릭터 찾기 (등급별 우선순위: SSR > SR > R)
     const charData = new Map();
     currentLog.filter(item => item.type === 'produce').forEach(item => {
-        const charId = item.id.split('_')[0];
+        // ID에서 접두어 제거 및 캐릭터 식별자 추출
+        let fullId = item.id.split('_')[0];
+        const charId = fullId.replace(/^(ssr|sr|pr|r)/i, ''); 
+        
         if (!charData.has(charId)) {
             charData.set(charId, { 
                 charId: charId, // 캐릭터 식별자 저장 (아이콘용)
                 id: item.id, 
                 name: item.name, 
                 counts: { SSR: 0, SR: 0, R: 0 },
-                repId: item.id 
+                repId: item.id,
+                plan: item.plan || 'sense'
             });
         }
         const data = charData.get(charId);
@@ -59,7 +63,10 @@ export function openGachaLogModal() {
         data.counts[rarity]++;
         
         // 대표 이미지 결정 (SSR이 있으면 무조건 SSR 이미지 사용)
-        if (rarity === 'SSR') data.repId = item.id;
+        if (rarity === 'SSR') {
+            data.repId = item.id;
+            data.plan = item.plan || data.plan;
+        }
     });
     
     const sortedChars = Array.from(charData.values()).sort((a, b) => {
@@ -101,10 +108,14 @@ function renderStats(container, total, stats, topChar) {
 
     const getPerc = (c) => ((c / total) * 100).toFixed(1) + '%';
     const labels = isJa ? 
-        { total: '総ガチャ回数', all: ['全体 SSR', '全体 SR', '全体 R'], p: 'プロデュースアイドル詳細', s: 'サポート카드 상세' } : 
+        { total: '総ガチャ回数', all: ['全体 SSR', '全体 SR', '全体 R'], p: 'プロデュースアイドル詳細', s: 'サポートカード詳細' } : 
         { total: '총 뽑기 횟수', all: ['전체 SSR', '전체 SR', '전체 R'], p: '프로듀스 아이돌 상세', s: '서포트 카드 상세' };
 
-    const charThumb = topChar ? `<img src="icons/idolicons/${topChar.charId}.png" class="stat-header-thumb" title="${topChar.name}">` : '';
+    const charThumb = topChar ? `
+        <div class="stat-header-thumb-container">
+            <img src="./icons/idolicons/${topChar.charId}.png" class="stat-header-thumb">
+            <img src="./icons/${topChar.plan}.webp" class="stat-header-plan">
+        </div>` : '';
 
     container.innerHTML = `
         <div class="stat-row-top">

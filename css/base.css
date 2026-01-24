@@ -93,7 +93,6 @@ main {
     display: flex; 
     flex-direction: column;
     overflow-y: auto;
-    border: 2px solid blue; /* 디버깅용 외곽선 추가 */
 }
 
 #content-area {
@@ -236,22 +235,22 @@ footer {
     .btn-icon { width: 24px; height: 24px; }
 }
 
-/* Ŀ���� ��ũ�ѹ� ������ */
+/* Scrollbar Style */
 #idol::-webkit-scrollbar {
-    width: 6px; /* ��ũ�ѹ� �ʺ� */
+    width: 6px;
 }
 #idol::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05); /* ��� */
+    background: rgba(0, 0, 0, 0.05);
 }
 #idol::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2); /* ��ũ�ѹ� ���� */
-    border-radius: 10px; /* �ձ� �𼭸� */
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 #idol::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color); /* ���콺 �÷��� �� ����Ʈ ���� */
+    background: var(--primary-color);
 }
 
-/* ��í ��� ��ư ��Ÿ�� */
+/* Log Button Style */
 .log-btn {
     position: absolute;
     top: 10px;
@@ -271,7 +270,7 @@ footer {
     transform: scale(1.05);
 }
 .reset-btn {
-    left: 110px; /* 원래 간격 유지 */
+    left: 110px;
 }
 @media (max-width: 768px) {
     .log-btn {
@@ -281,6 +280,26 @@ footer {
         left: 5px;
     }
     .reset-btn {
-        left: 75px; /* 모바일에서 버튼 간격을 75px로 조정 */
+        left: 75px;
+    }
+}
+
+/* Disclaimer Style - Extremely Small */
+.disclaimer-container {
+    margin-top: 1.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    font-size: 0.65rem; 
+    color: #bbb;
+    line-height: 1.2;
+    text-align: center;
+}
+.disclaimer-container p { margin: 1px 0; }
+
+@media (max-width: 768px) {
+    .disclaimer-container {
+        font-size: 0.45rem; 
+        margin-top: 0.8rem;
+        color: #ccc;
     }
 }

@@ -42,7 +42,7 @@
     gap: 10px;
     width: 100%;
     max-width: 800px;
-    margin: 3rem auto 2rem; /* PC 기본 위치 */
+    margin: 3rem auto 2rem; /* PC 기본 위치 복구 */
 }
 
 /* 1연차일 때 중앙 정렬 설정 (PC/공통) */
@@ -50,7 +50,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     align-content: center; /* 세로 중앙 정렬 추가 */
-    min-height: 50vh; /* 세로 중앙 정렬을 위한 최소 높이 확보 */
+    min-height: 50vh; /* 세로 중앙 정렬을 위한 최소 높이 확보 복구 */
     margin: 0 auto; /* 상단 여백 제거하여 세로 중앙에 집중 */
 }
 .gacha-results.single-result .gacha-result-card {

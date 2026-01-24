@@ -3,9 +3,9 @@ import translations from './i18n.js';
 import { state } from './state.js';
 
 // 텍스트 번역 업데이트
-export function updatePageTranslations() {
+export function updatePageTranslations(root = document) {
     const lang = state.currentLang;
-    document.querySelectorAll('[data-i18n]').forEach(el => {
+    root.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang][key]) {
             if (el.tagName === 'SPAN' || el.children.length === 0) {
@@ -23,6 +23,7 @@ export function applyBackground(name) {
     const fixedBg = document.getElementById('fixed-bg');
     if (fixedBg) {
         fixedBg.style.backgroundImage = `url('images/${name}.png')`;
+        fixedBg.style.backgroundSize = 'contain'; // 항상 기본 크기로 복구
     }
 }
 

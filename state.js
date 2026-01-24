@@ -20,19 +20,20 @@ export const state = {
     currentLang: localStorage.getItem('lang') || 'ko',
     currentBg: localStorage.getItem('selectedBg') || '',
     filters: {
-        plan: 'all',
-        attr: 'all',
+        plan: [],
+        attr: [],
         source: 'all',
         rarity: 'all'
     },
-    sortBy: 'id-desc', // 기본값: 최신순
-    extraFiltersOpen: false, // 상세 필터 열림 여부
-    gachaMuted: true, // 가챠 음소거 상태 (기본값: 음소거)
+    sortBy: 'id-desc',
+    extraFiltersOpen: false,
+    gachaMuted: true,
     supportLB: JSON.parse(localStorage.getItem('supportLB')) || {},
     jewels: parseInt(localStorage.getItem('jewels')) || 0,
     totalPulls: storedPulls,
     gachaLog: storedLog,
-    gachaType: localStorage.getItem('gachaType') || 'normal'
+    gachaType: localStorage.getItem('gachaType') || 'normal',
+    pssrIndex: JSON.parse(localStorage.getItem('pssrIndex')) || {}
 };
 
 export function setLanguage(lang) {
@@ -53,7 +54,16 @@ export function setBackground(name) {
 
 export function setFilter(type, value) {
     if (state.filters[type] !== undefined) {
-        state.filters[type] = value;
+        if (Array.isArray(state.filters[type])) {
+            const index = state.filters[type].indexOf(value);
+            if (index > -1) {
+                state.filters[type].splice(index, 1);
+            } else {
+                state.filters[type].push(value);
+            }
+        } else {
+            state.filters[type] = (state.filters[type] === value) ? 'all' : value;
+        }
     }
 }
 
@@ -69,8 +79,7 @@ export function setTotalPulls(count, type = state.gachaType) {
 
 export function addGachaLog(results, type = state.gachaType) {
     const currentLog = state.gachaLog[type] || [];
-    // 최신 기록이 위로 오도록 앞에 추가
-    const newLog = [...results, ...currentLog].slice(0, 9999); // 최근 9999개까지만 저장
+    const newLog = [...results, ...currentLog].slice(0, 9999);
     state.gachaLog[type] = newLog;
     localStorage.setItem('gachaLogObj', JSON.stringify(state.gachaLog));
 }
@@ -83,4 +92,9 @@ export function clearGachaLog(type = state.gachaType) {
 export function setJewels(amount) {
     state.jewels = amount;
     localStorage.setItem('jewels', amount);
+}
+
+export function setPSSRIndex(cardId, index) {
+    state.pssrIndex[cardId] = index;
+    localStorage.setItem('pssrIndex', JSON.stringify(state.pssrIndex));
 }

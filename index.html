@@ -22,6 +22,12 @@
             <div id="content-area">
                 <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
                 <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+                
+                <div class="disclaimer-container">
+                    <p data-i18n="disclaimer_1">이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.</p>
+                    <p data-i18n="disclaimer_2">사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.</p>
+                </div>
+
                 <div class="lang-switch-container">
                     <div class="lang-switch">
                         <button id="lang-ko" class="lang-btn active">KO</button>
@@ -94,11 +100,15 @@
             <div class="modal-body">
                 <div class="modal-img-container">
                     <img id="modal-img" src="" alt="">
+                    <h2 id="modal-title"></h2>
+                    <img id="modal-rarity" class="modal-rarity-icon" src="" alt="">
+                    <img id="modal-plan" class="modal-plan-icon" src="" alt="">
+                    <img id="modal-type" class="modal-type-icon" src="" alt="">
                     <div id="modal-limit-break" class="star-rating">
-                        <span class="star" data-star="1">★</span>
-                        <span class="star" data-star="2">★</span>
-                        <span class="star" data-star="3">★</span>
-                        <span class="star" data-star="4">★</span>
+                        <img class="star" data-star="1" src="icons/flower.png">
+                        <img class="star" data-star="2" src="icons/flower.png">
+                        <img class="star" data-star="3" src="icons/flower.png">
+                        <img class="star" data-star="4" src="icons/flower.png">
                     </div>
                 </div>
                 <h2 id="modal-title"></h2>
@@ -134,6 +144,12 @@
     <template id="tpl-home">
         <h1 data-i18n="main_title">새로운 프로젝트에 오신 것을 환영합니다</h1>
         <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
+        
+        <div class="disclaimer-container">
+            <p data-i18n="disclaimer_1">이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.</p>
+            <p data-i18n="disclaimer_2">사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.</p>
+        </div>
+
         <div class="lang-switch-container">
             <div class="lang-switch">
                 <button id="lang-ko" class="lang-btn active">KO</button>
@@ -212,20 +228,29 @@
         <div class="support-card">
             <div class="card-image-wrapper">
                 <img src="" alt="" class="card-img">
+                <img src="" alt="" class="card-type-icon">
                 <img src="" alt="" class="card-plan-icon">
-                <span class="card-rarity"></span>
+                <div class="card-limit-break">
+                    <img class="card-star" data-star="1" src="icons/flower.png">
+                    <img class="card-star" data-star="2" src="icons/flower.png">
+                    <img class="card-star" data-star="3" src="icons/flower.png">
+                    <img class="card-star" data-star="4" src="icons/flower.png">
+                </div>
             </div>
             <div class="card-info">
-                <div class="card-type-row">
-                    <span class="card-type"></span>
-                    <div class="card-limit-break">
-                        <span class="card-star" data-star="1">★</span>
-                        <span class="card-star" data-star="2">★</span>
-                        <span class="card-star" data-star="3">★</span>
-                        <span class="card-star" data-star="4">★</span>
-                    </div>
-                </div>
-                <h3 class="card-name"></h3>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-pssr-item">
+        <div class="pssr-card">
+            <div class="pssr-img-wrapper">
+                <img src="" alt="" class="pssr-img">
+            </div>
+            <div class="pssr-info">
+                <img src="" alt="" class="pssr-rarity-icon">
+                <img src="" alt="" class="pssr-plan-icon">
+                <span class="pssr-name"></span>
             </div>
         </div>
     </template>

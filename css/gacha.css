@@ -10,8 +10,12 @@
     height: 85%;
     min-height: 500px;
     position: relative;
-    overflow-x: hidden; /* 가로 스크롤바 방지 */
-    /* border: 2px solid red; debug */
+    overflow: hidden !important; /* 넘쳐도 스크롤 숨김 */
+}
+
+/* 가챠 화면일 때 메인 컨테이너 스크롤 차단 */
+#idol:has(.gacha-container) {
+    overflow: hidden !important;
 }
 
 /* 상단 컨트롤러 (음소거, 뒤로가기) */

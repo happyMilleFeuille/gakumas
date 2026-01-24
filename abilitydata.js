@@ -261,7 +261,7 @@ export const abilityData = {
             "SR": {1: 3, 2: 5 },                
         }
     },
-    "get_item": {
+    "get_item6": {
         format: { ko: "P아이템 획득 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "Pアイテム獲得時、{type}上昇+{val} (プロヂュース中6回)" },
         levels: {
             "SSR": {1: 11,2: 15},     
@@ -269,6 +269,22 @@ export const abilityData = {
             "SR": {1: 6, 2: 11 },                
         }
     },    
+    "get_drink": {
+        format: { ko: "P드링크 획득 시 {type} 상승+{val}", ja: "Pドリンク獲得時、{type}上昇+{val}" },
+        levels: {
+            "SSR": {1: 4,2: 5},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 0, 2: 0 },                
+        }
+    },   
+    "purchase_drink": {
+        format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}" },
+        levels: {
+            "SSR": {1: 8,2: 11},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 4, 2: 8 },                
+        }
+    },         
     "gift": {
         format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val}", ja: "活動支給・差し入れ選択時、{type}上昇+{val}" },
         levels: {
@@ -318,7 +334,7 @@ export const abilityData = {
         }
     } ,
     "test": {
-        format: { ko: "시험・오디션 종료 시 {type} 상승+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、{type}上昇+{val} (プロヂュース中1回)" },
+        format: { ko: "시험・오디션 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "試験・オーディション終了時、{type}上昇+{val} (プロヂュース中2回)" },
         levels: {
             "SSR": {1: 17,2: 22},     
             "SSR_DIST": {1: 11, 2: 17},                   
@@ -332,5 +348,29 @@ export const abilityData = {
             "SSR_DIST": {1: 6, 2: 8},                   
             "SR": {1: 4, 2: 8 },                  
         }
-    }                                                                     
+    },
+    "delete_metal3": {
+        format: { ko: "멘탈카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "アクティブスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
+        levels: {
+            "SSR": {1: 17,2: 22},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 8, 2: 16 },                  
+        }
+    },  
+    "delete_active3": {
+        format: { ko: "액티브카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "メンタルスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
+        levels: {
+            "SSR": {1: 17,2: 22},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 8, 2: 16 },                  
+        }
+    },           
+    "change3": {
+        format: { ko: "카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
+        levels: {
+            "SSR": {1: 16,2: 21},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 0, 2: 0 },                  
+        }
+    }                                                                            
 };

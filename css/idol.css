@@ -1,27 +1,141 @@
 /* idol.css */
 .idol-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    padding: 2rem 0;
-    max-width: 600px;
+    display: flex; 
+    flex-wrap: nowrap; 
+    overflow-x: auto; 
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+    width: 100%;
+    max-width: 1000px;
     margin: 0 auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
 }
-.idol-item { display: flex; flex-direction: column; align-items: center; }
+.idol-grid::-webkit-scrollbar { display: none; }
+.idol-grid:active { cursor: grabbing; }
+
+.idol-item { 
+    flex: 0 0 auto;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+
 .idol-icon {
-    width: 70px; height: 70px;
-    border-radius: 50%;
+    width: 80px; height: 110px;
+    border-radius: 12px;
     background: #fff;
-    padding: 5px;
+    padding: 3px;
     box-shadow: var(--shadow);
     cursor: pointer;
     transition: transform 0.2s;
+    object-fit: cover;
 }
-.idol-icon:hover { transform: scale(1.1); }
+.idol-icon:hover { transform: scale(1.05); }
 
 @media (max-width: 768px) {
-    .idol-grid { grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
-    .idol-icon { width: 60px; height: 60px; }
+    .idol-icon { width: 65px; height: 90px; }
+}
+
+/* PSSR Display Styles */
+.pssr-container {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0 1rem 5rem;
+}
+.pssr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 최소 너비 220px로 확대 */
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.pssr-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.pssr-img-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 166.66%; 
+    overflow: hidden;
+    background: #eee;
+    transition: background-color 0.3s ease; /* 배경색 전환 부드럽게 */
+}
+.pssr-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: translateX(0);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+    opacity: 1;
+}
+
+/* 슬라이드 아웃 (왼쪽으로 사라짐) */
+.pssr-img.slide-out {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+/* 슬라이드 인 준비 (오른쪽 대기) */
+.pssr-img.slide-prepare {
+    transition: none;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.pssr-info {
+    padding: 10px;
+    background: #fff; /* JS에서 퍼스널 컬러로 덮어씀 */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.pssr-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333; /* 배경색에 따라 흰색으로 바뀔 수 있음 */
+    line-height: 1.3;
+    word-break: keep-all;
+    text-align: left;
+}
+
+.pssr-rarity-icon {
+    height: 18px;
+    width: auto;
+    object-fit: contain;
+    align-self: flex-start;
+}
+
+.pssr-plan-icon {
+    position: absolute;
+    top: -15px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+@media (max-width: 768px) {
+    .pssr-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    .pssr-img-wrapper { padding-top: 166.66%; }
+    .pssr-name { font-size: 0.75rem; }
+    .pssr-plan-icon { width: 24px; height: 24px; top: -12px; }
 }
 
 /* calc.css */

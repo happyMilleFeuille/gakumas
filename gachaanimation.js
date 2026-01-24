@@ -105,14 +105,14 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
 
         // 클릭음 제거 (gacha.js로 이동)
 
+        const prevPulls = state.totalPulls[state.gachaType] || 0;
         setJewels(state.jewels - cost);
-        const currentPulls = state.totalPulls[state.gachaType] || 0;
-        setTotalPulls(currentPulls + mode, state.gachaType);
+        setTotalPulls(prevPulls + mode, state.gachaType);
 
         currentResults = pickGacha(mode, state.gachaType);
         addGachaLog(currentResults, state.gachaType);
 
-        if (callbacks.onStart) callbacks.onStart(mode);
+        if (callbacks.onStart) callbacks.onStart(mode, prevPulls);
 
         document.body.classList.add('immersive-mode');
         history.pushState({ target: 'gacha', view: 'playing' }, "");
