@@ -67,6 +67,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    position: relative; /* 기준점 추가 */
     /* 애니메이션 기본 상태 */
     opacity: 0;
     transform: translateX(30px);
@@ -74,6 +75,44 @@
 
 .gacha-result-card.animate {
     animation: cardSlideIn 0.4s ease forwards;
+}
+
+/* NEW 뱃지 스타일 */
+.new-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    background: none;
+    border: none;
+    font-weight: 900;
+    font-size: 0.95rem;
+    z-index: 20;
+    pointer-events: none;
+    line-height: 1.2;
+    /* 진한 노란색 글로우 효과 (더 은은하게) */
+    text-shadow: 
+        0 0 2px #ffcc00, 
+        0 0 4px rgba(255, 153, 0, 0.6); 
+}
+
+/* IDOL / SUPPORT 타입 텍스트 스타일 */
+.card-type-label {
+    position: absolute;
+    bottom: 60px; /* 위치 미세 조정 */
+    right: -91px; /* 너비가 늘어났으므로 우측 위치 재조정 */
+    width: 200px; /* 넉넉한 너비 확보 */
+    text-align: center; /* 너비 안에서 중앙 정렬 */
+    transform: rotate(-90deg);
+    transform-origin: center center; /* 박스 중심 기준으로 회전 */
+    color: #fffbf4;
+    font-size: 1.1rem;
+    font-weight: 900;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.9;
+    white-space: nowrap;
 }
 
 @keyframes cardSlideIn {
@@ -253,4 +292,22 @@
     .result-card-rarity-img { width: 100%; height: 14px; object-position: center bottom; }
     .result-card-plan-icon { width: 13px; height: 13px; object-position: center bottom; }
     .result-card-name { font-size: 0.45rem; padding: 2px; }
+
+    /* 모바일에서 NEW 뱃지 크기 축소 */
+    .new-badge {
+        font-size: 0.6rem;
+    }
+
+    /* 모바일에서 IDOL / SUPPORT 라벨 크기 및 위치 조정 */
+    .card-type-label {
+        font-size: 0.65rem; /* 모바일 크기에 맞춰 축소 */
+        width: 150px; /* 모바일에 맞는 너비 */
+        text-align: center;
+        position: absolute;
+        bottom: 40px; /* 세로 위치 조정 */
+        right: -71px; /* -68px에서 -71px로 미세 조정 */
+        transform: rotate(-90deg);
+        transform-origin: center center;
+        opacity: 0.8;
+    }
 }

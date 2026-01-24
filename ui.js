@@ -4,10 +4,17 @@ import { updatePageTranslations, applyBackground } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
 import { abilityData } from './abilitydata.js';
+import { initCalc } from './calc.js';
 import translations from './i18n.js';
 
 const contentArea = document.getElementById('content-area');
-// ... 생략 (idolList 및 renderHome, renderCalc, renderIdolList는 동일하게 유지)
+
+// 계산기 화면 복귀 이벤트 리스너
+window.addEventListener('renderCalcRequested', () => {
+    renderCalc();
+});
+
+// ... 생략 (idolList 및 renderHome은 동일)
 const idolList = [
     'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
@@ -43,6 +50,7 @@ export function renderCalc() {
     contentArea.innerHTML = '';
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
+    initCalc();
 }
 
 export function renderIdolList() {

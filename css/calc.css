@@ -5,13 +5,169 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    gap: 2rem;
-    padding-top: 1.5rem; /* 4rem에서 1.5rem으로 축소 */
+    gap: 1.5rem;
+    padding-top: 1rem;
 }
 
 .calc-buttons {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+.calc-container {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 440px; /* 전체 너비 최적화 */
+    margin: 0 auto;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.8rem;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-item img {
+    width: 28px;
+    height: 28px;
+}
+
+.stat-item span {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* 모든 주차를 감싸는 하나의 거대한 보드 */
+.unified-plan-board {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1rem 0.5rem;
+    width: 100%;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 2rem;
+}
+
+/* 각 주차별 한 줄 */
+.week-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.03); /* 아주 연한 구분선 */
+}
+
+.week-row:last-child {
+    border-bottom: none;
+}
+
+.week-label {
+    font-weight: bold;
+    color: #666;
+    min-width: 35px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.plan-icons-container {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+/* 아이콘 스타일 */
+.plan-icon-wrapper {
+    width: 54px; 
+    height: 54px;
+    padding: 2px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fdfdfd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* 대형 아이콘 스타일 */
+.plan-icon-wrapper.large-icon {
+    width: 100px;
+    height: 60px;
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.plan-icon-wrapper:hover {
+    transform: translateY(-1px);
+    background: #fff;
+}
+
+.plan-icon-wrapper.active {
+    background: #fff;
+    border-color: #ff4d8d;
+    box-shadow: 0 0 8px rgba(255, 77, 141, 0.4);
+}
+
+.plan-icon-wrapper.large-icon.active {
+    filter: drop-shadow(0 0 8px rgba(255, 77, 141, 0.9));
+}
+
+.plan-icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.calc-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 2rem;
+}
+
+.back-btn {
+    background-color: #f8f9fa;
+    color: #333 !important;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 440px) {
+    .plan-icon-wrapper {
+        width: 44px;
+        height: 44px;
+    }
+    .plan-icon-wrapper.large-icon {
+        width: 80px;
+        height: 48px;
+    }
 }

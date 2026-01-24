@@ -110,9 +110,10 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
         setTotalPulls(prevPulls + mode, state.gachaType);
 
         currentResults = pickGacha(mode, state.gachaType);
-        addGachaLog(currentResults, state.gachaType);
 
         if (callbacks.onStart) callbacks.onStart(mode, prevPulls);
+
+        addGachaLog(currentResults, state.gachaType);
 
         document.body.classList.add('immersive-mode');
         history.pushState({ target: 'gacha', view: 'playing' }, "");

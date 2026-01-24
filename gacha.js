@@ -225,7 +225,7 @@ export function renderGacha() {
         }).catch(() => { if (++loadedCount >= assets.length && spinner) spinner.classList.remove('active'); });
     });
 
-    const renderResults = (currentResults) => {
+    const renderResults = (currentResults, existingIds = new Set()) => {
         if (!resultsContainer) return;
         resultsContainer.innerHTML = '';
         const itemTpl = document.getElementById('tpl-gacha-result-item');
@@ -241,6 +241,16 @@ export function renderGacha() {
             const planIcon = clone.querySelector('.result-card-plan-icon');
             const rarityImg = clone.querySelector('.result-card-rarity-img');
             const name = clone.querySelector('.result-card-name');
+
+            // NEW 뱃지 처리 (전달받은 가챠 전 보유 목록에 없으면 NEW)
+            if (!existingIds.has(card.id)) {
+                const newBadge = document.createElement('div');
+                newBadge.className = 'new-badge';
+                newBadge.textContent = 'NEW';
+                cardEl.appendChild(newBadge);
+                // 이번 10연차 내 중복은 NEW 표시 안 함
+                existingIds.add(card.id);
+            }
 
             if (card.type === 'produce') {
                 img.src = `idols/${card.id}1.webp`;
@@ -258,16 +268,29 @@ export function renderGacha() {
             const rKey = card.displayRarity.toLowerCase();
             rarityImg.src = `icons/${rKey}.png`;
             cardEl.classList.add(`${rKey}-bg`);
+
+            // IDOL / SUPPORT 타입 텍스트 추가
+            const typeLabel = document.createElement('div');
+            typeLabel.className = 'card-type-label';
+            typeLabel.textContent = card.type === 'produce' ? 'IDOL' : 'SUPPORT';
+            cardEl.appendChild(typeLabel);
+
             name.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
             resultsContainer.appendChild(clone);
         });
     };
 
-    let prevPulls = 0; // 이전 포인트 저장용 변수
+    let prevPulls = 0; 
+    let prePullExistingIds = new Set(); // 가챠 전 보유 목록 저장
 
     const animation = setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, {
         onStart: (mode, actualPrevPulls) => {
-            prevPulls = actualPrevPulls; // 전달받은 정확한 이전 포인트 저장
+            prevPulls = actualPrevPulls;
+            
+            // 가챠 시작 전 보유 아이디들을 미리 복사해둠
+            const currentLog = state.gachaLog[state.gachaType] || [];
+            prePullExistingIds = new Set(currentLog.map(item => item.id));
+
             if (muteControls) muteControls.style.display = 'none';
             if (logBtn) logBtn.classList.add('hidden');
             if (resetBtn) resetBtn.classList.add('hidden');
@@ -275,7 +298,7 @@ export function renderGacha() {
             if (controlsTop) controlsTop.classList.add('hidden');
         },
         onFinish: (currentResults, gachaMode) => {
-            updateTotalPullsUI(prevPulls); // 결과창 전용 UI 업데이트 (이전 -> 이후)
+            updateTotalPullsUI(prevPulls); 
             if (logBtn) logBtn.classList.remove('hidden');
             if (jewelContainer) jewelContainer.classList.remove('hidden');
             if (fixedBtnArea) { fixedBtnArea.classList.remove('view-main'); fixedBtnArea.classList.add('view-result'); }
@@ -283,11 +306,11 @@ export function renderGacha() {
             if (btn1 && btn10) {
                 btn1.textContent = translations[state.currentLang].gacha_close;
                 btn1.onclick = () => {
-                    // playClickSFX() 제거
                     btn1.style.pointerEvents = 'none';
                     btn10.style.pointerEvents = 'none';
                     setTimeout(() => renderGacha(), 100);
                 };
+                
                 const is10 = (gachaMode === 10);
                 btn10.textContent = translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull'];
                 btn10.onclick = () => {
@@ -298,7 +321,7 @@ export function renderGacha() {
                     setTimeout(() => animation.startGacha(gachaMode), 100);
                 };
                 
-                // 0.3초간 실수 클릭 방지 (비활성화 효과 없이 클릭만 차단) - 실수 방지는 유지
+                // 0.3초간 실수 클릭 방지
                 btn1.style.pointerEvents = 'none';
                 btn10.style.pointerEvents = 'none';
                 setTimeout(() => {
@@ -307,7 +330,7 @@ export function renderGacha() {
                     updateGachaButtonsState();
                 }, 300);
             }
-            renderResults(currentResults);
+            renderResults(currentResults, prePullExistingIds); // 저장해둔 목록 전달
             const fixedBg = document.getElementById('fixed-bg');
             if (fixedBg) { fixedBg.style.backgroundImage = "url('gasya/background.jpg')"; fixedBg.style.backgroundSize = "cover"; }
             history.pushState({ target: 'gacha', view: 'result' }, "");
