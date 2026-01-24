@@ -77,7 +77,6 @@ function renderWeeklyPlan(type) {
                 ${weeksHtml}
             </div>
             <div class="calc-actions">
-                <button class="primary-btn" id="btn-calculate">계산하기</button>
                 <button class="back-btn primary-btn">뒤로가기</button>
             </div>
         </div>
