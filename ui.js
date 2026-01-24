@@ -151,6 +151,12 @@ function renderProduceCards(idolName, container) {
             imageList.push(`idols/${a.id}1.webp`);
         });
 
+        // 이미지 프리로딩: 전환 시 끊김 방지
+        imageList.forEach(url => {
+            const preimg = new Image();
+            preimg.src = url;
+        });
+
         // 저장된 인덱스 불러오기
         let currentIndex = state.pssrIndex[card.id] || 0;
         if (currentIndex >= imageList.length) currentIndex = 0;
