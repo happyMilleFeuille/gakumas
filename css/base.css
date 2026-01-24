@@ -294,6 +294,11 @@ footer {
     line-height: 1.2;
     text-align: center;
 }
+/* 가챠 결과 화면에서 하단 메뉴만 숨김 */
+body.gacha-result-active .button-group.horizontal {
+    display: none !important;
+}
+
 .disclaimer-container p { margin: 1px 0; }
 
 @media (max-width: 768px) {

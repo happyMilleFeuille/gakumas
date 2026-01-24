@@ -402,12 +402,11 @@
 
 @media (max-width: 768px) {
     .support-container {
-        padding: 1rem 0.05rem; 
+        padding: 1rem 0.5rem; 
     }
     .support-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 3px; 
-        row-gap: 10px; /* 위아래 간격 추가 확대 */
+        gap: 10px; 
     }
 
     .support-card {

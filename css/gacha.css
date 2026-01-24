@@ -106,8 +106,56 @@
 .gacha-buttons.view-result .gacha-btn { order: 2; }
 
 .gacha-btn { 
-    min-width: 150px; 
+    width: 180px;
+    height: 70px;
+    background: url('../icons/gasya.png') no-repeat center;
+    background-size: contain;
+    border: none;
+    cursor: pointer;
     transition: transform 0.1s ease;
+    color: #fff; 
+    font-weight: bold;
+    font-size: 1.1rem; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 8px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    line-height: 1.75;
+    text-align: center;
+}
+
+.btn-cost {
+    padding-left: 60px; 
+    font-size: 0.95rem;
+}
+
+.gacha-btn.close-style {
+    background: #ffffff !important;
+    color: #444; 
+    text-shadow: none;
+    border: 1px solid #dcdcdc;
+    border-radius: 35px;
+    font-weight: bold;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    flex-direction: row !important;
+    align-items: center; 
+    justify-content: center;
+    padding-top: 18px; 
+    filter: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    gap: 8px; 
+    white-space: nowrap;
+}
+
+.close-x {
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: #888;
 }
 
 .gacha-btn:active:not(:disabled) {
@@ -191,7 +239,9 @@
     border-radius: 50%; width: 20px; height: 20px;
     font-size: 1.2rem; line-height: 1;
     cursor: pointer;
-    display: flex; justify-content: center; align-items: center;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
     font-weight: bold;
     transition: transform 0.1s, opacity 0.1s;
 }
@@ -225,14 +275,15 @@
 
 .gacha-type-indicator .dot {
     width: 6px; height: 6px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
+    background: rgba(150, 150, 150, 0.6); 
+    border-radius: 0;
+    transform: rotate(45deg);
     transition: all 0.2s;
 }
 .gacha-type-indicator .dot.active {
-    background: #fff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-    transform: scale(1.2);
+    background: #FF9800; 
+    box-shadow: 0 0 6px rgba(255, 152, 0, 0.8);
+    transform: rotate(45deg); 
 }
 
 .current-type-display.capsule-box span, .type-nav-btn.circle-btn span {
@@ -304,7 +355,38 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         width: 100% !important;
     }
     .gacha-buttons { gap: 10px; bottom: 5px; }
-    .gacha-btn { min-width: 110px; padding: 0.6rem 0.8rem; font-size: 0.85rem; }
+    
+    .gacha-btn { 
+        width: 130px !important; 
+        min-width: 0 !important; 
+        height: 55px; 
+        padding-top: 5px; 
+        font-size: 0.75rem; 
+        line-height: 2;
+        background-size: 130px 55px !important; 
+        overflow: visible;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        white-space: nowrap; 
+    }
+
+    .btn-cost {
+        padding-left: 15px;
+        font-size: 0.75rem;
+    }
+
+    .gacha-btn.close-style {
+        width: 90px !important;
+        height: 45px;
+        border-radius: 25px;
+        padding-top: 16px; 
+        margin-top: 5px;
+        background: #ffffff !important; 
+    }
+
+    .close-x {
+        transform: translateY(0) !important; 
+    }
+
     .mute-toggle-btn { width: 30px; height: 30px; font-size: 0.9rem; }
     
     .jewel-container { top: 5px; right: 5px; }

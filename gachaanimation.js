@@ -8,6 +8,24 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
     const skipBtn = contentArea.querySelector('#skip-button');
     const muteControls = document.getElementById('gacha-header-controls');
 
+    // 이미지 오버레이 요소 동적 생성 및 초기 스타일 설정
+    const imgOverlay = document.createElement('img');
+    imgOverlay.id = 'gacha-card-overlay';
+    imgOverlay.className = 'hidden';
+    imgOverlay.style.cssText = `
+        position: absolute;
+        top: 44%; left: 50%;
+        transform: translate(-50%, -50%) scale(0.1); /* 초기 상태: 매우 작음 */
+        z-index: 10;
+        width: 45vh; 
+        max-width: 100%; 
+        height: auto;
+        pointer-events: none;
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+    `;
+    if (videoContainer) videoContainer.appendChild(imgOverlay);
+
     let currentResults = [];
     let currentVideoSrc = "";
     let clickTimer = null;
@@ -23,6 +41,8 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
         if (activeScreenSfx) { activeScreenSfx.pause(); activeScreenSfx.currentTime = 0; }
         gachaBGM.pause();
         gachaBGM.currentTime = 0;
+        imgOverlay.classList.add('hidden');
+        imgOverlay.style.opacity = '0';
 
         if (!state.gachaMuted) {
             mainBGM.currentTime = 0;
@@ -47,6 +67,65 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
         if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode);
     };
 
+    const playIndividualResults = (index = 0) => {
+        // 매 연출 시작 시 이미지 초기화
+        imgOverlay.style.transition = 'none';
+        imgOverlay.style.transform = 'translate(-50%, -50%) scale(0.1)';
+        imgOverlay.style.opacity = '0';
+        imgOverlay.classList.add('hidden');
+
+        if (index >= currentResults.length) {
+            finishGacha();
+            return;
+        }
+
+        const card = currentResults[index];
+        // 개별 연출 대상 판별 (서포트 R/SR 또는 프로듀스 PSR)
+        const isRSupport = card.type !== 'produce' && card.displayRarity === 'R';
+        const isSRSupport = card.type !== 'produce' && card.displayRarity === 'SR';
+        const isPSR = card.type === 'produce' && card.rarity === 'PSR';
+
+        if (isRSupport || isSRSupport || isPSR) {
+            canClick = false; // 영상 시작 시 클릭(스킵) 차단
+            setTimeout(() => { canClick = true; }, 700); // 0.7초 후 클릭 허용
+
+            let getSrc = 'gasya/spotget_rsupport.mp4';
+            if (isSRSupport) getSrc = 'gasya/spotget_srsupport.mp4';
+            if (isPSR) getSrc = 'gasya/spotget_psrsupport.mp4';
+
+            videoNext.src = assetBlobs[getSrc] || getSrc;
+            videoNext.muted = state.gachaMuted;
+            videoNext.load();
+
+            // 카드 타입에 따라 위치와 크기 개별 설정
+            const targetTop = isPSR ? '43.5%' : '45%';
+            const targetScale = isPSR ? 0.60 : 0.9;
+
+            imgOverlay.style.top = targetTop;
+            imgOverlay.src = card.type === 'produce' ? `idols/${card.id}1.webp` : `images/support/${card.id}.webp`;
+            
+            videoNext.onplaying = () => {
+                // 효과음 재생
+                if (!state.gachaMuted && assetBlobs['gasya/spotget_r.mp3']) {
+                    new Audio(assetBlobs['gasya/spotget_r.mp3']).play().catch(() => {});
+                }
+                
+                setTimeout(() => {
+                    imgOverlay.classList.remove('hidden');
+                    imgOverlay.offsetHeight; // 리플로우 강제
+                    imgOverlay.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
+                    imgOverlay.style.transform = `translate(-50%, -50%) scale(${targetScale})`; 
+                    imgOverlay.style.opacity = '1';
+                }, 350); // 0.35초 지연 후 애니메이션 시작
+            };
+            videoNext.onended = () => playIndividualResults(index + 1);
+            videoNext.onclick = () => { if (canClick) playIndividualResults(index + 1); };
+            videoNext.play().catch(() => playIndividualResults(index + 1));
+        } else {
+            playIndividualResults(index + 1);
+        }
+    };
+
     const playGetAnimation = () => {
         const highest = getHighestRarity(currentResults);
         let getSrc = (highest === 'SSR' || highest === 'SR') ? 'gasya/get_sr.mp4' : 'gasya/get_r.mp4';
@@ -61,11 +140,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
                 videoNext.classList.remove('hidden');
                 videoMain.pause();
             };
-            videoNext.onended = finishGacha;
-            videoNext.onclick = () => { if (canClick) finishGacha(); };
-            videoNext.play().catch(finishGacha);
+            videoNext.onended = () => playIndividualResults(0);
+            videoNext.onclick = () => { if (canClick) playIndividualResults(0); };
+            videoNext.play().catch(() => playIndividualResults(0));
         } else {
-            finishGacha();
+            playIndividualResults(0);
         }
     };
 
@@ -102,8 +181,6 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
             navigator.mediaSession.metadata = new MediaMetadata({ title: '', artist: '', album: '', artwork: [] });
             navigator.mediaSession.playbackState = 'playing';
         }
-
-        // 클릭음 제거 (gacha.js로 이동)
 
         const prevPulls = state.totalPulls[state.gachaType] || 0;
         setJewels(state.jewels - cost);
