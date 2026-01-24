@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/idol.css">
     <link rel="stylesheet" href="css/support.css">
     <link rel="stylesheet" href="css/gacha.css">
+    <link rel="stylesheet" href="css/gachalog.css">
+    <link rel="stylesheet" href="css/gacha_anim.css">
     <link rel="stylesheet" href="css/calc.css">
 </head>
 <body>
@@ -31,6 +33,7 @@
             <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
                 <div class="total-pulls-box">
                     <span id="total-pull-count">0</span>
+                    <button id="btn-gacha-reset" class="log-btn reset-btn hidden" data-i18n="gacha_reset">초기화</button>
                 </div>
                 <div class="gacha-controls-top">
                     <button id="btn-prev-gacha" class="type-nav-btn circle-btn"><span></span></button>
@@ -49,7 +52,6 @@
                 <button class="primary-btn gacha-btn" id="btn-10pull-fixed">10회 뽑기</button>
             </div>
             <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">가챠 기록</button>
-            <button id="btn-gacha-reset" class="log-btn reset-btn hidden" data-i18n="gacha_reset">초기화</button>
             <div id="gacha-header-controls" class="gacha-header-controls hidden">
                 <button id="gacha-mute-btn" class="mute-toggle-btn">🔇</button>
             </div>

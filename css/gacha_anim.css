@@ -1,0 +1,256 @@
+/* --- Gacha Animation & Result Styles --- */
+
+/* Video Overlay */
+.gacha-video-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    z-index: 20000;
+    display: flex; justify-content: center; align-items: center;
+}
+.gacha-video-overlay.hidden { display: none; }
+
+.gacha-vid {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+.gacha-vid.hidden { display: none !important; }
+
+.skip-btn {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    z-index: 20001;
+}
+
+/* Gacha Results Display */
+.gacha-results {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin: 3rem auto 2rem; /* PC 기본 위치 */
+}
+
+/* 1연차일 때 중앙 정렬 설정 (PC/공통) */
+.gacha-results.single-result {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-content: center; /* 세로 중앙 정렬 추가 */
+    min-height: 50vh; /* 세로 중앙 정렬을 위한 최소 높이 확보 */
+    margin: 0 auto; /* 상단 여백 제거하여 세로 중앙에 집중 */
+}
+.gacha-results.single-result .gacha-result-card {
+    grid-column: 3;
+}
+
+.gacha-result-card {
+    background: transparent;
+    border-radius: 0; /* 둥근 모서리 제거 */
+    overflow: hidden;
+    box-shadow: none;
+    text-align: center;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* 애니메이션 기본 상태 */
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.gacha-result-card.animate {
+    animation: cardSlideIn 0.4s ease forwards;
+}
+
+@keyframes cardSlideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.result-card-img-wrapper {
+    position: relative;
+    padding-top: 170%; 
+    background: transparent;
+    overflow: hidden;
+}
+
+/* 프로듀스 아이돌 전용: 진짜 투명 마스크 적용 */
+.gacha-result-card.produce-card .result-card-img-wrapper {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 30%, black 70%, transparent 80%);
+    mask-image: linear-gradient(to bottom, transparent 20%, black 30%, black 70%, transparent 80%);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+}
+
+.result-card-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    transition: transform 0.3s ease;
+}
+
+/* 프로듀스 아이돌 이미지 배율 및 위치는 JS에서 동적으로 처리함 */
+.gacha-result-card.produce-card .result-card-img {
+    /* transform 설정 제거 */
+}
+
+.gacha-result-card.landscape .result-card-img {
+    padding: 0;
+    object-fit: contain;
+    transform: rotate(-45deg) scale(1.7) translateX(20%);
+    /* drop-shadow를 여러 번 겹쳐서 선명한 흰색 테두리 효과를 만듦 */
+    filter: 
+        drop-shadow(1px 0 0 #fff) 
+        drop-shadow(-1px 0 0 #fff) 
+        drop-shadow(0 1px 0 #fff) 
+        drop-shadow(0 -1px 0 #fff)
+        drop-shadow(3px 3px 5px rgba(0,0,0,0.5));
+    border-radius: 0;
+    box-shadow: none; /* 이전 box-shadow 제거 */
+}
+
+/* 등급별 배경 설정 (마스크 효과 분리) */
+.gacha-result-card.sr-bg, .gacha-result-card.ssr-bg {
+    background-image: none !important; /* 부모 배경 제거 */
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    position: relative;
+}
+
+/* 가상 요소로 배경 이미지와 마스크 적용 */
+.gacha-result-card.sr-bg::before, .gacha-result-card.ssr-bg::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    z-index: 0;
+}
+
+.gacha-result-card.sr-bg::before { background-image: url('../images/srbackground.jpg'); }
+.gacha-result-card.ssr-bg::before { background-image: url('../images/ssrbackground.jpg'); }
+
+/* 이미지 래퍼에도 동일한 마스크 적용 (배경과 일치시키기 위함) */
+.gacha-result-card.sr-bg .result-card-img-wrapper,
+.gacha-result-card.ssr-bg .result-card-img-wrapper {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    z-index: 1;
+}
+
+/* 프로듀스 아이돌 전용 마스크 (기존 유지하되 우선순위 조정) */
+.gacha-result-card.produce-card .result-card-img-wrapper {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 30%, black 70%, transparent 80%);
+    mask-image: linear-gradient(to bottom, transparent 20%, black 30%, black 70%, transparent 80%);
+}
+
+.gacha-result-card.r-bg { 
+    background: linear-gradient(to bottom, transparent 0%, rgb(224, 240, 240) 10%, rgb(224, 240, 240) 90%, transparent 100%); 
+}
+
+.result-card-badge-container {
+    position: absolute;
+    bottom: 35px; /* wrapper 내부가 아니므로 위치 상향 조정 */
+    left: 0;
+    width: 40px; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 4px; 
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .result-card-badge-container {
+        bottom: 25px;
+        left: -3px;
+    }
+}
+
+.result-card-rarity-img {
+    width: 100%; /* 40px 영역에 맞춤 */
+    max-width: 60px;
+    height: 25px;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
+}
+
+.result-card-plan-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
+}
+
+.result-card-name {
+    display: none;
+    padding: 5px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #fdfdfd;
+    color: #333;
+}
+
+/* 등급별 색상 */
+.rarity-ssr { color: #a335ee !important; }
+.rarity-sr { color: #ffca28 !important; }
+.rarity-r { color: #708090 !important; }
+
+.ssr-border { border: none !important; }
+.sr-border { border: none !important; }
+.r-border { border: none !important; }
+
+/* Mobile Optimization for Results */
+@media (max-width: 768px) {
+    .gacha-results {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        width: 100%;
+        margin: 0 !important; 
+        padding: 0 5px;
+        min-height: 60vh;
+        align-content: center;
+        contain: layout; /* 레이아웃 계산을 격리하여 덜컥거림 방지 */
+    }
+    .gacha-result-card { width: 100%; min-width: 0; }
+    .gacha-results.single-result {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 10연차와 동일한 5열 구조 유지 */
+        justify-content: center;
+    }
+    .gacha-results.single-result .gacha-result-card { 
+        grid-column: 3; /* 5개 칸 중 정확히 가운데(3번째) 칸에 배치 */
+        width: 100%;
+    }
+    .result-card-img-wrapper { padding-top: 300%; }
+    .result-card-badge-container { bottom: 3px; left: -3px !important; width: 30px; gap: 2px; }
+    .result-card-rarity-img { width: 100%; height: 14px; object-position: center bottom; }
+    .result-card-plan-icon { width: 13px; height: 13px; object-position: center bottom; }
+    .result-card-name { font-size: 0.45rem; padding: 2px; }
+}

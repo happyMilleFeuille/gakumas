@@ -27,13 +27,9 @@ export function handleNavigation(target, isBack = false) {
         }
     });
 
-    // 다른 탭으로 이동 시 가챠 BGM 정지 및 가챠 배경 초기화
+    // 다른 탭으로 이동 시 가챠 BGM 정지
     if (target !== 'gacha') {
         if (mainBGM) mainBGM.pause();
-        const fixedBg = document.getElementById('fixed-bg');
-        if (fixedBg) {
-            fixedBg.style.backgroundImage = '';
-        }
     }
 
     // 히스토리 상태 기록 (뒤로가기 시 홈으로 보내기 위해, 뒤로가기 중이 아닐 때만)
@@ -51,4 +47,7 @@ export function handleNavigation(target, isBack = false) {
         case 'gacha': renderGacha(); break;
         default: console.warn('Unknown navigation target:', target);
     }
+
+    // 화면 전환 후 전역 UI 상태 동기화 (main.js에서 제공하는 기능을 window 전역 객체 등을 통해 간접 실행하거나 이벤트를 발생시킴)
+    window.dispatchEvent(new CustomEvent('viewChanged'));
 }

@@ -116,7 +116,7 @@ export const produceList = [
     { id: "ssrhiro_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited" },
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited" },
     { id: "ssrhiro_2nd", name: "콘트라스트",name_ja: "コントラスト", rarity: "PSSR", plan: "sense", source: "normal" },
-    { id: "ssrhiro_3rd", name: "선페이디드",name_ja: "サンフェーデッド", rarity: "PSSR", plan: "anomaly", source: "normal" },    
+    { id: "ssrhiro_3rd", name: "sunfaded",name_ja: "サンフェーデッド", rarity: "PSSR", plan: "anomaly", source: "normal" },    
 
     // --- 츠바메 SSR (PSSR) ---    
     { id: "ssrtsubame_1st", name: "이론무장하고",name_ja: "理論武装して", rarity: "PSSR", plan: "logic", source: "normal" },   

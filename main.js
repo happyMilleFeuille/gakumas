@@ -7,8 +7,6 @@ import { renderGacha } from './gacha.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. 요소 선택
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
     const langBtns = document.querySelectorAll('.lang-btn');
     const idolSection = document.getElementById('idol'); // 배경이 적용될 섹션 (혹은 fixedBg)
     const logo = document.querySelector('.logo');
@@ -20,9 +18,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initMobileHeightFix();
 
-    // 초기 언어 버튼 활성화 상태 설정
-    langBtns.forEach(b => b.classList.toggle('active', b.id === `lang-${state.currentLang}`));
+    // 모든 언어 버튼 상태 동기화 함수
+    const syncLangBtns = () => {
+        document.querySelectorAll('.lang-btn').forEach(b => {
+            b.classList.toggle('active', b.id === `lang-${state.currentLang}`);
+        });
+    };
+
+    // 전역 UI 상태 동기화 (배경, 버튼 등)
+    const syncGlobalUI = () => {
+        syncLangBtns();
+        if (state.currentBg) {
+            applyBackground(state.currentBg);
+        }
+    };
+
+    // 초기 실행
+    syncGlobalUI();
     document.documentElement.lang = state.currentLang;
+
+    // 화면 전환 이벤트 발생 시 동기화
+    window.addEventListener('viewChanged', syncGlobalUI);
 
     // 새로고침 시 히스토리 상태 초기화 (현재 화면이 홈이므로 상태를 홈으로 맞춤)
     history.replaceState({ target: 'home' }, "");
@@ -36,39 +52,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 언어 변경
-    langBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const newLang = btn.id.split('-')[1];
-            setLanguage(newLang);
-            updatePageTranslations();
+    // 언어 변경 (이벤트 위임 방식)
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.lang-btn');
+        if (!btn) return;
 
-            // UI 업데이트 (버튼 활성화 상태)
-            langBtns.forEach(b => b.classList.toggle('active', b.id === `lang-${newLang}`));
-            
-            // 현재 화면이 서포트 카드라면 갱신
-            if (document.querySelector('.support-grid')) {
-                renderSupport();
-            }
-            // 현재 화면이 가챠라면 갱신
-            if (document.querySelector('.gacha-container')) {
-                renderGacha();
-            }
-        });
+        const newLang = btn.id.split('-')[1];
+        if (!newLang) return;
+
+        setLanguage(newLang);
+        updatePageTranslations();
+
+        // UI 업데이트 (모든 언어 버튼들의 활성화 상태 갱신)
+        syncLangBtns();
+        
+        // 현재 화면 상태에 따라 추가 렌더링
+        if (document.querySelector('.support-grid')) {
+            renderSupport();
+        }
+        if (document.querySelector('.gacha-container')) {
+            renderGacha();
+        }
     });
 
-    // 햄버거 메뉴
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            menuToggle.classList.toggle('is-active');
-        });
-    }
-
     // 네비게이션 링크
-    document.querySelectorAll('.nav-links a, .menu-btn').forEach(el => {
+    document.querySelectorAll('.menu-btn').forEach(el => {
         el.addEventListener('click', (e) => {
-            if (el.tagName === 'A' && el.getAttribute('href').startsWith('#')) e.preventDefault();
             handleNavigation(el.dataset.target);
         });
     });
