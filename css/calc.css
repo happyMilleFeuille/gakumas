@@ -447,39 +447,27 @@
 
 .side-card-item img {
 
+
+
     width: 100%;
+
+
 
     height: 100%;
 
+
+
     object-fit: cover;
 
+
+
 }
 
 
 
-.side-card-badge {
 
-    position: absolute;
 
-    top: 2px;
 
-    left: 2px;
-
-    font-size: 0.55rem;
-
-    font-weight: 900;
-
-    background: rgba(255, 255, 255, 0.8);
-
-    padding: 1px 3px;
-
-    border-radius: 3px;
-
-    line-height: 1;
-
-    z-index: 5;
-
-}
 
 .rarity-ssr { color: #a335ee; }
 .rarity-sr { color: #ffca28; }

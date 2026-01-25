@@ -258,7 +258,6 @@ function openSupportCardPanel(selectedPlan) {
     const renderColumnCards = (cards) => cards.map(card => `
         <div class="side-card-item" data-id="${card.id}">
             <img src="images/support/${card.id}.webp" alt="${card.name}" onerror="this.src='icons/card.png'">
-            <div class="side-card-badge rarity-${card.rarity.toLowerCase()}">${card.rarity}</div>
         </div>
     `).join('');
 
