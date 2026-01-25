@@ -177,15 +177,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardModal = document.getElementById('card-modal');
         const gachaLogModal = document.getElementById('gacha-log-modal');
         const resultsContainer = document.querySelector('#gacha-results');
+        const calcPanel = document.getElementById('calc-side-panel'); // 계산기 패널 추가
         
         const isCardModalVisible = cardModal && !cardModal.classList.contains('hidden');
         const isGachaLogVisible = gachaLogModal && !gachaLogModal.classList.contains('hidden');
         const isGachaPlaying = document.body.classList.contains('immersive-mode');
         const isGachaResultVisible = resultsContainer && resultsContainer.children.length > 0;
+        const isCalcPanelOpen = calcPanel && calcPanel.classList.contains('open'); // 계산기 패널 상태
 
         if (isGachaPlaying) {
             // 영상 재생 중 뒤로가기 시도 -> 히스토리를 다시 쌓아서 현재 페이지 유지 (차단)
             history.pushState({ target: 'gacha', view: 'playing' }, "");
+            return;
+        }
+
+        if (isCalcPanelOpen) {
+            // 계산기 패널이 열려있으면 패널만 닫음 (calc.js의 close 지원 호출)
+            if (window.closeSupportCardPanel) {
+                window.closeSupportCardPanel(true);
+            } else {
+                calcPanel.classList.remove('open');
+                const overlay = document.getElementById('panel-overlay');
+                if (overlay) overlay.classList.remove('show');
+            }
             return;
         }
 

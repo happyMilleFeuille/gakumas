@@ -92,7 +92,6 @@ function renderWeeklyPlan(type) {
 
     calcRoot.innerHTML = `
         <div class="calc-container">
-            <!-- 메인 컨텐츠 래퍼 (왼쪽 열) -->
             <div class="calc-main-wrapper">
                 <div class="calc-actions top">
                     <button class="calc-btn primary-btn" id="btn-run-calc">계산</button>
@@ -138,7 +137,6 @@ function renderWeeklyPlan(type) {
                     ${weeksHtml}
                 </div>
             </div>
-            <!-- 메인 컨텐츠 래퍼 끝 -->
         </div>
     `;
     
@@ -230,27 +228,50 @@ function setupCalcAction() {
             if (!activePlanBtn) return;
             
             const selectedPlan = activePlanBtn.dataset.type;
-            openSupportCardPanel(selectedPlan);
+            toggleSupportCardPanel(selectedPlan);
         };
     }
 }
 
-function openSupportCardPanel(selectedPlan) {
+function toggleSupportCardPanel(selectedPlan) {
     let panel = document.getElementById('calc-side-panel');
-    if (panel) panel.remove();
+    let overlay = document.getElementById('panel-overlay');
 
-    panel = document.createElement('div');
-    panel.id = 'calc-side-panel';
-    panel.className = 'calc-side-panel';
+    if (panel && panel.classList.contains('open')) {
+        closeSupportCardPanel();
+        return;
+    }
 
-    // 해당하는 플랜 + 프리 플랜 필터링 (R등급 및 어시스트 제외)
+    const isMobile = window.innerWidth <= 768;
+
+    if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'calc-side-panel';
+        panel.className = 'calc-side-panel';
+        
+        // 화면 너비에 따라 추가 위치 결정
+        if (isMobile) {
+            document.body.appendChild(panel);
+        } else {
+            const container = document.querySelector('.calc-container');
+            if (container) container.appendChild(panel);
+        }
+    }
+
+    if (isMobile && !overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'panel-overlay';
+        overlay.className = 'panel-overlay';
+        document.body.appendChild(overlay);
+        overlay.onclick = closeSupportCardPanel;
+    }
+
     const filteredCards = cardList.filter(c => 
         (c.plan === selectedPlan || c.plan === 'free') && 
         c.rarity !== 'R' && 
         c.type !== 'assist'
     );
 
-    // 속성별 카드 분류
     const vocalCards = filteredCards.filter(c => c.type === 'vocal');
     const danceCards = filteredCards.filter(c => c.type === 'dance');
     const visualCards = filteredCards.filter(c => c.type === 'visual');
@@ -258,6 +279,8 @@ function openSupportCardPanel(selectedPlan) {
     const renderColumnCards = (cards) => cards.map(card => `
         <div class="side-card-item" data-id="${card.id}">
             <img src="images/support/${card.id}.webp" alt="${card.name}" onerror="this.src='icons/card.png'">
+            <img src="images/support/${card.id}_card.webp" class="side-card-overlay-icon" 
+                 onerror="this.src='images/support/${card.id}_item.webp'; this.onerror=null;">
         </div>
     `).join('');
 
@@ -274,8 +297,33 @@ function openSupportCardPanel(selectedPlan) {
         </div>
     `;
 
-    document.querySelector('.calc-container').appendChild(panel);
+    requestAnimationFrame(() => {
+        if (panel) {
+            panel.classList.add('open');
+            // 뒤로가기 대응을 위해 히스토리 추가 (모바일에서만 권장하지만 일관성을 위해)
+            if (window.innerWidth <= 768) {
+                history.pushState({ panelOpen: true }, "");
+            }
+        }
+        if (overlay) overlay.classList.add('show');
+    });
 }
+
+function closeSupportCardPanel(isPopState = false) {
+    const panel = document.getElementById('calc-side-panel');
+    const overlay = document.getElementById('panel-overlay');
+    
+    if (panel && panel.classList.contains('open')) {
+        panel.classList.remove('open');
+        if (overlay) overlay.classList.remove('show');
+        
+        // 수동으로 닫은 경우(뒤로가기 버튼이 아닌 경우) 히스토리 한 칸 되돌리기
+        if (!isPopState && window.innerWidth <= 768 && history.state && history.state.panelOpen) {
+            history.back();
+        }
+    }
+}
+window.closeSupportCardPanel = closeSupportCardPanel; // 전역 등록
 
 function setupPlanTypeSelector() {
     const btns = document.querySelectorAll('.plan-type-btn');
