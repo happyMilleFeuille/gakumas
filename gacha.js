@@ -184,13 +184,26 @@ export function renderGacha() {
     updateTypeUI();
 
     const updateGachaButtonsState = () => {
+        const isResultView = fixedBtnArea && fixedBtnArea.classList.contains('view-result');
+
         if (btn1) {
-            const isClose = (btn1.textContent === '닫기' || btn1.textContent === '閉じる');
-            btn1.disabled = isClose ? false : (state.jewels < 250);
+            // 결과창에서의 '닫기' 버튼은 항상 활성화
+            if (isResultView) {
+                btn1.disabled = false;
+            } else {
+                btn1.disabled = (state.jewels < 250);
+            }
         }
+        
         if (btn10) {
-            const isRetry = (btn10.textContent === '1회 뽑기' || btn10.textContent === '1回引く');
-            btn10.disabled = (state.jewels < (isRetry ? 250 : 2500));
+            if (isResultView) {
+                // 버튼 텍스트(innerHTML)에서 숫자만 추출하여 실제 비용 확인
+                const match = btn10.innerHTML.match(/2500|250/);
+                const cost = match ? parseInt(match[0]) : 2500;
+                btn10.disabled = (state.jewels < cost);
+            } else {
+                btn10.disabled = (state.jewels < 2500);
+            }
         }
     };
 

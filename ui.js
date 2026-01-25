@@ -14,7 +14,6 @@ window.addEventListener('renderCalcRequested', () => {
     renderCalc();
 });
 
-// ... 생략 (idolList 및 renderHome은 동일)
 const idolList = [
     'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
@@ -103,14 +102,12 @@ function renderProduceCards(idolName, container) {
     const itemTpl = document.getElementById('tpl-pssr-item');
     if (!itemTpl) return;
 
-    // 해당 아이돌의 PSSR 및 PSR (어나더 제외) 필터링
     const produceCards = produceList.filter(p => 
         p.id.includes(idolName) && 
         (p.rarity === 'PSSR' || p.rarity === 'PSR') && 
         p.another !== true
     );
 
-    // 등급순 정렬 (PSSR -> PSR)
     produceCards.sort((a, b) => {
         if (a.rarity === b.rarity) return 0;
         return a.rarity === 'PSSR' ? -1 : 1;
@@ -131,42 +128,34 @@ function renderProduceCards(idolName, container) {
         const name = item.querySelector('.pssr-name');
 
         const personalColor = idolColors[idolName] || "#ffffff";
-        
-        // 카드 스타일링: 정보창 배경색을 아주 연하게 적용 (15% 투명도)
         const infoBox = item.querySelector('.pssr-info');
         infoBox.style.backgroundColor = personalColor + "26"; 
         name.style.color = '#333'; 
-        
         imgWrapper.style.backgroundColor = personalColor + "11"; 
 
-        // 이미지 순환 리스트 구성
         const imageList = [
             `idols/${card.id}1.webp`,
             `idols/${card.id}2.webp`
         ];
         
-        // 해당 카드의 어나더 버전들 추가
         const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
         anothers.forEach(a => {
             imageList.push(`idols/${a.id}1.webp`);
         });
 
-        // 이미지 프리로딩: 전환 시 끊김 방지
         imageList.forEach(url => {
             const preimg = new Image();
             preimg.src = url;
         });
 
-        // 저장된 인덱스 불러오기
         let currentIndex = state.pssrIndex[card.id] || 0;
         if (currentIndex >= imageList.length) currentIndex = 0;
-        
         img.src = imageList[currentIndex];
 
         cardEl.addEventListener('click', (e) => {
             e.stopPropagation();
             img.classList.add('slide-out');
-            imgWrapper.style.backgroundColor = personalColor; // 전환 중 색상 강조
+            imgWrapper.style.backgroundColor = personalColor; 
             
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % imageList.length;
@@ -189,15 +178,12 @@ function renderProduceCards(idolName, container) {
             }, 100);
         });
 
-        // 존재하지 않는 이미지 자동 건너뛰기
         let retryCount = 0;
         img.onerror = () => {
             if (retryCount < imageList.length) {
                 retryCount++;
                 currentIndex = (currentIndex + 1) % imageList.length;
                 img.src = imageList[currentIndex];
-            } else {
-                img.onerror = null;
             }
         };
         
@@ -208,8 +194,7 @@ function renderProduceCards(idolName, container) {
             planIcon.style.display = 'none';
         }
 
-        // 등급 아이콘 설정 (PSSR -> ssr.png, PSR -> sr.png)
-        const rarityKey = card.rarity.toLowerCase().replace('p', ''); // pssr -> ssr, psr -> sr
+        const rarityKey = card.rarity.toLowerCase().replace('p', ''); 
         rarityIcon.src = `icons/${rarityKey}.png`;
         name.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
         
@@ -220,27 +205,20 @@ function renderProduceCards(idolName, container) {
 export function renderSupport() {
     if (!contentArea) return;
 
-    // 1. Initial Shell Setup (Only once)
     let container = contentArea.querySelector('.support-container');
     if (!container) {
         contentArea.innerHTML = '';
         const tpl = document.getElementById('tpl-support');
         contentArea.appendChild(tpl.content.cloneNode(true));
         container = contentArea.querySelector('.support-container');
-
-        // Setup Static Listeners (Filters, Sort, Toggle)
         setupStaticListeners(container);
     }
 
-    // 2. Sync Filter UI State
     syncFilterUI(container);
-
-    // 3. Render/Update the Grid
     updateSupportGrid(container);
 }
 
 function setupStaticListeners(container) {
-    // Filter Buttons
     const filterGroups = ['plan', 'attr', 'source', 'rarity'];
     filterGroups.forEach(type => {
         const group = container.querySelector(`#filter-${type}`);
@@ -253,7 +231,6 @@ function setupStaticListeners(container) {
         });
     });
 
-    // Toggle Extra
     const toggleBtn = container.querySelector('#btn-toggle-extra');
     const extraWrapper = container.querySelector('#extra-filters');
     if (toggleBtn && extraWrapper) {
@@ -269,7 +246,6 @@ function setupStaticListeners(container) {
         });
     }
 
-    // Sort Select
     const sortSelect = container.querySelector('#support-sort');
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
@@ -278,7 +254,6 @@ function setupStaticListeners(container) {
         });
     }
 
-    // Event Delegation for Grid (Stars and Card Click)
     const grid = container.querySelector('.support-grid');
     grid.addEventListener('click', (e) => {
         const star = e.target.closest('.card-star');
@@ -292,12 +267,8 @@ function setupStaticListeners(container) {
             const newLB = (starIdx === currentLB) ? 0 : starIdx;
             
             setSupportLB(cardId, newLB);
-            
-            // Update UI for this card's stars only
             const stars = cardEl.querySelectorAll('.card-star');
-            stars.forEach((s, idx) => {
-                s.classList.toggle('active', idx < newLB);
-            });
+            stars.forEach((s, idx) => s.classList.toggle('active', idx < newLB));
             return;
         }
 
@@ -340,7 +311,6 @@ function updateSupportGrid(container) {
     const grid = container.querySelector('.support-grid');
     const itemTpl = document.getElementById('tpl-support-item');
     
-    // 1. Filter Data
     let filteredList = cardList.filter(card => {
         if (card.encyclopedia === false) return false;
         const cPlan = (card.plan || 'free').toLowerCase();
@@ -356,7 +326,6 @@ function updateSupportGrid(container) {
         return planMatch && attrMatch && sourceMatch && rarityMatch;
     });
 
-    // 2. Sort Data
     const getNumericId = (id) => {
         const match = id.match(/\d+/);
         return match ? parseInt(match[0], 10) : 0;
@@ -383,7 +352,6 @@ function updateSupportGrid(container) {
         return 0;
     });
 
-    // 3. Batch DOM updates using Fragment
     grid.innerHTML = '';
     if (filteredList.length === 0) {
         grid.innerHTML = '<p style="text-align:center; width:100%; grid-column:1/-1; padding:2rem;">No cards found.</p>';
@@ -394,26 +362,16 @@ function updateSupportGrid(container) {
             const cardEl = item.querySelector('.support-card');
             const cardId = card.id;
             const currentLB = state.supportLB[cardId] || 0;
-            
             cardEl.dataset.id = cardId;
             cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
             
             const imgSrc = card.image || `images/support/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
+            item.querySelectorAll('.card-star').forEach((s, idx) => s.classList.toggle('active', idx < currentLB));
             
-            const cardStars = item.querySelectorAll('.card-star');
-            cardStars.forEach((s, idx) => {
-                s.classList.toggle('active', idx < currentLB);
-            });
-            
-            const planIcon = item.querySelector('.card-plan-icon');
             const plan = (card.plan || 'free').toLowerCase();
-            planIcon.src = `icons/${plan}.webp`;
-            planIcon.alt = plan;
-
-            const typeIcon = item.querySelector('.card-type-icon');
-            typeIcon.src = `icons/${card.type.toLowerCase()}.png`;
-            typeIcon.alt = card.type;
+            item.querySelector('.card-plan-icon').src = `icons/${plan}.webp`;
+            item.querySelector('.card-type-icon').src = `icons/${card.type.toLowerCase()}.png`;
 
             fragment.appendChild(item);
         });
@@ -423,8 +381,10 @@ function updateSupportGrid(container) {
 }
 
 // 모달 표시 함수
-function showCardModal(card, displayName, imgSrc) {
+export function showCardModal(card, displayName, imgSrc) {
     const modal = document.getElementById('card-modal');
+    if (!modal) return; 
+
     const mImg = document.getElementById('modal-img');
     const mTitle = document.getElementById('modal-title');
     const mRarity = document.getElementById('modal-rarity');
@@ -438,176 +398,124 @@ function showCardModal(card, displayName, imgSrc) {
 
     mImg.src = imgSrc;
     mTitle.textContent = displayName;
-
-    // 등급 및 속성 아이콘 설정
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
     mPlan.src = `icons/${(card.plan || 'free').toLowerCase()}.webp`;
     mType.src = `icons/${card.type.toLowerCase()}.png`;
 
-    // 제목 색상 변경 (기존 속성 클래스 제거 후 추가)
     mTitle.classList.remove('title-vocal', 'title-dance', 'title-visual', 'title-assist');
     mTitle.classList.add(`title-${card.type.toLowerCase()}`);
 
-    // 아이콘 이미지 설정 (_card 시도 후 실패 시 _item 시도)
     const baseIconPath = `images/support/${card.id}`;
     mExtraIcon.src = `${baseIconPath}_card.webp`;
     mExtraIcon.onerror = () => {
         mExtraIcon.src = `${baseIconPath}_item.webp`;
-        mExtraIcon.onerror = null; // 무한 루프 방지
+        mExtraIcon.onerror = null;
     };
 
-            // 수치에 색상을 입히는 헬퍼
-            const highlightNumbers = (text, type) => {
-                if (!text) return '';
-                const colorClass = `highlight-${type.toLowerCase()}`;
-                // 숫자, %, . 을 포함한 패턴을 찾아 span으로 감쌈 (+ 제외)
-                return text.replace(/([0-9]+[0-9.]*[%]*)/g, `<span class="${colorClass}">$1</span>`);
-            };    
-        const getExtraText = (val) => {
-            if (!val) return '';
-            
-            let resultText = '';
-            if (val === 'param') {
-                const rarity = card.rarity || 'SSR';
-                const valNum = (rarity === 'SSR') ? 20 : 15;
-                const attrKey = `attr_${card.type.toLowerCase()}`;
-                const translatedType = translations[state.currentLang][attrKey] || card.type;
-                const format = translations[state.currentLang]['extra_param'] || '{type} 상승+{val}';
-                resultText = format.replace('{type}', translatedType).replace('{val}', valNum);
-            } else {
-                const key = `extra_${val}`;
-                resultText = translations[state.currentLang][key] || val;
-            }
-    
-            return highlightNumbers(resultText, card.type);
-        };
-    
-        mExtra1.innerHTML = getExtraText(card.extra1);
-        
-        // SSR일 때만 extra2 표시, SR 등 그 외에는 숨김
-        if (card.rarity === 'SSR') {
-            mExtra2.innerHTML = getExtraText(card.extra2);
-            mExtra2.classList.remove('hidden');
+    const highlightNumbers = (text, type) => {
+        if (!text) return '';
+        const colorClass = `highlight-${type.toLowerCase()}`;
+        return text.replace(/([0-9]+[0-9.]*[%]*)/g, `<span class="${colorClass}">$1</span>`);
+    };    
+
+    const getExtraText = (val) => {
+        if (!val) return '';
+        let resultText = '';
+        if (val === 'param') {
+            const rarity = card.rarity || 'SSR';
+            const valNum = (rarity === 'SSR') ? 20 : 15;
+            const attrKey = `attr_${card.type.toLowerCase()}`;
+            const translatedType = translations[state.currentLang][attrKey] || card.type;
+            const format = translations[state.currentLang]['extra_param'] || '{type} 상승+{val}';
+            resultText = format.replace('{type}', translatedType).replace('{val}', valNum);
         } else {
-            mExtra2.innerHTML = '';
-            mExtra2.classList.add('hidden');
+            const key = `extra_${val}`;
+            resultText = translations[state.currentLang][key] || val;
         }
-    
-        let currentLB = state.supportLB[card.id] || 0; // 저장된 돌파 상태 가져오기
-    
-        const updateAbilities = (lb) => {
-            mAbilities.innerHTML = '';
-            if (card.abilities && card.abilities.length > 0) {
-                card.abilities.forEach((abId, index) => {
-                    const data = abilityData[abId];
-                    if (data) {
-                        // ... 생략 (수치 결정 로직은 동일)
-                        const rarity = card.rarity || 'SSR';
-                        const isDist = card.source === 'dist';
-                        let rarityKey = rarity;
-                        
-                        if (rarity === 'SSR' && isDist && data.levels['SSR_DIST']) {
-                            rarityKey = 'SSR_DIST';
-                        }
-    
-                        let val = 0;
-                        if (abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam') {
-                            const targetLv = lb + 1;
-                            if (data.levels[rarity]) {
-                                val = data.levels[rarity][targetLv] || data.levels[rarity][5];
-                            }
-                            else {
-                                val = data.levels[targetLv] || Object.values(data.levels)[0];
-                            }
-                        } else if (abId === 'event_paraup' || abId === 'event_recoveryup') {
-                            let targetLv = 1;
-                            if (rarity === 'SSR') {
-                                if (lb >= 4) targetLv = 3;
-                                else if (lb >= 1) targetLv = 2;
-                            } else if (rarity === 'SR') {
-                                if (lb >= 4) targetLv = 3;
-                                else if (lb >= 2) targetLv = 2;
-                            }
-                            val = data.levels[targetLv] || data.levels[1];
-                        } else {
-                            let targetLv = 1;
-                            if (index === 1) { 
-                                if (rarity === 'SSR') targetLv = (lb >= 2) ? 2 : 1;
-                                else if (rarity === 'SR') targetLv = (lb >= 1) ? 2 : 1;
-                            } else if (index === 3) {
-                                if (rarity === 'SSR' && !isDist) targetLv = (lb >= 3) ? 2 : 1;
-                                else if (rarity === 'SR' || isDist) targetLv = (lb >= 4) ? 2 : 1;
-                            } else if (index === 4) {
-                                if (rarity === 'SSR' && !isDist) targetLv = (lb >= 4) ? 2 : 1;
-                                else if (rarity === 'SR' || isDist) targetLv = (lb >= 3) ? 2 : 1;
-                            } else {
-                                targetLv = (lb >= 2) ? 2 : 1;
-                            }
-    
-                            if (data.levels[rarityKey]) {
-                                val = data.levels[rarityKey][targetLv] || data.levels[rarityKey][1];
-                            } else if (data.levels[rarity]) {
-                                val = data.levels[rarity][targetLv] || data.levels[rarity][1];
-                            } else {
-                                val = data.levels[targetLv] || Object.values(data.levels)[0];
-                            }
-                        }
-    
-                        const format = data.format[state.currentLang] || data.format['ko'];
-                        const attrKey = `attr_${card.type.toLowerCase()}`;
-                        const translatedType = translations[state.currentLang][attrKey] || card.type;
-                        const rawText = format.replaceAll('{val}', val).replaceAll('{type}', translatedType);
-                        
-                                            // 수치 하이라이트 적용
-                                            const highlightedText = highlightNumbers(rawText, card.type);
-                                            
-                                            const abEl = document.createElement('div');
-                                            abEl.className = `ability-item border-${card.type.toLowerCase()}`;
-                                            
-                                            // 글자 수가 많으면 shrink 클래스 추가 (줄바꿈 1회까지만 허용하기 위함)
-                                            const isLongText = rawText.length > 35;
-                                            const shrinkClass = isLongText ? 'shrink' : '';
-                        
-                                            abEl.innerHTML = `
-                                                <div class="ability-text ${shrinkClass}">
-                                                    ${highlightedText}
-                                                </div>
-                                            `;
-                                            mAbilities.appendChild(abEl);                    }
-                });
-            }
-        };
+        return highlightNumbers(resultText, card.type);
+    };
+
+    mExtra1.innerHTML = getExtraText(card.extra1);
+    if (card.rarity === 'SSR') {
+        mExtra2.innerHTML = getExtraText(card.extra2);
+        mExtra2.classList.remove('hidden');
+    } else {
+        mExtra2.innerHTML = '';
+        mExtra2.classList.add('hidden');
+    }
+
+    let currentLB = state.supportLB[card.id] || 0;
+
+    const updateAbilities = (lb) => {
+        mAbilities.innerHTML = '';
+        if (card.abilities && card.abilities.length > 0) {
+            card.abilities.forEach((abId, index) => {
+                const data = abilityData[abId];
+                if (data) {
+                    const rarity = card.rarity || 'SSR';
+                    const isDist = card.source === 'dist';
+                    let rarityKey = rarity;
+                    if (rarity === 'SSR' && isDist && data.levels['SSR_DIST']) rarityKey = 'SSR_DIST';
+
+                    let val = 0;
+                    if (abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam') {
+                        const targetLv = lb + 1;
+                        const bonusLevels = data.levels[rarity] || data.levels;
+                        val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length-1];
+                    } else if (abId === 'event_paraup' || abId === 'event_recoveryup') {
+                        let targetLv = (rarity === 'SSR') ? (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1)) : (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
+                        val = data.levels[targetLv] || data.levels[1];
+                    } else {
+                        let targetLv = 1;
+                        if (index === 1) targetLv = (rarity === 'SSR' ? (lb >= 2 ? 2 : 1) : (lb >= 1 ? 2 : 1));
+                        else if (index === 3) targetLv = ((rarity === 'SSR' && !isDist) ? (lb >= 3 ? 2 : 1) : (lb >= 4 ? 2 : 1));
+                        else if (index === 4) targetLv = ((rarity === 'SSR' && !isDist) ? (lb >= 4 ? 2 : 1) : (lb >= 3 ? 2 : 1));
+                        else targetLv = (lb >= 2 ? 2 : 1);
+
+                        const bonusLevels = data.levels[rarityKey] || data.levels[rarity] || data.levels;
+                        val = bonusLevels[targetLv] || bonusLevels[1];
+                    }
+
+                    const format = data.format[state.currentLang] || data.format['ko'];
+                    const attrKey = `attr_${card.type.toLowerCase()}`;
+                    const translatedType = translations[state.currentLang][attrKey] || card.type;
+                    const rawText = format.replaceAll('{val}', val).replaceAll('{type}', translatedType);
+                    const highlightedText = highlightNumbers(rawText, card.type);
+                    
+                    const abEl = document.createElement('div');
+                    abEl.className = `ability-item border-${card.type.toLowerCase()}`;
+                    const shrinkClass = rawText.length > 35 ? 'shrink' : '';
+                    abEl.innerHTML = `<div class="ability-text ${shrinkClass}">${highlightedText}</div>`;
+                    mAbilities.appendChild(abEl);
+                }
+            });
+        }
+    };
+
     const updateStars = (lb) => {
-        stars.forEach((s, idx) => {
-            s.classList.toggle('active', idx < lb);
-        });
+        stars.forEach((s, idx) => s.classList.toggle('active', idx < lb));
         updateAbilities(lb);
     };
 
-    // 초기 별 상태
     updateStars(currentLB);
 
-    // 별 클릭 이벤트 등록
     stars.forEach((s, idx) => {
         s.onclick = () => {
             const newLB = (idx + 1 === currentLB) ? 0 : idx + 1;
             currentLB = newLB;
-            setSupportLB(card.id, currentLB); // 모달에서의 변경사항도 전역 상태에 저장
+            setSupportLB(card.id, currentLB);
             updateStars(currentLB);
-            
-            // 서포트 카드 목록의 해당 카드 별점 즉시 업데이트 (ID 기반 최적화)
+            if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
             const cardInGrid = document.querySelector(`.support-card[data-id="${card.id}"]`);
             if (cardInGrid) {
-                const cardStars = cardInGrid.querySelectorAll('.card-star');
-                cardStars.forEach((cs, cIdx) => {
-                    cs.classList.toggle('active', cIdx < currentLB);
-                });
+                cardInGrid.querySelectorAll('.card-star').forEach((cs, cIdx) => cs.classList.toggle('active', cIdx < currentLB));
             }
         };
     });
 
     modal.classList.remove('hidden');
-
-    // Add state to history for back button support
+    modal.style.display = 'flex';
+    modal.style.zIndex = '30001';
     history.pushState({ modalOpen: true }, "");
 }
+window.showCardModal = showCardModal;

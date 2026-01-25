@@ -598,7 +598,7 @@ export const cardList = [
             "fixedparam",
             "test",
             "supportrateup", 
-            "change",
+            "change3",
             "class",
             "event_paraup"
         ]        

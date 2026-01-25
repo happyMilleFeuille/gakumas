@@ -4,14 +4,14 @@ export const calcPlans = {
         title: "Hajime",
         weeks: {
             1: [
-                { value: "class1" }
+                { value: "class_hajime" }
             ],
             2: [
-                { value: "class1" }
+                { value: "class_hajime" }
             ],
             3: [
-                { value: "goout"},
-                { value: "gift1"}
+                { value: "goout_hajime"},
+                { value: "gift_hajime"}
             ],
             4: [
                 { value: "lessonvo"},
@@ -19,12 +19,12 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],
             5: [
-                { value: "goout"},
+                { value: "goout_hajime"},
                 { value: "advice"},
-                { value: "gift1"},
+                { value: "gift_hajime"},
             ],
             6: [
-                { value: "class1" }
+                { value: "class_hajime" }
             ],                     
             7: [
                 { value: "lessonvo"},
@@ -41,8 +41,8 @@ export const calcPlans = {
                 { value: "test"},
             ],
             11: [
-                { value: "goout"},
-                { value: "gift1"},
+                { value: "goout_hajime"},
+                { value: "gift_hajime"},
             ],    
             12: [
                 { value: "lessonvo"},
@@ -50,9 +50,9 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],    
             13: [
-                { value: "goout"},
+                { value: "goout_hajime"},
                 { value: "advice"},
-                { value: "gift1"}
+                { value: "gift_hajime"}
             ],     
             14: [
                 { value: "lessonvo"},
@@ -60,7 +60,7 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],  
             15: [
-                { value: "class1"},
+                { value: "class_hajime"},
             ],          
             16: [
                 { value: "lessonvo"},
@@ -85,11 +85,11 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],
             2: [
-                { value: "class2" }
+                { value: "class_nia" }
             ],
             3: [
-                { value: "goout"},
-                { value: "gift2"}
+                { value: "goout_nia"},
+                { value: "gift_nia"}
             ],
             4: [
                 { value: "lessonvo"},
@@ -97,14 +97,14 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],
             5: [
-                { value: "class2"},
+                { value: "class_nia"},
             ],
             6: [
-                { value: "goout"},
+                { value: "goout_nia"},
                 { value: "advice"},
             ],                     
             7: [
-                { value: "class2"},
+                { value: "class_nia"},
             ],      
             8: [
                 { value: "spclass"},
@@ -113,8 +113,8 @@ export const calcPlans = {
                 { value: "audition"},
             ],         
             10: [
-                { value: "goout"},
-                { value: "gift2"},
+                { value: "goout_nia"},
+                { value: "gift_nia"},
             ],
             11: [
                 { value: "lessonvo"},
@@ -122,12 +122,12 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],    
             12: [
-                { value: "class2"},
+                { value: "class_nia"},
             ],    
             13: [
-                { value: "goout"},
+                { value: "goout_nia"},
                 { value: "advice"},
-                { value: "gift2"}
+                { value: "gift_nia"}
             ],     
             14: [
                 { value: "lessonvo"},
@@ -135,7 +135,7 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],  
             15: [
-                { value: "class2"},
+                { value: "class_nia"},
             ],          
             16: [
                 { value: "spclass"},
@@ -144,8 +144,8 @@ export const calcPlans = {
                 { value: "audition"},
             ],            
             18: [
-                { value: "goout"},
-                { value: "gift2"}
+                { value: "goout_nia"},
+                { value: "gift_nia"}
             ], 
             19: [
                 { value: "lessonvo"},
@@ -153,11 +153,11 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],                        
             20: [
-                { value: "class2"},
+                { value: "class_nia"},
             ],
             21: [
                 { value: "advice"},
-                { value: "gift2"},
+                { value: "gift_nia"},
                 { value: "spclass"},
             ],     
             22: [
@@ -166,7 +166,7 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],  
             23: [
-                { value: "class2"},
+                { value: "class_nia"},
             ],                                                 
             24: [
                 { value: "lessonvo"},
@@ -174,7 +174,7 @@ export const calcPlans = {
                 { value: "lessonvi"}
             ],  
             25: [
-                { value: "goout"},
+                { value: "goout_nia"},
                 { value: "advice"},
                 { value: "spclass"},
             ],      

@@ -177,22 +177,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardModal = document.getElementById('card-modal');
         const gachaLogModal = document.getElementById('gacha-log-modal');
         const resultsContainer = document.querySelector('#gacha-results');
-        const calcPanel = document.getElementById('calc-side-panel'); // 계산기 패널 추가
+        const calcPanel = document.getElementById('calc-side-panel');
         
-        const isCardModalVisible = cardModal && !cardModal.classList.contains('hidden');
-        const isGachaLogVisible = gachaLogModal && !gachaLogModal.classList.contains('hidden');
-        const isGachaPlaying = document.body.classList.contains('immersive-mode');
-        const isGachaResultVisible = resultsContainer && resultsContainer.children.length > 0;
-        const isCalcPanelOpen = calcPanel && calcPanel.classList.contains('open'); // 계산기 패널 상태
-
-        if (isGachaPlaying) {
-            // 영상 재생 중 뒤로가기 시도 -> 히스토리를 다시 쌓아서 현재 페이지 유지 (차단)
+        // 영상 재생 중 예외 처리
+        if (document.body.classList.contains('immersive-mode')) {
             history.pushState({ target: 'gacha', view: 'playing' }, "");
             return;
         }
 
-        if (isCalcPanelOpen) {
-            // 계산기 패널이 열려있으면 패널만 닫음 (calc.js의 close 지원 호출)
+        // 1. 상세 모달이 열려있으면 모달만 닫기
+        if (cardModal && !cardModal.classList.contains('hidden')) {
+            hideModal();
+            return;
+        }
+
+        // 2. 가챠 로그 모달이 열려있으면 닫기
+        if (gachaLogModal && !gachaLogModal.classList.contains('hidden')) {
+            hideGachaLogModal();
+            return;
+        }
+
+        // 3. 계산기 패널이 열려있으면 패널만 닫기
+        if (calcPanel && calcPanel.classList.contains('open')) {
             if (window.closeSupportCardPanel) {
                 window.closeSupportCardPanel(true);
             } else {
@@ -203,15 +209,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (isCardModalVisible || isGachaLogVisible) {
-            hideModal();
-            hideGachaLogModal();
-        } else if (isGachaResultVisible) {
+        // 4. 가챠 결과 화면 처리
+        if (resultsContainer && resultsContainer.children.length > 0) {
             document.body.classList.remove('immersive-mode');
-            if (resultsContainer) resultsContainer.innerHTML = '';
+            resultsContainer.innerHTML = '';
             renderGacha();
-        } else {
-            handleNavigation('home', true);
+            return;
         }
+
+        // 5. 기본 내비게이션
+        handleNavigation('home', true);
     });
 });
