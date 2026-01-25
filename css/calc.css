@@ -1,4 +1,6 @@
-/* calc.css */
+/* calc.css - 레이아웃 재정비 */
+
+/* 공통 컨테이너 설정 */
 .calc-menu-container {
     display: flex;
     flex-direction: column;
@@ -16,15 +18,77 @@
     justify-content: center;
 }
 
+/* ★★★ 레이아웃 핵심 ★★★ */
+
+/* 1. 기본 (모바일): 세로 배치, 중앙 정렬, 너비 제한 */
 .calc-container {
     padding: 0.5rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 세로 배치 */
     align-items: center;
     width: 100%;
-    max-width: 440px; /* 전체 너비 최적화 */
+    max-width: 440px; /* 모바일 최대 너비 */
     margin: 0 auto;
+    position: relative;
 }
+
+/* 보드 메인 영역 (모바일) */
+.calc-main-wrapper {
+    width: 100%;
+}
+
+/* 서포트 카드 패널 (모바일): 중앙 모달 */
+.calc-side-panel {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px; /* 최대 너비 600px로 확장 */
+    height: 82vh;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    z-index: 2000;
+    overflow: hidden;
+}
+
+/* 2. PC/태블릿 (769px 이상): 가로 2열 배치 */
+@media (min-width: 769px) {
+    .calc-container {
+        flex-direction: row; /* 가로 배치 */
+        align-items: flex-start;
+        justify-content: center;
+        max-width: 1100px; /* 전체 너비 확장 */
+        gap: 20px;
+    }
+
+    .calc-main-wrapper {
+        width: 440px; /* 보드 고정 너비 */
+        flex-shrink: 0;
+    }
+
+    /* 서포트 카드 패널 (PC): 좌측 사이드바 (Sticky) */
+    .calc-side-panel {
+        position: sticky;
+        top: 20px;
+        left: auto;
+        right: auto;
+        transform: none;
+        flex: 1; /* 남는 공간 차지 */
+        min-width: 250px; /* 최소 너비 */
+        max-width: 560px; /* 최대 너비 600px로 확장 */
+        height: 75vh;
+        z-index: 100;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        order: -1; /* 왼쪽으로 이동 */
+    }
+}
+
+/* --- 내부 요소 스타일 --- */
 
 .stat-header {
     display: flex;
@@ -54,7 +118,128 @@
     color: #555;
 }
 
-/* 모든 주차를 감싸는 하나의 거대한 보드 */
+.plan-type-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.6rem;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.plan-type-btn {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    background: white;
+}
+
+.plan-type-btn.active {
+    opacity: 1;
+    border-color: #ff4d8d;
+    box-shadow: 0 0 8px rgba(255, 77, 141, 0.4);
+    transform: scale(1.1);
+}
+
+.plan-type-btn img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.idol-selector-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    width: 100%;
+    padding: 10px 5px;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    cursor: grab;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.idol-selector-grid::-webkit-scrollbar { display: none; }
+.idol-selector-grid:active { cursor: grabbing; }
+
+.idol-sel-item {
+    flex: 0 0 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background: white;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.idol-sel-item.active {
+    border-color: #ff4d8d;
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(255, 77, 141, 0.4);
+}
+
+.idol-sel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.activity-counter {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    margin-bottom: 1rem;
+}
+
+.counter-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.counter-item img { width: 24px; height: 24px; object-fit: contain; }
+.counter-count { font-size: 0.85rem; font-weight: bold; color: #ff4d8d; }
+
+.board-toggle-bar {
+    background: transparent;
+    border: none;
+    padding: 5px 20px;
+    margin: 0 auto 0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: block;
+    width: fit-content;
+    text-decoration: none;
+}
+
+.board-toggle-bar:hover { color: #ff4d8d; background: transparent; }
+
 .unified-plan-board {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
@@ -68,26 +253,18 @@
     margin-bottom: 2rem;
 }
 
-/* 각 주차별 한 줄 */
+.unified-plan-board.collapsed-board { display: none; }
+
 .week-row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.4rem 0.5rem;
-    border-bottom: 1px solid rgba(0,0,0,0.03); /* 아주 연한 구분선 */
+    border-bottom: 1px solid rgba(0,0,0,0.03);
 }
 
-.week-row:last-child {
-    border-bottom: none;
-}
-
-.week-label {
-    font-weight: bold;
-    color: #666;
-    min-width: 35px;
-    font-size: 0.85rem;
-    text-align: center;
-}
+.week-header { min-width: 45px; user-select: none; }
+.week-label { font-weight: bold; color: #666; font-size: 0.85rem; white-space: nowrap; }
 
 .plan-icons-container {
     display: flex;
@@ -98,7 +275,6 @@
     flex: 1;
 }
 
-/* 아이콘 스타일 */
 .plan-icon-wrapper {
     width: 54px; 
     height: 54px;
@@ -112,38 +288,46 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    position: relative;
 }
 
-/* 대형 아이콘 스타일 */
-.plan-icon-wrapper.large-icon {
-    width: 100px;
-    height: 60px;
-    background: none;
-    border: none;
-    padding: 0;
-    box-shadow: none;
+.sp-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4d8d;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 100;
+    pointer-events: none;
+    line-height: 1;
 }
 
-.plan-icon-wrapper:hover {
-    transform: translateY(-1px);
-    background: #fff;
+.main-label-text {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 10;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.plan-icon-wrapper.active {
-    background: #fff;
-    border-color: #ff4d8d;
-    box-shadow: 0 0 8px rgba(255, 77, 141, 0.4);
-}
-
-.plan-icon-wrapper.large-icon.active {
-    filter: drop-shadow(0 0 8px rgba(255, 77, 141, 0.9));
-}
-
-.plan-icon-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
+.plan-icon-wrapper.large-icon { width: 100px; height: 60px; background: none; border: none; padding: 0; box-shadow: none; }
+.plan-icon-wrapper:hover { transform: translateY(-1px); background: #fff; }
+.plan-icon-wrapper.active { background: #fff; border-color: #ff4d8d; box-shadow: 0 0 8px rgba(255, 77, 141, 0.4); }
+.plan-icon-wrapper.large-icon.active { filter: drop-shadow(0 0 8px rgba(255, 77, 141, 0.9)); }
+.plan-icon-img { width: 100%; height: 100%; object-fit: contain; }
 
 .calc-actions {
     display: flex;
@@ -153,21 +337,239 @@
     padding-bottom: 2rem;
 }
 
+.calc-actions.top {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    padding-top: 0.2rem;
+    width: 100%;
+}
+
+.calc-btn {
+    background-color: #ff4d8d;
+    color: white !important;
+    border: none;
+    padding: 4px 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.calc-btn:hover { background-color: #e91e63; }
+.calc-btn:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.6; }
+
 .back-btn {
     background-color: #f8f9fa;
     color: #333 !important;
     border: 1px solid #ddd;
-    padding: 0.5rem 1.5rem;
-    font-size: 0.9rem;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    border-radius: 6px;
 }
 
+.side-panel-header {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    color: #333;
+}
+
+.side-panel-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 8px 10px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    gap: 8px;
+}
+
+.panel-tab-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.panel-tab-item img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    opacity: 0.8;
+}
+
+/* 서포트 카드 패널 컨텐츠 (3열 배치) */
+.side-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px 10px;
+    display: grid; 
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3개의 열 */
+    gap: 10px; /* 열 사이의 가로 간격 */
+    align-content: flex-start;
+}
+
+/* 각 열(보컬, 댄스, 비주얼) 스타일 */
+.side-panel-column {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2px, 1vw, 10px); /* 간격을 더욱 극소화 */
+}
+
+.side-card-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 16 / 9;
+    width: 100%; /* 너비 꽉 채움 */
+    border: 1px solid #eee;
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+
+.side-card-item:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+}
+
+
+
+.side-card-item img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+
+
+.side-card-badge {
+
+    position: absolute;
+
+    top: 2px;
+
+    left: 2px;
+
+    font-size: 0.55rem;
+
+    font-weight: 900;
+
+    background: rgba(255, 255, 255, 0.8);
+
+    padding: 1px 3px;
+
+    border-radius: 3px;
+
+    line-height: 1;
+
+    z-index: 5;
+
+}
+
+.rarity-ssr { color: #a335ee; }
+.rarity-sr { color: #ffca28; }
+.rarity-r { color: #708090; }
+
+.calc-tooltip {
+    position: absolute;
+    background: white;
+    border: 1px solid #ff4d8d;
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto;
+    transform: translate(10px, -50%);
+}
+
+.calc-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+    border-width: 8px 8px 8px 0;
+    border-style: solid;
+    border-color: transparent #ff4d8d transparent transparent;
+}
+
+.tooltip-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #333;
+}
+
+.tooltip-option input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: #ff4d8d;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.counter-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+.cnt-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #333;
+}
+.cnt-btn:hover { background: #eee; }
+.cnt-val {
+    min-width: 18px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #ff4d8d;
+}
+
+/* 440px 이하 모바일 최적화 */
 @media (max-width: 440px) {
-    .plan-icon-wrapper {
-        width: 44px;
-        height: 44px;
-    }
-    .plan-icon-wrapper.large-icon {
-        width: 80px;
-        height: 48px;
+    .plan-icon-wrapper { width: 42px; height: 42px; }
+    .plan-icon-wrapper.large-icon { width: 75px; height: 45px; }
+    .result-card-name { font-size: 0.45rem; padding: 2px; }
+
+    .calc-btn, .back-btn {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        width: auto;
+        min-width: 50px;
+        text-align: center;
     }
 }

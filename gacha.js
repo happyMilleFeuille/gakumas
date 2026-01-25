@@ -155,27 +155,30 @@ export function renderGacha() {
             }
         };
 
-        if (gachaContainer) {
+        // 드래그 이벤트를 적용할 대상 목록 (상단 컨텐츠 영역 + 하단 버튼 영역)
+        const swipeTargets = [gachaContainer, fixedBtnArea].filter(Boolean);
+
+        swipeTargets.forEach(target => {
             // 터치 이벤트 (모바일)
-            gachaContainer.addEventListener('touchstart', (e) => {
+            target.addEventListener('touchstart', (e) => {
                 touchStartX = e.changedTouches[0].screenX;
             }, { passive: true });
 
-            gachaContainer.addEventListener('touchend', (e) => {
+            target.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
                 handleSwipe();
             }, { passive: true });
 
             // 마우스 드래그 이벤트 (PC)
-            gachaContainer.addEventListener('mousedown', (e) => {
+            target.addEventListener('mousedown', (e) => {
                 touchStartX = e.screenX;
             });
 
-            gachaContainer.addEventListener('mouseup', (e) => {
+            target.addEventListener('mouseup', (e) => {
                 touchEndX = e.screenX;
                 handleSwipe();
             });
-        }
+        });
     }
 
     updateTypeUI();
