@@ -102,11 +102,17 @@ function renderProduceCards(idolName, container) {
     const itemTpl = document.getElementById('tpl-pssr-item');
     if (!itemTpl) return;
 
-    const produceCards = produceList.filter(p => 
-        p.id.includes(idolName) && 
-        (p.rarity === 'PSSR' || p.rarity === 'PSR') && 
-        p.another !== true
-    );
+    const produceCards = produceList.filter(p => {
+        // ID가 ssr이름_ 혹은 sr이름_ 형식으로 시작하는지 정교하게 체크
+        // 예: ssrchina_... 는 china에게만 매칭되고, ssrhiro_michinaru... 는 hiro에게만 매칭됨
+        const nameMatch = p.id.startsWith(`ssr${idolName}_`) || 
+                          p.id.startsWith(`sr${idolName}_`) || 
+                          p.id.startsWith(`r${idolName}_`);
+        
+        return nameMatch && 
+               (p.rarity === 'PSSR' || p.rarity === 'PSR') && 
+               p.another !== true;
+    });
 
     produceCards.sort((a, b) => {
         if (a.rarity === b.rarity) return 0;
@@ -506,9 +512,17 @@ export function showCardModal(card, displayName, imgSrc) {
             setSupportLB(card.id, currentLB);
             updateStars(currentLB);
             if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
+            
+            // 1. 서포트 카드 그리드 업데이트
             const cardInGrid = document.querySelector(`.support-card[data-id="${card.id}"]`);
             if (cardInGrid) {
                 cardInGrid.querySelectorAll('.card-star').forEach((cs, cIdx) => cs.classList.toggle('active', cIdx < currentLB));
+            }
+
+            // 2. 계산기 사이드 패널 업데이트 (추가)
+            const cardInSidePanel = document.querySelector(`.side-card-item[data-id="${card.id}"]`);
+            if (cardInSidePanel) {
+                cardInSidePanel.querySelectorAll('.calc-card-star').forEach((cs, cIdx) => cs.classList.toggle('active', cIdx < currentLB));
             }
         };
     });

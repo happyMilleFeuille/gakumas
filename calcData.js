@@ -14,9 +14,9 @@ export const calcPlans = {
                 { value: "gift_hajime"}
             ],
             4: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],
             5: [
                 { value: "goout_hajime"},
@@ -27,9 +27,9 @@ export const calcPlans = {
                 { value: "class_hajime" }
             ],                     
             7: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],      
             8: [
                 { value: "advice"},
@@ -45,9 +45,9 @@ export const calcPlans = {
                 { value: "gift_hajime"},
             ],    
             12: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],    
             13: [
                 { value: "goout_hajime"},
@@ -55,17 +55,17 @@ export const calcPlans = {
                 { value: "gift_hajime"}
             ],     
             14: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],  
             15: [
                 { value: "class_hajime"},
             ],          
             16: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],                                                                                              
             17: [
                 { value: "advice"},
@@ -80,21 +80,21 @@ export const calcPlans = {
         title: "nia",
         weeks: {
             1: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],
             2: [
                 { value: "class_nia" }
             ],
             3: [
                 { value: "goout_nia"},
-                { value: "gift_nia"}
+                { value: "gift_nia", results:["get","get_drink"]}
             ],
             4: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],
             5: [
                 { value: "class_nia"},
@@ -110,16 +110,16 @@ export const calcPlans = {
                 { value: "spclass"},
             ],                
             9: [
-                { value: "audition"},
+                { value: "audition",results:["get","get","get","get"]},
             ],         
             10: [
                 { value: "goout_nia"},
-                { value: "gift_nia"},
+                { value: "gift_nia", results:["get","get_drink"]},
             ],
             11: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],    
             12: [
                 { value: "class_nia"},
@@ -127,12 +127,12 @@ export const calcPlans = {
             13: [
                 { value: "goout_nia"},
                 { value: "advice"},
-                { value: "gift_nia"}
+                { value: "gift_nia", results:["get","get_drink"]},
             ],     
             14: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],  
             15: [
                 { value: "class_nia"},
@@ -145,33 +145,33 @@ export const calcPlans = {
             ],            
             18: [
                 { value: "goout_nia"},
-                { value: "gift_nia"}
+                { value: "gift_nia", results:["get","get_drink"]},
             ], 
             19: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],                        
             20: [
                 { value: "class_nia"},
             ],
             21: [
                 { value: "advice"},
-                { value: "gift_nia"},
+                { value: "gift_nia", results:["get","get_drink"]},
                 { value: "spclass"},
             ],     
             22: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],  
             23: [
                 { value: "class_nia"},
             ],                                                 
             24: [
-                { value: "lessonvo"},
-                { value: "lessondan"},
-                { value: "lessonvi"}
+                { value: "lessonvo",results:["get","get_drink"]},
+                { value: "lessondan",results:["get","get_drink"]},
+                { value: "lessonvi",results:["get","get_drink"]}
             ],  
             25: [
                 { value: "goout_nia"},
