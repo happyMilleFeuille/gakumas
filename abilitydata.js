@@ -339,6 +339,14 @@ export const abilityData = {
             "SR": {1: 9, 2: 17 }},   
             trigger: ["test","audition"],max:2,               
     },
+    "spclass": {
+        format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)" },
+        levels: {
+            "SSR": {1: 0,2: 0},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 9, 2: 18 }},   
+            trigger: ["spclass"],max:3,               
+    },    
     "delete": {
         format: { ko: "카드 삭제 시 {type} 상승+{val}", ja: "スキルカード削除時、{type}上昇+{val}" },
         levels: {
@@ -348,7 +356,7 @@ export const abilityData = {
             trigger: ["delete"],                   
         
     },
-    "delete_metal3": {
+    "delete_mental3": {
         format: { ko: "멘탈카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "アクティブスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
         levels: {
             "SSR": {1: 17,2: 22},     
@@ -374,5 +382,14 @@ export const abilityData = {
             "SR": {1: 0, 2: 0 }},  
             trigger: ["change"],max:3,                
         
-    }                                                                            
+    },             
+    "customize6": {
+        format: { ko: "카드 개조 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "スキルカードカスタマイズ時、{type}上昇+{val} (プロヂュース中6回)" },
+        levels: {
+            "SSR": {1: 8,2: 11},     
+            "SSR_DIST": {1: 0, 2: 0},                   
+            "SR": {1: 4, 2: 8 }},  
+            trigger: ["customize"],max:6,                
+        
+    }                                                                      
 };

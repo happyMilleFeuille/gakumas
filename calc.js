@@ -10,7 +10,97 @@ import { updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI } fro
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 
-export function initCalc() { renderCalcMenu(); }
+export function initCalc() { 
+    renderCalcMenu(); 
+    initGlobalDistListener();
+}
+
+// 보드에서 사용 가능한 각종 풀(pool) 계산
+function getBoardPools(calcType) {
+    const board = document.querySelector('.unified-plan-board');
+    const resArr = {
+        enhance: { generic: 0, m: 0, a: 0 },
+        delete: { generic: 0, m: 0, a: 0 },
+        get: { generic: 0, m: 0, a: 0 }
+    };
+    if (!board) return resArr;
+
+    board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => {
+        const val = icon.dataset.value;
+        const res = (icon.dataset.results ? icon.dataset.results.split(',') : []).concat(Object.keys(icon.dataset).filter(k => k.startsWith('opt')).flatMap(k => {
+            const optId = k.slice(3).toLowerCase(), countInc = (icon.dataset[k] === 'true' ? 1 : (!isNaN(icon.dataset[k]) ? parseInt(icon.dataset[k]) : 0));
+            if (countInc === 0) return [];
+            const optDef = (activityOptions[val] || []).find(o => o.id === optId) || (activityOptions[val] || []).flatMap(o => o.subOptions || []).find(so => so.id === optId);
+            return Array(countInc).fill((optDef && optDef.results) ? optDef.results : [optId]).flat();
+        }));
+        res.forEach(rid => {
+            const id = rid.trim();
+            if (id === 'enhance' || id === 'ranenhance') resArr.enhance.generic++;
+            else if (id === 'enhance_m') resArr.enhance.m++;
+            else if (id === 'enhance_a') resArr.enhance.a++;
+            else if (id === 'delete') resArr.delete.generic++;
+            else if (id === 'delete_m') resArr.delete.m++;
+            else if (id === 'delete_a') resArr.delete.a++;
+            else if (id === 'get') resArr.get.generic++;
+            else if (id === 'get_m') resArr.get.m++;
+            else if (id === 'get_a') resArr.get.a++;
+        });
+    });
+    return resArr;
+}
+
+function initGlobalDistListener() {
+    if (window._distInit) return;
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.dist-btn');
+        if (!btn) return;
+        
+        e.preventDefault(); e.stopPropagation();
+        
+        const board = document.querySelector('.unified-plan-board');
+        if (!board) return;
+        const type = board.dataset.calcType;
+        const distTarget = btn.dataset.dist; // 'm', 'a', 'dm', 'da', 'gm', 'ga'
+
+        const current = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+        const pools = getBoardPools(type);
+
+        // [수정] 모든 분배기의 싱크 및 초기화 로직 보강
+        if (!current.manualEnhance || (Number(current.manualEnhance.m) + Number(current.manualEnhance.a) !== pools.enhance.generic)) {
+            current.manualEnhance = { m: pools.enhance.generic, a: 0 };
+        }
+        if (!current.manualDelete || (Number(current.manualDelete.m) + Number(current.manualDelete.a) !== pools.delete.generic)) {
+            current.manualDelete = { m: pools.delete.generic, a: 0 };
+        }
+        if (!current.manualGet || (Number(current.manualGet.m) + Number(current.manualGet.a) !== pools.get.generic)) {
+            current.manualGet = { m: pools.get.generic, a: 0 };
+        }
+        
+        let em = Number(current.manualEnhance.m) || 0;
+        let ea = Number(current.manualEnhance.a) || 0;
+        let dm = Number(current.manualDelete.m) || 0;
+        let da = Number(current.manualDelete.a) || 0;
+        let gm = Number(current.manualGet.m) || 0;
+        let ga = Number(current.manualGet.a) || 0;
+
+        // 분배 로직 (제로섬)
+        if (distTarget === 'a') { if (em > 0) { em--; ea++; } }
+        else if (distTarget === 'm') { if (ea > 0) { ea--; em++; } }
+        else if (distTarget === 'da') { if (dm > 0) { dm--; da++; } }
+        else if (distTarget === 'dm') { if (da > 0) { da--; dm++; } }
+        else if (distTarget === 'ga') { if (gm > 0) { gm--; ga++; } }
+        else if (distTarget === 'gm') { if (ga > 0) { ga--; gm++; } }
+        
+        current.manualEnhance = { m: em, a: ea };
+        current.manualDelete = { m: dm, a: da };
+        current.manualGet = { m: gm, a: ga };
+        
+        localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
+        refreshCardBonuses();
+        updateActivityCounts();
+    });
+    window._distInit = true;
+}
 
 function renderCalcMenu() {
     const root = document.getElementById('calc-root');
@@ -56,7 +146,6 @@ function renderWeeklyPlan(type) {
     const savedPlanBtn = root.querySelector(`.plan-type-btn[data-type="${activePlan}"]`);
     if (savedPlanBtn) savedPlanBtn.classList.add('active');
 
-    // 선택된 카드 UI 복원
     if (activePlan && savedState.planCards && savedState.planCards[activePlan]) {
         updateSelectedCardsUI(savedState.planCards[activePlan]);
     }
@@ -101,46 +190,67 @@ function refreshCardBonuses() {
 function updateActivityCounts() {
     const board = document.querySelector('.unified-plan-board');
     if (!board) return;
+    const type = board.dataset.calcType;
+    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
+    const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+    
     const counts = {}, spCounts = { lessonvo: 0, lessondan: 0, lessonvi: 0 }, extraCounts = { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, get_drink: 0, purchase_drink: 0, change: 0, customize: 0, get: 0, get_m: 0, get_a: 0, get_ssr: 0, get_genki: 0, get_goodcondition: 0, get_concentration: 0, get_motivation: 0, get_goodimpression: 0, get_preservation: 0, get_enthusiasm: 0, get_fullpower: 0 };
 
-    // 1. 주간 보드에서 횟수 집계
+    const pools = getBoardPools(type);
+    
     board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => {
         const val = icon.dataset.value; counts[val] = (counts[val] || 0) + 1;
         if (icon.dataset.optsp === 'true' && spCounts.hasOwnProperty(val)) spCounts[val]++;
-        const results = (icon.dataset.results ? icon.dataset.results.split(',') : []).concat(Object.keys(icon.dataset).filter(k => k.startsWith('opt')).flatMap(k => {
+        const res = (icon.dataset.results ? icon.dataset.results.split(',') : []).concat(Object.keys(icon.dataset).filter(k => k.startsWith('opt')).flatMap(k => {
             const optId = k.slice(3).toLowerCase(), countInc = (icon.dataset[k] === 'true' ? 1 : (!isNaN(icon.dataset[k]) ? parseInt(icon.dataset[k]) : 0));
             if (countInc === 0) return [];
             const optDef = (activityOptions[val] || []).find(o => o.id === optId) || (activityOptions[val] || []).flatMap(o => o.subOptions || []).find(so => so.id === optId);
             return Array(countInc).fill((optDef && optDef.results) ? optDef.results : [optId]).flat();
         }));
-        results.forEach(rid => { if (extraCounts.hasOwnProperty(rid)) extraCounts[rid]++; });
+        res.forEach(rid => { 
+            const id = rid.trim();
+            if (!['enhance', 'ranenhance', 'enhance_m', 'enhance_a', 'delete', 'delete_m', 'delete_a', 'get', 'get_m', 'get_a'].includes(id)) {
+                if (extraCounts.hasOwnProperty(id)) extraCounts[id]++; 
+            }
+        });
     });
 
-    // 2. 선택된 서포트 카드의 have 속성 분석 (추가)
-    const type = board.dataset.calcType;
-    const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
     const selectedIds = (savedState.planCards && activePlan) ? (savedState.planCards[activePlan] || []) : [];
-
+    let cardFixedM = 0, cardFixedA = 0, cardFixedTotal = 0;
     selectedIds.forEach(id => {
         const card = cardList.find(c => c.id === id);
-        if (card && card.have) {
-            if (card.have.startsWith('card_')) {
-                extraCounts.get++; // 카드 획득 기본 +1
-                if (card.have === 'card_a') extraCounts.get_a++; // 액티브 획득 +1
-                else if (card.have === 'card_m') extraCounts.get_m++; // 멘탈 획득 +1
-                
-                // SSR이면서 카드 획득인 경우 SSR 획득 +1 (추가됨)
-                if (card.rarity === 'SSR') {
-                    extraCounts.get_ssr++;
-                }
-            }
+        if (card?.have?.startsWith('card_')) {
+            cardFixedTotal++;
+            if (card.have === 'card_a') cardFixedA++;
+            else if (card.have === 'card_m') cardFixedM++;
+            if (card.rarity === 'SSR') extraCounts.get_ssr++;
         }
     });
 
+    // 1. 강화 분배
+    let manualE = savedState.manualEnhance || { m: pools.enhance.generic, a: 0 };
+    if (Number(manualE.m) + Number(manualE.a) !== pools.enhance.generic) manualE = { m: pools.enhance.generic, a: 0 };
+    extraCounts.enhance = pools.enhance.generic + pools.enhance.m + pools.enhance.a;
+    extraCounts.enhance_m = pools.enhance.m + Number(manualE.m);
+    extraCounts.enhance_a = pools.enhance.a + Number(manualE.a);
+
+    // 2. 삭제 분배
+    let manualD = savedState.manualDelete || { m: pools.delete.generic, a: 0 };
+    if (Number(manualD.m) + Number(manualD.a) !== pools.delete.generic) manualD = { m: pools.delete.generic, a: 0 };
+    extraCounts.delete = pools.delete.generic + pools.delete.m + pools.delete.a;
+    extraCounts.delete_m = pools.delete.m + Number(manualD.m);
+    extraCounts.delete_a = pools.delete.a + Number(manualD.a);
+
+    // 3. 획득 분배
+    let manualG = savedState.manualGet || { m: pools.get.generic, a: 0 };
+    if (Number(manualG.m) + Number(manualG.a) !== pools.get.generic) manualG = { m: pools.get.generic, a: 0 };
+    extraCounts.get = pools.get.generic + pools.get.m + pools.get.a + cardFixedTotal;
+    extraCounts.get_m = pools.get.m + cardFixedM + Number(manualG.m);
+    extraCounts.get_a = pools.get.a + cardFixedA + Number(manualG.a);
+
     const sortOrder = ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'];
     const allPossibleValues = Array.from(new Set(Array.from(board.querySelectorAll('.plan-icon-wrapper')).map(w => w.dataset.value)));
-    updateActivityCountsUI(counts, spCounts, extraCounts, activePlan, allPossibleValues, sortOrder);
+    updateActivityCountsUI(counts, spCounts, extraCounts, activePlan, allPossibleValues, sortOrder, type);
 }
 
 function saveCalcState() {
@@ -149,23 +259,26 @@ function saveCalcState() {
     const type = board.dataset.calcType;
     const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type || '';
     
-    // 기존 데이터 불러오기
-    const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || { planCards: {} };
-    if (!savedState.planCards) savedState.planCards = {};
+    // [수정] 모든 수동 분배 데이터(manualEnhance, manualDelete, manualGet)를 보존하며 저장
+    const oldSaved = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+    const manualEnhance = oldSaved.manualEnhance || null;
+    const manualDelete = oldSaved.manualDelete || null;
+    const manualGet = oldSaved.manualGet || null;
+    const planCards = oldSaved.planCards || {};
 
-    // 현재 선택된 카드 추출 (패널이 있을 때만 업데이트)
     const panel = document.getElementById('calc-side-panel');
-    if (panel) {
-        const selectedIds = Array.from(panel.querySelectorAll('.side-card-item.selected')).map(i => i.dataset.id);
-        if (activePlan) {
-            savedState.planCards[activePlan] = selectedIds;
-        }
+    if (panel && activePlan) {
+        planCards[activePlan] = Array.from(panel.querySelectorAll('.side-card-item.selected')).map(i => i.dataset.id);
     }
 
     const stateData = {
+        ...oldSaved,
+        manualEnhance: manualEnhance,
+        manualDelete: manualDelete,
+        manualGet: manualGet,
+        planCards: planCards,
         selectedIdol: document.querySelector('.idol-sel-item.active')?.dataset.id || '',
         planType: activePlan,
-        planCards: savedState.planCards, // 패널이 없었다면 기존 데이터가 그대로 유지됨
         isBoardCollapsed: board.classList.contains('collapsed-board'),
         weeks: {}
     };
@@ -192,31 +305,24 @@ function setupPlanTypeSelector() {
     document.querySelectorAll('.plan-type-btn').forEach(btn => {
         btn.onclick = () => {
             if (btn.classList.contains('active')) return;
-            
-            // 1. 플랜 변경 전 현재 상태 저장
             saveCalcState();
-
-            // 2. 플랜 전환
             document.querySelectorAll('.plan-type-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const newPlan = btn.dataset.type;
-
-            // 3. 해당 플랜에 저장된 서포트 카드 불러오기
-            const board = document.querySelector('.unified-plan-board');
-            const type = board?.dataset.calcType;
-            const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-            const planCards = (savedState.planCards && savedState.planCards[newPlan]) ? savedState.planCards[newPlan] : [];
-            
-            // 4. 사이드 패널 및 UI 갱신
+            const type = document.querySelector('.unified-plan-board')?.dataset.calcType;
+            const saved = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+            const planCards = (saved.planCards && saved.planCards[newPlan]) ? saved.planCards[newPlan] : [];
             const panel = document.getElementById('calc-side-panel');
             if (panel) {
+                renderSidePanelContent(panel, newPlan);
                 panel.querySelectorAll('.side-card-item').forEach(item => {
                     item.classList.toggle('selected', planCards.includes(item.dataset.id));
+                    if (planCards.includes(item.dataset.id)) item.dataset.selectTime = Date.now();
                 });
             }
             updateSelectedCardsUI(planCards);
-
-            saveCalcState(); 
+            saveCalcState();
+            if (panel) setTimeout(() => { document.getElementById('calc-side-spinner-overlay')?.remove(); }, 100);
         };
     });
 }
@@ -230,6 +336,15 @@ function setupCalcAction() {
     };
 }
 
+function renderSidePanelContent(panel, selectedPlan) {
+    const filtered = cardList.filter(c => (c.plan === selectedPlan || c.plan === 'free') && c.rarity !== 'R' && c.type !== 'assist');
+    const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
+        const lb = state.supportLB[c.id] || 0;
+        return `<div class="side-card-item" data-id="${c.id}"><img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'"><img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;"><div class="calc-card-stars">${Array.from({length:4}, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div><div class="card-bonus-overlay"><span class="bonus-val"></span></div><div class="info-btn">i</div></div>`;
+    }).join('');
+    panel.innerHTML = `<div class="side-panel-tabs"><div class="panel-tab-item"><img src="icons/vocal.png"></div><div class="panel-tab-item"><img src="icons/dance.png"></div><div class="panel-tab-item"><img src="icons/visual.png"></div></div><div class="side-panel-content"><div class="calc-spinner-overlay" id="calc-side-spinner-overlay"><div class="calc-spinner"></div></div><div class="side-panel-column" data-type="vocal">${renderCol('vocal')}</div><div class="side-panel-column" data-type="dance">${renderCol('dance')}</div><div class="side-panel-column" data-type="visual">${renderCol('visual')}</div></div>`;
+}
+
 function toggleSupportCardPanel(selectedPlan) {
     let panel = document.getElementById('calc-side-panel'), overlay = document.getElementById('panel-overlay');
     if (panel?.classList.contains('open')) { closeSupportCardPanel(); return; }
@@ -238,96 +353,41 @@ function toggleSupportCardPanel(selectedPlan) {
         (window.innerWidth <= 768 ? document.body : document.querySelector('.calc-container')).appendChild(panel);
         panel.addEventListener('click', (e) => {
             const infoBtn = e.target.closest('.info-btn'), item = e.target.closest('.side-card-item');
-            
-            // 1. 정보 버튼(i) 클릭 시 모달 열기
             if (infoBtn && item) {
                 e.stopPropagation();
                 const card = cardList.find(c => c.id === item.dataset.id);
                 if (card) window.showCardModal(card, (state.currentLang === 'ja' && card.name_ja ? card.name_ja : card.name), card.image || `images/support/${card.id}.webp`);
                 return;
             }
-
-            // 2. 카드 클릭 시 선택 (최대 6장, 선입선출 로직)
             if (item) {
-                const cardId = item.dataset.id;
-                const isSelected = item.classList.contains('selected');
-                
-                let selectedItems = Array.from(panel.querySelectorAll('.side-card-item.selected'))
-                    .sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0));
-
-                if (isSelected) {
-                    item.classList.remove('selected');
-                    delete item.dataset.selectTime;
-                } else {
-                    if (selectedItems.length >= 6) {
-                        const oldestItem = selectedItems[0];
-                        oldestItem.classList.remove('selected');
-                        delete oldestItem.dataset.selectTime;
-                    }
-                    item.classList.add('selected');
-                    item.dataset.selectTime = Date.now();
+                const cardId = item.dataset.id, isSelected = item.classList.contains('selected');
+                let selectedItems = Array.from(panel.querySelectorAll('.side-card-item.selected')).sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0));
+                if (isSelected) { item.classList.remove('selected'); delete item.dataset.selectTime; }
+                else {
+                    if (selectedItems.length >= 6) { const oldestItem = selectedItems[0]; oldestItem.classList.remove('selected'); delete oldestItem.dataset.selectTime; }
+                    item.classList.add('selected'); item.dataset.selectTime = Date.now();
                 }
-                
-                const finalIds = Array.from(panel.querySelectorAll('.side-card-item.selected'))
-                    .sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0))
-                    .map(el => el.dataset.id);
-                
-                updateSelectedCardsUI(finalIds); 
-                saveCalcState();
+                const finalIds = Array.from(panel.querySelectorAll('.side-card-item.selected')).sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0)).map(el => el.dataset.id);
+                updateSelectedCardsUI(finalIds); saveCalcState();
             }
         });
     }
     if (window.innerWidth <= 768 && !overlay) { overlay = document.createElement('div'); overlay.id = 'panel-overlay'; overlay.className = 'panel-overlay'; document.body.appendChild(overlay); overlay.onclick = closeSupportCardPanel; }
-
-    const filtered = cardList.filter(c => (c.plan === selectedPlan || c.plan === 'free') && c.rarity !== 'R' && c.type !== 'assist');
-    const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
-        const lb = state.supportLB[c.id] || 0;
-        return `<div class="side-card-item" data-id="${c.id}"><img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'"><img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;"><div class="calc-card-stars">${Array.from({length:4}, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div><div class="card-bonus-overlay"><span class="bonus-val"></span></div><div class="info-btn">i</div></div>`;
-    }).join('');
-
-            panel.innerHTML = `<div class="side-panel-tabs"><div class="panel-tab-item"><img src="icons/vocal.png"></div><div class="panel-tab-item"><img src="icons/dance.png"></div><div class="panel-tab-item"><img src="icons/visual.png"></div></div><div class="side-panel-content"><div class="calc-spinner-overlay" id="calc-side-spinner-overlay"><div class="calc-spinner"></div></div><div class="side-panel-column" data-type="vocal">${renderCol('vocal')}</div><div class="side-panel-column" data-type="dance">${renderCol('dance')}</div><div class="side-panel-column" data-type="visual">${renderCol('visual')}</div></div>`;
-
-            
-
-            // 저장된 선택 카드 복원 (최신 planCards 구조 사용)
-
-            const boardElem = document.querySelector('.unified-plan-board');
-
-            if (boardElem) {
-
-                const type = boardElem.dataset.calcType;
-
-                const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-
-                const planCards = (savedState.planCards && selectedPlan) ? (savedState.planCards[selectedPlan] || []) : [];
-
-                
-
-                planCards.forEach(id => {
-
-                    const item = panel.querySelector(`.side-card-item[data-id="${id}"]`);
-
-                    if (item) {
-
-                        item.classList.add('selected');
-
-                        item.dataset.selectTime = Date.now(); 
-
-                    }
-
-                });
-
-                updateSelectedCardsUI(planCards);
-
-            }
-
-        
-
-            requestAnimationFrame(() => {
-
-        
-
-     panel.classList.add('open'); if (overlay) overlay.classList.add('show'); setTimeout(() => { refreshCardBonuses(); document.getElementById('calc-side-spinner-overlay')?.remove(); }, 150); });
+    renderSidePanelContent(panel, selectedPlan);
+    const boardElem = document.querySelector('.unified-plan-board');
+    if (boardElem) {
+        const type = boardElem.dataset.calcType, saved = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+        const planCards = (saved.planCards && selectedPlan) ? (saved.planCards[selectedPlan] || []) : [];
+        planCards.forEach(id => {
+            const item = panel.querySelector(`.side-card-item[data-id="${id}"]`);
+            if (item) { item.classList.add('selected'); item.dataset.selectTime = Date.now(); }
+        });
+        updateSelectedCardsUI(planCards);
+    }
+    requestAnimationFrame(() => {
+        panel.classList.add('open'); if (overlay) overlay.classList.add('show');
+        setTimeout(() => { refreshCardBonuses(); document.getElementById('calc-side-spinner-overlay')?.remove(); }, 150);
+    });
 }
 
 export function closeSupportCardPanel(isPopState = false) {
@@ -348,10 +408,10 @@ function setupIconToggles() {
         });
         document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip').forEach(t => t.remove()); updateActivityCounts(); saveCalcState();
     };
-
     board.addEventListener('click', (e) => {
         const wrapper = e.target.closest('.plan-icon-wrapper');
-        if (e.target.closest('.calc-tooltip, .calc-sub-tooltip')) return;
+        // dist-btn 클릭 시 툴팁 제거 로직 방지
+        if (e.target.closest('.calc-tooltip, .calc-sub-tooltip, .dist-btn')) return;
         if (!wrapper) { removeAllTooltips(); return; }
         if (wrapper.classList.contains('active')) { Object.keys(wrapper.dataset).forEach(k => { if (k.startsWith('opt')) delete wrapper.dataset[k]; }); wrapper.classList.remove('active'); updateSPBadge(wrapper); updateMainLabel(wrapper); removeAllTooltips(); }
         else {
@@ -389,7 +449,9 @@ function setupIconToggles() {
         updateActivityCounts(); saveCalcState();
     });
     document.getElementById('board-toggle-bar').onclick = () => { board.classList.toggle('collapsed-board'); document.getElementById('board-toggle-bar').textContent = board.classList.contains('collapsed-board') ? '주간 행동 열기 ▼' : '주간 행동 닫기 ▲'; saveCalcState(); };
-    document.addEventListener('mousedown', (e) => { if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper')) removeAllTooltips(); });
+    document.addEventListener('mousedown', (e) => { 
+        if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper, .dist-btn')) removeAllTooltips(); 
+    });
 }
 
 function updateSPBadge(w) { w.querySelector('.sp-badge')?.remove(); if (w.classList.contains('active') && w.dataset.optsp === 'true') { const b = document.createElement('div'); b.className = 'sp-badge'; b.textContent = 'SP'; w.appendChild(b); } }

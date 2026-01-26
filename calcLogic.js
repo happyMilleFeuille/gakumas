@@ -58,6 +58,32 @@ export function getTriggerCountsFromDOM() {
             }
         });
     });
+
+    // 수동 분배 수치 반영 (simulator-engine이 인식할 수 있도록 counts.total에 주입)
+    const calcType = board.dataset.calcType;
+    const saved = JSON.parse(localStorage.getItem(`calc_state_${calcType}`)) || {};
+    
+    // 1. 강화 분배 반영
+    const manualE = saved.manualEnhance || { m: 0, a: 0 };
+    const mVal = Number(manualE.m) || 0;
+    const aVal = Number(manualE.a) || 0;
+    if (mVal > 0) counts.total['enhance_m'] = (counts.total['enhance_m'] || 0) + mVal;
+    if (aVal > 0) counts.total['enhance_a'] = (counts.total['enhance_a'] || 0) + aVal;
+
+    // 2. 삭제 분배 반영
+    const manualD = saved.manualDelete || { m: 0, a: 0 };
+    const dmVal = Number(manualD.m) || 0;
+    const daVal = Number(manualD.a) || 0;
+    if (dmVal > 0) counts.total['delete_m'] = (counts.total['delete_m'] || 0) + dmVal;
+    if (daVal > 0) counts.total['delete_a'] = (counts.total['delete_a'] || 0) + daVal;
+
+    // 3. 카드 획득 분배 반영
+    const manualG = saved.manualGet || { m: 0, a: 0 };
+    const gmVal = Number(manualG.m) || 0;
+    const gaVal = Number(manualG.a) || 0;
+    if (gmVal > 0) counts.total['get_m'] = (counts.total['get_m'] || 0) + gmVal;
+    if (gaVal > 0) counts.total['get_a'] = (counts.total['get_a'] || 0) + gaVal;
+
     return counts;
 }
 

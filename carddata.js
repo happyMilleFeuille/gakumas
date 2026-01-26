@@ -159,28 +159,7 @@ export const cardList = [
             "enhance_mental",
             "event_paraup"
         ]        
-    },       
-    { 
-    id: "vocal_free7", 
-    name: "한 사람도 빠짐없이", 
-    name_ja: "一人たりとも欠ける事なく",     
-    type: "vocal", 
-    plan: "free", 
-    have:"item",
-    releasedAt: "2024-09-11",       
-    rarity: "SSR",       
-    source:"dist",    
-    extra1: "param", extra2:"ranenhance",    
-        abilities: 
-        [
-            "fixedparam",
-            "sp_lessonup",
-            "supportrateup", 
-            "sp_recovery",
-            "advice",
-            "event_paraup"
-        ]        
-    },      
+    },             
     { 
     id: "vocal_free8", 
     name: "두 사람이라면 눈 깜짝할 새네", 
@@ -285,6 +264,27 @@ export const cardList = [
             "event_paraup"
         ]        
     },
+        { 
+    id: "vocal_distfree1", 
+    name: "한 사람도 빠짐없이", 
+    name_ja: "一人たりとも欠ける事なく",     
+    type: "vocal", 
+    plan: "free", 
+    have:"item",
+    releasedAt: "2024-09-11",       
+    rarity: "SSR",       
+    source:"dist",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_recovery",
+            "advice",
+            "event_paraup"
+        ]        
+    },
     { 
     id: "vocal_sense1", 
     name: "여름을 즐겨봐요!", 
@@ -325,27 +325,6 @@ export const cardList = [
             "event_paraup"
         ]        
     },              
-    { 
-    id: "vocal_distsense1", 
-    name: "이 녀석들 성가셔~", 
-    name_ja: "こいつらめんどくさー",     
-    type: "vocal", 
-    plan: "sense", 
-    have:"card_m",
-    releasedAt: "2024-05-16",    
-    rarity: "SSR", 
-    source:"dist",    
-    extra1: "param", extra2:"ranenhance",    
-        abilities: 
-        [
-            "percentparam",
-            "sp_ppoint",
-            "supportrateup", 
-            "sp_param",
-            "enhance_mental",
-            "event_paraup"
-        ]        
-    },  
     { 
     id: "vocal_limitedsense1", 
     name: "일시 휴전이에요", 
@@ -408,7 +387,7 @@ export const cardList = [
             "gift",
             "event_paraup"
         ]        
-    },         
+    },
     { 
     id: "vocal_fessense1", 
     name: "다시 한번, 처음부터!", 
@@ -429,7 +408,259 @@ export const cardList = [
             "class",
             "event_paraup"
         ]        
-    },                        
+    },         
+    { 
+    id: "vocal_distsense1", 
+    name: "이 녀석들 성가셔~", 
+    name_ja: "こいつらめんどくさー",     
+    type: "vocal", 
+    plan: "sense", 
+    have:"card_m",
+    releasedAt: "2024-05-16",    
+    rarity: "SSR", 
+    source:"dist",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_ppoint",
+            "supportrateup", 
+            "sp_param",
+            "enhance_mental",
+            "event_paraup"
+        ]        
+    },           
+    { 
+    id: "vocal_logic1", 
+    name: "여전히 서투르네", 
+    name_ja: "相変わらず不器用ね",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-04-22",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "get_goodimpression",
+            "supportrateup", 
+            "sp_param",
+            "goout",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "vocal_logic2", 
+    name: "당당하게 땡땡이치고 있어!?", 
+    name_ja: "堂々とサボってる!?",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"card_m",
+    releasedAt: "2026-01-05",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_goodimpression",
+            "get_ssr",
+            "event_paraup"
+        ]        
+    },       
+    { 
+    id: "vocal_limitedlogic1", 
+    name: "반드시 전해드리겠어욧!", 
+    name_ja: "絶対にお渡ししますわっ!",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-02-14",    
+    rarity: "SSR", 
+    source:"limited",    
+    extra1: "param", extra2:"ranchange",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "lesson_param",
+            "goout",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "vocal_limitedlogic2", 
+    name: "이런, 위험해", 
+    name_ja: "おっと、危ないよ",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-08-29",    
+    rarity: "SSR", 
+    source:"limited",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "class",
+            "supportrateup", 
+            "sp_param",
+            "gift",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "vocal_limitedlogic3", 
+    name: "츠키무라 테마리, 흥미롭네", 
+    name_ja: "月村手毬、興味深いわね",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"card_m",
+    releasedAt: "2025-10-10",    
+    rarity: "SSR", 
+    source:"limited",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "gift",
+            "supportrateup", 
+            "sp_param",
+            "delete",
+            "event_paraup"
+        ]        
+    },          
+    { 
+    id: "vocal_feslogic1", 
+    name: "어떤 관계인거죠?", 
+    name_ja: "どんな関係なんですか?",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-06-30",    
+    rarity: "SSR", 
+    source:"limited_f",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_genki",
+            "gift",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "vocal_anomaly1", 
+    name: "내버려 둘 수 없는 신경 쓰이는 아이", 
+    name_ja: "放っておけない気になる子",     
+    type: "vocal", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2025-07-17",    
+    rarity: "SSR",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "delete",
+            "supportrateup", 
+            "purchase_drink",
+            "gift",
+            "event_paraup"
+        ]        
+    },     
+    { 
+    id: "vocal_anomaly2", 
+    name: "테마리의 리사이틀, 이네", 
+    name_ja: "手毬のリサイタル、だね",     
+    type: "vocal", 
+    plan: "anomaly", 
+    have:"card_m",
+    releasedAt: "2026-01-16",    
+    rarity: "SSR",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "get_mental",
+            "supportrateup", 
+            "sp_param",
+            "get_ssr",
+            "event_paraup"
+        ]        
+    },      
+    { 
+    id: "vocal_limitedanomaly1", 
+    name: "v갸루 피ㅡㅡㅡ스v", 
+    name_ja: "vギャルピーーースッv",     
+    type: "vocal", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2025-09-08",    
+    rarity: "SSR", 
+    source:"limited",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "gift",
+            "delete",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "vocal_fesanomaly1", 
+    name: "자, 모두 함께♪", 
+    name_ja: "はいっ、みんなも一緒に♪",     
+    type: "vocal", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2025-01-09",    
+    rarity: "SSR", 
+    source:"limited_f",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_recovery",
+            "goout",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "vocal_distanomaly1", 
+    name: "모두의 의견을 들려줘♪", 
+    name_ja: "みんなの意見を聞かせて♪",     
+    type: "vocal", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2025-06-01",    
+    rarity: "SSR", 
+    source:"dist",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "class",
+            "enhance_active",
+            "event_paraup"
+        ]        
+    },    
+    
+    
+
+                    
     { 
     id: "dance_free1", 
     name: "으으으윽.....!", 
@@ -778,7 +1009,27 @@ export const cardList = [
             "sp_param20",
             "event_paraup"
         ]        
-    },                                                         
+    },
+    { 
+    id: "dance_logic1", 
+    name: "슬슬 익었으려나?", 
+    name_ja: "そろそろ焼けたかな?",     
+    type: "dance", 
+    have:"card_m",
+    releasedAt: "2024-11-06",        
+    plan: "logic", 
+    rarity: "SSR",   
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "gift",
+            "event_paraup"
+        ]        
+    },                                                             
     { 
     id: "dance_distlogic1", 
     name: "우리들, 하면 된다", 
@@ -800,6 +1051,213 @@ export const cardList = [
             "event_paraup"
         ]        
     },
+    { 
+    id: "dance_limitedlogic1", 
+    name: "정말! 차갑다구!", 
+    name_ja: "もうっ！冷たいよ!",     
+    type: "dance", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-07-01",    
+    source: "limited",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "test",
+            "event_paraup"
+        ]        
+    },      
+    { 
+    id: "dance_limitedlogic2", 
+    name: "여름을 만끽하는 거야!", 
+    name_ja: "夏を満喫するわよ!",     
+    type: "dance", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-08-11",    
+    source: "limited",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "enhance_mental",
+            "supportrateup", 
+            "sp_param",
+            "class",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "dance_limitedlogic3", 
+    name: "어울리지 않아?", 
+    name_ja: "似合うんじゃない?",     
+    type: "dance", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-09-30",    
+    source: "limited",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "ppoint",
+            "supportrateup", 
+            "sp_param",
+            "goout",
+            "event_paraup"
+        ]        
+    },       
+    { 
+    id: "dance_limitedlogic4", 
+    name: "너희들이 좋아", 
+    name_ja: "あなたたちのことが好き",     
+    type: "dance", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-02-28",    
+    source: "limited",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "enhance_metal",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "dance_feslogic1", 
+    name: "드디어 찾았다!", 
+    name_ja: "やっと見つけたぞ!",     
+    type: "dance", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-11-16",    
+    source: "limited",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "delete",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "dance_anomaly1", 
+    name: "기다리렴!", 
+    name_ja: "待ちなさーい!",     
+    type: "dance", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2024-12-18",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "get_active",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "dance_anomaly2", 
+    name: "메리 크리스마스, 언니♪", 
+    name_ja: "メリクリ、おね一ちゃん♪",     
+    type: "dance", 
+    plan: "anomaly", 
+    have:"card_m",
+    releasedAt: "2025-11-28",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "get_ssr",
+            "supportrateup", 
+            "sp_param",
+            "enhance",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "dance_anomaly3", 
+    name: "어째서 이런 곳에!?", 
+    name_ja: "なぜこんなところにッ!?",     
+    type: "dance", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2025-12-08",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_ssr",
+            "sp_param",
+            "event_paraup"
+        ]        
+    },                
+    { 
+    id: "dance_limitedanomaly1", 
+    name: "잘했다, 쿠라모토", 
+    name_ja: "よくやったな、倉本",     
+    type: "dance", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2025-05-29",    
+    source: "limited",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "get_drink",
+            "event_paraup"
+        ]        
+    },         
+    { 
+    id: "dance_distanomaly1", 
+    name: "프로듀스란 건 큰일이네", 
+    name_ja: "プロデュースって大変ね",     
+    type: "dance", 
+    plan: "anomaly", 
+    have:"item",
+    releasedAt: "2024-11-16",    
+    source: "dist",
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "gift_recovery",
+            "test",
+            "event_paraup"
+        ]        
+    },              
 
     { 
     id: "visual_free1", 
@@ -1107,7 +1565,170 @@ export const cardList = [
             "get_drink",
             "event_paraup"
         ]        
-    },                                           
+    }, 
+    { 
+    id: "visual_logic1", 
+    name: "「아」가 아니라「에」", 
+    name_ja: "「ア」じゃなくて「エ」",     
+    type: "visual", 
+    plan: "logic", 
+    have:"card_m",
+    releasedAt: "2024-06-19",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "lesson_param",
+            "get_mental",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "visual_logic2", 
+    name: "느긋하게 보내자", 
+    name_ja: "ゆっくりと過ごしましょう",     
+    type: "visual", 
+    plan: "logic", 
+    have:"card_a",
+    releasedAt: "2024-09-01",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_recovery",
+            "supportrateup", 
+            "sp_param",
+            "purchase_drink",
+            "event_paraup"
+        ]        
+    },  
+    { 
+    id: "visual_logic3", 
+    name: "회장님, 준비만반입니다", 
+    name_ja: "会長、準備は万端です",     
+    type: "visual", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-10-18",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "ppoint",
+            "supportrateup", 
+            "enhance_mental",
+            "goout",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "visual_logic4", 
+    name: "조금 알고 있어요!", 
+    name_ja: "ちょっと詳しいんです!",     
+    type: "visual", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-09-17",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param20",
+            "get_mental",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "visual_limitedlogic1", 
+    name: "따뜻하네", 
+    name_ja: "あったかいね",     
+    type: "visual", 
+    plan: "logic", 
+    have:"item",
+    source:"limited",
+    releasedAt: "2024-12-09",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_mental",
+            "advice",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "visual_limitedlogic2", 
+    name: "덕질의 시간, 이네!", 
+    name_ja: "推し活なひととき、だね！",     
+    type: "visual", 
+    plan: "logic", 
+    have:"item",
+    source:"limited",
+    releasedAt: "2025-06-09",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "get_goodimpression",
+            "supportrateup", 
+            "customize6",
+            "gift",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "visual_distlogic1", 
+    name: "미아의 안내 말씀 드립니다", 
+    name_ja: "迷子のおしらせです",     
+    type: "visual", 
+    plan: "logic", 
+    have:"item",
+    source:"dist",
+    releasedAt: "2025-06-01",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_mental",
+            "enhance_memtal",
+            "event_paraup"
+        ]        
+    },      
+    { 
+    id: "visual_anomaly1", 
+    name: "혼잣말이에요", 
+    name_ja: "ひとりごとです",     
+    type: "visual", 
+    releasedAt: "2025-05-26",        
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SSR",         
+    extra1: "param", extra2:"ranchange",    
+        abilities: 
+        [
+            "fixedparam",
+            "change3",
+            "supportrateup", 
+            "sp_param",
+            "delete_active3",
+            "event_paraup"
+        ]        
+    },                    
     { 
     id: "visual_distanomaly1", 
     name: "끊기듯 이어지는 장마", 
@@ -1128,7 +1749,70 @@ export const cardList = [
             "enhance_mental",
             "event_paraup"
         ]        
-    },        
+    },   
+    { 
+    id: "visual_limitedanomaly1", 
+    name: "발렌타인♡회의중!", 
+    name_ja: "バレンタイン♡会議中ーっ!",     
+    type: "visual", 
+    releasedAt: "2025-02-01",        
+    plan: "anomaly", 
+    have:"card_m",
+    rarity: "SSR",     
+    source:"limited",
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "percentparam",
+            "delete",
+            "supportrateup", 
+            "enhance_active",
+            "sp_param",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "visual_limitedanomaly2", 
+    name: "새 생활의 시작이네", 
+    name_ja: "新生活のはじまりだね",     
+    type: "visual", 
+    releasedAt: "2025-03-10",        
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SSR",     
+    source:"limited",
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "lesson_param",
+            "get_preservation",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "visual_limitedanomaly3", 
+    name: "상대로서 부족함 없어!", 
+    name_ja: "相手にとって不足なしよ!",     
+    type: "visual", 
+    releasedAt: "2025-04-11",        
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SSR",     
+    source:"limited",
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "delete_mental",
+            "event_paraup"
+        ]        
+    },                    
     
     
 
@@ -1287,6 +1971,272 @@ export const cardList = [
         ]        
     },
     { 
+    id: "vocal_srsense1", 
+    name: "제5종 접근 조우", 
+    name_ja: "第五種接近遭遇",     
+    type: "vocal", 
+    releasedAt: "2024-07-22",         
+    plan: "sense", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "ppoint",
+            "supportrateup", 
+            "lesson_param",
+            "advice",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "vocal_srsense2", 
+    name: "잠자는 숲속의 왕자님", 
+    name_ja: "眠れる森の王子様",     
+    type: "vocal", 
+    releasedAt: "2025-10-31",         
+    plan: "sense", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_param20",
+            "supportrateup", 
+            "delete",
+            "spclass3",
+            "event_paraup"
+        ]        
+    },           
+    { 
+    id: "vocal_srlimitedsense1", 
+    name: "흥미로운 음료", 
+    name_ja: "興味深い飲み物",     
+    type: "vocal", 
+    releasedAt: "2024-10-08",         
+    plan: "sense", 
+    have:"card_m",
+    rarity: "SR",    
+    source:"limited",         
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "class",
+            "event_paraup"
+        ]        
+    },       
+    { 
+    id: "vocal_srlogic1", 
+    name: "이어폰 나눠서", 
+    name_ja: "イヤホンはんぶんこ",     
+    type: "vocal", 
+    releasedAt: "2024-05-22",         
+    plan: "logic", 
+    have:"card_a",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_recovery",
+            "supportrateup", 
+            "rest",
+            "goout",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "vocal_srlogic2", 
+    name: "브레이크 타임은 커피로", 
+    name_ja: "ブレイクタイムは珈琲で",     
+    type: "vocal", 
+    releasedAt: "2024-09-20",         
+    plan: "logic", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "ppoint",
+            "supportrateup", 
+            "lesson_param",
+            "purchase_drink",
+            "event_paraup"
+        ]        
+    },             
+    { 
+    id: "vocal_srlogic3", 
+    name: "굴욕의 2위", 
+    name_ja: "屈辱の2位",     
+    type: "vocal", 
+    releasedAt: "2025-04-22",         
+    plan: "logic", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "goout",
+            "supportrateup", 
+            "test",
+            "delete",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "vocal_srlogic4", 
+    name: "버디?", 
+    name_ja: "バディ?",     
+    type: "vocal", 
+    releasedAt: "2025-11-16",         
+    plan: "logic", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "delete",
+            "supportrateup", 
+            "sp_param",
+            "get_item6",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "vocal_srlogic5", 
+    name: "보글보글, 좋은 냄새♪", 
+    name_ja: "ぐつぐつ、いいにおい♪",     
+    type: "vocal", 
+    releasedAt: "2026-01-05",         
+    plan: "logic", 
+    have:"card_m",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_param20",
+            "supportrateup", 
+            "gift",
+            "change3",
+            "event_paraup"
+        ]        
+    },               
+    { 
+    id: "vocal_srlimitedlogic1", 
+    name: "바다, 즐기지 않으면", 
+    name_ja: "海、楽しまなきゃ",     
+    type: "vocal", 
+    releasedAt: "2024-07-12",         
+    plan: "logic", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "alllesson_ppoint",
+            "supportrateup", 
+            "sp_recovery",
+            "rest",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "vocal_srlimitedlogic2", 
+    name: "진심을 담아", 
+    name_ja: "まごころを込めて",     
+    type: "vocal", 
+    releasedAt: "2025-02-14",         
+    plan: "logic", 
+    have:"card_a",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_recovery",
+            "supportrateup", 
+            "goout",
+            "class",
+            "event_paraup"
+        ]        
+    },  
+    { 
+    id: "vocal_srlimitedlogic3", 
+    name: "따끈한 발 경혈 마사지", 
+    name_ja: "あったか足ツボマッサージ",     
+    type: "vocal", 
+    releasedAt: "2025-10-10",         
+    plan: "logic", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "customize6",
+            "supportrateup", 
+            "goout",
+            "delete",
+            "event_paraup"
+        ]        
+    },         
+    { 
+    id: "vocal_sranomaly1", 
+    name: "스파르타&스파이스", 
+    name_ja: "スパルタ&スパイス",     
+    type: "vocal", 
+    releasedAt: "2025-07-17",         
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "ppoint",
+            "supportrateup", 
+            "sp_param",
+            "get_preservation",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "vocal_srlimitedanomaly1", 
+    name: "뾰족뾰족 주의보", 
+    name_ja: "トゲトゲ注意報",     
+    type: "vocal", 
+    releasedAt: "2025-09-08",         
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "get_ssr",
+            "supportrateup", 
+            "spclass",
+            "delete",
+            "event_paraup"
+        ]        
+    },         
+    
+    
+
+
+
+    { 
     id: "dance_srfree1", 
     name: "매혹의 대퇴사두근", 
     name_ja: "魅惑の大腿四頭筋",     
@@ -1426,7 +2376,7 @@ export const cardList = [
             "advice",            
             "event_paraup"
         ]        
-    },     
+    },
     { 
     id: "dance_srunitfree1", 
     name: "오늘은 견학인데요", 
@@ -1441,13 +2391,323 @@ export const cardList = [
         abilities: 
         [
             "fixedparam",
-            "delete_metal3",
+            "delete_mental3",
             "supportrateup", 
             "sp_param",
             "gift",            
             "event_paraup"
         ]        
+    },       
+    { 
+    id: "dance_srsense1", 
+    name: "찰칵 포즈", 
+    name_ja: "パシャっとキメポ",     
+    type: "dance", 
+    releasedAt: "2024-06-01",         
+    plan: "sense", 
+    have:"card_m",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_recovery",
+            "supportrateup", 
+            "lesson_param",
+            "rest",
+            "event_paraup"
+        ]        
+    },     
+    { 
+    id: "dance_srsense2", 
+    name: "으랴꺄아아앗", 
+    name_ja: "どりゃぎゃ",     
+    type: "dance", 
+    releasedAt: "2024-06-10",         
+    plan: "sense", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "lesson_param",
+            "gift",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "dance_srsense3", 
+    name: "꽉 조여서", 
+    name_ja: "キュッと締めて",     
+    type: "dance", 
+    releasedAt: "2024-08-22",         
+    plan: "sense", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_recovery",
+            "supportrateup", 
+            "lesson_param",
+            "purchase_drink",
+            "event_paraup"
+        ]        
+    },        
+    { 
+    id: "dance_srsense4", 
+    name: "잠자리를 잡아서", 
+    name_ja: "トンボをつかまえて",     
+    type: "dance", 
+    releasedAt: "2024-10-28",         
+    plan: "sense", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "enhance",
+            "supportrateup", 
+            "sp_param",
+            "test",
+            "event_paraup"
+        ]        
+    },     
+    { 
+    id: "dance_srsense5", 
+    name: "민망x2 패션쇼", 
+    name_ja: "むずx2ふぁっしょんしょー",     
+    type: "dance", 
+    releasedAt: "2025-06-19",         
+    plan: "sense", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_recovery",
+            "supportrateup", 
+            "sp_param",
+            "get_concentrate",
+            "event_paraup"
+        ]        
+    },      
+    { 
+    id: "dance_srlimitedsense1", 
+    name: "XL의 10배!", 
+    name_ja: "ディカプルエックスエル！",     
+    type: "dance", 
+    plan: "sense", 
+    have:"item",
+    releasedAt: "2024-11-28", 
+    source:"limited",            
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "ppoint",
+            "supportrateup", 
+            "sp_param",
+            "advice",            
+            "event_paraup"
+        ]        
     },   
+    { 
+    id: "dance_srlimitedsense2", 
+    name: "걸즈♡토크", 
+    name_ja: "ガールズ♡トーク",     
+    type: "dance", 
+    plan: "sense", 
+    have:"item",
+    releasedAt: "2024-11-28", 
+    source:"limited",            
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "goout",
+            "supportrateup", 
+            "sp_param",
+            "enhance_mental",            
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "dance_srlimitedsense3", 
+    name: "해피 할로위~~인!", 
+    name_ja: "はっぴぃはろうぃ～～ん!",     
+    type: "dance", 
+    plan: "sense", 
+    have:"item",
+    releasedAt: "2025-09-29", 
+    source:"limited",            
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "delete",            
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "dance_srlogic1", 
+    name: "인기를 끌자!", 
+    name_ja: "バズっちゃお！",     
+    type: "dance", 
+    releasedAt: "2024-11-06",         
+    plan: "logic", 
+    have:"card_a",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "advice",
+            "supportrateup", 
+            "goout",
+            "gift",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "dance_srlimitedlogic1", 
+    name: "치나의 은혜갚기", 
+    name_ja: "千奈の恩返し",     
+    type: "dance", 
+    releasedAt: "2024-09-30",         
+    plan: "logic", 
+    source:"limited",
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "delete",
+            "supportrateup", 
+            "sp_param",
+            "gift",
+            "event_paraup"
+        ]        
+    }, 
+    { 
+    id: "dance_srlimitedlogic2", 
+    name: "큐루~웅 포즈☆", 
+    name_ja: "きゅる～んωポーズッ☆",     
+    type: "dance", 
+    releasedAt: "2024-12-09",         
+    plan: "logic", 
+    source:"limited",
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "test",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "dance_srlimitedlogic3", 
+    name: "퓨와 슈의 이중주", 
+    name_ja: "ピューとシューの二重奏",     
+    type: "dance", 
+    releasedAt: "2025-02-28",         
+    plan: "logic", 
+    source:"limited",
+    have:"card_m",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "enhance_mental",
+            "supportrateup", 
+            "class",
+            "get_goodimpression",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "dance_sranomaly1", 
+    name: "뿅망치로 뿅", 
+    name_ja: "ピコピコでポーン",     
+    type: "dance", 
+    releasedAt: "2025-11-28",         
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "get_preservation",
+            "supportrateup", 
+            "sp_param",
+            "gift",
+            "event_paraup"
+        ]        
+    },  
+    { 
+    id: "dance_sranomaly2", 
+    name: "햇님 미소, 만개한 둘", 
+    name_ja: "ピコピコでポーン",     
+    type: "dance", 
+    releasedAt: "2026-01-16",         
+    plan: "anomaly", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "spclass",
+            "supportrateup", 
+            "test",
+            "get_item6",
+            "event_paraup"
+        ]        
+    },         
+    { 
+    id: "dance_srlimitedanomaly1", 
+    name: "앙 드 뜨와", 
+    name_ja: "あん・どぅ・とろわっ！",     
+    type: "dance", 
+    releasedAt: "2025-05-29",         
+    plan: "anomaly", 
+    have:"item",
+    source:"limited",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "enhance",
+            "event_paraup"
+        ]        
+    },     
+    
+
+
     { 
     id: "visual_srfree1", 
     name: "언젠가, 꼭 꽃이 핀다", 
@@ -1585,6 +2845,292 @@ export const cardList = [
             "supportrateup", 
             "hpmax",
             "goout",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "visual_srsense1", 
+    name: "시원한 한때", 
+    name_ja: "ちべたなひととき",     
+    type: "visual",
+    plan: "sense", 
+    have:"item",
+    releasedAt: "2025-08-12",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "get",
+            "supportrateup", 
+            "sp_param",
+            "delete",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "visual_srsense2", 
+    name: "안녕하시와요 같은 인사♪", 
+    name_ja: "ごきげんような挨拶♪",     
+    type: "visual",
+    plan: "sense", 
+    have:"item",
+    releasedAt: "2025-10-21",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_item6",
+            "delete",
+            "event_paraup"
+        ]        
+    },              
+    { 
+    id: "visual_srlimitedsense1", 
+    name: "상냥하고, 따뜻해", 
+    name_ja: "やさしさ、あったかい",     
+    type: "visual", 
+    plan: "sense", 
+    have:"card_m",
+    releasedAt: "2024-08-01", 
+    source:"limited",            
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_recovery",
+            "supportrateup", 
+            "lesson_param",
+            "goout",            
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "visual_srlogic1", 
+    name: "뻣뻣 스트레칭", 
+    name_ja: "かちこちストレッチ",     
+    type: "visual",
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-06-19",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "alllesson_ppoint",
+            "supportrateup", 
+            "sp_param",
+            "advice",
+            "event_paraup"
+        ]        
+    },       
+    { 
+    id: "visual_srlogic2", 
+    name: "훌륭한 억새!", 
+    name_ja: "りっぱなすすき!",     
+    type: "visual",
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-09-01",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "goout",
+            "supportrateup", 
+            "sp_param",
+            "gift",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "visual_srlogic3", 
+    name: "SSD의 비밀", 
+    name_ja: "SSDのひみつ",     
+    type: "visual",
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-10-18",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "gift",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "visual_srlogic4", 
+    name: "복근과 등으로 코어 유지!", 
+    name_ja: "腹筋で背筋で体幹キープ!",     
+    type: "visual",
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2024-09-17",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "get_goodimpression",
+            "supportrateup", 
+            "sp_param",
+            "get_item6",
+            "event_paraup"
+        ]        
+    },          
+    { 
+    id: "visual_srlimitedlogic1", 
+    name: "철푸덕", 
+    name_ja: "ばたんきゅー",     
+    type: "visual",
+    plan: "logic", 
+    have:"item",
+    source:"limited",
+    releasedAt: "2025-06-09",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "delete_mental3",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "visual_srlimitedlogic2", 
+    name: "사제의 수행", 
+    name_ja: "師弟の修行",     
+    type: "visual",
+    plan: "logic", 
+    have:"item",
+    source:"limited",
+    releasedAt: "2025-08-29",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "customize6",
+            "supportrateup", 
+            "sp_param",
+            "get_motivation",
+            "event_paraup"
+        ]        
+    },
+    { 
+    id: "visual_sranomaly1", 
+    name: "생과자, 단맛, 말차, 떫은맛", 
+    name_ja: "主菓子、甘い、薄茶、渋み",     
+    type: "visual",
+    plan: "anomaly",     
+    have:"item",
+    releasedAt: "2025-05-16",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "test",
+            "event_paraup"
+        ]        
+    },   
+    { 
+    id: "visual_sranomaly2", 
+    name: "우메 썰매 레이스, 질주!", 
+    name_ja: "佑芽ソリレース、疾走!",     
+    type: "visual",
+    plan: "anomaly",     
+    have:"item",
+    releasedAt: "2025-12-08",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_param20",
+            "supportrateup", 
+            "get_preservation",
+            "get_item6",
+            "event_paraup"
+        ]        
+    },        
+    { 
+    id: "visual_srlimitedanomaly1", 
+    name: "SSC의 탄생", 
+    name_ja: "SSCの爆誕",     
+    type: "visual",
+    plan: "anomaly", 
+    source:"limited",
+    have:"card_m",
+    releasedAt: "2025-02-01",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "goout",
+            "event_paraup"
+        ]        
+    },                    
+    { 
+    id: "visual_srlimitedanomaly2", 
+    name: "벌레를 사랑하는 왕자님", 
+    name_ja: "虫愛づる王子様",     
+    type: "visual",
+    plan: "anomaly", 
+    source:"limited",    
+    have:"card_a",
+    releasedAt: "2025-03-10",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "enhance",
+            "supportrateup", 
+            "goout",
+            "delete",
+            "event_paraup"
+        ]        
+    },    
+    { 
+    id: "visual_srlimitedanomaly3", 
+    name: "오의, 3단뛰기!", 
+    name_ja: "奥義、三重とび!",     
+    type: "visual",
+    plan: "anomaly", 
+    source:"limited",    
+    have:"item",
+    releasedAt: "2025-04-11",     
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "enhance_mental",
+            "supportrateup", 
+            "class",
+            "test",
             "event_paraup"
         ]        
     },    

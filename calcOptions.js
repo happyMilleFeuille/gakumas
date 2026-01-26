@@ -2,8 +2,8 @@
 // 각 활동(value)별로 나타날 툴팁 옵션들을 정의합니다.
 
 const enhanceSubOpts = [
-    { id: "enhance_m", results: ["enhance_m", "enhance"],label_ko: "멘탈 강화", label_ja: "メンタルカード強化", type: "checkbox" },
-    { id: "enhance_a", results: ["enhance_a", "enhance"],label_ko: "액티브 강화", label_ja: "アクティブカード強化", type: "checkbox" },
+    { id: "enhance_m", results: ["enhance_m"],label_ko: "멘탈 강화", label_ja: "メンタルカード強化", type: "checkbox" },
+    { id: "enhance_a", results: ["enhance_a"],label_ko: "액티브 강화", label_ja: "アクティブカード強化", type: "checkbox" },
 ];
 
 const changeSubOpts = [
@@ -12,8 +12,8 @@ const changeSubOpts = [
 ];
 
 const deleteSubOpts = [
-    { id: "delete_m", results: ["delete_m", "delete"],label_ko: "멘탈 삭제", label_ja: "メンタルカード削除", type: "checkbox" },
-    { id: "delete_a", results: ["delete_a", "delete"],label_ko: "액티브 삭제", label_ja: "アクティブカード削除", type: "checkbox" },
+    { id: "delete_m", results: ["delete_m"],label_ko: "멘탈 삭제", label_ja: "メンタルカード削除", type: "checkbox" },
+    { id: "delete_a", results: ["delete_a"],label_ko: "액티브 삭제", label_ja: "アクティブカード削除", type: "checkbox" },
 ];
 
 export const activityOptions = {

@@ -207,8 +207,8 @@ export const produceList = [
     { id: "ssrsaki_ameagariunit", name: "비 갠 뒤의 아이리스",name_ja: "雨上がりのアイリス", rarity: "PSSR", plan: "logic", source: "limited_u" },               
     { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스",name_ja: "雨上がりのアイリス", rarity: "PSSR", plan: "sense", source: "limited_u" },               
     { id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스",name_ja: "雨上がりのアイリス", rarity: "PSSR", plan: "anomaly", source: "limited_u" },                           
-    { id: "ssrchina_michinaruunit", name: "미지로 펼쳐지는",name_ja: "みちなるひろがる", rarity: "PSSR", plan: "logic", source: "limited_u" },    
-    { id: "ssrhiro_michinaruunit", name: "미지로 펼쳐지는",name_ja: "みちなるひろがる", rarity: "PSSR", plan: "sense", source: "limited_u" },      
+    { id: "ssrchina_michinaruunit", name: "미지로 펼쳐지는",name_ja: "みちなるひろがる", rarity: "PSSR", plan: "sense", source: "limited_u" },    
+    { id: "ssrhiro_michinaruunit", name: "미지로 펼쳐지는",name_ja: "みちなるひろがる", rarity: "PSSR", plan: "logic", source: "limited_u" },      
 
     // --- PSR (Produce SR) ---
     { id: "srrinami_1sr", name: "『나다움』의 시작",name_ja:"『私らしさ』のはじまり", rarity: "PSR", plan: "sense", source: "normal" },

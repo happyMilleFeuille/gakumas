@@ -6,7 +6,7 @@ import { idolData } from './calcStats.js';
 /**
  * 하단 활동 카운터 UI 업데이트
  */
-export function updateActivityCountsUI(counts, spCounts, extraCounts, currentPlan, allPossibleValues, sortOrder) {
+export function updateActivityCountsUI(counts, spCounts, extraCounts, currentPlan, allPossibleValues, sortOrder, calcType) {
     const counterContainer = document.getElementById('activity-counter');
     if (!counterContainer) return;
 
@@ -34,23 +34,59 @@ export function updateActivityCountsUI(counts, spCounts, extraCounts, currentPla
     });
     html += '</div>';
 
+    // 1. 강화 분배기
+    const totalEnhance = Number(extraCounts.enhance) || 0;
+    const mCount = Number(extraCounts.enhance_m) || 0;
+    const aCount = Number(extraCounts.enhance_a) || 0;
+    let enhanceDisplay = `
+        <div class="enhance-item-content">
+            <span class="dist-label">강화 <span class="counter-count">${totalEnhance}</span></span>
+            <div class="dist-group">
+                <div class="dist-unit"><span>멘탈</span><span class="dist-val">${mCount}</span><button class="dist-btn plus" data-dist="m">+</button></div>
+                <div class="dist-unit"><span>액티브</span><span class="dist-val">${aCount}</span><button class="dist-btn plus" data-dist="a">+</button></div>
+            </div>
+        </div>
+    `;
+
+    // 2. 삭제 분배기
+    const totalDelete = Number(extraCounts.delete) || 0;
+    const mDelCount = Number(extraCounts.delete_m) || 0;
+    const aDelCount = Number(extraCounts.delete_a) || 0;
+    let deleteDisplay = `
+        <div class="enhance-item-content" style="background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1);">
+            <span class="dist-label">삭제 <span class="counter-count" style="color: #555;">${totalDelete}</span></span>
+            <div class="dist-group">
+                <div class="dist-unit"><span>멘탈</span><span class="dist-val" style="color: #555;">${mDelCount}</span><button class="dist-btn plus" data-dist="dm">+</button></div>
+                <div class="dist-unit"><span>액티브</span><span class="dist-val" style="color: #555;">${aDelCount}</span><button class="dist-btn plus" data-dist="da">+</button></div>
+            </div>
+        </div>
+    `;
+
+    // 3. 카드 획득 분배기
+    const totalGet = Number(extraCounts.get) || 0;
+    const mGetCount = Number(extraCounts.get_m) || 0;
+    const aGetCount = Number(extraCounts.get_a) || 0;
+    let getDisplay = `
+        <div class="enhance-item-content" style="background: rgba(255, 193, 7, 0.05); border-color: rgba(255, 193, 7, 0.2);">
+            <span class="dist-label">카드획득 <span class="counter-count" style="color: #ff9800;">${totalGet}</span></span>
+            <div class="dist-group">
+                <div class="dist-unit"><span>멘탈</span><span class="dist-val" style="color: #ff9800;">${mGetCount}</span><button class="dist-btn plus" data-dist="gm">+</button></div>
+                <div class="dist-unit"><span>액티브</span><span class="dist-val" style="color: #ff9800;">${aGetCount}</span><button class="dist-btn plus" data-dist="ga">+</button></div>
+            </div>
+        </div>
+    `;
+
     html += `
         <div class="counter-divider" style="width: 100%; height: 1px; background: rgba(0,0,0,0.08); margin: 2px 0;"></div>
         <div class="extra-text-counts" style="font-size: 0.75rem; display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: center; color: #555; font-weight: 500;">
-            <div class="text-count-item" style="opacity: ${extraCounts.enhance > 0 ? 1 : 0.4}">강화 <span class="counter-count">${extraCounts.enhance}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.enhance_m > 0 ? 1 : 0.4}">멘탈강화 <span class="counter-count">${extraCounts.enhance_m}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.enhance_a > 0 ? 1 : 0.4}">액티브강화 <span class="counter-count">${extraCounts.enhance_a}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.delete > 0 ? 1 : 0.4}">삭제 <span class="counter-count">${extraCounts.delete}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.delete_m > 0 ? 1 : 0.4}">멘탈삭제 <span class="counter-count">${extraCounts.delete_m}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.delete_a > 0 ? 1 : 0.4}">액티브삭제 <span class="counter-count">${extraCounts.delete_a}</span></div>
+            <div class="text-count-item" style="opacity: ${totalEnhance > 0 ? 1 : 0.4}; border:none; padding:0;">${enhanceDisplay}</div>
+            <div class="text-count-item" style="opacity: ${totalDelete > 0 ? 1 : 0.4}; border:none; padding:0;">${deleteDisplay}</div>
+            <div class="text-count-item" style="opacity: ${totalGet > 0 ? 1 : 0.4}; border:none; padding:0;">${getDisplay}</div>
+            <div class="text-count-item" style="opacity: ${extraCounts.get_ssr > 0 ? 1 : 0.4}">SSR획득 <span class="counter-count">${extraCounts.get_ssr}</span></div>
             <div class="text-count-item" style="opacity: ${extraCounts.get_drink > 0 ? 1 : 0.4}">드링크획득 <span class="counter-count">${extraCounts.get_drink}</span></div>
             <div class="text-count-item" style="opacity: ${extraCounts.purchase_drink > 0 ? 1 : 0.4}">드링크구매 <span class="counter-count">${extraCounts.purchase_drink}</span></div>
             <div class="text-count-item" style="opacity: ${extraCounts.change > 0 ? 1 : 0.4}">체인지 <span class="counter-count">${extraCounts.change}</span></div>
             <div class="text-count-item" style="opacity: ${extraCounts.customize > 0 ? 1 : 0.4}">개조 <span class="counter-count">${extraCounts.customize}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.get > 0 ? 1 : 0.4}">카드획득 <span class="counter-count">${extraCounts.get}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.get_m > 0 ? 1 : 0.4}">멘탈획득 <span class="counter-count">${extraCounts.get_m}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.get_a > 0 ? 1 : 0.4}">액티브획득 <span class="counter-count">${extraCounts.get_a}</span></div>
-            <div class="text-count-item" style="opacity: ${extraCounts.get_ssr > 0 ? 1 : 0.4}">SSR획득 <span class="counter-count">${extraCounts.get_ssr}</span></div>
             <div class="text-count-item" style="opacity: ${extraCounts.get_genki > 0 ? 1 : 0.4}">원기획득 <span class="counter-count">${extraCounts.get_genki}</span></div>
             ${currentPlan === 'sense' ? `
                 <div class="text-count-item" style="opacity: ${extraCounts.get_goodcondition > 0 ? 1 : 0.4}">호조획득 <span class="counter-count">${extraCounts.get_goodcondition}</span></div>
