@@ -181,7 +181,14 @@ function refreshCardBonuses() {
             const bonus = calculateCardBonus(card, detailedCounts, state.supportLB[card.id] || 0);
             let val = bonus.vocal + bonus.dance + bonus.visual + (bonus.percent > 0 ? Math.round((baseTotal[card.type] || 0) * (bonus.percent / 100)) : 0);
             const bonusEl = item.querySelector('.bonus-val');
-            if (bonusEl) bonusEl.textContent = val > 0 ? `+${val}` : '';
+            if (bonusEl) {
+                bonusEl.textContent = val > 0 ? `+${val}` : '';
+                // SP 레슨 업 클래스 초기화 및 조건부 추가
+                bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
+                if (card.abilities.includes('sp_lessonup')) {
+                    bonusEl.classList.add(`sp-${card.type}`);
+                }
+            }
             item.style.order = -val;
         });
     }

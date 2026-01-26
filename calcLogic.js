@@ -134,11 +134,18 @@ export function calculateAllTotals(detailedCounts, selectedIds) {
         }
     });
 
-    baseTotal.vocal += baseStats.initial.vocal || 0;
-    baseTotal.dance += baseStats.initial.dance || 0;
-    baseTotal.visual += baseStats.initial.visual || 0;
+    // 2. 아이돌 성장 보너스 적용
+    const currentIdolBtn = document.querySelector('.idol-sel-item.active');
+    const currentIdolId = currentIdolBtn?.dataset.id;
+    const currentIdolData = idolData[currentIdolId];
 
-    // 2. 카드 보너스 합산
+    if (currentIdolData) {
+        cardBonusTotal.vocal += Math.floor(baseTotal.vocal * (currentIdolData.vocalBonus / 100));
+        cardBonusTotal.dance += Math.floor(baseTotal.dance * (currentIdolData.danceBonus / 100));
+        cardBonusTotal.visual += Math.floor(baseTotal.visual * (currentIdolData.visualBonus / 100));
+    }
+
+    // 3. 카드 보너스 합산
     selectedIds.forEach(cardId => {
         const card = cardList.find(c => c.id === cardId);
         if (!card) return;

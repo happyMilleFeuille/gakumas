@@ -38,7 +38,7 @@ export const calcPlans = {
                 { value: "spclass"},
             ],         
             10: [
-                { value: "test"},
+                { value: "test",results:["get","get","get","get"]},
             ],
             11: [
                 { value: "goout_hajime"},

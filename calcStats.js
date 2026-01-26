@@ -82,22 +82,21 @@ export const getNiaLessonStat = (actionId, isSP, week) => {
 
     
 
-// 아이돌별 데이터 (특화 순서 및 성장 유형)
+// 아이돌별 데이터 (특화 순서, 성장 유형 및 성장 보너스%)
 export const idolData = {
-    'saki': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced' },
-    'temari': { priority: ['vocal', 'dance', 'visual'], growthType: 'protruded' },
-    'kotone': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded' },
-    'tsubame': { priority: ['dance', 'vocal', 'visual'], growthType: 'protruded' },
-    'mao': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded' },
-    'lilja': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced' },
-    'china': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded' },
-    'sumika': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded' },
-    'hiro': { priority: ['vocal', 'dance', 'visual'], growthType: 'balanced' },
-    'sena': { priority: ['visual', 'vocal', 'dance'], growthType: 'balanced' },
-    'misuzu': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded' },
-    'ume': { priority: ['dance', 'vocal', 'visual'], growthType: 'balanced' },
-    'rinami': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced' }
-
+    'saki': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 16.5, danceBonus: 16.5, visualBonus: 20.5 },
+    'temari': { priority: ['vocal', 'dance', 'visual'], growthType: 'protruded', vocalBonus: 24.0, danceBonus: 21.5, visualBonus: 8.5 },
+    'kotone': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 8.0, danceBonus: 24.5, visualBonus: 22.5 },
+    'tsubame': { priority: ['dance', 'vocal', 'visual'], growthType: 'protruded', vocalBonus: 15, danceBonus: 20, visualBonus: 12 },
+    'mao': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded', vocalBonus: 22.0, danceBonus: 8.0, visualBonus: 23.0 },
+    'lilja': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 18.0, danceBonus: 20.0, visualBonus: 18.0 },
+    'china': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 10.0, danceBonus: 24.0, visualBonus: 20.5 },
+    'sumika': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 9.0, danceBonus: 23.0, visualBonus: 23.0 },
+    'hiro': { priority: ['vocal', 'dance', 'visual'], growthType: 'balanced', vocalBonus: 23.0, danceBonus: 19.5, visualBonus: 10.0 },
+    'sena': { priority: ['visual', 'vocal', 'dance'], growthType: 'balanced', vocalBonus: 15.0, danceBonus: 8.0, visualBonus: 20.5 },
+    'misuzu': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded', vocalBonus: 27.0, danceBonus: 10.0, visualBonus: 18.0 },
+    'ume': { priority: ['dance', 'vocal', 'visual'], growthType: 'balanced', vocalBonus: 20.0, danceBonus: 23.0, visualBonus: 15.0 },
+    'rinami': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 11.0, danceBonus: 21.5, visualBonus: 23.5 }
 };
 
     
