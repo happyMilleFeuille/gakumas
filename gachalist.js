@@ -223,8 +223,22 @@ export function pickGacha(count = 1, poolType = 'normal') {
 
         const pickedCard = (poolType === 'test' && key === 'PSSR') 
             ? (() => {
-                const rinamiPool = pool.PSSR.filter(c => c.id.startsWith('ssrrinami_') && !c.another);
-                return rinamiPool.length > 0 ? rinamiPool[Math.floor(Math.random() * rinamiPool.length)] : targetPool[Math.floor(Math.random() * targetPool.length)];
+                const testPickups = CURRENT_PICKUPS.test.pssr || [];
+                const testOthers = CURRENT_PICKUPS.test.others || [];
+                
+                // 픽업 리스트와 일반 리스트를 합침
+                const allTestCandidates = [
+                    ...testPickups.map(p => ({ id: p.id, isPickup: true })),
+                    ...testOthers.map(id => ({ id: id, isPickup: false }))
+                ];
+
+                if (allTestCandidates.length > 0) {
+                    const chosen = allTestCandidates[Math.floor(Math.random() * allTestCandidates.length)];
+                    // 테스트 모드이므로 풀 필터링을 무시하고 전체 데이터(produceList)에서 직접 찾음
+                    const card = produceList.find(c => c.id === chosen.id);
+                    if (card) return card;
+                }
+                return targetPool[Math.floor(Math.random() * targetPool.length)];
               })()
             : targetPool[Math.floor(Math.random() * targetPool.length)];
         

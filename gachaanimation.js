@@ -266,12 +266,19 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 if (clickTimer) clearTimeout(clickTimer);
                 canClick = false; 
                 if (currentSubVideo === "pssr_intro") {
-                    const specialSrc = `gasya/pssr/${card.id}.mp4`;
-                    const specialBlob = assetBlobs[specialSrc];
-                    const finalSrc = specialBlob || specialSrc;
+                    // 어나더 카드인 경우 원본 영상 ID 추출 (예: ssrrinami_1st2another -> ssrrinami_1st)
+                    let videoId = card.id;
+                    if (card.another) {
+                        const match = card.id.match(/(.*_.*?st)/); // '...st'로 끝나는 원본 패턴 추출
+                        if (match) videoId = match[1];
+                    }
+
+                    const specialSrc = `gasya/pssr/${videoId}.mp4`;
+                    // 본인 영상이 없으면 원본 ID 영상으로 폴백
+                    const finalSrc = assetBlobs[`gasya/pssr/${card.id}.mp4`] || assetBlobs[specialSrc] || specialSrc;
                     
                     videoNext.src = finalSrc;
-                    videoNext.muted = state.gachaMuted; // PSSR 본 영상은 소리 재생 허용
+                    videoNext.muted = state.gachaMuted; 
                     videoNext.onplaying = () => {
                         currentSubVideo = "pssr_special"; 
                         if (clickTimer) clearTimeout(clickTimer);

@@ -25,7 +25,18 @@ export const CURRENT_PICKUPS = {
         sr_card: []
     },
     test: { 
-        pssr: [{ id: 'ssrrinami_3rd', char: 'rinami' }],
+        // 픽업 연출(블랙아웃) 확인용 카드 리스트
+        pssr: [
+            { id: 'ssrtemari_campusfes', char: 'temari' },            
+        ],
+        // 일반 SSR 연출 확인용 카드 리스트 (블랙아웃 안 터짐)
+        others: [
+            'ssrrinami_1st2another',
+            'ssrume_starmineunit',
+            'ssrsena_campusfes',
+            'ssrtemari_1st9another',
+            'ssrtemari_1st4another',
+        ],
         sssr: [],
         sr_card: []
     }

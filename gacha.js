@@ -448,13 +448,21 @@ export function renderGacha() {
         const results = animation.prepareResults(mode);
         const pssrCards = results.filter(c => c.rarity === 'PSSR');
         if (pssrCards.length > 0) {
-            const loadPromises = pssrCards.map(card => {
-                const videoPath = `gasya/pssr/${card.id}.mp4`;
-                if (assetBlobs[videoPath]) return Promise.resolve();
-                return fetch(videoPath).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(buffer => { 
-                    const blob = new Blob([buffer], { type: 'video/mp4' });
-                    assetBlobs[videoPath] = URL.createObjectURL(blob); 
-                }).catch(() => {});
+            const loadPromises = pssrCards.flatMap(card => {
+                let videoIds = [card.id];
+                if (card.another) {
+                    const match = card.id.match(/(.*_.*?st)/);
+                    if (match && !videoIds.includes(match[1])) videoIds.push(match[1]);
+                }
+
+                return videoIds.map(vid => {
+                    const videoPath = `gasya/pssr/${vid}.mp4`;
+                    if (assetBlobs[videoPath]) return Promise.resolve();
+                    return fetch(videoPath).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(buffer => { 
+                        const blob = new Blob([buffer], { type: 'video/mp4' });
+                        assetBlobs[videoPath] = URL.createObjectURL(blob); 
+                    }).catch(() => {});
+                });
             });
             await Promise.allSettled(loadPromises);
         }

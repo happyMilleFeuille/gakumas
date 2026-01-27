@@ -2,15 +2,15 @@
 export const produceList = [
     // --- 리나미 SSR (PSSR) ---
     { id: "ssrrinami_1st", name: "clumsy trick", rarity: "PSSR",plan: "sense", source: "normal"   ,jumpTime2:10.3},
-    { id: "ssrrinami_1st2another", name: "관국",name_ja:"冠菊", rarity: "PSSR", plan: "sense", source: "limited", another: true },
+    { id: "ssrrinami_1st2another", name: "관국",name_ja:"冠菊", rarity: "PSSR", plan: "sense", source: "limited", another: true ,jumpTime2:6.2},
     { id: "ssrrinami_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
-    { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR",  plan: "sense",source: "limited", another: true },
+    { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR",  plan: "sense",source: "limited", another: true ,jumpTime2:8.1},
     { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR",  plan: "sense",source: "limited", another: true },
     { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프",name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", another: true },
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" ,another: true},
-    { id: "ssrrinami_2nd", name: "L.U.V", rarity: "PSSR",plan: "logic",  source: "normal"   ,jumpTime2:11.4},
+    { id: "ssrrinami_2nd", name: "L.U.V", rarity: "PSSR",plan: "logic",  source: "normal"   },
     { id: "ssrrinami_3rd", name: "36℃ U.B.U", rarity: "PSSR", plan: "logic", source: "normal"   ,jumpTime2:8.7},
 
         // --- 사키 SSR (PSSR) ---
@@ -18,11 +18,11 @@ export const produceList = [
     { id: "ssrsaki_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
     { id: "ssrsaki_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR",  plan: "sense",source: "limited", another: true },    
     { id: "ssrsaki_1st4another", name: "White Night! White Wish!", rarity: "PSSR",plan: "sense",  source: "limited" , another: true},
-    { id: "ssrsaki_1st5another", name: "해피 밀퓌유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", source: "limited", another: true },
+    { id: "ssrsaki_1st5another", name: "해피 밀퓌유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", source: "limited", another: true ,jumpTime2:7.2},
     { id: "ssrsaki_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "sense", source: "limited" , another: true},          
     { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true},        
     { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited", another: true },
-    { id: "ssrsaki_2nd", name: "Boom Boom Pow", rarity: "PSSR", plan: "logic", source: "normal" },
+    { id: "ssrsaki_2nd", name: "Boom Boom Pow", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:9.3},
 
 
     // --- 치나 SSR (PSSR) ---
@@ -39,8 +39,8 @@ export const produceList = [
     { id: "ssrchina_3rd", name: "하늘과 약속", name_ja: "空と約束",rarity: "PSSR", plan: "sense", source: "normal" },
 
         // --- 스미카 SSR (PSSR) ---
-    { id: "ssrsumika_1st", name: "Tame-Lie-One-Step", rarity: "PSSR",plan: "sense",  source: "normal" },
-    { id: "ssrsumika_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
+    { id: "ssrsumika_1st", name: "Tame-Lie-One-Step", rarity: "PSSR",plan: "sense",  source: "normal" ,jumpTime2:6.4},
+    { id: "ssrsumika_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited" , another: true,jumpTime2:6.3},
     { id: "ssrsumika_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", source: "limited", another: true },       
     { id: "ssrsumika_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st5another", name: "해피 밀퓌유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", source: "limited", another: true },
@@ -48,7 +48,7 @@ export const produceList = [
     { id: "ssrsumika_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", another: true },
     { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true},    
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
-    { id: "ssrsumika_2nd", name: "숨겼던 나",name_ja: "カクシタワタシ", rarity: "PSSR", plan: "anomaly", source: "normal" },
+    { id: "ssrsumika_2nd", name: "숨겼던 나",name_ja: "カクシタワタシ", rarity: "PSSR", plan: "anomaly", source: "normal",jumpTime2:12.2},
     { id: "ssrsumika_3rd", name: "Love & Joy", rarity: "PSSR", plan: "sense", source: "normal" },
 
 
@@ -79,16 +79,16 @@ export const produceList = [
     { id: "ssrkotone_3rd", name: "자기긍정감 떡상↑↑ 슈키슈키송",name_ja:"自己肯定感爆上げ↑↑しゅきしゅきソング", rarity: "PSSR", plan: "sense", source: "normal" },        
 
     // --- 테마리 SSR (PSSR) ---
-    { id: "ssrtemari_1st", name: "Luna say maybe", rarity: "PSSR", plan: "sense", source: "normal" },
+    { id: "ssrtemari_1st", name: "Luna say maybe", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:11.4},
     { id: "ssrtemari_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "sense", source: "limited" , another: true},   
     { id: "ssrtemari_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", another: true },     
-    { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR",  plan: "sense",source: "limited" , another: true},    
+    { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR",  plan: "sense",source: "limited" , another: true,jumpTime2:8.0},    
     { id: "ssrtemari_1st5another", name: "해피 밀퓌유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", source: "limited", another: true},   
     { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프",name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrtemari_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", another: true },
-    { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true},    
+    { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true,jumpTime2:6.4},    
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
-    { id: "ssrtemari_2nd", name: "아이비",name_ja: "アイヴイ", rarity: "PSSR", plan: "logic", source: "normal" },
+    { id: "ssrtemari_2nd", name: "아이비",name_ja: "アイヴイ", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:9.3},
     { id: "ssrtemari_3rd", name: "대체 언제부터",name_ja:"一体いつから", rarity: "PSSR", plan: "anomaly", source: "normal" },        
 
     // --- 릴리야 SSR (PSSR) ---
@@ -105,25 +105,25 @@ export const produceList = [
 
 
     // --- 히로 SSR (PSSR) ---
-    { id: "ssrhiro_1st", name: "광경",name_ja:"光景", rarity: "PSSR", plan: "logic", source: "normal" },
-    { id: "ssrhiro_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
+    { id: "ssrhiro_1st", name: "광경",name_ja:"光景", rarity: "PSSR", plan: "logic", source: "normal",jumpTime2:10.3 },
+    { id: "ssrhiro_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "logic", source: "limited" , another: true,jumpTime2:6.3},
     { id: "ssrhiro_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
     { id: "ssrhiro_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
-    { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited" , another: true},    
+    { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited" , another: true,jumpTime2:8.2},    
     { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프",name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", another: true },
     { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", source: "limited" , another: true},        
     { id: "ssrhiro_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
-    { id: "ssrhiro_2nd", name: "콘트라스트",name_ja: "コントラスト", rarity: "PSSR", plan: "sense", source: "normal" },
-    { id: "ssrhiro_3rd", name: "sunfaded",name_ja: "サンフェーデッド", rarity: "PSSR", plan: "anomaly", source: "normal" },    
+    { id: "ssrhiro_2nd", name: "콘트라스트",name_ja: "コントラスト", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:10.3},
+    { id: "ssrhiro_3rd", name: "sunfaded",name_ja: "サンフェーデッド", rarity: "PSSR", plan: "anomaly", source: "normal" ,jumpTime2:8.3},    
 
     // --- 츠바메 SSR (PSSR) ---    
-    { id: "ssrtsubame_1st", name: "이론무장하고",name_ja: "理論武装して", rarity: "PSSR", plan: "logic", source: "normal" },   
+    { id: "ssrtsubame_1st", name: "이론무장하고",name_ja: "理論武装して", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:7.8},   
 
     
     // --- 세나 SSR (PSSR) ---
-    { id: "ssrsena_1st", name: "작은 야망",name_ja:"ちいさな野望", rarity: "PSSR", plan: "anomaly", source: "normal" },
+    { id: "ssrsena_1st", name: "작은 야망",name_ja:"ちいさな野望", rarity: "PSSR", plan: "anomaly", source: "normal",jumpTime2:9.4 },
     { id: "ssrsena_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", another: true },
     { id: "ssrsena_1st7another", name: "벚꽃 포토그래프",name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited" , another: true},
     { id: "ssrsena_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "anomaly", source: "normal" , another: true},
@@ -134,14 +134,14 @@ export const produceList = [
     { id: "ssrsena_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR",  plan: "anomaly",source: "limited" , another: true},
     { id: "ssrsena_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR",plan: "anomaly",  source: "limited", another: true },    
     { id: "ssrsena_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited" , another: true},    
-    { id: "ssrsena_2nd", name: "Our Chant", rarity: "PSSR", plan: "logic", source: "normal" },
+    { id: "ssrsena_2nd", name: "Our Chant", rarity: "PSSR", plan: "logic", source: "normal",jumpTime2:10.1 },
 
     // --- 우메 SSR (PSSR) ---
-    { id: "ssrume_1st", name: "The Rolling Riceball", rarity: "PSSR", plan: "logic", source: "normal" },
+    { id: "ssrume_1st", name: "The Rolling Riceball", rarity: "PSSR", plan: "logic", source: "normal",jumpTime2:9.4 },
     { id: "ssrume_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
     { id: "ssrume_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrume_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR",plan: "logic",  source: "limited", another: true },    
-    { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", another: true },
+    { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", another: true ,jumpTime2:6.3},
     { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", source: "limited" , another: true},        
     { id: "ssrume_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrume_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR",plan: "logic",  source: "limited", another: true },
@@ -149,7 +149,7 @@ export const produceList = [
 
 
     // --- 미스즈 SSR (PSSR) ---
-    { id: "ssrmisuzu_1st", name: "달거북이",name_ja:"ツキノカメ", rarity: "PSSR", plan: "anomaly", source: "normal" },
+    { id: "ssrmisuzu_1st", name: "달거북이",name_ja:"ツキノカメ", rarity: "PSSR", plan: "anomaly", source: "normal" ,jumpTime2:11.3},
     { id: "ssrmisuzu_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "anomaly", source: "limited", another: true },    
     { id: "ssrmisuzu_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited" , another: true},    
     { id: "ssrmisuzu_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", source: "limited", another: true},
@@ -157,22 +157,22 @@ export const produceList = [
     { id: "ssrmisuzu_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", source: "limited" , another: true},    
     { id: "ssrmisuzu_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "anomaly", source: "normal", another: true },      
     { id: "ssrmisuzu_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited", another: true },    
-    { id: "ssrmisuzu_2nd", name: "Superlative", rarity: "PSSR", plan: "logic", source: "normal" },    
+    { id: "ssrmisuzu_2nd", name: "Superlative", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:7.2},    
     
     
     // 특별 통상
-    { id: "ssrrinami_onsen", name:"어서오세요 초성온천",name_ja: "ようこそ初星温泉", rarity: "PSSR",plan: "logic",  source: "normal"    ,jumpTime2:12.3},
+    { id: "ssrrinami_onsen", name:"어서오세요 초성온천",name_ja: "ようこそ初星温泉", rarity: "PSSR",plan: "logic",  source: "normal",jumpTime2:12.3},
     { id: "ssrchina_onsen", name:"어서오세요 초성온천",name_ja: "ようこそ初星温泉", rarity: "PSSR", plan: "sense", source: "normal" },
-    { id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal" },    
+    { id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:11.2},    
     
     // 페스 (Campus Fes)
     { id: "ssrrinami_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "anomaly", source: "limited_f" },
     { id: "ssrchina_campusfes", name: "Campus mode!!", rarity: "PSSR",plan: "logic",  source: "limited_f" },    
-    { id: "ssrtsubame_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f" },    
-    { id: "ssrsena_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f" },        
+    { id: "ssrtsubame_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f",jumpTime2:8.5 },    
+    { id: "ssrsena_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f",jumpTime2:8.4 },        
     { id: "ssrmisuzu_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "logic", source: "limited_f" },        
-    { id: "ssrsaki_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f" },             
-    { id: "ssrtemari_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f" },
+    { id: "ssrsaki_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f" ,jumpTime2:8.4 },             
+    { id: "ssrtemari_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "sense", source: "limited_f",jumpTime2:8.3 },
     { id: "ssrkotone_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "logic", source: "limited_f" },    
     { id: "ssrmao_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "anomaly", source: "limited_f" },    
     { id: "ssrlilja_campusfes", name: "Campus mode!!", rarity: "PSSR",plan: "sense",  source: "limited_f" },        
@@ -190,7 +190,7 @@ export const produceList = [
     { id: "ssrume_christmaslimited", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited" },   
     { id: "ssrlilja_christmaslimited", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", source: "limited" },   
     { id: "ssrrinami_valentinelimited", name: "해피 밀퓌유",name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "anomaly", source: "limited",jumpTime2:9.3},       
-    { id: "ssrsena_valentinelimited", name: "해피 밀퓌유",name_ja: "ハッピーミルフィーユ", rarity: "PSSR",  source: "limited" },           
+    { id: "ssrsena_valentinelimited", name: "해피 밀퓌유",name_ja: "ハッピーミルフィーユ", rarity: "PSSR",  source: "limited" ,jumpTime2:9.8},           
     { id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에",name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited" },     
     { id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에",name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited" },                
     { id: "ssrchina_howlinglimited", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", source: "limited" },    
@@ -201,8 +201,8 @@ export const produceList = [
     { id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited" },         
 
     // 유닛 (unit)
-    { id: "ssrsena_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "sense", source: "limited_u" },        
-    { id: "ssrume_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "logic", source: "limited_u" },        
+    { id: "ssrsena_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "sense", source: "limited_u",jumpTime2:10.6},        
+    { id: "ssrume_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "logic", source: "limited_u",jumpTime2:10.4 },        
     { id: "ssrmisuzu_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "anomaly", source: "limited_u" },           
     { id: "ssrsaki_ameagariunit", name: "비 갠 뒤의 아이리스",name_ja: "雨上がりのアイリス", rarity: "PSSR", plan: "logic", source: "limited_u" },               
     { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스",name_ja: "雨上がりのアイリス", rarity: "PSSR", plan: "sense", source: "limited_u" },               
