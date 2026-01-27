@@ -198,20 +198,27 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
                 
                 // PSSR 인트로가 아닐 때만 이미지/텍스트 표시
                 if (card.rarity !== 'PSSR') {
-                    imgOverlay.classList.remove('hidden');
-                    imgOverlay.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
-                    imgOverlay.style.transform = `translate(-50%, -50%) scale(${isPSR || isPR ? 0.60 : 0.9})`;
-                    imgOverlay.style.opacity = '1';
-                    nameOverlay.classList.remove('hidden');
-                    nameOverlay.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                    nameOverlay.style.transform = 'translate(-50%, -50%) translateY(0)';
-                    nameOverlay.style.opacity = '1';
-                    if (isNew) {
-                        newBadgeOverlay.classList.remove('hidden');
-                        newBadgeOverlay.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
-                        newBadgeOverlay.style.transform = 'translate(-50%, -50%) scale(1)';
-                        newBadgeOverlay.style.opacity = '1';
-                    }
+                    setTimeout(() => {
+                        imgOverlay.classList.remove('hidden');
+                        void imgOverlay.offsetWidth; // Force reflow
+                        imgOverlay.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
+                        imgOverlay.style.transform = `translate(-50%, -50%) scale(${isPSR || isPR ? 0.60 : 0.9})`;
+                        imgOverlay.style.opacity = '1';
+
+                        nameOverlay.classList.remove('hidden');
+                        void nameOverlay.offsetWidth; // Force reflow
+                        nameOverlay.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+                        nameOverlay.style.transform = 'translate(-50%, -50%) translateY(0)';
+                        nameOverlay.style.opacity = '1';
+
+                        if (isNew) {
+                            newBadgeOverlay.classList.remove('hidden');
+                            void newBadgeOverlay.offsetWidth; // Force reflow
+                            newBadgeOverlay.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
+                            newBadgeOverlay.style.transform = 'translate(-50%, -50%) scale(1)';
+                            newBadgeOverlay.style.opacity = '1';
+                        }
+                    }, 350);
                 }
             };
 
