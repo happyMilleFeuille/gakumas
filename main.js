@@ -28,7 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 전역 UI 상태 동기화 (배경, 버튼 등)
     const syncGlobalUI = () => {
         syncLangBtns();
-        if (state.currentBg) {
+        // 가챠 탭이 아닐 때만 일반 배경 적용 (가챠 탭은 자체 픽업 배경 로직 사용)
+        const isGachaView = document.querySelector('.gacha-container');
+        if (!isGachaView && state.currentBg) {
             applyBackground(state.currentBg);
         }
     };

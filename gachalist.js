@@ -40,10 +40,29 @@ const FES_GUARANTEED_RATES = {
     SSR_CARD: 0.57 * (0.925 / 0.95)
 };
 
+// 테스트 가챠 확률 (SSR 100%: PSSR 50%, SSSR 50%)
+const TEST_RATES = {
+    PSSR: 0.5,
+    SSSR: 0.5,
+    PSR: 0,
+    SSR_CARD: 0,
+    PR: 0,
+    R_CARD: 0
+};
+
 // 부족한 등급용 더미 데이터 (서포트 SR/R 등)
 const dummyData = {
     SR_CARD: [{ id: "ssrcard_dummy", name: "더미 서포트 SR", rarity: "SR", type: "dance" }],
     R_CARD: [{ id: "rcard_dummy", name: "더미 서포트 R", rarity: "R", type: "visual" }]
+};
+
+// 현재 픽업 설정 (ID 목록)
+export const CURRENT_PICKUPS = {
+    normal: ['ssrrinami_3rd'],
+    limited: ['ssrrinami_valentinelimited'],
+    unit: [],
+    fes: [],
+    test: ['ssrrinami_3rd'] // 테스트 가챠용 픽업 추가
 };
 
 export function getGachaPool(poolType = 'normal') {
@@ -85,8 +104,12 @@ export function pickGacha(count = 1, poolType = 'normal') {
     
     // 페스 여부에 따라 확률 테이블 선택
     const isFes = (poolType === 'fes');
-    const currentRates = isFes ? FES_RATES : RATES;
+    let currentRates = isFes ? FES_RATES : RATES;
     const currentGuaranteed = isFes ? FES_GUARANTEED_RATES : GUARANTEED_RATES;
+
+    if (poolType === 'test') {
+        currentRates = TEST_RATES;
+    }
 
     for (let i = 0; i < count; i++) {
         const isGuaranteedSlot = (count === 10 && i === 9); // 10연차의 마지막 자리
@@ -134,8 +157,35 @@ export function pickGacha(count = 1, poolType = 'normal') {
                 }
             }
         }
+        // [신규] 가챠 픽업 로직 (0.75%)
+        else if ((poolType === 'normal' || poolType === 'limited' || poolType === 'test') && key === 'PSSR' && CURRENT_PICKUPS[poolType].length > 0) {
+            // PSSR 당첨(2.0%) 상태에서 픽업 대상(0.75%)인지 판별
+            // 확률: 0.75 / 2.0 = 0.375 (37.5%)
+            const isPickup = Math.random() < (0.75 / 2.0);
+            
+            if (isPickup) {
+                // 해당 풀의 픽업 대상 중에서 랜덤 선택
+                const pickupIds = CURRENT_PICKUPS[poolType];
+                const pickupCards = pool.PSSR.filter(c => pickupIds.includes(c.id));
+                if (pickupCards.length > 0) {
+                    targetPool = pickupCards;
+                }
+            } else {
+                // 픽업이 아닌 경우 (나머지 1.25%)
+                // 해당 풀의 픽업 대상을 제외한 나머지 PSSR 풀에서 선택
+                const otherCards = pool.PSSR.filter(c => !CURRENT_PICKUPS[poolType].includes(c.id));
+                if (otherCards.length > 0) {
+                    targetPool = otherCards;
+                }
+            }
+        }
 
-        const pickedCard = targetPool[Math.floor(Math.random() * targetPool.length)];
+        const pickedCard = (poolType === 'test' && key === 'PSSR') 
+            ? (() => {
+                const rinamiPool = pool.PSSR.filter(c => c.id.startsWith('ssrrinami_') && !c.another);
+                return rinamiPool.length > 0 ? rinamiPool[Math.floor(Math.random() * rinamiPool.length)] : targetPool[Math.floor(Math.random() * targetPool.length)];
+              })()
+            : targetPool[Math.floor(Math.random() * targetPool.length)];
         
         const result = {...pickedCard};
         if (key === 'SSSR' || key === 'PSSR') result.displayRarity = 'SSR';

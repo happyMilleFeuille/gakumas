@@ -4,6 +4,7 @@ import { state, setJewels, setTotalPulls, clearGachaLog, setGachaType } from './
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { openGachaLogModal } from './gachalog.js';
+import { CURRENT_PICKUPS } from './gachalist.js';
 
 const gachaBGM = new Audio();
 gachaBGM.disableRemotePlayback = true;
@@ -38,9 +39,15 @@ export function renderGacha() {
     const fixedBg = document.getElementById('fixed-bg');
     if (fixedBg) {
         fixedBg.style.transition = 'none';
-        fixedBg.style.backgroundSize = 'contain'; // 기본적으로 contain으로 초기화
-        if (state.currentBg) applyBackground(state.currentBg);
-        else {
+        const pickups = CURRENT_PICKUPS[state.gachaType];
+        if (pickups && pickups.length > 0) {
+            fixedBg.style.backgroundImage = `url('idols/${pickups[0]}1.webp')`;
+            fixedBg.style.backgroundSize = 'contain';
+            fixedBg.style.backgroundPosition = 'center';
+            fixedBg.style.filter = '';
+        } else if (state.currentBg) {
+            applyBackground(state.currentBg);
+        } else {
             fixedBg.style.backgroundImage = '';
         }
     }
@@ -71,12 +78,13 @@ export function renderGacha() {
         }
     };
 
-    const types = ['normal', 'limited', 'unit', 'fes'];
+    const types = ['normal', 'limited', 'unit', 'fes', 'test'];
     const typeDisplayNames = {
         normal: state.currentLang === 'ko' ? '통상' : '恒常',
         limited: state.currentLang === 'ko' ? '한정' : '限定',
         unit: state.currentLang === 'ko' ? '유닛' : 'ユニット',
-        fes: state.currentLang === 'ko' ? '페스' : 'フェス'
+        fes: state.currentLang === 'ko' ? '페스' : 'フェス',
+        test: 'Test'
     };
 
     const typeDisplay = document.getElementById('current-gacha-type-display');
@@ -99,6 +107,24 @@ export function renderGacha() {
             if (nextSpan) nextSpan.textContent = typeDisplayNames[types[(idx + 1) % types.length]];
         }
         updateTotalPullsUI();
+
+        // 픽업 배경 업데이트
+        const fixedBg = document.getElementById('fixed-bg');
+        if (fixedBg) {
+            const pickups = CURRENT_PICKUPS[state.gachaType];
+            if (pickups && pickups.length > 0) {
+                const pickupId = pickups[0];
+                fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
+                fixedBg.style.backgroundSize = 'contain';
+                fixedBg.style.backgroundPosition = 'center';
+                fixedBg.style.filter = ''; 
+            } else {
+                fixedBg.style.filter = '';
+                fixedBg.style.backgroundSize = 'contain';
+                if (state.currentBg) applyBackground(state.currentBg);
+                else fixedBg.style.backgroundImage = '';
+            }
+        }
     };
 
     const slideSFX = new Audio('gasya/slide.mp3');
@@ -141,44 +167,45 @@ export function renderGacha() {
         // 드래그(스와이프)로 가챠 종류 전환 기능 추가
         let touchStartX = 0;
         let touchEndX = 0;
+        let isSliding = false; // 위치를 handleSwipe 외부로 이동
         const gachaContainer = contentArea.querySelector('.gacha-container');
 
         const handleSwipe = () => {
+            if (isSliding) return; // 이미 슬라이딩 중이면 무시
+
             const swipeDistance = touchEndX - touchStartX;
             const threshold = 50; // 최소 드래그 거리 (픽셀)
             if (Math.abs(swipeDistance) > threshold) {
+                isSliding = true; // 슬라이딩 시작
                 if (swipeDistance > 0) {
                     animateChange('prev');
                 } else {
                     animateChange('next');
                 }
+                // 애니메이션과 상태 변경이 완료될 즈음(약 300ms) 해제
+                setTimeout(() => { isSliding = false; }, 300);
             }
         };
 
         // 드래그 이벤트를 적용할 대상 목록 (상단 컨텐츠 영역 + 하단 버튼 영역)
-        const swipeTargets = [gachaContainer, fixedBtnArea].filter(Boolean);
+        // fixedBtnArea는 유지되는 요소이므로 한 번만 등록해야 함
+        if (!fixedBtnArea.dataset.swipeInitialized) {
+            fixedBtnArea.dataset.swipeInitialized = "true";
+            
+            // 터치 이벤트
+            fixedBtnArea.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+            fixedBtnArea.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, { passive: true });
 
-        swipeTargets.forEach(target => {
-            // 터치 이벤트 (모바일)
-            target.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
+            // 마우스 이벤트
+            fixedBtnArea.addEventListener('mousedown', (e) => { touchStartX = e.screenX; });
+            fixedBtnArea.addEventListener('mouseup', (e) => { touchEndX = e.screenX; handleSwipe(); });
+        }
 
-            target.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, { passive: true });
-
-            // 마우스 드래그 이벤트 (PC)
-            target.addEventListener('mousedown', (e) => {
-                touchStartX = e.screenX;
-            });
-
-            target.addEventListener('mouseup', (e) => {
-                touchEndX = e.screenX;
-                handleSwipe();
-            });
-        });
+        // gachaContainer는 매번 새로 생성되므로 매번 등록해도 무관
+        gachaContainer.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        gachaContainer.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, { passive: true });
+        gachaContainer.addEventListener('mousedown', (e) => { touchStartX = e.screenX; });
+        gachaContainer.addEventListener('mouseup', (e) => { touchEndX = e.screenX; handleSwipe(); });
     }
 
     updateTypeUI();
@@ -267,7 +294,7 @@ export function renderGacha() {
     if (btn10) btn10.disabled = true;
     if (spinner) spinner.classList.add('active');
 
-    const assets = ['gasya/start_ren1.mp4', 'gasya/start_ren10.mp4', 'gasya/start_bgmnormal.mp3', 'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/screen1.mp3', 'gasya/get_sr.mp4', 'gasya/get_r.mp4', 'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_psrsupport.mp4', 'gasya/spotget_r.mp3'];
+    const assets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_bgmnormal.mp3', 'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/screen1.mp3', 'gasya/get_sr.mp4', 'gasya/get_r.mp4', 'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'];
     const assetBlobs = {}; 
     let loadedCount = 0;
 
@@ -402,30 +429,64 @@ export function renderGacha() {
         }
     };
 
+    const handleGachaClick = async (mode) => {
+        playClickSFX();
+        // 결과창에서의 재시도 비용 확인
+        const isResultView = fixedBtnArea && fixedBtnArea.classList.contains('view-result');
+        const cost = (isResultView && mode === 10) ? (gachaMode === 1 ? 250 : 2500) : (mode === 1 ? 250 : 2500);
+        
+        updateJewelDisplayOnly(cost);
+        if (btn1) btn1.style.pointerEvents = 'none';
+        if (btn10) btn10.style.pointerEvents = 'none';
+
+        // 1. 결과 미리 생성
+        const results = animation.prepareResults(mode);
+        
+        // 2. PSSR 영상 로딩 (필요한 경우에만)
+        const pssrCards = results.filter(c => c.rarity === 'PSSR');
+        if (pssrCards.length > 0) {
+            const loadPromises = pssrCards.map(card => {
+                const videoPath = `gasya/pssr/${card.id}.mp4`;
+                if (assetBlobs[videoPath]) return Promise.resolve();
+                return fetch(videoPath)
+                    .then(r => r.ok ? r.blob() : Promise.reject())
+                    .then(blob => { assetBlobs[videoPath] = URL.createObjectURL(blob); })
+                    .catch(() => {});
+            });
+            await Promise.allSettled(loadPromises);
+        }
+
+        // 3. 애니메이션 시작
+        setTimeout(() => animation.startGacha(mode, results), 50);
+    };
+
     if (btn1) {
         btn1.classList.remove('close-style'); // 초기화 시 클래스 제거
         btn1.innerHTML = translations[state.currentLang].gacha_1pull + "<br><span class='btn-cost'>250</span>";
         btn1.style.pointerEvents = 'auto'; // 확실하게 초기화
-        btn1.onclick = () => {
-            playClickSFX();
-            updateJewelDisplayOnly(250); // 즉시 갱신
-            btn1.style.pointerEvents = 'none';
-            btn10.style.pointerEvents = 'none';
-            setTimeout(() => animation.startGacha(1), 100);
-        };
+        btn1.onclick = () => handleGachaClick(1);
     }
     if (btn10) {
         btn10.innerHTML = translations[state.currentLang].gacha_10pull + "<br><span class='btn-cost'>2500</span>";
         btn10.style.pointerEvents = 'auto'; // 확실하게 초기화
-        btn10.onclick = () => {
-            playClickSFX();
-            updateJewelDisplayOnly(gachaBGM && gachaBGM.src.includes('view-result') ? (gachaMode === 1 ? 250 : 2500) : 2500); // gachaMode 접근 문제 해결 필요
-            // 단순하게 가기로 함: 메인 버튼은 10pull(2500), 결과창 버튼은 gachaMode에 따라 다름.
-            const cost = (fixedBtnArea && fixedBtnArea.classList.contains('view-result')) ? (gachaMode === 1 ? 250 : 2500) : 2500;
-            updateJewelDisplayOnly(cost);
-            btn1.style.pointerEvents = 'none';
-            btn10.style.pointerEvents = 'none';
-            setTimeout(() => animation.startGacha(10), 100);
-        };
+        btn10.onclick = () => handleGachaClick(10);
     }
+
+    // 최종 배경 확정 (진입 시 즉시 반영 보장)
+    requestAnimationFrame(() => {
+        const fixedBg = document.getElementById('fixed-bg');
+        if (fixedBg) {
+            const pickups = CURRENT_PICKUPS[state.gachaType];
+            if (pickups && pickups.length > 0) {
+                fixedBg.style.backgroundImage = `url('idols/${pickups[0]}1.webp')`;
+                fixedBg.style.backgroundSize = 'contain';
+                fixedBg.style.backgroundPosition = 'center';
+                fixedBg.style.filter = '';
+            } else if (state.currentBg) {
+                applyBackground(state.currentBg);
+            } else {
+                fixedBg.style.backgroundImage = '';
+            }
+        }
+    });
 }
