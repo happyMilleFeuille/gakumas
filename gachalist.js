@@ -32,12 +32,21 @@ const GUARANTEED_RATES = {
     SSR_CARD: 0.57 // SR 중 나머지 57% (합계 95%)
 };
 
-// 페스 10연차 마지막 자리 (SSR 1.5배 적용)
-const FES_GUARANTEED_RATES = {
-    PSSR: 0.03,
-    SSSR: 0.045, // SSR 합계 7.5%
-    PSR: 0.38 * (0.925 / 0.95), // 나머지 92.5%를 SR 비율로 재분배
-    SSR_CARD: 0.57 * (0.925 / 0.95)
+// 유닛 가챠 확률 (PSSR 2.25%, SSSR 3%)
+const UNIT_RATES = {
+    PSSR: 0.0225,
+    SSSR: 0.03, 
+    PSR: 0.068,
+    SSR_CARD: 0.102,
+    PR: 0.312,
+    R_CARD: 0.4655 // 합계 1.0을 위해 조정
+};
+
+const UNIT_GUARANTEED_RATES = {
+    PSSR: 0.0225,
+    SSSR: 0.03,
+    PSR: 0.38 * (0.9475 / 0.95), // 나머지 94.75% 분배
+    SSR_CARD: 0.57 * (0.9475 / 0.95)
 };
 
 // 테스트 가챠 확률 (SSR 100%: PSSR 50%, SSSR 50%)
@@ -60,31 +69,34 @@ const dummyData = {
 export const CURRENT_PICKUPS = {
     normal: ['ssrrinami_3rd'],
     limited: ['ssrrinami_valentinelimited'],
-    unit: [],
+    unit: ['ssrchina_michinaruunit', 'ssrhiro_michinaruunit'],
     fes: [],
     test: ['ssrrinami_3rd'] // 테스트 가챠용 픽업 추가
 };
 
 export function getGachaPool(poolType = 'normal') {
     // 풀 타입에 따른 포함 가능한 소스 목록 정의
-    const validSources = ['normal']; // 통상은 기본 포함
+    const validSources = ['normal']; // 기본적으로 통상은 포함
     if (poolType === 'limited') validSources.push('limited');
     if (poolType === 'unit') validSources.push('limited_u');
     if (poolType === 'fes') validSources.push('limited_f');
 
     // 카드 포함 여부 체크 로직
-    const isInPool = (card) => {
+    const isInPool = (card, forceLimitedU = false) => {
         const source = card.source || 'normal';
+        // 유닛 가챠의 PSSR은 통상을 제외하고 limited_u만 포함
+        if (forceLimitedU) return source === 'limited_u' && card.gacha !== false;
         return validSources.includes(source) && card.gacha !== false;
     };
 
-    // 1. 서포트 카드 풀 (모든 등급에 제외 규칙 적용)
+    // 1. 서포트 카드 풀
     const sssrPool = cardList.filter(card => card.rarity === 'SSR' && isInPool(card));
     const srCardPool = cardList.filter(card => card.rarity === 'SR' && isInPool(card));
     const rCardPool = cardList.filter(card => card.rarity === 'R' && isInPool(card));
 
-    // 2. 프로듀스 아이돌 풀 (모든 등급에 제외 규칙 적용)
-    const pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isInPool(p));
+    // 2. 프로듀스 아이돌 풀
+    // 유닛 가챠(poolType === 'unit')일 경우 PSSR 풀에서 통상('normal')을 제외
+    const pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isInPool(p, poolType === 'unit'));
     const psrPool = produceList.filter(p => p.rarity === 'PSR' && isInPool(p));
     const prPool = produceList.filter(p => p.rarity === 'PR' && isInPool(p));
 
@@ -104,12 +116,15 @@ export function pickGacha(count = 1, poolType = 'normal') {
     
     // 페스 여부에 따라 확률 테이블 선택
     const isFes = (poolType === 'fes');
-    let currentRates = isFes ? FES_RATES : RATES;
-    const currentGuaranteed = isFes ? FES_GUARANTEED_RATES : GUARANTEED_RATES;
+    const isUnit = (poolType === 'unit');
+    
+    let currentRates = RATES;
+    if (isFes) currentRates = FES_RATES;
+    else if (isUnit) currentRates = UNIT_RATES;
+    else if (poolType === 'test') currentRates = TEST_RATES;
 
-    if (poolType === 'test') {
-        currentRates = TEST_RATES;
-    }
+    let currentGuaranteed = isFes ? FES_GUARANTEED_RATES : GUARANTEED_RATES;
+    if (isUnit) currentGuaranteed = UNIT_GUARANTEED_RATES;
 
     for (let i = 0; i < count; i++) {
         const isGuaranteedSlot = (count === 10 && i === 9); // 10연차의 마지막 자리
@@ -152,12 +167,32 @@ export function pickGacha(count = 1, poolType = 'normal') {
                 } else if (normalCards.length > 0) {
                     targetPool = normalCards;
                 } else {
-                    // 통상 카드가 없으면(혹시 모를 예외) 그냥 페스 풀에서 뽑음
                     targetPool = fesCards;
                 }
             }
         }
-        // [신규] 가챠 픽업 로직 (0.75%)
+        // [수정] 유닛 가챠 전용 픽업 로직 (1.5% pickup, 0.75% others)
+        else if (isUnit && key === 'PSSR' && CURRENT_PICKUPS.unit.length > 0) {
+            // PSSR 당첨(2.25%) 상태에서 픽업 대상(1.5%)인지 판별
+            // 확률: 1.5 / 2.25 = 0.666... (약 66.7%)
+            const isPickup = Math.random() < (1.5 / 2.25);
+            
+            if (isPickup) {
+                // 유닛 픽업 대상 중에서 랜덤 선택
+                const pickupIds = CURRENT_PICKUPS.unit;
+                const pickupCards = pool.PSSR.filter(c => pickupIds.includes(c.id));
+                if (pickupCards.length > 0) {
+                    targetPool = pickupCards;
+                }
+            } else {
+                // 픽업이 아닌 나머지 유닛 카드 (0.75%)
+                const otherCards = pool.PSSR.filter(c => !CURRENT_PICKUPS.unit.includes(c.id));
+                if (otherCards.length > 0) {
+                    targetPool = otherCards;
+                }
+            }
+        }
+        // [기본] 일반 가챠 픽업 로직 (0.75%)
         else if ((poolType === 'normal' || poolType === 'limited' || poolType === 'test') && key === 'PSSR' && CURRENT_PICKUPS[poolType].length > 0) {
             // PSSR 당첨(2.0%) 상태에서 픽업 대상(0.75%)인지 판별
             // 확률: 0.75 / 2.0 = 0.375 (37.5%)

@@ -142,6 +142,12 @@ export function renderGacha() {
 
     if (btnPrev && btnNext) {
         const animateChange = (direction) => {
+            // 연출 중(immersive-mode)이거나 결과창(view-result)일 때는 전환 금지
+            if (document.body.classList.contains('immersive-mode') || 
+                (fixedBtnArea && fixedBtnArea.classList.contains('view-result'))) {
+                return;
+            }
+
             if (!state.gachaMuted) {
                 slideSFX.currentTime = 0;
                 slideSFX.play().catch(() => {});
@@ -172,6 +178,12 @@ export function renderGacha() {
 
         const handleSwipe = () => {
             if (isSliding) return; // 이미 슬라이딩 중이면 무시
+            
+            // 연출 중이거나 결과창일 때는 드래그 무시
+            if (document.body.classList.contains('immersive-mode') || 
+                (fixedBtnArea && fixedBtnArea.classList.contains('view-result'))) {
+                return;
+            }
 
             const swipeDistance = touchEndX - touchStartX;
             const threshold = 50; // 최소 드래그 거리 (픽셀)
@@ -294,7 +306,7 @@ export function renderGacha() {
     if (btn10) btn10.disabled = true;
     if (spinner) spinner.classList.add('active');
 
-    const assets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_bgmnormal.mp3', 'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/screen1.mp3', 'gasya/get_sr.mp4', 'gasya/get_r.mp4', 'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'];
+    const assets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 'gasya/start_bgmnormal.mp3', 'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3', 'gasya/get_sr.mp4', 'gasya/get_r.mp4', 'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'];
     const assetBlobs = {}; 
     let loadedCount = 0;
 

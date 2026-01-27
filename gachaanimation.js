@@ -286,13 +286,21 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
 
     const playSequel = () => {
         if (videoStep !== 0 || !canClick) return;
+        const isSsr = currentVideoSrc.includes('start_ssr');
         const isSr = currentVideoSrc.includes('start_sr');
-        const jumpTime = isSr ? 8.6 : 9.8;
+        
+        let jumpTime;
+        if (isSsr) jumpTime = 13.9;
+        else if (isSr) jumpTime = 8.6;
+        else jumpTime = 9.8;
 
         if (videoMain) {
             if (videoMain.currentTime > jumpTime + 0.1) return;
             if (!state.gachaMuted) {
-                const clickSfxSrc = isSr ? 'gasya/start_srclick.mp3' : 'gasya/start_click.mp3';
+                let clickSfxSrc = 'gasya/start_click.mp3';
+                if (isSsr) clickSfxSrc = 'gasya/start_ssrclick.mp3';
+                else if (isSr) clickSfxSrc = 'gasya/start_srclick.mp3';
+                
                 if (assetBlobs[clickSfxSrc]) {
                     new Audio(assetBlobs[clickSfxSrc]).play().catch(() => {});
                 }
@@ -333,8 +341,17 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
         videoStep = 0;
         canClick = false;
         setTimeout(() => { canClick = true; }, 600);
+
+        const highest = getHighestRarity(currentResults);
         let src = (mode === 1) ? 'gasya/start_r.mp4' : 'gasya/start_sr.mp4';
-        if (mode === 10 && Math.random() < 0.2) src = 'gasya/start_r.mp4';
+        
+        // SSR이 있고 30% 확률 당첨 시 SSR 연출, 아니면 10연차 시 20% 확률로 R 연출(낚시)
+        if (highest === 'SSR' && Math.random() < 0.3) {
+            src = 'gasya/start_ssr.mp4';
+        } else if (mode === 10 && Math.random() < 0.2) {
+            src = 'gasya/start_r.mp4';
+        }
+
         currentVideoSrc = src;
         if (videoMain && videoContainer) {
             videoContainer.classList.remove('hidden');
@@ -350,8 +367,14 @@ export function setupGachaAnimation(contentArea, assetBlobs, gachaBGM, mainBGM, 
             videoMain.onended = playGetAnimation;
             const checkPausePoint = () => {
                 if (videoStep === 0 && videoMain && !videoMain.paused) {
+                    const isSsr = currentVideoSrc.includes('start_ssr');
                     const isSr = currentVideoSrc.includes('start_sr');
-                    const loopEnd = isSr ? 8.6 : 9.7;
+                    
+                    let loopEnd;
+                    if (isSsr) loopEnd = 13.8;
+                    else if (isSr) loopEnd = 8.6;
+                    else loopEnd = 9.7;
+
                     const loopStart = loopEnd - 1.9;
                     if (videoMain.currentTime >= loopEnd) {
                         videoMain.currentTime = loopStart;
