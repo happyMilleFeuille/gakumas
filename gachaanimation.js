@@ -101,6 +101,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         
         stopBGM('gacha');
         stopBGM('main');
+        stopBGM('blackout'); // 블랙아웃 BGM 정지 추가
         stopStepSfx();
         
         imgOverlay.classList.add('hidden');
@@ -343,6 +344,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             if (!canClick || !isBlackoutLooping) return;
             isBlackoutLooping = false;
             
+            // 블랙아웃 BGM 시작
+            playSound('gasya/blackoutbgm.mp3', { loop: true, isBGM: true, bgmType: 'blackout' });
+
             // 클릭 즉시 다시 차단 (캐릭터 영상 스킵 방지)
             canClick = false; 
             videoNext.onclick = null; 

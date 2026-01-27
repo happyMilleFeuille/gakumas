@@ -303,7 +303,7 @@ export function renderGacha() {
         'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
         'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
         'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
-        'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3',
+        'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3', 'gasya/blackoutbgm.mp3',
         'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
         'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
         'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
