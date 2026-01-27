@@ -532,7 +532,28 @@ export const cardList = [
             "delete",
             "event_paraup"
         ]        
-    },          
+    },
+    { 
+    id: "vocal_unitlogic1", 
+    name: "추억의 보물상자, 네", 
+    name_ja: "思い出の宝箱だ、ね",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"card_a",
+    releasedAt: "2026-01-27",    
+    rarity: "SSR", 
+    source:"limited_u",    
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "gift",
+            "supportrateup", 
+            "test",
+            "get_mental",
+            "event_paraup"
+        ]        
+    },               
     { 
     id: "vocal_feslogic1", 
     name: "어떤 관계인거죠?", 
@@ -2193,7 +2214,7 @@ export const cardList = [
             "delete",
             "event_paraup"
         ]        
-    },         
+    },             
     { 
     id: "vocal_sranomaly1", 
     name: "스파르타&스파이스", 
@@ -2911,7 +2932,28 @@ export const cardList = [
             "goout",            
             "event_paraup"
         ]        
-    },    
+    },
+    { 
+    id: "visual_srunitsense1", 
+    name: "친하다는 증거", 
+    name_ja: "仲良しの証",     
+    type: "visual", 
+    releasedAt: "2026-01-27",         
+    plan: "sense", 
+    source:"limited_u",
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "get_item6",
+            "supportrateup", 
+            "enhance",
+            "spclass",
+            "event_paraup"
+        ]        
+    },         
     { 
     id: "visual_srlogic1", 
     name: "뻣뻣 스트레칭", 

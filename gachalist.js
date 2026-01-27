@@ -1,6 +1,7 @@
 // gachalist.js
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
+import { CURRENT_PICKUPS } from './gachaconfig.js';
 
 // 기본 가챠 확률
 const RATES = {
@@ -63,15 +64,6 @@ const TEST_RATES = {
 const dummyData = {
     SR_CARD: [{ id: "ssrcard_dummy", name: "더미 서포트 SR", rarity: "SR", type: "dance" }],
     R_CARD: [{ id: "rcard_dummy", name: "더미 서포트 R", rarity: "R", type: "visual" }]
-};
-
-// 현재 픽업 설정 (ID 목록)
-export const CURRENT_PICKUPS = {
-    normal: ['ssrrinami_3rd'],
-    limited: ['ssrrinami_valentinelimited'],
-    unit: ['ssrchina_michinaruunit', 'ssrhiro_michinaruunit'],
-    fes: [],
-    test: ['ssrrinami_3rd'] // 테스트 가챠용 픽업 추가
 };
 
 export function getGachaPool(poolType = 'normal') {
@@ -171,46 +163,67 @@ export function pickGacha(count = 1, poolType = 'normal') {
                 }
             }
         }
-        // [수정] 유닛 가챠 전용 픽업 로직 (1.5% pickup, 0.75% others)
-        else if (isUnit && key === 'PSSR' && CURRENT_PICKUPS.unit.length > 0) {
-            // PSSR 당첨(2.25%) 상태에서 픽업 대상(1.5%)인지 판별
-            // 확률: 1.5 / 2.25 = 0.666... (약 66.7%)
-            const isPickup = Math.random() < (1.5 / 2.25);
-            
-            if (isPickup) {
-                // 유닛 픽업 대상 중에서 랜덤 선택
-                const pickupIds = CURRENT_PICKUPS.unit;
-                const pickupCards = pool.PSSR.filter(c => pickupIds.includes(c.id));
-                if (pickupCards.length > 0) {
-                    targetPool = pickupCards;
+        // [수정] 유닛 가챠 전용 픽업 로직
+        else if (isUnit) {
+            const pickups = CURRENT_PICKUPS.unit;
+            if (key === 'PSSR' && pickups.pssr.length > 0) {
+                // PSSR 당첨(2.25%) 상태에서 픽업 대상(1.5%)인지 판별
+                // 확률: 1.5 / 2.25 = 0.666... (약 66.7%)
+                const isPickup = Math.random() < (1.5 / 2.25);
+                if (isPickup) {
+                    const pickupCards = pool.PSSR.filter(c => pickups.pssr.includes(c.id));
+                    if (pickupCards.length > 0) targetPool = pickupCards;
+                } else {
+                    const otherCards = pool.PSSR.filter(c => !pickups.pssr.includes(c.id));
+                    if (otherCards.length > 0) targetPool = otherCards;
                 }
-            } else {
-                // 픽업이 아닌 나머지 유닛 카드 (0.75%)
-                const otherCards = pool.PSSR.filter(c => !CURRENT_PICKUPS.unit.includes(c.id));
-                if (otherCards.length > 0) {
-                    targetPool = otherCards;
+            } else if (key === 'SSSR' && pickups.sssr.length > 0) {
+                // SSSR 당첨(3.0%) 상태에서 픽업 대상(1.0%)인지 판별
+                // 확률: 1.0 / 3.0 = 0.333... (약 33.3%)
+                const isPickup = Math.random() < (1.0 / 3.0);
+                if (isPickup) {
+                    const pickupCards = pool.SSSR.filter(c => pickups.sssr.includes(c.id));
+                    if (pickupCards.length > 0) targetPool = pickupCards;
+                } else {
+                    const otherCards = pool.SSSR.filter(c => !pickups.sssr.includes(c.id));
+                    if (otherCards.length > 0) targetPool = otherCards;
+                }
+            } else if (key === 'SR_CARD' && pickups.sr_card.length > 0) {
+                // SR 서포트 카드 당첨 시 픽업 확률 적용
+                let pickupProb = 0;
+                if (isGuaranteedSlot) {
+                    // 확정 슬롯에서의 픽업 확률: 22.36%
+                    // SR_CARD 당첨 확률: currentGuaranteed.SR_CARD (약 56.8%)
+                    pickupProb = 0.2236 / currentGuaranteed.SR_CARD;
+                } else {
+                    // 일반 슬롯에서의 픽업 확률: 4.0%
+                    // SR_CARD 당첨 확률: currentRates.SSR_CARD (10.2%)
+                    pickupProb = 0.04 / currentRates.SSR_CARD;
+                }
+
+                const isPickup = Math.random() < pickupProb;
+                if (isPickup) {
+                    const pickupCards = pool.SR_CARD.filter(c => pickups.sr_card.includes(c.id));
+                    if (pickupCards.length > 0) targetPool = pickupCards;
+                } else {
+                    const otherCards = pool.SR_CARD.filter(c => !pickups.sr_card.includes(c.id));
+                    if (otherCards.length > 0) targetPool = otherCards;
                 }
             }
         }
-        // [기본] 일반 가챠 픽업 로직 (0.75%)
-        else if ((poolType === 'normal' || poolType === 'limited' || poolType === 'test') && key === 'PSSR' && CURRENT_PICKUPS[poolType].length > 0) {
-            // PSSR 당첨(2.0%) 상태에서 픽업 대상(0.75%)인지 판별
-            // 확률: 0.75 / 2.0 = 0.375 (37.5%)
-            const isPickup = Math.random() < (0.75 / 2.0);
-            
-            if (isPickup) {
-                // 해당 풀의 픽업 대상 중에서 랜덤 선택
-                const pickupIds = CURRENT_PICKUPS[poolType];
-                const pickupCards = pool.PSSR.filter(c => pickupIds.includes(c.id));
-                if (pickupCards.length > 0) {
-                    targetPool = pickupCards;
-                }
-            } else {
-                // 픽업이 아닌 경우 (나머지 1.25%)
-                // 해당 풀의 픽업 대상을 제외한 나머지 PSSR 풀에서 선택
-                const otherCards = pool.PSSR.filter(c => !CURRENT_PICKUPS[poolType].includes(c.id));
-                if (otherCards.length > 0) {
-                    targetPool = otherCards;
+        // [기본] 일반/한정/테스트 가챠 픽업 로직 (PSSR만 처리)
+        else if ((poolType === 'normal' || poolType === 'limited' || poolType === 'test') && key === 'PSSR') {
+            const pickups = CURRENT_PICKUPS[poolType];
+            if (pickups && pickups.pssr && pickups.pssr.length > 0) {
+                // PSSR 당첨(2.0%) 상태에서 픽업 대상(0.75%)인지 판별
+                // 확률: 0.75 / 2.0 = 0.375 (37.5%)
+                const isPickup = Math.random() < (0.75 / 2.0);
+                if (isPickup) {
+                    const pickupCards = pool.PSSR.filter(c => pickups.pssr.includes(c.id));
+                    if (pickupCards.length > 0) targetPool = pickupCards;
+                } else {
+                    const otherCards = pool.PSSR.filter(c => !pickups.pssr.includes(c.id));
+                    if (otherCards.length > 0) targetPool = otherCards;
                 }
             }
         }

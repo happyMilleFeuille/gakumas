@@ -4,7 +4,7 @@ import { state, setJewels, setTotalPulls, clearGachaLog, setGachaType } from './
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { openGachaLogModal } from './gachalog.js';
-import { CURRENT_PICKUPS } from './gachalist.js';
+import { CURRENT_PICKUPS } from './gachaconfig.js';
 
 const gachaBGM = new Audio();
 gachaBGM.disableRemotePlayback = true;
@@ -306,7 +306,19 @@ export function renderGacha() {
     if (btn10) btn10.disabled = true;
     if (spinner) spinner.classList.add('active');
 
-    const assets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 'gasya/start_bgmnormal.mp3', 'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3', 'gasya/get_sr.mp4', 'gasya/get_r.mp4', 'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'];
+    const assets = [
+        'gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 
+        'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
+        'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
+        'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3',
+        'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
+        'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
+        'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
+        'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 
+        'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 
+        'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 
+        'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'
+    ];
     const assetBlobs = {}; 
     let loadedCount = 0;
 
