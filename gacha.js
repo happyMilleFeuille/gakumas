@@ -15,6 +15,10 @@ let activeNodes = {}; // 현재 재생 중인 소스 노드들 관리
 export function playSound(name, options = {}) {
     if (state.gachaMuted || !audioBuffers[name]) return null;
 
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
     const { loop = false, isBGM = false, bgmType = null, offset = 0 } = options;
 
     // 기존 동일 BGM 중단
@@ -150,7 +154,7 @@ export function renderGacha() {
         if (fixedBg) {
             const pickups = CURRENT_PICKUPS[state.gachaType];
             if (pickups && (pickups.pssr.length > 0 || pickups.sssr.length > 0)) {
-                const pickupId = pickups.pssr[0] || pickups.sssr[0];
+                const pickupId = (pickups.pssr.length > 0) ? pickups.pssr[0].id : pickups.sssr[0];
                 fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
                 fixedBg.style.backgroundSize = 'contain';
                 fixedBg.style.backgroundPosition = 'center';
@@ -299,6 +303,7 @@ export function renderGacha() {
         'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
         'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
         'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
+        'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3',
         'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
         'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
         'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
@@ -473,7 +478,7 @@ export function renderGacha() {
         if (fixedBg) {
             const pickups = CURRENT_PICKUPS[state.gachaType];
             if (pickups && (pickups.pssr.length > 0 || pickups.sssr.length > 0)) {
-                const pickupId = pickups.pssr[0] || pickups.sssr[0];
+                const pickupId = (pickups.pssr.length > 0) ? pickups.pssr[0].id : pickups.sssr[0];
                 fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
                 fixedBg.style.backgroundSize = 'contain';
                 fixedBg.style.backgroundPosition = 'center';

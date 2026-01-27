@@ -1,6 +1,7 @@
 import { state, setJewels, setTotalPulls, addGachaLog } from './state.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopBGM } from './gacha.js';
+import { CURRENT_PICKUPS } from './gachaconfig.js';
 
 export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     const videoContainer = contentArea.querySelector('#gacha-video-container');
@@ -74,17 +75,33 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     let currentVideoSrc = "";
     let clickTimer = null;
     let screenSfxTimeout = null;
+    let activeStepSfx = null; // 단계별 효과음 추적용 추가
     let videoStep = 0; 
     let gachaMode = 0;
     let canClick = false;
     let existingIdsSet = new Set();
     let currentSubVideo = ""; 
+    let blackoutScheduled = null; // { step: 1, time: 1.2 } 형태
+    let blackoutTriggered = false;
+
+    // 단계별 효과음 중단 공통 함수
+    const stopStepSfx = () => {
+        if (activeStepSfx) {
+            try {
+                activeStepSfx.stop();
+                activeStepSfx.disconnect();
+            } catch(e) {}
+            activeStepSfx = null;
+        }
+    };
 
     const finishGacha = () => {
         if (clickTimer) clearTimeout(clickTimer);
         if (screenSfxTimeout) clearTimeout(screenSfxTimeout);
         
         stopBGM('gacha');
+        stopBGM('main');
+        stopStepSfx();
         
         imgOverlay.classList.add('hidden');
         imgOverlay.style.opacity = '0';
@@ -145,7 +162,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
             if (clickTimer) clearTimeout(clickTimer);
             canClick = false; 
-            const lockTime = isSSSR ? 1300 : 700;
+            const lockTime = isSSSR ? 1300 : 500;
 
             let getSrc = 'gasya/spotget_rsupport.mp4';
             if (isSRSupport) getSrc = 'gasya/spotget_srsupport.mp4';
@@ -218,20 +235,25 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 if (card.rarity === 'PSSR' && currentSubVideo === "pssr_special") {
                     const j1 = card.jumpTime1 !== undefined ? card.jumpTime1 : 3.3;
                     const j2 = card.jumpTime2;
+                    const cur = videoNext.currentTime;
 
-                    if (videoNext.currentTime < j1) {
-                        videoNext.currentTime = j1;
-                        if (clickTimer) clearTimeout(clickTimer);
-                        canClick = false;
-                        clickTimer = setTimeout(() => { canClick = true; }, 2000);
-                        return;
-                    }
-                    if (j2 !== undefined && videoNext.currentTime < j2) {
-                        videoNext.currentTime = j2;
-                        if (clickTimer) clearTimeout(clickTimer);
-                        canClick = false;
-                        clickTimer = setTimeout(() => { canClick = true; }, 2000);
-                        return;
+                    // 점프 로직: readyState가 1 이상(메타데이터 로드됨)일 때만 수행
+                    if (videoNext.readyState >= 1) {
+                        if (cur < j1) {
+                            videoNext.currentTime = j1;
+                            if (clickTimer) clearTimeout(clickTimer);
+                            canClick = false;
+                            clickTimer = setTimeout(() => { canClick = true; }, 2000);
+                            return;
+                        }
+                        if (j2 !== undefined && cur < j2) {
+                            // 이미 j1 근처라면 j2로 점프
+                            videoNext.currentTime = j2;
+                            if (clickTimer) clearTimeout(clickTimer);
+                            canClick = false;
+                            clickTimer = setTimeout(() => { canClick = true; }, 2000);
+                            return;
+                        }
                     }
                 }
                 if (clickTimer) clearTimeout(clickTimer);
@@ -248,6 +270,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                     const finalSrc = specialBlob || specialSrc;
                     
                     videoNext.src = finalSrc;
+                    videoNext.muted = state.gachaMuted; // PSSR 본 영상은 소리 재생 허용
                     videoNext.onplaying = () => {
                         currentSubVideo = "pssr_special"; 
                         if (clickTimer) clearTimeout(clickTimer);
@@ -267,7 +290,88 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         }
     };
 
+    const triggerBlackout = () => {
+        if (blackoutTriggered) return;
+        blackoutTriggered = true;
+        
+        const targetChar = blackoutScheduled ? blackoutScheduled.char : null;
+        blackoutScheduled = null;
+
+        // 모든 소리 중단
+        stopBGM('gacha');
+        stopBGM('main');
+        stopStepSfx();
+
+        // AudioContext 재개 확인
+        import('./gacha.js').then(m => {
+            if (m.audioCtx.state === 'suspended') m.audioCtx.resume();
+        });
+
+        // 1. 공통 블랙아웃 영상 시작
+        videoStep = 99; // 특수 상태
+        videoNext.onplaying = null;
+        videoNext.onended = null;
+        
+        videoNext.src = assetBlobs['gasya/blackout.mp4'] || 'gasya/blackout.mp4';
+        videoNext.muted = true;
+        videoNext.loop = false;
+        videoNext.load();
+        
+        // 공통 블랙아웃 사운드 재생
+        playSound('gasya/blackout.mp3');
+
+        // 블랙아웃 초기 1초간 클릭 금지
+        if (clickTimer) clearTimeout(clickTimer);
+        canClick = false;
+        clickTimer = setTimeout(() => { canClick = true; }, 1000);
+
+        let isBlackoutLooping = true;
+        const checkBlackoutLoop = () => {
+            if (!isBlackoutLooping || videoStep !== 99) return;
+            const dur = videoNext.duration;
+            if (dur > 0) {
+                const loopEnd = dur - 0.1;
+                const loopStart = Math.max(0, dur - 2.0); // 마지막 2초 루프
+                if (videoNext.currentTime >= loopEnd) {
+                    videoNext.currentTime = loopStart;
+                }
+            }
+            requestAnimationFrame(checkBlackoutLoop);
+        };
+
+        const proceedFromBlackout = () => {
+            if (!canClick || !isBlackoutLooping) return;
+            isBlackoutLooping = false;
+            
+            // 클릭 즉시 다시 차단 (캐릭터 영상 스킵 방지)
+            canClick = false; 
+            videoNext.onclick = null; 
+
+            // 2. 클릭 시 캐릭터 전용 영상으로 전환
+            if (targetChar) {
+                const charVideo = `gasya/blackout${targetChar}.mp4`;
+                videoNext.src = assetBlobs[charVideo] || charVideo;
+                videoNext.onplaying = () => {
+                    playSound('gasya/blackoutresult.mp3');
+                };
+                videoNext.onended = () => {
+                    playIndividualResults(0);
+                };
+                videoNext.load();
+                videoNext.play().catch(() => playIndividualResults(0));
+            } else {
+                playIndividualResults(0);
+            }
+        };
+
+        videoNext.onclick = proceedFromBlackout;
+        videoNext.play().then(() => requestAnimationFrame(checkBlackoutLoop)).catch(() => playIndividualResults(0));
+    };
+
     const playGetAnimation = (step = 1, prevType = null) => {
+        if (blackoutTriggered) return;
+        // 이전 효과음 정지
+        stopStepSfx();
         const highest = getHighestRarity(currentResults);
         let nextType = ""; 
         let nextSrc = "";
@@ -324,19 +428,37 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                     } else if (step === 3) {
                         if (nextType !== "r") sfxSrc = 'gasya/screen_sr3.mp3';
                     }
-                    playSound(sfxSrc);
+                    if (sfxSrc) {
+                        stopStepSfx();
+                        activeStepSfx = playSound(sfxSrc);
+                    }
                 }
 
                 if (clickTimer) clearTimeout(clickTimer);
                 canClick = false;
-                let lockTime = 800; 
-                if (step === 2) lockTime = 1200; 
-                else if (step === 3) lockTime = 1400; 
+                let lockTime = 800; // 1단계 0.8초
+                if (step === 2) lockTime = 1200; // 2단계 1.2초
+                else if (step === 3) lockTime = 1400; // 3단계 1.4초
                 
                 clickTimer = setTimeout(() => { canClick = true; }, lockTime);
+
+                // 블랙아웃 감시 시작
+                if (blackoutScheduled && blackoutScheduled.step === step) {
+                    const checkTime = () => {
+                        if (blackoutTriggered || !blackoutScheduled || blackoutScheduled.step !== step) return;
+                        if (videoNext.currentTime >= blackoutScheduled.time) {
+                            triggerBlackout();
+                        }
+                        else {
+                            requestAnimationFrame(checkTime);
+                        }
+                    };
+                    requestAnimationFrame(checkTime);
+                }
             };
             
             videoNext.onended = () => {
+                stopStepSfx();
                 if (clickTimer) clearTimeout(clickTimer);
                 if (nextType === "r" && step === 2) {
                     playIndividualResults(0); 
@@ -406,6 +528,31 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         setTotalPulls(prevPulls + mode, state.gachaType);
 
         currentResults = precomputedResults || pickGacha(mode, state.gachaType);
+        
+        // 블랙아웃 예약 로직
+        blackoutTriggered = false;
+        blackoutScheduled = null;
+        const pickups = CURRENT_PICKUPS[state.gachaType] || { pssr: [], sssr: [] };
+        
+        // 당첨된 픽업 카드 찾기
+        const pickupResult = currentResults.find(card => 
+            (pickups.pssr && pickups.pssr.some(p => p.id === card.id)) || 
+            (pickups.sssr && pickups.sssr.includes(card.id))
+        );
+
+        // 픽업이 있고, 50% 확률 당첨 시에만 블랙아웃 예약
+        if (pickupResult && Math.random() < 0.5) {
+            // 해당 ID에 매칭되는 char 정보 찾기 (PSSR인 경우)
+            const pickupInfo = pickups.pssr.find(p => p.id === pickupResult.id);
+            const charId = pickupInfo ? pickupInfo.char : null;
+
+            const highest = getHighestRarity(currentResults);
+            const maxStep = (highest === 'R') ? 2 : 3; 
+            const targetStep = Math.floor(Math.random() * maxStep) + 1;
+            const targetTime = 0.3 + Math.random() * 0.8; 
+            blackoutScheduled = { step: targetStep, time: targetTime, char: charId };
+        }
+
         if (callbacks.onStart) callbacks.onStart(mode, prevPulls);
         addGachaLog(currentResults, state.gachaType);
         document.body.classList.add('immersive-mode');

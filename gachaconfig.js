@@ -1,18 +1,21 @@
 // gachaconfig.js
-// 현재 가챠 픽업 설정 (ID 목록)
+// 현재 가챠 픽업 설정 (ID 및 캐릭터 식별자)
 export const CURRENT_PICKUPS = {
     normal: { 
-        pssr: ['ssrrinami_3rd'],
+        pssr: [{ id: 'ssrrinami_3rd', char: 'rinami' }],
         sssr: [],
         sr_card: []
     },
     limited: { 
-        pssr: ['ssrrinami_valentinelimited'],
+        pssr: [{ id: 'ssrrinami_valentinelimited', char: 'rinami' }],
         sssr: [],
         sr_card: []
     },
     unit: { 
-        pssr: ['ssrchina_michinaruunit', 'ssrhiro_michinaruunit'],
+        pssr: [
+            { id: 'ssrchina_michinaruunit', char: 'china' },
+            { id: 'ssrhiro_michinaruunit', char: 'hiro' }
+        ],
         sssr: ['vocal_unitlogic1'],
         sr_card: ['visual_srunitsense1']
     },
@@ -22,7 +25,7 @@ export const CURRENT_PICKUPS = {
         sr_card: []
     },
     test: { 
-        pssr: ['ssrrinami_3rd'],
+        pssr: [{ id: 'ssrrinami_3rd', char: 'rinami' }],
         sssr: [],
         sr_card: []
     }
