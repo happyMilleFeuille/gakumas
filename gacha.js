@@ -15,7 +15,7 @@ let activeNodes = {}; // 현재 재생 중인 소스 노드들 관리
 export function playSound(name, options = {}) {
     if (state.gachaMuted || !audioBuffers[name]) return null;
 
-    const { loop = false, isBGM = false, bgmType = null } = options;
+    const { loop = false, isBGM = false, bgmType = null, offset = 0 } = options;
 
     // 기존 동일 BGM 중단
     if (bgmType) stopBGM(bgmType);
@@ -24,7 +24,7 @@ export function playSound(name, options = {}) {
     source.buffer = audioBuffers[name];
     source.loop = loop;
     source.connect(audioCtx.destination);
-    source.start(0);
+    source.start(0, offset); // offset 적용
 
     if (isBGM && bgmType) {
         activeNodes[bgmType] = source;
@@ -279,6 +279,11 @@ export function renderGacha() {
             }
             muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊';
         };
+    }
+
+    if (muteControls) {
+        muteControls.classList.remove('hidden');
+        muteControls.style.display = 'flex';
     }
 
     if (!state.gachaMuted) playMainBGM();

@@ -382,6 +382,12 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             videoStep = 1;
             canClick = false;
             videoMain.currentTime = jumpTime;
+            
+            // BGM 6.5초 지점으로 점프 (재시작)
+            if (!state.gachaMuted) {
+                playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
+            }
+
             videoMain.play().catch(finishGacha);
             clickTimer = setTimeout(() => { canClick = true; }, 2000);
         }
@@ -389,11 +395,16 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const startGacha = (mode, precomputedResults = null) => {
         stopBGM('main');
+        const cost = (mode === 1) ? 250 : 2500;
         
         const prevPulls = state.totalPulls[state.gachaType] || 0;
         const currentLog = state.gachaLog[state.gachaType] || [];
         existingIdsSet = new Set(currentLog.map(item => item.id));
         
+        // 상태 업데이트: 보석 차감 및 누적 횟수 증가
+        setJewels(state.jewels - cost);
+        setTotalPulls(prevPulls + mode, state.gachaType);
+
         currentResults = precomputedResults || pickGacha(mode, state.gachaType);
         if (callbacks.onStart) callbacks.onStart(mode, prevPulls);
         addGachaLog(currentResults, state.gachaType);
