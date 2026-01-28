@@ -3,7 +3,7 @@
 export const CURRENT_PICKUPS = {
     normal: { 
         pssr: [{ id: 'ssrrinami_3rd', char: 'rinami' }],
-        sssr: [],
+        sssr: ['visual_logic4'],
         sr_card: []
     },
     limited: { 
@@ -20,8 +20,8 @@ export const CURRENT_PICKUPS = {
         sr_card: ['visual_srunitsense1']
     },
     fes: { 
-        pssr: [],
-        sssr: [],
+        pssr: ['ssrtsubame_campusfes'],
+        sssr: ['dance_fessense1'],
         sr_card: []
     },
     test: { 

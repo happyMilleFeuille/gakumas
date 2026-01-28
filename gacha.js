@@ -80,12 +80,19 @@ export function renderGacha() {
     if (fixedBg) {
         fixedBg.style.transition = 'none';
         const pickups = CURRENT_PICKUPS[state.gachaType];
-        if (pickups && (pickups.pssr.length > 0 || pickups.sssr.length > 0)) {
-            const pickupId = pickups.pssr[0] || pickups.sssr[0];
-            fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
-            fixedBg.style.backgroundSize = 'contain';
-            fixedBg.style.backgroundPosition = 'center';
-            fixedBg.style.filter = '';
+        // pssr 픽업이 있을 때만 배경 이미지 설정
+        if (pickups && pickups.pssr && pickups.pssr.length > 0) {
+            const firstP = pickups.pssr[0];
+            const pickupId = typeof firstP === 'string' ? firstP : firstP.id;
+            
+            if (pickupId) {
+                fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
+                fixedBg.style.backgroundSize = 'contain';
+                fixedBg.style.backgroundPosition = 'center';
+                fixedBg.style.filter = '';
+            } else {
+                fixedBg.style.backgroundImage = '';
+            }
         } else if (state.currentBg) {
             applyBackground(state.currentBg);
         } else {
@@ -153,13 +160,16 @@ export function renderGacha() {
         const fixedBg = document.getElementById('fixed-bg');
         if (fixedBg) {
             const pickups = CURRENT_PICKUPS[state.gachaType];
-            if (pickups && (pickups.pssr.length > 0 || pickups.sssr.length > 0)) {
-                const pickupId = (pickups.pssr.length > 0) ? pickups.pssr[0].id : pickups.sssr[0];
-                fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
-                fixedBg.style.backgroundSize = 'contain';
-                fixedBg.style.backgroundPosition = 'center';
-                fixedBg.style.filter = ''; 
-            } else {
+                        if (pickups && pickups.pssr && pickups.pssr.length > 0) {
+                            const firstP = pickups.pssr[0];
+                            const pickupId = typeof firstP === 'string' ? firstP : firstP.id;
+                            if (pickupId) {
+                                fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
+                                fixedBg.style.backgroundSize = 'contain';
+                                fixedBg.style.backgroundPosition = 'center';
+                                fixedBg.style.filter = '';
+                            }
+                        } else {
                 fixedBg.style.filter = '';
                 fixedBg.style.backgroundSize = 'contain';
                 if (state.currentBg) applyBackground(state.currentBg);
@@ -485,16 +495,15 @@ export function renderGacha() {
         const fixedBg = document.getElementById('fixed-bg');
         if (fixedBg) {
             const pickups = CURRENT_PICKUPS[state.gachaType];
-            if (pickups && (pickups.pssr.length > 0 || pickups.sssr.length > 0)) {
-                const pickupId = (pickups.pssr.length > 0) ? pickups.pssr[0].id : pickups.sssr[0];
-                fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
-                fixedBg.style.backgroundSize = 'contain';
-                fixedBg.style.backgroundPosition = 'center';
-                fixedBg.style.filter = '';
-            } else if (state.currentBg) {
-                applyBackground(state.currentBg);
-            } else {
-                fixedBg.style.backgroundImage = '';
+            if (pickups && pickups.pssr && pickups.pssr.length > 0) {
+                const firstP = pickups.pssr[0];
+                const pickupId = typeof firstP === 'string' ? firstP : firstP.id;
+                if (pickupId) {
+                    fixedBg.style.backgroundImage = `url('idols/${pickupId}1.webp')`;
+                    fixedBg.style.backgroundSize = 'contain';
+                    fixedBg.style.backgroundPosition = 'center';
+                    fixedBg.style.filter = '';
+                }
             }
         }
     });

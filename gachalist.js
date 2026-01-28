@@ -14,8 +14,7 @@ const RATES = {
 };
 
 // 페스 가챠 확률 (SSR 1.5배)
-// PSSR: 3% (2.5% 페스 + 0.5% 통상), SSSR: 4.5%
-// R 합계: 78% - 2.5% = 75.5%
+// PSSR: 3%, SSSR: 4.5% (총 7.5%)
 const FES_RATES = {
     PSSR: 0.03,
     SSSR: 0.045, // SSR 합계 7.5%
@@ -31,6 +30,14 @@ const GUARANTEED_RATES = {
     SSSR: 0.03, // SSR 합계 5%
     PSR: 0.38,  // SR 중 PSR 38%
     SSR_CARD: 0.57 // SR 중 나머지 57% (합계 95%)
+};
+
+// 페스 10연차 마지막 자리(SR 확정) 확률
+const FES_GUARANTEED_RATES = {
+    PSSR: 0.03,
+    SSSR: 0.045, // SSR 합계 7.5%
+    PSR: 0.37,   // SR 비중 조정 (합계 1.0 맞춤)
+    SSR_CARD: 0.555
 };
 
 // 유닛 가챠 확률 (PSSR 2.25%, SSSR 3%)
@@ -144,23 +151,52 @@ export function pickGacha(count = 1, poolType = 'normal') {
         const currentPool = pool[key];
         let targetPool = currentPool.length > 0 ? currentPool : pool.R_CARD;
         
-        // [중요] 페스 가챠에서 PSSR이 선택되었을 때, 픽업(2.5%)과 통상(0.5%) 분리 추첨
+        // [중요] 페스 가챠 전용 PSSR 확률 로직 (총 3.0%)
         if (isFes && key === 'PSSR' && pool.PSSR.length > 0) {
-            // 페스 한정 카드와 통상 카드 분리
-            const fesCards = pool.PSSR.filter(c => c.source === 'limited_f');
-            const normalCards = pool.PSSR.filter(c => c.source !== 'limited_f');
+            const pickups = CURRENT_PICKUPS.fes;
+            // 픽업 ID 리스트 추출 (객체 배열 또는 문자열 배열 대응)
+            const pickupIds = (pickups && pickups.pssr) ? 
+                pickups.pssr.map(p => typeof p === 'string' ? p : p.id) : [];
             
-            // 페스 카드가 존재할 경우에만 분리 추첨 진행
-            if (fesCards.length > 0) {
-                // PSSR 전체 3.0 중 2.5(약 83.3%)는 페스, 0.5(약 16.7%)는 통상
-                const isPickup = Math.random() < (2.5 / 3.0);
-                if (isPickup) {
-                    targetPool = fesCards;
-                } else if (normalCards.length > 0) {
-                    targetPool = normalCards;
-                } else {
-                    targetPool = fesCards;
-                }
+            // 1. 지정 픽업 페스 캐릭터 (0.75%)
+            const pickupFesCards = pool.PSSR.filter(c => pickupIds.includes(c.id));
+            // 2. 픽업 제외 기타 페스 캐릭터 (1.5%)
+            const otherFesCards = pool.PSSR.filter(c => c.source === 'limited_f' && !pickupIds.includes(c.id));
+            // 3. 통상 캐릭터 (0.75%)
+            const normalCards = pool.PSSR.filter(c => c.source !== 'limited_f');
+
+            const randPSSR = Math.random() * 3.0;
+            if (randPSSR < 0.75 && pickupFesCards.length > 0) {
+                targetPool = pickupFesCards;
+            } else if (randPSSR < 2.25 && otherFesCards.length > 0) {
+                // 0.75 ~ 2.25 구간 (1.5% 비중)
+                targetPool = otherFesCards.length > 0 ? otherFesCards : pickupFesCards;
+            } else if (normalCards.length > 0) {
+                // 2.25 ~ 3.0 구간 (0.75% 비중)
+                targetPool = normalCards;
+            }
+        }
+        // [중요] 페스 가챠 전용 SSSR 확률 로직 (총 5.0%)
+        else if (isFes && key === 'SSSR' && pool.SSSR.length > 0) {
+            const pickups = CURRENT_PICKUPS.fes;
+            const pickupIds = (pickups && pickups.sssr) ? pickups.sssr : [];
+            
+            // 1. 지정 픽업 페스 서포트 (1.0%)
+            const pickupFesCards = pool.SSSR.filter(c => pickupIds.includes(c.id));
+            // 2. 픽업 제외 기타 페스 서포트 (1.0%)
+            const otherFesCards = pool.SSSR.filter(c => c.source === 'limited_f' && !pickupIds.includes(c.id));
+            // 3. 통상 서포트 (2.5%)
+            const normalCards = pool.SSSR.filter(c => c.source !== 'limited_f');
+
+            const randSSSR = Math.random() * 4.5;
+            if (randSSSR < 1.0 && pickupFesCards.length > 0) {
+                targetPool = pickupFesCards;
+            } else if (randSSSR < 2.0 && otherFesCards.length > 0) {
+                // 1.0 ~ 2.0 구간 (1.0% 비중)
+                targetPool = otherFesCards;
+            } else if (normalCards.length > 0) {
+                // 2.0 ~ 4.5 구간 (2.5% 비중)
+                targetPool = normalCards;
             }
         }
         // [수정] 유닛 가챠 전용 픽업 로직

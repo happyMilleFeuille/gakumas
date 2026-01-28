@@ -403,7 +403,12 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
             if (shouldPromote) {
                 if (prevType === "r") {
-                    nextType = Math.random() < 0.7 ? "sr" : "ssr";
+                    // 최고 등급이 SR이면 SR까지만, SSR이면 확률적으로 SSR까지 승격 가능
+                    if (highest === "SR") {
+                        nextType = "sr";
+                    } else {
+                        nextType = Math.random() < 0.7 ? "sr" : "ssr";
+                    }
                 } else if (prevType === "sr") {
                     nextType = "ssr";
                 }
@@ -516,9 +521,17 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             canClick = false;
             videoMain.currentTime = jumpTime;
             
-            // BGM 6.5초 지점으로 점프 (재시작)
+            // BGM 점프 로직 수정: 이미 6.5초를 넘었으면 그대로 두고, 아니면 6.5초로 이동
             if (!state.gachaMuted) {
-                playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
+                const bgm = window.audioManager && window.audioManager.bgm;
+                if (bgm && bgm.src.includes('start_bgmnormal.mp3')) {
+                    if (bgm.currentTime < 6.5) {
+                        playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
+                    }
+                } else {
+                    // 혹시 BGM이 안 틀어져 있거나 다른 거라면 실행
+                    playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
+                }
             }
 
             videoMain.play().catch(finishGacha);
@@ -551,8 +564,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             (pickups.sssr && pickups.sssr.includes(card.id))
         );
 
-        // 픽업이 있고, 50% 확률 당첨 시에만 블랙아웃 예약
-        if (pickupResult && Math.random() < 0.5) {
+        // 수정: PSSR 픽업인 경우에만 발동하도록 조건 추가
+        const isPssrPickup = pickupResult && pickups.pssr && pickups.pssr.some(p => p.id === pickupResult.id);
+
+        // 픽업이 있고(PSSR만), 60% 확률 당첨 시에만 블랙아웃 예약
+        if (isPssrPickup && Math.random() < 0.6) {
             // 해당 ID에 매칭되는 char 정보 찾기 (PSSR인 경우)
             const pickupInfo = pickups.pssr.find(p => p.id === pickupResult.id);
             const charId = pickupInfo ? pickupInfo.char : null;
@@ -611,7 +627,15 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         return pickGacha(mode, state.gachaType);
     };
 
-    if (skipBtn) skipBtn.onclick = () => { if (canClick) finishGacha(); };
+    if (skipBtn) {
+        skipBtn.style.pointerEvents = 'none';
+        skipBtn.style.opacity = '0.5';
+        setTimeout(() => {
+            skipBtn.style.pointerEvents = 'auto';
+            skipBtn.style.opacity = '1';
+        }, 1000);
+        skipBtn.onclick = () => { finishGacha(); };
+    }
 
     return { startGacha, prepareResults };
 }
