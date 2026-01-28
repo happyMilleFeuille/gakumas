@@ -110,7 +110,7 @@ export const calcPlans = {
                 { value: "spclass"},
             ],                
             9: [
-                { value: "audition",results:["get","get","get","get"]},
+                { value: "audition",results:["get","get","get","get","get_item"]},
             ],         
             10: [
                 { value: "goout_nia"},
@@ -141,7 +141,7 @@ export const calcPlans = {
                 { value: "spclass"},
             ],                                                                                              
             17: [
-                { value: "audition"},
+                { value: "audition",results:["get_item"]},
             ],            
             18: [
                 { value: "goout_nia"},

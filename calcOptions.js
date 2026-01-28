@@ -23,7 +23,8 @@ export const activityOptions = {
     ],
     class_nia: [
         { id: "get_drink", mainlabel: "Drink",label_ko: "드링크 선택", label_ja: "ドリンク選択", type: "checkbox" },
-        { id: "not", label_ko: "해당 없음", label_ja: "該当なし", type: "checkbox" },    
+        { id: "get_enhancedcard", mainlabel: "Card",label_ko: "강화카드 선택", label_ja: "強化カード選択", type: "checkbox" },
+        { id: "get_ppoint", mainlabel: "Ppoint",label_ko: "P포인트 선택", label_ja: "Pポイント選択", type: "checkbox" },                
     ],
     goout_nia: [
         { id: "goout_nia1", results: ["enhance","get"],label_ko: "카드강화, 트러블 추가", label_ja: "カード強化・トラブルカード獲得", type: "checkbox"},

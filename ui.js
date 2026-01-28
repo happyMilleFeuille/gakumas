@@ -260,6 +260,18 @@ function setupStaticListeners(container) {
         });
     }
 
+    const allMaxBtn = container.querySelector('#btn-all-max-lb');
+    if (allMaxBtn) {
+        allMaxBtn.addEventListener('click', () => {
+            if (!confirm('모든 카드를 4단계 돌파(풀돌) 상태로 변경하시겠습니까?')) return;
+            cardList.forEach(card => {
+                setSupportLB(card.id, 4);
+            });
+            renderSupport();
+            if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
+        });
+    }
+
     const grid = container.querySelector('.support-grid');
     grid.addEventListener('click', (e) => {
         const star = e.target.closest('.card-star');

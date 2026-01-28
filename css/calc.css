@@ -138,6 +138,57 @@
     border: 1px dashed #ccc;
 }
 
+.p-item-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.p-item-slot {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.p-item-slot:hover {
+    border-color: #ff4d8d;
+    background: #fff0f5;
+}
+
+.p-item-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.p-item-placeholder {
+    color: #ccc;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.p-item-tooltip {
+    padding: 12px;
+    background: white;
+    border: 1px solid #ff4d8d;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    z-index: 2000;
+}
+
 .selected-card-slot {
     aspect-ratio: 1 / 1;
     border-radius: 8px;
@@ -152,6 +203,19 @@
 .selected-card-slot.filled {
     border-color: #ff4d8d;
     background: white;
+    position: relative; /* 체크박스 배치를 위해 추가 */
+}
+
+.card-slot-check {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    z-index: 10;
+    accent-color: #ff4d8d;
+    margin: 0;
 }
 
 .selected-card-slot img {
@@ -191,6 +255,13 @@
     font-weight: bold; 
     color: #ff4d8d; /* 보너스 느낌을 주기 위해 분홍색 적용 */
     margin-top: 10px; /* 아이콘과의 간격 증가 */
+}
+
+.sp-percent-label {
+    font-size: 0.65rem !important;
+    color: #666 !important;
+    margin-top: 2px !important;
+    font-weight: normal !important;
 }
 
 .stat-item img { 
@@ -377,6 +448,7 @@
     pointer-events: none;
     color: white;
     font-weight: bold;
+    z-index: 15; /* 아이콘(10)보다는 높고 별(25)보다는 낮음 */
 }
 .bonus-val { 
     font-size: 1.0rem; 
@@ -387,10 +459,10 @@
     line-height: 1.1;
 }
 
-/* SP 레슨 발생률 업 강조 색상 */
-.bonus-val.sp-vocal { color: #ff4d8d !important; }
-.bonus-val.sp-dance { color: #46a4f3 !important; }
-.bonus-val.sp-visual { color: #fcc75e !important; }
+/* SP 레슨 발생률 업 강조 색상 (배경색 변경) */
+.bonus-val.sp-vocal { background-color: #ff4d8d !important; color: white !important; }
+.bonus-val.sp-dance { background-color: #46a4f3 !important; color: white !important; }
+.bonus-val.sp-visual { background-color: #fcc75e !important; color: white !important; }
 
 @media (max-width: 768px) {
     .bonus-val {
@@ -421,12 +493,9 @@
     font-size: 12px;
     font-weight: bold;
     font-family: serif;
-    z-index: 20;
+    z-index: 30; /* 막과 별보다 위에 배치 */
     cursor: pointer;
     transition: background 0.2s;
-}
-.info-btn:hover {
-    background: rgba(255, 77, 141, 0.9);
 }
 
 .side-card-overlay-icon {
@@ -444,7 +513,7 @@
 /* 계산기 전용 별 스타일 */
 .calc-card-stars {
     position: absolute !important; bottom: 3px !important; right: 3px !important;
-    display: flex !important; gap: 1px !important; z-index: 15 !important; 
+    display: flex !important; gap: 1px !important; z-index: 25 !important; /* 막(15)보다 위로 올림 */
     pointer-events: none !important;
 }
 .calc-card-star {
@@ -503,27 +572,38 @@
 /* Distributor Styles */
 .enhance-item-content {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     background: rgba(255, 77, 141, 0.05);
-    padding: 2px 8px;
-    border-radius: 6px;
+    padding: 6px 8px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 77, 141, 0.1);
 }
 .dist-label {
     white-space: nowrap;
+    font-weight: bold;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    width: 100%;
+    text-align: center;
+    padding-bottom: 2px;
 }
 .dist-group {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 3px;
     font-size: 0.7rem;
     align-items: center;
+    width: 100%;
 }
 .dist-unit {
     display: flex;
     align-items: center;
-    gap: 3px;
+    justify-content: space-between;
+    gap: 8px;
     color: #666;
+    width: 100%;
 }
 .dist-btn {
     width: 16px;

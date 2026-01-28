@@ -59,10 +59,47 @@ export function getTriggerCountsFromDOM() {
         });
     });
 
-    // 수동 분배 수치 반영 (simulator-engine이 인식할 수 있도록 counts.total에 주입)
     const calcType = board.dataset.calcType;
     const saved = JSON.parse(localStorage.getItem(`calc_state_${calcType}`)) || {};
-    
+
+    // 0. Nia 전용 P-아이템 보너스 반영 (서포카 보너스용)
+    if (calcType === 'nia' && saved.pItems) {
+        // 보드 활동 횟수 재집계 (counts.total 활용 가능)
+        if (saved.pItems.includes('nia1-1')) {
+            const bonus = Math.min(counts.total['spclass'] || 0, 2);
+            counts.total['get'] = (counts.total['get'] || 0) + bonus;
+            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+        }
+        if (saved.pItems.includes('nia1-2')) {
+            const bonus = Math.min(counts.total['advice'] || 0, 2);
+            counts.total['get'] = (counts.total['get'] || 0) + bonus;
+            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+        }
+        
+        let nia21Count = 0, nia22Count = 0, nia23Count = 0;
+        board.querySelectorAll('.plan-icon-wrapper.active[data-value="class_nia"]').forEach(icon => {
+            if (icon.dataset.optget_enhancedcard === 'true') nia21Count++;
+            if (icon.dataset.optget_ppoint === 'true') nia22Count++;
+            if (icon.dataset.optget_drink === 'true') nia23Count++;
+        });
+
+        if (saved.pItems.includes('nia2-1')) {
+            const bonus = Math.min(nia21Count, 2);
+            counts.total['get'] = (counts.total['get'] || 0) + bonus;
+            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+        }
+        if (saved.pItems.includes('nia2-2')) {
+            const bonus = Math.min(nia22Count, 2);
+            counts.total['get'] = (counts.total['get'] || 0) + bonus;
+            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+        }
+        if (saved.pItems.includes('nia2-3')) {
+            const bonus = Math.min(nia23Count, 2);
+            counts.total['get'] = (counts.total['get'] || 0) + bonus;
+            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+        }
+    }
+
     // 1. 강화 분배 반영
     const manualE = saved.manualEnhance || { m: 0, a: 0 };
     const mVal = Number(manualE.m) || 0;
@@ -83,6 +120,42 @@ export function getTriggerCountsFromDOM() {
     const gaVal = Number(manualG.a) || 0;
     if (gmVal > 0) counts.total['get_m'] = (counts.total['get_m'] || 0) + gmVal;
     if (gaVal > 0) counts.total['get_a'] = (counts.total['get_a'] || 0) + gaVal;
+
+    // 3.5. 슬롯 선택 카드 반영 (체크박스 기반)
+    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
+    const selectedIds = (saved.planCards && activePlan) ? (saved.planCards[activePlan] || []) : [];
+    const cardChecked = saved.cardChecked || {};
+
+    selectedIds.forEach(id => {
+        const card = cardList.find(c => c.id === id);
+        if (card) {
+            // 체크박스가 체크된 경우에만 수치에 반영
+            if (cardChecked[id]) {
+                if (card.have === 'item') {
+                    counts.total['item'] = (counts.total['item'] || 0) + 1;
+                } else if (card.have?.startsWith('card_')) {
+                    if (card.have === 'card_a') counts.total['get_a'] = (counts.total['get_a'] || 0) + 1;
+                    else if (card.have === 'card_m') counts.total['get_m'] = (counts.total['get_m'] || 0) + 1;
+                    if (card.rarity === 'SSR') counts.total['get_ssr'] = (counts.total['get_ssr'] || 0) + 1;
+                }
+            }
+        }
+    });
+
+    // 4. 기타 획득 수동 보정 반영 (SSR, 원기, 플랜별 스탯 등)
+    const manualO = saved.manualOther || {};
+    Object.keys(manualO).forEach(key => {
+        const val = Number(manualO[key]) || 0;
+        if (val !== 0) {
+            counts.total[key] = (counts.total[key] || 0) + val;
+        }
+    });
+
+    // [추가] 아이템 획득 수치를 get_item 트리거로 연결
+    const totalItemCount = (counts.total['item'] || 0) + (counts.total['get_item'] || 0);
+    if (totalItemCount > 0) {
+        counts.total['get_item'] = (counts.total['get_item'] || 0) + totalItemCount;
+    }
 
     return counts;
 }

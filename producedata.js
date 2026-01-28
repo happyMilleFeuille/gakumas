@@ -1,7 +1,7 @@
 // producedata.js
 export const produceList = [
     // --- 리나미 SSR (PSSR) ---
-    { id: "ssrrinami_1st", name: "clumsy trick", rarity: "PSSR",plan: "sense", source: "normal"   ,jumpTime2:10.3},
+    { id: "ssrrinami_1st", name: "clumsy trick", rarity: "PSSR",plan: "sense", source: "normal",jumpTime2:10.3},
     { id: "ssrrinami_1st2another", name: "관국",name_ja:"冠菊", rarity: "PSSR", plan: "sense", source: "limited", another: true ,jumpTime2:6.2},
     { id: "ssrrinami_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
     { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR",  plan: "sense",source: "limited", another: true ,jumpTime2:8.1},
@@ -11,7 +11,7 @@ export const produceList = [
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" ,another: true},
     { id: "ssrrinami_2nd", name: "L.U.V", rarity: "PSSR",plan: "logic",  source: "normal"   },
-    { id: "ssrrinami_3rd", name: "36℃ U.B.U", rarity: "PSSR", plan: "logic", source: "normal"   ,jumpTime2:8.7},
+    { id: "ssrrinami_3rd", name: "36℃ U.B.U", rarity: "PSSR", plan: "logic", source: "normal",jumpTime2:8.7},
 
         // --- 사키 SSR (PSSR) ---
     { id: "ssrsaki_1st", name: "Fighting My Way", rarity: "PSSR", plan: "sense", source: "normal" },
