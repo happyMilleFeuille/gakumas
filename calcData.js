@@ -80,9 +80,9 @@ export const calcPlans = {
         title: "nia",
         weeks: {
             1: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],
             2: [
                 { value: "class_nia" }
@@ -92,9 +92,9 @@ export const calcPlans = {
                 { value: "gift_nia", results:["get","get_drink"]}
             ],
             4: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],
             5: [
                 { value: "class_nia"},
@@ -117,9 +117,9 @@ export const calcPlans = {
                 { value: "gift_nia", results:["get","get_drink"]},
             ],
             11: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],    
             12: [
                 { value: "class_nia"},
@@ -130,9 +130,9 @@ export const calcPlans = {
                 { value: "gift_nia", results:["get","get_drink"]},
             ],     
             14: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],  
             15: [
                 { value: "class_nia"},
@@ -148,9 +148,9 @@ export const calcPlans = {
                 { value: "gift_nia", results:["get","get_drink"]},
             ], 
             19: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],                        
             20: [
                 { value: "class_nia"},
@@ -161,17 +161,17 @@ export const calcPlans = {
                 { value: "spclass"},
             ],     
             22: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],  
             23: [
                 { value: "class_nia"},
             ],                                                 
             24: [
-                { value: "lessonvo",results:["get","get_drink"]},
-                { value: "lessondan",results:["get","get_drink"]},
-                { value: "lessonvi",results:["get","get_drink"]}
+                { value: "lessonvo"},
+                { value: "lessondan"},
+                { value: "lessonvi"}
             ],  
             25: [
                 { value: "goout_nia"},

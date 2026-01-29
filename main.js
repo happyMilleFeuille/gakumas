@@ -211,6 +211,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // [추가] 스킬 카드 조정 모달이 열려있으면 닫기
+        const tuneModal = document.querySelector('.modal-content .tune-card-grid')?.closest('.modal');
+        if (tuneModal) {
+            tuneModal.remove();
+            return;
+        }
+
         // 4. 가챠 결과 화면 처리
         if (resultsContainer && resultsContainer.children.length > 0) {
             document.body.classList.remove('immersive-mode');

@@ -1,6 +1,7 @@
 // calcLogic.js
 import { state } from './state.js';
 import { cardList } from './carddata.js';
+import { skillCardList } from './skillcarddata.js';
 import { activityOptions } from './calcOptions.js';
 import { calculateCardBonus } from './simulator-engine.js';
 import { baseStats, getNiaLessonStat, getHajimeLessonStat, idolData, niaAuditionStats } from './calcStats.js';
@@ -64,94 +65,156 @@ export function getTriggerCountsFromDOM() {
 
     // 0. Nia 전용 P-아이템 보너스 반영 (서포카 보너스용)
     if (calcType === 'nia' && saved.pItems) {
-        // 보드 활동 횟수 재집계 (counts.total 활용 가능)
+        // 보드 활동 횟수 재집계
+        let niaBonusGet = 0;
+        let niaBonusDelete = 0;
+        let niaBonusEnhance = 0;
+
+        const boardCounts = {};
+        board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => {
+            const val = icon.dataset.value; boardCounts[val] = (boardCounts[val] || 0) + 1;
+        });
+
         if (saved.pItems.includes('nia1-1')) {
-            const bonus = Math.min(counts.total['spclass'] || 0, 2);
-            counts.total['get'] = (counts.total['get'] || 0) + bonus;
-            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+            const bonus = Math.min(boardCounts['spclass'] || 0, 2);
+            niaBonusGet += bonus; niaBonusDelete += bonus;
         }
         if (saved.pItems.includes('nia1-2')) {
-            const bonus = Math.min(counts.total['advice'] || 0, 2);
-            counts.total['get'] = (counts.total['get'] || 0) + bonus;
-            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+            const bonus = Math.min(boardCounts['advice'] || 0, 2);
+            niaBonusGet += bonus; niaBonusDelete += bonus;
         }
         
         let nia21Count = 0, nia22Count = 0, nia23Count = 0;
-        board.querySelectorAll('.plan-icon-wrapper.active[data-value="class_nia"]').forEach(icon => {
-            if (icon.dataset.optget_enhancedcard === 'true') nia21Count++;
-            if (icon.dataset.optget_ppoint === 'true') nia22Count++;
-            if (icon.dataset.optget_drink === 'true') nia23Count++;
+        let nia41Count = 0;
+        board.querySelectorAll('.week-row').forEach(row => {
+            const week = parseInt(row.dataset.week);
+            const icon = row.querySelector('.plan-icon-wrapper.active[data-value="class_nia"]');
+            if (icon) {
+                if (icon.dataset.optget_enhancedcard === 'true') {
+                    nia21Count++;
+                    if (week >= 10) nia41Count++;
+                }
+                if (icon.dataset.optget_ppoint === 'true') nia22Count++;
+                if (icon.dataset.optget_drink === 'true') nia23Count++;
+            }
         });
 
         if (saved.pItems.includes('nia2-1')) {
             const bonus = Math.min(nia21Count, 2);
-            counts.total['get'] = (counts.total['get'] || 0) + bonus;
-            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+            niaBonusGet += bonus; niaBonusDelete += bonus;
         }
         if (saved.pItems.includes('nia2-2')) {
             const bonus = Math.min(nia22Count, 2);
-            counts.total['get'] = (counts.total['get'] || 0) + bonus;
-            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+            niaBonusGet += bonus; niaBonusDelete += bonus;
         }
         if (saved.pItems.includes('nia2-3')) {
             const bonus = Math.min(nia23Count, 2);
-            counts.total['get'] = (counts.total['get'] || 0) + bonus;
-            counts.total['delete'] = (counts.total['delete'] || 0) + bonus;
+            niaBonusGet += bonus; niaBonusDelete += bonus;
         }
+
+        if (saved.pItems.includes('nia3-1')) {
+            const bonus = Math.min(boardCounts['audition'] || 0, 2);
+            niaBonusGet += bonus; niaBonusDelete += bonus;
+        }
+        if (saved.pItems.includes('nia3-2')) {
+            const bonus = Math.min(boardCounts['audition'] || 0, 2);
+            niaBonusGet += bonus; niaBonusDelete += bonus;
+        }
+
+        // 4단계 & 5단계 강화 보너스 반영
+        if (saved.pItems.includes('nia4-1')) {
+            niaBonusEnhance += Math.min(nia41Count, 2);
+        }
+        if (saved.pItems.includes('nia5-1')) {
+            const hasSPAfterAudition2 = Array.from(board.querySelectorAll('.week-row')).some(row => {
+                const week = parseInt(row.dataset.week);
+                const activeIcon = row.querySelector('.plan-icon-wrapper.active');
+                return week > 17 && activeIcon && activeIcon.dataset.optsp === 'true';
+            });
+            if (hasSPAfterAudition2) niaBonusEnhance += 1;
+        }
+
+        counts.total['get'] = (counts.total['get'] || 0) + niaBonusGet;
+        counts.total['delete'] = (counts.total['delete'] || 0) + niaBonusDelete;
+        counts.total['enhance'] = (counts.total['enhance'] || 0) + niaBonusEnhance;
     }
 
-    // 1. 강화 분배 반영
-    const manualE = saved.manualEnhance || { m: 0, a: 0 };
-    const mVal = Number(manualE.m) || 0;
-    const aVal = Number(manualE.a) || 0;
-    if (mVal > 0) counts.total['enhance_m'] = (counts.total['enhance_m'] || 0) + mVal;
-    if (aVal > 0) counts.total['enhance_a'] = (counts.total['enhance_a'] || 0) + aVal;
+    // 1. 강화 분배 반영 (니아 보너스 포함)
+    const totalEnhancePool = (counts.total['enhance'] || 0);
+    let em = Number(saved.manualEnhance?.m) || 0;
+    let ea = Number(saved.manualEnhance?.a) || 0;
+    const diffE = totalEnhancePool - (em + ea);
+    if (diffE !== 0) em = Math.max(0, em + diffE); // 부족한 수치는 멘탈에 우선 가산
+    
+    counts.total['enhance_m'] = (counts.total['enhance_m'] || 0) + em;
+    counts.total['enhance_a'] = (counts.total['enhance_a'] || 0) + ea;
 
-    // 2. 삭제 분배 반영
-    const manualD = saved.manualDelete || { m: 0, a: 0 };
-    const dmVal = Number(manualD.m) || 0;
-    const daVal = Number(manualD.a) || 0;
-    if (dmVal > 0) counts.total['delete_m'] = (counts.total['delete_m'] || 0) + dmVal;
-    if (daVal > 0) counts.total['delete_a'] = (counts.total['delete_a'] || 0) + daVal;
+    // 2. 삭제 분배 반영 (니아 보너스 포함)
+    const totalDeletePool = (counts.total['delete'] || 0);
+    let dm = Number(saved.manualDelete?.m) || 0;
+    let da = Number(saved.manualDelete?.a) || 0;
+    const diffD = totalDeletePool - (dm + da);
+    if (diffD !== 0) dm = Math.max(0, dm + diffD);
+    
+    counts.total['delete_m'] = (counts.total['delete_m'] || 0) + dm;
+    counts.total['delete_a'] = (counts.total['delete_a'] || 0) + da;
 
-    // 3. 카드 획득 분배 반영
-    const manualG = saved.manualGet || { m: 0, a: 0 };
-    const gmVal = Number(manualG.m) || 0;
-    const gaVal = Number(manualG.a) || 0;
-    if (gmVal > 0) counts.total['get_m'] = (counts.total['get_m'] || 0) + gmVal;
-    if (gaVal > 0) counts.total['get_a'] = (counts.total['get_a'] || 0) + gaVal;
+    // 3. 카드 획득 분배 및 스킬 카드 보너스 반영 (모달 선택 기반)
+    const selectedSkills = saved.selectedSkills || {};
+    Object.keys(selectedSkills).forEach(skillId => {
+        const skill = skillCardList[skillId];
+        if (skill) {
+            const count = selectedSkills[skillId] || 0;
+            if (count <= 0) return;
 
-    // 3.5. 슬롯 선택 카드 반영 (체크박스 기반)
+            // 1) 카드 획득 타입 반영 (active -> get_a, mental -> get_m)
+            if (skill.type === 'active') {
+                counts.total['get_a'] = (counts.total['get_a'] || 0) + count;
+            } else if (skill.type === 'mental') {
+                counts.total['get_m'] = (counts.total['get_m'] || 0) + count;
+            }
+            counts.total['get'] = (counts.total['get'] || 0) + count;
+
+            // 2) 희귀도 반영 (SSR)
+            if (skill.rarity === 'SSR') {
+                counts.total['get_ssr'] = (counts.total['get_ssr'] || 0) + count;
+            }
+
+            // 3) 속성 반영 (attrs)
+            if (skill.attrs && Array.isArray(skill.attrs)) {
+                skill.attrs.forEach(attr => {
+                    const key = `get_${attr}`;
+                    counts.total[key] = (counts.total[key] || 0) + count;
+                });
+            }
+        }
+    });
+
+    // 3.5. 슬롯 선택 서포트 카드 반영 (체크박스 기반 - 기존 로직 유지)
     const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
     const selectedIds = (saved.planCards && activePlan) ? (saved.planCards[activePlan] || []) : [];
     const cardChecked = saved.cardChecked || {};
 
     selectedIds.forEach(id => {
         const card = cardList.find(c => c.id === id);
-        if (card) {
-            // 체크박스가 체크된 경우에만 수치에 반영
-            if (cardChecked[id]) {
-                if (card.have === 'item') {
-                    counts.total['item'] = (counts.total['item'] || 0) + 1;
-                } else if (card.have?.startsWith('card_')) {
-                    if (card.have === 'card_a') counts.total['get_a'] = (counts.total['get_a'] || 0) + 1;
-                    else if (card.have === 'card_m') counts.total['get_m'] = (counts.total['get_m'] || 0) + 1;
-                    if (card.rarity === 'SSR') counts.total['get_ssr'] = (counts.total['get_ssr'] || 0) + 1;
+        if (card && cardChecked[id]) {
+            if (card.have === 'item') {
+                counts.total['item'] = (counts.total['item'] || 0) + 1;
+            } else if (card.have?.startsWith('card_')) {
+                if (card.have === 'card_a') {
+                    counts.total['get_a'] = (counts.total['get_a'] || 0) + 1;
+                } else if (card.have === 'card_m') {
+                    counts.total['get_m'] = (counts.total['get_m'] || 0) + 1;
                 }
+                if (card.rarity === 'SSR') counts.total['get_ssr'] = (counts.total['get_ssr'] || 0) + 1;
+                
+                // [중요] 전체 카드 획득 수치(get)에도 반영
+                counts.total['get'] = (counts.total['get'] || 0) + 1;
             }
         }
     });
 
-    // 4. 기타 획득 수동 보정 반영 (SSR, 원기, 플랜별 스탯 등)
-    const manualO = saved.manualOther || {};
-    Object.keys(manualO).forEach(key => {
-        const val = Number(manualO[key]) || 0;
-        if (val !== 0) {
-            counts.total[key] = (counts.total[key] || 0) + val;
-        }
-    });
-
-    // [추가] 아이템 획득 수치를 get_item 트리거로 연결
+    // 4. 아이템 획득 수치를 get_item 트리거로 연결
     const totalItemCount = (counts.total['item'] || 0) + (counts.total['get_item'] || 0);
     if (totalItemCount > 0) {
         counts.total['get_item'] = (counts.total['get_item'] || 0) + totalItemCount;
