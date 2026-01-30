@@ -1,5 +1,4 @@
 // calcStats.js
-// 각 활동별 기본 상승 수치를 정의합니다.
 
 export const baseStats = {
     // 공통/기본 수치 (필요 시 채워넣음)
