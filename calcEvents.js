@@ -1,7 +1,9 @@
 // calcEvents.js
 import { state } from './state.js';
 import { activityOptions } from './calcOptions.js';
+import { cardList } from './carddata.js';
 import { showOtherTuneModal } from './calcModals.js';
+import { updateSelectedCardsUI } from './calcUI.js';
 
 /**
  * 전역 분배기 리스너 설정
@@ -10,13 +12,79 @@ export function initGlobalDistListener(getBoardPools, refreshCardBonuses, update
     if (window._distInit) return;
     document.addEventListener('click', (e) => {
         const cardCheckBtn = e.target.closest('.card-slot-check');
+        const cardRemoveBtn = e.target.closest('.card-slot-remove');
         const btn = e.target.closest('.dist-btn');
         const tuneBtn = e.target.closest('#btn-other-tune');
+        const counterBtn = e.target.closest('.card-counter-btn');
         
         const board = document.querySelector('.unified-plan-board');
         if (!board) return;
         const type = board.dataset.calcType;
         const current = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+        const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
+
+        if (counterBtn) {
+            e.stopPropagation();
+            const cardId = counterBtn.dataset.id;
+            const card = cardList.find(c => c.id === cardId);
+            if (!card || !card.item_effects) return;
+
+            if (!current.itemCounters) current.itemCounters = {};
+            let count = current.itemCounters[cardId] || 0;
+
+            if (counterBtn.classList.contains('plus')) {
+                // Max 계산
+                let max = 99;
+                const effect = card.item_effects.find(e => e.type === 'action' || e.type === 'add_count');
+                if (effect) {
+                    if (effect.max) max = effect.max;
+                    else if (effect.trigger || effect.target) {
+                        const trigger = effect.trigger || effect.target;
+                        // SSR, 원기, 호조, 집중 등의 속성이면 현재 총합을 max로 사용
+                        if (['get_ssr', 'get_genki', 'get_goodcondition', 'get_concentration', 'get_motivation', 'get_goodimpression', 'get_preservation', 'get_enthusiasm', 'get_fullpower'].includes(trigger)) {
+                             max = current.lastCounts?.[trigger] || 0;
+                        }
+                    }
+                }
+                if (count < max) count++;
+            } else {
+                if (count > 0) count--;
+            }
+
+            current.itemCounters[cardId] = count;
+            localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
+            updateSelectedCardsUI(current.planCards?.[activePlan] || [], type);
+            refreshCardBonuses();
+            updateActivityCounts();
+            return;
+        }
+
+        if (cardRemoveBtn) {
+            e.stopPropagation();
+            const cardId = cardRemoveBtn.dataset.id;
+            if (current.planCards && activePlan && current.planCards[activePlan]) {
+                current.planCards[activePlan] = current.planCards[activePlan].filter(id => id !== cardId);
+            }
+            if (current.cardChecked && current.cardChecked[cardId]) {
+                delete current.cardChecked[cardId];
+            }
+            
+            // 사이드 패널 UI 동기화 (선택 해제)
+            const panel = document.getElementById('calc-side-panel');
+            if (panel) {
+                const item = panel.querySelector(`.side-card-item[data-id="${cardId}"]`);
+                if (item) {
+                    item.classList.remove('selected');
+                    delete item.dataset.selectTime;
+                }
+            }
+
+            localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
+            updateSelectedCardsUI(current.planCards[activePlan] || [], type);
+            refreshCardBonuses();
+            updateActivityCounts();
+            return;
+        }
 
         if (cardCheckBtn) {
             if (!current.cardChecked) current.cardChecked = {};
@@ -51,16 +119,10 @@ export function initGlobalDistListener(getBoardPools, refreshCardBonuses, update
             return;
         }
 
-        // 분배 로직 (기존 로직 유지)
-        if (!current.manualEnhance || (Number(current.manualEnhance.m) + Number(current.manualEnhance.a) !== pools.enhance.generic)) {
-            current.manualEnhance = { m: pools.enhance.generic, a: 0 };
-        }
-        if (!current.manualDelete || (Number(current.manualDelete.m) + Number(current.manualDelete.a) !== pools.delete.generic)) {
-            current.manualDelete = { m: pools.delete.generic, a: 0 };
-        }
-        if (!current.manualGet || (Number(current.manualGet.m) + Number(current.manualGet.a) !== pools.get.generic)) {
-            current.manualGet = { m: pools.get.generic, a: 0 };
-        }
+        // 분배 로직 (전체 풀은 calc.js에서 동기화되므로 여기서는 교체 로직만 수행)
+        if (!current.manualEnhance) current.manualEnhance = { m: 0, a: 0 };
+        if (!current.manualDelete) current.manualDelete = { m: 0, a: 0 };
+        if (!current.manualGet) current.manualGet = { m: 0, a: 0 };
         
         let em = Number(current.manualEnhance.m), ea = Number(current.manualEnhance.a);
         let dm = Number(current.manualDelete.m), da = Number(current.manualDelete.a);
@@ -75,7 +137,7 @@ export function initGlobalDistListener(getBoardPools, refreshCardBonuses, update
         
         current.manualEnhance = { m: em, a: ea };
         current.manualDelete = { m: dm, a: da };
-        current.manualGet = { m: gm, ga: ga };
+        current.manualGet = { m: gm, a: ga }; // ga: ga에서 a: ga로 오타도 수정
         localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
         refreshCardBonuses(); 
         updateActivityCounts();

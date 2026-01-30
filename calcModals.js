@@ -177,9 +177,10 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
                 @media (min-width: 769px) { .tune-card-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; } }
                 .tune-card-group-box { grid-column: span 2; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 6px; background: rgba(156, 39, 176, 0.12); border: 2px solid rgba(156, 39, 176, 0.4); border-radius: 12px; }
                 .tune-card-item { cursor: pointer; transition: transform 0.1s; position: relative; }
-                .tune-card-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; border: 2px solid #eee; background: #fdfdfd; display: block; }
-                .tune-card-item.selected img { border-color: #9c27b0; box-shadow: 0 0 8px rgba(156, 39, 176, 0.4); }
-                .tune-card-item:hover img { border-color: #9c27b0; }
+                .tune-card-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; border: 2px solid #eee; background: #fdfdfd; display: block; opacity: 0.5; transition: opacity 0.2s; }
+                .tune-card-item.selected img { border-color: #9c27b0; box-shadow: 0 0 8px rgba(156, 39, 176, 0.4); opacity: 1; }
+                .tune-card-item:hover img { border-color: #9c27b0; opacity: 0.8; }
+                .tune-card-item.selected:hover img { opacity: 1; }
                 .tune-card-item:active { transform: scale(0.95); }
                 .card-count-badge { position: absolute; top: -5px; right: -5px; background: #9c27b0; color: white; font-size: 0.75rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; z-index: 10; pointer-events: none; }
                 .card-reset-btn { position: absolute; top: -5px; left: -5px; background: #ff4d4d; color: white; font-size: 1rem; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; line-height: 1; }
@@ -256,23 +257,24 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
                 e.stopPropagation();
                 delete selectedSkills[id];
             } else {
+                // 그룹(얼터) 로직: 그룹 박스 내의 다른 카드들은 해제
+                const groupBox = item.closest('.tune-card-group-box');
+                if (groupBox) {
+                    const groupIds = groupBox.dataset.group.split(',');
+                    groupIds.forEach(gid => {
+                        if (gid !== id && selectedSkills[gid]) {
+                            delete selectedSkills[gid];
+                            updateUI(gid);
+                        }
+                    });
+                }
+
                 if (skill.multi) {
                     selectedSkills[id] = (selectedSkills[id] || 0) + 1;
                 } else {
                     if (selectedSkills[id]) {
                         delete selectedSkills[id];
                     } else {
-                        // 얼터 로직: 같은 그룹 내 다른 카드 해제
-                        const groupBox = item.closest('.tune-card-group-box');
-                        if (groupBox) {
-                            const groupIds = groupBox.dataset.group.split(',');
-                            groupIds.forEach(gid => {
-                                if (gid !== id) {
-                                    delete selectedSkills[gid];
-                                    updateUI(gid);
-                                }
-                            });
-                        }
                         selectedSkills[id] = 1;
                     }
                 }

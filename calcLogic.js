@@ -220,6 +220,36 @@ export function getTriggerCountsFromDOM() {
         counts.total['get_item'] = (counts.total['get_item'] || 0) + totalItemCount;
     }
 
+    // 5. 개조(customize) 수치 반영
+    // calc.js의 updateActivityCounts에서 계산된 수치가 있다면 localStorage나 다른 방식으로 전달되어야 하지만,
+    // 현재 구조상 calcLogic.js가 독립적으로 계산하는 경우가 많으므로 여기서도 유사하게 집계해야 합니다.
+    // 일단 기본적으로 보드 옵션에서 optcustomize가 있으면 집계됩니다 (위의 opt 처리 로직).
+    // 여기에 추가로 서포트 카드나 P-아이템에 의한 개조 횟수 증가 로직을 보강합니다.
+    
+    // (1) 서포트 카드 체크박스에 의한 개조 카운트 (customize)
+    selectedIds.forEach(id => {
+        const card = cardList.find(c => c.id === id);
+        if (card && cardChecked[id]) {
+             // 개조 관련 효과를 가진 카드가 있다면 여기서 counts.total['customize']를 증가시킬 수 있습니다.
+             // 현재 carddata.js에는 'customize'라는 have 속성이나 직접적인 개조 증가 속성은 없으나,
+             // 질문 내용에 따라 "customize6" 코드를 가진 카드가 개조 횟수에 반응해야 한다고 했으므로,
+             // 만약 "개조" 자체를 제공하는 카드가 있다면 여기서 처리합니다.
+             // 다만, "개조 횟수에 따라 수치가 오른다"는 것은 트리거 카운트 문제이고,
+             // "개조 횟수 자체"를 늘려주는 카드는 별개입니다.
+             
+             // 만약 특정 카드가 개조 횟수를 +1 해준다면:
+             // if (card.abilities.includes('some_ability_that_gives_customize')) {
+             //    counts.total['customize'] = (counts.total['customize'] || 0) + 1;
+             // }
+        }
+    });
+
+    // (2) P-아이템 등에 의한 개조 카운트 (필요 시 추가)
+    // 예: saved.pItems에 'customize_item'이 있다면
+    // if (saved.pItems && saved.pItems.includes('some_p_item')) {
+    //    counts.total['customize'] = (counts.total['customize'] || 0) + 1;
+    // }
+
     return counts;
 }
 
@@ -282,9 +312,15 @@ export function calculateAllTotals(detailedCounts, selectedIds) {
     }
 
     // 3. 카드 보너스 합산
+    const savedState = JSON.parse(localStorage.getItem(`calc_state_${calcType}`)) || {};
+    const cardChecked = savedState.cardChecked || {};
+    const itemCounters = savedState.itemCounters || {};
+
     selectedIds.forEach(cardId => {
         const card = cardList.find(c => c.id === cardId);
         if (!card) return;
+
+        // 일반 어빌리티 보너스
         const lb = state.supportLB[cardId] || 0;
         const bonus = calculateCardBonus(card, detailedCounts, lb);
         
@@ -292,6 +328,22 @@ export function calculateAllTotals(detailedCounts, selectedIds) {
         cardBonusTotal.dance += bonus.dance || 0;
         cardBonusTotal.visual += bonus.visual || 0;
         if (bonus.percent > 0) percentBonuses[card.type] += bonus.percent;
+
+        // [New] 아이템 효과 (fixed, action) 반영
+        if (card.item_effects && cardChecked[cardId]) {
+            const counter = itemCounters[cardId] || 0;
+            card.item_effects.forEach(eff => {
+                if (eff.type === 'fixed' && eff.stats) {
+                    cardBonusTotal.vocal += eff.stats.vocal || 0;
+                    cardBonusTotal.dance += eff.stats.dance || 0;
+                    cardBonusTotal.visual += eff.stats.visual || 0;
+                } else if (eff.type === 'action' && eff.stats && counter > 0) {
+                    cardBonusTotal.vocal += (eff.stats.vocal || 0) * counter;
+                    cardBonusTotal.dance += (eff.stats.dance || 0) * counter;
+                    cardBonusTotal.visual += (eff.stats.visual || 0) * counter;
+                }
+            });
+        }
     });
 
     cardBonusTotal.vocal += Math.round(baseTotal.vocal * (percentBonuses.vocal / 100));

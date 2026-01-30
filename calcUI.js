@@ -156,16 +156,39 @@ export function updateSelectedCardsUI(selectedIds, calcType) {
 
     const saved = JSON.parse(localStorage.getItem(`calc_state_${calcType}`)) || {};
     const cardChecked = saved.cardChecked || {};
+    const itemCounters = saved.itemCounters || {};
+    
+    // 동적 max 계산을 위해 현재 집계된 카운트 필요 (없으면 99로 대체)
+    // 실제 정밀한 max는 calc.js에서 넘어온 데이터를 쓰면 좋지만, 일단 UI 표시용으로만 처리
+    const currentCounts = saved.lastCounts || {}; 
 
     container.innerHTML = Array.from({length: 6}, (_, i) => {
         const cardId = selectedIds[i];
         if (cardId) {
+            const card = cardList.find(c => c.id === cardId);
             const checked = cardChecked[cardId] ? 'checked' : '';
+            const counter = itemCounters[cardId] || 0;
+            
+            let counterHtml = '';
+            if (card && card.item_effects) {
+                const needsCounter = card.item_effects.some(e => e.type === 'action' || e.type === 'add_count');
+                if (needsCounter) {
+                    counterHtml = `
+                        <div class="card-item-counter">
+                            <button class="card-counter-btn minus" data-id="${cardId}">-</button>
+                            <span class="card-counter-val">${counter}</span>
+                            <button class="card-counter-btn plus" data-id="${cardId}">+</button>
+                        </div>
+                    `;
+                }
+            }
             
             return `<div class="selected-card-slot filled" data-id="${cardId}">
                         <img src="images/support/${cardId}_card.webp" 
                              onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
+                        <div class="card-slot-remove" data-id="${cardId}" style="position:absolute; top:-6px; left:-6px; width:16px; height:16px; background:red; color:white; border-radius:50%; font-size:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; z-index:10; line-height:1;">×</div>
                         <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked}>
+                        ${counterHtml}
                     </div>`;
         }
         return `<div class="selected-card-slot empty"></div>`;

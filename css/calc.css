@@ -190,20 +190,57 @@
 }
 
 .selected-card-slot {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: auto;
+    width: 100%;
+    min-height: 50px;
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.05);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: flex-start;
+    overflow: visible;
     border: 1px solid transparent;
+    padding-bottom: 4px;
 }
 
 .selected-card-slot.filled {
     border-color: #ff4d8d;
     background: white;
-    position: relative; /* 체크박스 배치를 위해 추가 */
+    position: relative;
+}
+
+.card-item-counter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    background: rgba(255, 77, 141, 0.1);
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+.card-counter-btn {
+    width: 18px;
+    height: 18px;
+    background: #ff4d8d;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.card-counter-val {
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 14px;
+    text-align: center;
+    color: #ff4d8d;
 }
 
 .card-slot-check {
@@ -220,8 +257,9 @@
 
 .selected-card-slot img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 1 / 1;
     object-fit: contain;
+    border-radius: 8px 8px 0 0;
 }
 
 .side-card-item.selected {

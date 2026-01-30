@@ -104,13 +104,13 @@ function getBoardPools(type, current) {
     return resArr;
 }
 
-function refreshCardBonuses() {
+function refreshCardBonuses(providedCounts) {
     const panel = document.getElementById('calc-side-panel');
     const boardElem = document.querySelector('.unified-plan-board');
     if (!boardElem) return;
     const type = boardElem.dataset.calcType;
     const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
-    const detailedCounts = getTriggerCountsFromDOM();
+    const detailedCounts = providedCounts || getTriggerCountsFromDOM();
     
     let selectedIds = [];
     if (panel) selectedIds = Array.from(panel.querySelectorAll('.side-card-item.selected')).map(i => i.dataset.id);
@@ -183,9 +183,7 @@ function updateActivityCounts() {
         if (skill && count > 0) {
             if (skill.type === 'active') extraCounts.get_a += count;
             else if (skill.type === 'mental') extraCounts.get_m += count;
-            
             if (skill.rarity === 'SSR') extraCounts.get_ssr += count;
-            
             if (skill.attrs && Array.isArray(skill.attrs)) {
                 skill.attrs.forEach(attr => {
                     const key = `get_${attr}`;
@@ -207,45 +205,99 @@ function updateActivityCounts() {
                     if (card.rarity === 'SSR') extraCounts.get_ssr++;
                     if (card.have === 'card_m') { extraCounts.get_m++; }
                     else if (card.have === 'card_a') { extraCounts.get_a++; }
-                    // 전체 카드 획득 수치 합산
                     extraCounts.get++;
+                    if (card.attrs && Array.isArray(card.attrs)) {
+                        card.attrs.forEach(attr => {
+                            const key = `get_${attr}`;
+                            if (extraCounts.hasOwnProperty(key)) extraCounts[key]++;
+                        });
+                    }
                 }
             }
         }
     });
 
-    // 분배 로직 적용 (기존 extraCounts에 누적)
-    const totalEnhancePool = pools.enhance.generic;
+    // [New] 아이템 효과 (add_count) 반영
+    const itemCounters = savedState.itemCounters || {};
+    selectedIds.forEach(id => {
+        if (cardChecked[id]) {
+            const card = cardList.find(c => c.id === id);
+            if (card && card.item_effects) {
+                const counter = itemCounters[id] || 0;
+                card.item_effects.forEach(eff => {
+                    if (eff.type === 'add_count' && eff.target && counter > 0) {
+                        if (extraCounts.hasOwnProperty(eff.target)) {
+                            extraCounts[eff.target] += (eff.value || 1) * counter;
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    // 분배 로직 적용 (모든 추가 수치가 반영된 extraCounts 기반)
+    // 1. 보드의 기본 풀 수치 합산
+    extraCounts.enhance += pools.enhance.generic + pools.enhance.m + pools.enhance.a;
+    extraCounts.enhance_m += pools.enhance.m;
+    extraCounts.enhance_a += pools.enhance.a;
+    
+    extraCounts.delete += pools.delete.generic + pools.delete.m + pools.delete.a;
+    extraCounts.delete_m += pools.delete.m;
+    extraCounts.delete_a += pools.delete.a;
+
+    // 2. 미분배 수치에 대한 수동 분배 및 자동 할당 적용
+    const currentEnhanceTotal = extraCounts.enhance;
     let em = Number(savedState.manualEnhance?.m) || 0;
     let ea = Number(savedState.manualEnhance?.a) || 0;
-    const diffE = totalEnhancePool - (em + ea);
-    if (diffE !== 0) em = Math.max(0, em + diffE);
-    extraCounts.enhance += totalEnhancePool + pools.enhance.m + pools.enhance.a;
-    extraCounts.enhance_m += pools.enhance.m + em;
-    extraCounts.enhance_a += pools.enhance.a + ea;
+    let diffE = currentEnhanceTotal - (em + ea);
+    if (diffE > 0) em += diffE;
+    else if (diffE < 0) {
+        const redM = Math.min(em, -diffE);
+        em -= redM; diffE += redM;
+        if (diffE < 0) ea = Math.max(0, ea + diffE);
+    }
+    savedState.manualEnhance = { m: em, a: ea };
+    extraCounts.enhance_m += em;
+    extraCounts.enhance_a += ea;
     
-    const totalDeletePool = pools.delete.generic;
+    const currentDeleteTotal = extraCounts.delete;
     let dm = Number(savedState.manualDelete?.m) || 0;
     let da = Number(savedState.manualDelete?.a) || 0;
-    const diffD = totalDeletePool - (dm + da);
-    if (diffD !== 0) dm = Math.max(0, dm + diffD);
-    extraCounts.delete += totalDeletePool + pools.delete.m + pools.delete.a;
-    extraCounts.delete_m += pools.delete.m + dm;
-    extraCounts.delete_a += pools.delete.a + da;
+    let diffD = currentDeleteTotal - (dm + da);
+    if (diffD > 0) dm += diffD;
+    else if (diffD < 0) {
+        const redM = Math.min(dm, -diffD);
+        dm -= redM; diffD += redM;
+        if (diffD < 0) da = Math.max(0, da + diffD);
+    }
+    savedState.manualDelete = { m: dm, a: da };
+    extraCounts.delete_m += dm;
+    extraCounts.delete_a += da;
 
     const totalGetPool = pools.get.generic;
     let gm = Number(savedState.manualGet?.m) || 0;
     let ga = Number(savedState.manualGet?.a) || 0;
-    // 자동 할당(diffG) 로직 제거: 이제 모달에서 선택한 것만 반영됨
     extraCounts.get += totalGetPool + pools.get.m + pools.get.a;
     extraCounts.get_m += pools.get.m + gm;
     extraCounts.get_a += pools.get.a + ga;
 
-    // 기타 수동 보정 반영 (더 이상 사용하지 않음 - 필요한 경우 여기에 새로운 로직 추가)
-    // const manualOther = savedState.manualOther || {};
-    // Object.keys(manualOther).forEach(key => { if (extraCounts.hasOwnProperty(key)) { extraCounts[key] = Math.max(0, (extraCounts[key] || 0) + (Number(manualOther[key]) || 0)); } });
-
     updateActivityCountsUI(counts, spCounts, extraCounts, activePlan, Array.from(new Set(Array.from(board.querySelectorAll('.plan-icon-wrapper')).map(w => w.dataset.value))), ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'], type);
+
+    // [New] UI 카운트 기반으로 보너스 재계산 (동기화)
+    const mergedCounts = {
+        total: { ...counts, ...extraCounts },
+        lessons: {
+            vocal: { normal: (counts.lessonvo || 0) - (spCounts.lessonvo || 0), sp: spCounts.lessonvo || 0 },
+            dance: { normal: (counts.lessondan || 0) - (spCounts.lessondan || 0), sp: spCounts.lessondan || 0 },
+            visual: { normal: (counts.lessonvi || 0) - (spCounts.lessonvi || 0), sp: spCounts.lessonvi || 0 }
+        }
+    };
+
+    // UI의 동적 max 계산을 위해 현재 상태 저장
+    savedState.lastCounts = mergedCounts.total;
+    localStorage.setItem(`calc_state_${type}`, JSON.stringify(savedState));
+
+    refreshCardBonuses(mergedCounts);
 }
 
 function saveCalcState() {
