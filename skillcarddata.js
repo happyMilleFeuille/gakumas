@@ -71,7 +71,7 @@ export const skillCardList = {
     // --- Logic ---
     "logic-legend1": { type: "mental", attrs: [], rarity: "Legend" },
     "logic-legend2": { type: "mental", attrs: ["goodimpression"], rarity: "Legend" },
-    "logic-legend3": { type: "mental", attrs: ["motivation"], rarity: "Legend" },
+    "logic-legend3": { type: "mental", attrs: ["motivation","genki"], rarity: "Legend" },
     "logic-r1": { type: "active", attrs: ["goodimpression"], rarity: "R" ,multi:true},
     "logic-r1alt": { type: "active", attrs: ["goodimpression"], rarity: "R" ,multi:true},
     "logic-r2": { type: "active", attrs: ["motivation"], rarity: "R" ,multi:true },

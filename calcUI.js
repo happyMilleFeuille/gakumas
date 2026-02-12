@@ -234,7 +234,8 @@ export function renderWeeklyPlan(type, calcPlans, idolList, handlers) {
     }).join('');
 
     const pItemHtml = type === 'nia' ? `
-        <div class="p-item-container" id="p-item-container">
+        <div class="p-item-container" id="p-item-container" style="position: relative; padding-left: 28px;">
+            <div class="p-item-info-btn" style="position: absolute; left: 5px; top: 5px; width: 20px; height: 20px; border-radius: 50%; background: #ddd; color: #555; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer;">i</div>
             <div class="p-item-slot" data-index="0"></div>
             <div class="p-item-slot" data-index="1"></div>
             <div class="p-item-slot" data-index="2"></div>

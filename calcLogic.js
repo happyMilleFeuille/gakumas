@@ -160,7 +160,8 @@ export function getTriggerCountsFromDOM() {
     counts.total['delete_a'] = (counts.total['delete_a'] || 0) + da;
 
     // 3. 카드 획득 분배 및 스킬 카드 보너스 반영 (모달 선택 기반)
-    const selectedSkills = saved.selectedSkills || {};
+    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type || 'sense';
+    const selectedSkills = saved.planSkills?.[activePlan] || {};
     Object.keys(selectedSkills).forEach(skillId => {
         const skill = skillCardList[skillId];
         if (skill) {
@@ -191,7 +192,6 @@ export function getTriggerCountsFromDOM() {
     });
 
     // 3.5. 슬롯 선택 서포트 카드 반영 (체크박스 기반 - 기존 로직 유지)
-    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
     const selectedIds = (saved.planCards && activePlan) ? (saved.planCards[activePlan] || []) : [];
     const cardChecked = saved.cardChecked || {};
 
@@ -219,6 +219,47 @@ export function getTriggerCountsFromDOM() {
     if (totalItemCount > 0) {
         counts.total['get_item'] = (counts.total['get_item'] || 0) + totalItemCount;
     }
+
+    // 4.5 [New] 아이템 효과(item_effects)의 target 수치 반영 (trigger 제한 포함)
+    const itemCounters = saved.itemCounters || {};
+    selectedIds.forEach(cardId => {
+        const card = cardList.find(c => c.id === cardId);
+        if (card && card.item_effects && cardChecked[cardId]) {
+            const counter = itemCounters[cardId] || 0;
+            card.item_effects.forEach(eff => {
+                if ((eff.type === 'action' || eff.type === 'add_count') && eff.target && counter > 0) {
+                    let multiplier = counter;
+                    if (eff.trigger) {
+                        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                        let totalTriggerCount = 0;
+                        triggers.forEach(t => {
+                            const l = counts.lessons;
+                            if (t === 'lesson') {
+                                // 카드 타입과 일치하는 레슨(일반+SP)만 합산
+                                if (card.type === 'vocal') totalTriggerCount += (l.vocal.normal + l.vocal.sp);
+                                else if (card.type === 'dance') totalTriggerCount += (l.dance.normal + l.dance.sp);
+                                else if (card.type === 'visual') totalTriggerCount += (l.visual.normal + l.visual.sp);
+                                else totalTriggerCount += (l.vocal.normal + l.vocal.sp + l.dance.normal + l.dance.sp + l.visual.normal + l.visual.sp);
+                            } else if (t === 'sp') {
+                                // 카드 타입과 일치하는 SP 레슨만 합산
+                                if (card.type === 'vocal') totalTriggerCount += l.vocal.sp;
+                                else if (card.type === 'dance') totalTriggerCount += l.dance.sp;
+                                else if (card.type === 'visual') totalTriggerCount += l.visual.sp;
+                                else totalTriggerCount += (l.vocal.sp + l.dance.sp + l.visual.sp);
+                            } else {
+                                totalTriggerCount += (counts.total[t] || 0);
+                            }
+                        });
+                        multiplier = Math.min(totalTriggerCount, counter);
+                    }
+                    if (multiplier > 0) {
+                        const val = eff.value || 1;
+                        counts.total[eff.target] = (counts.total[eff.target] || 0) + (val * multiplier);
+                    }
+                }
+            });
+        }
+    });
 
     // 5. 개조(customize) 수치 반영
     // calc.js의 updateActivityCounts에서 계산된 수치가 있다면 localStorage나 다른 방식으로 전달되어야 하지만,
@@ -338,9 +379,29 @@ export function calculateAllTotals(detailedCounts, selectedIds) {
                     cardBonusTotal.dance += eff.stats.dance || 0;
                     cardBonusTotal.visual += eff.stats.visual || 0;
                 } else if (eff.type === 'action' && eff.stats && counter > 0) {
-                    cardBonusTotal.vocal += (eff.stats.vocal || 0) * counter;
-                    cardBonusTotal.dance += (eff.stats.dance || 0) * counter;
-                    cardBonusTotal.visual += (eff.stats.visual || 0) * counter;
+                    let multiplier = counter;
+                    
+                    // trigger가 있으면 실제 행동 횟수와 비교하여 제한
+                    if (eff.trigger) {
+                        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                        let totalTriggerCount = 0;
+                        triggers.forEach(t => {
+                            if (t === 'lesson') {
+                                // 'lesson' 키워드는 모든 레슨(vo, da, vi) 합산
+                                const l = detailedCounts.lessons;
+                                totalTriggerCount += (l.vocal.normal + l.vocal.sp + l.dance.normal + l.dance.sp + l.visual.normal + l.visual.sp);
+                            } else {
+                                totalTriggerCount += (detailedCounts.total[t] || 0);
+                            }
+                        });
+                        multiplier = Math.min(totalTriggerCount, counter);
+                    }
+
+                    if (multiplier > 0) {
+                        cardBonusTotal.vocal += (eff.stats.vocal || 0) * multiplier;
+                        cardBonusTotal.dance += (eff.stats.dance || 0) * multiplier;
+                        cardBonusTotal.visual += (eff.stats.visual || 0) * multiplier;
+                    }
                 }
             });
         }

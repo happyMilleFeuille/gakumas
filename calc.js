@@ -22,6 +22,8 @@ const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china'
 export function initCalc() { 
     renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia')); 
     initGlobalDistListener(getBoardPools, refreshCardBonuses, updateActivityCounts);
+    window.updateActivityCounts = updateActivityCounts;
+    window.refreshCardBonuses = refreshCardBonuses;
 }
 
 function startWeeklyPlan(type) {
@@ -34,7 +36,7 @@ function startWeeklyPlan(type) {
             const panel = document.getElementById('calc-side-panel');
             if (panel?.classList.contains('open')) { closeSupportCardPanel(); return; }
             const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
-            if (activePlan) toggleSupportCardPanel(activePlan, refreshCardBonuses, saveCalcState);
+            if (activePlan) toggleSupportCardPanel(activePlan, updateActivityCounts, saveCalcState);
         }; },
         setupPItemSelector: (t) => setupPItemSelector(t, saveCalcState, refreshCardBonuses, updateActivityCounts)
     });
@@ -122,17 +124,49 @@ function refreshCardBonuses(providedCounts) {
     const { baseTotal, cardBonusTotal } = calculateAllTotals(detailedCounts, selectedIds);
     updateStatHeaderUI(cardBonusTotal, document.querySelector('.idol-sel-item.active')?.dataset.id, selectedIds, type);
 
+    const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
+    const itemCounters = savedState.itemCounters || {};
+
     if (panel?.classList.contains('open')) {
         panel.querySelectorAll('.side-card-item').forEach(item => {
             const card = cardList.find(c => c.id === item.dataset.id);
             if (!card) return;
             const bonus = calculateCardBonus(card, detailedCounts, state.supportLB[card.id] || 0);
             let val = bonus.vocal + bonus.dance + bonus.visual + (bonus.percent > 0 ? Math.round((baseTotal[card.type] || 0) * (bonus.percent / 100)) : 0);
+            
+            // [New] 아이템 효과(action) 패널 표시 반영
+            if (card.item_effects) {
+                const counter = itemCounters[card.id] || 0;
+                card.item_effects.forEach(eff => {
+                    if (eff.type === 'fixed' && eff.stats) {
+                        val += (eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0);
+                    } else if (eff.type === 'action' && eff.stats && counter > 0) {
+                        let multiplier = counter;
+                        if (eff.trigger) {
+                            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                            let totalTriggerCount = 0;
+                            triggers.forEach(t => {
+                                if (t === 'lesson') {
+                                    const l = detailedCounts.lessons || { vocal: {normal:0,sp:0}, dance: {normal:0,sp:0}, visual: {normal:0,sp:0} };
+                                    totalTriggerCount += (l.vocal.normal + l.vocal.sp + l.dance.normal + l.dance.sp + l.visual.normal + l.visual.sp);
+                                } else {
+                                    totalTriggerCount += (detailedCounts.total[t] || 0);
+                                }
+                            });
+                            multiplier = Math.min(totalTriggerCount, counter);
+                        }
+                        if (multiplier > 0) {
+                            val += ((eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0)) * multiplier;
+                        }
+                    }
+                });
+            }
+
             const bonusEl = item.querySelector('.bonus-val');
             if (bonusEl) {
                 bonusEl.textContent = val > 0 ? `+${val}` : '';
                 bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
-                if (card.abilities.includes('sp_lessonup')) bonusEl.classList.add(`sp-${card.type}`);
+                if (card.abilities && card.abilities.includes('sp_lessonup')) bonusEl.classList.add(`sp-${card.type}`);
             }
             item.style.order = -val;
         });
@@ -176,7 +210,7 @@ function updateActivityCounts() {
     }
 
     // 모달에서 선택한 스킬 카드 반영
-    const selectedSkills = savedState.selectedSkills || {};
+    const selectedSkills = savedState.planSkills?.[activePlan || 'sense'] || {};
     Object.keys(selectedSkills).forEach(skillId => {
         const skill = skillCardList[skillId];
         const count = selectedSkills[skillId] || 0;
@@ -217,7 +251,7 @@ function updateActivityCounts() {
         }
     });
 
-    // [New] 아이템 효과 (add_count) 반영
+    // [New] 아이템 효과 반영 (trigger 제한 포함 범용 로직)
     const itemCounters = savedState.itemCounters || {};
     selectedIds.forEach(id => {
         if (cardChecked[id]) {
@@ -225,9 +259,31 @@ function updateActivityCounts() {
             if (card && card.item_effects) {
                 const counter = itemCounters[id] || 0;
                 card.item_effects.forEach(eff => {
-                    if (eff.type === 'add_count' && eff.target && counter > 0) {
-                        if (extraCounts.hasOwnProperty(eff.target)) {
-                            extraCounts[eff.target] += (eff.value || 1) * counter;
+                    if ((eff.type === 'add_count' || eff.type === 'action') && eff.target && counter > 0) {
+                        let multiplier = counter;
+                        if (eff.trigger) {
+                            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                            let totalTriggerCount = 0;
+                            triggers.forEach(t => {
+                                if (t === 'lesson') {
+                                    if (card.type === 'vocal') totalTriggerCount += (counts.lessonvo || 0);
+                                    else if (card.type === 'dance') totalTriggerCount += (counts.lessondan || 0);
+                                    else if (card.type === 'visual') totalTriggerCount += (counts.lessonvi || 0);
+                                    else totalTriggerCount += ((counts.lessonvo || 0) + (counts.lessondan || 0) + (counts.lessonvi || 0));
+                                } else if (t === 'sp') {
+                                    if (card.type === 'vocal') totalTriggerCount += (spCounts.lessonvo || 0);
+                                    else if (card.type === 'dance') totalTriggerCount += (spCounts.lessondan || 0);
+                                    else if (card.type === 'visual') totalTriggerCount += (spCounts.lessonvi || 0);
+                                    else totalTriggerCount += ((spCounts.lessonvo || 0) + (spCounts.lessondan || 0) + (spCounts.lessonvi || 0));
+                                } else {
+                                    totalTriggerCount += (counts[t] || 0);
+                                }
+                            });
+                            multiplier = Math.min(totalTriggerCount, counter);
+                        }
+                        
+                        if (multiplier > 0 && extraCounts.hasOwnProperty(eff.target)) {
+                            extraCounts[eff.target] += (eff.value || 1) * multiplier;
                         }
                     }
                 });

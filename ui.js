@@ -524,6 +524,7 @@ export function showCardModal(card, displayName, imgSrc) {
             setSupportLB(card.id, currentLB);
             updateStars(currentLB);
             if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
+            if (typeof window.updateActivityCounts === 'function') window.updateActivityCounts();
             
             // 1. 서포트 카드 그리드 업데이트
             const cardInGrid = document.querySelector(`.support-card[data-id="${card.id}"]`);

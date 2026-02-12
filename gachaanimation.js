@@ -79,6 +79,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     let videoStep = 0; 
     let gachaMode = 0;
     let canClick = false;
+    let gachaBgmStartTime = 0;
     let existingIdsSet = new Set();
     let currentSubVideo = ""; 
     let blackoutScheduled = null; // { step: 1, time: 1.2 } 형태
@@ -229,30 +230,39 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 }
             };
 
-            videoNext.onclick = () => {
-                if (!canClick) return;
+            videoNext.onclick = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                if (!canClick || videoNext.seeking) return;
                 if (currentSubVideo === "pssr_intro") return;
 
                 if (card.rarity === 'PSSR' && currentSubVideo === "pssr_special") {
-                    const j1 = card.jumpTime1 !== undefined ? card.jumpTime1 : 3.3;
-                    const j2 = card.jumpTime2;
+                    const j1 = parseFloat(card.jumpTime1 !== undefined ? card.jumpTime1 : 3.3);
+                    const j2 = card.jumpTime2 !== undefined ? parseFloat(card.jumpTime2) : undefined;
                     const cur = videoNext.currentTime;
+                    const dur = videoNext.duration;
 
-                    // 점프 로직: readyState가 1 이상(메타데이터 로드됨)일 때만 수행
-                    if (videoNext.readyState >= 1) {
-                        if (cur < j1) {
-                            videoNext.currentTime = j1;
-                            if (clickTimer) clearTimeout(clickTimer);
-                            canClick = false;
-                            clickTimer = setTimeout(() => { canClick = true; }, 2000);
-                            return;
+                    if (videoNext.readyState >= 1 && !isNaN(dur) && dur > 0) {
+                        let targetTime = null;
+                        let isSecondJump = false;
+                        const safetyMargin = 0.5;
+
+                        if (cur < j1 && j1 < (dur - safetyMargin)) {
+                            targetTime = j1;
+                        } else if (j2 !== undefined && cur < j2 && j2 < (dur - safetyMargin)) {
+                            targetTime = j2;
+                            isSecondJump = true;
                         }
-                        if (j2 !== undefined && cur < j2) {
-                            // 이미 j1 근처라면 j2로 점프
-                            videoNext.currentTime = j2;
+
+                        if (targetTime !== null) {
                             if (clickTimer) clearTimeout(clickTimer);
                             canClick = false;
-                            clickTimer = setTimeout(() => { canClick = true; }, 2000);
+                            
+                            // 비디오 인코딩 최적화가 완료되었으므로 직접 할당 방식 사용
+                            videoNext.currentTime = targetTime;
+                            
+                            // 2차 점프(하이라이트) 후에는 더 빨리 클릭(스킵) 가능하도록 설정
+                            const lockTime = isSecondJump ? 500 : 1200;
+                            clickTimer = setTimeout(() => { canClick = true; }, lockTime);
                             return;
                         }
                     }
@@ -266,17 +276,13 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 if (clickTimer) clearTimeout(clickTimer);
                 canClick = false; 
                 if (currentSubVideo === "pssr_intro") {
-                    // 어나더 카드인 경우 원본 영상 ID 추출 (예: ssrrinami_1st2another -> ssrrinami_1st)
-                    let videoId = card.id;
-                    if (card.another) {
-                        const match = card.id.match(/(.*_.*?st)/); // '...st'로 끝나는 원본 패턴 추출
-                        if (match) videoId = match[1];
+                    const finalSrc = assetBlobs[`gasya/pssr/${card.id}.mp4`];
+                    
+                    if (!finalSrc) {
+                        playIndividualResults(index + 1);
+                        return;
                     }
 
-                    const specialSrc = `gasya/pssr/${videoId}.mp4`;
-                    // 본인 영상이 없으면 원본 ID 영상으로 폴백
-                    const finalSrc = assetBlobs[`gasya/pssr/${card.id}.mp4`] || assetBlobs[specialSrc] || specialSrc;
-                    
                     videoNext.src = finalSrc;
                     videoNext.muted = state.gachaMuted; 
                     videoNext.onplaying = () => {
@@ -522,14 +528,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             videoMain.currentTime = jumpTime;
             
             // BGM 점프 로직 수정: 이미 6.5초를 넘었으면 그대로 두고, 아니면 6.5초로 이동
-            if (!state.gachaMuted) {
-                const bgm = window.audioManager && window.audioManager.bgm;
-                if (bgm && bgm.src.includes('start_bgmnormal.mp3')) {
-                    if (bgm.currentTime < 6.5) {
-                        playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
-                    }
-                } else {
-                    // 혹시 BGM이 안 틀어져 있거나 다른 거라면 실행
+            if (!state.gachaMuted && gachaBgmStartTime > 0) {
+                const elapsed = (Date.now() - gachaBgmStartTime) / 1000;
+                if (elapsed < 6.5) {
                     playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
                 }
             }
@@ -567,8 +568,8 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         // 수정: PSSR 픽업인 경우에만 발동하도록 조건 추가
         const isPssrPickup = pickupResult && pickups.pssr && pickups.pssr.some(p => p.id === pickupResult.id);
 
-        // 픽업이 있고(PSSR만), 60% 확률 당첨 시에만 블랙아웃 예약
-        if (isPssrPickup && Math.random() < 0.6) {
+        // 픽업이 있고(PSSR만), 90% 확률 당첨 시에만 블랙아웃 예약
+        if (isPssrPickup && Math.random() < 0.9) {
             // 해당 ID에 매칭되는 char 정보 찾기 (PSSR인 경우)
             const pickupInfo = pickups.pssr.find(p => p.id === pickupResult.id);
             const charId = pickupInfo ? pickupInfo.char : null;
@@ -602,6 +603,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         if (videoMain && videoContainer) {
             videoContainer.classList.remove('hidden');
             playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
+            gachaBgmStartTime = Date.now();
             
             videoMain.src = assetBlobs[src] || src;
             videoMain.muted = true; 
@@ -628,13 +630,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     if (skipBtn) {
-        skipBtn.style.pointerEvents = 'none';
-        skipBtn.style.opacity = '0.5';
-        setTimeout(() => {
-            skipBtn.style.pointerEvents = 'auto';
-            skipBtn.style.opacity = '1';
-        }, 1000);
-        skipBtn.onclick = () => { finishGacha(); };
+        skipBtn.onclick = () => { if (canClick) finishGacha(); };
     }
 
     return { startGacha, prepareResults };

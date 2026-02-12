@@ -97,8 +97,9 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
     const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type || 'sense';
     const isHajime = type === 'hajime';
     
-    // 현재 선택된 스킬 카드 상태 로드
-    const selectedSkills = current.selectedSkills || {};
+    // 플랜별 스킬 카드 상태 로드
+    if (!current.planSkills) current.planSkills = {};
+    const selectedSkills = current.planSkills[activePlan] || {};
     
     // 보드에서의 카드 획득 수치 계산 (모든 타입 합산 + 서포트 카드 보너스)
     const pools = getBoardPools(type, current);
@@ -169,9 +170,10 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
         return group.length > 1 ? `<div class="tune-card-group-box" data-group="${group.join(',')}">${itemsHtml}</div>` : itemsHtml;
     }).join('');
 
+    const planTitle = activePlan.charAt(0).toUpperCase() + activePlan.slice(1);
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 95%; width: 600px; max-height: 85vh; padding: 15px; display: flex; flex-direction: column;">
-            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 15px; text-align: center; color: #9c27b0;">카드 선택 (0 / 0)</h3>
+            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 15px; text-align: center; color: #9c27b0;">${planTitle} 카드 선택 (0 / 0)</h3>
             <style>
                 .tune-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 5px; flex: 1; overflow-y: auto; }
                 @media (min-width: 769px) { .tune-card-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; } }
@@ -209,7 +211,7 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
         const selectedCount = Object.values(selectedSkills).reduce((a, b) => a + b, 0);
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
-            titleEl.textContent = `카드 선택 (${selectedCount} / ${boardGetCount})`;
+            titleEl.textContent = `${planTitle} 카드 선택 (${selectedCount} / ${boardGetCount})`;
         }
     };
 
@@ -235,16 +237,43 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
     };
 
     // 전체 초기화 로직
-    document.getElementById('reset-all-skills').onclick = () => {
-        if (!confirm('모든 선택을 초기화하시겠습니까?')) return;
-        Object.keys(selectedSkills).forEach(id => {
-            delete selectedSkills[id];
-            updateUI(id);
-        });
-        current.selectedSkills = selectedSkills;
-        localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
-        refreshCardBonuses();
-        updateActivityCounts();
+    document.getElementById('reset-all-skills').onclick = (e) => {
+        const btn = e.target;
+        if (document.querySelector('.reset-confirm-tooltip')) return;
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'calc-tooltip reset-confirm-tooltip';
+        tooltip.style.cssText = 'position: fixed; z-index: 31000; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 2px solid #666; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 15px; align-items: center; min-width: 200px;';
+        tooltip.innerHTML = `
+            <span style="font-size: 1rem; color: #333; font-weight: bold;">모든 선택을 초기화할까요?</span>
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button class="primary-btn" id="confirm-reset-btn" style="flex: 1; padding: 10px; background: #ff4d4d; border-radius: 6px;">확인</button>
+                <button class="primary-btn" id="cancel-reset-btn" style="flex: 1; padding: 10px; background: #888; border-radius: 6px;">취소</button>
+            </div>
+        `;
+        document.body.appendChild(tooltip);
+
+        document.getElementById('confirm-reset-btn').onclick = () => {
+            Object.keys(selectedSkills).forEach(id => {
+                delete selectedSkills[id];
+                updateUI(id);
+            });
+            current.planSkills[activePlan] = selectedSkills;
+            localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
+            refreshCardBonuses();
+            updateActivityCounts();
+            tooltip.remove();
+        };
+
+        document.getElementById('cancel-reset-btn').onclick = () => tooltip.remove();
+        
+        const outsideClick = (oe) => {
+            if (!tooltip.contains(oe.target) && oe.target !== btn) {
+                tooltip.remove();
+                document.removeEventListener('mousedown', outsideClick);
+            }
+        };
+        setTimeout(() => document.addEventListener('mousedown', outsideClick), 10);
     };
 
     modal.querySelectorAll('.tune-card-item').forEach(item => {
@@ -281,7 +310,7 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
             }
 
             updateUI(id);
-            current.selectedSkills = selectedSkills;
+            current.planSkills[activePlan] = selectedSkills;
             localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
             refreshCardBonuses();
             updateActivityCounts();

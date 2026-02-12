@@ -480,6 +480,27 @@ export const cardList = [
             "get_ssr",
             "event_paraup"
         ]        
+    },    
+        { 
+    id: "vocal_distlogic1", 
+    name: "찾았다.", 
+    name_ja: "みいつけた。",     
+    type: "vocal", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2026-01-27",       
+    rarity: "SSR",       
+    source:"dist",    
+    extra1: "param", extra2:"ranchange",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_recovery",
+            "supportrateup", 
+            "get_genki",
+            "gift",
+            "event_paraup"
+        ]        
     },       
     { 
     id: "vocal_limitedlogic1", 
@@ -1688,7 +1709,28 @@ export const cardList = [
             "customize6",
             "event_paraup"
         ]        
-    },    
+    }, 
+    { 
+    id: "visual_logic5", 
+    name: "덤벼보렴!", 
+    name_ja: "かかってらっしゃい!",     
+    type: "visual", 
+    plan: "logic", 
+    have:"card_a",
+    attrs:["genki"],    
+    releasedAt: "2026-02-09",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_param20",
+            "supportrateup", 
+            "get_genki",
+            "get_mental",
+            "event_paraup"
+        ]        
+    },          
     { 
     id: "visual_limitedlogic1", 
     name: "따뜻하네", 
@@ -1881,7 +1923,7 @@ export const cardList = [
     type: "vocal", 
     plan: "free", 
     have:"item",
-     item_effects: [{ type: "add_count", target: "enhance", value: 1, max: 7 }],
+    item_effects: [{ type: "action", trigger: ["sp"], target: "enhance", value: 1, max: 9}],   
     releasedAt: "2024-05-16",     
     rarity: "SR",             
     extra1: "param",    
@@ -1901,6 +1943,7 @@ export const cardList = [
     name_ja: "愛無き暗記は難しい",     
     type: "vocal", 
     have:"item",
+    item_effects: [{ type: "action", trigger: ["audition","test"], stats: { vocal: 26 }, max: 3 }],
     releasedAt: "2024-05-16",         
     plan: "free", 
     rarity: "SR",             
@@ -1941,7 +1984,8 @@ export const cardList = [
     name_ja: "マイペース、マイライフ",     
     type: "vocal", 
     have:"item",
-    releasedAt: "2024-05-16",         
+    releasedAt: "2024-05-16",      
+    item_effects: [{ type: "action", trigger: ["lesson"], stats: { vocal: 13 }}],           
     plan: "free", 
     rarity: "SR",             
     extra1: "param",    
@@ -1983,6 +2027,7 @@ export const cardList = [
     type: "vocal", 
     releasedAt: "2025-01-22",         
     plan: "free", 
+    item_effects: [{ type: "action", trigger: ["sp"], target: "get_drink", value: 1, max: 9}],   
     have:"item",
     rarity: "SR",             
     extra1: "param",    
@@ -2002,6 +2047,7 @@ export const cardList = [
     name_ja: "2名様、ご案内~♪",     
     type: "vocal", 
     plan: "free", 
+    item_effects: [{ type: "action", trigger: ["get_genki"], stats: { vocal: 6 }}],
     have:"item",
     releasedAt: "2025-05-01",         
     source:"limited_u",        
@@ -2159,7 +2205,7 @@ export const cardList = [
             "get_item6",
             "event_paraup"
         ]        
-    }, 
+    },  
     { 
     id: "vocal_srlogic5", 
     name: "보글보글, 좋은 냄새♪", 
@@ -2180,7 +2226,27 @@ export const cardList = [
             "change3",
             "event_paraup"
         ]        
-    },               
+    },
+    { 
+    id: "vocal_srlogic6", 
+    name: "프리마스텔라와 왕자님", 
+    name_ja: "一番星と王子様",     
+    type: "vocal", 
+    releasedAt: "2026-02-09",         
+    plan: "logic", 
+    have:"item",
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "test",
+            "event_paraup"
+        ]        
+    },                       
     { 
     id: "vocal_srlimitedlogic1", 
     name: "바다, 즐기지 않으면", 
@@ -2317,6 +2383,7 @@ export const cardList = [
     type: "dance", 
     plan: "free", 
     have:"item",
+    item_effects: [{ type: "action", trigger: ["sp"], target: "get_drink", value: 2, max: 9}],   
     releasedAt: "2024-05-16",     
     rarity: "SR",             
     extra1: "param",    
@@ -2336,6 +2403,7 @@ export const cardList = [
     name_ja: "嬉し恥ずかし夢心地",     
     type: "dance", 
     have:"item",
+    item_effects: [{ type: "action", trigger: ["audition","test"], stats: { dance: 26 }, max: 3 }],    
     plan: "free", 
     releasedAt: "2024-05-16",     
     rarity: "SR",             
@@ -2357,6 +2425,7 @@ export const cardList = [
     type: "dance", 
     plan: "free",
     have:"item", 
+    item_effects: [{ type: "action", trigger: ["sp"], stats: { dance: 13 }, max: 9}],            
     releasedAt: "2024-05-16",     
     rarity: "SR",             
     extra1: "param",    

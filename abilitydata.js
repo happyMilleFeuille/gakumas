@@ -287,7 +287,7 @@ export const abilityData = {
         format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val}", ja: "活動支給・差し入れ選択時、{type}上昇+{val}" },
         levels: {
             "SSR": {1: 12,2: 17},     
-            "SSR_DIST": {1: 0, 2: 0},                   
+            "SSR_DIST": {1: 9, 2: 12},                   
             "SR": {1: 6, 2: 11 }},  
             trigger: ["gift_hajime","gift_nia"],
     },

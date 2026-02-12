@@ -57,10 +57,10 @@ const UNIT_GUARANTEED_RATES = {
     SSR_CARD: 0.57 * (0.9475 / 0.95)
 };
 
-// 테스트 가챠 확률 (SSR 100%: PSSR 50%, SSSR 50%)
+// 테스트 가챠 확률 (SSR 100%: PSSR 100%)
 const TEST_RATES = {
-    PSSR: 0.5,
-    SSSR: 0.5,
+    PSSR: 1.0,
+    SSSR: 0,
     PSR: 0,
     SSR_CARD: 0,
     PR: 0,
@@ -74,6 +74,34 @@ const dummyData = {
 };
 
 export function getGachaPool(poolType = 'normal') {
+    // [추가] 테스트 가챠 전용 풀 로직: gachaconfig.js에 정의된 리스트만 사용
+    if (poolType === 'test') {
+        const testCfg = CURRENT_PICKUPS.test || {};
+        
+        // PSSR 리스트 (pssr + others) - 중첩 배열 대응을 위해 .flat() 사용
+        const testPssrIds = [
+            ...(testCfg.pssr || []).map(p => typeof p === 'string' ? p : p.id),
+            ...(testCfg.others || [])
+        ].flat(Infinity).filter(id => id); 
+
+        const pssrPool = produceList.filter(p => p.rarity === 'PSSR' && testPssrIds.includes(p.id));
+        const sssrPool = cardList.filter(card => card.rarity === 'SSR' && (testCfg.sssr || []).includes(card.id));
+        const srCardPool = cardList.filter(card => card.rarity === 'SR' && (testCfg.sr_card || []).includes(card.id));
+        
+        // 테스트 모드에서 지정된 등급의 풀이 비어있을 경우, 전체 데이터에서 해당 등급을 가져오거나 최소한 더미는 안 나오게 처리
+        const finalPssrPool = pssrPool.length > 0 ? pssrPool : produceList.filter(p => p.rarity === 'PSSR');
+        const finalSssrPool = sssrPool.length > 0 ? sssrPool : cardList.filter(c => c.rarity === 'SSR');
+
+        return {
+            PSSR: finalPssrPool,
+            SSSR: finalSssrPool,
+            PSR: [],
+            SR_CARD: srCardPool.length > 0 ? srCardPool : dummyData.SR_CARD,
+            PR: [],
+            R_CARD: dummyData.R_CARD
+        };
+    }
+
     // 풀 타입에 따른 포함 가능한 소스 목록 정의
     const validSources = ['normal']; // 기본적으로 통상은 포함
     if (poolType === 'limited') validSources.push('limited');
@@ -241,18 +269,48 @@ export function pickGacha(count = 1, poolType = 'normal') {
                 }
             }
         }
-        // [기본] 일반/한정/테스트 가챠 픽업 로직 (PSSR만 처리)
-        else if ((poolType === 'normal' || poolType === 'limited' || poolType === 'test') && key === 'PSSR') {
+        // [기본] 일반/한정/테스트 가챠 픽업 로직 (PSSR, SSSR, SR_CARD 처리)
+        else if ((poolType === 'normal' || poolType === 'limited' || poolType === 'test') && (key === 'PSSR' || key === 'SSSR' || key === 'SR_CARD')) {
             const pickups = CURRENT_PICKUPS[poolType];
-            if (pickups && pickups.pssr && pickups.pssr.length > 0) {
-                // PSSR 당첨(2.0%) 상태에서 픽업 대상(0.75%)인지 판별
-                const isPickup = Math.random() < (0.75 / 2.0);
-                if (isPickup) {
-                    const pickupCards = pool.PSSR.filter(c => pickups.pssr.some(p => p.id === c.id));
-                    if (pickupCards.length > 0) targetPool = pickupCards;
-                } else {
-                    const otherCards = pool.PSSR.filter(c => !pickups.pssr.some(p => p.id === c.id));
-                    if (otherCards.length > 0) targetPool = otherCards;
+            if (pickups) {
+                if (key === 'PSSR' && pickups.pssr && pickups.pssr.length > 0) {
+                    // PSSR 당첨(2.0%) 상태에서 픽업 대상(0.75%)인지 판별
+                    const isPickup = Math.random() < (0.75 / 2.0);
+                    if (isPickup) {
+                        const pickupCards = pool.PSSR.filter(c => pickups.pssr.some(p => p.id === c.id));
+                        if (pickupCards.length > 0) targetPool = pickupCards;
+                    } else {
+                        const otherCards = pool.PSSR.filter(c => !pickups.pssr.some(p => p.id === c.id));
+                        if (otherCards.length > 0) targetPool = otherCards;
+                    }
+                } else if (key === 'SSSR' && pickups.sssr && pickups.sssr.length > 0) {
+                    // SSSR 당첨(3.0%) 상태에서 픽업 대상(1.0%)인지 판별
+                    const isPickup = Math.random() < (1.0 / 3.0);
+                    if (isPickup) {
+                        const pickupCards = pool.SSSR.filter(c => pickups.sssr.includes(c.id));
+                        if (pickupCards.length > 0) targetPool = pickupCards;
+                    } else {
+                        const otherCards = pool.SSSR.filter(c => !pickups.sssr.includes(c.id));
+                        if (otherCards.length > 0) targetPool = otherCards;
+                    }
+                } else if (key === 'SR_CARD' && pickups.sr_card && pickups.sr_card.length > 0) {
+                    // SR 서포트 카드 당첨 시 픽업 확률 적용 (4%)
+                    let pickupProb = 0;
+                    if (isGuaranteedSlot) {
+                        // (0.04 / 0.17) * 0.95 = 0.223529... (약 22.36%)
+                        pickupProb = 0.223529 / currentGuaranteed.SR_CARD;
+                    } else {
+                        pickupProb = 0.04 / currentRates.SSR_CARD;
+                    }
+
+                    const isPickup = Math.random() < pickupProb;
+                    if (isPickup) {
+                        const pickupCards = pool.SR_CARD.filter(c => pickups.sr_card.includes(c.id));
+                        if (pickupCards.length > 0) targetPool = pickupCards;
+                    } else {
+                        const otherCards = pool.SR_CARD.filter(c => !pickups.sr_card.includes(c.id));
+                        if (otherCards.length > 0) targetPool = otherCards;
+                    }
                 }
             }
         }

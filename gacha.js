@@ -421,11 +421,7 @@ export function renderGacha() {
                 const is10 = (gachaMode === 10);
                 btn10.innerHTML = translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull'] + "<br><span class='btn-cost'>" + (is10 ? "2500" : "250") + "</span>";
                 btn10.onclick = () => {
-                    playSound('gasya/gasyaclick.mp3');
-                    updateJewelDisplayOnly(gachaMode === 1 ? 250 : 2500);
-                    btn1.style.pointerEvents = 'none';
-                    btn10.style.pointerEvents = 'none';
-                    setTimeout(() => animation.startGacha(gachaMode), 100);
+                    handleGachaClick(gachaMode);
                 };
                 btn1.style.pointerEvents = 'none';
                 btn10.style.pointerEvents = 'none';
@@ -459,11 +455,7 @@ export function renderGacha() {
         const pssrCards = results.filter(c => c.rarity === 'PSSR');
         if (pssrCards.length > 0) {
             const loadPromises = pssrCards.flatMap(card => {
-                let videoIds = [card.id];
-                if (card.another) {
-                    const match = card.id.match(/(.*_.*?st)/);
-                    if (match && !videoIds.includes(match[1])) videoIds.push(match[1]);
-                }
+                const videoIds = [card.id];
 
                 return videoIds.map(vid => {
                     const videoPath = `gasya/pssr/${vid}.mp4`;

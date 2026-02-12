@@ -275,6 +275,66 @@ export function setupPItemSelector(type, saveCalcState, refreshCardBonuses, upda
             tooltip.style.left = `${rect.left + rect.width / 2}px`; tooltip.style.top = `${rect.top + window.scrollY - 10}px`; tooltip.style.transform = 'translate(-50%, -100%)';
         };
     });
+
+    const infoBtn = container.querySelector('.p-item-info-btn');
+    if (infoBtn) {
+        infoBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (document.querySelector('.p-item-info-tooltip')) {
+                document.querySelector('.p-item-info-tooltip').remove();
+                return;
+            }
+            const tooltip = document.createElement('div');
+            tooltip.className = 'calc-tooltip p-item-info-tooltip';
+            tooltip.style.cssText = 'position: absolute; width: max-content; max-width: 90vw; padding: 12px 15px; background: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.85rem; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;';
+            tooltip.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia1-1.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>특별수업 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia1-2.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>상담 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span>
+                    </div>
+                    <div style="height: 1px; background: #eee; margin: 2px 0;"></div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia2-1.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>영업(강화카드) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia2-2.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>영업(P포인트) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia2-3.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>영업(드링크) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span>
+                    </div>
+                    <div style="height: 1px; background: #eee; margin: 2px 0;"></div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia3-1.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>오디션 종료 시 카드 삭제 +1 / 복제 (프로듀스 중 2회)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="icons/cal/nia3-2.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        <span>오디션 종료 시 카드 삭제 +1 / 복제 (프로듀스 중 2회)</span>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(tooltip);
+            const rect = infoBtn.getBoundingClientRect();
+            tooltip.style.left = `${rect.left}px`; 
+            tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+
+            const closeTooltip = (ev) => {
+                if (!tooltip.contains(ev.target) && ev.target !== infoBtn) {
+                    tooltip.remove();
+                    document.removeEventListener('click', closeTooltip);
+                }
+            };
+            setTimeout(() => document.addEventListener('click', closeTooltip), 10);
+        };
+    }
 }
 
 /**
