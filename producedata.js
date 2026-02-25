@@ -49,7 +49,7 @@ export const produceList = [
     { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true},    
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
     { id: "ssrsumika_2nd", name: "숨겼던 나",name_ja: "カクシタワタシ", rarity: "PSSR", plan: "anomaly", source: "normal",jumpTime2:12.2},
-    { id: "ssrsumika_3rd", name: "Love & Joy", rarity: "PSSR", plan: "sense", source: "normal" },
+    { id: "ssrsumika_3rd", name: "Love & Joy", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:8.6},
 
 
     // --- 마오 SSR (PSSR) ---
