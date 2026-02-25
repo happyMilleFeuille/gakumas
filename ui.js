@@ -1,6 +1,6 @@
 // ui.js
 import { state, setFilter, setBackground, setSupportLB, setPSSRIndex } from './state.js';
-import { updatePageTranslations, applyBackground } from './utils.js';
+import { updatePageTranslations } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
 import { abilityData } from './abilitydata.js';
@@ -74,7 +74,6 @@ export function renderIdolList() {
         img.alt = name;
         img.addEventListener('click', (e) => {
             setBackground(name);
-            applyBackground(name);
 
             // Center the clicked icon
             const clickedItem = e.currentTarget.parentElement;

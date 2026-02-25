@@ -53,7 +53,11 @@ export function initGlobalDistListener(getBoardPools, refreshCardBonuses, update
 
             current.itemCounters[cardId] = count;
             localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
-            updateSelectedCardsUI(current.planCards?.[activePlan] || [], type);
+            
+            // 현재 슬롯의 카드 ID 순서를 유지하여 UI 업데이트 (순서 꼬임 방지)
+            const currentIds = Array.from(document.querySelectorAll('.selected-card-slot.filled')).map(el => el.dataset.id);
+            updateSelectedCardsUI(currentIds, type);
+            
             refreshCardBonuses();
             updateActivityCounts();
             return;

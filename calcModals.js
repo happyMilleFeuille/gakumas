@@ -128,12 +128,10 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
         for(let i=1; i<=planMax; i++) {
             const group = [`${activePlan}-${r}${i}`];
             const key = `${r}${i}`;
-            let hasAlt = false;
-            if (activePlan === 'sense' && ['r2', 'r8', 'sr1', 'sr6', 'sr9'].includes(key)) hasAlt = true;
-            if (activePlan === 'logic' && ['r1', 'r3', 'sr3', 'sr6', 'sr8'].includes(key)) hasAlt = true;
-            if (activePlan === 'anomaly' && ['r3', 'r4', 'sr1', 'sr3', 'sr4'].includes(key)) hasAlt = true;
-            
-            if (hasAlt) group.push(`${activePlan}-${r}${i}alt`);
+            const altId = `${activePlan}-${r}${i}alt`;
+            if (skillCardList[altId]) {
+                group.push(altId);
+            }
             cardGroups.push(group);
         }
         

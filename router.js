@@ -27,10 +27,16 @@ export function handleNavigation(target, isBack = false) {
         }
     });
 
-    // 다른 탭으로 이동 시 가챠 BGM 정지
+    // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 초기화
     if (target !== 'gacha') {
         stopBGM('main');
         stopBGM('gacha');
+        
+        const fixedBg = document.getElementById('fixed-bg');
+        if (fixedBg) {
+            fixedBg.style.backgroundImage = '';
+            fixedBg.style.filter = '';
+        }
     }
 
     // 히스토리 상태 기록 (뒤로가기 시 홈으로 보내기 위해, 뒤로가기 중이 아닐 때만)

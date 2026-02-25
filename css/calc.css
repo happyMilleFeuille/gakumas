@@ -132,10 +132,11 @@
     gap: 8px;
     width: 100%;
     margin-bottom: 1rem;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
     padding: 10px;
     border-radius: 12px;
-    border: 1px dashed #ccc;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .p-item-container {
@@ -145,9 +146,10 @@
     width: 100%;
     margin-bottom: 1rem;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .p-item-slot {
@@ -190,31 +192,39 @@
 }
 
 .selected-card-slot {
-    aspect-ratio: auto;
     width: 100%;
-    min-height: 50px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    overflow: visible;
-    border: 1px solid transparent;
-    padding-bottom: 4px;
 }
 
-.selected-card-slot.filled {
-    border-color: #ff4d8d;
-    background: white;
+.slot-frame {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px dashed #ccc;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selected-card-slot.filled .slot-frame {
+    border: 1px solid #ff4d8d;
+    background: white;
+}
+
+.selected-card-slot.empty {
+    /* 기본 슬롯 스타일 유지 */
 }
 
 .card-item-counter {
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-top: 4px;
+    margin-top: 6px; /* 테두리와의 간격 확보 */
     background: rgba(255, 77, 141, 0.1);
     border-radius: 4px;
     padding: 2px 4px;
@@ -280,6 +290,7 @@
     padding: 0.8rem;
     border-radius: 12px;
     border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .stat-item {
@@ -337,6 +348,7 @@
     padding: 0.6rem;
     border-radius: 12px;
     border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .plan-type-btn {
@@ -351,12 +363,12 @@
 
 .idol-selector-grid {
     display: flex; gap: 10px; overflow-x: auto; width: 100%; padding: 10px 5px; margin-bottom: 1rem;
-    background: rgba(255, 255, 255, 0.5); border-radius: 12px; border: 1px solid #ddd; cursor: grab;
-    -ms-overflow-style: none; scrollbar-width: none;
+    background: rgba(255, 255, 255, 0.7); border-radius: 12px; border: 1px solid #ddd;
+    -ms-overflow-style: none; scrollbar-width: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 .idol-selector-grid::-webkit-scrollbar { display: none; }
 .idol-sel-item {
-    flex: 0 0 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid transparent;
+    flex: 0 0 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 1px solid #eee;
     background: white; transition: all 0.2s; user-select: none;
 }
 .idol-sel-item.active { border-color: #ff4d8d; transform: scale(1.1); box-shadow: 0 0 8px rgba(255, 77, 141, 0.4); }
@@ -367,11 +379,12 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.7);
     padding: 12px;
     border-radius: 12px;
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
     margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .main-counts {
@@ -392,8 +405,8 @@
 .board-toggle-bar:hover { color: #ff4d8d; }
 
 .unified-plan-board {
-    background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 1rem 0.5rem; width: 100%;
-    border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.7); border-radius: 15px; padding: 1rem 0.5rem; width: 100%;
+    border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 2rem;
 }
 .unified-plan-board.collapsed-board { display: none; }
 

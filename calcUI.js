@@ -184,14 +184,18 @@ export function updateSelectedCardsUI(selectedIds, calcType) {
             }
             
             return `<div class="selected-card-slot filled" data-id="${cardId}">
-                        <img src="images/support/${cardId}_card.webp" 
-                             onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
-                        <div class="card-slot-remove" data-id="${cardId}" style="position:absolute; top:-6px; left:-6px; width:16px; height:16px; background:red; color:white; border-radius:50%; font-size:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; z-index:10; line-height:1;">×</div>
-                        <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked}>
+                        <div class="slot-frame">
+                            <img src="images/support/${cardId}_card.webp" 
+                                 onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
+                            <div class="card-slot-remove" data-id="${cardId}" style="position:absolute; top:-6px; left:-6px; width:16px; height:16px; background:red; color:white; border-radius:50%; font-size:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; z-index:10; line-height:1;">×</div>
+                            <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked}>
+                        </div>
                         ${counterHtml}
                     </div>`;
         }
-        return `<div class="selected-card-slot empty"></div>`;
+        return `<div class="selected-card-slot empty">
+                    <div class="slot-frame"></div>
+                </div>`;
     }).join('');
 }
 

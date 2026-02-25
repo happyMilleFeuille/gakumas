@@ -113,6 +113,25 @@ h1 {
     z-index: 1;
 }
 
+.main-logo-h1 {
+    margin: 2rem 0 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.main-logo-img {
+    max-width: 500px;
+    width: 90%;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .main-logo-img {
+        max-width: 320px;
+    }
+}
+
 #fixed-bg {
     position: fixed;
     top: 0; left: 0;
@@ -159,29 +178,28 @@ footer {
     justify-content: center;
     align-items: flex-start;
     gap: 0.5rem;
-    width: 500px;
+    width: 540px; 
     height: 120px;
     position: fixed;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
+    padding-top: 15px;
     padding-bottom: 2rem;
 }
 
 .button-group.horizontal::before {
     content: "";
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 115%;
-    height: 150px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #ffe0ea;
-    border-radius: 50% / 30px 30px 100% 100%;
+    border-top: 1px solid #ffe0ea;
     z-index: -1;
-    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .menu-btn {
@@ -201,7 +219,7 @@ footer {
     gap: 5px;
     white-space: nowrap;
     transform-origin: center top;
-    transform: rotate(var(--rot)) translateY(var(--ty)) scale(var(--sc, 1));
+    transform: scale(var(--sc, 1));
 }
 
 .menu-btn:hover {
@@ -214,12 +232,6 @@ footer {
     height: 35px;
     object-fit: contain;
 }
-
-.menu-btn:nth-child(1) { --rot: 15deg; --ty: -25px; }
-.menu-btn:nth-child(2) { --rot: 7deg; --ty: -5px; }
-.menu-btn:nth-child(3) { --rot: 0deg; --ty: 0px; }
-.menu-btn:nth-child(4) { --rot: -7deg; --ty: -5px; }
-.menu-btn:nth-child(5) { --rot: -15deg; --ty: -25px; }
 
 @media (max-width: 768px) {
     h1 {
@@ -234,8 +246,8 @@ footer {
         min-height: 35vh;
         height: 100%;
     }
-    .button-group.horizontal { width: 95%; height: 80px; }
-    .button-group.horizontal::before { height: 100px; }
+    .button-group.horizontal { width: 100%; height: 80px; }
+    .button-group.horizontal::before { height: 100%; }
     .btn-icon { width: 24px; height: 24px; }
 }
 

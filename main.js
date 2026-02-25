@@ -1,6 +1,6 @@
 // main.js
 import { state, setLanguage } from './state.js';
-import { updatePageTranslations, applyBackground, initMobileHeightFix } from './utils.js';
+import { updatePageTranslations, initMobileHeightFix } from './utils.js';
 import { handleNavigation } from './router.js';
 import { renderSupport } from './ui.js';
 import { renderGacha } from './gacha.js';
@@ -13,9 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 2. 초기화
     updatePageTranslations();
-    if (state.currentBg) {
-        applyBackground(state.currentBg);
-    }
     initMobileHeightFix();
 
     // 모든 언어 버튼 상태 동기화 함수
@@ -30,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         syncLangBtns();
         // 가챠 탭이 아닐 때만 일반 배경 적용 (가챠 탭은 자체 픽업 배경 로직 사용)
         const isGachaView = document.querySelector('.gacha-container');
-        if (!isGachaView && state.currentBg) {
-            applyBackground(state.currentBg);
-        }
     };
 
     // 초기 실행
