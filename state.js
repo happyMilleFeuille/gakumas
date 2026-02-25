@@ -33,7 +33,8 @@ export const state = {
     totalPulls: storedPulls,
     gachaLog: storedLog,
     gachaType: localStorage.getItem('gachaType') || 'normal',
-    pssrIndex: JSON.parse(localStorage.getItem('pssrIndex')) || {}
+    pssrIndex: JSON.parse(localStorage.getItem('pssrIndex')) || {},
+    favoriteIdol: localStorage.getItem('favoriteIdol') || ''
 };
 
 export function setLanguage(lang) {
@@ -97,4 +98,9 @@ export function setJewels(amount) {
 export function setPSSRIndex(cardId, index) {
     state.pssrIndex[cardId] = index;
     localStorage.setItem('pssrIndex', JSON.stringify(state.pssrIndex));
+}
+
+export function setFavoriteIdol(name) {
+    state.favoriteIdol = (state.favoriteIdol === name) ? '' : name;
+    localStorage.setItem('favoriteIdol', state.favoriteIdol);
 }

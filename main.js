@@ -2,7 +2,7 @@
 import { state, setLanguage } from './state.js';
 import { updatePageTranslations, initMobileHeightFix } from './utils.js';
 import { handleNavigation } from './router.js';
-import { renderSupport } from './ui.js';
+import { renderSupport, updateGlobalBackgroundColor } from './ui.js';
 import { renderGacha } from './gacha.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. 초기화
     updatePageTranslations();
     initMobileHeightFix();
+    updateGlobalBackgroundColor(); // [추가] 초기 배경색 설정
 
     // 모든 언어 버튼 상태 동기화 함수
     const syncLangBtns = () => {

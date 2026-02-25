@@ -1,5 +1,5 @@
 // ui.js
-import { state, setFilter, setBackground, setSupportLB, setPSSRIndex } from './state.js';
+import { state, setFilter, setBackground, setSupportLB, setPSSRIndex, setFavoriteIdol } from './state.js';
 import { updatePageTranslations } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
@@ -70,13 +70,41 @@ export function renderIdolList() {
     idolList.forEach(name => {
         const item = itemTpl.content.cloneNode(true);
         const img = item.querySelector('.idol-icon');
+        const favBtn = item.querySelector('.fav-star-btn');
+        
         img.src = `icons/idolicons/${name}.png`;
         img.alt = name;
+
+        // 즐겨찾기 상태 반영
+        if (state.favoriteIdol === name) {
+            favBtn.classList.add('active');
+        }
+
+        favBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // 카드 클릭 이벤트 방지
+            setFavoriteIdol(name);
+            
+            // 모든 별 버튼 상태 업데이트
+            document.querySelectorAll('.fav-star-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (state.favoriteIdol === name) {
+                favBtn.classList.add('active');
+            }
+
+            // [추가] 전체 배경색 업데이트
+            updateGlobalBackgroundColor();
+        });
+
         img.addEventListener('click', (e) => {
             setBackground(name);
 
+            // [추가] 선택된 아이콘 스타일링
+            document.querySelectorAll('.idol-icon').forEach(icon => icon.classList.remove('selected'));
+            img.classList.add('selected');
+
             // Center the clicked icon
-            const clickedItem = e.currentTarget.parentElement;
+            const clickedItem = e.currentTarget.parentElement.parentElement;
             const gridContainer = clickedItem.parentElement;
             if (gridContainer) {
                 const containerWidth = gridContainer.offsetWidth;
@@ -94,6 +122,16 @@ export function renderIdolList() {
 
     contentArea.appendChild(view);
     contentArea.appendChild(pssrArea);
+
+    // [추가] 즐겨찾기 아이돌이 있다면 자동으로 선택
+    if (state.favoriteIdol) {
+        setTimeout(() => {
+            const favIcon = contentArea.querySelector(`.idol-icon[alt="${state.favoriteIdol}"]`);
+            if (favIcon) {
+                favIcon.click();
+            }
+        }, 100); // 렌더링 후 안정적인 실행을 위해 짧은 지연
+    }
 }
 
 function renderProduceCards(idolName, container) {
@@ -201,7 +239,60 @@ function renderProduceCards(idolName, container) {
 
         const rarityKey = card.rarity.toLowerCase().replace('p', ''); 
         rarityIcon.src = `icons/${rarityKey}.png`;
-        name.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        name.textContent = displayName;
+
+        // 유튜브 링크 설정
+        const youtubeLink = item.querySelector('.pssr-youtube-link');
+        if (youtubeLink) {
+            if (card.youtube_url) {
+                youtubeLink.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const videoModal = document.getElementById('video-modal');
+                    const iframe = document.getElementById('video-iframe');
+                    if (!videoModal || !iframe) return;
+
+                    const finalUrl = card.youtube_url;
+                    // 유튜브 URL을 embed용으로 변환
+                    let embedUrl = finalUrl;
+                    if (finalUrl.includes('watch?v=')) {
+                        const videoId = finalUrl.split('watch?v=')[1].split('&')[0];
+                        embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    } else if (finalUrl.includes('youtu.be/')) {
+                        const videoId = finalUrl.split('youtu.be/')[1].split('?')[0];
+                        embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    }
+
+                                                    iframe.src = embedUrl;
+                                    
+                                                    // 캐릭터별 테두리 색상 적용
+                                                    const modalContent = videoModal.querySelector('.video-modal-content');
+                                                    if (modalContent) {
+                                                        modalContent.style.borderColor = idolColors[idolName] || '#ff4d8d';
+                                                    }
+                                    
+                                                    // 로딩 지연 및 싱크 개선: 약간의 시간차를 두고 모달 표시
+                                                    setTimeout(() => {
+                                                        videoModal.classList.remove('hidden');
+                                                        videoModal.style.display = 'flex';
+                                                    }, 100);
+                                                    
+                                                    const hideVideoModal = () => {                        videoModal.classList.add('hidden');
+                        videoModal.style.display = 'none';
+                        iframe.src = '';
+                    };
+                    
+                    videoModal.onclick = (ev) => { if (ev.target === videoModal) hideVideoModal(); };
+                    
+                    history.pushState({ modalOpen: 'video' }, "");
+                };
+                youtubeLink.classList.remove('hidden');
+            } else {
+                youtubeLink.classList.add('hidden');
+            }
+        }
         
         container.appendChild(item);
     });
@@ -545,3 +636,14 @@ export function showCardModal(card, displayName, imgSrc) {
     history.pushState({ modalOpen: true }, "");
 }
 window.showCardModal = showCardModal;
+
+// [추가] 즐겨찾기 기반 배경색 업데이트 함수
+export function updateGlobalBackgroundColor() {
+    if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
+        const color = idolColors[state.favoriteIdol];
+        // 퍼스널 컬러를 배경으로 쓸 수 있게 옅게 적용 (약 15% 농도)
+        document.body.style.backgroundColor = color + "26"; 
+    } else {
+        document.body.style.backgroundColor = "#ffffff"; // 기본값 흰색
+    }
+}

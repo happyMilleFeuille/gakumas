@@ -139,6 +139,15 @@
             </div>
         </div>
     </div>
+
+    <!-- 비디오 모달 추가 -->
+    <div id="video-modal" class="modal hidden">
+        <div class="video-modal-content">
+            <div class="video-container">
+                <iframe id="video-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
     
     <script type="module" src="main.js"></script>
 
@@ -249,7 +258,12 @@
             <div class="pssr-info">
                 <img src="" alt="" class="pssr-rarity-icon">
                 <img src="" alt="" class="pssr-plan-icon">
-                <span class="pssr-name"></span>
+                <div class="pssr-name-wrap">
+                    <span class="pssr-name"></span>
+                    <a href="" target="_blank" class="pssr-youtube-link hidden">
+                        <img src="icons/youtube.svg" alt="YouTube" class="pssr-youtube-icon">
+                    </a>
+                </div>
             </div>
         </div>
     </template>
@@ -260,7 +274,14 @@
 
     <template id="tpl-idol-item">
         <div class="idol-item">
-            <img src="" alt="" class="idol-icon">
+            <div class="idol-icon-wrapper">
+                <img src="" alt="" class="idol-icon">
+                <div class="fav-star-btn">
+                    <svg class="fav-star-svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                </div>
+            </div>
         </div>
     </template>
 
