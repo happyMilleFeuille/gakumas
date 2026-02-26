@@ -1,6 +1,6 @@
 // 이 파일은 GitHub Actions에 의해 매일 자동으로 업데이트됩니다.
-// Update Time: 2026-02-25
+// Update Time: 2026-02-26
 export const currencyData = {
-    rate: 9.2615,
-    updatedAt: "2026-02-25"
+    rate: 9.1101,
+    updatedAt: "2026-02-26"
 };
