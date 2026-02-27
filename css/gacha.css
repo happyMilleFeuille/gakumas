@@ -248,7 +248,141 @@
 .add-jewel-btn:hover { opacity: 0.8; }
 .add-jewel-btn:active { transform: scale(0.9); }
 
-/* 가챠 타입 셀렉터 (독립 원형 버튼 스타일) */
+/* 가챠 애니메이션 연출 전용 스타일 */
+#gacha-video-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #000;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.gacha-vid {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+#gacha-card-overlay {
+    position: absolute;
+    left: 50%;
+    z-index: 1010;
+    width: 45vh; 
+    max-width: 100%; 
+    height: auto;
+    pointer-events: none;
+    opacity: 0;
+    /* 초기 상태: 작게 */
+    transform: translate(-50%, -50%) scale(0.1);
+}
+
+/* 프로듀스 카드 위치/크기 */
+#gacha-card-overlay.produce-card { top: 43.5%; }
+#gacha-card-overlay.produce-card.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.60);
+    /* 나타날 때만 애니메이션 적용 */
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+/* 서포트 카드 위치/크기 */
+#gacha-card-overlay.landscape-card { top: 45%; }
+#gacha-card-overlay.landscape-card.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.9);
+    /* 나타날 때만 애니메이션 적용 */
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+#gacha-name-overlay {
+    position: absolute;
+    left: 50%;
+    z-index: 1011;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 8px 25px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    white-space: nowrap;
+    /* 초기 상태: 아래에서 대기 */
+    transform: translate(-50%, -50%) translateY(20px);
+}
+
+#gacha-name-overlay.produce-name { top: 78%; }
+#gacha-name-overlay.landscape-name { top: 66%; }
+
+#gacha-name-overlay.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+    /* 나타날 때만 애니메이션 적용 */
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+#gacha-new-badge {
+    position: absolute;
+    top: 15%; left: 50%; 
+    z-index: 1012;
+    background: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-shadow: 0 0 2px #ffcc00, 0 0 4px rgba(255, 153, 0, 0.6);
+    pointer-events: none;
+    opacity: 0;
+    /* 초기 상태: 작게 사라진 상태 */
+    transform: translate(-50%, -50%) scale(0);
+}
+
+#gacha-new-badge.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    /* 나타날 때만 애니메이션 적용 */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+}
+
+.skip-btn {
+    position: absolute;
+    bottom: 25px; right: 20px;
+    z-index: 1020;
+    background: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    /* 세로 늘어남 방지 */
+    height: auto !important;
+    width: auto !important;
+    line-height: 1.2;
+    display: inline-block;
+    align-self: flex-end;
+}
+
+.skip-btn:hover {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .skip-btn {
+        bottom: 20px; right: 15px;
+        padding: 6px 16px;
+        font-size: 0.75rem;
+    }
+}
+
+/* 탭 전환 버튼 */
 .type-nav-btn.circle-btn {
     background: rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.2);

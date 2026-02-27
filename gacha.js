@@ -9,7 +9,63 @@ import { CURRENT_PICKUPS } from './gachaconfig.js';
 // Web Audio API Context
 export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const audioBuffers = {};
+const assetBlobs = {}; // 전역 캐시로 이동
 let activeNodes = {}; // 현재 재생 중인 소스 노드들 관리
+
+// 가챠 자산 목록 정의
+const GACHA_ASSETS = [
+    'bgm/mainbgm.mp3',
+    'gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 
+    'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
+    'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
+    'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
+    'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3', 'gasya/blackoutbgm.mp3',
+    'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
+    'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
+    'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
+    'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 
+    'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 
+    'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 
+    'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'
+];
+
+// 자산 로딩 상태 관리
+let isAssetsLoading = false;
+let assetsLoadedPromise = null;
+
+async function loadGachaAssets() {
+    if (assetsLoadedPromise) return assetsLoadedPromise;
+    if (isAssetsLoading) return;
+
+    isAssetsLoading = true;
+    assetsLoadedPromise = (async () => {
+        const loadTasks = GACHA_ASSETS.map(async (src) => {
+            // 이미 로드된 경우 스킵
+            if (src.endsWith('.mp3') && audioBuffers[src]) return;
+            if (src.endsWith('.mp4') && assetBlobs[src]) return;
+
+            try {
+                const response = await fetch(src);
+                const buffer = await response.arrayBuffer();
+                
+                if (src.endsWith('.mp3')) {
+                    const decoded = await audioCtx.decodeAudioData(buffer);
+                    audioBuffers[src] = decoded;
+                } else {
+                    const blob = new Blob([buffer], { type: 'video/mp4' });
+                    assetBlobs[src] = URL.createObjectURL(blob);
+                }
+            } catch (error) {
+                console.error(`Failed to load asset: ${src}`, error);
+            }
+        });
+
+        await Promise.allSettled(loadTasks);
+        isAssetsLoading = false;
+    })();
+
+    return assetsLoadedPromise;
+}
 
 // 오디오 재생 유틸리티
 export function playSound(name, options = {}) {
@@ -307,41 +363,12 @@ export function renderGacha() {
     if (btn10) btn10.disabled = true;
     if (spinner) spinner.classList.add('active');
 
-    const assets = [
-        'bgm/mainbgm.mp3',
-        'gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 
-        'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
-        'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
-        'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
-        'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3', 'gasya/blackoutbgm.mp3',
-        'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
-        'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
-        'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
-        'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 
-        'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 
-        'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 
-        'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'
-    ];
-
-    const assetBlobs = {}; 
-    let loadedCount = 0;
-
-    assets.forEach(src => {
-        fetch(src).then(r => r.arrayBuffer()).then(buffer => {
-            if (src.endsWith('.mp3')) {
-                return audioCtx.decodeAudioData(buffer).then(decoded => {
-                    audioBuffers[src] = decoded;
-                });
-            } else {
-                const blob = new Blob([buffer], { type: 'video/mp4' });
-                assetBlobs[src] = URL.createObjectURL(blob);
-            }
-        }).then(() => {
-            if (++loadedCount >= assets.length) {
-                updateGachaButtonsState();
-                if (spinner) spinner.classList.remove('active');
-            }
-        }).catch(() => { if (++loadedCount >= assets.length && spinner) spinner.classList.remove('active'); });
+    // 리팩토링된 자산 로딩 호출
+    loadGachaAssets().then(() => {
+        updateGachaButtonsState();
+        if (spinner) spinner.classList.remove('active');
+    }).catch(() => {
+        if (spinner) spinner.classList.remove('active');
     });
 
     const renderResults = (currentResults, existingIds = new Set()) => {

@@ -3,6 +3,17 @@ import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopBGM } from './gacha.js';
 import { CURRENT_PICKUPS } from './gachaconfig.js';
 
+// 연출 상태 정의
+const States = {
+    IDLE: 'IDLE',
+    STARTING: 'STARTING',
+    SEQUEL: 'SEQUEL',
+    PROMOTION: 'PROMOTION',
+    BLACKOUT: 'BLACKOUT',
+    SHOWING_INDIVIDUAL: 'SHOWING_INDIVIDUAL',
+    FINISHED: 'FINISHED'
+};
+
 export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     const videoContainer = contentArea.querySelector('#gacha-video-container');
     const videoMain = contentArea.querySelector('#gacha-video-main');
@@ -10,627 +21,416 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     const skipBtn = contentArea.querySelector('#skip-button');
     const muteControls = document.getElementById('gacha-header-controls');
 
-    // 이미지 오버레이 요소 동적 생성
-    const imgOverlay = document.createElement('img');
-    imgOverlay.id = 'gacha-card-overlay';
-    imgOverlay.className = 'hidden';
-    imgOverlay.style.cssText = `
-        position: absolute;
-        top: 44%; left: 50%;
-        transform: translate(-50%, -50%) scale(0.1);
-        z-index: 10;
-        width: 45vh; 
-        max-width: 100%; 
-        height: auto;
-        pointer-events: none;
-        opacity: 0;
-        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
-    `;
-    if (videoContainer) videoContainer.appendChild(imgOverlay);
+    const imgOverlay = document.getElementById('gacha-card-overlay') || createOverlay('img', 'gacha-card-overlay');
+    const nameOverlay = document.getElementById('gacha-name-overlay') || createOverlay('div', 'gacha-name-overlay');
+    const newBadgeOverlay = document.getElementById('gacha-new-badge') || createOverlay('div', 'gacha-new-badge');
 
-    // 이름 오버레이 요소 동적 생성
-    const nameOverlay = document.createElement('div');
-    nameOverlay.id = 'gacha-name-overlay';
-    nameOverlay.className = 'hidden';
-    nameOverlay.style.cssText = `
-        position: absolute;
-        top: 78%; left: 50%;
-        transform: translate(-50%, -50%) translateY(20px);
-        z-index: 11;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: bold;
-        background: #000;
-        padding: 8px 25px;
-        border-radius: 4px;
-        pointer-events: none;
-        opacity: 0;
-        transition: transform 0.4s ease, opacity 0.4s ease;
-        white-space: nowrap;
-    `;
-    if (videoContainer) videoContainer.appendChild(nameOverlay);
+    function createOverlay(tag, id) {
+        const el = document.createElement(tag);
+        el.id = id;
+        if (tag === 'div' && id === 'gacha-new-badge') el.textContent = 'NEW';
+        if (videoContainer) videoContainer.appendChild(el);
+        return el;
+    }
 
-    // NEW 뱃지 오버레이 요소 생성
-    const newBadgeOverlay = document.createElement('div');
-    newBadgeOverlay.id = 'gacha-new-badge';
-    newBadgeOverlay.className = 'hidden';
-    newBadgeOverlay.textContent = 'NEW';
-    newBadgeOverlay.style.cssText = `
-        position: absolute;
-        top: 15%; left: 50%; 
-        transform: translate(-50%, -50%) scale(0);
-        z-index: 12;
-        background: none;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: 900;
-        text-shadow: 0 0 2px #ffcc00, 0 0 4px rgba(255, 153, 0, 0.6);
-        pointer-events: none;
-        opacity: 0;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
-    `;
-    if (videoContainer) videoContainer.appendChild(newBadgeOverlay);
-
+    let currentState = States.IDLE;
+    let currentStep = 0;
     let currentResults = [];
     let currentVideoSrc = "";
-    let clickTimer = null;
-    let screenSfxTimeout = null;
-    let activeStepSfx = null; // 단계별 효과음 추적용 추가
-    let videoStep = 0; 
     let gachaMode = 0;
     let canClick = false;
+    let clickTimer = null; // 클릭 잠금 타이머
+    let activeStepSfx = null;
+    let blackoutScheduled = null;
     let gachaBgmStartTime = 0;
     let existingIdsSet = new Set();
-    let currentSubVideo = ""; 
-    let blackoutScheduled = null; // { step: 1, time: 1.2 } 형태
-    let blackoutTriggered = false;
+    let subState = "";
 
-    // 단계별 효과음 중단 공통 함수
     const stopStepSfx = () => {
         if (activeStepSfx) {
-            try {
-                activeStepSfx.stop();
-                activeStepSfx.disconnect();
-            } catch(e) {}
+            try { activeStepSfx.stop(); activeStepSfx.disconnect(); } catch(e) {}
             activeStepSfx = null;
         }
     };
 
-    const finishGacha = () => {
-        if (clickTimer) clearTimeout(clickTimer);
-        if (screenSfxTimeout) clearTimeout(screenSfxTimeout);
+    const clearVideoHandlers = (video) => {
+        if (!video) return;
+        video.onplaying = null;
+        video.onended = null;
+        video.onclick = null;
+    };
+
+    const resetOverlays = () => {
+        [imgOverlay, nameOverlay, newBadgeOverlay].forEach(el => {
+            el.classList.remove('visible');
+        });
+    };
+
+    const transitionTo = (newState, params = {}) => {
+        console.log(`Transitioning: ${currentState} -> ${newState}`);
+        if (clickTimer) clearTimeout(clickTimer); // 상태 전환 시 타이머 청소
         
-        stopBGM('gacha');
-        stopBGM('main');
-        stopBGM('blackout'); // 블랙아웃 BGM 정지 추가
-        stopStepSfx();
+        currentState = newState;
+        currentStep = params.step || 0;
+        canClick = false;
         
-        imgOverlay.classList.add('hidden');
-        imgOverlay.style.opacity = '0';
-        nameOverlay.classList.add('hidden');
-        nameOverlay.style.opacity = '0';
-        newBadgeOverlay.classList.add('hidden');
-        newBadgeOverlay.style.opacity = '0';
+        clearVideoHandlers(videoMain);
+        clearVideoHandlers(videoNext);
+
+        switch (newState) {
+            case States.IDLE:
+                resetOverlays();
+                if (videoContainer) videoContainer.classList.add('hidden');
+                document.body.classList.remove('immersive-mode');
+                break;
+            case States.STARTING:
+                playStartingVideo();
+                break;
+            case States.SEQUEL:
+                playSequelVideo();
+                break;
+            case States.PROMOTION:
+                playPromotionVideo(params.step || 1, params.prevType);
+                break;
+            case States.BLACKOUT:
+                playBlackoutVideo(params.char);
+                break;
+            case States.SHOWING_INDIVIDUAL:
+                playIndividualResults(params.index || 0);
+                break;
+            case States.FINISHED:
+                finishGacha();
+                break;
+        }
+    };
+
+    const playStartingVideo = () => {
+        const highest = getHighestRarity(currentResults);
+        let src = (gachaMode === 1) ? 'gasya/start_r.mp4' : 'gasya/start_sr.mp4';
+        if (highest === 'SSR' && Math.random() < 0.6) src = 'gasya/start_ssr.mp4';
+        else if (gachaMode === 10 && Math.random() < 0.2) src = 'gasya/start_r.mp4';
+
+        currentVideoSrc = src;
+        if (videoContainer) videoContainer.classList.remove('hidden');
+        playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
+        gachaBgmStartTime = Date.now();
+
+        videoMain.src = assetBlobs[src] || src;
+        videoMain.classList.remove('hidden');
+        videoMain.onended = () => transitionTo(States.PROMOTION, { step: 1 });
+        videoMain.onclick = () => { if (canClick) transitionTo(States.SEQUEL); };
+
+        const checkLoop = () => {
+            if (currentState !== States.STARTING) return;
+            const isSsr = currentVideoSrc.includes('start_ssr');
+            const isSr = currentVideoSrc.includes('start_sr');
+            let loopEnd = isSsr ? 13.8 : (isSr ? 8.6 : 9.7);
+            const loopStart = loopEnd - 1.9;
+            if (videoMain.currentTime >= loopEnd) videoMain.currentTime = loopStart;
+            requestAnimationFrame(checkLoop);
+        };
+
+        videoMain.play().then(() => {
+            requestAnimationFrame(checkLoop);
+            setTimeout(() => { if (currentState === States.STARTING) canClick = true; }, 600);
+        }).catch(finishGacha);
+    };
+
+    const playSequelVideo = () => {
+        const isSsr = currentVideoSrc.includes('start_ssr');
+        const isSr = currentVideoSrc.includes('start_sr');
+        let jumpTime = isSsr ? 13.9 : (isSr ? 8.6 : 9.8);
 
         if (!state.gachaMuted) {
-            playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
+            const clickSfx = isSsr ? 'gasya/start_ssrclick.mp3' : (isSr ? 'gasya/start_srclick.mp3' : 'gasya/start_click.mp3');
+            playSound(clickSfx);
+            setTimeout(() => { 
+                if (currentState === States.SEQUEL) {
+                    stopStepSfx();
+                    activeStepSfx = playSound('gasya/screen1.mp3'); 
+                }
+            }, 300);
         }
 
-        const resultSound = (gachaMode === 1) ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3';
-        playSound(resultSound);
-
-        if(videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
-        if(videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
-        if(videoContainer) videoContainer.classList.add('hidden');
-        document.body.classList.remove('immersive-mode');
-        
-        if (muteControls) {
-            muteControls.classList.remove('hidden');
-            muteControls.style.display = 'flex';
+        videoMain.currentTime = jumpTime;
+        if (!state.gachaMuted && gachaBgmStartTime > 0) {
+            const elapsed = (Date.now() - gachaBgmStartTime) / 1000;
+            if (elapsed < 6.5) playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
         }
-        
-        if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode);
+
+        videoMain.onended = () => transitionTo(States.PROMOTION, { step: 1 });
+        videoMain.onclick = () => { if (canClick) videoMain.onended(); };
+        videoMain.play();
+        setTimeout(() => { if (currentState === States.SEQUEL) canClick = true; }, 2000);
     };
 
-    const playIndividualResults = (index = 0) => {
-        imgOverlay.style.transition = 'none';
-        imgOverlay.style.transform = 'translate(-50%, -50%) scale(0.1)';
-        imgOverlay.style.opacity = '0';
-        imgOverlay.classList.add('hidden');
-        nameOverlay.style.transition = 'none';
-        nameOverlay.style.transform = 'translate(-50%, -50%) translateY(20px)';
-        nameOverlay.style.opacity = '0';
-        nameOverlay.classList.add('hidden');
-        newBadgeOverlay.style.transition = 'none';
-        newBadgeOverlay.style.transform = 'translate(-50%, -50%) scale(0)';
-        newBadgeOverlay.style.opacity = '0';
-        newBadgeOverlay.classList.add('hidden');
-
-        if (index >= currentResults.length) {
-            finishGacha();
-            return;
-        }
-
-        const card = currentResults[index];
-        const isRSupport = card.type !== 'produce' && card.displayRarity === 'R';
-        const isSRSupport = card.type !== 'produce' && card.displayRarity === 'SR';
-        const isSSSR = card.type !== 'produce' && card.displayRarity === 'SSR';
-        const isPSR = card.type === 'produce' && (card.rarity === 'PSSR' || card.rarity === 'PSR');
-        const isPR = card.type === 'produce' && (card.rarity === 'PR' || card.rarity === 'R');
-
-        if (isRSupport || isSRSupport || isSSSR || isPSR || isPR) {
-            const isNew = !existingIdsSet.has(card.id);
-            if (isNew) existingIdsSet.add(card.id);
-
-            if (clickTimer) clearTimeout(clickTimer);
-            canClick = false; 
-            const lockTime = isSSSR ? 1300 : 500;
-
-            let getSrc = 'gasya/spotget_rsupport.mp4';
-            if (isSRSupport) getSrc = 'gasya/spotget_srsupport.mp4';
-            if (isSSSR) getSrc = 'gasya/spotget_ssrsupport.mp4';
-            if (isPSR) getSrc = (card.rarity === 'PSSR') ? 'gasya/spotget_pssr.mp4' : 'gasya/spotget_psr.mp4';
-            if (isPR) getSrc = 'gasya/spotget_pr.mp4';
-
-            videoNext.src = assetBlobs[getSrc] || getSrc;
-            videoNext.muted = true;
-            videoNext.classList.remove('hidden');
-            videoNext.load();
-
-            if (card.rarity === 'PSSR') currentSubVideo = "pssr_intro";
-            else currentSubVideo = "normal";
-
-            const targetTop = (isPSR || isPR) ? '43.5%' : '45%';
-            const targetScale = (isPSR || isPR) ? 0.60 : 0.9;
-            imgOverlay.style.top = targetTop;
-            imgOverlay.src = card.type === 'produce' ? `idols/${card.id}1.webp` : `images/support/${card.id}.webp`;
-            
-            nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
-            nameOverlay.style.top = (card.type !== 'produce') ? '66%' : '78%';
-
-            const rarity = card.displayRarity || card.rarity;
-            let bgCol = '#000';
-            if (rarity === 'SR') bgCol = 'rgb(245, 205, 70)';
-            else if (rarity === 'R') bgCol = '#add0eb';
-            else if (rarity === 'SSR') bgCol = '#a335ee';
-            nameOverlay.style.background = bgCol;
-
-            videoNext.onplaying = () => {
-                if (clickTimer) clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => { canClick = true; }, lockTime);
-
-                let spotSfxSrc = 'gasya/spotget_r.mp3';
-                if (card.rarity === 'PSSR' || isSSSR) spotSfxSrc = 'gasya/get_pssr.mp3';
-                else if (card.displayRarity === 'SR') spotSfxSrc = 'gasya/spotget_sr.mp3';
-                
-                playSound(spotSfxSrc);
-                
-                if (card.rarity !== 'PSSR') {
-                    setTimeout(() => {
-                        imgOverlay.classList.remove('hidden');
-                        void imgOverlay.offsetWidth;
-                        imgOverlay.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
-                        imgOverlay.style.transform = `translate(-50%, -50%) scale(${targetScale})`;
-                        imgOverlay.style.opacity = '1';
-
-                        nameOverlay.classList.remove('hidden');
-                        void nameOverlay.offsetWidth;
-                        nameOverlay.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                        nameOverlay.style.transform = 'translate(-50%, -50%) translateY(0)';
-                        nameOverlay.style.opacity = '1';
-
-                        if (isNew) {
-                            newBadgeOverlay.classList.remove('hidden');
-                            void newBadgeOverlay.offsetWidth;
-                            newBadgeOverlay.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
-                            newBadgeOverlay.style.transform = 'translate(-50%, -50%) scale(1)';
-                            newBadgeOverlay.style.opacity = '1';
-                        }
-                    }, 350);
-                }
-            };
-
-            videoNext.onclick = (e) => {
-                if (e) { e.preventDefault(); e.stopPropagation(); }
-                if (!canClick || videoNext.seeking) return;
-                if (currentSubVideo === "pssr_intro") return;
-
-                if (card.rarity === 'PSSR' && currentSubVideo === "pssr_special") {
-                    const j1 = parseFloat(card.jumpTime1 !== undefined ? card.jumpTime1 : 3.3);
-                    const j2 = card.jumpTime2 !== undefined ? parseFloat(card.jumpTime2) : undefined;
-                    const cur = videoNext.currentTime;
-                    const dur = videoNext.duration;
-
-                    if (videoNext.readyState >= 1 && !isNaN(dur) && dur > 0) {
-                        let targetTime = null;
-                        let isSecondJump = false;
-                        const safetyMargin = 0.5;
-
-                        if (cur < j1 && j1 < (dur - safetyMargin)) {
-                            targetTime = j1;
-                        } else if (j2 !== undefined && cur < j2 && j2 < (dur - safetyMargin)) {
-                            targetTime = j2;
-                            isSecondJump = true;
-                        }
-
-                        if (targetTime !== null) {
-                            if (clickTimer) clearTimeout(clickTimer);
-                            canClick = false;
-                            
-                            // 비디오 인코딩 최적화가 완료되었으므로 직접 할당 방식 사용
-                            videoNext.currentTime = targetTime;
-                            
-                            // 2차 점프(하이라이트) 후에는 더 빨리 클릭(스킵) 가능하도록 설정
-                            const lockTime = isSecondJump ? 500 : 1200;
-                            clickTimer = setTimeout(() => { canClick = true; }, lockTime);
-                            return;
-                        }
-                    }
-                }
-                if (clickTimer) clearTimeout(clickTimer);
-                canClick = false; 
-                playIndividualResults(index + 1);
-            };
-
-            videoNext.onended = () => {
-                if (clickTimer) clearTimeout(clickTimer);
-                canClick = false; 
-                if (currentSubVideo === "pssr_intro") {
-                    const finalSrc = assetBlobs[`gasya/pssr/${card.id}.mp4`];
-                    
-                    if (!finalSrc) {
-                        playIndividualResults(index + 1);
-                        return;
-                    }
-
-                    videoNext.src = finalSrc;
-                    videoNext.muted = state.gachaMuted; 
-                    videoNext.onplaying = () => {
-                        currentSubVideo = "pssr_special"; 
-                        if (clickTimer) clearTimeout(clickTimer);
-                        clickTimer = setTimeout(() => { canClick = true; }, 1000);
-                    };
-                    videoNext.load();
-                    videoNext.play().catch(() => playIndividualResults(index + 1));
-                } else {
-                    playIndividualResults(index + 1);
-                }
-            };
-
-            videoNext.play().catch(() => playIndividualResults(index + 1));
-        } else {
-            if (!existingIdsSet.has(card.id)) existingIdsSet.add(card.id);
-            playIndividualResults(index + 1);
-        }
-    };
-
-    const triggerBlackout = () => {
-        if (blackoutTriggered) return;
-        blackoutTriggered = true;
-        
-        const targetChar = blackoutScheduled ? blackoutScheduled.char : null;
-        blackoutScheduled = null;
-
-        // 모든 소리 중단
-        stopBGM('gacha');
-        stopBGM('main');
-        stopStepSfx();
-
-        // AudioContext 재개 확인
-        import('./gacha.js').then(m => {
-            if (m.audioCtx.state === 'suspended') m.audioCtx.resume();
-        });
-
-        // 1. 공통 블랙아웃 영상 시작
-        videoStep = 99; // 특수 상태
-        videoNext.onplaying = null;
-        videoNext.onended = null;
-        
-        videoNext.src = assetBlobs['gasya/blackout.mp4'] || 'gasya/blackout.mp4';
-        videoNext.muted = true;
-        videoNext.loop = false;
-        videoNext.load();
-        
-        // 공통 블랙아웃 사운드 재생
-        playSound('gasya/blackout.mp3');
-
-        // 블랙아웃 초기 1초간 클릭 금지
-        if (clickTimer) clearTimeout(clickTimer);
-        canClick = false;
-        clickTimer = setTimeout(() => { canClick = true; }, 1000);
-
-        let isBlackoutLooping = true;
-        const checkBlackoutLoop = () => {
-            if (!isBlackoutLooping || videoStep !== 99) return;
-            const dur = videoNext.duration;
-            if (dur > 0) {
-                const loopEnd = dur - 0.1;
-                const loopStart = Math.max(0, dur - 2.0); // 마지막 2초 루프
-                if (videoNext.currentTime >= loopEnd) {
-                    videoNext.currentTime = loopStart;
-                }
-            }
-            requestAnimationFrame(checkBlackoutLoop);
-        };
-
-        const proceedFromBlackout = () => {
-            if (!canClick || !isBlackoutLooping) return;
-            isBlackoutLooping = false;
-            
-            // 블랙아웃 BGM 시작
-            playSound('gasya/blackoutbgm.mp3', { loop: true, isBGM: true, bgmType: 'blackout' });
-
-            // 클릭 즉시 다시 차단 (캐릭터 영상 스킵 방지)
-            canClick = false; 
-            videoNext.onclick = null; 
-
-            // 2. 클릭 시 캐릭터 전용 영상으로 전환
-            if (targetChar) {
-                const charVideo = `gasya/blackout${targetChar}.mp4`;
-                videoNext.src = assetBlobs[charVideo] || charVideo;
-                videoNext.onplaying = () => {
-                    playSound('gasya/blackoutresult.mp3');
-                };
-                videoNext.onended = () => {
-                    playIndividualResults(0);
-                };
-                videoNext.load();
-                videoNext.play().catch(() => playIndividualResults(0));
-            } else {
-                playIndividualResults(0);
-            }
-        };
-
-        videoNext.onclick = proceedFromBlackout;
-        videoNext.play().then(() => requestAnimationFrame(checkBlackoutLoop)).catch(() => playIndividualResults(0));
-    };
-
-    const playGetAnimation = (step = 1, prevType = null) => {
-        if (blackoutTriggered) return;
-        // 이전 효과음 정지
-        stopStepSfx();
+    const playPromotionVideo = (step, prevType) => {
         const highest = getHighestRarity(currentResults);
-        let nextType = ""; 
-        let nextSrc = "";
+        let nextType = "", nextSrc = "", soundPlayed = false;
 
         if (step === 1) {
-            if (currentVideoSrc.includes('start_ssr')) nextType = "ssr";
-            else if (currentVideoSrc.includes('start_sr')) nextType = "sr";
-            else nextType = "r";
-            nextSrc = `gasya/get_${nextType}1.mp4`;
+            nextType = currentVideoSrc.includes('start_ssr') ? "ssr" : (currentVideoSrc.includes('start_sr') ? "sr" : "r");
         } else {
-            const canPromote = (type) => {
-                if (type === "r") return highest === "SSR" || highest === "SR";
-                if (type === "sr") return highest === "SSR";
-                return false;
-            };
-
-            const shouldPromote = canPromote(prevType) && Math.random() < 0.3;
-
+            const canPromote = (prevType === "r" && (highest === "SSR" || highest === "SR")) || (prevType === "sr" && highest === "SSR");
+            const shouldPromote = canPromote && Math.random() < 0.5;
             if (shouldPromote) {
-                if (prevType === "r") {
-                    // 최고 등급이 SR이면 SR까지만, SSR이면 확률적으로 SSR까지 승격 가능
-                    if (highest === "SR") {
-                        nextType = "sr";
-                    } else {
-                        nextType = Math.random() < 0.7 ? "sr" : "ssr";
-                    }
-                } else if (prevType === "sr") {
-                    nextType = "ssr";
-                }
+                if (prevType === "r") nextType = (highest === "SR") ? "sr" : (Math.random() < 0.7 ? "sr" : "ssr");
+                else nextType = "ssr";
             } else {
-                if (prevType === "r") {
-                    if (step === 2) nextType = "r";
-                    else { playIndividualResults(0); return; }
-                } else {
-                    nextType = prevType;
-                }
+                if (prevType === "r" && step === 2) nextType = "r";
+                else if (prevType === "r" && step === 3) { transitionTo(States.SHOWING_INDIVIDUAL); return; }
+                else nextType = prevType;
             }
-            nextSrc = `gasya/get_${nextType}${step}.mp4`;
         }
+        nextSrc = `gasya/get_${nextType}${step}.mp4`;
 
-        if (nextType === "ssr" && (!prevType || prevType !== "ssr")) {
+        if (nextType === "ssr" && prevType !== "ssr") {
             playSound('gasya/bgm_ssr.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
         }
 
-        if (videoNext && videoMain) {
-            videoStep = 2;
-            videoNext.src = assetBlobs[nextSrc] || nextSrc;
-            videoNext.muted = true;
-            videoNext.load();
-            videoNext.onplaying = () => {
-                videoMain.classList.add('hidden');
-                videoNext.classList.remove('hidden');
-                videoMain.pause();
-                
-                if (!state.gachaMuted) {
-                    let sfxSrc = "";
-                    if (step === 2) {
-                        sfxSrc = (nextType === "r") ? 'gasya/screen_r2.mp3' : 'gasya/screen_sr2.mp3';
-                    } else if (step === 3) {
-                        if (nextType !== "r") sfxSrc = 'gasya/screen_sr3.mp3';
-                    }
-                    if (sfxSrc) {
-                        stopStepSfx();
-                        activeStepSfx = playSound(sfxSrc);
-                    }
-                }
-
-                if (clickTimer) clearTimeout(clickTimer);
-                canClick = false;
-                let lockTime = 800; // 1단계 0.8초
-                if (step === 2) lockTime = 1200; // 2단계 1.2초
-                else if (step === 3) lockTime = 1400; // 3단계 1.4초
-                
-                clickTimer = setTimeout(() => { canClick = true; }, lockTime);
-
-                // 블랙아웃 감시 시작
-                if (blackoutScheduled && blackoutScheduled.step === step) {
-                    const checkTime = () => {
-                        if (blackoutTriggered || !blackoutScheduled || blackoutScheduled.step !== step) return;
-                        if (videoNext.currentTime >= blackoutScheduled.time) {
-                            triggerBlackout();
+        videoNext.src = assetBlobs[nextSrc] || nextSrc;
+                videoNext.onplaying = () => {
+                    if (currentState !== States.PROMOTION || currentStep !== step) return;
+        
+                    videoMain.classList.add('hidden');
+                    videoNext.classList.remove('hidden');
+                    videoMain.pause();
+                    
+                    if (!state.gachaMuted && !soundPlayed) {
+                        let sfx = "";
+                        if (step === 2) sfx = (nextType === "r" ? 'gasya/screen_r2.mp3' : 'gasya/screen_sr2.mp3');
+                        else if (step === 3 && nextType !== "r") sfx = 'gasya/screen_sr3.mp3';
+                        
+                        if (sfx) {
+                            stopStepSfx(); // 새로운 단계의 소리가 있을 때만 정지 후 재생
+                            activeStepSfx = playSound(sfx);
+                            soundPlayed = true;
                         }
-                        else {
-                            requestAnimationFrame(checkTime);
-                        }
-                    };
-                    requestAnimationFrame(checkTime);
-                }
-            };
-            
-            videoNext.onended = () => {
-                stopStepSfx();
-                if (clickTimer) clearTimeout(clickTimer);
-                if (nextType === "r" && step === 2) {
-                    playIndividualResults(0); 
-                } else if (step < 3) {
-                    playGetAnimation(step + 1, nextType); 
-                } else {
-                    playIndividualResults(0); 
-                }
-            };
+                    }
+            if (clickTimer) clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { if (currentState === States.PROMOTION && currentStep === step) canClick = true; }, step === 1 ? 800 : (step === 2 ? 1200 : 1400));
+            if (blackoutScheduled && blackoutScheduled.step === step) {
+                const checkBlackout = () => {
+                    if (currentState !== States.PROMOTION || currentStep !== step) return;
+                    if (videoNext.currentTime >= blackoutScheduled.time) transitionTo(States.BLACKOUT, { char: blackoutScheduled.char });
+                    else requestAnimationFrame(checkBlackout);
+                };
+                requestAnimationFrame(checkBlackout);
+            }
+        };
+        videoNext.onended = () => {
+            if (currentState !== States.PROMOTION || currentStep !== step) return;
+            if (nextType === "r" && step === 2) transitionTo(States.SHOWING_INDIVIDUAL);
+            else if (step < 3) transitionTo(States.PROMOTION, { step: step + 1, prevType: nextType });
+            else transitionTo(States.SHOWING_INDIVIDUAL);
+        };
+        videoNext.onclick = () => { if (canClick) videoNext.onended(); };
+        videoNext.play().catch(() => transitionTo(States.SHOWING_INDIVIDUAL));
+    };
 
-            videoNext.onclick = () => { 
-                if (!canClick) return;
-                videoNext.onended();
-            };
-            videoNext.play().catch(() => playIndividualResults(0));
+    const playBlackoutVideo = (char) => {
+        stopBGM('gacha');
+        videoNext.src = assetBlobs['gasya/blackout.mp4'] || 'gasya/blackout.mp4';
+        
+        stopStepSfx();
+        activeStepSfx = playSound('gasya/blackout.mp3');
+
+        let isLooping = true;
+        const checkLoop = () => {
+            if (!isLooping || currentState !== States.BLACKOUT) return;
+            if (videoNext.currentTime >= videoNext.duration - 0.1) videoNext.currentTime = Math.max(0, videoNext.duration - 2.0);
+            requestAnimationFrame(checkLoop);
+        };
+        videoNext.onclick = () => {
+            if (!canClick) return;
+            isLooping = false; canClick = false; 
+            playSound('gasya/blackoutbgm.mp3', { loop: true, isBGM: true, bgmType: 'blackout' });
+            if (char) {
+                videoNext.src = assetBlobs[`gasya/blackout${char}.mp4`] || `gasya/blackout${char}.mp4`;
+                videoNext.onplaying = () => { 
+                    if (currentState !== States.BLACKOUT) return; 
+                    stopStepSfx();
+                    activeStepSfx = playSound('gasya/blackoutresult.mp3'); 
+                };
+                videoNext.onended = () => transitionTo(States.SHOWING_INDIVIDUAL);
+                videoNext.load();
+                videoNext.play().catch(() => transitionTo(States.SHOWING_INDIVIDUAL));
+            } else { transitionTo(States.SHOWING_INDIVIDUAL); }
+        };
+        videoNext.play().then(() => { requestAnimationFrame(checkLoop); setTimeout(() => { if (currentState === States.BLACKOUT) canClick = true; }, 1000); });
+    };
+
+    const playIndividualResults = (index) => {
+        resetOverlays();
+        canClick = false; 
+        if (index >= currentResults.length) { transitionTo(States.FINISHED); return; }
+
+        const card = currentResults[index];
+        const isRevealTarget = (card.type === 'produce' || card.type === 'support' || !!card.rarity);
+        let soundPlayed = false;
+
+        if (!isRevealTarget) {
+            if (!existingIdsSet.has(card.id)) existingIdsSet.add(card.id);
+            playIndividualResults(index + 1); return;
+        }
+
+        const isNew = !existingIdsSet.has(card.id);
+        if (isNew) existingIdsSet.add(card.id);
+
+        let getSrc = 'gasya/spotget_rsupport.mp4';
+        const isSupport = card.type !== 'produce';
+        if (isSupport) {
+            if (card.displayRarity === 'SR') getSrc = 'gasya/spotget_srsupport.mp4';
+            else if (card.displayRarity === 'SSR') getSrc = 'gasya/spotget_ssrsupport.mp4';
         } else {
-            playIndividualResults(0);
+            getSrc = (card.rarity === 'PSSR') ? 'gasya/spotget_pssr.mp4' : (card.rarity === 'PSR' ? 'gasya/spotget_psr.mp4' : 'gasya/spotget_pr.mp4');
         }
-    };
 
-    const playSequel = () => {
-        if (videoStep !== 0 || !canClick) return;
-        const isSsr = currentVideoSrc.includes('start_ssr');
-        const isSr = currentVideoSrc.includes('start_sr');
-        
-        let jumpTime;
-        if (isSsr) jumpTime = 13.9;
-        else if (isSr) jumpTime = 8.6;
-        else jumpTime = 9.8;
+        videoNext.src = assetBlobs[getSrc] || getSrc;
+        subState = (card.rarity === 'PSSR') ? "pssr_intro" : "normal";
 
-        if (videoMain) {
-            if (videoMain.currentTime > jumpTime + 0.1) return;
-            if (!state.gachaMuted) {
-                let clickSfxSrc = 'gasya/start_click.mp3';
-                if (isSsr) clickSfxSrc = 'gasya/start_ssrclick.mp3';
-                else if (isSr) clickSfxSrc = 'gasya/start_srclick.mp3';
-                playSound(clickSfxSrc);
-                
-                screenSfxTimeout = setTimeout(() => {
-                    playSound('gasya/screen1.mp3');
-                }, 300);
-            }
-            videoStep = 1;
-            canClick = false;
-            videoMain.currentTime = jumpTime;
+        imgOverlay.classList.remove('produce-card', 'landscape-card');
+        imgOverlay.classList.add(isSupport ? 'landscape-card' : 'produce-card');
+        nameOverlay.classList.remove('produce-name', 'landscape-name');
+        nameOverlay.classList.add(isSupport ? 'landscape-name' : 'produce-name');
+
+        imgOverlay.src = card.type === 'produce' ? `idols/${card.id}1.webp` : `images/support/${card.id}.webp`;
+        nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        nameOverlay.style.background = (card.displayRarity === 'SSR' ? '#a335ee' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
+
+        videoNext.onplaying = () => {
+            if (currentState !== States.SHOWING_INDIVIDUAL) return;
             
-            // BGM 점프 로직 수정: 이미 6.5초를 넘었으면 그대로 두고, 아니면 6.5초로 이동
-            if (!state.gachaMuted && gachaBgmStartTime > 0) {
-                const elapsed = (Date.now() - gachaBgmStartTime) / 1000;
-                if (elapsed < 6.5) {
-                    playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha', offset: 6.5 });
+            // [추가] 스킵으로 바로 넘어온 경우를 대비해 비디오 레이어 교체
+            if (videoMain && !videoMain.classList.contains('hidden')) {
+                videoMain.classList.add('hidden');
+                videoMain.pause();
+            }
+            if (videoNext) videoNext.classList.remove('hidden');
+
+            if (!state.gachaMuted && !soundPlayed) {
+                const sfx = (card.rarity === 'PSSR' || card.displayRarity === 'SSR') ? 'gasya/get_pssr.mp3' : (card.displayRarity === 'SR' ? 'gasya/spotget_sr.mp3' : 'gasya/spotget_r.mp3');
+                stopStepSfx();
+                activeStepSfx = playSound(sfx); 
+                soundPlayed = true;
+            }
+            if (card.rarity !== 'PSSR') {
+                setTimeout(() => {
+                    if (currentState !== States.SHOWING_INDIVIDUAL) return;
+                    imgOverlay.classList.add('visible'); nameOverlay.classList.add('visible');
+                    if (isNew) { newBadgeOverlay.classList.add('visible'); }
+                }, 350);
+            }
+            const lockTime = (card.displayRarity === 'SSR' || card.rarity === 'PSSR') ? 1300 : 500;
+            if (clickTimer) clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, lockTime);
+        };
+
+        videoNext.onended = () => {
+            if (currentState !== States.SHOWING_INDIVIDUAL) return;
+            if (subState === "pssr_intro" && assetBlobs[`gasya/pssr/${card.id}.mp4`]) {
+                canClick = false; 
+                if (clickTimer) clearTimeout(clickTimer);
+                
+                videoNext.src = assetBlobs[`gasya/pssr/${card.id}.mp4`];
+                videoNext.onplaying = () => { 
+                    if (currentState !== States.SHOWING_INDIVIDUAL) return; 
+                    subState = "pssr_special"; 
+                    if (clickTimer) clearTimeout(clickTimer);
+                    clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 1000); 
+                };
+                videoNext.play();
+            } else { playIndividualResults(index + 1); }
+        };
+
+        videoNext.onclick = () => {
+            if (!canClick) return;
+            if (subState === "pssr_intro") return;
+            if (subState === "pssr_special") {
+                const j1 = card.jumpTime1 || 3.3, j2 = card.jumpTime2;
+                const cur = videoNext.currentTime;
+                if (cur < j1) { 
+                    canClick = false; 
+                    if (clickTimer) clearTimeout(clickTimer);
+                    videoNext.currentTime = j1; 
+                    clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 1200); 
+                    return; 
+                }
+                if (j2 && cur < j2) { 
+                    canClick = false; 
+                    if (clickTimer) clearTimeout(clickTimer);
+                    videoNext.currentTime = j2; 
+                    clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 500); 
+                    return; 
                 }
             }
-
-            videoMain.play().catch(finishGacha);
-            clickTimer = setTimeout(() => { canClick = true; }, 2000);
-        }
+            videoNext.onended();
+        };
+        videoNext.play().catch(() => playIndividualResults(index + 1));
     };
 
-    const startGacha = (mode, precomputedResults = null) => {
-        stopBGM('main');
+    const finishGacha = () => {
+        stopBGM('gacha'); stopBGM('main'); stopBGM('blackout'); stopStepSfx();
+        resetOverlays();
+        if (!state.gachaMuted) playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
+        playSound(gachaMode === 1 ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3');
+        if (videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
+        if (videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
+        if (videoContainer) videoContainer.classList.add('hidden');
+        document.body.classList.remove('immersive-mode');
+        if (muteControls) { muteControls.classList.remove('hidden'); muteControls.style.display = 'flex'; }
+        if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode);
+        currentState = States.FINISHED;
+    };
+
+    const startGacha = (mode, results) => {
+        stopBGM('main'); 
         const cost = (mode === 1) ? 250 : 2500;
-        
         const prevPulls = state.totalPulls[state.gachaType] || 0;
-        const currentLog = state.gachaLog[state.gachaType] || [];
-        existingIdsSet = new Set(currentLog.map(item => item.id));
-        
-        // 상태 업데이트: 보석 차감 및 누적 횟수 증가
         setJewels(state.jewels - cost);
         setTotalPulls(prevPulls + mode, state.gachaType);
-
-        currentResults = precomputedResults || pickGacha(mode, state.gachaType);
-        
-        // 블랙아웃 예약 로직
-        blackoutTriggered = false;
+        gachaMode = mode;
+        currentResults = results;
+        const currentLog = state.gachaLog[state.gachaType] || [];
+        existingIdsSet = new Set(currentLog.map(item => item.id));
+        const pickups = CURRENT_PICKUPS[state.gachaType] || { pssr: [] };
+        const pssrPickup = currentResults.find(c => pickups.pssr.some(p => p.id === c.id));
         blackoutScheduled = null;
-        const pickups = CURRENT_PICKUPS[state.gachaType] || { pssr: [], sssr: [] };
-        
-        // 당첨된 픽업 카드 찾기
-        const pickupResult = currentResults.find(card => 
-            (pickups.pssr && pickups.pssr.some(p => p.id === card.id)) || 
-            (pickups.sssr && pickups.sssr.includes(card.id))
-        );
-
-        // 수정: PSSR 픽업인 경우에만 발동하도록 조건 추가
-        const isPssrPickup = pickupResult && pickups.pssr && pickups.pssr.some(p => p.id === pickupResult.id);
-
-        // 픽업이 있고(PSSR만), 90% 확률 당첨 시에만 블랙아웃 예약
-        if (isPssrPickup && Math.random() < 0.9) {
-            // 해당 ID에 매칭되는 char 정보 찾기 (PSSR인 경우)
-            const pickupInfo = pickups.pssr.find(p => p.id === pickupResult.id);
-            const charId = pickupInfo ? pickupInfo.char : null;
-
+        if (pssrPickup && Math.random() < 0.9) {
+            const char = pickups.pssr.find(p => p.id === pssrPickup.id)?.char;
             const highest = getHighestRarity(currentResults);
-            const maxStep = (highest === 'R') ? 2 : 3; 
-            const targetStep = Math.floor(Math.random() * maxStep) + 1;
-            const targetTime = 0.3 + Math.random() * 0.8; 
-            blackoutScheduled = { step: targetStep, time: targetTime, char: charId };
+            blackoutScheduled = { step: Math.floor(Math.random() * (highest === 'R' ? 2 : 3)) + 1, time: 0.3 + Math.random() * 0.8, char };
         }
-
         if (callbacks.onStart) callbacks.onStart(mode, prevPulls);
         addGachaLog(currentResults, state.gachaType);
         document.body.classList.add('immersive-mode');
-        history.pushState({ target: 'gacha', view: 'playing' }, "");
-        gachaMode = mode;
-        videoStep = 0;
-        canClick = false;
-        setTimeout(() => { canClick = true; }, 600);
-
-        const highest = getHighestRarity(currentResults);
-        let src = (mode === 1) ? 'gasya/start_r.mp4' : 'gasya/start_sr.mp4';
-        
-        if (highest === 'SSR' && Math.random() < 0.3) {
-            src = 'gasya/start_ssr.mp4';
-        } else if (mode === 10 && Math.random() < 0.2) {
-            src = 'gasya/start_r.mp4';
-        }
-
-        currentVideoSrc = src;
-        if (videoMain && videoContainer) {
-            videoContainer.classList.remove('hidden');
-            playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
-            gachaBgmStartTime = Date.now();
-            
-            videoMain.src = assetBlobs[src] || src;
-            videoMain.muted = true; 
-            videoMain.classList.remove('hidden'); 
-            videoMain.onclick = () => { if (canClick) playSequel(); };
-            videoMain.onended = () => playGetAnimation(1);
-            
-            const checkPausePoint = () => {
-                if (videoStep === 0 && videoMain && !videoMain.paused) {
-                    const isSsr = currentVideoSrc.includes('start_ssr');
-                    const isSr = currentVideoSrc.includes('start_sr');
-                    let loopEnd = isSsr ? 13.8 : (isSr ? 8.6 : 9.7);
-                    const loopStart = loopEnd - 1.9;
-                    if (videoMain.currentTime >= loopEnd) videoMain.currentTime = loopStart;
-                    requestAnimationFrame(checkPausePoint);
-                }
-            };
-            videoMain.play().then(() => requestAnimationFrame(checkPausePoint)).catch(finishGacha);
-        }
+        transitionTo(States.STARTING);
     };
 
-    const prepareResults = (mode) => {
-        return pickGacha(mode, state.gachaType);
-    };
+    const prepareResults = (mode) => pickGacha(mode, state.currentGachaType || state.gachaType);
 
     if (skipBtn) {
-        skipBtn.onclick = () => { if (canClick) finishGacha(); };
+        skipBtn.onclick = () => {
+            if (!canClick || currentState === States.IDLE || currentState === States.FINISHED) return;
+
+            // [추가] 개별 연출 진입 전(시작/승격/블랙아웃)에 스킵을 누른 경우
+            if (currentState !== States.SHOWING_INDIVIDUAL) {
+                const firstSSRIndex = currentResults.findIndex(c => c.displayRarity === 'SSR');
+                
+                // SSR이 결과에 포함되어 있다면 해당 지점으로 점프
+                if (firstSSRIndex !== -1) {
+                    // 건너뛰는 카드들의 ID를 기존 목록에 추가 (NEW 뱃지 계산용)
+                    for (let i = 0; i < firstSSRIndex; i++) {
+                        existingIdsSet.add(currentResults[i].id);
+                    }
+                    transitionTo(States.SHOWING_INDIVIDUAL, { index: firstSSRIndex });
+                    return;
+                }
+            }
+
+            // 그 외(이미 연출 중이거나 SSR이 없음)의 경우는 즉시 종료
+            transitionTo(States.FINISHED);
+        };
     }
 
     return { startGacha, prepareResults };
