@@ -16,7 +16,6 @@ export const calcStore = {
     manualEnhance: { m: 0, a: 0 },
     manualDelete: { m: 0, a: 0 },
     pItems: [null, null, null, null, null],
-    pItemsChecked: [false, false, false, false, false],
     isBoardCollapsed: false,
 
     /**
@@ -36,7 +35,6 @@ export const calcStore = {
         this.manualEnhance = saved.manualEnhance || { m: 0, a: 0 };
         this.manualDelete = saved.manualDelete || { m: 0, a: 0 };
         this.pItems = saved.pItems || [null, null, null, null, null];
-        this.pItemsChecked = saved.pItemsChecked || [false, false, false, false, false];
         this.isBoardCollapsed = !!saved.isBoardCollapsed;
 
         // 초기 주간 계획 설정 (저장된 게 없으면 기본값)
