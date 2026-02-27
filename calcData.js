@@ -11,7 +11,7 @@ export const calcPlans = {
             ],
             3: [
                 { value: "goout_hajime"},
-                { value: "gift_hajime"}
+                { value: "gift_hajime", results: ["get", "get_drink"]}
             ],
             4: [
                 { value: "lessonvo",results:["get","get_drink"]},
@@ -21,7 +21,7 @@ export const calcPlans = {
             5: [
                 { value: "goout_hajime"},
                 { value: "advice"},
-                { value: "gift_hajime"},
+                { value: "gift_hajime", results: ["get", "get_drink"]},
             ],
             6: [
                 { value: "class_hajime" }
@@ -42,7 +42,7 @@ export const calcPlans = {
             ],
             11: [
                 { value: "goout_hajime"},
-                { value: "gift_hajime"},
+                { value: "gift_hajime", results: ["get", "get_drink"]},
             ],    
             12: [
                 { value: "lessonvo",results:["get","get_drink"]},
@@ -52,7 +52,7 @@ export const calcPlans = {
             13: [
                 { value: "goout_hajime"},
                 { value: "advice"},
-                { value: "gift_hajime"}
+                { value: "gift_hajime", results: ["get", "get_drink"]}
             ],     
             14: [
                 { value: "lessonvo",results:["get","get_drink"]},

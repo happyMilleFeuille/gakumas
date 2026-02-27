@@ -10,6 +10,7 @@ export const produceList = [
     { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", another: true },
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" ,another: true},
+    { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited",jumpTime2:7.2 ,another: true},
     { id: "ssrrinami_2nd", name: "L.U.V", rarity: "PSSR",plan: "logic",  source: "normal",jumpTime2:11.4,youtube_url: "https://youtu.be/1Fbhh3HYC0U?si=GaY-ywMTKmu7CWFw"},
     { id: "ssrrinami_3rd", name: "36℃ U.B.U", rarity: "PSSR", plan: "logic", source: "normal",jumpTime2:8.7,youtube_url: "https://youtu.be/szxn42peP3M?si=0Fa3iBImUAHj4Rsm"},
 
@@ -22,6 +23,7 @@ export const produceList = [
     { id: "ssrsaki_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "sense", source: "limited" , another: true},          
     { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true},        
     { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited", another: true },
+    { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited" ,jumpTime2:9.3,another: true},    
     { id: "ssrsaki_2nd", name: "Boom Boom Pow", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:9.3,youtube_url: "https://youtu.be/gSjzH8FxYuA?si=SxE6cGHrYfFz6mlY"},
 
 
@@ -35,6 +37,7 @@ export const produceList = [
     { id: "ssrchina_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", another: true },
     { id: "ssrchina_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR",plan: "logic",  source: "limited", another: true },
     { id: "ssrchina_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited", another: true },
+    { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited",jumpTime2:7.3 ,another: true},
     { id: "ssrchina_2nd", name: "매일, 발견적 스텝!",name_ja: "日々、発見的ステップ!", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:9.4,youtube_url: "https://youtu.be/yROmuk6Jusg?si=Sdzsx-E75OfLMj-j"},
     { id: "ssrchina_3rd", name: "하늘과 약속", name_ja: "空と約束",rarity: "PSSR", plan: "sense", source: "normal" ,youtube_url: "https://youtu.be/WxFmsuy4nrM?si=AD1GxXNrDtL2AG29"},
 
@@ -48,6 +51,7 @@ export const produceList = [
     { id: "ssrsumika_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", another: true },
     { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true},    
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
+    { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited",jumpTime2:7.4 ,another: true},
     { id: "ssrsumika_2nd", name: "숨겼던 나",name_ja: "カクシタワタシ", rarity: "PSSR", plan: "anomaly", source: "normal",jumpTime2:12.2,youtube_url: "https://youtu.be/m1oZgWeL3lY?si=8v7NOmk3EmvxxAMg"},
     { id: "ssrsumika_3rd", name: "Love & Joy", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:8.6,youtube_url: "https://youtu.be/YzBr_c61TsU?si=tVarpAMm8HEV5kU1"},
 
@@ -62,6 +66,7 @@ export const produceList = [
     { id: "ssrmao_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal" , another: true},
     { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited", another: true ,jumpTime2:7.3},    
     { id: "ssrmao_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited", another: true },
+    { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited",jumpTime2:7.2 ,another: true},
     { id: "ssrmao_2nd", name: "Feel Jewel Dream", rarity: "PSSR", plan: "logic", source: "normal",jumpTime2:11.2 ,youtube_url: "https://youtu.be/8cYN4IRVU0M?si=cv0dmM3xBqH9yQQj"},
     { id: "ssrmao_3rd", name: "봐줘",name_ja:"見て", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:11.2 ,youtube_url: "https://youtu.be/nKO8cTM9jrI?si=5zmdnmkquuK_IEQg"},    
 
@@ -71,16 +76,17 @@ export const produceList = [
     { id: "ssrkotone_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR",plan: "logic",  source: "limited" , another: true,jumpTime2:8.1},        
     { id: "ssrkotone_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
     { id: "ssrkotone_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited" , another: true},        
-    { id: "ssrkotone_1st7another", name: "벚꽃 포토그래프",name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
+    { id: "ssrkotone_1st7another", name: "벚꽃 포토그래프",name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited" ,jumpTime2:7.2, another: true},
     { id: "ssrkotone_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", another: true },
     { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", source: "limited" , another: true},    
     { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited", another: true },
+    { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited",jumpTime2:7.2 ,another: true},
     { id: "ssrkotone_2nd", name: "Yellow Big Bang!", rarity: "PSSR", plan: "sense", source: "normal",jumpTime2:10.3 ,youtube_url: "https://youtu.be/xjqsnpsFQE4?si=BnSGynUjPWdAepGr"},
     { id: "ssrkotone_3rd", name: "자기긍정감 떡상↑↑ 슈키슈키송",name_ja:"自己肯定感爆上げ↑↑しゅきしゅきソング", rarity: "PSSR", plan: "sense", source: "normal",jumpTime2:8.1 ,youtube_url: "https://youtu.be/WCDLyXJgbIo?si=sUASzokNaAkg68Ho"},        
 
     // --- 테마리 SSR (PSSR) ---
     { id: "ssrtemari_1st", name: "Luna say maybe", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:11.4,youtube_url: "https://youtu.be/Sq5Dj0U06vQ?si=z7zi9RBA43D7QpwX"},
-    { id: "ssrtemari_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "sense", source: "limited" , another: true},   
+    { id: "ssrtemari_1st1another", name: "너와 세미블루",name_ja:"キミトセミブルー", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2:6.4,another: true},   
     { id: "ssrtemari_1st2another", name: "관국",name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", another: true },     
     { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR",  plan: "sense",source: "limited" , another: true,jumpTime2:8.0},    
     { id: "ssrtemari_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", source: "limited", another: true},   
@@ -88,6 +94,7 @@ export const produceList = [
     { id: "ssrtemari_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", another: true },
     { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", source: "limited" , another: true,jumpTime2:6.4},    
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "sense", source: "limited" , another: true},
+    { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited",jumpTime2:7.2 ,another: true},    
     { id: "ssrtemari_2nd", name: "아이비",name_ja: "アイヴイ", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:9.3,youtube_url: "https://youtu.be/heLDPvSfJUE?si=40MVPtHuI_l4mjh7"},
     { id: "ssrtemari_3rd", name: "대체 언제부터",name_ja:"一体いつから", rarity: "PSSR", plan: "anomaly", source: "normal",youtube_url: "https://youtu.be/PE_iyDsY5xM?si=8v9OKPXlkxqQwl4r"},        
 
@@ -100,6 +107,7 @@ export const produceList = [
     { id: "ssrlilja_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", another: true ,jumpTime2: 6.4},
     { id: "ssrlilja_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
     { id: "ssrlilja_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR",plan: "logic",  source: "limited", another: true },
+    { id: "ssrlilja_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited",jumpTime2:7.4 ,another: true},    
     { id: "ssrlilja_2nd", name: "극광",name_ja: "極光", rarity: "PSSR", plan: "anomaly", source: "normal",jumpTime2: 9.6 ,youtube_url: "https://youtu.be/6BDjxWSGSkw?si=VH1IcVz2sLLywSTd"},
     { id: "ssrlilja_3rd", name: "Atmosphere", rarity: "PSSR", plan: "anomaly", source: "normal" ,jumpTime2: 9.5,youtube_url: "https://youtu.be/R9PEnLmv6zI?si=CG6jPxmYp4dGctXo"},    
 
@@ -115,11 +123,13 @@ export const produceList = [
     { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", source: "limited" , another: true},        
     { id: "ssrhiro_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited" , another: true},
+    { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited",jumpTime2:7.5 ,another: true},
     { id: "ssrhiro_2nd", name: "콘트라스트",name_ja: "コントラスト", rarity: "PSSR", plan: "sense", source: "normal" ,jumpTime2:10.3,youtube_url: "https://youtu.be/X7egVXrwKpI?si=28hEFsFvo7ZtStHc"},
     { id: "ssrhiro_3rd", name: "sunfaded",name_ja: "サンフェーデッド", rarity: "PSSR", plan: "anomaly", source: "normal" ,jumpTime2:8.3,youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J"},    
 
     // --- 츠바메 SSR (PSSR) ---    
     { id: "ssrtsubame_1st", name: "이론무장하고",name_ja: "理論武装して", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:7.8,youtube_url: "https://youtu.be/0ZWUdwVQOJA?si=4OJ6d8ZxH0k0LmvB"},   
+    { id: "ssrtsubame_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited" ,jumpTime2:7.2,another: true},
 
     
     // --- 세나 SSR (PSSR) ---
@@ -213,6 +223,9 @@ export const produceList = [
     { id: "ssrsaki_gamusyaradist", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "dist" ,youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H"},        
     { id: "ssrkotone_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" ,youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H"},    
     { id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited",youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H" },         
+    { id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "dist" ,youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn"},    
+    { id: "ssrume_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited" ,jumpTime2:7.4,youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn"},    
+
 
     // 유닛 (unit)
     { id: "ssrsena_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "sense", source: "limited_u",jumpTime2:10.6,youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },        

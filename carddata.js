@@ -389,10 +389,10 @@ export const cardList = [
         abilities: 
         [
             "fixedparam",
-            "sp_lessonup",
+            "gift",
             "supportrateup", 
             "get_goodcondition",
-            "gift",
+            "customize6",
             "event_paraup"
         ]        
     },
@@ -1045,7 +1045,28 @@ export const cardList = [
             "class",
             "event_paraup"
         ]        
-    },     
+    },  
+    { 
+    id: "dance_limitedsense3", 
+    name: "합격 축하해!", 
+    name_ja: "合格おめでとう！",     
+    type: "dance", 
+    plan: "sense", 
+    have:"item",
+    source: "limited",    
+    releasedAt: "2026-02-27",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "get_ssr",
+            "get_concentration",
+            "event_paraup"
+        ]        
+    },         
     { 
     id: "dance_fessense1", 
     name: "자신과 마주할 시간이다", 
@@ -2618,7 +2639,7 @@ export const cardList = [
             "sp_recovery",
             "supportrateup", 
             "sp_param",
-            "get_concentrate",
+            "get_concentration",
             "event_paraup"
         ]        
     },      
@@ -2685,6 +2706,27 @@ export const cardList = [
             "event_paraup"
         ]        
     },
+    { 
+    id: "dance_srlimitedsense4", 
+    name: "세탁물의 밸런스 타워", 
+    name_ja: "選択物のバランスタワー",     
+    type: "dance", 
+    plan: "sense", 
+    have:"item",
+    releasedAt: "2026-02-27", 
+    source:"limited",            
+    rarity: "SR",             
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "get",
+            "supportrateup", 
+            "get_item6",
+            "change3",            
+            "event_paraup"
+        ]        
+    },    
     { 
     id: "dance_srlogic1", 
     name: "인기를 끌자!", 

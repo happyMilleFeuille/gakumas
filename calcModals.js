@@ -3,8 +3,9 @@ import { state } from './state.js';
 import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { calculateCardBonus } from './simulator-engine.js';
-import { getTriggerCountsFromDOM, calculateAllTotals } from './calcLogic.js';
-import { updateSelectedCardsUI, updateStatHeaderUI } from './calcUI.js';
+import { getTriggerCounts, calculateTotals } from './calcLogic.js';
+import { updateSelectedCardsUI } from './calcUI.js';
+import { calcStore } from './calcStore.js';
 
 /**
  * 서포트 카드 선택 패널 렌더링
@@ -13,20 +14,41 @@ export function renderSidePanelContent(panel, selectedPlan) {
     const filtered = cardList.filter(c => (c.plan === selectedPlan || c.plan === 'free') && c.rarity !== 'R' && c.type !== 'assist');
     const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
         const lb = state.supportLB[c.id] || 0;
-        return `<div class="side-card-item" data-id="${c.id}"><img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'"><img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;"><div class="calc-card-stars">${Array.from({length:4}, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div><div class="card-bonus-overlay"><span class="bonus-val"></span></div><div class="info-btn">i</div></div>`;
+        return `
+            <div class="side-card-item" data-id="${c.id}">
+                <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
+                <img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;">
+                <div class="calc-card-stars">${Array.from({length:4}, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
+                <div class="card-bonus-overlay"><span class="bonus-val"></span></div>
+                <div class="info-btn">i</div>
+            </div>`;
     }).join('');
-    panel.innerHTML = `<div class="side-panel-tabs"><div class="panel-tab-item"><img src="icons/vocal.png"></div><div class="panel-tab-item"><img src="icons/dance.png"></div><div class="panel-tab-item"><img src="icons/visual.png"></div></div><div class="side-panel-content"><div class="calc-spinner-overlay" id="calc-side-spinner-overlay"><div class="calc-spinner"></div></div><div class="side-panel-column" data-type="vocal">${renderCol('vocal')}</div><div class="side-panel-column" data-type="dance">${renderCol('dance')}</div><div class="side-panel-column" data-type="visual">${renderCol('visual')}</div></div>`;
+
+    panel.innerHTML = `
+        <div class="side-panel-tabs">
+            <div class="panel-tab-item"><img src="icons/vocal.png"></div>
+            <div class="panel-tab-item"><img src="icons/dance.png"></div>
+            <div class="panel-tab-item"><img src="icons/visual.png"></div>
+        </div>
+        <div class="side-panel-content">
+            <div class="calc-spinner-overlay" id="calc-side-spinner-overlay"><div class="calc-spinner"></div></div>
+            <div class="side-panel-column" data-type="vocal">${renderCol('vocal')}</div>
+            <div class="side-panel-column" data-type="dance">${renderCol('dance')}</div>
+            <div class="side-panel-column" data-type="visual">${renderCol('visual')}</div>
+        </div>`;
 }
 
 /**
  * 서포트 카드 패널 토글
  */
-export function toggleSupportCardPanel(selectedPlan, refreshCardBonuses, saveCalcState) {
+export function toggleSupportCardPanel(selectedPlan, refreshAll) {
     let panel = document.getElementById('calc-side-panel'), overlay = document.getElementById('panel-overlay');
     if (panel?.classList.contains('open')) { closeSupportCardPanel(); return; }
+    
     if (!panel) {
         panel = document.createElement('div'); panel.id = 'calc-side-panel'; panel.className = 'calc-side-panel';
         (window.innerWidth <= 768 ? document.body : document.querySelector('.calc-container')).appendChild(panel);
+        
         panel.addEventListener('click', (e) => {
             const infoBtn = e.target.closest('.info-btn'), item = e.target.closest('.side-card-item');
             if (infoBtn && item) {
@@ -36,89 +58,83 @@ export function toggleSupportCardPanel(selectedPlan, refreshCardBonuses, saveCal
                 return;
             }
             if (item) {
-                const board = document.querySelector('.unified-plan-board');
-                const type = board?.dataset.calcType;
                 const cardId = item.dataset.id, isSelected = item.classList.contains('selected');
-                let selectedItems = Array.from(panel.querySelectorAll('.side-card-item.selected')).sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0));
-                
-                const current = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-                if (!current.cardChecked) current.cardChecked = {};
+                const plan = calcStore.planType;
+                let currentPlanCards = calcStore.planCards[plan] || [];
 
                 if (isSelected) { 
-                    item.classList.remove('selected'); 
-                    delete item.dataset.selectTime;
-                    if (current.cardChecked[cardId]) delete current.cardChecked[cardId];
-                }
-                else {
-                    if (selectedItems.length >= 6) { 
-                        const oldestItem = selectedItems[0]; 
-                        oldestItem.classList.remove('selected'); 
-                        delete oldestItem.dataset.selectTime;
-                        if (current.cardChecked[oldestItem.dataset.id]) delete current.cardChecked[oldestItem.dataset.id];
+                    item.classList.remove('selected'); delete item.dataset.selectTime;
+                    calcStore.planCards[plan] = currentPlanCards.filter(id => id !== cardId);
+                    if (calcStore.cardChecked[cardId]) delete calcStore.cardChecked[cardId];
+                } else {
+                    if (currentPlanCards.length >= 6) { 
+                        const sorted = Array.from(panel.querySelectorAll('.side-card-item.selected')).sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0));
+                        const oldest = sorted[0];
+                        if (oldest) {
+                            oldest.classList.remove('selected'); delete oldest.dataset.selectTime;
+                            calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== oldest.dataset.id);
+                        }
                     }
                     item.classList.add('selected'); item.dataset.selectTime = Date.now();
+                    calcStore.planCards[plan].push(cardId);
+                    calcStore.cardChecked[cardId] = false; // 기본 체크 해제 상태로 추가
                 }
                 
-                localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
-                const finalIds = Array.from(panel.querySelectorAll('.side-card-item.selected')).sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0)).map(el => el.dataset.id);
-                updateSelectedCardsUI(finalIds, type); 
-                saveCalcState();
+                calcStore.save();
+                updateSelectedCardsUI(calcStore); 
+                refreshAll();
             }
         });
     }
-    if (window.innerWidth <= 768 && !overlay) { overlay = document.createElement('div'); overlay.id = 'panel-overlay'; overlay.className = 'panel-overlay'; document.body.appendChild(overlay); overlay.onclick = closeSupportCardPanel; }
-    renderSidePanelContent(panel, selectedPlan);
-    const boardElem = document.querySelector('.unified-plan-board');
-    if (boardElem) {
-        const type = boardElem.dataset.calcType, saved = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-        const planCards = (saved.planCards && selectedPlan) ? (saved.planCards[selectedPlan] || []) : [];
-        planCards.forEach(id => {
-            const item = panel.querySelector(`.side-card-item[data-id="${id}"]`);
-            if (item) { item.classList.add('selected'); item.dataset.selectTime = Date.now(); }
-        });
-        updateSelectedCardsUI(planCards, type);
+
+    if (window.innerWidth <= 768 && !overlay) { 
+        overlay = document.createElement('div'); overlay.id = 'panel-overlay'; overlay.className = 'panel-overlay'; 
+        document.body.appendChild(overlay); overlay.onclick = closeSupportCardPanel; 
     }
+    
+    renderSidePanelContent(panel, selectedPlan);
+    
+    // 선택 상태 복원
+    const planCards = calcStore.planCards[selectedPlan] || [];
+    planCards.forEach(id => {
+        const item = panel.querySelector(`.side-card-item[data-id="${id}"]`);
+        if (item) { item.classList.add('selected'); item.dataset.selectTime = Date.now(); }
+    });
+    updateSelectedCardsUI(calcStore);
+
     requestAnimationFrame(() => {
         panel.classList.add('open'); if (overlay) overlay.classList.add('show');
-        setTimeout(() => { refreshCardBonuses(); document.getElementById('calc-side-spinner-overlay')?.remove(); }, 150);
+        setTimeout(() => { 
+            try { refreshAll(); } catch (err) { console.error(err); }
+            finally { document.getElementById('calc-side-spinner-overlay')?.remove(); }
+        }, 150);
     });
 }
 
 export function closeSupportCardPanel(isPopState = false) {
     const panel = document.getElementById('calc-side-panel'), overlay = document.getElementById('panel-overlay');
-    if (panel?.classList.contains('open')) { panel.classList.remove('open'); if (overlay) overlay.classList.remove('show'); if (!isPopState && window.innerWidth <= 768 && history.state?.panelOpen) history.back(); }
+    if (panel?.classList.contains('open')) { 
+        panel.classList.remove('open'); 
+        if (overlay) overlay.classList.remove('show'); 
+        if (!isPopState && window.innerWidth <= 768 && history.state?.panelOpen) history.back(); 
+    }
 }
 window.closeSupportCardPanel = closeSupportCardPanel;
 
 /**
  * 스킬 카드 선택(조정) 모달
  */
-export function showOtherTuneModal(type, current, refreshCardBonuses, updateActivityCounts, getBoardPools) {
-    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type || 'sense';
-    const isHajime = type === 'hajime';
+export function showOtherTuneModal(refreshAll, getBoardPools) {
+    const activePlan = calcStore.planType;
+    const selectedSkills = calcStore.planSkills[activePlan] || {};
     
-    // 플랜별 스킬 카드 상태 로드
-    if (!current.planSkills) current.planSkills = {};
-    const selectedSkills = current.planSkills[activePlan] || {};
+    // 보드에서의 카드 획득 수치 계산 (실제 calcLogic과 동일하게 counts.total.get 기반으로 계산)
+    const counts = getTriggerCounts(calcStore);
+    let boardGetCount = counts.total.get || 0;
     
-    // 보드에서의 카드 획득 수치 계산 (모든 타입 합산 + 서포트 카드 보너스)
-    const pools = getBoardPools(type, current);
-    let boardGetCount = pools.get.generic + pools.get.m + pools.get.a;
-    
-    // 서포트 카드 체크박스 보너스 합산
-    const cardChecked = current.cardChecked || {};
-    const planCards = current.planCards || {};
-    const selectedIds = planCards[activePlan] || [];
-    selectedIds.forEach(id => {
-        if (cardChecked[id]) {
-            const card = cardList.find(c => c.id === id);
-            if (card && card.have?.startsWith('card_')) boardGetCount++;
-        }
-    });
-
     const cardGroups = [];
     const rarities = ['r', 'sr', 'ssr'];
-    if (isHajime) rarities.push('legend');
+    if (calcStore.type === 'hajime') rarities.push('legend');
 
     const maxNums = { ssr: 13, sr: 21, r: 14, legend: 3 };
     const freeMaxNums = { ssr: 9, sr: 3, r: 2 };
@@ -127,194 +143,128 @@ export function showOtherTuneModal(type, current, refreshCardBonuses, updateActi
         const planMax = maxNums[r] || 0;
         for(let i=1; i<=planMax; i++) {
             const group = [`${activePlan}-${r}${i}`];
-            const key = `${r}${i}`;
-            const altId = `${activePlan}-${r}${i}alt`;
-            if (skillCardList[altId]) {
-                group.push(altId);
-            }
+            if (skillCardList[`${activePlan}-${r}${i}alt`]) group.push(`${activePlan}-${r}${i}alt`);
             cardGroups.push(group);
         }
-        
         if (r !== 'legend') {
             const freeMax = freeMaxNums[r] || 0;
-            for(let i=1; i<=freeMax; i++) {
-                cardGroups.push([`free-${r}${i}`]);
-            }
+            for(let i=1; i<=freeMax; i++) cardGroups.push([`free-${r}${i}`]);
         }
     });
 
     const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'flex';
-    modal.style.zIndex = '30000';
+    modal.className = 'modal'; 
+    modal.style.display = 'flex'; 
+    modal.style.zIndex = '40000'; // 패널(20000)보다 훨씬 높게 설정
+    
+    // 모달 내부 클릭이 외부로 전파되어 다른 리스너를 트리거하지 않도록 설정
+    modal.addEventListener('mousedown', (e) => e.stopPropagation());
+    modal.addEventListener('click', (e) => e.stopPropagation());
     
     const renderCardItem = (id) => {
-        const skill = skillCardList[id] || {};
-        const count = selectedSkills[id] || 0;
-        const isSelected = count > 0;
-        const multiAttr = skill.multi ? 'data-multi="true"' : '';
-        
+        const skill = skillCardList[id] || {}, count = selectedSkills[id] || 0, isSelected = count > 0;
         return `
-            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${multiAttr}>
+            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${skill.multi ? 'data-multi="true"' : ''}>
                 <img src="icons/cal/card/${id}.webp" onerror="this.parentElement.style.display='none';">
                 <div class="card-count-badge ${count > 1 ? '' : 'hidden'}">x${count}</div>
                 <div class="card-reset-btn ${isSelected && skill.multi ? '' : 'hidden'}">×</div>
-            </div>
-        `;
+            </div>`;
     };
 
-    const cardsHtml = cardGroups.map(group => {
-        const itemsHtml = group.map(id => renderCardItem(id)).join('');
-        return group.length > 1 ? `<div class="tune-card-group-box" data-group="${group.join(',')}">${itemsHtml}</div>` : itemsHtml;
-    }).join('');
-
-    const planTitle = activePlan.charAt(0).toUpperCase() + activePlan.slice(1);
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 95%; width: 600px; max-height: 85vh; padding: 15px; display: flex; flex-direction: column;">
-            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 15px; text-align: center; color: #9c27b0;">${planTitle} 카드 선택 (0 / 0)</h3>
-            <style>
-                .tune-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 5px; flex: 1; overflow-y: auto; }
-                @media (min-width: 769px) { .tune-card-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; } }
-                .tune-card-group-box { grid-column: span 2; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 6px; background: rgba(156, 39, 176, 0.12); border: 2px solid rgba(156, 39, 176, 0.4); border-radius: 12px; }
-                .tune-card-item { cursor: pointer; transition: transform 0.1s; position: relative; }
-                .tune-card-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; border: 2px solid #eee; background: #fdfdfd; display: block; opacity: 0.5; transition: opacity 0.2s; }
-                .tune-card-item.selected img { border-color: #9c27b0; box-shadow: 0 0 8px rgba(156, 39, 176, 0.4); opacity: 1; }
-                .tune-card-item:hover img { border-color: #9c27b0; opacity: 0.8; }
-                .tune-card-item.selected:hover img { opacity: 1; }
-                .tune-card-item:active { transform: scale(0.95); }
-                .card-count-badge { position: absolute; top: -5px; right: -5px; background: #9c27b0; color: white; font-size: 0.75rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; z-index: 10; pointer-events: none; }
-                .card-reset-btn { position: absolute; top: -5px; left: -5px; background: #ff4d4d; color: white; font-size: 1rem; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; line-height: 1; }
-                .hidden { display: none !important; }
-            </style>
-            <div class="tune-card-grid">${cardsHtml}</div>
+        <div class="modal-content" style="max-width: 95%; width: 600px; max-height: 85vh; padding: 15px; display: flex; flex-direction: column; position: relative;">
+            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 15px; text-align: center; color: #9c27b0;"></h3>
+            <div class="tune-card-grid">${cardGroups.map(g => g.length > 1 ? `<div class="tune-card-group-box" data-group="${g.join(',')}">${g.map(renderCardItem).join('')}</div>` : renderCardItem(g[0])).join('')}</div>
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="primary-btn" id="reset-all-skills" style="flex: 1; padding: 12px; background: #666; border-radius: 8px;">전체 초기화</button>
-                <button class="primary-btn" id="close-tune-modal" style="flex: 1; padding: 12px; background: #9c27b0; border-radius: 8px;">닫기</button>
+                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 10px; border-radius: 8px;">전체 초기화</button>
+                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 10px; border-radius: 8px;">닫기</button>
             </div>
-        </div>
-    `;
+        </div>`;
 
     document.body.appendChild(modal);
 
-    // 외부 클릭 처리
-    const closeModal = () => {
-        modal.remove();
-    };
-
+    // [추가] 배경 클릭 시 모달 닫기
     modal.onclick = (e) => {
-        if (e.target === modal) closeModal();
+        if (e.target === modal) {
+            modal.remove();
+        }
     };
 
     const updateTitle = () => {
-        const selectedCount = Object.values(selectedSkills).reduce((a, b) => a + b, 0);
+        // 실시간으로 counts를 다시 가져와서 분모 업데이트
+        const counts = getTriggerCounts(calcStore);
+        const boardGetCount = counts.total.get || 0;
+        const currentPlan = calcStore.planType;
+        const skills = calcStore.planSkills[currentPlan] || {};
+        const total = Object.values(skills).reduce((a, b) => a + b, 0);
+        
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
-            titleEl.textContent = `${planTitle} 카드 선택 (${selectedCount} / ${boardGetCount})`;
+            titleEl.textContent = `${currentPlan.toUpperCase()} 카드 선택 (${total} / ${boardGetCount})`;
         }
     };
-
-    updateTitle(); // 초기 제목 설정
-
-    const updateUI = (id) => {
-        const item = modal.querySelector(`.tune-card-item[data-id="${id}"]`);
-        if (!item) return;
-        const count = selectedSkills[id] || 0;
-        const skill = skillCardList[id] || {};
-        
-        item.classList.toggle('selected', count > 0);
-        const badge = item.querySelector('.card-count-badge');
-        if (badge) {
-            badge.textContent = `x${count}`;
-            badge.classList.toggle('hidden', count <= 1);
-        }
-        const resetBtn = item.querySelector('.card-reset-btn');
-        if (resetBtn) {
-            resetBtn.classList.toggle('hidden', count === 0 || !skill.multi);
-        }
-        updateTitle();
-    };
-
-    // 전체 초기화 로직
-    document.getElementById('reset-all-skills').onclick = (e) => {
-        const btn = e.target;
-        if (document.querySelector('.reset-confirm-tooltip')) return;
-
-        const tooltip = document.createElement('div');
-        tooltip.className = 'calc-tooltip reset-confirm-tooltip';
-        tooltip.style.cssText = 'position: fixed; z-index: 31000; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 2px solid #666; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 15px; align-items: center; min-width: 200px;';
-        tooltip.innerHTML = `
-            <span style="font-size: 1rem; color: #333; font-weight: bold;">모든 선택을 초기화할까요?</span>
-            <div style="display: flex; gap: 10px; width: 100%;">
-                <button class="primary-btn" id="confirm-reset-btn" style="flex: 1; padding: 10px; background: #ff4d4d; border-radius: 6px;">확인</button>
-                <button class="primary-btn" id="cancel-reset-btn" style="flex: 1; padding: 10px; background: #888; border-radius: 6px;">취소</button>
-            </div>
-        `;
-        document.body.appendChild(tooltip);
-
-        document.getElementById('confirm-reset-btn').onclick = () => {
-            Object.keys(selectedSkills).forEach(id => {
-                delete selectedSkills[id];
-                updateUI(id);
-            });
-            current.planSkills[activePlan] = selectedSkills;
-            localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
-            refreshCardBonuses();
-            updateActivityCounts();
-            tooltip.remove();
-        };
-
-        document.getElementById('cancel-reset-btn').onclick = () => tooltip.remove();
-        
-        const outsideClick = (oe) => {
-            if (!tooltip.contains(oe.target) && oe.target !== btn) {
-                tooltip.remove();
-                document.removeEventListener('mousedown', outsideClick);
-            }
-        };
-        setTimeout(() => document.addEventListener('mousedown', outsideClick), 10);
-    };
+    updateTitle();
 
     modal.querySelectorAll('.tune-card-item').forEach(item => {
         item.onclick = (e) => {
-            const id = item.dataset.id;
-            const skill = skillCardList[id] || {};
-            const resetBtn = e.target.closest('.card-reset-btn');
+            e.preventDefault();
+            e.stopPropagation(); // 중복 처리 방지
+
+            const id = item.dataset.id, skill = skillCardList[id] || {}, resetBtn = e.target.closest('.card-reset-btn');
+            const currentPlan = calcStore.planType;
+            
+            if (!calcStore.planSkills[currentPlan]) calcStore.planSkills[currentPlan] = {};
+            const skills = calcStore.planSkills[currentPlan];
 
             if (resetBtn) {
-                e.stopPropagation();
-                delete selectedSkills[id];
-            } else {
-                // 그룹(얼터) 로직: 그룹 박스 내의 다른 카드들은 해제
+                delete skills[id];
+            }
+            else {
                 const groupBox = item.closest('.tune-card-group-box');
                 if (groupBox) {
-                    const groupIds = groupBox.dataset.group.split(',');
-                    groupIds.forEach(gid => {
-                        if (gid !== id && selectedSkills[gid]) {
-                            delete selectedSkills[gid];
-                            updateUI(gid);
-                        }
-                    });
+                    groupBox.dataset.group.split(',').forEach(gid => { if (gid !== id) delete skills[gid]; });
                 }
-
-                if (skill.multi) {
-                    selectedSkills[id] = (selectedSkills[id] || 0) + 1;
-                } else {
-                    if (selectedSkills[id]) {
-                        delete selectedSkills[id];
-                    } else {
-                        selectedSkills[id] = 1;
-                    }
-                }
+                if (skill.multi) skills[id] = (skills[id] || 0) + 1;
+                else if (skills[id]) delete skills[id]; else skills[id] = 1;
             }
 
-            updateUI(id);
-            current.planSkills[activePlan] = selectedSkills;
-            localStorage.setItem(`calc_state_${type}`, JSON.stringify(current));
-            refreshCardBonuses();
-            updateActivityCounts();
+            // [중요] 스토어에 데이터 반영 및 저장
+            calcStore.save();
+            refreshAll(); 
+            updateTitle();
+
+            // 모달 내 아이템 UI 즉시 갱신
+            modal.querySelectorAll('.tune-card-item').forEach(el => {
+                const cid = el.dataset.id;
+                const count = skills[cid] || 0;
+                el.classList.toggle('selected', count > 0);
+                const badge = el.querySelector('.card-count-badge');
+                if (badge) { badge.textContent = `x${count}`; badge.classList.toggle('hidden', count <= 1); }
+                const rb = el.querySelector('.card-reset-btn');
+                if (rb) rb.classList.toggle('hidden', count === 0 || !skillCardList[cid]?.multi);
+            });
         };
     });
 
-    document.getElementById('close-tune-modal').onclick = () => closeModal();
+    document.getElementById('reset-all-skills').onclick = () => {
+        if (!confirm('초기화할까요?')) return;
+        
+        // 1. 데이터 초기화 및 저장
+        calcStore.planSkills[activePlan] = {}; 
+        calcStore.save(); 
+        
+        // 2. 전체 UI 갱신 (하단 대시보드 등)
+        refreshAll(); 
+        
+        // 3. 모달 내 헤더 제목 및 개별 아이템 UI 즉시 갱신
+        updateTitle();
+        modal.querySelectorAll('.tune-card-item').forEach(el => {
+            el.classList.remove('selected');
+            const badge = el.querySelector('.card-count-badge');
+            if (badge) badge.classList.add('hidden');
+            const rb = el.querySelector('.card-reset-btn');
+            if (rb) rb.classList.add('hidden');
+        });
+    };
+    document.getElementById('close-tune-modal').onclick = () => modal.remove();
 }
-

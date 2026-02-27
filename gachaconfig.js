@@ -7,9 +7,9 @@ export const CURRENT_PICKUPS = {
         sr_card: ['vocal_srlogic5']
     },
     limited: { 
-        pssr: [{ id: 'ssrrinami_valentinelimited', char: 'rinami' }],
-        sssr: [],
-        sr_card: []
+        pssr: [{ id: 'ssrume_endlesslimited', char: 'ume' }],
+        sssr: ['dance_limitedsense3'],
+        sr_card: ['dance_srlimitedsense4']
     },
     unit: { 
         pssr: [

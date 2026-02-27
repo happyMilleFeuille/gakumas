@@ -46,7 +46,7 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
     const rand = Math.random();
 
     if (key === 'PSSR' && pickups.pssr?.length > 0) {
-        if (rand < (0.75 / rates.PSSR)) {
+        if (rand < (0.0075 / rates.PSSR)) {
             const p = pool.PSSR.filter(c => pickups.pssr.some(item => item.id === c.id));
             if (p.length > 0) targetPool = p;
         } else {
@@ -54,7 +54,7 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
             if (o.length > 0) targetPool = o;
         }
     } else if (key === 'SSSR' && pickups.sssr?.length > 0) {
-        if (rand < (1.0 / rates.SSSR)) {
+        if (rand < (0.01 / rates.SSSR)) {
             const p = pool.SSSR.filter(c => pickups.sssr.includes(c.id));
             if (p.length > 0) targetPool = p;
         } else {

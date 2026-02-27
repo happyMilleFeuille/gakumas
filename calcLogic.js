@@ -1,5 +1,6 @@
 // calcLogic.js
 import { state } from './state.js';
+import { calcPlans } from './calcData.js';
 import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { activityOptions } from './calcOptions.js';
@@ -7,225 +8,200 @@ import { calculateCardBonus } from './simulator-engine.js';
 import { baseStats, getNiaLessonStat, getHajimeLessonStat, idolData, niaAuditionStats } from './calcStats.js';
 
 /**
- * DOM에서 현재 선택된 모든 활동과 옵션의 트리거 횟수를 집계
+ * 전역 상태(Store) 객체를 바탕으로 트리거 횟수를 정밀하게 집계
  */
-export function getTriggerCountsFromDOM() {
+export function getTriggerCounts(store) {
     const counts = {
-        total: {},
-        lessons: {
-            vocal: { normal: 0, sp: 0 },
-            dance: { normal: 0, sp: 0 },
-            visual: { normal: 0, sp: 0 }
-        }
+        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, get: 0, get_m: 0, get_a: 0, get_drink: 0, purchase_drink: 0, get_item: (store.type === 'nia' ? 1 : 0), change: 0 },
+        lessons: { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } }
     };
     
-    const board = document.querySelector('.unified-plan-board');
-    if (!board) return counts;
+    // 1. 보드 행동(Weeks) 분석 및 기본 풀(Pool) 집계
+    Object.keys(store.weeks).forEach(weekNum => {
+        const week = store.weeks[weekNum];
+        if (!week || !week.value) return;
+        const actionId = week.value, opts = week.opts || {}, isSP = opts.sp === 'true';
 
-    board.querySelectorAll('.plan-icon-wrapper.active').forEach(wrapper => {
-        const actionId = wrapper.dataset.value;
-        const isSP = wrapper.dataset.optsp === 'true';
-        
         counts.total[actionId] = (counts.total[actionId] || 0) + 1;
 
-        if (wrapper.dataset.results) {
-            wrapper.dataset.results.split(',').forEach(rid => {
-                if (rid) counts.total[rid] = (counts.total[rid] || 0) + 1;
+        // 1. 계획(calcPlans)에 직접 정의된 결과물(results) 집계 (예: gift의 get 등)
+        const planData = store.type === 'hajime' ? calcPlans.hajime : calcPlans.nia;
+        const weekOptions = planData.weeks[weekNum] || [];
+        const actionDef = weekOptions.find(o => o.value === actionId);
+        if (actionDef && actionDef.results) {
+            actionDef.results.forEach(rid => {
+                const id = rid.trim();
+                if (id === 'get') counts.total.get++;
+                else if (id === 'get_drink') counts.total.get_drink++;
+                else counts.total[id] = (counts.total[id] || 0) + 1;
             });
         }
 
-        if (actionId === 'lessonvo') {
-            if (isSP) counts.lessons.vocal.sp++; else counts.lessons.vocal.normal++;
-        } else if (actionId === 'lessondan') {
-            if (isSP) counts.lessons.dance.sp++; else counts.lessons.dance.normal++;
-        } else if (actionId === 'lessonvi') {
-            if (isSP) counts.lessons.visual.sp++; else counts.lessons.visual.normal++;
+        // 2. 활동 정의(activityOptions)에 있는 기본 결과물 가산 (하위 호환성)
+        const optDefMain = (activityOptions[actionId] || []).find(o => o.value === actionId);
+        if (optDefMain && optDefMain.results) {
+            optDefMain.results.forEach(rid => { counts.total[rid] = (counts.total[rid] || 0) + 1; });
         }
 
-        Object.keys(wrapper.dataset).forEach(key => {
-            if (key.startsWith('opt')) {
-                const optId = key.slice(3).toLowerCase();
-                const countInc = (wrapper.dataset[key] === 'true') ? 1 : (!isNaN(wrapper.dataset[key]) ? parseInt(wrapper.dataset[key]) : 0);
-                if (countInc === 0) return;
+        // 레슨 타입 분류
+        if (actionId === 'lessonvo') { if (isSP) counts.lessons.vocal.sp++; else counts.lessons.vocal.normal++; }
+        else if (actionId === 'lessondan') { if (isSP) counts.lessons.dance.sp++; else counts.lessons.dance.normal++; }
+        else if (actionId === 'lessonvi') { if (isSP) counts.lessons.visual.sp++; else counts.lessons.visual.normal++; }
 
-                const options = activityOptions[actionId] || [];
-                const optDef = options.find(o => o.id === optId) || 
-                             options.flatMap(o => o.subOptions || []).find(so => so.id === optId);
+        // 옵션에서 발생하는 획득/강화/삭제 키워드 분석
+        Object.keys(opts).forEach(optId => {
+            const countInc = (opts[optId] === 'true') ? 1 : (!isNaN(opts[optId]) ? parseInt(opts[optId]) : 0);
+            if (countInc === 0) return;
 
-                const targetIds = (optDef && optDef.results) ? optDef.results : [optId];
-                targetIds.forEach(tid => {
-                    counts.total[tid] = (counts.total[tid] || 0) + countInc;
-                });
-            }
+            const options = activityOptions[actionId] || [];
+            const optDef = options.find(o => o.id === optId) || options.flatMap(o => o.subOptions || []).find(so => so.id === optId);
+            const targets = (optDef && optDef.results) ? optDef.results : [optId];
+
+            targets.forEach(t => {
+                const id = t.trim();
+                if (['enhance', 'ranenhance'].includes(id)) counts.total.enhance += countInc;
+                else if (id === 'enhance_m') { counts.total.enhance += countInc; counts.total.enhance_m += countInc; }
+                else if (id === 'enhance_a') { counts.total.enhance += countInc; counts.total.enhance_a += countInc; }
+                else if (id === 'delete') counts.total.delete += countInc;
+                else if (id === 'delete_m') { counts.total.delete += countInc; counts.total.delete_m += countInc; }
+                else if (id === 'delete_a') { counts.total.delete += countInc; counts.total.delete_a += countInc; }
+                else if (id === 'get') counts.total.get += countInc;
+                else if (id === 'get_m') { counts.total.get += countInc; counts.total.get_m += countInc; }
+                else if (id === 'get_a') { counts.total.get += countInc; counts.total.get_a += countInc; }
+                else if (counts.total.hasOwnProperty(id)) counts.total[id] += countInc;
+                else counts.total[id] = (counts.total[id] || 0) + countInc;
+            });
         });
     });
 
-    const calcType = board.dataset.calcType;
-    const saved = JSON.parse(localStorage.getItem(`calc_state_${calcType}`)) || {};
-
-    // 0. Nia 전용 P-아이템 보너스 반영 (서포카 보너스용)
-    if (calcType === 'nia' && saved.pItems) {
-        // 보드 활동 횟수 재집계
-        let niaBonusGet = 0;
-        let niaBonusDelete = 0;
-        let niaBonusEnhance = 0;
-
+    // 2. Nia 전용 P-아이템 보너스 (Nia 모드일 때만)
+    if (store.type === 'nia' && store.pItems) {
         const boardCounts = {};
-        board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => {
-            const val = icon.dataset.value; boardCounts[val] = (boardCounts[val] || 0) + 1;
-        });
-
-        if (saved.pItems.includes('nia1-1')) {
-            const bonus = Math.min(boardCounts['spclass'] || 0, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
-        }
-        if (saved.pItems.includes('nia1-2')) {
-            const bonus = Math.min(boardCounts['advice'] || 0, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
-        }
+        Object.values(store.weeks).forEach(w => { if(w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
         
-        let nia21Count = 0, nia22Count = 0, nia23Count = 0;
-        let nia41Count = 0;
-        board.querySelectorAll('.week-row').forEach(row => {
-            const week = parseInt(row.dataset.week);
-            const icon = row.querySelector('.plan-icon-wrapper.active[data-value="class_nia"]');
-            if (icon) {
-                if (icon.dataset.optget_enhancedcard === 'true') {
-                    nia21Count++;
-                    if (week >= 10) nia41Count++;
-                }
-                if (icon.dataset.optget_ppoint === 'true') nia22Count++;
-                if (icon.dataset.optget_drink === 'true') nia23Count++;
+        let niaBonusGet = 0, niaBonusDelete = 0, niaBonusEnhance = 0;
+
+        // 1단계 아이템: 특별수업(spclass), 상담(advice) 시 보너스
+        if (store.pItems.includes('nia1-1')) { const b = Math.min(boardCounts['spclass'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
+        if (store.pItems.includes('nia1-2')) { const b = Math.min(boardCounts['advice'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
+        
+        // 2단계 아이템: 영업(class_nia) 세부 옵션에 따른 보너스
+        let n21 = 0, n22 = 0, n23 = 0, n41 = 0;
+        Object.keys(store.weeks).forEach(wNum => {
+            const week = store.weeks[wNum];
+            if (week.value === 'class_nia') {
+                if (week.opts.get_enhancedcard === 'true') { n21++; if (parseInt(wNum) >= 10) n41++; }
+                if (week.opts.get_ppoint === 'true') n22++;
+                if (week.opts.get_drink === 'true') n23++;
             }
         });
+        if (store.pItems.includes('nia2-1')) { const b = Math.min(n21, 2); niaBonusGet += b; niaBonusDelete += b; }
+        if (store.pItems.includes('nia2-2')) { const b = Math.min(n22, 2); niaBonusGet += b; niaBonusDelete += b; }
+        if (store.pItems.includes('nia2-3')) { const b = Math.min(n23, 2); niaBonusGet += b; niaBonusDelete += b; }
 
-        if (saved.pItems.includes('nia2-1')) {
-            const bonus = Math.min(nia21Count, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
-        }
-        if (saved.pItems.includes('nia2-2')) {
-            const bonus = Math.min(nia22Count, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
-        }
-        if (saved.pItems.includes('nia2-3')) {
-            const bonus = Math.min(nia23Count, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
+        // 3단계 아이템: 오디션(audition) 종료 시 보너스
+        if (store.pItems.includes('nia3-1') || store.pItems.includes('nia3-2')) {
+            const b = Math.min(boardCounts['audition'] || 0, 2);
+            niaBonusGet += b; niaBonusDelete += b;
         }
 
-        if (saved.pItems.includes('nia3-1')) {
-            const bonus = Math.min(boardCounts['audition'] || 0, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
+        // 4, 5단계 아이템: 강화 보너스
+        if (store.pItems.includes('nia4-1')) niaBonusEnhance += Math.min(n41, 2);
+        if (store.pItems.includes('nia4-2')) {
+            let n42 = 0;
+            Object.values(store.weeks).forEach(w => { if(w.value === 'class_nia' && w.opts.get_drink === 'true') n42++; });
+            counts.total.get_drink = (counts.total.get_drink || 0) + (Math.min(n42, 2) * 2);
         }
-        if (saved.pItems.includes('nia3-2')) {
-            const bonus = Math.min(boardCounts['audition'] || 0, 2);
-            niaBonusGet += bonus; niaBonusDelete += bonus;
-        }
-
-        // 4단계 & 5단계 강화 보너스 반영
-        if (saved.pItems.includes('nia4-1')) {
-            niaBonusEnhance += Math.min(nia41Count, 2);
-        }
-        if (saved.pItems.includes('nia5-1')) {
-            const hasSPAfterAudition2 = Array.from(board.querySelectorAll('.week-row')).some(row => {
-                const week = parseInt(row.dataset.week);
-                const activeIcon = row.querySelector('.plan-icon-wrapper.active');
-                return week > 17 && activeIcon && activeIcon.dataset.optsp === 'true';
-            });
-            if (hasSPAfterAudition2) niaBonusEnhance += 1;
+        if (store.pItems.includes('nia5-1')) {
+            if (Object.keys(store.weeks).some(w => parseInt(w) > 17 && store.weeks[w].opts.sp === 'true')) niaBonusEnhance += 1;
         }
 
-        counts.total['get'] = (counts.total['get'] || 0) + niaBonusGet;
-        counts.total['delete'] = (counts.total['delete'] || 0) + niaBonusDelete;
-        counts.total['enhance'] = (counts.total['enhance'] || 0) + niaBonusEnhance;
+        counts.total.get += niaBonusGet;
+        counts.total.delete += niaBonusDelete;
+        counts.total.enhance += niaBonusEnhance;
     }
 
-    // 1. 강화 분배 반영 (니아 보너스 포함)
-    const totalEnhancePool = (counts.total['enhance'] || 0);
-    let em = Number(saved.manualEnhance?.m) || 0;
-    let ea = Number(saved.manualEnhance?.a) || 0;
-    const diffE = totalEnhancePool - (em + ea);
-    if (diffE !== 0) em = Math.max(0, em + diffE); // 부족한 수치는 멘탈에 우선 가산
-    
-    counts.total['enhance_m'] = (counts.total['enhance_m'] || 0) + em;
-    counts.total['enhance_a'] = (counts.total['enhance_a'] || 0) + ea;
+    // 3. 수동 분배 수치 자동 할당 및 합산 (동적 총량 동기화)
+    const currentEnhancePool = counts.total.enhance || 0;
+    let em = Number(store.manualEnhance?.m) || 0;
+    let ea = Number(store.manualEnhance?.a) || 0;
 
-    // 2. 삭제 분배 반영 (니아 보너스 포함)
-    const totalDeletePool = (counts.total['delete'] || 0);
-    let dm = Number(saved.manualDelete?.m) || 0;
-    let da = Number(saved.manualDelete?.a) || 0;
-    const diffD = totalDeletePool - (dm + da);
-    if (diffD !== 0) dm = Math.max(0, dm + diffD);
-    
-    counts.total['delete_m'] = (counts.total['delete_m'] || 0) + dm;
-    counts.total['delete_a'] = (counts.total['delete_a'] || 0) + da;
+    if (currentEnhancePool === 0) {
+        em = 0; ea = 0;
+    } else {
+        let diffE = currentEnhancePool - (em + ea);
+        if (diffE > 0) {
+            em += diffE; // 늘어나면 멘탈에 추가
+        } else if (diffE < 0) {
+            // 줄어들면 멘탈에서 먼저 빼고, 부족하면 액티브에서 뺌
+            const reduceM = Math.min(em, Math.abs(diffE));
+            em -= reduceM;
+            diffE += reduceM;
+            if (diffE < 0) ea = Math.max(0, ea + diffE);
+        }
+    }
+    store.manualEnhance = { m: em, a: ea };
+    counts.total.enhance_m += em;
+    counts.total.enhance_a += ea;
 
-    // 3. 카드 획득 분배 및 스킬 카드 보너스 반영 (모달 선택 기반)
-    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type || 'sense';
-    const selectedSkills = saved.planSkills?.[activePlan] || {};
+    const currentDeletePool = counts.total.delete || 0;
+    let dm = Number(store.manualDelete?.m) || 0;
+    let da = Number(store.manualDelete?.a) || 0;
+
+    if (currentDeletePool === 0) {
+        dm = 0; da = 0;
+    } else {
+        let diffD = currentDeletePool - (dm + da);
+        if (diffD > 0) {
+            dm += diffD;
+        } else if (diffD < 0) {
+            const reduceM = Math.min(dm, Math.abs(diffD));
+            dm -= reduceM;
+            diffD += reduceM;
+            if (diffD < 0) da = Math.max(0, da + diffD);
+        }
+    }
+    store.manualDelete = { m: dm, a: da };
+    counts.total.delete_m += dm;
+    counts.total.delete_a += da;
+
+    // 4. 스킬 카드 및 서포트 카드 보너스 (모달 선택은 획득 총량에 합산하지 않음)
+    const activePlan = store.planType || 'sense', selectedSkills = store.planSkills?.[activePlan] || {};
     Object.keys(selectedSkills).forEach(skillId => {
-        const skill = skillCardList[skillId];
-        if (skill) {
-            const count = selectedSkills[skillId] || 0;
-            if (count <= 0) return;
-
-            // 1) 카드 획득 타입 반영 (active -> get_a, mental -> get_m)
-            if (skill.type === 'active') {
-                counts.total['get_a'] = (counts.total['get_a'] || 0) + count;
-            } else if (skill.type === 'mental') {
-                counts.total['get_m'] = (counts.total['get_m'] || 0) + count;
-            }
-            counts.total['get'] = (counts.total['get'] || 0) + count;
-
-            // 2) 희귀도 반영 (SSR)
-            if (skill.rarity === 'SSR') {
-                counts.total['get_ssr'] = (counts.total['get_ssr'] || 0) + count;
-            }
-
-            // 3) 속성 반영 (attrs)
-            if (skill.attrs && Array.isArray(skill.attrs)) {
-                skill.attrs.forEach(attr => {
-                    const key = `get_${attr}`;
-                    counts.total[key] = (counts.total[key] || 0) + count;
-                });
-            }
+        const skill = skillCardList[skillId], count = selectedSkills[skillId] || 0;
+        if (skill && count > 0) {
+            // 스탯 트리거용 속성 카운트만 합산
+            if (skill.type === 'active') counts.total.get_a += count;
+            else if (skill.type === 'mental') counts.total.get_m += count;
+            
+            if (skill.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + count;
+            if (skill.attrs) skill.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + count; });
+            
+            // counts.total.get += count; <-- 이 줄을 제거하여 총 획득량 중복 합산 방지
         }
     });
 
-    // 3.5. 슬롯 선택 서포트 카드 반영 (체크박스 기반 - 기존 로직 유지)
-    const selectedIds = (saved.planCards && activePlan) ? (saved.planCards[activePlan] || []) : [];
-    const cardChecked = saved.cardChecked || {};
-
+    const selectedIds = store.planCards?.[activePlan] || [];
     selectedIds.forEach(id => {
-        const card = cardList.find(c => c.id === id);
-        if (card && cardChecked[id]) {
-            if (card.have === 'item') {
-                counts.total['item'] = (counts.total['item'] || 0) + 1;
-            } else if (card.have?.startsWith('card_')) {
-                if (card.have === 'card_a') {
-                    counts.total['get_a'] = (counts.total['get_a'] || 0) + 1;
-                } else if (card.have === 'card_m') {
-                    counts.total['get_m'] = (counts.total['get_m'] || 0) + 1;
+        if (store.cardChecked?.[id]) {
+            const card = cardList.find(c => c.id === id);
+            if (card) {
+                if (card.have === 'item') counts.total.get_item++;
+                else if (card.have?.startsWith('card_')) {
+                    if (card.have === 'card_a') counts.total.get_a++; else if (card.have === 'card_m') counts.total.get_m++;
+                    if (card.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + 1;
+                    counts.total.get++;
+                    if (card.attrs) card.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + 1; });
                 }
-                if (card.rarity === 'SSR') counts.total['get_ssr'] = (counts.total['get_ssr'] || 0) + 1;
-                
-                // [중요] 전체 카드 획득 수치(get)에도 반영
-                counts.total['get'] = (counts.total['get'] || 0) + 1;
             }
         }
     });
 
-    // 4. 아이템 획득 수치를 get_item 트리거로 연결
-    const totalItemCount = (counts.total['item'] || 0) + (counts.total['get_item'] || 0);
-    if (totalItemCount > 0) {
-        counts.total['get_item'] = (counts.total['get_item'] || 0) + totalItemCount;
-    }
-
-    // 4.5 [New] 아이템 효과(item_effects)의 target 수치 반영 (trigger 제한 포함)
-    const itemCounters = saved.itemCounters || {};
+    // 5. 아이템 효과(Item Effects) 보너스 트리거 반영
     selectedIds.forEach(cardId => {
         const card = cardList.find(c => c.id === cardId);
-        if (card && card.item_effects && cardChecked[cardId]) {
-            const counter = itemCounters[cardId] || 0;
+        if (card && card.item_effects && store.cardChecked?.[cardId]) {
+            const counter = store.itemCounters[cardId] || 0;
             card.item_effects.forEach(eff => {
                 if ((eff.type === 'action' || eff.type === 'add_count') && eff.target && counter > 0) {
                     let multiplier = counter;
@@ -233,175 +209,88 @@ export function getTriggerCountsFromDOM() {
                         const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
                         let totalTriggerCount = 0;
                         triggers.forEach(t => {
-                            const l = counts.lessons;
                             if (t === 'lesson') {
-                                // 카드 타입과 일치하는 레슨(일반+SP)만 합산
-                                if (card.type === 'vocal') totalTriggerCount += (l.vocal.normal + l.vocal.sp);
-                                else if (card.type === 'dance') totalTriggerCount += (l.dance.normal + l.dance.sp);
-                                else if (card.type === 'visual') totalTriggerCount += (l.visual.normal + l.visual.sp);
-                                else totalTriggerCount += (l.vocal.normal + l.vocal.sp + l.dance.normal + l.dance.sp + l.visual.normal + l.visual.sp);
+                                if (card.type === 'vocal') totalTriggerCount += (counts.lessons.vocal.normal + counts.lessons.vocal.sp);
+                                else if (card.type === 'dance') totalTriggerCount += (counts.lessons.dance.normal + counts.lessons.dance.sp);
+                                else if (card.type === 'visual') totalTriggerCount += (counts.lessons.visual.normal + counts.lessons.visual.sp);
+                                else totalTriggerCount += (counts.lessons.vocal.normal + counts.lessons.vocal.sp + counts.lessons.dance.normal + counts.lessons.dance.sp + counts.lessons.visual.normal + counts.lessons.visual.sp);
                             } else if (t === 'sp') {
-                                // 카드 타입과 일치하는 SP 레슨만 합산
-                                if (card.type === 'vocal') totalTriggerCount += l.vocal.sp;
-                                else if (card.type === 'dance') totalTriggerCount += l.dance.sp;
-                                else if (card.type === 'visual') totalTriggerCount += l.visual.sp;
-                                else totalTriggerCount += (l.vocal.sp + l.dance.sp + l.visual.sp);
-                            } else {
-                                totalTriggerCount += (counts.total[t] || 0);
-                            }
+                                if (card.type === 'vocal') totalTriggerCount += counts.lessons.vocal.sp; else if (card.type === 'dance') totalTriggerCount += counts.lessons.dance.sp; else if (card.type === 'visual') totalTriggerCount += counts.lessons.visual.sp;
+                                else totalTriggerCount += (counts.lessons.vocal.sp + counts.lessons.dance.sp + counts.lessons.visual.sp);
+                            } else totalTriggerCount += (counts.total[t] || 0);
                         });
                         multiplier = Math.min(totalTriggerCount, counter);
                     }
-                    if (multiplier > 0) {
-                        const val = eff.value || 1;
-                        counts.total[eff.target] = (counts.total[eff.target] || 0) + (val * multiplier);
-                    }
+                    if (multiplier > 0 && counts.total.hasOwnProperty(eff.target)) counts.total[eff.target] += ((eff.value || 1) * multiplier);
+                    else if (multiplier > 0) counts.total[eff.target] = (counts.total[eff.target] || 0) + ((eff.value || 1) * multiplier);
                 }
             });
         }
     });
 
-    // 5. 개조(customize) 수치 반영
-    // calc.js의 updateActivityCounts에서 계산된 수치가 있다면 localStorage나 다른 방식으로 전달되어야 하지만,
-    // 현재 구조상 calcLogic.js가 독립적으로 계산하는 경우가 많으므로 여기서도 유사하게 집계해야 합니다.
-    // 일단 기본적으로 보드 옵션에서 optcustomize가 있으면 집계됩니다 (위의 opt 처리 로직).
-    // 여기에 추가로 서포트 카드나 P-아이템에 의한 개조 횟수 증가 로직을 보강합니다.
-    
-    // (1) 서포트 카드 체크박스에 의한 개조 카운트 (customize)
-    selectedIds.forEach(id => {
-        const card = cardList.find(c => c.id === id);
-        if (card && cardChecked[id]) {
-             // 개조 관련 효과를 가진 카드가 있다면 여기서 counts.total['customize']를 증가시킬 수 있습니다.
-             // 현재 carddata.js에는 'customize'라는 have 속성이나 직접적인 개조 증가 속성은 없으나,
-             // 질문 내용에 따라 "customize6" 코드를 가진 카드가 개조 횟수에 반응해야 한다고 했으므로,
-             // 만약 "개조" 자체를 제공하는 카드가 있다면 여기서 처리합니다.
-             // 다만, "개조 횟수에 따라 수치가 오른다"는 것은 트리거 카운트 문제이고,
-             // "개조 횟수 자체"를 늘려주는 카드는 별개입니다.
-             
-             // 만약 특정 카드가 개조 횟수를 +1 해준다면:
-             // if (card.abilities.includes('some_ability_that_gives_customize')) {
-             //    counts.total['customize'] = (counts.total['customize'] || 0) + 1;
-             // }
-        }
-    });
-
-    // (2) P-아이템 등에 의한 개조 카운트 (필요 시 추가)
-    // 예: saved.pItems에 'customize_item'이 있다면
-    // if (saved.pItems && saved.pItems.includes('some_p_item')) {
-    //    counts.total['customize'] = (counts.total['customize'] || 0) + 1;
-    // }
-
     return counts;
 }
 
 /**
- * 기본 스탯 및 카드 보너스를 포함한 전체 합계 계산
+ * 전역 상태를 바탕으로 최종 합계 스탯 계산
  */
-export function calculateAllTotals(detailedCounts, selectedIds) {
+export function calculateTotals(store, detailedCounts) {
     let baseTotal = { vocal: 0, dance: 0, visual: 0 };
     let cardBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     let percentBonuses = { vocal: 0, dance: 0, visual: 0 };
 
-    const board = document.querySelector('.unified-plan-board');
-    if (!board) return { baseTotal, cardBonusTotal };
-
-    const calcType = board.dataset.calcType;
-
     // 1. 행동 기본 수치 합산
-    board.querySelectorAll('.plan-icon-wrapper.active').forEach(wrapper => {
-        const actionId = wrapper.dataset.value;
-        const isSP = wrapper.dataset.optsp === 'true';
-        const week = parseInt(wrapper.closest('.week-row')?.dataset.week || 0);
-        
+    Object.keys(store.weeks).forEach(weekNum => {
+        const week = store.weeks[weekNum]; if(!week || !week.value) return;
+        const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
         let stats = null;
-        if (calcType === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
-            stats = getNiaLessonStat(actionId, isSP, week);
-        } else if (calcType === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
-            stats = getHajimeLessonStat(actionId, isSP, week) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
-        } else if (calcType === 'nia' && actionId === 'audition') {
-            const currentIdol = document.querySelector('.idol-sel-item.active');
-            const data = idolData[currentIdol?.dataset.id];
+        if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
+        else if (store.type === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
+        else if (store.type === 'nia' && actionId === 'audition') {
+            const data = idolData[store.selectedIdol];
             if (data) {
-                const stage = week === 9 ? 1 : (week === 17 ? 2 : (week === 26 ? 3 : 0));
-                const stageStats = niaAuditionStats[stage];
+                const stage = wInt === 9 ? 1 : (wInt === 17 ? 2 : (wInt === 26 ? 3 : 0)), stageStats = niaAuditionStats[stage];
                 if (stageStats) {
                     const vals = data.growthType === 'protruded' ? stageStats.protruded : stageStats.balanced;
-                    stats = { vocal: 0, dance: 0, visual: 0 };
-                    data.priority.forEach((attr, idx) => { stats[attr] = vals[idx]; });
+                    stats = { vocal: 0, dance: 0, visual: 0 }; data.priority.forEach((attr, idx) => { stats[attr] = vals[idx]; });
                 }
             }
-        } else {
-            stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
-        }
-
-        if (stats) {
-            baseTotal.vocal += stats.vocal || 0;
-            baseTotal.dance += stats.dance || 0;
-            baseTotal.visual += stats.visual || 0;
-        }
+        } else stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
+        if (stats) { baseTotal.vocal += stats.vocal || 0; baseTotal.dance += stats.dance || 0; baseTotal.visual += stats.visual || 0; }
     });
 
-    // 2. 아이돌 성장 보너스 적용
-    const currentIdolBtn = document.querySelector('.idol-sel-item.active');
-    const currentIdolId = currentIdolBtn?.dataset.id;
-    const currentIdolData = idolData[currentIdolId];
-
+    // 2. 아이돌 성장 보너스
+    const currentIdolData = idolData[store.selectedIdol];
     if (currentIdolData) {
         cardBonusTotal.vocal += Math.floor(baseTotal.vocal * (currentIdolData.vocalBonus / 100));
         cardBonusTotal.dance += Math.floor(baseTotal.dance * (currentIdolData.danceBonus / 100));
         cardBonusTotal.visual += Math.floor(baseTotal.visual * (currentIdolData.visualBonus / 100));
     }
 
-    // 3. 카드 보너스 합산
-    const savedState = JSON.parse(localStorage.getItem(`calc_state_${calcType}`)) || {};
-    const cardChecked = savedState.cardChecked || {};
-    const itemCounters = savedState.itemCounters || {};
-
+    // 3. 카드 보너스
+    const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(cardId => {
-        const card = cardList.find(c => c.id === cardId);
-        if (!card) return;
-
-        // 일반 어빌리티 보너스
-        const lb = state.supportLB[cardId] || 0;
-        const bonus = calculateCardBonus(card, detailedCounts, lb);
-        
-        cardBonusTotal.vocal += bonus.vocal || 0;
-        cardBonusTotal.dance += bonus.dance || 0;
-        cardBonusTotal.visual += bonus.visual || 0;
+        const card = cardList.find(c => c.id === cardId); if (!card) return;
+        const lb = state.supportLB[cardId] || 0, bonus = calculateCardBonus(card, detailedCounts, lb);
+        cardBonusTotal.vocal += bonus.vocal || 0; cardBonusTotal.dance += bonus.dance || 0; cardBonusTotal.visual += bonus.visual || 0;
         if (bonus.percent > 0) percentBonuses[card.type] += bonus.percent;
 
-        // [New] 아이템 효과 (fixed, action) 반영
-        if (card.item_effects && cardChecked[cardId]) {
-            const counter = itemCounters[cardId] || 0;
+        if (card.item_effects && store.cardChecked[cardId]) {
+            const counter = store.itemCounters[cardId] || 0;
             card.item_effects.forEach(eff => {
-                if (eff.type === 'fixed' && eff.stats) {
-                    cardBonusTotal.vocal += eff.stats.vocal || 0;
-                    cardBonusTotal.dance += eff.stats.dance || 0;
-                    cardBonusTotal.visual += eff.stats.visual || 0;
-                } else if (eff.type === 'action' && eff.stats && counter > 0) {
+                if (eff.type === 'fixed' && eff.stats) { cardBonusTotal.vocal += eff.stats.vocal || 0; cardBonusTotal.dance += eff.stats.dance || 0; cardBonusTotal.visual += eff.stats.visual || 0; }
+                else if (eff.type === 'action' && eff.stats && counter > 0) {
                     let multiplier = counter;
-                    
-                    // trigger가 있으면 실제 행동 횟수와 비교하여 제한
                     if (eff.trigger) {
                         const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
                         let totalTriggerCount = 0;
-                        triggers.forEach(t => {
-                            if (t === 'lesson') {
-                                // 'lesson' 키워드는 모든 레슨(vo, da, vi) 합산
-                                const l = detailedCounts.lessons;
-                                totalTriggerCount += (l.vocal.normal + l.vocal.sp + l.dance.normal + l.dance.sp + l.visual.normal + l.visual.sp);
-                            } else {
-                                totalTriggerCount += (detailedCounts.total[t] || 0);
-                            }
+                        triggers.forEach(t => { 
+                            if (t === 'lesson') totalTriggerCount += (detailedCounts.lessons.vocal.normal + detailedCounts.lessons.vocal.sp + detailedCounts.lessons.dance.normal + detailedCounts.lessons.dance.sp + detailedCounts.lessons.visual.normal + detailedCounts.lessons.visual.sp);
+                            else totalTriggerCount += (detailedCounts.total[t] || 0);
                         });
-                        multiplier = Math.min(totalTriggerCount, counter);
+                        multiplier = Math.min(totalTriggerCount, multiplier);
                     }
-
-                    if (multiplier > 0) {
-                        cardBonusTotal.vocal += (eff.stats.vocal || 0) * multiplier;
-                        cardBonusTotal.dance += (eff.stats.dance || 0) * multiplier;
-                        cardBonusTotal.visual += (eff.stats.visual || 0) * multiplier;
-                    }
+                    if (multiplier > 0) { cardBonusTotal.vocal += (eff.stats.vocal || 0) * multiplier; cardBonusTotal.dance += (eff.stats.dance || 0) * multiplier; cardBonusTotal.visual += (eff.stats.visual || 0) * multiplier; }
                 }
             });
         }

@@ -4,64 +4,399 @@ import { updatePageTranslations } from './utils.js';
 import { calcPlans } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
-import { skillCardList } from './skillcarddata.js';
+import { abilityData } from './abilitydata.js';
+import { calcStore } from './calcStore.js';
+import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { calculateCardBonus } from './simulator-engine.js';
-import { getTriggerCountsFromDOM, calculateAllTotals } from './calcLogic.js';
 import { 
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel 
 } from './calcUI.js';
-import { 
-    initGlobalDistListener, setupIdolSelector, setupPlanTypeSelector, 
-    setupIconToggles, setupPItemSelector 
-} from './calcEvents.js';
-import { toggleSupportCardPanel, renderSidePanelContent, closeSupportCardPanel } from './calcModals.js';
+import { initGlobalDistListener } from './calcEvents.js';
+import { toggleSupportCardPanel, closeSupportCardPanel } from './calcModals.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 
 export function initCalc() { 
     renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia')); 
-    initGlobalDistListener(getBoardPools, refreshCardBonuses, updateActivityCounts);
-    window.updateActivityCounts = updateActivityCounts;
-    window.refreshCardBonuses = refreshCardBonuses;
 }
 
 function startWeeklyPlan(type) {
-    renderWeeklyPlan(type, calcPlans, idolList, {
-        setupBackBtn: () => { document.querySelector('.back-btn').onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia')); },
-        setupPlanTypeSelector: () => setupPlanTypeSelector(saveCalcState, renderSidePanelContent, updateSelectedCardsUI),
-        setupIdolSelector: () => setupIdolSelector(saveCalcState),
-        setupIconToggles: () => setupIconToggles(updateSPBadge, updateMainLabel, updateActivityCounts, saveCalcState),
-        setupCalcAction: () => { document.getElementById('btn-run-calc').onclick = () => {
-            const panel = document.getElementById('calc-side-panel');
-            if (panel?.classList.contains('open')) { closeSupportCardPanel(); return; }
-            const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
-            if (activePlan) toggleSupportCardPanel(activePlan, updateActivityCounts, saveCalcState);
-        }; },
-        setupPItemSelector: (t) => setupPItemSelector(t, saveCalcState, refreshCardBonuses, updateActivityCounts)
-    });
+    calcStore.init(type);
+    initGlobalDistListener(refreshAll, getBoardPools);
     
-    saveCalcState();
-    refreshCardBonuses();
-    updateActivityCounts();
+    const handlers = {
+        setupAll: () => {
+            const backBtn = document.querySelector('.back-btn');
+            if (backBtn) backBtn.onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
+            
+            document.querySelectorAll('.plan-type-btn').forEach(btn => {
+                btn.onclick = () => {
+                    if (btn.classList.contains('active')) return;
+                    calcStore.setPlanType(btn.dataset.type);
+                    startWeeklyPlan(type); 
+                };
+            });
+
+            document.querySelectorAll('.idol-sel-item').forEach(item => {
+                item.onclick = (e) => {
+                    if (window._isDraggingIdol) {
+                        e.preventDefault();
+                        return;
+                    }
+                    if (item.classList.contains('active')) return;
+                    calcStore.setSelectedIdol(item.dataset.id);
+                    document.querySelectorAll('.idol-sel-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    refreshAll();
+                };
+            });
+
+            // 아이돌 셀렉터 드래그 스크롤 복구
+            const grid = document.getElementById('idol-selector-grid');
+            if (grid) {
+                let isDown = false, startX, scrollLeft;
+                grid.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    window._isDraggingIdol = false;
+                    grid.classList.add('active');
+                    startX = e.pageX - grid.offsetLeft;
+                    scrollLeft = grid.scrollLeft;
+                });
+                grid.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    grid.classList.remove('active');
+                });
+                grid.addEventListener('mouseup', () => {
+                    isDown = false;
+                    grid.classList.remove('active');
+                    // 클릭 이벤트 방지를 위해 약간의 지연 후 드래그 상태 해제
+                    setTimeout(() => { window._isDraggingIdol = false; }, 50);
+                });
+                grid.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - grid.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    if (Math.abs(walk) > 5) window._isDraggingIdol = true;
+                    grid.scrollLeft = scrollLeft - walk;
+                });
+            }
+
+            const board = document.querySelector('.unified-plan-board');
+            if (board) {
+                const removeAllTooltips = (exclude = null) => {
+                    document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip').forEach(t => t.remove());
+                    document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
+                        if (w === exclude) return;
+                        const optsDef = activityOptions[w.dataset.value] || [];
+                        const week = w.closest('.week-row').dataset.week;
+                        const savedOpts = calcStore.weeks[week]?.opts || {};
+                        if (optsDef.some(o => o.type === 'checkbox') && !optsDef.some(o => savedOpts[o.id] === 'true')) {
+                            calcStore.setWeekAction(week, '', {});
+                            w.classList.remove('active');
+                            updateSPBadge(w); updateMainLabel(w);
+                        }
+                    });
+                    refreshAll();
+                };
+
+                board.onclick = (e) => {
+                    const wrapper = e.target.closest('.plan-icon-wrapper');
+                    if (!wrapper || e.target.closest('.calc-tooltip, .calc-sub-tooltip, .dist-btn')) return;
+                    const weekNum = wrapper.closest('.week-row').dataset.week;
+                    const val = wrapper.dataset.value;
+
+                    if (wrapper.classList.contains('active')) {
+                        calcStore.setWeekAction(weekNum, '', {});
+                        wrapper.classList.remove('active');
+                        Object.keys(wrapper.dataset).forEach(k => { if(k.startsWith('opt')) delete wrapper.dataset[k]; });
+                        updateSPBadge(wrapper); updateMainLabel(wrapper);
+                        removeAllTooltips();
+                    } else {
+                        wrapper.closest('.week-row').querySelectorAll('.plan-icon-wrapper').forEach(w => {
+                            w.classList.remove('active');
+                            Object.keys(w.dataset).forEach(k => { if(k.startsWith('opt')) delete w.dataset[k]; });
+                            w.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
+                        });
+                        calcStore.setWeekAction(weekNum, val, {});
+                        wrapper.classList.add('active');
+                        updateSPBadge(wrapper); updateMainLabel(wrapper);
+                        removeAllTooltips(wrapper);
+
+                        const opts = activityOptions[val];
+                        if (opts?.length > 0) {
+                            const tooltip = document.createElement('div');
+                            tooltip.className = 'calc-tooltip';
+                            tooltip.innerHTML = opts.map(o => {
+                                const label = o[`label_${state.currentLang}`] || o.label_ko;
+                                const savedVal = calcStore.weeks[weekNum].opts[o.id];
+                                if (o.type === 'checkbox') {
+                                    return `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${savedVal === 'true' ? 'checked' : ''}><span>${label}${o.subOptions ? ' ▶' : ''}</span></label>`;
+                                } else {
+                                    return `<div class="tooltip-option"><span>${label}</span><div class="counter-controls" data-id="${o.id}"><button class="cnt-btn minus">-</button><span class="cnt-val">${savedVal || 0}</span><button class="cnt-btn plus">+</button></div></div>`;
+                                }
+                            }).join('');
+                            document.body.appendChild(tooltip);
+                            const rect = wrapper.getBoundingClientRect();
+                            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                            tooltip.style.top = `${rect.top + window.scrollY + rect.height / 2}px`;
+                            tooltip.style.transform = 'translate(-50%, -50%)';
+
+                            tooltip.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+                                chk.onchange = () => {
+                                    const optId = chk.dataset.id;
+                                    if (chk.checked) {
+                                        tooltip.querySelectorAll('input[type="checkbox"]').forEach(other => {
+                                            if (other !== chk && other.checked) {
+                                                other.checked = false;
+                                                calcStore.updateWeekOpt(weekNum, other.dataset.id, false);
+                                                wrapper.dataset[`opt${other.dataset.id}`] = 'false';
+                                            }
+                                        });
+                                    }
+                                    calcStore.updateWeekOpt(weekNum, optId, chk.checked);
+                                    wrapper.dataset[`opt${optId}`] = String(chk.checked);
+                                    updateSPBadge(wrapper); updateMainLabel(wrapper);
+                                    if (chk.checked && opts.find(o => o.id === optId)?.subOptions) showSubTooltip(optDef, weekNum, wrapper, tooltip);
+                                    else if (!opts.some(o => o.type === 'counter')) setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
+                                    refreshAll();
+                                };
+                            });
+
+                            tooltip.querySelectorAll('.counter-controls').forEach(ctrl => {
+                                ctrl.onclick = (ce) => {
+                                    const btn = ce.target.closest('.cnt-btn'); if (!btn) return;
+                                    const optId = ctrl.dataset.id;
+                                    const optDef = opts.find(o => o.id === optId);
+                                    let cur = parseInt(calcStore.weeks[weekNum].opts[optId]) || 0;
+                                    if (btn.classList.contains('plus') && cur < (optDef.max || 9)) cur++;
+                                    else if (btn.classList.contains('minus') && cur > 0) cur--;
+                                    calcStore.updateWeekOpt(weekNum, optId, cur);
+                                    wrapper.dataset[`opt${optId}`] = String(cur);
+                                    ctrl.querySelector('.cnt-val').textContent = cur;
+                                    updateMainLabel(wrapper);
+                                    refreshAll();
+                                };
+                            });
+                        }
+                    }
+                    refreshAll();
+                };
+            }
+
+            if (type === 'nia') setupPItemSelector();
+            const calcBtn = document.getElementById('btn-run-calc');
+            if (calcBtn) calcBtn.onclick = () => toggleSupportCardPanel(calcStore.planType, refreshAll);
+            const toggleBar = document.getElementById('board-toggle-bar');
+            if (toggleBar) {
+                toggleBar.onclick = () => {
+                    calcStore.isBoardCollapsed = !calcStore.isBoardCollapsed;
+                    calcStore.save();
+                    board?.classList.toggle('collapsed-board', calcStore.isBoardCollapsed);
+                    toggleBar.textContent = calcStore.isBoardCollapsed ? '주간 행동 열기 ▼' : '주간 행동 닫기 ▲';
+                };
+            }
+        }
+    };
+
+    renderWeeklyPlan(calcStore, calcPlans, idolList, handlers);
+    refreshAll();
 }
 
-// 보드에서 사용 가능한 각종 풀(pool) 계산 (이벤트 리스너용)
-function getBoardPools(type, current) {
-    const board = document.querySelector('.unified-plan-board');
-    const resArr = { enhance: { generic: 0, m: 0, a: 0 }, delete: { generic: 0, m: 0, a: 0 }, get: { generic: 0, m: 0, a: 0 } };
-    if (!board) return resArr;
+/**
+ * [핵심] 모든 수치 계산 및 UI 동기화
+ */
+function refreshAll() {
+    try {
+        const counts = getTriggerCounts(calcStore);
+        const { cardBonusTotal } = calculateTotals(calcStore, counts);
+        
+        const spTotals = { vocal: 0, dance: 0, visual: 0 };
+        const selectedIds = calcStore.planCards[calcStore.planType] || [];
+        selectedIds.forEach(id => {
+            const card = cardList.find(c => c.id === id);
+            if (card?.abilities?.includes('sp_lessonup')) {
+                const lb = state.supportLB[id] || 0;
+                const ability = abilityData['sp_lessonup'];
+                if (ability) {
+                    const bonusLevels = ability.levels[card.rarity] || ability.levels;
+                    spTotals[card.type] += (bonusLevels[lb >= 2 ? 2 : 1] || bonusLevels[1]);
+                }
+            }
+        });
 
-    board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => {
-        const val = icon.dataset.value;
-        const res = (icon.dataset.results ? icon.dataset.results.split(',') : []).concat(Object.keys(icon.dataset).filter(k => k.startsWith('opt')).flatMap(k => {
-            const optId = k.slice(3).toLowerCase(), countInc = (icon.dataset[k] === 'true' ? 1 : (!isNaN(icon.dataset[k]) ? parseInt(icon.dataset[k]) : 0));
-            if (countInc === 0) return [];
+        updateStatHeaderUI(calcStore, cardBonusTotal, spTotals);
+        updateActivityCountsUI(calcStore, counts);
+        updateSelectedCardsUI(calcStore);
+
+        // 사이드 패널 업데이트 (에러 격리)
+        const panel = document.getElementById('calc-side-panel');
+        if (panel && panel.classList.contains('open')) {
+            updateSidePanelBonuses(panel, counts);
+        }
+    } catch (err) {
+        console.error("Critical error in refreshAll:", err);
+    }
+}
+
+/**
+ * 사이드 패널 내의 각 카드 보너스 수치 실시간 업데이트
+ */
+function updateSidePanelBonuses(panel, counts) {
+    try {
+        const { baseTotal } = calculateTotals(calcStore, counts);
+        const bonusItems = panel.querySelectorAll('.side-card-item');
+        
+        bonusItems.forEach(item => {
+            const cardId = item.dataset.id;
+            const card = cardList.find(c => c.id === cardId);
+            if (!card) return;
+            
+            const lb = state.supportLB[cardId] || 0;
+            const bonus = calculateCardBonus(card, counts, lb);
+            
+            let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
+            if (bonus.percent > 0 && card.type && baseTotal[card.type]) {
+                totalVal += Math.round(baseTotal[card.type] * (bonus.percent / 100));
+            }
+
+            if (card.item_effects) {
+                const counter = calcStore.itemCounters[cardId] || 0;
+                card.item_effects.forEach(eff => {
+                    if (eff.type === 'fixed' && eff.stats) {
+                        totalVal += (eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0);
+                    } else if (eff.type === 'action' && eff.stats && counter > 0) {
+                        let multiplier = counter;
+                        if (eff.trigger) {
+                            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                            let tCount = 0;
+                            triggers.forEach(t => {
+                                if (t === 'lesson') tCount += (counts.lessons.vocal.normal + counts.lessons.vocal.sp + counts.lessons.dance.normal + counts.lessons.dance.sp + counts.lessons.visual.normal + counts.lessons.visual.sp);
+                                else tCount += (counts.total[t] || 0);
+                            });
+                            multiplier = Math.min(tCount, counter);
+                        }
+                        if (multiplier > 0) {
+                            totalVal += ((eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0)) * multiplier;
+                        }
+                    }
+                });
+            }
+
+            const bonusEl = item.querySelector('.bonus-val');
+            if (bonusEl) {
+                // 수치가 0보다 클 때만 표시, 아니면 비움
+                bonusEl.textContent = totalVal > 0 ? `+${totalVal}` : '';
+                
+                // SP 강조 효과 처리
+                bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
+                if (card.abilities?.includes('sp_lessonup')) {
+                    bonusEl.classList.add(`sp-${card.type}`);
+                }
+            }
+            // 정렬 순서 강제 적용
+            item.style.order = Math.floor(-totalVal);
+        });
+    } catch (err) {
+        console.error("Failed to update side panel bonuses:", err);
+    }
+}
+
+function setupPItemSelector() {
+    const container = document.getElementById('p-item-container');
+    if (!container) return;
+
+    if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
+    const niaItemsBySlot = [['nia1-1', 'nia1-2'], ['nia2-1', 'nia2-2', 'nia2-3'], ['nia3-1', 'nia3-2'], ['nia4-1', 'nia4-2', 'nia4-3'], ['nia5-1', 'nia5-2', 'nia5-3']];
+
+    container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
+        const val = calcStore.pItems[idx];
+        slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
+        
+        slot.onclick = (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.p-item-tooltip').forEach(t => t.remove());
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = 'calc-tooltip p-item-tooltip';
+            tooltip.style.cssText = 'flex-direction:row; flex-wrap:wrap; width:210px; min-width:180px; gap:8px; justify-content:flex-start; padding:12px;';
+
+            const clearBtn = document.createElement('div');
+            clearBtn.textContent = 'X'; clearBtn.className = 'calc-btn'; clearBtn.style.cssText = 'width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#f8f9fa; color:#888; border:1px solid #ddd; cursor:pointer;';
+            clearBtn.onclick = () => { 
+                calcStore.pItems[idx] = null; 
+                slot.innerHTML = '<span class="p-item-placeholder">+</span>'; 
+                calcStore.save(); refreshAll(); tooltip.remove(); 
+            };
+            tooltip.appendChild(clearBtn);
+
+            (niaItemsBySlot[idx] || []).forEach(item => {
+                const img = document.createElement('img');
+                img.src = `icons/cal/${item}.webp`; img.style.cssText = 'width:40px; height:40px; cursor:pointer; border:1px solid #eee; border-radius:4px;';
+                img.onclick = () => { 
+                    calcStore.pItems[idx] = item; 
+                    slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`; 
+                    calcStore.save(); refreshAll(); tooltip.remove(); 
+                };
+                tooltip.appendChild(img);
+            });
+
+            document.body.appendChild(tooltip);
+            const rect = slot.getBoundingClientRect();
+            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+            tooltip.style.top = `${rect.top + window.scrollY - 10}px`;
+            tooltip.style.transform = 'translate(-50%, -100%)';
+        };
+    });
+
+    const infoBtn = container.querySelector('.p-item-info-btn');
+    if (infoBtn) {
+        infoBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (document.querySelector('.p-item-info-tooltip')) { document.querySelector('.p-item-info-tooltip').remove(); return; }
+            const tooltip = document.createElement('div');
+            tooltip.className = 'calc-tooltip p-item-info-tooltip';
+            tooltip.style.cssText = 'position: absolute; width: max-content; max-width: 90vw; padding: 12px 15px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(4px); border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.85rem; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;';
+            tooltip.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia1-1.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>특별수업 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia1-2.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>상담 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="height: 1px; background: #eee; margin: 2px 0;"></div>
+                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia2-1.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>영업(강화카드) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia2-2.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>영업(P포인트) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia2-3.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>영업(드링크) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="display: flex; gap: 2px;">
+                            <img src="icons/cal/nia3-1.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                            <img src="icons/cal/nia3-2.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                        </div>
+                        <span>오디션 종료 시 카드 삭제 +1 / 복제 (프로듀스 중 2회)</span>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(tooltip);
+            const rect = infoBtn.getBoundingClientRect();
+            let left = rect.left;
+            const tooltipWidth = tooltip.offsetWidth;
+            if (left + tooltipWidth > window.innerWidth) { left = window.innerWidth - tooltipWidth - 10; }
+            tooltip.style.left = `${Math.max(10, left)}px`; tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+        };
+    }
+}
+
+function getBoardPools(type, store) {
+    const resArr = { enhance: { generic: 0, m: 0, a: 0 }, delete: { generic: 0, m: 0, a: 0 }, get: { generic: 0, m: 0, a: 0 } };
+    Object.values(store.weeks).forEach(week => {
+        const val = week.value; if(!val) return;
+        const opts = week.opts || {};
+        const res = (Object.keys(opts).filter(k => opts[k] === 'true' || !isNaN(opts[k])).flatMap(optId => {
+            const countInc = (opts[optId] === 'true' ? 1 : parseInt(opts[optId]));
             const optDef = (activityOptions[val] || []).find(o => o.id === optId) || (activityOptions[val] || []).flatMap(o => o.subOptions || []).find(so => so.id === optId);
             return Array(countInc).fill((optDef && optDef.results) ? optDef.results : [optId]).flat();
         }));
-        res.forEach(rid => {
-            const id = rid.trim();
+        res.forEach(id => {
             if (['enhance', 'ranenhance'].includes(id)) resArr.enhance.generic++;
             else if (id === 'enhance_m') resArr.enhance.m++;
             else if (id === 'enhance_a') resArr.enhance.a++;
@@ -73,330 +408,67 @@ function getBoardPools(type, current) {
             else if (id === 'get_a') resArr.get.a++;
         });
     });
-
-    // Nia 전용 보너스 합산
-    if (type === 'nia' && current.pItems) {
-        const counts = {};
-        board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => { const val = icon.dataset.value; counts[val] = (counts[val] || 0) + 1; });
-        
+    if (type === 'nia' && store.pItems) {
+        const boardCounts = {};
+        Object.values(store.weeks).forEach(w => { if(w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
         let niaBonusGet = 0, niaBonusDelete = 0, niaBonusEnhance = 0;
-        if (current.pItems.includes('nia1-1')) { const b = Math.min(counts['spclass'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
-        if (current.pItems.includes('nia1-2')) { const b = Math.min(counts['advice'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
-        
-        let n21 = 0, n22 = 0, n23 = 0, n41 = 0;
-        board.querySelectorAll('.week-row').forEach(row => {
-            const w = parseInt(row.dataset.week), icon = row.querySelector('.plan-icon-wrapper.active[data-value="class_nia"]');
-            if (icon) {
-                if (icon.dataset.optget_enhancedcard === 'true') { n21++; if (w >= 10) n41++; }
-                if (icon.dataset.optget_ppoint === 'true') n22++;
-                if (icon.dataset.optget_drink === 'true') n23++;
-            }
+        if (store.pItems.includes('nia1-1')) { const b = Math.min(boardCounts['spclass'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
+        if (store.pItems.includes('nia1-2')) { const b = Math.min(boardCounts['advice'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
+        let n21 = 0, n41 = 0;
+        Object.keys(store.weeks).forEach(wNum => {
+            const week = store.weeks[wNum]; if(week.value === 'class_nia' && week.opts.get_enhancedcard === 'true') { n21++; if (parseInt(wNum) >= 10) n41++; }
         });
-        if (current.pItems.includes('nia2-1')) { const b = Math.min(n21, 2); niaBonusGet += b; niaBonusDelete += b; }
-        if (current.pItems.includes('nia2-2')) { const b = Math.min(n22, 2); niaBonusGet += b; niaBonusDelete += b; }
-        if (current.pItems.includes('nia2-3')) { const b = Math.min(n23, 2); niaBonusGet += b; niaBonusDelete += b; }
-        if (current.pItems.includes('nia3-1') || current.pItems.includes('nia3-2')) { const b = Math.min(counts['audition'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
-        if (current.pItems.includes('nia4-1')) niaBonusEnhance += Math.min(n41, 2);
-        if (current.pItems.includes('nia5-1')) {
-            const hasSP = Array.from(board.querySelectorAll('.week-row')).some(row => parseInt(row.dataset.week) > 17 && row.querySelector('.plan-icon-wrapper.active')?.dataset.optsp === 'true');
-            if (hasSP) niaBonusEnhance += 1;
-        }
+        if (store.pItems.includes('nia2-1')) { const b = Math.min(n21, 2); niaBonusGet += b; niaBonusDelete += b; }
         resArr.get.generic += niaBonusGet; resArr.delete.generic += niaBonusDelete; resArr.enhance.generic += niaBonusEnhance;
     }
     return resArr;
 }
 
-function refreshCardBonuses(providedCounts) {
-    const panel = document.getElementById('calc-side-panel');
-    const boardElem = document.querySelector('.unified-plan-board');
-    if (!boardElem) return;
-    const type = boardElem.dataset.calcType;
-    const activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
-    const detailedCounts = providedCounts || getTriggerCountsFromDOM();
-    
-    let selectedIds = [];
-    if (panel) selectedIds = Array.from(panel.querySelectorAll('.side-card-item.selected')).map(i => i.dataset.id);
-    else {
-        const saved = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-        if (saved.planCards && activePlan) selectedIds = saved.planCards[activePlan] || [];
-    }
-
-    const { baseTotal, cardBonusTotal } = calculateAllTotals(detailedCounts, selectedIds);
-    updateStatHeaderUI(cardBonusTotal, document.querySelector('.idol-sel-item.active')?.dataset.id, selectedIds, type);
-
-    const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-    const itemCounters = savedState.itemCounters || {};
-
-    if (panel?.classList.contains('open')) {
-        panel.querySelectorAll('.side-card-item').forEach(item => {
-            const card = cardList.find(c => c.id === item.dataset.id);
-            if (!card) return;
-            const bonus = calculateCardBonus(card, detailedCounts, state.supportLB[card.id] || 0);
-            let val = bonus.vocal + bonus.dance + bonus.visual + (bonus.percent > 0 ? Math.round((baseTotal[card.type] || 0) * (bonus.percent / 100)) : 0);
-            
-            // [New] 아이템 효과(action) 패널 표시 반영
-            if (card.item_effects) {
-                const counter = itemCounters[card.id] || 0;
-                card.item_effects.forEach(eff => {
-                    if (eff.type === 'fixed' && eff.stats) {
-                        val += (eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0);
-                    } else if (eff.type === 'action' && eff.stats && counter > 0) {
-                        let multiplier = counter;
-                        if (eff.trigger) {
-                            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-                            let totalTriggerCount = 0;
-                            triggers.forEach(t => {
-                                if (t === 'lesson') {
-                                    const l = detailedCounts.lessons || { vocal: {normal:0,sp:0}, dance: {normal:0,sp:0}, visual: {normal:0,sp:0} };
-                                    totalTriggerCount += (l.vocal.normal + l.vocal.sp + l.dance.normal + l.dance.sp + l.visual.normal + l.visual.sp);
-                                } else {
-                                    totalTriggerCount += (detailedCounts.total[t] || 0);
-                                }
-                            });
-                            multiplier = Math.min(totalTriggerCount, counter);
-                        }
-                        if (multiplier > 0) {
-                            val += ((eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0)) * multiplier;
-                        }
+function showSubTooltip(parent, week, wrapper, pTooltip) {
+    const sub = document.createElement('div'); sub.className = 'calc-tooltip calc-sub-tooltip'; sub.style.zIndex = '1100'; sub.style.backgroundColor = '#fefefe'; sub.style.border = '1px solid #ff4d8d';
+    sub.innerHTML = parent.subOptions.map(o => `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${calcStore.weeks[week].opts[o.id] === 'true' ? 'checked' : ''}><span>${o[`label_${state.currentLang}`] || o.label_ko}</span></label>`).join('');
+    document.body.appendChild(sub); const rect = pTooltip.getBoundingClientRect(); sub.style.left = `${rect.left + rect.width / 2}px`; sub.style.top = `${rect.top + window.scrollY + rect.height / 2}px`; sub.style.transform = 'translate(-50%, -50%)';
+    sub.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+        chk.onchange = () => {
+            if (chk.checked) {
+                sub.querySelectorAll('input[type="checkbox"]').forEach(other => {
+                    if (other !== chk && other.checked) {
+                        other.checked = false;
+                        calcStore.updateWeekOpt(week, other.dataset.id, false);
+                        wrapper.dataset[`opt${other.dataset.id}`] = 'false';
                     }
                 });
             }
-
-            const bonusEl = item.querySelector('.bonus-val');
-            if (bonusEl) {
-                bonusEl.textContent = val > 0 ? `+${val}` : '';
-                bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
-                if (card.abilities && card.abilities.includes('sp_lessonup')) bonusEl.classList.add(`sp-${card.type}`);
-            }
-            item.style.order = -val;
-        });
-    }
+            calcStore.updateWeekOpt(week, chk.dataset.id, chk.checked);
+            wrapper.dataset[`opt${chk.dataset.id}`] = String(chk.checked);
+            updateMainLabel(wrapper);
+            setTimeout(() => { document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip').forEach(t => t.remove()); }, 100);
+            refreshAll();
+        };
+    });
 }
 
-function updateActivityCounts() {
-    const board = document.querySelector('.unified-plan-board');
-    if (!board) return;
-    const type = board.dataset.calcType, activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type;
-    const savedState = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-    const counts = {}, spCounts = { lessonvo: 0, lessondan: 0, lessonvi: 0 }, extraCounts = { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, get_drink: 0, purchase_drink: 0, change: 0, customize: 0, get: 0, get_m: 0, get_a: 0, get_ssr: 0, get_genki: 0, get_goodcondition: 0, get_concentration: 0, get_motivation: 0, get_goodimpression: 0, get_preservation: 0, get_enthusiasm: 0, get_fullpower: 0, get_item: (type === 'nia' ? 1 : 0) };
-
-    const pools = getBoardPools(type, savedState);
-    
-    board.querySelectorAll('.plan-icon-wrapper.active').forEach(icon => {
-        const val = icon.dataset.value; counts[val] = (counts[val] || 0) + 1;
-        if (icon.dataset.optsp === 'true' && spCounts.hasOwnProperty(val)) spCounts[val]++;
-        const res = (icon.dataset.results ? icon.dataset.results.split(',') : []).concat(Object.keys(icon.dataset).filter(k => k.startsWith('opt')).flatMap(k => {
-            const optId = k.slice(3).toLowerCase(), countInc = (icon.dataset[k] === 'true' ? 1 : (!isNaN(icon.dataset[k]) ? parseInt(icon.dataset[k]) : 0));
-            if (countInc === 0) return [];
-            const optDef = (activityOptions[val] || []).find(o => o.id === optId) || (activityOptions[val] || []).flatMap(o => o.subOptions || []).find(so => so.id === optId);
-            return Array(countInc).fill((optDef && optDef.results) ? optDef.results : [optId]).flat();
-        }));
-        res.forEach(rid => { 
-            const id = rid.trim();
-            if (id === 'item') extraCounts.get_item++;
-            if (!['enhance', 'ranenhance', 'enhance_m', 'enhance_a', 'delete', 'delete_m', 'delete_a', 'get', 'get_m', 'get_a'].includes(id)) {
-                if (extraCounts.hasOwnProperty(id)) extraCounts[id]++; 
-            }
-        });
-    });
-
-    // 4, 5단계 보너스 반영 (드링크 등)
-    if (type === 'nia' && savedState.pItems) {
-        if (savedState.pItems.includes('nia4-2')) {
-            let n42 = 0;
-            board.querySelectorAll('.week-row').forEach(row => { if (parseInt(row.dataset.week) >= 10 && row.querySelector('.plan-icon-wrapper.active[data-value="class_nia"]')?.dataset.optget_drink === 'true') n42++; });
-            extraCounts.get_drink += Math.min(n42, 2) * 2;
-        }
-    }
-
-    // 모달에서 선택한 스킬 카드 반영
-    const selectedSkills = savedState.planSkills?.[activePlan || 'sense'] || {};
-    Object.keys(selectedSkills).forEach(skillId => {
-        const skill = skillCardList[skillId];
-        const count = selectedSkills[skillId] || 0;
-        if (skill && count > 0) {
-            if (skill.type === 'active') extraCounts.get_a += count;
-            else if (skill.type === 'mental') extraCounts.get_m += count;
-            if (skill.rarity === 'SSR') extraCounts.get_ssr += count;
-            if (skill.attrs && Array.isArray(skill.attrs)) {
-                skill.attrs.forEach(attr => {
-                    const key = `get_${attr}`;
-                    if (extraCounts.hasOwnProperty(key)) extraCounts[key] += count;
-                });
-            }
-        }
-    });
-
-    // 슬롯 선택 카드 반영
-    const selectedIds = (savedState.planCards && activePlan) ? (savedState.planCards[activePlan] || []) : [];
-    const cardChecked = savedState.cardChecked || {};
-    selectedIds.forEach(id => {
-        if (cardChecked[id]) {
-            const card = cardList.find(c => c.id === id);
-            if (card) {
-                if (card.have === 'item') extraCounts.get_item++;
-                else if (card.have?.startsWith('card_')) {
-                    if (card.rarity === 'SSR') extraCounts.get_ssr++;
-                    if (card.have === 'card_m') { extraCounts.get_m++; }
-                    else if (card.have === 'card_a') { extraCounts.get_a++; }
-                    extraCounts.get++;
-                    if (card.attrs && Array.isArray(card.attrs)) {
-                        card.attrs.forEach(attr => {
-                            const key = `get_${attr}`;
-                            if (extraCounts.hasOwnProperty(key)) extraCounts[key]++;
-                        });
-                    }
-                }
-            }
-        }
-    });
-
-    // [New] 아이템 효과 반영 (trigger 제한 포함 범용 로직)
-    const itemCounters = savedState.itemCounters || {};
-    selectedIds.forEach(id => {
-        if (cardChecked[id]) {
-            const card = cardList.find(c => c.id === id);
-            if (card && card.item_effects) {
-                const counter = itemCounters[id] || 0;
-                card.item_effects.forEach(eff => {
-                    if ((eff.type === 'add_count' || eff.type === 'action') && eff.target && counter > 0) {
-                        let multiplier = counter;
-                        if (eff.trigger) {
-                            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-                            let totalTriggerCount = 0;
-                            triggers.forEach(t => {
-                                if (t === 'lesson') {
-                                    if (card.type === 'vocal') totalTriggerCount += (counts.lessonvo || 0);
-                                    else if (card.type === 'dance') totalTriggerCount += (counts.lessondan || 0);
-                                    else if (card.type === 'visual') totalTriggerCount += (counts.lessonvi || 0);
-                                    else totalTriggerCount += ((counts.lessonvo || 0) + (counts.lessondan || 0) + (counts.lessonvi || 0));
-                                } else if (t === 'sp') {
-                                    if (card.type === 'vocal') totalTriggerCount += (spCounts.lessonvo || 0);
-                                    else if (card.type === 'dance') totalTriggerCount += (spCounts.lessondan || 0);
-                                    else if (card.type === 'visual') totalTriggerCount += (spCounts.lessonvi || 0);
-                                    else totalTriggerCount += ((spCounts.lessonvo || 0) + (spCounts.lessondan || 0) + (spCounts.lessonvi || 0));
-                                } else {
-                                    totalTriggerCount += (counts[t] || 0);
-                                }
-                            });
-                            multiplier = Math.min(totalTriggerCount, counter);
-                        }
-                        
-                        if (multiplier > 0 && extraCounts.hasOwnProperty(eff.target)) {
-                            extraCounts[eff.target] += (eff.value || 1) * multiplier;
-                        }
-                    }
-                });
-            }
-        }
-    });
-
-    // 분배 로직 적용 (모든 추가 수치가 반영된 extraCounts 기반)
-    // 1. 보드의 기본 풀 수치 합산
-    extraCounts.enhance += pools.enhance.generic + pools.enhance.m + pools.enhance.a;
-    extraCounts.enhance_m += pools.enhance.m;
-    extraCounts.enhance_a += pools.enhance.a;
-    
-    extraCounts.delete += pools.delete.generic + pools.delete.m + pools.delete.a;
-    extraCounts.delete_m += pools.delete.m;
-    extraCounts.delete_a += pools.delete.a;
-
-    // 2. 미분배 수치에 대한 수동 분배 및 자동 할당 적용
-    const currentEnhanceTotal = extraCounts.enhance;
-    let em = Number(savedState.manualEnhance?.m) || 0;
-    let ea = Number(savedState.manualEnhance?.a) || 0;
-    let diffE = currentEnhanceTotal - (em + ea);
-    if (diffE > 0) em += diffE;
-    else if (diffE < 0) {
-        const redM = Math.min(em, -diffE);
-        em -= redM; diffE += redM;
-        if (diffE < 0) ea = Math.max(0, ea + diffE);
-    }
-    savedState.manualEnhance = { m: em, a: ea };
-    extraCounts.enhance_m += em;
-    extraCounts.enhance_a += ea;
-    
-    const currentDeleteTotal = extraCounts.delete;
-    let dm = Number(savedState.manualDelete?.m) || 0;
-    let da = Number(savedState.manualDelete?.a) || 0;
-    let diffD = currentDeleteTotal - (dm + da);
-    if (diffD > 0) dm += diffD;
-    else if (diffD < 0) {
-        const redM = Math.min(dm, -diffD);
-        dm -= redM; diffD += redM;
-        if (diffD < 0) da = Math.max(0, da + diffD);
-    }
-    savedState.manualDelete = { m: dm, a: da };
-    extraCounts.delete_m += dm;
-    extraCounts.delete_a += da;
-
-    const totalGetPool = pools.get.generic;
-    let gm = Number(savedState.manualGet?.m) || 0;
-    let ga = Number(savedState.manualGet?.a) || 0;
-    extraCounts.get += totalGetPool + pools.get.m + pools.get.a;
-    extraCounts.get_m += pools.get.m + gm;
-    extraCounts.get_a += pools.get.a + ga;
-
-    updateActivityCountsUI(counts, spCounts, extraCounts, activePlan, Array.from(new Set(Array.from(board.querySelectorAll('.plan-icon-wrapper')).map(w => w.dataset.value))), ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'], type);
-
-    // [New] UI 카운트 기반으로 보너스 재계산 (동기화)
-    const mergedCounts = {
-        total: { ...counts, ...extraCounts },
-        lessons: {
-            vocal: { normal: (counts.lessonvo || 0) - (spCounts.lessonvo || 0), sp: spCounts.lessonvo || 0 },
-            dance: { normal: (counts.lessondan || 0) - (spCounts.lessondan || 0), sp: spCounts.lessondan || 0 },
-            visual: { normal: (counts.lessonvi || 0) - (spCounts.lessonvi || 0), sp: spCounts.lessonvi || 0 }
-        }
-    };
-
-    // UI의 동적 max 계산을 위해 현재 상태 저장
-    savedState.lastCounts = mergedCounts.total;
-    localStorage.setItem(`calc_state_${type}`, JSON.stringify(savedState));
-
-    refreshCardBonuses(mergedCounts);
-}
-
-function saveCalcState() {
-    const board = document.querySelector('.unified-plan-board');
-    if (!board) return;
-    const type = board.dataset.calcType, activePlan = document.querySelector('.plan-type-btn.active')?.dataset.type || '';
-    const oldSaved = JSON.parse(localStorage.getItem(`calc_state_${type}`)) || {};
-    
-    const pItems = []; document.querySelectorAll('.p-item-slot').forEach(slot => { const img = slot.querySelector('img'); pItems.push(img ? img.dataset.val : null); });
-    const planCards = oldSaved.planCards || {};
-    const panel = document.getElementById('calc-side-panel');
-    if (panel && activePlan) planCards[activePlan] = Array.from(panel.querySelectorAll('.side-card-item.selected')).map(i => i.dataset.id);
-
-    // 구형 데이터(manualOther, manualGet)를 제거하고 저장
-    const { manualOther, manualGet, ...restSaved } = oldSaved;
-
-    const stateData = { 
-        ...restSaved, 
-        pItems, 
-        planCards, 
-        selectedIdol: document.querySelector('.idol-sel-item.active')?.dataset.id || '', 
-        planType: activePlan, 
-        isBoardCollapsed: board.classList.contains('collapsed-board'), 
-        weeks: {} 
-    };
-    board.querySelectorAll('.week-row').forEach(row => {
-        const activeIcon = row.querySelector('.plan-icon-wrapper.active');
-        if (activeIcon) {
-            const opts = {}; Object.keys(activeIcon.dataset).forEach(k => { if (k.startsWith('opt')) opts[k.slice(3).toLowerCase()] = activeIcon.dataset[k]; });
-            stateData.weeks[row.dataset.week] = { value: activeIcon.dataset.value, opts };
-        }
-    });
-    localStorage.setItem(`calc_state_${type}`, JSON.stringify(stateData));
-    refreshCardBonuses(); updateActivityCounts();
-}
-
+// 화면 리사이즈 감지 (768px 경계 안정화)
 let lastWidth = window.innerWidth;
 window.addEventListener('resize', () => {
-    const cur = window.innerWidth;
-    if ((lastWidth <= 768 && cur > 768) || (lastWidth > 768 && cur <= 768)) {
-        document.getElementById('calc-side-panel')?.remove(); document.getElementById('panel-overlay')?.remove();
-        const board = document.querySelector('.unified-plan-board');
-        if (board) startWeeklyPlan(board.dataset.calcType);
+    const currentWidth = window.innerWidth;
+    // 768px 경계를 넘어갈 때만 실행
+    if ((lastWidth <= 768 && currentWidth > 768) || (lastWidth > 768 && currentWidth <= 768)) {
+        if (typeof closeSupportCardPanel === 'function') closeSupportCardPanel();
+        const panel = document.getElementById('calc-side-panel');
+        const overlay = document.getElementById('panel-overlay');
+        if (panel) panel.remove();
+        if (overlay) overlay.remove();
     }
-    lastWidth = cur;
+    lastWidth = currentWidth;
 });
+
+if (!window._calcGlobalInit) {
+    document.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.modal') || e.target.closest('.modal-content')) return;
+        if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper, .dist-btn, .p-item-slot, .other-tune-btn')) {
+            document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip, .p-item-tooltip').forEach(t => t.remove());
+        }
+    });
+    window._calcGlobalInit = true;
+}

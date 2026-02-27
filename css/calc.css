@@ -216,6 +216,31 @@
     background: white;
 }
 
+.card-slot-remove {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 18px;
+    height: 18px;
+    background: #ff4d4d;
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 100;
+    line-height: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: 1px solid white;
+}
+.card-slot-remove:hover {
+    background: #ff0000;
+    transform: scale(1.1);
+}
+
 .selected-card-slot.empty {
     /* 기본 슬롯 스타일 유지 */
 }
@@ -618,6 +643,108 @@
         top: 3px;
         left: 3px;
     }
+}
+
+/* Skill Adjustment Modal Styles */
+.tune-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 5px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+@media (min-width: 769px) {
+    .tune-card-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+    }
+}
+
+.tune-card-group-box {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 6px;
+    background: rgba(156, 39, 176, 0.08);
+    border: 2px solid rgba(156, 39, 176, 0.2);
+    border-radius: 12px;
+}
+
+.tune-card-item {
+    cursor: pointer;
+    transition: transform 0.1s;
+    position: relative;
+    width: 100%;
+}
+
+.tune-card-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #eee;
+    background: #fdfdfd;
+    display: block;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.tune-card-item.selected img {
+    border-color: #9c27b0;
+    box-shadow: 0 0 8px rgba(156, 39, 176, 0.4);
+    opacity: 1;
+}
+
+.tune-card-item:hover img {
+    border-color: #9c27b0;
+    opacity: 0.8;
+}
+
+.tune-card-item.selected:hover img {
+    opacity: 1;
+}
+
+.tune-card-item:active {
+    transform: scale(0.95);
+}
+
+.card-count-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #9c27b0;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.card-reset-btn {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    background: #ff4d4d;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    line-height: 1;
+}
+
+.other-tune-btn {
+    white-space: nowrap;
 }
 
 /* Distributor Styles */

@@ -19,6 +19,7 @@
     z-index: 1;
     transform: translateZ(0);
     backface-visibility: hidden;
+    cursor: default;
 }
 .gacha-vid.hidden { display: none !important; }
 
