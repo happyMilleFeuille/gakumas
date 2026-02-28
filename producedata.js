@@ -223,8 +223,8 @@ export const produceList = [
     { id: "ssrsaki_gamusyaradist", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "dist" ,youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H"},        
     { id: "ssrkotone_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "sense", source: "limited" ,youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H"},    
     { id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited",youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H" },         
-    { id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "dist" ,youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn"},    
-    { id: "ssrume_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited" ,jumpTime2:7.4,youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn"},    
+    { id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "dist" ,youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
+    { id: "ssrume_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited" ,jumpTime2:7.4,youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
 
 
     // 유닛 (unit)

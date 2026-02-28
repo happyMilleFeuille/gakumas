@@ -379,7 +379,7 @@ export const abilityData = {
         levels: {
             "SSR": {1: 16,2: 21},     
             "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 0, 2: 0 }},  
+            "SR": {1: 8, 2: 16 }},  
             trigger: ["change"],max:3,                
         
     },             

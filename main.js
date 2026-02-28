@@ -173,22 +173,36 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         const cardModal = document.getElementById('card-modal');
         const gachaLogModal = document.getElementById('gacha-log-modal');
+        const videoModal = document.getElementById('video-modal');
         const resultsContainer = document.querySelector('#gacha-results');
         const calcPanel = document.getElementById('calc-side-panel');
         
-        // 영상 재생 중 예외 처리
+        // 1. 영상 재생 중 예외 처리 (가챠 애니메이션)
         if (document.body.classList.contains('immersive-mode')) {
             history.pushState({ target: 'gacha', view: 'playing' }, "");
             return;
         }
 
-        // 1. 상세 모달이 열려있으면 모달만 닫기
+        // 2. 유튜브 모달 처리 (추가)
+        if (videoModal && !videoModal.classList.contains('hidden')) {
+            if (typeof window.hideVideoModal === 'function') {
+                window.hideVideoModal();
+            } else {
+                videoModal.classList.add('hidden');
+                videoModal.style.display = 'none';
+                const iframe = document.getElementById('video-iframe');
+                if (iframe) iframe.src = '';
+            }
+            return;
+        }
+
+        // 3. 상세 모달이 열려있으면 모달만 닫기
         if (cardModal && !cardModal.classList.contains('hidden')) {
             hideModal();
             return;
         }
 
-        // 2. 가챠 로그 모달이 열려있으면 닫기
+        // 4. 가챠 로그 모달이 열려있으면 닫기
         if (gachaLogModal && !gachaLogModal.classList.contains('hidden')) {
             hideGachaLogModal();
             return;

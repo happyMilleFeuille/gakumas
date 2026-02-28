@@ -376,9 +376,12 @@
 
 @media (max-width: 768px) {
     .skip-btn {
-        bottom: 20px; right: 15px;
-        padding: 6px 16px;
-        font-size: 0.75rem;
+        bottom: 80px; right: 20px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        z-index: 2000;
     }
 }
 

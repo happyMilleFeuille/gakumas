@@ -344,6 +344,8 @@ body.gacha-result-active .button-group.horizontal {
     position: relative;
     width: 100%;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    border: 1px solid #ff4d8d;
+    box-sizing: border-box;
 }
 
 .video-container iframe {

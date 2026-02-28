@@ -269,9 +269,10 @@ function renderProduceCards(idolName, container) {
                                     
                                                     // 캐릭터별 테두리 색상 적용
                                                     const modalContent = videoModal.querySelector('.video-modal-content');
-                                                    if (modalContent) {
-                                                        modalContent.style.borderColor = idolColors[idolName] || '#ff4d8d';
-                                                    }
+                                                    const innerContainer = videoModal.querySelector('.video-container');
+                                                    const personalColor = idolColors[idolName] || '#ff4d8d';
+                                                    if (modalContent) modalContent.style.borderColor = personalColor;
+                                                    if (innerContainer) innerContainer.style.borderColor = personalColor;
                                     
                                                     // 로딩 지연 및 싱크 개선: 약간의 시간차를 두고 모달 표시
                                                     setTimeout(() => {
@@ -279,10 +280,12 @@ function renderProduceCards(idolName, container) {
                                                         videoModal.style.display = 'flex';
                                                     }, 100);
                                                     
-                                                    const hideVideoModal = () => {                        videoModal.classList.add('hidden');
-                        videoModal.style.display = 'none';
-                        iframe.src = '';
-                    };
+                                                    const hideVideoModal = () => {
+                                                        videoModal.classList.add('hidden');
+                                                        videoModal.style.display = 'none';
+                                                        iframe.src = '';
+                                                    };
+                                                    window.hideVideoModal = hideVideoModal;
                     
                     videoModal.onclick = (ev) => { if (ev.target === videoModal) hideVideoModal(); };
                     
