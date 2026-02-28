@@ -1,0 +1,264 @@
+/* --- Gacha Rates Modal Styles --- */
+
+.rates-modal-content {
+    width: 95%;
+    max-width: 700px;
+    min-height: 70vh;
+    max-height: 85vh;
+    height: auto;
+    background: #fff;
+    border-radius: 15px;
+    padding: 1.2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+    display: block; 
+    overflow: hidden;
+}
+
+.gacha-rates-body {
+    max-height: calc(85vh - 80px); /* 헤더 축소 반영 */
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 5px;
+}
+
+.rates-title {
+    text-align: center;
+    margin: 0 0 0.8rem 0; /* 하단 마진을 0.5rem에서 0.8rem으로 증가 */
+    padding: 0 35px; /* 닫기 버튼 공간 확보 */
+    color: #333;
+    font-size: 1.05rem;
+    font-weight: bold;
+    line-height: 1.2;
+    display: block;
+}
+
+.close-rates-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+    z-index: 10;
+    line-height: 1;
+}
+
+.close-rates-modal:hover {
+    color: #333;
+}
+
+.rates-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.rates-table th, .rates-table td {
+    padding: 10px 5px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.rates-table th {
+    background-color: #f9f9f9;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.rarity-label {
+    font-weight: 900;
+    text-align: left !important;
+    padding-left: 15px !important;
+}
+
+/* 등급별 색상 정의 */
+.rarity-pssr { color: #a335ee !important; }
+.rarity-sssr { color: #a335ee !important; }
+.rarity-ssr_card { color: #a335ee !important; }
+.rarity-ssr { color: #a335ee !important; }
+.rarity-psr { color: #ffca28 !important; }
+.rarity-sr { color: #f5cd46 !important; }
+.rarity-sr_card { color: #f5cd46 !important; }
+.rarity-pr { color: #708090 !important; }
+.rarity-r { color: #add0eb !important; }
+.rarity-r_card { color: #add0eb !important; }
+
+.zero-row {
+    opacity: 0.4;
+    background-color: #f5f5f5;
+}
+
+.rate-row.expandable {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.rate-row.expandable:hover {
+    background-color: #fcfcfc;
+}
+
+.rate-row.expanded {
+    background-color: #f9f9f9;
+}
+
+.expand-icon {
+    display: inline-block;
+    width: 15px;
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.sub-rates-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fcfcfc;
+}
+
+.sub-label {
+    padding-left: 35px !important;
+    text-align: left !important;
+    font-weight: 600;
+}
+
+.detail-container {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 5px 15px;
+    border-left: 3px solid #ff4081; /* 등급색에 맞춤 */
+    margin: 5px 0 5px 40px;
+}
+
+.detail-header {
+    display: flex;
+    padding: 8px;
+    background-color: #f5f5f5;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #666;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-name { flex: 1; text-align: left; }
+.header-rate { width: 70px; text-align: right; }
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+}
+
+.detail-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.detail-card-img {
+    width: 60px !important;
+    height: 36px !important;
+    object-fit: cover !important;
+    border-radius: 4px !important;
+    border: 1px solid #ddd !important;
+    background-color: #f0f0f0 !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+.detail-name-wrapper {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    overflow: hidden;
+}
+
+.detail-name {
+    font-weight: bold;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detail-char-name {
+    font-size: 0.7rem;
+    color: #999;
+}
+
+.detail-rate-group {
+    display: flex;
+    gap: 10px;
+    width: 140px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.detail-rate {
+    width: 70px;
+    text-align: right;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.is-pickup .detail-name { color: #ff4081; }
+.is-pickup .detail-char-name { color: #ff80ab; }
+.is-pickup .detail-rate { color: #ff4081; font-weight: bold; }
+
+/* 툴팁 */
+#card-preview-tooltip {
+    position: fixed;
+    z-index: 100000;
+    pointer-events: none;
+    background: #fff;
+    border: 2px solid #ff4081;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    padding: 5px;
+    display: none;
+    transition: opacity 0.15s ease-out;
+    opacity: 0;
+}
+
+#card-preview-tooltip img {
+    width: 300px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .rates-modal-content {
+        padding: 0.8rem 0.4rem;
+        width: 98%;
+        min-height: 70vh;
+        max-height: 85vh;
+    }
+    .rates-title { font-size: 0.9rem; padding: 0 25px; }
+    .rates-table th, .rates-table td { padding: 5px 1px; font-size: 0.65rem; }
+    .sub-label { padding-left: 10px !important; }
+    .detail-card-img { width: 40px !important; height: 24px !important; }
+    .detail-container { margin-left: 8px; padding: 2px 4px; }
+    .detail-header { font-size: 0.6rem; padding: 3px; }
+    .header-rate { width: 55px; }
+    .detail-item { padding: 3px 2px; }
+    .detail-name { font-size: 0.6rem; }
+    .detail-char-name { font-size: 0.5rem; }
+    .detail-rate-group { width: 110px; gap: 4px; }
+    .detail-rate { width: 55px; font-size: 0.6rem; }
+}
+
+.rates-footer { border-top: 1px solid #eee; padding-top: 0.8rem; margin-top: 10px; flex-shrink: 0; }
+.rates-notice { font-size: 0.65rem; color: #888; margin: 2px 0; line-height: 1.4; }
+
+.detail-container::-webkit-scrollbar { width: 4px; }
+.detail-container::-webkit-scrollbar-track { background: #f1f1f1; }
+.detail-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }

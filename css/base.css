@@ -179,28 +179,22 @@ footer {
     justify-content: center;
     align-items: flex-start;
     gap: 0.5rem;
-    width: 540px; 
-    height: 120px;
+    width: 540px;
     position: fixed;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 10000;
     padding-top: 15px;
     padding-bottom: 2rem;
+    /* 배경 설정을 직접 추가 */
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid #ffe0ea;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .button-group.horizontal::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    border-top: 1px solid #ffe0ea;
-    z-index: -1;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+    display: none; /* 기존 가상 요소 배경 제거 */
 }
 
 .menu-btn {

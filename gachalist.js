@@ -10,8 +10,10 @@ const GUARANTEED_RATES = { PSSR: 0.02, SSSR: 0.03, PSR: 0.38, SSR_CARD: 0.57 };
 const FES_RATES = { PSSR: 0.03, SSSR: 0.045, PSR: 0.068, SSR_CARD: 0.102, PR: 0.312 * (0.755 / 0.78), R_CARD: 0.468 * (0.755 / 0.78) };
 const FES_GUARANTEED_RATES = { PSSR: 0.03, SSSR: 0.045, PSR: 0.37, SSR_CARD: 0.555 };
 
-const UNIT_RATES = { PSSR: 0.0225, SSSR: 0.03, PSR: 0.068, SSR_CARD: 0.102, PR: 0.312, R_CARD: 0.4655 };
-const UNIT_GUARANTEED_RATES = { PSSR: 0.0225, SSSR: 0.03, PSR: 0.38 * (0.9475 / 0.95), SSR_CARD: 0.57 * (0.9475 / 0.95) };
+const UNIT_RATES = { PSSR: 0.0225, SSSR: 0.0275, PSR: 0.068, SSR_CARD: 0.102, PR: 0.312, R_CARD: 0.468 };
+const UNIT_GUARANTEED_RATES = { PSSR: 0.0225, SSSR: 0.0275, PSR: 0.38 * (0.9475 / 0.95), SSR_CARD: 0.57 * (0.9475 / 0.95) };
+
+const SELECTION_GUARANTEED_RATES = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0 };
 
 const TEST_RATES = { PSSR: 1.0, SSSR: 0, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
 
@@ -77,7 +79,7 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
 
 // --- 가챠 타입별 전략 정의 ---
 
-const GACHA_STRATEGIES = {
+export const GACHA_STRATEGIES = {
     normal: {
         rates: RATES,
         guaranteed: GUARANTEED_RATES,
@@ -87,6 +89,11 @@ const GACHA_STRATEGIES = {
         rates: RATES,
         guaranteed: GUARANTEED_RATES,
         pick: (key, pool, isGuaranteedSlot) => handleStandardPickup(key, pool, 'limited', isGuaranteedSlot, RATES, GUARANTEED_RATES)
+    },
+    platinum: {
+        rates: RATES,
+        guaranteed: GUARANTEED_RATES,
+        pick: (key, pool, isGuaranteedSlot) => handleStandardPickup(key, pool, 'platinum', isGuaranteedSlot, RATES, GUARANTEED_RATES)
     },
     fes: {
         rates: FES_RATES,
@@ -135,9 +142,13 @@ const GACHA_STRATEGIES = {
             return getRandomFrom(pool[key] || pool.R_CARD);
         }
     },
-    test: {
-        rates: TEST_RATES,
-        guaranteed: TEST_RATES,
+    selection: {
+        rates: RATES,
+        guaranteed: SELECTION_GUARANTEED_RATES,
+        pick: (key, pool, isGuaranteedSlot) => handleStandardPickup(key, pool, 'selection', isGuaranteedSlot, RATES, SELECTION_GUARANTEED_RATES)
+    },
+    test: { 
+        rates: TEST_RATES,        guaranteed: TEST_RATES,
         pick: (key, pool) => {
             const testCfg = CURRENT_PICKUPS.test;
             const allCandidates = [
@@ -156,6 +167,22 @@ const GACHA_STRATEGIES = {
 // --- 기존 함수 유지 및 내부 로직 교체 ---
 
 export function getGachaPool(poolType = 'normal') {
+    const config = CURRENT_PICKUPS[poolType] || CURRENT_PICKUPS.normal;
+    const targetDate = config.date || "2026-03-01";
+    
+    // 픽업 아이디 세트 (날짜 무시 대상)
+    const pickupIds = new Set([
+        ...(config.pssr || []).map(p => typeof p === 'string' ? p : p.id),
+        ...(config.sssr || []),
+        ...(config.sr_card || [])
+    ]);
+
+    const isReleased = (item) => {
+        if (pickupIds.has(item.id)) return true; // 픽업은 무조건 포함
+        if (!item.releasedAt) return true; // 날짜 없으면 포함 (R등급 등)
+        return item.releasedAt <= targetDate; // 기준 날짜 이전 출시만 포함
+    };
+
     if (poolType === 'test') {
         const testCfg = CURRENT_PICKUPS.test || {};
         const testPssrIds = [...(testCfg.pssr || []).map(p => typeof p === 'string' ? p : p.id), ...(testCfg.others || [])].flat(Infinity).filter(id => id); 
@@ -177,17 +204,32 @@ export function getGachaPool(poolType = 'normal') {
 
     const isInPool = (card, forceLimitedU = false) => {
         const source = card.source || 'normal';
-        if (forceLimitedU) return source === 'limited_u' && card.gacha !== false;
-        return validSources.includes(source) && card.gacha !== false;
+        const isSourceMatch = forceLimitedU ? (source === 'limited_u') : validSources.includes(source);
+        if (!isSourceMatch) return false;
+        if (card.gacha === false) return false;
+        
+        return isReleased(card); // 날짜 필터링 적용
     };
 
+    // PSSR 풀 결정 로직 (셀렉션 타입 특수 처리)
+    let pssrPool;
+    if (poolType === 'selection' && config.pool_pssr) {
+        pssrPool = produceList.filter(p => p.rarity === 'PSSR' && config.pool_pssr.includes(p.id));
+    } else {
+        pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isInPool(p, poolType === 'unit'));
+    }
+
     return { 
-        PSSR: produceList.filter(p => p.rarity === 'PSSR' && isInPool(p, poolType === 'unit')),
+        PSSR: pssrPool,
         SSSR: cardList.filter(card => card.rarity === 'SSR' && isInPool(card)),
         PSR: produceList.filter(p => p.rarity === 'PSR' && isInPool(p)),
-        SR_CARD: cardList.filter(card => card.rarity === 'SR' && isInPool(card)).length > 0 ? cardList.filter(card => card.rarity === 'SR' && isInPool(card)) : dummyData.SR_CARD,
-        PR: produceList.filter(p => p.rarity === 'PR' && isInPool(p)),
-        R_CARD: cardList.filter(card => card.rarity === 'R' && isInPool(card)).length > 0 ? cardList.filter(card => card.rarity === 'R' && isInPool(card)) : dummyData.R_CARD
+        SR_CARD: cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased).length > 0 
+                 ? cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased) 
+                 : dummyData.SR_CARD,
+        PR: produceList.filter(p => p.rarity === 'PR' && isInPool(p)).filter(isReleased),
+        R_CARD: cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased).length > 0 
+                 ? cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased) 
+                 : dummyData.R_CARD
     };
 }
 

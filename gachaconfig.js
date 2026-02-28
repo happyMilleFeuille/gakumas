@@ -2,16 +2,19 @@
 // 현재 가챠 픽업 설정 (ID 및 캐릭터 식별자)
 export const CURRENT_PICKUPS = {
     normal: { 
+        date: "2026-02-09",
         pssr: [{ id: 'ssrsena_3rd', char: 'sena' }],
         sssr: ['visual_logic5'],
         sr_card: ['vocal_srlogic5']
     },
     limited: { 
+        date: "2026-02-27",
         pssr: [{ id: 'ssrume_endlesslimited', char: 'ume' }],
         sssr: ['dance_limitedsense3'],
         sr_card: ['dance_srlimitedsense4']
     },
     unit: { 
+        date: "2026-01-17",
         pssr: [
             { id: 'ssrchina_michinaruunit', char: 'china' },
             { id: 'ssrhiro_michinaruunit', char: 'hiro' }
@@ -20,88 +23,21 @@ export const CURRENT_PICKUPS = {
         sr_card: ['visual_srunitsense1']
     },
     fes: { 
+        date: "2025-12-26",
         pssr: ['ssrtsubame_campusfes'],
         sssr: ['dance_fessense1'],
         sr_card: []
     },
-    test: { 
-        // 픽업 연출(블랙아웃) 확인용 카드 리스트
-        pssr: [
-            {},                                
-        ],
-        // 일반 SSR 연출 확인용 카드 리스트 (블랙아웃 안 터짐)
-        others: [
-[
-  'ssrsena_3rd',  
-  'ssrtemari_campusfes',  
-  'ssrrinami_1st',
-  'ssrrinami_1st2another',
-  'ssrrinami_1st4another',
-  'ssrrinami_3rd',
-  'ssrsaki_1st5another',
-  'ssrsaki_2nd',
-  'ssrchina_1st',
-  'ssrchina_1st4another',
-  'ssrchina_1st7another',
-  'ssrchina_2nd',
-  'ssrsumika_1st',
-  'ssrsumika_1st2another',
-  'ssrsumika_2nd',
-  'ssrmao_1st',
-  'ssrmao_1st9another',
-  'ssrmao_2nd',
-  'ssrmao_3rd',
-  'ssrkotone_1st',
-  'ssrkotone_1st3another',
-  'ssrkotone_2nd',
-  'ssrkotone_3rd',
-  'ssrtemari_1st',
-  'ssrtemari_1st4another',
-  'ssrtemari_1st9another',
-  'ssrtemari_2nd',
-  'ssrlilja_1st',
-  'ssrlilja_1st8another',
-  'ssrlilja_2nd',
-  'ssrlilja_3rd',
-  'ssrhiro_1st',
-  'ssrhiro_1st1another',
-  'ssrhiro_1st6another',
-  'ssrhiro_2nd',
-  'ssrhiro_3rd',
-  'ssrtsubame_1st',
-  'ssrsena_1st',
-  'ssrsena_2nd',
-  'ssrume_1st',
-  'ssrume_1st8another',
-  'ssrmisuzu_1st',
-  'ssrmisuzu_2nd',
-  'ssrrinami_onsen',
-  'ssrchina_onsen',
-  'ssrsaki_animate',
-  'ssrchina_campusfes',
-  'ssrtsubame_campusfes',
-  'ssrsena_campusfes',
-  'ssrsaki_campusfes',
-  'ssrtemari_campusfes',
-  'ssrkotone_campusfes',
-  'ssrmao_campusfes',
-  'ssrrinami_summerlimited',
-  'ssrlilja_kanmurilimited',
-  'ssrrinami_valentinelimited',
-  'ssrsena_valentinelimited',
-  'ssrchina_yukidokenilimited',
-  'ssrlilja_howlinglimited',
-  'ssrmao_miraclelimited',
-  'ssrsena_starmineunit',
-  'ssrume_starmineunit',
-  'ssrmisuzu_starmineunit',
-  'ssrsaki_ameagariunit',
-  'ssrkotone_ameagariunit',
-  'ssrchina_michinaruunit',
-  'ssrhiro_michinaruunit',
-]
-                      
-        ],
+    platinum: { 
+        date: "2025-05-16",
+        pssr: [],
+        sssr: [],
+        sr_card: []
+    },
+    selection: { 
+        date: "2026-05-16",
+        pool_pssr: ['ssrmisuzu_2nd','ssrtsubame_1st','ssrkotone_gamusyaralimited','ssrtemari_gamusyaralimited','ssrsumika_sakuralimited','ssrsaki_sakuralimited','ssrlilja_2nd','ssrsaki_animate','ssrmao_2nd','ssrume_1st','ssrtemari_2nd','ssrsaki_1st'], // 여기에 등장할 PSSR ID들을 직접 기입 (예: ['ssr_id1', 'ssr_id2'])
+        pssr: [],      // 픽업 연출을 줄 카드 (선택 사항)
         sssr: [],
         sr_card: []
     }

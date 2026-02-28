@@ -3,7 +3,7 @@ import { updatePageTranslations, applyBackground } from './utils.js';
 import { state, setJewels, setTotalPulls, clearGachaLog, setGachaType } from './state.js';
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
-import { openGachaLogModal } from './gachalog.js';
+import { pickGacha, getGachaPool, GACHA_STRATEGIES } from './gachalist.js';
 import { CURRENT_PICKUPS } from './gachaconfig.js';
 
 // Web Audio API Context
@@ -157,6 +157,7 @@ export function renderGacha() {
     }
 
     const logBtn = document.getElementById('btn-gacha-log');
+    const ratesBtn = document.getElementById('btn-gacha-rates');
     const resetBtn = document.getElementById('btn-gacha-reset');
     const btn1 = document.getElementById('btn-1pull-fixed');
     const btn10 = document.getElementById('btn-10pull-fixed');
@@ -167,6 +168,49 @@ export function renderGacha() {
     const muteControls = document.getElementById('gacha-header-controls');
     const muteBtn = document.getElementById('gacha-mute-btn');
     const resultsContainer = contentArea.querySelector('#gacha-results');
+
+    // --- 함수 순서 조정 (초기화 에러 방지) ---
+    const updateGachaButtonsState = () => {
+        const isResultView = fixedBtnArea && fixedBtnArea.classList.contains('view-result');
+        const currentPulls = state.totalPulls[state.gachaType] || 0;
+
+        if (btn1) {
+            if (!isResultView && state.gachaType === 'selection') {
+                btn1.style.display = 'none'; // 셀렉션에서는 1회 뽑기 숨김
+            } else {
+                btn1.style.display = 'block'; // 다른 탭에서는 다시 표시
+                btn1.disabled = isResultView ? false : (state.jewels < 250);
+                btn1.style.opacity = '1';
+                // 일반 가챠는 텍스트를 고정하지 않고 필요한 경우에만 업데이트
+                if (!isResultView) {
+                    btn1.innerHTML = (state.currentLang === 'ko' ? '1회 뽑기' : '1回引く') + "<br><span class='btn-cost'>250</span>";
+                }
+            }
+        }
+        
+        if (btn10) {
+            if (isResultView && state.gachaType === 'selection') {
+                btn10.style.display = 'none'; // 결과 화면에서 셀렉션 10회 버튼 숨김
+            } else if (!isResultView && state.gachaType === 'selection' && currentPulls >= 10) {
+                btn10.style.display = 'block';
+                btn10.disabled = true;
+                btn10.style.opacity = '0.5';
+                btn10.innerHTML = (state.currentLang === 'ko' ? '10회 뽑기' : '10回引く') + "<br><span class='btn-cost'>2500</span>";
+            } else {
+                btn10.style.display = 'block'; // 기본적으로 표시
+                const match = btn10.innerHTML.match(/2500|250/);
+                const cost = match ? parseInt(match[0]) : 2500;
+                btn10.disabled = (state.jewels < cost);
+                btn10.style.opacity = '1';
+                // 일반 가챠는 텍스트를 고정하지 않고 필요한 경우에만 업데이트
+                if (!isResultView && state.gachaType !== 'selection') {
+                    btn10.innerHTML = (state.currentLang === 'ko' ? '10회 뽑기' : '10回引く') + "<br><span class='btn-cost'>2500</span>";
+                } else if (!isResultView && state.gachaType === 'selection') {
+                    btn10.innerHTML = (state.currentLang === 'ko' ? '10회 뽑기' : '10回引く') + "<br><span class='btn-cost'>2500</span>";
+                }
+            }
+        }
+    };
 
     const updateJewelUI = () => {
         if (jewelCount) jewelCount.textContent = state.jewels.toLocaleString();
@@ -182,13 +226,14 @@ export function renderGacha() {
         }
     };
 
-    const types = ['normal', 'limited', 'unit', 'fes', 'test'];
+    const types = ['normal', 'limited', 'unit', 'fes', 'platinum', 'selection'];
     const typeDisplayNames = {
         normal: state.currentLang === 'ko' ? '통상' : '恒常',
         limited: state.currentLang === 'ko' ? '한정' : '限定',
         unit: state.currentLang === 'ko' ? '유닛' : 'ユニット',
         fes: state.currentLang === 'ko' ? '페스' : 'フェス',
-        test: 'Test'
+        platinum: state.currentLang === 'ko' ? '플래티넘' : 'プラチナ',
+        selection: state.currentLang === 'ko' ? '셀렉션' : 'セレクション'
     };
 
     const typeDisplay = document.getElementById('current-gacha-type-display');
@@ -211,6 +256,7 @@ export function renderGacha() {
             if (nextSpan) nextSpan.textContent = typeDisplayNames[types[(idx + 1) % types.length]];
         }
         updateTotalPullsUI();
+        updateGachaButtonsState(); // 추가: 가챠 타입 변경 시 버튼 상태 즉시 갱신
 
         // 픽업 배경 업데이트
         const fixedBg = document.getElementById('fixed-bg');
@@ -236,8 +282,10 @@ export function renderGacha() {
 
     if (btnPrev && btnNext) {
         const animateChange = (direction) => {
+            const spinner = document.getElementById('gacha-spinner');
             if (document.body.classList.contains('immersive-mode') || 
-                (fixedBtnArea && fixedBtnArea.classList.contains('view-result'))) {
+                (fixedBtnArea && fixedBtnArea.classList.contains('view-result')) ||
+                (spinner && spinner.classList.contains('active'))) {
                 return;
             }
 
@@ -267,7 +315,12 @@ export function renderGacha() {
 
         const handleSwipe = () => {
             if (isSliding) return;
-            if (document.body.classList.contains('immersive-mode') || (fixedBtnArea && fixedBtnArea.classList.contains('view-result'))) return;
+            const spinner = document.getElementById('gacha-spinner');
+            if (document.body.classList.contains('immersive-mode') || 
+                (fixedBtnArea && fixedBtnArea.classList.contains('view-result')) ||
+                (spinner && spinner.classList.contains('active'))) {
+                return;
+            }
             const swipeDistance = touchEndX - touchStartX;
             if (Math.abs(swipeDistance) > 50) {
                 isSliding = true;
@@ -291,25 +344,6 @@ export function renderGacha() {
 
     updateTypeUI();
 
-    const updateGachaButtonsState = () => {
-        const isResultView = fixedBtnArea && fixedBtnArea.classList.contains('view-result');
-
-        if (btn1) {
-            if (isResultView) btn1.disabled = false;
-            else btn1.disabled = (state.jewels < 250);
-        }
-        
-        if (btn10) {
-            if (isResultView) {
-                const match = btn10.innerHTML.match(/2500|250/);
-                const cost = match ? parseInt(match[0]) : 2500;
-                btn10.disabled = (state.jewels < cost);
-            } else {
-                btn10.disabled = (state.jewels < 2500);
-            }
-        }
-    };
-
     if (jewelContainer) { jewelContainer.classList.remove('hidden'); updateJewelUI(); }
     updateTotalPullsUI();
 
@@ -325,7 +359,30 @@ export function renderGacha() {
     }
 
     if (fixedBtnArea) { fixedBtnArea.classList.remove('hidden'); fixedBtnArea.style.display = 'flex'; }
-    if (logBtn) { logBtn.classList.remove('hidden'); logBtn.onclick = openGachaLogModal; }
+    if (logBtn) { 
+        logBtn.classList.remove('hidden'); 
+        logBtn.onclick = () => {
+            const modal = document.getElementById('gacha-log-modal');
+            if (modal) {
+                // 히스토리 추가
+                history.pushState({ modalOpen: 'gachaLog' }, "");
+                import('./gachalog.js').then(m => {
+                    m.openGachaLogModal();
+                    modal.style.display = 'flex'; // 확실히 열기
+                });
+            }
+        };
+    }
+    if (ratesBtn) {
+        ratesBtn.classList.remove('hidden');
+        ratesBtn.onclick = () => {
+            const modal = document.getElementById('gacha-rates-modal');
+            if (modal) {
+                history.pushState({ modalOpen: 'rates' }, "");
+                import('./gacharates.js').then(m => m.openGachaRatesModal());
+            }
+        };
+    }
     if (resetBtn) {
         resetBtn.classList.remove('hidden');
         resetBtn.onclick = () => {
@@ -358,7 +415,7 @@ export function renderGacha() {
 
     if (!state.gachaMuted) playMainBGM();
 
-    const spinner = contentArea.querySelector('#gacha-spinner');
+    const spinner = document.getElementById('gacha-spinner');
     if (btn1) btn1.disabled = true;
     if (btn10) btn10.disabled = true;
     if (spinner) spinner.classList.add('active');
@@ -438,6 +495,7 @@ export function renderGacha() {
             if (jewelContainer) jewelContainer.classList.remove('hidden');
             if (fixedBtnArea) { fixedBtnArea.classList.remove('view-main'); fixedBtnArea.classList.add('view-result'); }
             if (btn1 && btn10) {
+                const isSelection = state.gachaType === 'selection';
                 btn1.classList.add('close-style');
                 btn1.innerHTML = "<span class='close-x'>✕</span> " + translations[state.currentLang].gacha_close;
                 btn1.onclick = () => {
@@ -445,11 +503,18 @@ export function renderGacha() {
                     btn10.style.pointerEvents = 'none';
                     setTimeout(() => renderGacha(), 100);
                 };
+
                 const is10 = (gachaMode === 10);
-                btn10.innerHTML = translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull'] + "<br><span class='btn-cost'>" + (is10 ? "2500" : "250") + "</span>";
-                btn10.onclick = () => {
-                    handleGachaClick(gachaMode);
-                };
+                if (isSelection) {
+                    btn10.style.display = 'none'; // 셀렉션이면 결과창에서 즉시 숨김
+                } else {
+                    btn10.style.display = 'block';
+                    btn10.innerHTML = translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull'] + "<br><span class='btn-cost'>" + (is10 ? "2500" : "250") + "</span>";
+                    btn10.onclick = () => {
+                        handleGachaClick(gachaMode);
+                    };
+                }
+
                 btn1.style.pointerEvents = 'none';
                 btn10.style.pointerEvents = 'none';
                 setTimeout(() => {

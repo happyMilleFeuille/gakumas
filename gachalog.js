@@ -94,8 +94,7 @@ export function openGachaLogModal() {
     list.appendChild(fragment);
 
     modal.classList.remove('hidden');
-    // 모달 상태 히스토리 추가 (뒤로가기 시 닫힘 처리용)
-    history.pushState({ modalOpen: 'gachaLog' }, "");
+    modal.style.display = 'flex'; // 확실히 표시
 }
 
 function renderStats(container, total, stats, topChar) {
@@ -114,7 +113,6 @@ function renderStats(container, total, stats, topChar) {
     const charThumb = topChar ? `
         <div class="stat-header-thumb-container">
             <img src="./icons/idolicons/${topChar.charId}.png" class="stat-header-thumb">
-            <img src="./icons/${topChar.plan}.webp" class="stat-header-plan">
         </div>` : '';
 
     container.innerHTML = `

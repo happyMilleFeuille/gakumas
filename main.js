@@ -117,8 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 모달 닫기
     const modal = document.getElementById('card-modal');
     const gachaLogModal = document.getElementById('gacha-log-modal');
+    const gachaRatesModal = document.getElementById('gacha-rates-modal');
     const closeModal = document.querySelector('.close-modal');
     const closeGachaLogModal = document.querySelector('.close-log-modal');
+    const closeGachaRatesModal = document.querySelector('.close-rates-modal');
     
     function hideModal() {
         if (!modal.classList.contains('hidden')) {
@@ -129,43 +131,50 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideGachaLogModal() {
         if (gachaLogModal && !gachaLogModal.classList.contains('hidden')) {
             gachaLogModal.classList.add('hidden');
+            gachaLogModal.style.display = 'none';
+        }
+    }
+
+    function hideGachaRatesModal() {
+        if (gachaRatesModal && !gachaRatesModal.classList.contains('hidden')) {
+            gachaRatesModal.classList.add('hidden');
+            gachaRatesModal.style.display = 'none';
         }
     }
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
-            if (history.state && history.state.modalOpen === true) {
-                history.back(); 
-            } else {
-                hideModal();
-            }
+            if (history.state && history.state.modalOpen === true) history.back(); 
+            else hideModal();
         });
     }
 
     if (closeGachaLogModal) {
         closeGachaLogModal.addEventListener('click', () => {
-            if (history.state && history.state.modalOpen === 'gachaLog') {
-                history.back();
-            } else {
-                hideGachaLogModal();
-            }
+            if (history.state && history.state.modalOpen === 'gachaLog') history.back();
+            else hideGachaLogModal();
+        });
+    }
+
+    if (closeGachaRatesModal) {
+        closeGachaRatesModal.addEventListener('click', () => {
+            if (history.state && history.state.modalOpen === 'rates') history.back();
+            else hideGachaRatesModal();
         });
     }
 
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
-            if (history.state && history.state.modalOpen === true) {
-                history.back();
-            } else {
-                hideModal();
-            }
+            if (history.state && history.state.modalOpen === true) history.back();
+            else hideModal();
         }
         if (event.target === gachaLogModal) {
-            if (history.state && history.state.modalOpen === 'gachaLog') {
-                history.back();
-            } else {
-                hideGachaLogModal();
-            }
+            if (history.state && history.state.modalOpen === 'gachaLog') history.back();
+            else hideGachaLogModal();
+        }
+        if (event.target === gachaRatesModal) {
+            if (history.state && history.state.modalOpen === 'rates') history.back();
+            else hideGachaRatesModal();
         }
     });
 
@@ -173,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         const cardModal = document.getElementById('card-modal');
         const gachaLogModal = document.getElementById('gacha-log-modal');
+        const gachaRatesModal = document.getElementById('gacha-rates-modal');
         const videoModal = document.getElementById('video-modal');
         const resultsContainer = document.querySelector('#gacha-results');
         const calcPanel = document.getElementById('calc-side-panel');
@@ -205,6 +215,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. 가챠 로그 모달이 열려있으면 닫기
         if (gachaLogModal && !gachaLogModal.classList.contains('hidden')) {
             hideGachaLogModal();
+            return;
+        }
+
+        // [추가] 가챠 확률 모달이 열려있으면 닫기
+        if (gachaRatesModal && !gachaRatesModal.classList.contains('hidden')) {
+            hideGachaRatesModal();
             return;
         }
 

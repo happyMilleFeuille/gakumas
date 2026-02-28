@@ -1108,7 +1108,27 @@ export const cardList = [
             "gift",
             "event_paraup"
         ]        
-    },                                                             
+    },
+    { 
+    id: "dance_logic2", 
+    name: "드디어 찾았다!", 
+    name_ja: "やっと見つけたぞ!",     
+    type: "dance", 
+    plan: "logic", 
+    have:"item",
+    releasedAt: "2025-11-16",    
+    rarity: "SSR", 
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "delete",
+            "event_paraup"
+        ]        
+    },                                                                   
     { 
     id: "dance_distlogic1", 
     name: "우리들, 하면 된다", 
@@ -1214,28 +1234,7 @@ export const cardList = [
             "enhance_metal",
             "event_paraup"
         ]        
-    },
-    { 
-    id: "dance_feslogic1", 
-    name: "드디어 찾았다!", 
-    name_ja: "やっと見つけたぞ!",     
-    type: "dance", 
-    plan: "logic", 
-    have:"item",
-    releasedAt: "2025-11-16",    
-    source: "limited",
-    rarity: "SSR", 
-    extra1: "param", extra2:"ranenhance",    
-        abilities: 
-        [
-            "fixedparam",
-            "sp_lessonup",
-            "supportrateup", 
-            "sp_param",
-            "delete",
-            "event_paraup"
-        ]        
-    },    
+    },  
     { 
     id: "dance_anomaly1", 
     name: "기다리렴!", 

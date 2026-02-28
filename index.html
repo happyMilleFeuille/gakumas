@@ -11,11 +11,13 @@
     <link rel="stylesheet" href="css/support.css">
     <link rel="stylesheet" href="css/gacha.css">
     <link rel="stylesheet" href="css/gachalog.css">
+    <link rel="stylesheet" href="css/gacharates.css">
     <link rel="stylesheet" href="css/gacha_anim.css">
     <link rel="stylesheet" href="css/calc.css">
 </head>
 <body>
     <div id="fixed-bg"></div>
+    <div id="gacha-spinner" class="spinner"></div>
 
     <main>
         <section id="idol">
@@ -53,6 +55,7 @@
                             <span class="dot"></span>
                             <span class="dot"></span>
                             <span class="dot"></span>
+                            <span class="dot"></span>
                         </div>
                     </div>
                     <button id="btn-next-gacha" class="type-nav-btn circle-btn"><span></span></button>
@@ -60,8 +63,10 @@
                 <button class="primary-btn gacha-btn" id="btn-1pull-fixed">1회 뽑기</button>
                 <button class="primary-btn gacha-btn" id="btn-10pull-fixed">10회 뽑기</button>
             </div>
-            <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">가챠 기록</button>
-            <div id="gacha-header-controls" class="gacha-header-controls hidden">
+            <div class="gacha-sub-buttons">
+                <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">가챠 기록</button>
+                <button id="btn-gacha-rates" class="log-btn hidden" data-i18n="gacha_rates">가챠 확률</button>
+            </div>            <div id="gacha-header-controls" class="gacha-header-controls hidden">
                 <button id="gacha-mute-btn" class="mute-toggle-btn">🔇</button>
             </div>
             <div id="jewel-container" class="jewel-container hidden">
@@ -136,6 +141,17 @@
             </div>
             <div id="gacha-log-list" class="gacha-log-list">
                 <!-- 가챠 기록이 여기에 동적으로 추가됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Gacha Rates Modal -->
+    <div id="gacha-rates-modal" class="modal hidden">
+        <div class="modal-content rates-modal-content">
+            <span class="close-rates-modal">&times;</span>
+            <h2 id="rates-modal-title" class="rates-title">가챠 확률 정보</h2>
+            <div id="gacha-rates-body" class="gacha-rates-body">
+                <!-- 확률 정보가 동적으로 삽입됨 -->
             </div>
         </div>
     </div>
@@ -227,7 +243,6 @@
                 <video id="gacha-video-next" class="gacha-vid hidden" playsinline></video>
                 <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
             </div>
-            <div id="gacha-spinner" class="spinner"></div>
             <div id="gacha-results" class="gacha-results"></div>
         </div>
     </template>
