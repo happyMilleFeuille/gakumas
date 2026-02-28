@@ -1819,7 +1819,7 @@ export const cardList = [
     name: "혼잣말이에요", 
     name_ja: "ひとりごとです",     
     type: "visual", 
-    releasedAt: "2025-05-26",        
+    releasedAt: "2025-05-16",        
     plan: "anomaly", 
     have:"item",
     rarity: "SSR",         

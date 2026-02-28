@@ -38,11 +38,25 @@ async function loadGachaAssets() {
     if (isAssetsLoading) return;
 
     isAssetsLoading = true;
+    const progressText = document.getElementById('gacha-progress-text');
+    let loadedCount = 0;
+    const totalCount = GACHA_ASSETS.length;
+
+    const updateProgress = () => {
+        if (progressText) {
+            const percent = Math.floor((loadedCount / totalCount) * 100);
+            progressText.textContent = `${percent}%`;
+        }
+    };
+
     assetsLoadedPromise = (async () => {
         const loadTasks = GACHA_ASSETS.map(async (src) => {
             // 이미 로드된 경우 스킵
-            if (src.endsWith('.mp3') && audioBuffers[src]) return;
-            if (src.endsWith('.mp4') && assetBlobs[src]) return;
+            if ((src.endsWith('.mp3') && audioBuffers[src]) || (src.endsWith('.mp4') && assetBlobs[src])) {
+                loadedCount++;
+                updateProgress();
+                return;
+            }
 
             try {
                 const response = await fetch(src);
@@ -57,11 +71,16 @@ async function loadGachaAssets() {
                 }
             } catch (error) {
                 console.error(`Failed to load asset: ${src}`, error);
+            } finally {
+                loadedCount++;
+                updateProgress();
             }
         });
 
         await Promise.allSettled(loadTasks);
         isAssetsLoading = false;
+        // 로딩 완료 후 텍스트 초기화 (다음에 다시 띄울 때를 위해)
+        if (progressText) progressText.textContent = '0%';
     })();
 
     return assetsLoadedPromise;
@@ -94,6 +113,13 @@ export function playSound(name, options = {}) {
 }
 
 export function stopBGM(type) {
+    if (type === 'all') {
+        Object.keys(activeNodes).forEach(key => {
+            try { activeNodes[key].stop(); } catch(e) {}
+            delete activeNodes[key];
+        });
+        return;
+    }
     if (activeNodes[type]) {
         try { activeNodes[type].stop(); } catch(e) {}
         delete activeNodes[type];
@@ -484,17 +510,18 @@ export function renderGacha() {
             prePullExistingIds = new Set(currentLog.map(item => item.id));
             if (muteControls) muteControls.style.display = 'none';
             if (logBtn) logBtn.classList.add('hidden');
+            if (ratesBtn) ratesBtn.classList.add('hidden');
             if (resetBtn) resetBtn.classList.add('hidden');
             if (jewelContainer) jewelContainer.classList.add('hidden');
             if (controlsTop) controlsTop.classList.add('hidden');
         },
         onFinish: (currentResults, gachaMode) => {
             document.body.classList.add('gacha-result-active');
-            updateTotalPullsUI(prevPulls); 
+            updateTotalPullsUI(prevPulls);
             if (logBtn) logBtn.classList.remove('hidden');
+            if (ratesBtn) ratesBtn.classList.remove('hidden');
             if (jewelContainer) jewelContainer.classList.remove('hidden');
-            if (fixedBtnArea) { fixedBtnArea.classList.remove('view-main'); fixedBtnArea.classList.add('view-result'); }
-            if (btn1 && btn10) {
+            if (fixedBtnArea) { fixedBtnArea.classList.remove('view-main'); fixedBtnArea.classList.add('view-result'); }            if (btn1 && btn10) {
                 const isSelection = state.gachaType === 'selection';
                 btn1.classList.add('close-style');
                 btn1.innerHTML = "<span class='close-x'>✕</span> " + translations[state.currentLang].gacha_close;

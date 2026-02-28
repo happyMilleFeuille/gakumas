@@ -215,9 +215,9 @@ export function openGachaRatesModal() {
                                                     <td colspan="3">
                                                         <div class="detail-container">
                                                             <div class="detail-header">
-                                                                <span class="header-name">카드명</span>
-                                                                <span class="header-rate">일반</span>
-                                                                <span class="header-rate">확정</span>
+                                                                <span class="header-name">${lang === 'ja' ? '名前' : '이름'}</span>
+                                                                <span class="header-rate">${lang === 'ja' ? '通常' : '일반'}</span>
+                                                                <span class="header-rate">${lang === 'ja' ? '確定' : '확정'}</span>
                                                             </div>
                                                             <div class="detail-list">
                                                                 ${cards.map(c => {

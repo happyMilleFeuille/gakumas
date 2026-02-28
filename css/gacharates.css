@@ -126,9 +126,19 @@
 .detail-container {
     max-height: 500px;
     overflow-y: auto;
-    padding: 5px 15px;
-    border-left: 3px solid #ff4081; /* 등급색에 맞춤 */
-    margin: 5px 0 5px 40px;
+    padding: 8px 10px;
+    border-left: 3px solid #ff4081; /* 3px로 조정 */
+    margin: 5px 0 10px 0; 
+    background-color: #f7f7f7; /* 살짝 더 밝은 회색으로 조정 */
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+    .detail-container {
+        margin-left: 0; /* 모바일에서도 여백 제거 */
+        padding: 5px 4px;
+    }
 }
 
 .detail-header {
@@ -141,8 +151,8 @@
     border-bottom: 1px solid #ddd;
 }
 
-.header-name { flex: 1; text-align: left; }
-.header-rate { width: 70px; text-align: right; }
+.header-name { flex: 1; text-align: center; }
+.header-rate { width: 70px; text-align: center; }
 
 .detail-item {
     display: flex;
@@ -202,7 +212,7 @@
 
 .detail-rate {
     width: 70px;
-    text-align: right;
+    text-align: center;
     font-family: monospace;
     font-size: 0.8rem;
     color: #666;
@@ -238,7 +248,7 @@
 @media (max-width: 768px) {
     .rates-modal-content {
         padding: 0.8rem 0.4rem;
-        width: 98%;
+        width: 90%;
         min-height: 70vh;
         max-height: 85vh;
     }
@@ -250,10 +260,11 @@
     .detail-header { font-size: 0.6rem; padding: 3px; }
     .header-rate { width: 55px; }
     .detail-item { padding: 3px 2px; }
-    .detail-name { font-size: 0.6rem; }
-    .detail-char-name { font-size: 0.5rem; }
+    .detail-name { font-size: 0.5rem; }
+    .detail-char-name { font-size: 0.4rem; }
+    .detail-name-wrapper { max-width: 120px; }
     .detail-rate-group { width: 110px; gap: 4px; }
-    .detail-rate { width: 55px; font-size: 0.6rem; }
+    .detail-rate { width: 55px; font-size: 0.6rem; text-align: center; }
 }
 
 .rates-footer { border-top: 1px solid #eee; padding-top: 0.8rem; margin-top: 10px; flex-shrink: 0; }

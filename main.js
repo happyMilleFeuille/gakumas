@@ -254,4 +254,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // 5. 기본 내비게이션
         handleNavigation('home', true);
     });
+
+    // [추가] 페이지 가시성(Visibility) 감지하여 오디오 제어
+    document.addEventListener('visibilitychange', () => {
+        import('./gacha.js').then(m => {
+            if (m.audioCtx) {
+                if (document.hidden) {
+                    // 탭을 내리거나 홈 화면으로 나갔을 때 일시 정지
+                    m.audioCtx.suspend();
+                } else {
+                    // 다시 돌아왔을 때 재개 (음소거 상태가 아닐 때만)
+                    const { state } = m;
+                    if (state && !state.gachaMuted) {
+                        m.audioCtx.resume();
+                    }
+                }
+            }
+        });
+    });
 });

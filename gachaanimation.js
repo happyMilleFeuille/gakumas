@@ -372,6 +372,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     const finishGacha = () => {
         stopBGM('gacha'); stopBGM('main'); stopBGM('blackout'); stopStepSfx();
         resetOverlays();
+        canClick = false; // 종료 시 즉시 클릭 차단
+        if (clickTimer) clearTimeout(clickTimer);
+        
         if (!state.gachaMuted) playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
         playSound(gachaMode === 1 ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3');
         if (videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
@@ -385,6 +388,12 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const startGacha = (mode, results) => {
         stopBGM('main'); 
+        // 상태 초기화
+        canClick = false;
+        if (clickTimer) clearTimeout(clickTimer);
+        currentStep = 0;
+        subState = "";
+        
         const cost = (mode === 1) ? 250 : 2500;
         const prevPulls = state.totalPulls[state.gachaType] || 0;
         setJewels(state.jewels - cost);

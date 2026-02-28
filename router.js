@@ -14,6 +14,7 @@ export function handleNavigation(target, isBack = false) {
     const gachaElements = [
         'gacha-fixed-buttons',
         'btn-gacha-log',
+        'btn-gacha-rates',
         'btn-gacha-reset',
         'gacha-header-controls',
         'jewel-container'
@@ -29,8 +30,7 @@ export function handleNavigation(target, isBack = false) {
 
     // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 초기화
     if (target !== 'gacha') {
-        stopBGM('main');
-        stopBGM('gacha');
+        stopBGM('all'); // 모든 오디오(BGM 및 효과음) 즉시 중단
         
         const fixedBg = document.getElementById('fixed-bg');
         if (fixedBg) {

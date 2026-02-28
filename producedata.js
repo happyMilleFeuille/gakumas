@@ -169,7 +169,7 @@ export const produceList = [
     { id: "ssrmisuzu_1st11another", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "limited",releasedAt: "2025-09-29", another: true },
     { id: "ssrmisuzu_1st3another", name: "가장광소곡",name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", source: "limited" ,releasedAt: "2025-11-07", another: true},    
     { id: "ssrmisuzu_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "anomaly",releasedAt: "2025-11-21", source: "normal", another: true },      
-    { id: "ssrmisuzu_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited",releasedAt: "2025-11-28", another: true },    
+    { id: "ssrmisuzu_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited",releasedAt: "2025-12-18", another: true },    
     { id: "ssrmisuzu_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "anomaly", source: "limited",releasedAt: "2026-02-14", another: true },        
     { id: "ssrmisuzu_2nd", name: "Superlative", rarity: "PSSR", plan: "logic", source: "normal" ,jumpTime2:7.2,releasedAt: "2026-01-05",youtube_url: "https://youtu.be/O2VI4mS6kfg?si=wlIuIkRlKwinObss"},    
     
