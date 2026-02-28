@@ -35,7 +35,7 @@ export const CURRENT_PICKUPS = {
         sr_card: []
     },
     selection: { 
-        date: "2026-05-16",
+        date: "2025-05-16",
         pool_pssr: ['ssrmisuzu_2nd','ssrtsubame_1st','ssrkotone_gamusyaralimited','ssrtemari_gamusyaralimited','ssrsumika_sakuralimited','ssrsaki_sakuralimited','ssrlilja_2nd','ssrsaki_animate','ssrmao_2nd','ssrume_1st','ssrtemari_2nd','ssrsaki_1st'], // 여기에 등장할 PSSR ID들을 직접 기입 (예: ['ssr_id1', 'ssr_id2'])
         pssr: [],      // 픽업 연출을 줄 카드 (선택 사항)
         sssr: [],
