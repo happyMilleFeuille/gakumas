@@ -1,7 +1,7 @@
 // gacharates.js
 import { state } from './state.js';
 import { GACHA_STRATEGIES, getGachaPool } from './gachalist.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import translations from './i18n.js';
 
@@ -73,6 +73,24 @@ export function openGachaRatesModal() {
             const cardData = produceList.find(c => c.id === pid);
             activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
         }
+    } else if (type === 'unit') {
+        const unt = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+        if (unt) {
+            config = unt.pool || config;
+            const firstPSSR = config.pssr?.[0];
+            const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+            const cardData = produceList.find(c => c.id === pid);
+            activeName = unt.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
+        }
+    } else if (type === 'fes') {
+        const fes = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+        if (fes) {
+            config = fes.pool || config;
+            const firstPSSR = config.pssr?.[0];
+            const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+            const cardData = produceList.find(c => c.id === pid);
+            activeName = fes.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
+        }
     }
 
     const rateKeys = { PSSR: 'PSSR', SSSR: 'SSSR', PSR: 'PSR', SR_CARD: 'SSR_CARD', PR: 'PR', R_CARD: 'R_CARD' };
@@ -96,9 +114,9 @@ export function openGachaRatesModal() {
         const totalRate = strategy.rates[internalKey] || 0;
         const totalGuaranteed = strategy.guaranteed[internalKey] || 0;
 
-        const pickups = (rarityKey === 'PSSR') ? (config.pssr || []) : 
-                       (rarityKey === 'SSSR' ? (config.sssr || []) : 
-                       (rarityKey === 'SR_CARD' ? (config.sr_card || []) : []));
+        const pickups = (rarityKey === 'PSSR') ? (config.pssr || config.pool?.pssr || []) : 
+                       (rarityKey === 'SSSR' ? (config.sssr || config.pool?.sssr || []) : 
+                       (rarityKey === 'SR_CARD' ? (config.sr_card || config.pool?.sr_card || []) : []));
         
         const pickupIds = pickups.map(p => typeof p === 'string' ? p : p.id);
         const pickupCards = rarityPool.filter(c => pickupIds.includes(c.id));
@@ -124,18 +142,42 @@ export function openGachaRatesModal() {
             });
         } else {
             let pTotal = 0;
-            if (rarityKey === 'PSSR') pTotal = (type === 'unit' ? 0.015 : 0.0075);
-            else if (rarityKey === 'SSSR') pTotal = 0.01;
+            if (rarityKey === 'PSSR') {
+                // 유닛 가챠는 인원수당 0.75%, 그 외는 단일 0.75%
+                pTotal = (type === 'unit' ? 0.0075 * pickupCards.length : 0.0075);
+            }
+            else if (rarityKey === 'SSSR') {
+                // SSSR 역시 인원수당 1.0% (최대치 제한)
+                pTotal = (type === 'unit' ? 0.01 * pickupCards.length : 0.01);
+            }
             else if (rarityKey === 'SR_CARD') pTotal = 0.04;
+            
             const actualPTotal = pickupCards.length > 0 ? Math.min(pTotal, totalRate) : 0;
             const pRN = actualPTotal / Math.max(1, pickupCards.length);
-            const nRN = (totalRate - actualPTotal) / Math.max(1, regularCards.length);
+            
+            // 일반 확률 미세 오차 제거
+            let nRN = (totalRate - actualPTotal) / Math.max(1, regularCards.length);
+            if (totalRate - actualPTotal < 0.00001) nRN = 0;
+
             let pRG = 0, nRG = 0;
             if (totalGuaranteed > 0) {
+                // 확정 슬롯에서의 픽업 합산 확률 계산 (유닛 가챠는 개별 비율 유지)
                 let pTG = (rarityKey === 'SR_CARD') ? 0.223529 : (actualPTotal * (totalGuaranteed / totalRate));
-                pTG = Math.min(totalGuaranteed * 0.99, pTG);
+                
+                // 유닛 가챠의 경우, 전체 확정 확률(totalGuaranteed)을 넘지 않는 선에서 픽업 합산 적용
+                if (type === 'unit' && rarityKey === 'PSSR') {
+                    pTG = 0.0075 * pickupCards.length * (totalGuaranteed / totalRate);
+                }
+
+                // 확정 확률 미세 오차 제거 (픽업 합계가 전체 확률과 거의 같으면 픽뚫 0)
+                if (totalGuaranteed - pTG < 0.00001) {
+                    pTG = totalGuaranteed;
+                    nRG = 0;
+                } else {
+                    nRG = (totalGuaranteed - pTG) / Math.max(1, regularCards.length);
+                }
+                
                 pRG = pTG / Math.max(1, pickupCards.length);
-                nRG = (totalGuaranteed - pTG) / Math.max(1, regularCards.length);
             }
             results = rarityPool.map(c => {
                 const isPk = pickupIds.includes(c.id);
@@ -176,7 +218,9 @@ export function openGachaRatesModal() {
                                         const isSupport = c.rarity.includes('CARD') || c.rarity === 'SSSR', imgTag = isSupport ? `<img src="images/support/${c.card.id}.webp" class="detail-card-img" onerror="this.style.display='none'" alt="">` : "";
                                         const isPk = c.isPk && !config.isOnlyPool;
                                         const pkClass = isPk ? 'is-pickup' : '';
-                                        return `<div class="detail-item ${pkClass}"><div class="detail-name-row">${imgTag}<div class="detail-name-wrapper"><span class="detail-name">${isPk ? '[PICKUP] ' : ''}${c.name}</span>${c.charName ? `<span class="detail-char-name">${c.charName}</span>` : ""}</div></div><div class="detail-rate-group"><span class="detail-rate">${formatPercent(c.normalRate)}</span><span class="detail-rate">${c.guaranteedRate > 0 ? formatPercent(c.guaranteedRate) : '-'}</span></div></div>`;
+                                        const displayNormalRate = c.normalRate > 0.000001 ? formatPercent(c.normalRate) : '-';
+                                        const displayGuaranteedRate = c.guaranteedRate > 0.000001 ? formatPercent(c.guaranteedRate) : '-';
+                                        return `<div class="detail-item ${pkClass}"><div class="detail-name-row">${imgTag}<div class="detail-name-wrapper"><span class="detail-name">${isPk ? '[PICKUP] ' : ''}${c.name}</span>${c.charName ? `<span class="detail-char-name">${c.charName}</span>` : ""}</div></div><div class="detail-rate-group"><span class="detail-rate">${displayNormalRate}</span><span class="detail-rate">${displayGuaranteedRate}</span></div></div>`;
                                     }).join('')}</div></div></td></tr>`;
                             }).join('')}</tbody></table></td></tr>`;
                 }).join('')}

@@ -53,8 +53,20 @@ export const state = {
     selectedPickup: safeParse('selectedPickup', {}),
     activeSelectionId: localStorage.getItem('activeSelectionId') || 'ongakusai_day1',
     activeNormalId: localStorage.getItem('activeNormalId') || 'normal_default',
-    activeLimitedId: localStorage.getItem('activeLimitedId') || 'limited_default'
+    activeLimitedId: localStorage.getItem('activeLimitedId') || 'ssrume_endlesslimited',
+    activeUnitId: localStorage.getItem('activeUnitId') || 'ssrchina_michinaruunit',
+    activeFesId: localStorage.getItem('activeFesId') || 'ssrtsubame_campusfes'
 };
+
+export function setActiveFesId(id) {
+    state.activeFesId = id;
+    localStorage.setItem('activeFesId', id);
+}
+
+export function setActiveUnitId(id) {
+    state.activeUnitId = id;
+    localStorage.setItem('activeUnitId', id);
+}
 
 export function setActiveSelectionId(id) {
     state.activeSelectionId = id;

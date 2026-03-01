@@ -1,7 +1,7 @@
 import { state, setJewels, setTotalPulls, addGachaLog } from './state.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopBGM } from './gacha.js';
-import { CURRENT_PICKUPS } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 
 // 연출 상태 정의
 const States = {
@@ -294,7 +294,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         nameOverlay.classList.remove('produce-name', 'landscape-name');
         nameOverlay.classList.add(isSupport ? 'landscape-name' : 'produce-name');
 
-        imgOverlay.src = card.type === 'produce' ? `idols/${card.id}1.webp` : `images/support/${card.id}.webp`;
+        if (card.type === 'produce') {
+            imgOverlay.src = `idols/${card.id}1.webp`;
+        } else {
+            imgOverlay.src = `images/support/${card.id}.webp`;
+        }
         nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
         nameOverlay.style.background = (card.displayRarity === 'SSR' ? '#a335ee' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
 
@@ -333,6 +337,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 if (clickTimer) clearTimeout(clickTimer);
                 
                 videoNext.src = assetBlobs[`gasya/pssr/${card.id}.mp4`];
+                videoNext.muted = state.gachaMuted; // PSSR 영상 음소거 동기화
                 videoNext.onplaying = () => { 
                     if (currentState !== States.SHOWING_INDIVIDUAL) return; 
                     subState = "pssr_special"; 
@@ -388,6 +393,10 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const startGacha = (mode, results) => {
         stopBGM('main'); 
+        // 비디오 음소거 상태 동기화
+        if (videoMain) videoMain.muted = state.gachaMuted;
+        if (videoNext) videoNext.muted = state.gachaMuted;
+
         // 상태 초기화
         canClick = false;
         if (clickTimer) clearTimeout(clickTimer);
@@ -402,11 +411,22 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         currentResults = results;
         const currentLog = state.gachaLog[state.gachaType] || [];
         existingIdsSet = new Set(currentLog.map(item => item.id));
-        const pickups = CURRENT_PICKUPS[state.gachaType] || { pssr: [] };
-        const pssrPickup = currentResults.find(c => pickups.pssr.some(p => p.id === c.id));
+        // 현재 활성화된 가챠의 상세 설정 가져오기 (픽업 정보 추출용)
+        const type = state.gachaType;
+        let activeCfg = CURRENT_PICKUPS[type] || { pssr: [] };
+        if (type === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
+        else if (type === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+        else if (type === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
+        else if (type === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+        else if (type === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+
+        const pssrPickups = activeCfg.pssr || activeCfg.pool?.pssr || [];
+        const pssrPickup = currentResults.find(c => pssrPickups.some(p => (typeof p === 'string' ? p : p.id) === c.id));
+        
         blackoutScheduled = null;
         if (pssrPickup && Math.random() < 0.9) {
-            const char = pickups.pssr.find(p => p.id === pssrPickup.id)?.char;
+            const p = pssrPickups.find(p => (typeof p === 'string' ? p : p.id) === pssrPickup.id);
+            const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
             const highest = getHighestRarity(currentResults);
             blackoutScheduled = { step: Math.floor(Math.random() * (highest === 'R' ? 2 : 3)) + 1, time: 0.3 + Math.random() * 0.8, char };
         }

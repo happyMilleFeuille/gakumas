@@ -2,21 +2,6 @@
 // 현재 가챠 픽업 설정 (ID 및 캐릭터 식별자)
 export const CURRENT_PICKUPS = {
 
-    unit: { 
-        date: "2026-01-17",
-        pssr: [
-            { id: 'ssrchina_michinaruunit', char: 'china' },
-            { id: 'ssrhiro_michinaruunit', char: 'hiro' }
-        ],
-        sssr: ['vocal_unitlogic1'],
-        sr_card: ['visual_srunitsense1']
-    },
-    fes: { 
-        date: "2025-12-26",
-        pssr: ['ssrtsubame_campusfes'],
-        sssr: ['dance_fessense1'],
-        sr_card: []
-    },
     platinum: { 
         date: "2025-05-16",
         pssr: [],
@@ -24,6 +9,62 @@ export const CURRENT_PICKUPS = {
         sr_card: []
     }
 };
+
+// 페스 가챠 상세 설정
+export const FES_CONFIG = [
+    {
+        id: 'ssrtsubame_campusfes',
+        date: '2025-12-26',
+        bannerImg: 'idols/ssrtsubame_campusfes1.webp',
+        pool: {
+            pssr: ['ssrtsubame_campusfes'],
+            sssr: ['dance_fessense1'],
+            sr_card: []
+        }
+    },
+    {
+        id: 'ssrtmisuzu_campusfes',
+        date: '2025-06-30',
+        bannerImg: 'idols/ssrmisuzu_campusfes1.webp',
+        pool: {
+            pssr: ['ssrmisuzu_campusfes'],
+            sssr: ['vocal_feslogic1'],
+            sr_card: []
+        }
+    }    
+];
+
+// 유닛 가챠 상세 설정
+export const UNIT_CONFIG = [
+    {
+        id: 'michinaruunit',
+        date: '2026-01-17',
+        bannerImg: 'idols/ssrchina_michinaruunit1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrchina_michinaruunit', char: 'china' },
+                { id: 'ssrhiro_michinaruunit', char: 'hiro' }
+            ],
+            sssr: ['vocal_unitlogic1'],
+            sr_card: ['visual_srunitsense1']
+        }
+    },
+    {
+        id: 'starmineunit',
+        date: '2025-07-31',
+        bannerImg: 'idols/ssrsena_starmineunit1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrsena_starmineunit', char: 'sena' },
+                { id: 'ssrmisuzu_starmineunit', char: 'misuzu' },
+                { id: 'ssrume_starmineunit', char: 'ume' },
+
+            ],
+            sssr: ['dance_unitfree2'],
+            sr_card: ['dance_srunitfree1']
+        }
+    }    
+];
 
 // 통상 가챠 상세 설정 (기간별 라인업 등)
 export const NORMAL_CONFIG = [

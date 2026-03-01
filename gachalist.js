@@ -1,7 +1,7 @@
 // gachalist.js
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { state } from './state.js';
 
 // --- 확률 테이블 정의 ---
@@ -53,15 +53,19 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
     const srCardList = pickups.sr_card || pickups.pool?.sr_card || [];
 
     if (key === 'PSSR' && pssrList.length > 0) {
-        const pickupRate = 0.0075 / RATES.PSSR; 
-        if (rand < pickupRate) return getRandomFrom(pssrList.map(p => produceList.find(c => c.id === (typeof p === 'string' ? p : p.id))).filter(Boolean));
+        // 개별 픽업 캐릭터당 0.75% 고정, 인원수에 따라 합산
+        const totalPickupRate = 0.0075 * pssrList.length;
+        const pickupRatio = totalPickupRate / rates.PSSR; 
+        if (rand < pickupRatio) return getRandomFrom(pssrList.map(p => produceList.find(c => c.id === (typeof p === 'string' ? p : p.id))).filter(Boolean));
     }
     if (key === 'SSSR' && sssrList.length > 0) {
-        const pickupRate = 0.01 / RATES.SSSR;
-        if (rand < pickupRate) return getRandomFrom(sssrList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
+        // 개별 픽업 서포트 카드당 1.0% 고정
+        const totalPickupRate = 0.01 * sssrList.length;
+        const pickupRatio = totalPickupRate / rates.SSSR;
+        if (rand < pickupRatio) return getRandomFrom(sssrList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
     }
     if (key === 'SR_CARD' && srCardList.length > 0) {
-        const baseRate = isGuaranteedSlot ? (0.223529 / 0.57) : (0.04 / RATES.SSR_CARD);
+        const baseRate = isGuaranteedSlot ? (0.223529 / 0.57) : (0.04 / rates.SSR_CARD);
         if (rand < baseRate) return getRandomFrom(srCardList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
     }
 
@@ -94,6 +98,12 @@ export function getGachaPool(poolType) {
     } else if (poolType === 'limited') {
         const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         if (lim) config = lim.pool || config;
+    } else if (poolType === 'unit') {
+        const unt = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+        if (unt) config = unt.pool || config;
+    } else if (poolType === 'fes') {
+        const fes = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+        if (fes) config = fes.pool || config;
     }
 
     const validSources = ['normal'];
@@ -118,6 +128,12 @@ export function getGachaPool(poolType) {
         } else if (poolType === 'limited') {
             const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
             if (lim?.date) referenceDate = new Date(lim.date);
+        } else if (poolType === 'unit') {
+            const unt = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
+            if (unt?.date) referenceDate = new Date(unt.date);
+        } else if (poolType === 'fes') {
+            const fes = FES_CONFIG.find(c => c.id === state.activeFesId);
+            if (fes?.date) referenceDate = new Date(fes.date);
         }
 
         if (!card.releasedAt) return true;
@@ -169,6 +185,10 @@ export function pickGacha(count = 1, poolType = 'normal', customPool = null) {
         activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
     } else if (poolType === 'limited') {
         activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
+    } else if (poolType === 'unit') {
+        activeConfig = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+    } else if (poolType === 'fes') {
+        activeConfig = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
     }
 
     for (let i = 0; i < count; i++) {

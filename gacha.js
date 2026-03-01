@@ -3,7 +3,7 @@ import { updatePageTranslations } from './utils.js';
 import { state, setJewels, setTotalPulls, clearGachaLog, setGachaType, setSelectedPickup, idolColors } from './state.js';
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import { audioCtx, assetBlobs, loadGachaAssets, playSound, stopBGM, playMainBGM } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
@@ -284,6 +284,12 @@ async function handleGachaClick(ui, mode, animation) {
     } else if (state.gachaType === 'limited') {
         const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
         if (lim) customPool = lim.pool;
+    } else if (state.gachaType === 'unit') {
+        const unt = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
+        if (unt) customPool = unt.pool;
+    } else if (state.gachaType === 'fes') {
+        const fes = FES_CONFIG.find(c => c.id === state.activeFesId);
+        if (fes) customPool = fes.pool;
     }
 
     const results = animation.prepareResults(mode, customPool); 

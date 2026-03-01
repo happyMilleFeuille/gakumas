@@ -158,6 +158,7 @@
     .drawer-item.selection-type { width: 200px; }
     .drawer-content-scroll { padding: 20px 50vw 0; }
     .drawer-item-name { font-size: 0.75rem; width: 110px; height: 2rem; }
+    .drawer-item.selection-type .drawer-item-name { width: 200px; }
     
     /* 레이어 간격 통일 (40px로 확대) */
     .drawer-items-layer { gap: 40px; }
@@ -166,6 +167,9 @@
     .drawer-diamond-wrapper { 
         width: 110px; 
         padding-bottom: 17.5px; 
+    }
+    .drawer-diamond-wrapper.selection-diamond {
+        width: 200px; /* 모바일 셀렉션/더블픽업 너비 일치 */
     }
     .drawer-indicator-line { 
         bottom: 20px; 
