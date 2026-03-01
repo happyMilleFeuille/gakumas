@@ -18,15 +18,6 @@ export function updatePageTranslations(root = document) {
     });
 }
 
-// 배경 이미지 설정
-export function applyBackground(name) {
-    const fixedBg = document.getElementById('fixed-bg');
-    if (fixedBg) {
-        fixedBg.style.backgroundImage = `url('images/${name}.png')`;
-        fixedBg.style.backgroundSize = 'contain'; // 항상 기본 크기로 복구
-    }
-}
-
 // 모바일 배경 높이 고정 (주소창 꿀렁임 방지)
 export function initMobileHeightFix() {
     const fixedBg = document.getElementById('fixed-bg');

@@ -18,7 +18,6 @@ if (!storedLog) {
 
 export const state = {
     currentLang: localStorage.getItem('lang') || 'ko',
-    currentBg: localStorage.getItem('selectedBg') || '',
     filters: {
         plan: [],
         attr: [],
@@ -46,11 +45,6 @@ export function setLanguage(lang) {
 export function setGachaType(type) {
     state.gachaType = type;
     localStorage.setItem('gachaType', type);
-}
-
-export function setBackground(name) {
-    state.currentBg = name;
-    localStorage.setItem('selectedBg', name);
 }
 
 export function setFilter(type, value) {

@@ -1,5 +1,5 @@
 // ui.js
-import { state, setFilter, setBackground, setSupportLB, setPSSRIndex, setFavoriteIdol } from './state.js';
+import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol } from './state.js';
 import { updatePageTranslations } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
@@ -97,8 +97,6 @@ export function renderIdolList() {
         });
 
         img.addEventListener('click', (e) => {
-            // [제거] setBackground(name); - 배경 이미지 변경 로직 삭제
-
             // [추가] 선택된 아이콘 스타일링
             document.querySelectorAll('.idol-icon').forEach(icon => icon.classList.remove('selected'));
             img.classList.add('selected');
