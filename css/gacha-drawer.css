@@ -1,0 +1,173 @@
+/* gacha-drawer.css - 상단 픽업/셀렉션 선택 서랍 스타일 (레이어 분리형) */
+
+.gacha-drawer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 35vh; 
+    background: rgba(10, 10, 10, 0.15);
+    backdrop-filter: blur(25px);
+    z-index: 20001;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.gacha-drawer.active {
+    transform: translateY(0);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drawer-header { display: none; }
+
+/* 공통 스크롤 컨테이너 */
+.drawer-content-scroll {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    scroll-snap-type: x mandatory;
+    padding: 0 50vw; /* 양옆 여백 */
+}
+
+.drawer-content-scroll::-webkit-scrollbar { height: 0; background: transparent; }
+
+/* 1. 인디케이터 레이어 (가로선 + 마름모) */
+.drawer-indicator-layer {
+    position: absolute;
+    bottom: 0; 
+    left: 50vw;
+    height: 100px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-end;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.drawer-indicator-line {
+    position: absolute;
+    bottom: 30px; /* 라인 위치 고정 (마름모 중앙) */
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.drawer-diamond-wrapper {
+    width: 160px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 27.5px; /* (라인위치 30px) - (마름모반지름 2.5px) 내외로 조정 */
+    scroll-snap-align: center;
+}
+
+.drawer-diamond-wrapper.selection-diamond {
+    width: 280px; /* 셀렉션용 너비 보정 */
+}
+
+.drawer-item-date { 
+    color: #fff; 
+    font-size: 0.7rem; 
+    opacity: 0.8; 
+    margin-bottom: 12px;
+}
+
+/* 2. 아이템 레이어 (이미지 + 텍스트) */
+.drawer-items-layer {
+    display: flex;
+    gap: 40px;
+    padding-top: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.drawer-item {
+    width: 160px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s, opacity 0.3s;
+    scroll-snap-align: center;
+}
+
+/* 중앙 강조 효과 */
+.drawer-item { transform: scale(0.85); opacity: 0.5; }
+.drawer-item.active-item { transform: scale(1.05); opacity: 1; }
+
+.drawer-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1.25;
+    background-size: cover;
+    background-position: top;
+    border-radius: 0 30px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    margin-bottom: 12px;
+}
+
+.drawer-item.selection-type { width: 280px; }
+.drawer-item.selection-type .drawer-card-img { aspect-ratio: 16 / 9; }
+
+.drawer-item-name {
+    color: #fff; font-size: 0.85rem; font-weight: bold;
+    height: 2.4rem; display: flex; align-items: center; justify-content: center; text-align: center;
+    margin-bottom: 4px;
+}
+
+.drawer-diamond {
+    width: 6px; height: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    transform: rotate(45deg) scale(1); /* 기본 크기 */
+    transform-origin: center center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2;
+}
+
+.active-diamond .drawer-diamond {
+    width: 6px; height: 6px; /* 크기 고정 */
+    background: #ff4081;
+    transform: rotate(45deg) scale(2.2); /* 스케일로 확대하여 중앙 정렬 유지 */
+    box-shadow: 0 0 8px #ff4081;
+    opacity: 1;
+}
+
+/* 오버레이 */
+.drawer-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.3); z-index: 20000;
+    visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s;
+}
+.drawer-overlay.active { visibility: visible; opacity: 1; }
+
+@media (max-width: 768px) {
+    .gacha-drawer { height: 35vh; }
+    .drawer-card-img { width: 110px; margin-bottom: 8px; }
+    .drawer-item { width: 110px; }
+    .drawer-item.selection-type { width: 200px; }
+    .drawer-content-scroll { padding: 20px 50vw 0; }
+    .drawer-item-name { font-size: 0.75rem; width: 110px; height: 2rem; }
+    
+    /* 레이어 간격 통일 (40px로 확대) */
+    .drawer-items-layer { gap: 40px; }
+    .drawer-indicator-layer { gap: 40px; bottom: 0; }
+    
+    .drawer-diamond-wrapper { 
+        width: 110px; 
+        padding-bottom: 17.5px; 
+    }
+    .drawer-indicator-line { 
+        bottom: 20px; 
+    }
+}

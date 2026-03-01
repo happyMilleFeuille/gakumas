@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/idol.css">
     <link rel="stylesheet" href="css/support.css">
     <link rel="stylesheet" href="css/gacha.css">
+    <link rel="stylesheet" href="css/gacha-drawer.css">
     <link rel="stylesheet" href="css/gachalog.css">
     <link rel="stylesheet" href="css/gacharates.css">
     <link rel="stylesheet" href="css/gacha_anim.css">
@@ -20,6 +21,16 @@
     <div id="gacha-spinner" class="spinner">
         <div id="gacha-progress-text">0%</div>
     </div>
+
+    <!-- 가챠 선택 서랍 (최상위 배치) -->
+    <div id="gacha-drawer" class="gacha-drawer">
+        <div class="drawer-header">
+            <span id="drawer-title">PICKUP SELECT</span>
+            <button id="btn-close-drawer" class="drawer-close-btn">✕</button>
+        </div>
+        <div id="drawer-content" class="drawer-content-scroll"></div>
+    </div>
+    <div id="drawer-overlay" class="drawer-overlay"></div>
 
     <main>
         <section id="idol">

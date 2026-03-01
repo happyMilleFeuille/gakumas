@@ -320,7 +320,7 @@ export const cardList = [
     type: "vocal", 
     plan: "sense", 
     have:"card_a",
-    releasedAt: "2024-10-31",    
+    releasedAt: "2025-10-31",    
     rarity: "SSR", 
     extra1: "param", extra2:"ranenhance",    
         abilities: 
@@ -3167,7 +3167,7 @@ export const cardList = [
     type: "visual",
     plan: "logic", 
     have:"item",
-    releasedAt: "2024-09-17",     
+    releasedAt: "2025-09-17",     
     rarity: "SR",             
     extra1: "param",    
         abilities: 

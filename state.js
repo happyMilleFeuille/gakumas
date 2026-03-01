@@ -50,8 +50,26 @@ export const state = {
     gachaType: localStorage.getItem('gachaType') || 'normal',
     pssrIndex: JSON.parse(localStorage.getItem('pssrIndex')) || {},
     favoriteIdol: localStorage.getItem('favoriteIdol') || '',
-    selectedPickup: safeParse('selectedPickup', {})
+    selectedPickup: safeParse('selectedPickup', {}),
+    activeSelectionId: localStorage.getItem('activeSelectionId') || 'ongakusai_day1',
+    activeNormalId: localStorage.getItem('activeNormalId') || 'normal_default',
+    activeLimitedId: localStorage.getItem('activeLimitedId') || 'limited_default'
 };
+
+export function setActiveSelectionId(id) {
+    state.activeSelectionId = id;
+    localStorage.setItem('activeSelectionId', id);
+}
+
+export function setActiveNormalId(id) {
+    state.activeNormalId = id;
+    localStorage.setItem('activeNormalId', id);
+}
+
+export function setActiveLimitedId(id) {
+    state.activeLimitedId = id;
+    localStorage.setItem('activeLimitedId', id);
+}
 
 export function setSelectedPickup(type, id) {
     state.selectedPickup[type] = id;

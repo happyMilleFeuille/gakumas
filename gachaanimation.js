@@ -416,7 +416,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         transitionTo(States.STARTING);
     };
 
-    const prepareResults = (mode) => pickGacha(mode, state.currentGachaType || state.gachaType);
+    const prepareResults = (mode, customPool = null) => pickGacha(mode, state.currentGachaType || state.gachaType, customPool);
 
     if (skipBtn) {
         skipBtn.onclick = () => {
