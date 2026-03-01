@@ -13,6 +13,239 @@
     overflow: hidden !important; /* 넘쳐도 스크롤 숨김 */
 }
 
+/* 픽업 선택기 스타일 */
+.gacha-pickup-selector {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 60px; /* 간격을 60px로 확대 */
+    z-index: 5;
+    pointer-events: auto;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.pickup-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 픽업 선택기 뒷배경 스타일 */
+.selector-bg-container {
+    position: absolute;
+    top: 42.5%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 60px; /* 카드 간격과 동일하게 60px로 맞춤 */
+    z-index: 1; 
+    pointer-events: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.selector-bg-item {
+    aspect-ratio: 1 / 1.25;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: blur(1px) brightness(0.7); 
+    opacity: 0.6;
+    transition: all 0.4s ease;
+    transform: scale(1.1); 
+    margin: 0; /* 모든 마진 제거하여 gap 설정이 정확히 먹히게 함 */
+}
+
+/* 개별 픽업용 배경 크기 (220px 일치) */
+.selector-bg-item.single-bg {
+    width: 220px;
+}
+
+/* 유닛 픽업용 배경 크기 (160px 일치) */
+.selector-bg-item.unit-bg {
+    width: 160px;
+}
+
+.selector-bg-item.unit-bg:first-child, .selector-bg-item.unit-bg:last-child { margin: 0; }
+
+@media (max-width: 768px) {
+    .gacha-pickup-selector {
+        gap: 30px; /* 모바일 간격 30px로 확대 */
+    }
+    .selector-bg-container {
+        top: 40%;
+        gap: 30px; /* 배경 모바일 간격 일치 */
+    }
+    .selector-bg-item.single-bg {
+        width: 130px;
+    }
+    .selector-bg-item.unit-bg {
+        width: 100px;
+    }
+}
+
+/* 픽업 그룹 (유닛 가챠용) */
+.pickup-group {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 0; 
+    padding: 0;
+    background: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 10; /* 배경보다 앞으로 */
+}
+
+.pickup-group:hover {
+    transform: translateY(-5px);
+}
+
+.pickup-group.selected {
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
+}
+
+/* 유닛 내부 이미지들 가로 나열 컨테이너 */
+.pickup-images-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 픽업 이름 공통 스타일 */
+.pickup-name {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 4px 8px;
+    text-align: center;
+    margin-top: 8px;
+    position: relative;
+    z-index: 10; /* 배경보다 앞으로 */
+}
+
+@media (max-width: 768px) {
+    .pickup-name {
+        font-size: 0.7rem;
+    }
+}
+
+/* 그룹 내부 아이템 스타일 조정 */
+.pickup-item-inner {
+    width: 160px;
+    background: none;
+    border: none;
+    padding: 0;
+    pointer-events: none;
+    margin: 0; /* 겹침 제거 */
+}
+
+/* 유닛 뭉치 양 끝단 라운딩 */
+.pickup-item-inner:first-child .pickup-img-wrapper { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.pickup-item-inner:last-child .pickup-img-wrapper { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+.pickup-item-inner .pickup-img-wrapper {
+    margin-bottom: 0;
+    border-radius: 0;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+}
+
+.pickup-item {
+    width: 220px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    border-radius: 8px;
+    padding: 0;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10; /* 배경보다 앞으로 */
+}
+
+.pickup-item:hover {
+    transform: translateY(-5px);
+}
+
+.pickup-item.selected {
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
+}
+
+.pickup-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.25;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0; /* 선택기 내에서의 간격은 부모에서 조절 */
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.pickup-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 카드에 꽉 차게 복구 */
+    object-position: top; /* 얼굴 위주로 표시 */
+    display: block;
+}
+
+.pickup-name {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 4px;
+}
+
+@media (max-width: 768px) {
+    .gacha-pickup-selector {
+        gap: 20px; /* 모바일 카드 간격 20px 유지 */
+    }
+    .pickup-group {
+        padding: 5px;
+    }
+    /* 유닛 그룹 내부 아이템 크기 대폭 축소 */
+    .pickup-item-inner {
+        width: 100px; 
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+    .pickup-item-inner:first-child { margin-left: 0; }
+    .pickup-item-inner:last-child { margin-right: 0; }
+
+    .pickup-item {
+        width: 130px; /* 개별 픽업 아이템 크기 */
+    }
+    .pickup-name {
+        font-size: 0.7rem;
+    }
+    /* 모바일 배경 간격 미세 조정 */
+    .selector-bg-container {
+        top: 40%;
+        gap: 18px; /* 10px에서 18px로 수정 */
+    }
+}
+
 /* 가챠 화면일 때 메인 컨테이너 스크롤 차단 */
 #idol:has(.gacha-container) {
     overflow: hidden !important;

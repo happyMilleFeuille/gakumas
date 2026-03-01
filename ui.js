@@ -1,5 +1,5 @@
 // ui.js
-import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol } from './state.js';
+import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors } from './state.js';
 import { updatePageTranslations } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
@@ -18,22 +18,6 @@ const idolList = [
     'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
 ];
-
-const idolColors = {
-    saki: "#E30F25",
-    temari: "#0C7BBB",
-    kotone: "#F8C112",
-    mao: "#7F1184",
-    lilja: "#EAFDFF",
-    china: "#F68B1F",
-    sumika: "#7CFC00",
-    hiro: "#00AFCC",
-    rinami: "#F6ADC6",
-    ume: "#EA533A",
-    misuzu: "#7A99CF",
-    sena: "#F6AE54",
-    tsubame: "#7B68E8"
-};
 
 export function renderHome() {
     if (!contentArea) return;

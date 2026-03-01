@@ -16,6 +16,22 @@ if (!storedLog) {
     storedLog = { normal: oldVal, limited: [], unit: [], fes: [] };
 }
 
+export const idolColors = {
+    saki: "#E30F25",
+    temari: "#0C7BBB",
+    kotone: "#F8C112",
+    mao: "#7F1184",
+    lilja: "#EAFDFF",
+    china: "#F68B1F",
+    sumika: "#7CFC00",
+    hiro: "#00AFCC",
+    rinami: "#F6ADC6",
+    ume: "#EA533A",
+    misuzu: "#7A99CF",
+    sena: "#F6AE54",
+    tsubame: "#7B68E8"
+};
+
 export const state = {
     currentLang: localStorage.getItem('lang') || 'ko',
     filters: {
@@ -33,8 +49,14 @@ export const state = {
     gachaLog: storedLog,
     gachaType: localStorage.getItem('gachaType') || 'normal',
     pssrIndex: JSON.parse(localStorage.getItem('pssrIndex')) || {},
-    favoriteIdol: localStorage.getItem('favoriteIdol') || ''
+    favoriteIdol: localStorage.getItem('favoriteIdol') || '',
+    selectedPickup: safeParse('selectedPickup', {})
 };
+
+export function setSelectedPickup(type, id) {
+    state.selectedPickup[type] = id;
+    localStorage.setItem('selectedPickup', JSON.stringify(state.selectedPickup));
+}
 
 export function setLanguage(lang) {
     state.currentLang = lang;
