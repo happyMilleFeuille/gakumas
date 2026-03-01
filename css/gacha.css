@@ -57,8 +57,8 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    filter: blur(1px) brightness(0.7); 
-    opacity: 0.6;
+    filter: blur(15px) brightness(1.3); 
+    opacity: 0.8;
     transition: all 0.4s ease;
     transform: scale(1.1); 
     margin: 0; /* 모든 마진 제거하여 gap 설정이 정확히 먹히게 함 */
@@ -75,14 +75,16 @@
 }
 
 .selector-bg-item.unit-bg:first-child, .selector-bg-item.unit-bg:last-child { margin: 0; }
-
 @media (max-width: 768px) {
     .gacha-pickup-selector {
-        gap: 30px; /* 모바일 간격 30px로 확대 */
+        gap: 25px; /* 모바일 간격 30px로 확대 */
     }
     .selector-bg-container {
         top: 40%;
-        gap: 30px; /* 배경 모바일 간격 일치 */
+        gap: 25px; /* 배경 모바일 간격 일치 */
+    }
+    .selector-bg-item {
+        filter: blur(8px) brightness(1.2); /* 모바일 블러 8px로 조정 */
     }
     .selector-bg-item.single-bg {
         width: 130px;

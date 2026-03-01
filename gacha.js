@@ -291,7 +291,8 @@ export function renderGacha() {
                     
                     // 가챠 로그 전체에서 보유 여부 확인 함수
                     const checkHasCard = (id) => {
-                        return Object.values(state.gachaLog).some(log => log.some(item => item.id === id));
+                        const currentLog = state.gachaLog[state.gachaType] || [];
+                        return currentLog.some(item => item.id === id);
                     };
 
                     // 배경 아이템 생성 함수
@@ -303,8 +304,9 @@ export function renderGacha() {
                             if (activeId && activeId !== pid) return; 
                             const bgItem = document.createElement('div');
                             bgItem.className = `selector-bg-item single-bg`;
-                            // 뒷배경은 항상 1번 버전 사용
-                            bgItem.style.backgroundImage = `url('idols/${pid}1.webp')`;
+                            // 보유 여부에 따라 1번 또는 2번 버전 사용
+                            const imgVer = checkHasCard(pid) ? '2' : '1';
+                            bgItem.style.backgroundImage = `url('idols/${pid}${imgVer}.webp')`;
                             bgContainer.appendChild(bgItem);
                         });
                     };
@@ -484,13 +486,14 @@ export function renderGacha() {
         };
     }
     if (resetBtn) {
-        resetBtn.classList.remove('hidden');
+        resetBtn.classList.remove('hidden'); // 추가: 초기 렌더링 시 버튼 표시
         resetBtn.onclick = () => {
             setTotalPulls(0, state.gachaType); 
             clearGachaLog(state.gachaType);
             updateJewelUI(); 
             updateTotalPullsUI();
             if (resultsContainer) resultsContainer.innerHTML = '';
+            renderGacha(); 
         };
     }
 
