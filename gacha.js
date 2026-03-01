@@ -3,155 +3,25 @@ import { updatePageTranslations } from './utils.js';
 import { state, setJewels, setTotalPulls, clearGachaLog, setGachaType, setSelectedPickup, idolColors } from './state.js';
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
-import { pickGacha, getGachaPool, GACHA_STRATEGIES } from './gachalist.js';
+import { pickGacha } from './gachalist.js';
 import { CURRENT_PICKUPS } from './gachaconfig.js';
 import { produceList } from './producedata.js';
+import { audioCtx, assetBlobs, loadGachaAssets, playSound, stopBGM, playMainBGM } from './gacha-assets.js';
 
-// Web Audio API Context
-export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const audioBuffers = {};
-const assetBlobs = {}; // 전역 캐시로 이동
-let activeNodes = {}; // 현재 재생 중인 소스 노드들 관리
+// 외부 노출이 필요한 함수들 (애니메이션 등에서 사용)
+export { audioCtx, playSound, stopBGM, playMainBGM };
 
-// 가챠 자산 목록 정의
-const GACHA_ASSETS = [
-    'bgm/mainbgm.mp3',
-    'gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 
-    'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
-    'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
-    'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
-    'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3', 'gasya/blackoutbgm.mp3',
-    'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
-    'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
-    'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
-    'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 
-    'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 
-    'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 
-    'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3'
-];
-
-// 자산 로딩 상태 관리
-let isAssetsLoading = false;
-let assetsLoadedPromise = null;
-
-async function loadGachaAssets() {
-    if (assetsLoadedPromise) return assetsLoadedPromise;
-    if (isAssetsLoading) return;
-
-    isAssetsLoading = true;
-    const progressText = document.getElementById('gacha-progress-text');
-    let loadedCount = 0;
-    const totalCount = GACHA_ASSETS.length;
-
-    const updateProgress = () => {
-        if (progressText) {
-            const percent = Math.floor((loadedCount / totalCount) * 100);
-            progressText.textContent = `${percent}%`;
-        }
-    };
-
-    assetsLoadedPromise = (async () => {
-        const loadTasks = GACHA_ASSETS.map(async (src) => {
-            // 이미 로드된 경우 스킵
-            if ((src.endsWith('.mp3') && audioBuffers[src]) || (src.endsWith('.mp4') && assetBlobs[src])) {
-                loadedCount++;
-                updateProgress();
-                return;
-            }
-
-            try {
-                const response = await fetch(src);
-                const buffer = await response.arrayBuffer();
-                
-                if (src.endsWith('.mp3')) {
-                    const decoded = await audioCtx.decodeAudioData(buffer);
-                    audioBuffers[src] = decoded;
-                } else {
-                    const blob = new Blob([buffer], { type: 'video/mp4' });
-                    assetBlobs[src] = URL.createObjectURL(blob);
-                }
-            } catch (error) {
-                console.error(`Failed to load asset: ${src}`, error);
-            } finally {
-                loadedCount++;
-                updateProgress();
-            }
-        });
-
-        await Promise.allSettled(loadTasks);
-        isAssetsLoading = false;
-        // 로딩 완료 후 텍스트 초기화 (다음에 다시 띄울 때를 위해)
-        if (progressText) progressText.textContent = '0%';
-    })();
-
-    return assetsLoadedPromise;
-}
-
-// 오디오 재생 유틸리티
-export function playSound(name, options = {}) {
-    if (state.gachaMuted || !audioBuffers[name]) return null;
-
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-
-    const { loop = false, isBGM = false, bgmType = null, offset = 0 } = options;
-
-    // 기존 동일 BGM 중단
-    if (bgmType) stopBGM(bgmType);
-
-    const source = audioCtx.createBufferSource();
-    source.buffer = audioBuffers[name];
-    source.loop = loop;
-    source.connect(audioCtx.destination);
-    source.start(0, offset); // offset 적용
-
-    if (isBGM && bgmType) {
-        activeNodes[bgmType] = source;
-    }
-    
-    return source;
-}
-
-export function stopBGM(type) {
-    if (type === 'all') {
-        Object.keys(activeNodes).forEach(key => {
-            try { activeNodes[key].stop(); } catch(e) {}
-            delete activeNodes[key];
-        });
-        return;
-    }
-    if (activeNodes[type]) {
-        try { activeNodes[type].stop(); } catch(e) {}
-        delete activeNodes[type];
-    }
-}
-
-export function playMainBGM() {
-    playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
-}
-
+/**
+ * 가챠 메인 렌더링 함수
+ */
 export function renderGacha() {
-    // AudioContext 재개 (브라우저 정책 대응)
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     
-    document.body.classList.remove('immersive-mode'); 
-    document.body.classList.remove('gacha-result-active'); 
+    document.body.classList.remove('immersive-mode', 'gacha-result-active'); 
     const contentArea = document.getElementById('content-area');
     if (!contentArea) return;
 
-    const fixedBtnArea = document.getElementById('gacha-fixed-buttons');
-    if (fixedBtnArea) {
-        fixedBtnArea.classList.add('loading-shift');
-        fixedBtnArea.classList.remove('view-result');
-        fixedBtnArea.classList.add('view-main');
-        requestAnimationFrame(() => {
-            setTimeout(() => fixedBtnArea.classList.remove('loading-shift'), 50);
-        });
-    }
-
+    const fixedBtnArea = setupFixedButtons();
     const tpl = document.getElementById('tpl-gacha');
     if (!tpl) return;
     
@@ -166,77 +36,190 @@ export function renderGacha() {
         fixedBg.style.filter = '';
     }
 
+    // UI 요소 참조
+    const ui = {
+        btn1: document.getElementById('btn-1pull-fixed'),
+        btn10: document.getElementById('btn-10pull-fixed'),
+        jewelCount: document.getElementById('jewel-count'),
+        totalPullCount: document.getElementById('total-pull-count'),
+        muteBtn: document.getElementById('gacha-mute-btn'),
+        pickupSelector: contentArea.querySelector('#gacha-pickup-selector'),
+        resultsContainer: contentArea.querySelector('#gacha-results'),
+        fixedBtnArea
+    };
+
+    // 버튼 활성화 초기화 (먹통 방지)
+    if (ui.btn1) ui.btn1.style.pointerEvents = 'auto';
+    if (ui.btn10) ui.btn10.style.pointerEvents = 'auto';
+
+    // 초기화 및 이벤트 바인딩
+    initUIState(ui);
+    initNavigation(ui);
+    initHeaderControls(ui);
+    
+    const animation = setupAnimationLogic(ui, contentArea);
+    bindGachaActions(ui, animation);
+
+    updateTypeUI(ui);
+
+    if (!state.gachaMuted) playMainBGM();
+
+    // 자산 로딩
+    const spinner = document.getElementById('gacha-spinner');
+    if (spinner) spinner.classList.add('active');
+    loadGachaAssets().then(() => {
+        updateGachaButtonsState(ui);
+        if (spinner) spinner.classList.remove('active');
+    }).catch(() => {
+        if (spinner) spinner.classList.remove('active');
+    });
+}
+
+/**
+ * 고정 버튼 영역 초기 설정
+ */
+function setupFixedButtons() {
+    const area = document.getElementById('gacha-fixed-buttons');
+    if (area) {
+        area.classList.add('loading-shift');
+        area.classList.remove('view-result');
+        area.classList.add('view-main');
+        area.style.display = 'flex';
+        area.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            setTimeout(() => area.classList.remove('loading-shift'), 50);
+        });
+    }
+    return area;
+}
+
+/**
+ * 초기 UI 상태 설정
+ */
+function initUIState(ui) {
+    updateJewelUI(ui);
+    updateTotalPullsUI(ui);
+    const controlsTop = document.querySelector('.gacha-controls-top');
+    if (controlsTop) controlsTop.classList.remove('hidden');
+    
+    const addJewelBtn = document.getElementById('btn-add-jewel');
+    if (addJewelBtn) {
+        addJewelBtn.onclick = (e) => {
+            e.stopPropagation();
+            setJewels(state.jewels + 8200);
+            updateJewelUI(ui);
+        };
+    }
+}
+
+/**
+ * 네비게이션 (이전/다음/스와이프) 초기화
+ */
+function initNavigation(ui) {
+    const types = ['normal', 'limited', 'unit', 'fes', 'platinum', 'selection'];
+    const typeDisplay = document.getElementById('current-gacha-type-display');
+    const btnPrev = document.getElementById('btn-prev-gacha');
+    const btnNext = document.getElementById('btn-next-gacha');
+    const gachaContainer = document.querySelector('.gacha-container');
+
+    if (!btnPrev || !btnNext) return;
+
+    const animateChange = (direction) => {
+        const spinner = document.getElementById('gacha-spinner');
+        const isResultView = ui.fixedBtnArea?.classList.contains('view-result');
+        if (document.body.classList.contains('immersive-mode') || isResultView || spinner?.classList.contains('active')) return;
+
+        playSound('gasya/slide.mp3');
+        const outClass = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
+        const inClass = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
+        const elements = [typeDisplay, btnPrev, btnNext];
+
+        elements.forEach(el => el?.classList.add(outClass));
+        setTimeout(() => {
+            let idx = types.indexOf(state.gachaType);
+            idx = (direction === 'next') ? (idx + 1) % types.length : (idx - 1 + types.length) % types.length;
+            setGachaType(types[idx]);
+            updateTypeUI(ui);
+            elements.forEach(el => {
+                if(el) { el.classList.remove(outClass); void el.offsetWidth; el.classList.add(inClass); }
+            });
+            setTimeout(() => elements.forEach(el => el?.classList.remove(inClass)), 80);
+        }, 80);
+    };
+
+    btnPrev.onclick = () => animateChange('prev');
+    btnNext.onclick = () => animateChange('next');
+
+    // 스와이프 로직
+    let touchStartX = 0;
+    let isSliding = false;
+    const handleSwipe = (endX) => {
+        if (isSliding) return;
+        const swipeDistance = endX - touchStartX;
+        if (Math.abs(swipeDistance) > 50) {
+            isSliding = true;
+            animateChange(swipeDistance > 0 ? 'prev' : 'next');
+            setTimeout(() => { isSliding = false; }, 300);
+        }
+    };
+
+    const targets = [ui.fixedBtnArea, gachaContainer];
+    targets.forEach(target => {
+        if (!target || target.dataset.swipeInitialized) return;
+        target.dataset.swipeInitialized = "true";
+        target.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        target.addEventListener('touchend', (e) => handleSwipe(e.changedTouches[0].screenX), { passive: true });
+        target.addEventListener('mousedown', (e) => { touchStartX = e.screenX; });
+        target.addEventListener('mouseup', (e) => handleSwipe(e.screenX));
+    });
+}
+
+/**
+ * 상단 및 보조 컨트롤 버튼 초기화
+ */
+function initHeaderControls(ui) {
     const logBtn = document.getElementById('btn-gacha-log');
     const ratesBtn = document.getElementById('btn-gacha-rates');
     const resetBtn = document.getElementById('btn-gacha-reset');
-    const btn1 = document.getElementById('btn-1pull-fixed');
-    const btn10 = document.getElementById('btn-10pull-fixed');
-    const jewelContainer = document.getElementById('jewel-container');
-    const jewelCount = document.getElementById('jewel-count');
-    const addJewelBtn = document.getElementById('btn-add-jewel');
-    const totalPullCount = document.getElementById('total-pull-count');
-    const muteControls = document.getElementById('gacha-header-controls');
-    const muteBtn = document.getElementById('gacha-mute-btn');
-    const resultsContainer = contentArea.querySelector('#gacha-results');
-    const pickupSelector = contentArea.querySelector('#gacha-pickup-selector');
 
-    // --- 함수 순서 조정 (초기화 에러 방지) ---
-    const updateGachaButtonsState = () => {
-        const isResultView = fixedBtnArea && fixedBtnArea.classList.contains('view-result');
-        const currentPulls = state.totalPulls[state.gachaType] || 0;
+    if (logBtn) {
+        logBtn.classList.remove('hidden');
+        logBtn.onclick = () => {
+            history.pushState({ modalOpen: 'gachaLog' }, "");
+            import('./gachalog.js').then(m => m.openGachaLogModal());
+        };
+    }
+    if (ratesBtn) {
+        ratesBtn.classList.remove('hidden');
+        ratesBtn.onclick = () => {
+            history.pushState({ modalOpen: 'rates' }, "");
+            import('./gacharates.js').then(m => m.openGachaRatesModal());
+        };
+    }
+    if (resetBtn) {
+        resetBtn.classList.remove('hidden');
+        resetBtn.onclick = () => {
+            setTotalPulls(0, state.gachaType); 
+            clearGachaLog(state.gachaType);
+            renderGacha(); 
+        };
+    }
+    if (ui.muteBtn) {
+        ui.muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊'; 
+        ui.muteBtn.onclick = () => {
+            state.gachaMuted = !state.gachaMuted;
+            state.gachaMuted ? stopBGM('all') : playMainBGM();
+            ui.muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊';
+        };
+        const muteControls = document.getElementById('gacha-header-controls');
+        if (muteControls) { muteControls.classList.remove('hidden'); muteControls.style.display = 'flex'; }
+    }
+}
 
-        if (btn1) {
-            if (!isResultView && state.gachaType === 'selection') {
-                btn1.style.display = 'none'; // 셀렉션에서는 1회 뽑기 숨김
-            } else {
-                btn1.style.display = 'block'; // 다른 탭에서는 다시 표시
-                btn1.disabled = isResultView ? false : (state.jewels < 250);
-                btn1.style.opacity = '1';
-                // 일반 가챠는 텍스트를 고정하지 않고 필요한 경우에만 업데이트
-                if (!isResultView) {
-                    btn1.innerHTML = (state.currentLang === 'ko' ? '1회 뽑기' : '1회引く') + "<br><span class='btn-cost'>250</span>";
-                }
-            }
-        }
-        
-        if (btn10) {
-            if (isResultView && state.gachaType === 'selection') {
-                btn10.style.display = 'none'; // 결과 화면에서 셀렉션 10회 버튼 숨김
-            } else if (!isResultView && state.gachaType === 'selection' && currentPulls >= 10) {
-                btn10.style.display = 'block';
-                btn10.disabled = true;
-                btn10.style.opacity = '0.5';
-                btn10.innerHTML = (state.currentLang === 'ko' ? '10회 뽑기' : '10회引く') + "<br><span class='btn-cost'>2500</span>";
-            } else {
-                btn10.style.display = 'block'; // 기본적으로 표시
-                const match = btn10.innerHTML.match(/2500|250/);
-                const cost = match ? parseInt(match[0]) : 2500;
-                btn10.disabled = (state.jewels < cost);
-                btn10.style.opacity = '1';
-                // 일반 가챠는 텍스트를 고정하지 않고 필요한 경우에만 업데이트
-                if (!isResultView && state.gachaType !== 'selection') {
-                    btn10.innerHTML = (state.currentLang === 'ko' ? '10회 뽑기' : '10회引く') + "<br><span class='btn-cost'>2500</span>";
-                } else if (!isResultView && state.gachaType === 'selection') {
-                    btn10.innerHTML = (state.currentLang === 'ko' ? '10회 뽑기' : '10회引く') + "<br><span class='btn-cost'>2500</span>";
-                }
-            }
-        }
-    };
-
-    const updateJewelUI = () => {
-        if (jewelCount) jewelCount.textContent = state.jewels.toLocaleString();
-        updateGachaButtonsState();
-    };
-
-    const updateTotalPullsUI = (prevCount = null) => {
-        if (totalPullCount) {
-            const exchangeText = translations[state.currentLang]?.gacha_exchange_pt || "교환pt";
-            const currentPulls = state.totalPulls[state.gachaType] || 0;
-            totalPullCount.textContent = (prevCount !== null) ? 
-                `${exchangeText}    ${prevCount}  →  ${currentPulls}` : `${exchangeText}    ${currentPulls}`;
-        }
-    };
-
+/**
+ * 가챠 타입 UI 업데이트 (도트, 이름, 픽업 선택기)
+ */
+function updateTypeUI(ui) {
     const types = ['normal', 'limited', 'unit', 'fes', 'platinum', 'selection'];
     const typeDisplayNames = {
         normal: state.currentLang === 'ko' ? '통상' : '恒常',
@@ -248,436 +231,328 @@ export function renderGacha() {
     };
 
     const typeDisplay = document.getElementById('current-gacha-type-display');
-    const btnPrev = document.getElementById('btn-prev-gacha');
-    const btnNext = document.getElementById('btn-next-gacha');
-
-    const updateTypeUI = () => {
-        const typeSpan = typeDisplay?.querySelector('span');
-        if (typeSpan) typeSpan.textContent = typeDisplayNames[state.gachaType];
-        
-        document.querySelectorAll('.gacha-type-indicator .dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === types.indexOf(state.gachaType));
-        });
-
-        if (btnPrev && btnNext) {
-            const idx = types.indexOf(state.gachaType);
-            const prevSpan = btnPrev.querySelector('span');
-            const nextSpan = btnNext.querySelector('span');
-            if (prevSpan) prevSpan.textContent = typeDisplayNames[types[(idx - 1 + types.length) % types.length]];
-            if (nextSpan) nextSpan.textContent = typeDisplayNames[types[(idx + 1) % types.length]];
-        }
-        updateTotalPullsUI();
-        updateGachaButtonsState(); // 추가: 가챠 타입 변경 시 버튼 상태 즉시 갱신
-
-        // 픽업 배경 업데이트 제거
-        const fixedBg = document.getElementById('fixed-bg');
-        if (fixedBg) {
-            fixedBg.style.filter = '';
-            fixedBg.style.backgroundImage = '';
-        }
-
-        // [추가] 픽업 선택기 렌더링
-        const pickupSelector = document.getElementById('gacha-pickup-selector');
-        if (pickupSelector) {
-            const typesWithPickups = ['normal', 'limited', 'unit', 'fes'];
-            if (typesWithPickups.includes(state.gachaType)) {
-                pickupSelector.classList.remove('hidden');
-                pickupSelector.innerHTML = '<div class="selector-bg-container"></div>'; // 컨테이너 생성
-                const bgContainer = pickupSelector.querySelector('.selector-bg-container');
-                const pickups = CURRENT_PICKUPS[state.gachaType];
-                
-                if (pickups && pickups.pssr && pickups.pssr.length > 0) {
-                    const isUnit = (state.gachaType === 'unit');
-                    
-                    // 가챠 로그 전체에서 보유 여부 확인 함수
-                    const checkHasCard = (id) => {
-                        const currentLog = state.gachaLog[state.gachaType] || [];
-                        return currentLog.some(item => item.id === id);
-                    };
-
-                    // 배경 아이템 생성 함수
-                    const createBgItems = (activeId = null) => {
-                        if (!bgContainer) return;
-                        bgContainer.innerHTML = '';
-                        pickups.pssr.forEach(p => {
-                            const pid = typeof p === 'string' ? p : p.id;
-                            if (activeId && activeId !== pid) return; 
-                            const bgItem = document.createElement('div');
-                            bgItem.className = `selector-bg-item single-bg`;
-                            // 보유 여부에 따라 1번 또는 2번 버전 사용
-                            const imgVer = checkHasCard(pid) ? '2' : '1';
-                            bgItem.style.backgroundImage = `url('idols/${pid}${imgVer}.webp')`;
-                            bgContainer.appendChild(bgItem);
-                        });
-                    };
-
-                    const applyDynamicShadow = (element, ids) => {
-                        if (!element) return;
-                        const idList = Array.isArray(ids) ? ids : [ids];
-                        const randomId = idList[Math.floor(Math.random() * idList.length)];
-                        const charKey = randomId.replace('ssr', '').split('_')[0];
-                        const color = idolColors[charKey] || "#ff4081";
-                        element.style.boxShadow = `0 0 20px 5px ${color}99`; 
-                        element.style.border = `1px solid ${color}`;
-                    };
-
-                    if (!state.selectedPickup[state.gachaType]) {
-                        const firstP = pickups.pssr[0];
-                        const firstId = typeof firstP === 'string' ? firstP : firstP.id;
-                        setSelectedPickup(state.gachaType, firstId);
-                    }
-                    
-                    createBgItems(isUnit ? null : state.selectedPickup[state.gachaType]);
-
-                    pickups.pssr.forEach(p => {
-                        const pid = typeof p === 'string' ? p : p.id;
-                        const cardData = produceList.find(c => c.id === pid);
-                        const displayName = (state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || pid);
-
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'pickup-wrapper';
-
-                        const item = document.createElement('div');
-                        item.className = 'pickup-item';
-                        
-                        if (isUnit || state.selectedPickup[state.gachaType] === pid) {
-                            item.classList.add('selected');
-                            applyDynamicShadow(item, pid);
-                        }
-                        
-                        const imgVer = checkHasCard(pid) ? '2' : '1'; // 보유 시 2, 미보유 시 1
-                        item.innerHTML = `
-                            <div class="pickup-img-wrapper">
-                                <img src="idols/${pid}${imgVer}.webp" class="pickup-img" alt="${pid}">
-                            </div>
-                        `;
-
-                        const nameEl = document.createElement('div');
-                        nameEl.className = 'pickup-name';
-                        nameEl.textContent = displayName;
-
-                        // 유닛 가챠가 아닐 때만 개별 선택 가능
-                        if (!isUnit) {
-                            item.onclick = () => {
-                                setSelectedPickup(state.gachaType, pid);
-                                document.querySelectorAll('.pickup-item').forEach(el => {
-                                    el.classList.remove('selected');
-                                    el.style.boxShadow = 'none';
-                                    el.style.border = 'none';
-                                });
-                                item.classList.add('selected');
-                                applyDynamicShadow(item, pid);
-                                createBgItems(pid);
-                            };
-                        }
-
-                        wrapper.appendChild(item);
-                        wrapper.appendChild(nameEl);
-                        pickupSelector.appendChild(wrapper);
-                    });
-                }
-            } else {
-                pickupSelector.classList.add('hidden');
-            }
-        }
-    };
-
-    if (btnPrev && btnNext) {
-        const animateChange = (direction) => {
-            const spinner = document.getElementById('gacha-spinner');
-            if (document.body.classList.contains('immersive-mode') || 
-                (fixedBtnArea && fixedBtnArea.classList.contains('view-result')) ||
-                (spinner && spinner.classList.contains('active'))) {
-                return;
-            }
-
-            playSound('gasya/slide.mp3');
-            const outClass = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
-            const inClass = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
-            const elements = [typeDisplay, btnPrev, btnNext];
-            elements.forEach(el => el?.classList.add(outClass));
-            setTimeout(() => {
-                let idx = types.indexOf(state.gachaType);
-                idx = (direction === 'next') ? (idx + 1) % types.length : (idx - 1 + types.length) % types.length;
-                setGachaType(types[idx]);
-                updateTypeUI();
-                elements.forEach(el => {
-                    if(el) { el.classList.remove(outClass); void el.offsetWidth; el.classList.add(inClass); }
-                });
-                setTimeout(() => elements.forEach(el => el?.classList.remove(inClass)), 80);
-            }, 80);
-        };
-        btnPrev.onclick = () => animateChange('prev');
-        btnNext.onclick = () => animateChange('next');
-
-        let touchStartX = 0;
-        let touchEndX = 0;
-        let isSliding = false;
-        const gachaContainer = contentArea.querySelector('.gacha-container');
-
-        const handleSwipe = () => {
-            if (isSliding) return;
-            const spinner = document.getElementById('gacha-spinner');
-            if (document.body.classList.contains('immersive-mode') || 
-                (fixedBtnArea && fixedBtnArea.classList.contains('view-result')) ||
-                (spinner && spinner.classList.contains('active'))) {
-                return;
-            }
-            const swipeDistance = touchEndX - touchStartX;
-            if (Math.abs(swipeDistance) > 50) {
-                isSliding = true;
-                if (swipeDistance > 0) animateChange('prev'); else animateChange('next');
-                setTimeout(() => { isSliding = false; }, 300);
-            }
-        };
-
-        if (!fixedBtnArea.dataset.swipeInitialized) {
-            fixedBtnArea.dataset.swipeInitialized = "true";
-            fixedBtnArea.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-            fixedBtnArea.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, { passive: true });
-            fixedBtnArea.addEventListener('mousedown', (e) => { touchStartX = e.screenX; });
-            fixedBtnArea.addEventListener('mouseup', (e) => { touchEndX = e.screenX; handleSwipe(); });
-        }
-        gachaContainer.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-        gachaContainer.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, { passive: true });
-        gachaContainer.addEventListener('mousedown', (e) => { touchStartX = e.screenX; });
-        gachaContainer.addEventListener('mouseup', (e) => { touchEndX = e.screenX; handleSwipe(); });
-    }
-
-    updateTypeUI();
-
-    if (jewelContainer) { jewelContainer.classList.remove('hidden'); updateJewelUI(); }
-    updateTotalPullsUI();
-
-    const controlsTop = document.querySelector('.gacha-controls-top');
-    if (controlsTop) controlsTop.classList.remove('hidden');
-
-    if (addJewelBtn) {
-        addJewelBtn.onclick = (e) => {
-            e.stopPropagation();
-            setJewels(state.jewels + 8200);
-            updateJewelUI();
-        };
-    }
-
-    if (fixedBtnArea) { fixedBtnArea.classList.remove('hidden'); fixedBtnArea.style.display = 'flex'; }
-    if (logBtn) { 
-        logBtn.classList.remove('hidden'); 
-        logBtn.onclick = () => {
-            const modal = document.getElementById('gacha-log-modal');
-            if (modal) {
-                // 히스토리 추가
-                history.pushState({ modalOpen: 'gachaLog' }, "");
-                import('./gachalog.js').then(m => {
-                    m.openGachaLogModal();
-                    modal.style.display = 'flex'; // 확실히 열기
-                });
-            }
-        };
-    }
-    if (ratesBtn) {
-        ratesBtn.classList.remove('hidden');
-        ratesBtn.onclick = () => {
-            const modal = document.getElementById('gacha-rates-modal');
-            if (modal) {
-                history.pushState({ modalOpen: 'rates' }, "");
-                import('./gacharates.js').then(m => m.openGachaRatesModal());
-            }
-        };
-    }
-    if (resetBtn) {
-        resetBtn.classList.remove('hidden'); // 추가: 초기 렌더링 시 버튼 표시
-        resetBtn.onclick = () => {
-            setTotalPulls(0, state.gachaType); 
-            clearGachaLog(state.gachaType);
-            updateJewelUI(); 
-            updateTotalPullsUI();
-            if (resultsContainer) resultsContainer.innerHTML = '';
-            renderGacha(); 
-        };
-    }
-
-    if (muteBtn) {
-        muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊'; 
-        muteBtn.onclick = () => {
-            state.gachaMuted = !state.gachaMuted;
-            if (state.gachaMuted) {
-                stopBGM('main');
-                stopBGM('gacha');
-            } else {
-                playMainBGM();
-            }
-            muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊';
-        };
-    }
-
-    if (muteControls) {
-        muteControls.classList.remove('hidden');
-        muteControls.style.display = 'flex';
-    }
-
-    if (!state.gachaMuted) playMainBGM();
-
-    const spinner = document.getElementById('gacha-spinner');
-    if (btn1) btn1.disabled = true;
-    if (btn10) btn10.disabled = true;
-    if (spinner) spinner.classList.add('active');
-
-    // 리팩토링된 자산 로딩 호출
-    loadGachaAssets().then(() => {
-        updateGachaButtonsState();
-        if (spinner) spinner.classList.remove('active');
-    }).catch(() => {
-        if (spinner) spinner.classList.remove('active');
+    const typeSpan = typeDisplay?.querySelector('span');
+    if (typeSpan) typeSpan.textContent = typeDisplayNames[state.gachaType];
+    
+    document.querySelectorAll('.gacha-type-indicator .dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === types.indexOf(state.gachaType));
     });
 
-    const renderResults = (currentResults, existingIds = new Set()) => {
-        if (!resultsContainer) return;
-        resultsContainer.innerHTML = '';
-        const itemTpl = document.getElementById('tpl-gacha-result-item');
-        resultsContainer.classList.toggle('single-result', currentResults.length === 1);
+    // 이전/다음 버튼 텍스트 업데이트
+    const btnPrev = document.getElementById('btn-prev-gacha');
+    const btnNext = document.getElementById('btn-next-gacha');
+    if (btnPrev && btnNext) {
+        const idx = types.indexOf(state.gachaType);
+        const prevSpan = btnPrev.querySelector('span');
+        const nextSpan = btnNext.querySelector('span');
+        if (prevSpan) prevSpan.textContent = typeDisplayNames[types[(idx - 1 + types.length) % types.length]];
+        if (nextSpan) nextSpan.textContent = typeDisplayNames[types[(idx + 1) % types.length]];
+    }
 
-        currentResults.forEach((card, index) => {
-            const clone = itemTpl.content.cloneNode(true);
-            const cardEl = clone.querySelector('.gacha-result-card');
-            cardEl.classList.add('animate');
-            cardEl.style.animationDelay = `${index * 0.08}s`;
-            const img = clone.querySelector('.result-card-img');
-            const planIcon = clone.querySelector('.result-card-plan-icon');
-            const rarityImg = clone.querySelector('.result-card-rarity-img');
-            const name = clone.querySelector('.result-card-name');
-            if (!existingIds.has(card.id)) {
-                const newBadge = document.createElement('div');
-                newBadge.className = 'new-badge';
-                newBadge.textContent = 'NEW';
-                cardEl.appendChild(newBadge);
-                existingIds.add(card.id);
-            }
-            if (card.type === 'produce') {
-                img.src = `idols/${card.id}1.webp`;
-                cardEl.classList.add('produce-card');
-                let scale = card.scale || 1.60;
-                let offsetY = card.offsetY || 55;
-                if (window.innerWidth <= 768) { scale *= 0.7; offsetY *= 0.7; }
-                img.style.transform = `scale(${scale}) translateY(${offsetY}px)`;
-                if (card.plan && planIcon) { planIcon.src = `icons/${card.plan}.webp`; planIcon.classList.remove('hidden'); }
-            } else {
-                img.src = card.id.includes('dummy') ? 'icons/idol.png' : `images/support/${card.id}.webp`;
-                cardEl.classList.add('landscape');
-            }
-            const rKey = card.displayRarity.toLowerCase();
-            rarityImg.src = `icons/${rKey}.png`;
-            cardEl.classList.add(`${rKey}-bg`);
-            const typeLabel = document.createElement('div');
-            typeLabel.className = 'card-type-label';
-            typeLabel.textContent = card.type === 'produce' ? 'IDOL' : 'SUPPORT';
-            cardEl.appendChild(typeLabel);
-            name.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
-            resultsContainer.appendChild(clone);
+    updateTotalPullsUI(ui);
+    updateGachaButtonsState(ui);
+    renderPickupSelector(ui);
+}
+
+/**
+ * 픽업 선택기 렌더링
+ */
+function renderPickupSelector(ui) {
+    if (!ui.pickupSelector) return;
+
+    if (state.gachaType === 'selection') {
+        ui.pickupSelector.classList.remove('hidden');
+        
+        // 즐겨찾기 아이돌 색상 계산
+        const favColor = idolColors[state.favoriteIdol] || "#ff4081";
+        
+        ui.pickupSelector.innerHTML = `
+            <div class="selector-bg-container"></div>
+            <div class="pickup-wrapper selection-wrapper">
+                <div class="pickup-item selection-item" style="box-shadow: 0 0 20px 5px ${favColor}99;">
+                    <div class="pickup-img-wrapper" style="border: 1px solid ${favColor};">
+                        <div class="selection-banner-img" style="background-image: url('gasya/gasya_ongakusai1.webp'); width: 100%; height: 100%; background-size: cover; background-position: center;"></div>
+                    </div>
+                </div>
+                <div class="pickup-name">초성음악제 DAY1</div>
+            </div>
+        `;
+        return;
+    }
+
+    const typesWithPickups = ['normal', 'limited', 'unit', 'fes'];
+    
+    if (!typesWithPickups.includes(state.gachaType)) {
+        ui.pickupSelector.classList.add('hidden');
+        return;
+    }
+
+    ui.pickupSelector.classList.remove('hidden');
+    ui.pickupSelector.innerHTML = '<div class="selector-bg-container"></div>'; 
+    const bgContainer = ui.pickupSelector.querySelector('.selector-bg-container');
+    const pickups = CURRENT_PICKUPS[state.gachaType];
+    
+    if (!pickups?.pssr?.length) return;
+
+    const isUnit = (state.gachaType === 'unit');
+    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+
+    const createBgItems = (activeId = null) => {
+        if (!bgContainer) return;
+        bgContainer.innerHTML = '';
+        pickups.pssr.forEach(p => {
+            const pid = typeof p === 'string' ? p : p.id;
+            if (activeId && activeId !== pid) return; 
+            const bgItem = document.createElement('div');
+            bgItem.className = `selector-bg-item single-bg`;
+            bgItem.style.backgroundImage = `url('idols/${pid}${checkHasCard(pid) ? '2' : '1'}.webp')`;
+            bgContainer.appendChild(bgItem);
         });
     };
 
-    let prevPulls = 0; 
-    let prePullExistingIds = new Set();
+    const applyShadow = (el, pid) => {
+        const charKey = pid.replace('ssr', '').split('_')[0];
+        const color = idolColors[charKey] || "#ff4081";
+        el.style.boxShadow = `0 0 20px 5px ${color}99`; 
+        el.style.border = `1px solid ${color}`;
+    };
 
-    const animation = setupGachaAnimation(contentArea, assetBlobs, {
+    if (!state.selectedPickup[state.gachaType]) {
+        const firstP = pickups.pssr[0];
+        setSelectedPickup(state.gachaType, typeof firstP === 'string' ? firstP : firstP.id);
+    }
+    
+    createBgItems(isUnit ? null : state.selectedPickup[state.gachaType]);
+
+    pickups.pssr.forEach(p => {
+        const pid = typeof p === 'string' ? p : p.id;
+        const cardData = produceList.find(c => c.id === pid);
+        const displayName = (state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || pid);
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pickup-wrapper';
+
+        const item = document.createElement('div');
+        item.className = 'pickup-item';
+        if (isUnit || state.selectedPickup[state.gachaType] === pid) {
+            item.classList.add('selected');
+            applyShadow(item, pid);
+        }
+        
+        item.innerHTML = `
+            <div class="pickup-img-wrapper">
+                <img src="idols/${pid}${checkHasCard(pid) ? '2' : '1'}.webp" class="pickup-img" alt="${pid}">
+            </div>
+        `;
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'pickup-name';
+        nameEl.textContent = displayName;
+
+        if (!isUnit) {
+            item.onclick = () => {
+                setSelectedPickup(state.gachaType, pid);
+                ui.pickupSelector.querySelectorAll('.pickup-item').forEach(el => {
+                    el.classList.remove('selected');
+                    el.style.boxShadow = el.style.border = 'none';
+                });
+                item.classList.add('selected');
+                applyShadow(item, pid);
+                createBgItems(pid);
+            };
+        }
+
+        wrapper.appendChild(item);
+        wrapper.appendChild(nameEl);
+        ui.pickupSelector.appendChild(wrapper);
+    });
+}
+
+/**
+ * 애니메이션 콜백 및 결과 렌더링 설정
+ */
+function setupAnimationLogic(ui, contentArea) {
+    let prevPulls = 0;
+
+    return setupGachaAnimation(contentArea, assetBlobs, {
         onStart: (mode, actualPrevPulls) => {
             prevPulls = actualPrevPulls;
-            const pickupSelector = document.getElementById('gacha-pickup-selector');
-            if (pickupSelector) pickupSelector.classList.add('hidden');
-            const currentLog = state.gachaLog[state.gachaType] || [];
-            prePullExistingIds = new Set(currentLog.map(item => item.id));
+            ui.pickupSelector?.classList.add('hidden');
+            const muteControls = document.getElementById('gacha-header-controls');
             if (muteControls) muteControls.style.display = 'none';
-            if (logBtn) logBtn.classList.add('hidden');
-            if (ratesBtn) ratesBtn.classList.add('hidden');
-            if (resetBtn) resetBtn.classList.add('hidden');
-            if (jewelContainer) jewelContainer.classList.add('hidden');
-            if (controlsTop) controlsTop.classList.add('hidden');
+            ['btn-gacha-log', 'btn-gacha-rates', 'btn-gacha-reset', 'jewel-container', 'gacha-controls-top'].forEach(id => {
+                document.getElementById(id)?.classList.add('hidden');
+                const el = document.querySelector('.' + id);
+                if (el) el.classList.add('hidden');
+            });
         },
         onFinish: (currentResults, gachaMode) => {
             document.body.classList.add('gacha-result-active');
-            updateTotalPullsUI(prevPulls);
-            if (logBtn) logBtn.classList.remove('hidden');
-            if (ratesBtn) ratesBtn.classList.remove('hidden');
-            if (jewelContainer) jewelContainer.classList.remove('hidden');
-            if (fixedBtnArea) { fixedBtnArea.classList.remove('view-main'); fixedBtnArea.classList.add('view-result'); }            if (btn1 && btn10) {
-                const isSelection = state.gachaType === 'selection';
-                btn1.classList.add('close-style');
-                btn1.innerHTML = "<span class='close-x'>✕</span> " + translations[state.currentLang].gacha_close;
-                btn1.onclick = () => {
-                    btn1.style.pointerEvents = 'none';
-                    btn10.style.pointerEvents = 'none';
+            updateTotalPullsUI(ui, prevPulls);
+            ['btn-gacha-log', 'btn-gacha-rates', 'jewel-container'].forEach(id => document.getElementById(id)?.classList.remove('hidden'));
+            if (ui.fixedBtnArea) { ui.fixedBtnArea.classList.remove('view-main'); ui.fixedBtnArea.classList.add('view-result'); }
+            
+            if (ui.btn1 && ui.btn10) {
+                ui.btn1.classList.add('close-style');
+                ui.btn1.innerHTML = `<span class='close-x'>✕</span> ${translations[state.currentLang].gacha_close}`;
+                ui.btn1.onclick = () => {
+                    ui.btn1.style.pointerEvents = ui.btn10.style.pointerEvents = 'none';
                     setTimeout(() => renderGacha(), 100);
                 };
 
-                const is10 = (gachaMode === 10);
-                if (isSelection) {
-                    btn10.style.display = 'none'; // 셀렉션이면 결과창에서 즉시 숨김
+                if (state.gachaType === 'selection') {
+                    ui.btn10.style.display = 'none';
                 } else {
-                    btn10.style.display = 'block';
-                    btn10.innerHTML = translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull'] + "<br><span class='btn-cost'>" + (is10 ? "2500" : "250") + "</span>";
-                    btn10.onclick = () => {
-                        handleGachaClick(gachaMode);
-                    };
+                    const is10 = (gachaMode === 10);
+                    ui.btn10.style.display = 'block';
+                    ui.btn10.innerHTML = `${translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull']}<br><span class='btn-cost'>${is10 ? "2500" : "250"}</span>`;
+                    ui.btn10.onclick = () => handleGachaClick(ui, gachaMode, ui.animationInstance);
                 }
 
-                btn1.style.pointerEvents = 'none';
-                btn10.style.pointerEvents = 'none';
+                // 버튼 비활성화 해제 (pointerEvents 복구)
+                ui.btn1.style.pointerEvents = 'none';
+                ui.btn10.style.pointerEvents = 'none';
                 setTimeout(() => {
-                    btn1.style.pointerEvents = 'auto';
-                    btn10.style.pointerEvents = 'auto';
-                    updateGachaButtonsState();
+                    ui.btn1.style.pointerEvents = 'auto';
+                    ui.btn10.style.pointerEvents = 'auto';
+                    updateGachaButtonsState(ui);
                 }, 300);
             }
-            renderResults(currentResults, prePullExistingIds);
+            renderResults(ui, currentResults);
             const fixedBg = document.getElementById('fixed-bg');
             if (fixedBg) { fixedBg.style.backgroundImage = "url('gasya/background.jpg')"; fixedBg.style.backgroundSize = "cover"; }
             history.pushState({ target: 'gacha', view: 'result' }, "");
         }
     });
+}
 
-    const updateJewelDisplayOnly = (cost) => {
-        if (jewelCount) {
-            const newCount = Math.max(0, state.jewels - cost);
-            jewelCount.textContent = newCount.toLocaleString();
-        }
-    };
-
-    const handleGachaClick = async (mode) => {
-        playSound('gasya/gasyaclick.mp3');
-        const cost = mode === 1 ? 250 : 2500;
-        updateJewelDisplayOnly(cost);
-        if (btn1) btn1.style.pointerEvents = 'none';
-        if (btn10) btn10.style.pointerEvents = 'none';
-        const results = animation.prepareResults(mode);
-        const pssrCards = results.filter(c => c.rarity === 'PSSR');
-        if (pssrCards.length > 0) {
-            const loadPromises = pssrCards.flatMap(card => {
-                const videoIds = [card.id];
-
-                return videoIds.map(vid => {
-                    const videoPath = `gasya/pssr/${vid}.mp4`;
-                    if (assetBlobs[videoPath]) return Promise.resolve();
-                    return fetch(videoPath).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(buffer => { 
-                        const blob = new Blob([buffer], { type: 'video/mp4' });
-                        assetBlobs[videoPath] = URL.createObjectURL(blob); 
-                    }).catch(() => {});
-                });
-            });
-            await Promise.allSettled(loadPromises);
-        }
-        setTimeout(() => animation.startGacha(mode, results), 50);
-    };
-
-    if (btn1) {
-        btn1.classList.remove('close-style');
-        btn1.innerHTML = translations[state.currentLang].gacha_1pull + "<br><span class='btn-cost'>250</span>";
-        btn1.style.pointerEvents = 'auto';
-        btn1.onclick = () => handleGachaClick(1);
+/**
+ * 가챠 실행 버튼 바인딩
+ */
+function bindGachaActions(ui, animation) {
+    ui.animationInstance = animation; // 전역 참조용
+    if (ui.btn1) {
+        ui.btn1.classList.remove('close-style');
+        ui.btn1.innerHTML = `${translations[state.currentLang].gacha_1pull}<br><span class='btn-cost'>250</span>`;
+        ui.btn1.onclick = () => handleGachaClick(ui, 1, animation);
     }
-    if (btn10) {
-        btn10.innerHTML = translations[state.currentLang].gacha_10pull + "<br><span class='btn-cost'>2500</span>";
-        btn10.style.pointerEvents = 'auto';
-        btn10.onclick = () => handleGachaClick(10);
+    if (ui.btn10) {
+        ui.btn10.innerHTML = `${translations[state.currentLang].gacha_10pull}<br><span class='btn-cost'>2500</span>`;
+        ui.btn10.onclick = () => handleGachaClick(ui, 10, animation);
+    }
+}
+
+async function handleGachaClick(ui, mode, animation) {
+    playSound('gasya/gasyaclick.mp3');
+    const cost = mode === 1 ? 250 : 2500;
+    if (ui.jewelCount) {
+        ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
+    }
+    if (ui.btn1) ui.btn1.style.pointerEvents = 'none';
+    if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
+
+    const results = animation.prepareResults(mode);
+    const pssrCards = results.filter(c => c.rarity === 'PSSR');
+    if (pssrCards.length > 0) {
+        const loadPromises = pssrCards.map(card => {
+            const videoPath = `gasya/pssr/${card.id}.mp4`;
+            if (assetBlobs[videoPath]) return Promise.resolve();
+            return fetch(videoPath).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+                .then(buf => { assetBlobs[videoPath] = URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })); })
+                .catch(() => {});
+        });
+        await Promise.allSettled(loadPromises);
+    }
+    setTimeout(() => animation.startGacha(mode, results), 50);
+}
+
+/**
+ * 결과 목록 렌더링
+ */
+function renderResults(ui, currentResults) {
+    if (!ui.resultsContainer) return;
+    ui.resultsContainer.innerHTML = '';
+    const itemTpl = document.getElementById('tpl-gacha-result-item');
+    ui.resultsContainer.classList.toggle('single-result', currentResults.length === 1);
+
+    const currentLog = state.gachaLog[state.gachaType] || [];
+    const prePullExistingIds = new Set(currentLog.slice(0, -currentResults.length).map(item => item.id));
+
+    currentResults.forEach((card, index) => {
+        const clone = itemTpl.content.cloneNode(true);
+        const cardEl = clone.querySelector('.gacha-result-card');
+        cardEl.classList.add('animate', `${card.displayRarity.toLowerCase()}-bg`);
+        cardEl.style.animationDelay = `${index * 0.08}s`;
+
+        if (!prePullExistingIds.has(card.id)) {
+            const badge = document.createElement('div');
+            badge.className = 'new-badge'; badge.textContent = 'NEW';
+            cardEl.appendChild(badge);
+        }
+
+        const img = clone.querySelector('.result-card-img');
+        if (card.type === 'produce') {
+            img.src = `idols/${card.id}1.webp`;
+            cardEl.classList.add('produce-card');
+            let scale = (card.scale || 1.60) * (window.innerWidth <= 768 ? 0.7 : 1);
+            let offsetY = (card.offsetY || 55) * (window.innerWidth <= 768 ? 0.7 : 1);
+            img.style.transform = `scale(${scale}) translateY(${offsetY}px)`;
+            const planIcon = clone.querySelector('.result-card-plan-icon');
+            if (card.plan && planIcon) { planIcon.src = `icons/${card.plan}.webp`; planIcon.classList.remove('hidden'); }
+        } else {
+            img.src = card.id.includes('dummy') ? 'icons/idol.png' : `images/support/${card.id}.webp`;
+            cardEl.classList.add('landscape');
+        }
+
+        clone.querySelector('.result-card-rarity-img').src = `icons/${card.displayRarity.toLowerCase()}.png`;
+        const typeLabel = document.createElement('div');
+        typeLabel.className = 'card-type-label';
+        typeLabel.textContent = card.type === 'produce' ? 'IDOL' : 'SUPPORT';
+        cardEl.appendChild(typeLabel);
+        clone.querySelector('.result-card-name').textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        ui.resultsContainer.appendChild(clone);
+    });
+}
+
+// --- 단순 UI 갱신 유틸리티 ---
+
+function updateGachaButtonsState(ui) {
+    const isResultView = ui.fixedBtnArea?.classList.contains('view-result');
+    const currentPulls = state.totalPulls[state.gachaType] || 0;
+
+    if (ui.btn1) {
+        if (!isResultView && state.gachaType === 'selection') ui.btn1.style.display = 'none';
+        else {
+            ui.btn1.style.display = 'block';
+            ui.btn1.disabled = isResultView ? false : (state.jewels < 250);
+            if (!isResultView) ui.btn1.innerHTML = `${state.currentLang === 'ko' ? '1회 뽑기' : '1회引く'}<br><span class='btn-cost'>250</span>`;
+        }
+    }
+    
+    if (ui.btn10) {
+        if (isResultView && state.gachaType === 'selection') ui.btn10.style.display = 'none';
+        else if (!isResultView && state.gachaType === 'selection' && currentPulls >= 10) {
+            ui.btn10.style.display = 'block'; ui.btn10.disabled = true; ui.btn10.style.opacity = '0.5';
+            ui.btn10.innerHTML = `${state.currentLang === 'ko' ? '10회 뽑기' : '10회引く'}<br><span class='btn-cost'>2500</span>`;
+        } else {
+            ui.btn10.style.display = 'block'; ui.btn10.style.opacity = '1';
+            const cost = parseInt(ui.btn10.innerHTML.match(/2500|250/)?.[0] || 2500);
+            ui.btn10.disabled = (state.jewels < cost);
+            if (!isResultView) ui.btn10.innerHTML = `${state.currentLang === 'ko' ? '10회 뽑기' : '10회引く'}<br><span class='btn-cost'>${cost}</span>`;
+        }
+    }
+}
+
+function updateJewelUI(ui) {
+    if (ui.jewelCount) ui.jewelCount.textContent = state.jewels.toLocaleString();
+    updateGachaButtonsState(ui);
+}
+
+function updateTotalPullsUI(ui, prevCount = null) {
+    if (ui.totalPullCount) {
+        const exchangeText = translations[state.currentLang]?.gacha_exchange_pt || "교환pt";
+        const currentPulls = state.totalPulls[state.gachaType] || 0;
+        ui.totalPullCount.textContent = (prevCount !== null) ? 
+            `${exchangeText}    ${prevCount}  →  ${currentPulls}` : `${exchangeText}    ${currentPulls}`;
     }
 }

@@ -69,6 +69,34 @@
     width: 220px;
 }
 
+/* 셀렉션 전용 아이템 스타일 (16:9 비율) */
+.pickup-item.selection-item {
+    width: 500px; /* 16:9에 맞게 조절 */
+    height: auto;
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
+    border-radius: 0 50px 0 0;
+}
+
+.pickup-item.selection-item .pickup-img-wrapper {
+    aspect-ratio: 16 / 9; /* 16:9 비율 적용 */
+    border-radius: 0 50px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .pickup-item.selection-item {
+        width: 300px; /* 모바일 크기 조절 */
+    }
+    .pickup-item.selection-item .pickup-img-wrapper {
+        border-radius: 0 30px 0 0;
+    }
+}
+
+.selection-wrapper {
+    justify-content: center;
+    width: 100%;
+}
+
 /* 유닛 픽업용 배경 크기 (160px 일치) */
 .selector-bg-item.unit-bg {
     width: 160px;
@@ -173,7 +201,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    border-radius: 8px;
+    border-radius: 0 50px 0 0; /* 우상단 라운딩 50px로 대폭 확대 */
     padding: 0;
     background: none;
     border: none;
@@ -195,7 +223,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1.25;
-    border-radius: 8px;
+    border-radius: 0 50px 0 0; /* 우상단 라운딩 50px로 대폭 확대 */
     overflow: hidden;
     margin-bottom: 0; /* 선택기 내에서의 간격은 부모에서 조절 */
     background: rgba(0, 0, 0, 0.2);
