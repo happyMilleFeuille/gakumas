@@ -1916,7 +1916,7 @@ export const cardList = [
             "sp_lessonup",
             "supportrateup", 
             "sp_param",
-            "delete_mental",
+            "delete_mental3",
             "event_paraup"
         ]        
     },                    
