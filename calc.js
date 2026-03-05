@@ -186,7 +186,14 @@ function startWeeklyPlan(type) {
                 };
             }
 
-            if (type === 'nia') setupPItemSelector();
+            if (type === 'nia' || type === 'hajime') {
+                const c = document.getElementById('p-item-container');
+                if (c) c.classList.remove('hidden');
+                setupPItemSelector();
+            } else {
+                const c = document.getElementById('p-item-container');
+                if (c) c.classList.add('hidden');
+            }
             const calcBtn = document.getElementById('btn-run-calc');
             if (calcBtn) calcBtn.onclick = () => toggleSupportCardPanel(calcStore.planType, refreshAll);
             const toggleBar = document.getElementById('board-toggle-bar');
@@ -309,7 +316,13 @@ function setupPItemSelector() {
     if (!container) return;
 
     if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
+    
+    // 캐릭터별 아이템 구성
     const niaItemsBySlot = [['nia1-1', 'nia1-2'], ['nia2-1', 'nia2-2', 'nia2-3'], ['nia3-1', 'nia3-2'], ['nia4-1', 'nia4-2', 'nia4-3'], ['nia5-1', 'nia5-2', 'nia5-3']];
+    const hajimeItemsBySlot = [['hajime1'], ['hajime2'], ['hajime3'], ['hajime4-1', 'hajime4-2', 'hajime4-3']];
+    
+    const currentType = calcStore.type;
+    const itemsBySlot = currentType === 'nia' ? niaItemsBySlot : hajimeItemsBySlot;
 
     container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
         const val = calcStore.pItems[idx];
@@ -332,7 +345,8 @@ function setupPItemSelector() {
             };
             tooltip.appendChild(clearBtn);
 
-            (niaItemsBySlot[idx] || []).forEach(item => {
+            const slotItems = itemsBySlot[idx] || [];
+            slotItems.forEach(item => {
                 const img = document.createElement('img');
                 img.src = `icons/cal/${item}.webp`; img.style.cssText = 'width:40px; height:40px; cursor:pointer; border:1px solid #eee; border-radius:4px;';
                 img.onclick = () => { 

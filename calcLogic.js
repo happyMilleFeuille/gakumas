@@ -228,6 +228,16 @@ export function getTriggerCounts(store) {
         }
     });
 
+    // --- 하지메(Hajime) P-아이템 보너스 ---
+    if (store.type === 'hajime' && store.pItems) {
+        // hajime2: 수업(class_hajime) 시 카드 획득 +1 (최대 2회)
+        if (store.pItems.includes('hajime2')) {
+            const classCount = counts.total['class_hajime'] || 0;
+            const bonus = Math.min(classCount, 2);
+            counts.total.get += bonus;
+        }
+    }
+
     return counts;
 }
 

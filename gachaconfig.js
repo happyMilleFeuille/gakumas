@@ -63,7 +63,22 @@ export const UNIT_CONFIG = [
             sssr: ['dance_unitfree2'],
             sr_card: ['dance_srunitfree1']
         }
-    }    
+    },    
+    {
+        id: 'ameagariunit',
+        date: '2025-05-01',
+        bannerImg: 'idols/ssrsaki_ameagariunit1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrsaki_ameagariunit', char: 'saki' },
+                { id: 'ssrtemari_ameagariunit', char: 'temari' },
+                { id: 'ssrkotone_ameagariunit', char: 'kotone' },
+
+            ],
+            sssr: ['dance_unitfree1'],
+            sr_card: ['vocal_srunitfree1']
+        }
+    },    
 ];
 
 // 통상 가챠 상세 설정 (기간별 라인업 등)
@@ -216,7 +231,117 @@ export const NORMAL_CONFIG = [
             pssr: [{ id: 'ssrlilja_2nd', char: 'lilja' }],
             sssr: ['dance_free6'],
         }
-    },                              
+    }, 
+    {
+        id: 'ssrsumika_2nd',
+        date: '2024-12-18',
+        bannerImg: 'idols/ssrsumika_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsumika_2nd', char: 'sumika' }],
+            sssr: ['dance_anomaly1'],
+            sr_card: ['dance_srfree5']            
+        }
+    },
+    {
+        id: 'ssrsena_1st',
+        date: '2024-11-16',
+        bannerImg: 'idols/ssrsena_1st1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsena_1st', char: 'sena' }],
+            sssr: ['visual_free7'],
+            sr_card: ['visual_srfree6']            
+        }
+    },   
+    {
+        id: 'ssrsaki_animate',
+        date: '2024-10-28',
+        bannerImg: 'idols/ssrsaki_animate1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsaki_animate', char: 'saki' }],
+            sssr: ['assist_free2'],
+            sr_card: ['dance_srsense4']            
+        }
+    },
+    {
+        id: 'ssrrinami_2nd',
+        date: '2024-10-18',
+        bannerImg: 'idols/ssrrinami_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrrinami_2nd', char: 'rinami' }],
+            sssr: ['visual_logic3'],
+            sr_card: ['visual_srlogic3']            
+        }
+    },
+    {
+        id: 'ssrmao_2nd',
+        date: '2024-09-20',
+        bannerImg: 'idols/ssrmao_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrmao_2nd', char: 'mao' }],
+            sssr: ['vocal_free8'],
+            sr_card: ['vocal_srlogic2']            
+        }
+    },    
+    {
+        id: 'ssrchina_2nd',
+        date: '2024-08-22',
+        bannerImg: 'idols/ssrchina_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrchina_2nd', char: 'china' }],
+            sssr: ['dance_sense1'],
+            sr_card: ['dance_srsense3']            
+        }
+    }, 
+    {
+        id: 'ssrhiro_2nd',
+        date: '2024-07-22',
+        bannerImg: 'idols/ssrhiro_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrhiro_2nd', char: 'hiro' }],
+            sssr: ['vocal_sense1'],
+            sr_card: ['vocal_srsense1']            
+        }
+    }, 
+    {
+        id: 'ssrsaki_2nd',
+        date: '2024-06-19',
+        bannerImg: 'idols/ssrsaki_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsaki_2nd', char: 'saki' }],
+            sssr: ['visual_logic1'],
+            sr_card: ['visual_srlogic1']            
+        }
+    },  
+    {
+        id: 'ssrkotone_2nd',
+        date: '2024-06-10',
+        bannerImg: 'idols/ssrkotone_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrkotone_2nd', char: 'kotone' }],
+            sssr: ['dance_free5'],
+            sr_card: ['dance_srsense2']            
+        }
+    },    
+    {
+        id: 'ssrume_1st',
+        date: '2024-06-01',
+        bannerImg: 'idols/ssrume_1st1.webp',
+        pool: {
+            pssr: [{ id: 'ssrume_1st', char: 'ume' }],
+            sssr: ['vocal_free6'],
+            sr_card: ['dance_srsense1']            
+        }
+    },  
+    {
+        id: 'ssrtemari_2nd',
+        date: '2024-05-22',
+        bannerImg: 'idols/ssrtemari_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrtemari_2nd', char: 'temari' }],
+            sssr: ['vocal_free5'],
+            sr_card: ['vocal_srlogic1']            
+        }
+    },                                                                      
 ];
 
 // 한정 가챠 상세 설정

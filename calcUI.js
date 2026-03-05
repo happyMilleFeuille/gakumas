@@ -195,14 +195,12 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     ${['sense', 'logic', 'anomaly'].map(pt => `<div class="plan-type-btn ${store.planType === pt ? 'active' : ''}" data-type="${pt}"><img src="icons/${pt}.webp"></div>`).join('')}
                 </div>
                 
-                ${store.type === 'nia' ? `
+                ${(store.type === 'nia' || store.type === 'hajime') ? `
                 <div class="p-item-container" id="p-item-container">
                     <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: white; font-size: 12px; cursor: pointer; flex-shrink: 0;">?</button>
-                    <div class="p-item-slot" data-idx="0"></div>
-                    <div class="p-item-slot" data-idx="1"></div>
-                    <div class="p-item-slot" data-idx="2"></div>
-                    <div class="p-item-slot" data-idx="3"></div>
-                    <div class="p-item-slot" data-idx="4"></div>
+                    ${Array.from({length: store.type === 'nia' ? 5 : 4}).map((_, i) => `
+                        <div class="p-item-slot" data-idx="${i}"></div>
+                    `).join('')}
                 </div>
                 ` : ''}
 

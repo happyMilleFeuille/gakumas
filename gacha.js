@@ -136,21 +136,27 @@ function initNavigation(ui) {
     btnPrev.onclick = () => animateChange('prev');
     btnNext.onclick = () => animateChange('next');
 
-    // 스와이프 로직 연동
-    const handleSwipe = (endX, startX) => {
+    // 통합 스와이프 핸들러
+    const onSwipe = (endX, startX) => {
+        if (startX === null || startX === undefined) return;
         const diff = endX - startX;
         if (Math.abs(diff) > 50) animateChange(diff > 0 ? 'prev' : 'next');
     };
 
-    [ui.fixedBtnArea, gachaContainer].forEach(target => {
+    // 공통 이벤트 바인딩 로직
+    const bindSwipeEvents = (target) => {
         if (!target || target.dataset.swipeInitialized) return;
         target.dataset.swipeInitialized = "true";
-        let sX;
+        let sX = null;
+
         target.addEventListener('touchstart', (e) => { sX = e.changedTouches[0].screenX; }, { passive: true });
-        target.addEventListener('touchend', (e) => handleSwipe(e.changedTouches[0].screenX, sX), { passive: true });
+        target.addEventListener('touchend', (e) => { if (sX !== null) onSwipe(e.changedTouches[0].screenX, sX); sX = null; }, { passive: true });
         target.addEventListener('mousedown', (e) => { sX = e.screenX; });
-        target.addEventListener('mouseup', (e) => handleSwipe(e.screenX, sX));
-    });
+        target.addEventListener('mouseup', (e) => { if (sX !== null) onSwipe(e.screenX, sX); sX = null; });
+        target.addEventListener('mouseleave', () => { sX = null; });
+    };
+
+    [ui.fixedBtnArea, gachaContainer].forEach(bindSwipeEvents);
 }
 
 function initHeaderControls(ui) {

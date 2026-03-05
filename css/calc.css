@@ -154,7 +154,8 @@
 
 .p-item-slot {
     width: 50px;
-    height: 50px;
+    height: auto;
+    aspect-ratio: 1 / 1;
     background: white;
     border: 2px dashed #ddd;
     border-radius: 10px;
@@ -625,12 +626,47 @@
 }
 .cnt-btn:hover { background: #eee; }
 .cnt-val { min-width: 18px; text-align: center; font-weight: bold; font-size: 0.95rem; color: #ff4d8d; }
-
-@media (max-width: 440px) {
-
-    .plan-icon-wrapper { width: 42px; height: 42px; }
-
-    .plan-icon-wrapper.large-icon { width: 75px; height: 45px; }
+@media (max-width: 768px) {
+    .p-item-container {
+        gap: 6px;
+        padding: 8px;
+    }
+    .p-item-slot {
+        width: 45px;
+    }
+    .card-item-counter {
+        gap: 2px;
+        margin-top: 2px;
+        padding: 1px 2px;
+    }
+    .card-counter-btn {
+        width: 14px;
+        height: 14px;
+        font-size: 10px;
+    }
+    .card-counter-val {
+        font-size: 9px;
+        min-width: 10px;
+    }
+    .plan-icon-wrapper { 
+        width: 42px !important; 
+        height: 42px !important; 
+...
+        min-width: 42px !important;
+        min-height: 42px !important;
+        max-width: 42px !important;
+        max-height: 42px !important;
+        aspect-ratio: 1 / 1 !important; 
+        flex-shrink: 0 !important;
+    }
+    .plan-icon-wrapper.large-icon { 
+        width: 75px !important; 
+        height: 45px !important; 
+        min-width: 75px !important;
+        min-height: 45px !important;
+        aspect-ratio: auto !important; 
+        flex-shrink: 0 !important;
+    }
 
     .calc-btn, .back-btn { padding: 4px 8px; font-size: 0.7rem; width: auto; min-width: 60px; text-align: center; }
 

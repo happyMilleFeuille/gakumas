@@ -10,10 +10,10 @@
     height: 85%;
     min-height: 500px;
     position: relative;
-    overflow: hidden !important; /* 넘쳐도 스크롤 숨김 */
+    overflow: hidden !important; /* ?�쳐???�크�??��? */
 }
 
-/* 픽업 선택기 스타일 */
+/* ?�업 ?�택�??��???*/
 .gacha-pickup-selector {
     position: absolute;
     top: 40%;
@@ -26,7 +26,7 @@
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    align-items: flex-start; /* 다시 flex-start로 변경하여 수동 제어 */
+    align-items: flex-start; /* ?�시 flex-start�?변경하???�동 ?�어 */
 }
 
 .pickup-wrapper {
@@ -34,13 +34,13 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    /* 내부 pickup-item이 배경과 정확히 겹치도록 설정 */
+    /* ?��? pickup-item??배경�??�확??겹치?�록 ?�정 */
 }
 
-/* 픽업 선택기 뒷배경 스타일 */
+/* ?�업 ?�택�??�배�??��???*/
 .selector-bg-container {
     position: absolute;
-    top: 0; /* 부모인 gacha-pickup-selector의 상단 기준 */
+    top: 25%; /* 모든 기기?�서 공통?�로 ?�짝 ?�래�??�림 */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -48,45 +48,41 @@
     z-index: 1; 
     pointer-events: none;
     justify-content: center;
-    align-items: flex-start; /* 배너 이미지와 동일하게 상단 정렬 */
+    align-items: flex-start; /* 배너 ?��?지?� ?�일?�게 ?�단 ?�렬 */
     width: 100%;
     height: 100%;
 }
 
 .selector-bg-item {
-    aspect-ratio: 1 / 1.25;
+    width: 230px; /* ?�시 고정 ?�비�?복구 */
+    aspect-ratio: 1 / 1.15;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    filter: blur(4px) brightness(1.4); 
-    opacity: 0.8;
+    filter: blur(1.5px) brightness(1.2); 
+    opacity: 0.4;
     transition: all 0.4s ease;
-    transform: scale(1.1); 
+    transform: scale(2.3); 
     margin: 0;
 }
 
-/* 배경의 수직 위치를 배너 이미지와 강제 동기화 */
-.selector-bg-item.single-bg {
-    width: 220px;
-}
-
-/* 셀렉션 전용 아이템 스타일 (16:9 비율) */
+/* ?�?�션 ?�용 ?�이???��???(16:9 비율) */
 .pickup-item.selection-item {
-    width: 500px; /* 16:9에 맞게 조절 */
+    width: 500px; /* 16:9??맞게 조절 */
     height: auto;
     box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
     border-radius: 0 50px 0 0;
 }
 
 .pickup-item.selection-item .pickup-img-wrapper {
-    aspect-ratio: 16 / 9; /* 16:9 비율 적용 */
+    aspect-ratio: 16 / 9; /* 16:9 비율 ?�용 */
     border-radius: 0 50px 0 0;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
     .pickup-item.selection-item {
-        width: 300px; /* 모바일 크기 조절 */
+        width: 300px; /* 모바???�기 조절 */
     }
     .pickup-item.selection-item .pickup-img-wrapper {
         border-radius: 0 30px 0 0;
@@ -98,32 +94,20 @@
     width: 100%;
 }
 
-/* 유닛 픽업용 배경 크기 (160px 일치) */
-.selector-bg-item.unit-bg {
-    width: 160px;
-}
-
-.selector-bg-item.unit-bg:first-child, .selector-bg-item.unit-bg:last-child { margin: 0; }
+.selector-bg-item:first-child, .selector-bg-item:last-child { margin: 0; }
 @media (max-width: 768px) {
     .gacha-pickup-selector {
-        gap: 25px; /* 모바일 간격 30px로 확대 */
+        gap: 25px; /* 모바??간격 30px�??��? */
     }
-    .selector-bg-container {
-        top: 40%;
-        gap: 25px; /* 배경 모바일 간격 일치 */
-    }
+
     .selector-bg-item {
-        filter: blur(4px) brightness(1.4); /* 모바일 블러 8px로 조정 */
-    }
-    .selector-bg-item.single-bg {
         width: 130px;
-    }
-    .selector-bg-item.unit-bg {
-        width: 100px;
+        aspect-ratio: 1 / 1.5; /* 모바??비율: 1:1.5 */
+        filter: blur(2px) brightness(1.2); 
     }
 }
 
-/* 픽업 그룹 (유닛 가챠용) */
+/* ?�업 그룹 (?�닛 가챠용) */
 .pickup-group {
     display: flex;
     flex-direction: column; 
@@ -136,7 +120,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    z-index: 10; /* 배경보다 앞으로 */
+    z-index: 10; /* 배경보다 ?�으�?*/
 }
 
 .pickup-group:hover {
@@ -147,7 +131,7 @@
     box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
 }
 
-/* 유닛 내부 이미지들 가로 나열 컨테이너 */
+/* ?�닛 ?��? ?��?지??가�??�열 컨테?�너 */
 .pickup-images-inner {
     display: flex;
     justify-content: center;
@@ -156,7 +140,7 @@
     height: 100%;
 }
 
-/* 픽업 이름 공통 스타일 */
+/* ?�업 ?�름 공통 ?��???*/
 .pickup-name {
     color: #fff;
     font-size: 0.85rem;
@@ -169,7 +153,7 @@
     text-align: center;
     margin-top: 8px;
     position: relative;
-    z-index: 10; /* 배경보다 앞으로 */
+    z-index: 10; /* 배경보다 ?�으�?*/
 }
 
 @media (max-width: 768px) {
@@ -178,17 +162,17 @@
     }
 }
 
-/* 그룹 내부 아이템 스타일 조정 */
+/* 그룹 ?��? ?�이???��???조정 */
 .pickup-item-inner {
     width: 160px;
     background: none;
     border: none;
     padding: 0;
     pointer-events: none;
-    margin: 0; /* 겹침 제거 */
+    margin: 0; /* 겹침 ?�거 */
 }
 
-/* 유닛 뭉치 양 끝단 라운딩 */
+/* ?�닛 뭉치 ???�단 ?�운??*/
 .pickup-item-inner:first-child .pickup-img-wrapper { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
 .pickup-item-inner:last-child .pickup-img-wrapper { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
@@ -204,14 +188,14 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    border-radius: 0 50px 0 0; /* 우상단 라운딩 50px로 대폭 확대 */
+    border-radius: 0 50px 0 0; /* ?�상???�운??50px�??�???��? */
     padding: 0;
     background: none;
     border: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    z-index: 10; /* 배경보다 앞으로 */
+    z-index: 10; /* 배경보다 ?�으�?*/
 }
 
 .pickup-item:hover {
@@ -226,17 +210,17 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1.25;
-    border-radius: 0 50px 0 0; /* 우상단 라운딩 50px로 대폭 확대 */
+    border-radius: 0 50px 0 0; /* ?�상???�운??50px�??�???��? */
     overflow: hidden;
-    margin-bottom: 0; /* 선택기 내에서의 간격은 부모에서 조절 */
+    margin-bottom: 0; /* ?�택�??�에?�의 간격?� 부모에??조절 */
     background: rgba(0, 0, 0, 0.2);
 }
 
 .pickup-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 이미지가 카드에 꽉 차게 복구 */
-    object-position: top; /* 얼굴 위주로 표시 */
+    object-fit: cover; /* ?��?지가 카드??�?차게 복구 */
+    object-position: top; /* ?�굴 ?�주�??�시 */
     display: block;
 }
 
@@ -252,12 +236,12 @@
 
 @media (max-width: 768px) {
     .gacha-pickup-selector {
-        gap: 20px; /* 모바일 카드 간격 20px 유지 */
+        gap: 20px; /* 모바??카드 간격 20px ?��? */
     }
     .pickup-group {
         padding: 5px;
     }
-    /* 유닛 그룹 내부 아이템 크기 대폭 축소 */
+    /* ?�닛 그룹 ?��? ?�이???�기 ?�??축소 */
     .pickup-item-inner {
         width: 100px; 
         margin-left: -20px;
@@ -267,32 +251,28 @@
     .pickup-item-inner:last-child { margin-right: 0; }
 
     .pickup-item {
-        width: 130px; /* 개별 픽업 아이템 크기 */
+        width: 130px; /* 개별 ?�업 ?�이???�기 */
     }
     .pickup-name {
         font-size: 0.7rem;
     }
-    /* 모바일 배경 간격 및 크기 정밀 일치 */
+    /* 모바??배경 간격 �??�기 ?��? ?�치 */
     .selector-bg-container {
-        top: 0;
-        gap: 20px; /* 배너 간격 gap: 20px와 일치시킴 */
+        top: 20%;
     }
     .selector-bg-item.single-bg {
-        width: 130px; /* 배너 너비와 일치 */
-    }
-    .selector-bg-item.unit-bg {
-        width: 100px;
+        width: 130px; /* 배너 ?�비?� ?�치 */
     }
 }
 
-/* 픽업 뷰 레이아웃 (아이돌 배너 + 우측 서포트 카드 상시 노출) */
+/* ?�업 �??�이?�웃 (?�이??배너 + ?�측 ?�포??카드 ?�시 ?�출) */
 .pickup-item {
     position: relative;
     width: 220px;
     aspect-ratio: 1 / 1.25;
 }
 
-/* 유닛/셀렉션 배너 너비 복구 */
+/* ?�닛/?�?�션 배너 ?�비 복구 */
 .pickup-item.selection-item {
     width: 500px;
     aspect-ratio: 16 / 9;
@@ -311,7 +291,7 @@
 .pickup-support-column {
     position: absolute;
     top: 50%; 
-    left: 115%; /* 배너 우측 바깥쪽 */
+    left: 115%; /* 배너 ?�측 바깥�?*/
     transform: translate(-50%, -50%);
     width: auto;
     height: auto;
@@ -324,25 +304,25 @@
     pointer-events: none;
 }
 
-/* 유닛 가챠일 때 서포트 카드 위치 하단으로 변경 */
+/* ?�닛 가챠일 ???�포??카드 ?�치 ?�단?�로 변�?*/
 .pickup-item.selection-item .pickup-support-column {
     left: 75%;
     top: auto;
-    bottom: -20px; /* 배너 아래쪽에 배치 */
-    flex-direction: row; /* 가로로 나열 */
+    bottom: -20px; /* 배너 ?�래쪽에 배치 */
+    flex-direction: row; /* 가로로 ?�열 */
     gap: 10px;
 }
 
 .pickup-item.selection-item .support-pickup-mini {
-    transform: rotate(0deg); /* 유닛 가챠 하단에서는 회전 해제 */
-    width: 100px; /* 하단이므로 크기 살짝 확대 */
+    transform: rotate(0deg); /* ?�닛 가�??�단?�서???�전 ?�제 */
+    width: 100px; /* ?�단?��?�??�기 ?�짝 ?��? */
 }
 
 .support-pickup-mini:hover {
-    transform: rotate(-90deg) scale(1.05); /* 통상: 회전 유지하며 확대 */
+    transform: rotate(-90deg) scale(1.05); /* ?�상: ?�전 ?��??�며 ?��? */
 }
 
-/* 유닛 가챠 전용 호버 (회전 없음) */
+/* ?�닛 가�??�용 ?�버 (?�전 ?�음) */
 .pickup-item.selection-item .support-pickup-mini:hover {
     transform: rotate(0deg) scale(1.05);
 }
@@ -366,28 +346,28 @@
 
 @media (max-width: 768px) {
     .pickup-item { width: 130px; }
-    .pickup-item.selection-item { width: 280px; } /* 유닛 배너 크기 미세 조정 */
+    .pickup-item.selection-item { width: 280px; } /* ?�닛 배너 ?�기 미세 조정 */
     
-    /* 모바일 서포트 카드 뭉치 공통 */
+    /* 모바???�포??카드 뭉치 공통 */
     .pickup-support-column {
-        left: 120%; /* 화면 밖으로 나가지 않게 조금 안쪽으로 */
+        left: 120%; /* ?�면 밖으�??��?지 ?�게 조금 ?�쪽?�로 */
         gap: 30px;
     }
 
-    /* 모바일 유닛 가챠 서포트 카드 위치 */
+    /* 모바???�닛 가�??�포??카드 ?�치 */
     .pickup-item.selection-item .pickup-support-column {
         left: 75%;
-        bottom: -10px; /* 배너 아래쪽에 더 가깝게 */
+        bottom: -10px; /* 배너 ?�래쪽에 ??가깝게 */
         gap: 8px;
     }
 
     .support-pickup-mini {
-        width: 60px; /* 모바일 크기 축소 */
+        width: 60px; /* 모바???�기 축소 */
         border-radius: 4px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
     }
 
-    /* 모바일 호버 효과 (터치 시) */
+    /* 모바???�버 ?�과 (?�치 ?? */
     .support-pickup-mini:hover {
         transform: rotate(-90deg) scale(1.05);
     }
@@ -395,16 +375,16 @@
         transform: rotate(0deg) scale(1.05);
     }
     .pickup-item.selection-item .support-pickup-mini {
-        width: 60px; /* 유닛 가챠용 모바일 크기 */
+        width: 60px; /* ?�닛 가챠용 모바???�기 */
     }    
 }
 
-/* 가챠 화면일 때 메인 컨테이너 스크롤 차단 */
+/* 가�??�면????메인 컨테?�너 ?�크�?차단 */
 #idol:has(.gacha-container) {
     overflow: hidden !important;
 }
 
-/* 상단 컨트롤러 (음소거, 뒤로가기) */
+/* ?�단 컨트롤러 (?�소�? ?�로가�? */
 .gacha-header-controls {
     position: absolute;
     top: 48px;
@@ -449,7 +429,7 @@
 .back-btn:hover { background: #000; }
 .back-btn.hidden { display: none; }
 
-/* 상단 컨트롤 (콤보박스 등) */
+/* ?�단 컨트�?(콤보박스 ?? */
 .gacha-controls-top {
     width: 100%;
     display: flex;
@@ -462,7 +442,7 @@
     transform-style: flat;
 }
 
-/* 가챠 버튼 */
+/* 가�?버튼 */
 .gacha-buttons { 
     display: flex; 
     column-gap: 1.5rem;
@@ -481,12 +461,12 @@
 
 .gacha-buttons.loading-shift { opacity: 0 !important; }
 
-/* 메인 탭일 때 순서 */
+/* 메인 ??�� ???�서 */
 .gacha-buttons.view-main .gacha-controls-top { order: 0; }
 .gacha-buttons.view-main .gacha-btn { order: 1; }
 .gacha-buttons.view-main .total-pulls-box { order: 2; margin-top: 10px; }
 
-/* 결과 화면일 때 순서 */
+/* 결과 ?�면?????�서 */
 .gacha-buttons.view-result .gacha-controls-top { order: 0; }
 .gacha-buttons.view-result .total-pulls-box { order: 1; margin-bottom: 10px; }
 .gacha-buttons.view-result .gacha-btn { order: 2; }
@@ -548,7 +528,7 @@
     transform: scale(0.96);
 }
 
-/* 가챠 보조 버튼들 (기록, 확률 등) */
+/* 가�?보조 버튼??(기록, ?�률 ?? */
 .gacha-sub-buttons {
     position: absolute;
     top: 10px;
@@ -559,7 +539,7 @@
 }
 
 .gacha-sub-buttons .log-btn {
-    position: static !important; /* 개별 절대 위치 무효화 */
+    position: static !important; /* 개별 ?��? ?�치 무효??*/
     margin: 0;
 }
 
@@ -571,7 +551,7 @@
     }
 }
 
-/* 누적 가챠 횟수 박스 & 초기화 버튼 */
+/* ?�적 가�??�수 박스 & 초기??버튼 */
 .total-pulls-box {
     width: 100%;
     display: flex;
@@ -595,7 +575,7 @@
     white-space: pre;
 }
 
-/* 메인 탭일 때 교환pt 너비 축소 */
+/* 메인 ??�� ??교환pt ?�비 축소 */
 .view-main #total-pull-count { min-width: 120px; }
 
 #btn-gacha-reset {
@@ -615,7 +595,7 @@
     transform: scale(1.05);
 }
 
-/* 쥬얼 표시 UI (상단 우측 고정) */
+/* 쥬얼 ?�시 UI (?�단 ?�측 고정) */
 .jewel-container {
     position: absolute;
     top: 10px; right: 10px;
@@ -657,7 +637,7 @@
 .add-jewel-btn:hover { opacity: 0.8; }
 .add-jewel-btn:active { transform: scale(0.9); }
 
-/* 가챠 애니메이션 연출 전용 스타일 */
+/* 가�??�니메이???�출 ?�용 ?��???*/
 #gacha-video-container {
     position: fixed;
     top: 0; left: 0;
@@ -686,25 +666,25 @@
     height: auto;
     pointer-events: none;
     opacity: 0;
-    /* 초기 상태: 작게 */
+    /* 초기 ?�태: ?�게 */
     transform: translate(-50%, -50%) scale(0.1);
 }
 
-/* 프로듀스 카드 위치/크기 */
+/* ?�로?�??카드 ?�치/?�기 */
 #gacha-card-overlay.produce-card { top: 43.5%; }
 #gacha-card-overlay.produce-card.visible {
     opacity: 1;
     transform: translate(-50%, -50%) scale(0.60);
-    /* 나타날 때만 애니메이션 적용 */
+    /* ?��????�만 ?�니메이???�용 */
     transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
 }
 
-/* 서포트 카드 위치/크기 */
+/* ?�포??카드 ?�치/?�기 */
 #gacha-card-overlay.landscape-card { top: 45%; }
 #gacha-card-overlay.landscape-card.visible {
     opacity: 1;
     transform: translate(-50%, -50%) scale(0.9);
-    /* 나타날 때만 애니메이션 적용 */
+    /* ?��????�만 ?�니메이???�용 */
     transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
 }
 
@@ -720,7 +700,7 @@
     pointer-events: none;
     opacity: 0;
     white-space: nowrap;
-    /* 초기 상태: 아래에서 대기 */
+    /* 초기 ?�태: ?�래?�서 ?��?*/
     transform: translate(-50%, -50%) translateY(20px);
 }
 
@@ -730,7 +710,7 @@
 #gacha-name-overlay.visible {
     opacity: 1;
     transform: translate(-50%, -50%) translateY(0);
-    /* 나타날 때만 애니메이션 적용 */
+    /* ?��????�만 ?�니메이???�용 */
     transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
@@ -745,14 +725,14 @@
     text-shadow: 0 0 2px #ffcc00, 0 0 4px rgba(255, 153, 0, 0.6);
     pointer-events: none;
     opacity: 0;
-    /* 초기 상태: 작게 사라진 상태 */
+    /* 초기 ?�태: ?�게 ?�라�??�태 */
     transform: translate(-50%, -50%) scale(0);
 }
 
 #gacha-new-badge.visible {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    /* 나타날 때만 애니메이션 적용 */
+    /* ?��????�만 ?�니메이???�용 */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
 }
 
@@ -770,7 +750,7 @@
     font-weight: bold;
     letter-spacing: 0.5px;
     transition: all 0.2s;
-    /* 세로 늘어남 방지 */
+    /* ?�로 ?�어??방�? */
     height: auto !important;
     width: auto !important;
     line-height: 1.2;
@@ -796,7 +776,7 @@
     }
 }
 
-/* 탭 전환 버튼 */
+/* ???�환 버튼 */
 .type-nav-btn.circle-btn {
     background: rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -857,7 +837,7 @@
     --base-trans: translateY(0);
 }
 
-/* 텍스트 슬라이드 애니메이션 */
+/* ?�스???�라?�드 ?�니메이??*/
 .slide-out-left span { animation: textOutLeft 0.1s ease-in forwards; }
 .slide-in-right span { animation: textInRight 0.1s ease-out forwards; }
 .slide-out-right span { animation: textOutRight 0.1s ease-in forwards; }
@@ -878,14 +858,14 @@
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: #ffffff !important; /* 완전한 흰색 막 */
+    background: #ffffff !important; /* ?�전???�색 �?*/
     z-index: 9990 !important;
     margin: 0 !important;
     padding: 0 !important;
     touch-action: none;
     user-select: none;
     pointer-events: all;
-    display: block !important; /* flex 대신 block으로 변경 */
+    display: block !important; /* flex ?�??block?�로 변�?*/
 }
 
 .spinner.active::after {
@@ -893,7 +873,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* 화면의 정중앙에 배치 */
+    transform: translate(-50%, -50%); /* ?�면???�중?�에 배치 */
     border: 5px solid #eeeeee;
     border-top: 5px solid var(--primary-color);
     border-radius: 50%;
@@ -905,7 +885,7 @@
 
 #gacha-progress-text {
     position: absolute;
-    top: calc(50% + 55px); /* 스피너 아래쪽 10px 위치 (60px/2 + 25px) */
+    top: calc(50% + 55px); /* ?�피???�래�?10px ?�치 (60px/2 + 25px) */
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--primary-color);
@@ -961,7 +941,7 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         width: 90px !important;
         height: 45px;
         border-radius: 25px;
-        padding-top: 13px !important; /* 9px에서 13px로 증가 */
+        padding-top: 13px !important; /* 9px?�서 13px�?증�? */
         display: flex !important;
         align-items: center; 
         justify-content: center;
@@ -970,10 +950,10 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         font-size: 0.75rem;
     }
     .gacha-btn.close-style > * {
-        transform: none !important; /* 기존 개별 이동 제거 */
+        transform: none !important; /* 기존 개별 ?�동 ?�거 */
     }
     .close-x {
-        /* 패딩 때문에 너무 내려간 X 아이콘을 미세하게 위로 보정하여 텍스트와 맞춤 */
+        /* ?�딩 ?�문???�무 ?�려�?X ?�이콘을 미세?�게 ?�로 보정?�여 ?�스?��? 맞춤 */
         transform: translateY(-1px) !important; 
         margin-right: 4px;
     }
@@ -994,12 +974,4 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
     .type-nav-btn.circle-btn:hover, .type-nav-btn.circle-btn:active { transform: translateY(20px); }
     .current-type-display.capsule-box { min-width: 130px; height: 60px; line-height: 60px; font-size: 1.1rem; }
 
-    /* 모바일 배경 이미지 크기 조정 */
-    .selector-bg-item.unit-bg {
-        width: 270px !important; /* 220px에서 260px로 확대 */
-        aspect-ratio: 16 / 9;
-    }
-    .selector-bg-item.single-bg {
-        width: 130px !important;
-    }
 }
