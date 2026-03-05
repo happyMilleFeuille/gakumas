@@ -143,45 +143,52 @@ export function openGachaRatesModal() {
         } else {
             let pTotal = 0;
             if (rarityKey === 'PSSR') {
-                // 유닛 가챠는 인원수당 0.75%, 그 외는 단일 0.75%
-                pTotal = (type === 'unit' ? 0.0075 * pickupCards.length : 0.0075);
+                // 유닛 가챠 PSSR: 캐릭터당 고정 0.75%
+                const singlePkRate = 0.0075;
+                pTotal = singlePkRate * pickupCards.length;
             }
             else if (rarityKey === 'SSSR') {
-                // SSSR 역시 인원수당 1.0% (최대치 제한)
-                pTotal = (type === 'unit' ? 0.01 * pickupCards.length : 0.01);
+                // SSSR: 카드당 1.0% (유닛 가챠 특성 유지)
+                pTotal = 0.01 * pickupCards.length;
             }
-            else if (rarityKey === 'SR_CARD') pTotal = 0.04;
+            else if (rarityKey === 'SR_CARD') {
+                // SR 서포트: 카드당 4.0%
+                pTotal = 0.04 * pickupCards.length;
+            }
             
+            // 픽업 총 확률 결정 (전체 확률을 넘지 않음)
             const actualPTotal = pickupCards.length > 0 ? Math.min(pTotal, totalRate) : 0;
             const pRN = actualPTotal / Math.max(1, pickupCards.length);
             
-            // 일반 확률 미세 오차 제거
-            let nRN = (totalRate - actualPTotal) / Math.max(1, regularCards.length);
-            if (totalRate - actualPTotal < 0.00001) nRN = 0;
+            // 남은 확률(픽뚫) 계산: 전체 확률에서 픽업 합계를 뺀 나머지를 일반 카드들에게 배분
+            let nRN = 0;
+            if (regularCards.length > 0) {
+                nRN = Math.max(0, totalRate - actualPTotal) / regularCards.length;
+            } else if (pickupCards.length > 0 && actualPTotal < totalRate) {
+                // 만약 일반 카드가 없는데 확률이 남는 특수 상황(거의 없음)이면 픽업에 합산
+                const bonus = (totalRate - actualPTotal) / pickupCards.length;
+                // 이 경우 pRN에 더해줌 (아래 결과 매핑 시 적용)
+            }
 
             let pRG = 0, nRG = 0;
             if (totalGuaranteed > 0) {
-                // 확정 슬롯에서의 픽업 합산 확률 계산 (유닛 가챠는 개별 비율 유지)
-                let pTG = (rarityKey === 'SR_CARD') ? 0.223529 : (actualPTotal * (totalGuaranteed / totalRate));
+                // 확정 슬롯 확률 배분
+                let pTG = (rarityKey === 'SR_CARD') ? Math.min(0.223529 * pickupCards.length, totalGuaranteed) : (actualPTotal * (totalGuaranteed / totalRate));
                 
-                // 유닛 가챠의 경우, 전체 확정 확률(totalGuaranteed)을 넘지 않는 선에서 픽업 합산 적용
-                if (type === 'unit' && rarityKey === 'PSSR') {
-                    pTG = 0.0075 * pickupCards.length * (totalGuaranteed / totalRate);
-                }
-
-                // 확정 확률 미세 오차 제거 (픽업 합계가 전체 확률과 거의 같으면 픽뚫 0)
                 if (totalGuaranteed - pTG < 0.00001) {
                     pTG = totalGuaranteed;
                     nRG = 0;
-                } else {
-                    nRG = (totalGuaranteed - pTG) / Math.max(1, regularCards.length);
+                } else if (regularCards.length > 0) {
+                    nRG = (totalGuaranteed - pTG) / regularCards.length;
                 }
                 
                 pRG = pTG / Math.max(1, pickupCards.length);
             }
             results = rarityPool.map(c => {
                 const isPk = pickupIds.includes(c.id);
-                return { card: c, nRate: isPk ? pRN : nRN, gRate: isPk ? pRG : nRG };
+                // 일반 카드가 없을 때 남는 확률 보정 포함
+                const finalPRN = (isPk && regularCards.length === 0) ? totalRate / pickupCards.length : pRN;
+                return { card: c, nRate: isPk ? finalPRN : nRN, gRate: isPk ? pRG : nRG };
             });
         }
 

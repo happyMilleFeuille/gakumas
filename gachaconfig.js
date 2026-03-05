@@ -38,7 +38,7 @@ export const FES_CONFIG = [
 export const UNIT_CONFIG = [
     {
         id: 'michinaruunit',
-        date: '2026-01-17',
+        date: '2026-01-27',
         bannerImg: 'idols/ssrchina_michinaruunit1.webp',
         pool: {
             pssr: [
@@ -197,7 +197,26 @@ export const NORMAL_CONFIG = [
             sssr: ['visual_anomaly1'],
             sr_card: ['visual_sranomaly1']
         }
-    },                                  
+    },            
+    {
+        id: 'ssrsena_2nd',
+        date: '2025-04-22',
+        bannerImg: 'idols/ssrsena_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsena_2nd', char: 'sena' }],
+            sssr: ['vocal_logic1'],
+            sr_card: ['vocal_srlogic3']
+        }
+    },    
+    {
+        id: 'ssrlilja_2nd',
+        date: '2025-03-21',
+        bannerImg: 'idols/ssrlilja_2nd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrlilja_2nd', char: 'lilja' }],
+            sssr: ['dance_free6'],
+        }
+    },                              
 ];
 
 // 한정 가챠 상세 설정
@@ -271,7 +290,146 @@ export const LIMITED_CONFIG = [
             sssr: ['dance_limitedanomaly1'],
             sr_card: ['dance_srlimitedanomaly1']
         }
-    },                                        
+    },           
+    {
+        id: 'ssrsaki_sakuralimited',
+        date: '2025-04-11',
+        bannerImg: 'idols/ssrsaki_sakuralimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsaki_sakuralimited', char: 'saki' }],
+            sssr: ['visual_limitedanomaly3'],
+            sr_card: ['visual_srlimitedanomaly3']
+        }
+    },     
+    {
+        id: 'ssrsumika_sakuralimited',
+        date: '2025-04-01',
+        bannerImg: 'idols/ssrsumika_sakuralimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsumika_sakuralimited', char: 'sumika' }],
+            sssr: ['dance_limitedsense2'],
+            sr_card: ['dance_srlimitedsense2']
+        }
+    }, 
+    {
+        id: 'ssrmao_yukidokenilimited',
+        date: '2025-03-10',
+        bannerImg: 'idols/ssrmao_yukidokenilimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrmao_yukidokenilimited', char: 'mao' }],
+            sssr: ['visual_limitedanomaly2'],
+            sr_card: ['visual_srlimitedanomaly2']
+        }
+    },
+    {
+        id: 'ssrchina_yukidokenilimited',
+        date: '2025-02-28',
+        bannerImg: 'idols/ssrchina_yukidokenilimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrchina_yukidokenilimited', char: 'china' }],
+            sssr: ['dance_limitedlogic4'],
+            sr_card: ['dance_srlimitedlogic3']
+        }
+    },           
+    {
+        id: 'ssrsena_valentinelimited',
+        date: '2025-02-14',
+        bannerImg: 'idols/ssrsena_valentinelimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsena_valentinelimited', char: 'sena' }],
+            sssr: ['vocal_limitedlogic1'],
+            sr_card: ['vocal_srlimitedlogic2']
+        }
+    },    
+    {
+        id: 'ssrrinami_valentinelimited',
+        date: '2025-02-01',
+        bannerImg: 'idols/ssrrinami_valentinelimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrrinami_valentinelimited', char: 'rinami' }],
+            sssr: ['visual_limitedanomaly1'],
+            sr_card: ['visual_srlimitedanomaly1']
+        }
+    },   
+    {
+        id: 'ssrlilja_christmaslimited',
+        date: '2024-12-09',
+        bannerImg: 'idols/ssrlilja_christmaslimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrlilja_christmaslimited', char: 'lilja' }],
+            sssr: ['visual_limitedlogic1'],
+            sr_card: ['dance_srlimitedlogic2']
+        }
+    }, 
+    {
+        id: 'ssrume_christmaslimited',
+        date: '2024-11-28',
+        bannerImg: 'idols/ssrume_christmaslimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrume_christmaslimited', char: 'ume' }],
+            sssr: ['dance_limitedsense1'],
+            sr_card: ['dance_srlimitedsense1']
+        }
+    },   
+    {
+        id: 'ssrhiro_halloweenlimited',
+        date: '2024-10-08',
+        bannerImg: 'idols/ssrhiro_halloweenlimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrhiro_halloweenlimited', char: 'hiro' }],
+            sssr: ['vocal_limitedsense2'],
+            sr_card: ['vocal_srlimitedsense1']
+        }
+    },  
+    {
+        id: 'ssrtemari_halloweenlimited',
+        date: '2024-09-30',
+        bannerImg: 'idols/ssrtemari_halloweenlimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrtemari_halloweenlimited', char: 'temari' }],
+            sssr: ['dance_limitedlogic3'],
+            sr_card: ['dance_srlimitedlogic1']
+        }
+    },   
+    {
+        id: 'ssrkotone_kanmurilimited',
+        date: '2024-08-11',
+        bannerImg: 'idols/ssrkotone_kanmurilimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrkotone_kanmurilimited', char: 'kotone' }],
+            sssr: ['dance_limitedlogic2'],
+            sr_card: ['dance_srlimitedfree1']
+        }
+    }, 
+    {
+        id: 'ssrlilja_kanmurilimited',
+        date: '2024-08-01',
+        bannerImg: 'idols/ssrlilja_kanmurilimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrlilja_kanmurilimited', char: 'lilja' }],
+            sssr: ['visual_limitedsense1'],
+            sr_card: ['visual_srlimitedsense1']
+        }
+    }, 
+    {
+        id: 'ssrrinami_summerlimited',
+        date: '2024-07-12',
+        bannerImg: 'idols/ssrrinami_summerlimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrrinami_summerlimited', char: 'rinami' }],
+            sssr: ['vocal_limitedsense1'],
+            sr_card: ['vocal_srlimitedlogic1']
+        }
+    }, 
+    {
+        id: 'ssrsumika_summerlimited',
+        date: '2024-07-01',
+        bannerImg: 'idols/ssrsumika_summerlimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsumika_summerlimited', char: 'sumika' }],
+            sssr: ['dance_limitedlogic1'],
+        }
+    },                                                                                 
 ];
 
 // 셀렉션 가챠 상세 설정 (드로어 리스트 및 가챠 풀)

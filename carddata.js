@@ -2670,7 +2670,7 @@ export const cardList = [
     type: "dance", 
     plan: "sense", 
     have:"item",
-    releasedAt: "2024-11-28", 
+    releasedAt: "2025-04-01", 
     source:"limited",            
     rarity: "SR",             
     extra1: "param",    

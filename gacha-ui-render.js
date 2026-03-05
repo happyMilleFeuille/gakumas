@@ -23,13 +23,17 @@ export function renderPickupSelector(ui) {
         const isMulti = ( (type === 'unit' || type === 'fes') && currentCfg.pool?.pssr?.length >= 2);
         const itemClass = (isSelection || isMulti) ? 'selection-item' : 'normal-selection-item';
 
+        // 픽업 서포트 카드 데이터 추출
+        const sssrPickups = currentCfg.pool?.sssr || [];
+        const srPickups = currentCfg.pool?.sr_card || [];
+
         ui.pickupSelector.innerHTML = `
             <div class="selector-bg-container">
-                <div class="selector-bg-item single-bg" style="background-image: url('${bgImg}'); background-position: top; ${isMulti ? 'width: 500px; aspect-ratio: 16/9;' : ''}"></div>
+                <div class="selector-bg-item ${isMulti ? 'unit-bg' : 'single-bg'}" style="background-image: url('${bgImg}'); background-position: top; ${isMulti ? 'width: 500px; aspect-ratio: 16/9;' : ''}"></div>
             </div>
             <div class="pickup-wrapper ${ (isSelection || isMulti) ? 'selection-wrapper' : ''}">
                 <div class="pickup-item ${itemClass}" style="box-shadow: 0 0 20px 5px ${favColor}99;">
-                    <div class="pickup-img-wrapper" style="border: 1px solid ${favColor}; display: flex;">
+                    <div class="pickup-img-wrapper idol-main-img" style="border: 1px solid ${favColor}; ${isMulti ? 'display: flex;' : ''}">
                         ${ isMulti ? 
                             currentCfg.pool.pssr.map(p => {
                                 const pid = typeof p === 'string' ? p : p.id;
@@ -39,17 +43,92 @@ export function renderPickupSelector(ui) {
                             : `<div class="selection-banner-img" style="background-image: url('${bannerImg}'); width: 100%; height: 100%; background-size: cover; background-position: top;"></div>`
                         }
                     </div>
+                    <div class="pickup-support-column">
+                        ${sssrPickups.map(id => `<div class="support-pickup-mini" data-rarity="SSR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
+                        ${srPickups.map(id => `<div class="support-pickup-mini" data-rarity="SR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
+                    </div>
                 </div>
-                <div class="pickup-name">${displayName}</div>
+                <div class="pickup-footer">
+                    <div class="pickup-name-container">
+                        <div class="pickup-name">${displayName}</div>
+                    </div>
+                </div>
             </div>
         `;
         const banner = ui.pickupSelector.querySelector('.pickup-item');
         if (banner) bindSafeClick(banner, openDrawer);
+
+        // 픽업 서포트 카드 툴팁 이벤트 바인딩 (PC 전용)
+        setupSupportTooltips(ui.pickupSelector);
         return;
     }
 
     // 2. 기타 방식 (필요 시)
     ui.pickupSelector.classList.add('hidden');
+}
+
+/**
+ * 서포트 카드 툴팁 설정
+ */
+function setupSupportTooltips(container) {
+    if (window.innerWidth <= 768) return;
+
+    let tooltip = document.getElementById('card-preview-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'card-preview-tooltip';
+        tooltip.innerHTML = '<img src="" alt="">';
+        document.body.appendChild(tooltip);
+    }
+    const tImg = tooltip.querySelector('img');
+
+    const showTooltip = (e) => {
+        const item = e.target.closest('.support-pickup-mini');
+        if (!item) return;
+
+        const rarity = item.dataset.rarity;
+        const color = rarity === 'SSR' ? '#d4a5ff' : '#ffe082';
+        const shadow = rarity === 'SSR' ? 'rgba(212, 165, 255, 0.4)' : 'rgba(255, 224, 130, 0.3)';
+
+        // 배경 이미지 경로 추출
+        const bgImg = item.style.backgroundImage.slice(4, -1).replace(/"/g, "");
+        tImg.src = bgImg;
+        
+        // 등급별 스타일 적용
+        tooltip.style.borderColor = color;
+        tooltip.style.boxShadow = `0 10px 40px ${shadow}`;
+        
+        tooltip.style.display = 'block';
+        setTimeout(() => tooltip.style.opacity = '1', 10);
+    };
+
+    const moveTooltip = (e) => {
+        if (tooltip.style.display !== 'block') return;
+        const offset = 20;
+        let x = e.clientX + offset;
+        let y = e.clientY + offset;
+
+        // 화면 경계 체크
+        if (x + 320 > window.innerWidth) x = e.clientX - 320 - offset;
+        if (y + 200 > window.innerHeight) y = e.clientY - 200 - offset;
+
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+    };
+
+    const hideTooltip = () => {
+        tooltip.style.opacity = '0';
+        setTimeout(() => {
+            if (tooltip.style.opacity === '0') tooltip.style.display = 'none';
+        }, 150);
+    };
+
+    const targets = container.querySelectorAll('.support-pickup-mini');
+    targets.forEach(target => {
+        target.addEventListener('mouseenter', showTooltip);
+        target.addEventListener('mousemove', moveTooltip);
+        target.addEventListener('mouseleave', hideTooltip);
+    });
 }
 
 export function renderResults(ui, currentResults) {

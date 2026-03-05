@@ -114,6 +114,7 @@ export function getGachaPool(poolType) {
     const isInPool = (card, forceLimitedU = false) => {
         const source = card.source || 'normal';
         const isSourceMatch = forceLimitedU ? (source === 'limited_u') : validSources.includes(source);
+        
         if (!isSourceMatch) return false;
         if (card.gacha === false) return false;
         

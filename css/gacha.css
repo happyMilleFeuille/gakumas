@@ -20,34 +20,35 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    gap: 60px; /* 간격을 60px로 확대 */
+    gap: 60px;
     z-index: 5;
     pointer-events: auto;
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: flex-start; /* 다시 flex-start로 변경하여 수동 제어 */
 }
 
 .pickup-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    position: relative;
+    /* 내부 pickup-item이 배경과 정확히 겹치도록 설정 */
 }
 
 /* 픽업 선택기 뒷배경 스타일 */
 .selector-bg-container {
     position: absolute;
-    top: 42.5%; 
+    top: 0; /* 부모인 gacha-pickup-selector의 상단 기준 */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     display: flex;
-    gap: 60px; /* 카드 간격과 동일하게 60px로 맞춤 */
+    gap: 60px;
     z-index: 1; 
     pointer-events: none;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* 배너 이미지와 동일하게 상단 정렬 */
     width: 100%;
     height: 100%;
 }
@@ -61,10 +62,10 @@
     opacity: 0.8;
     transition: all 0.4s ease;
     transform: scale(1.1); 
-    margin: 0; /* 모든 마진 제거하여 gap 설정이 정확히 먹히게 함 */
+    margin: 0;
 }
 
-/* 개별 픽업용 배경 크기 (220px 일치) */
+/* 배경의 수직 위치를 배너 이미지와 강제 동기화 */
 .selector-bg-item.single-bg {
     width: 220px;
 }
@@ -271,11 +272,131 @@
     .pickup-name {
         font-size: 0.7rem;
     }
-    /* 모바일 배경 간격 미세 조정 */
+    /* 모바일 배경 간격 및 크기 정밀 일치 */
     .selector-bg-container {
-        top: 40%;
-        gap: 18px; /* 10px에서 18px로 수정 */
+        top: 0;
+        gap: 20px; /* 배너 간격 gap: 20px와 일치시킴 */
     }
+    .selector-bg-item.single-bg {
+        width: 130px; /* 배너 너비와 일치 */
+    }
+    .selector-bg-item.unit-bg {
+        width: 100px;
+    }
+}
+
+/* 픽업 뷰 레이아웃 (아이돌 배너 + 우측 서포트 카드 상시 노출) */
+.pickup-item {
+    position: relative;
+    width: 220px;
+    aspect-ratio: 1 / 1.25;
+}
+
+/* 유닛/셀렉션 배너 너비 복구 */
+.pickup-item.selection-item {
+    width: 500px;
+    aspect-ratio: 16 / 9;
+}
+
+.idol-main-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+    z-index: 10;
+    opacity: 1;
+}
+
+.pickup-support-column {
+    position: absolute;
+    top: 50%; 
+    left: 115%; /* 배너 우측 바깥쪽 */
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* 유닛 가챠일 때 서포트 카드 위치 하단으로 변경 */
+.pickup-item.selection-item .pickup-support-column {
+    left: 75%;
+    top: auto;
+    bottom: -20px; /* 배너 아래쪽에 배치 */
+    flex-direction: row; /* 가로로 나열 */
+    gap: 10px;
+}
+
+.pickup-item.selection-item .support-pickup-mini {
+    transform: rotate(0deg); /* 유닛 가챠 하단에서는 회전 해제 */
+    width: 100px; /* 하단이므로 크기 살짝 확대 */
+}
+
+.support-pickup-mini:hover {
+    transform: rotate(-90deg) scale(1.05); /* 통상: 회전 유지하며 확대 */
+}
+
+/* 유닛 가챠 전용 호버 (회전 없음) */
+.pickup-item.selection-item .support-pickup-mini:hover {
+    transform: rotate(0deg) scale(1.05);
+}
+
+.support-pickup-mini {
+    width: 100px;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    border: 1px solid #fff;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+    pointer-events: auto;
+    transform: rotate(-90deg); 
+    transition: transform 0.2s ease;
+}
+
+.support-pickup-mini[data-rarity="SSR"] { border-color: #d4a5ff !important; box-shadow: 0 0 15px rgba(212, 165, 255, 0.4); }
+.support-pickup-mini[data-rarity="SR"] { border-color: #ffe082 !important; box-shadow: 0 0 12px rgba(255, 224, 130, 0.3); }
+
+@media (max-width: 768px) {
+    .pickup-item { width: 130px; }
+    .pickup-item.selection-item { width: 280px; } /* 유닛 배너 크기 미세 조정 */
+    
+    /* 모바일 서포트 카드 뭉치 공통 */
+    .pickup-support-column {
+        left: 120%; /* 화면 밖으로 나가지 않게 조금 안쪽으로 */
+        gap: 30px;
+    }
+
+    /* 모바일 유닛 가챠 서포트 카드 위치 */
+    .pickup-item.selection-item .pickup-support-column {
+        left: 75%;
+        bottom: -10px; /* 배너 아래쪽에 더 가깝게 */
+        gap: 8px;
+    }
+
+    .support-pickup-mini {
+        width: 60px; /* 모바일 크기 축소 */
+        border-radius: 4px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    /* 모바일 호버 효과 (터치 시) */
+    .support-pickup-mini:hover {
+        transform: rotate(-90deg) scale(1.05);
+    }
+    .pickup-item.selection-item .support-pickup-mini:hover {
+        transform: rotate(0deg) scale(1.05);
+    }
+    .pickup-item.selection-item .support-pickup-mini {
+        width: 60px; /* 유닛 가챠용 모바일 크기 */
+    }    
 }
 
 /* 가챠 화면일 때 메인 컨테이너 스크롤 차단 */
@@ -872,4 +993,13 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
     }
     .type-nav-btn.circle-btn:hover, .type-nav-btn.circle-btn:active { transform: translateY(20px); }
     .current-type-display.capsule-box { min-width: 130px; height: 60px; line-height: 60px; font-size: 1.1rem; }
+
+    /* 모바일 배경 이미지 크기 조정 */
+    .selector-bg-item.unit-bg {
+        width: 270px !important; /* 220px에서 260px로 확대 */
+        aspect-ratio: 16 / 9;
+    }
+    .selector-bg-item.single-bg {
+        width: 130px !important;
+    }
 }

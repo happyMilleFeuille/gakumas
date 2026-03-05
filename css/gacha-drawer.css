@@ -152,24 +152,24 @@
 .drawer-overlay.active { visibility: visible; opacity: 1; }
 
 @media (max-width: 768px) {
-    .gacha-drawer { height: 35vh; }
-    .drawer-card-img { width: 110px; margin-bottom: 8px; }
-    .drawer-item { width: 110px; }
-    .drawer-item.selection-type { width: 200px; }
-    .drawer-content-scroll { padding: 20px 50vw 0; }
-    .drawer-item-name { font-size: 0.75rem; width: 110px; height: 2rem; }
-    .drawer-item.selection-type .drawer-item-name { width: 200px; }
+    .gacha-drawer { height: 38vh; }
+    .drawer-card-img { width: 100%; margin-bottom: 10px; } /* 130px -> 100%로 수정 */
+    .drawer-item { width: 130px; }
+    .drawer-item.selection-type { width: 290px; } /* 330px -> 290px 조정 */
+    .drawer-content-scroll { padding: 15px 50vw 0; }
+    .drawer-item-name { font-size: 0.8rem; width: 100%; height: 2.2rem; } 
+    .drawer-item.selection-type .drawer-item-name { width: 100%; }
     
-    /* 레이어 간격 통일 (40px로 확대) */
-    .drawer-items-layer { gap: 40px; }
-    .drawer-indicator-layer { gap: 40px; bottom: 0; }
+    /* 레이어 간격 확대 */
+    .drawer-items-layer { gap: 50px; padding-top: 35px; }
+    .drawer-indicator-layer { gap: 50px; bottom: 0; }
     
     .drawer-diamond-wrapper { 
-        width: 110px; 
+        width: 130px; 
         padding-bottom: 17.5px; 
     }
     .drawer-diamond-wrapper.selection-diamond {
-        width: 200px; /* 모바일 셀렉션/더블픽업 너비 일치 */
+        width: 290px; /* 유닛 다이아몬드 영역도 일치 */
     }
     .drawer-indicator-line { 
         bottom: 20px; 

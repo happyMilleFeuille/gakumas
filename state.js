@@ -54,7 +54,7 @@ export const state = {
     activeSelectionId: localStorage.getItem('activeSelectionId') || 'ongakusai_day1',
     activeNormalId: localStorage.getItem('activeNormalId') || 'normal_default',
     activeLimitedId: localStorage.getItem('activeLimitedId') || 'ssrume_endlesslimited',
-    activeUnitId: localStorage.getItem('activeUnitId') || 'ssrchina_michinaruunit',
+    activeUnitId: localStorage.getItem('activeUnitId') || 'michinaruunit',
     activeFesId: localStorage.getItem('activeFesId') || 'ssrtsubame_campusfes'
 };
 
