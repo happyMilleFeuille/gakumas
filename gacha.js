@@ -102,7 +102,7 @@ function initUIState(ui) {
 }
 
 function initNavigation(ui) {
-    const types = ['normal', 'limited', 'unit', 'fes', 'platinum', 'selection'];
+    const types = ['normal', 'limited', 'unit', 'fes', 'selection'];
     const typeDisplay = document.getElementById('current-gacha-type-display');
     const btnPrev = document.getElementById('btn-prev-gacha');
     const btnNext = document.getElementById('btn-next-gacha');
@@ -115,17 +115,26 @@ function initNavigation(ui) {
         const isResultView = ui.fixedBtnArea?.classList.contains('view-result');
         if (document.body.classList.contains('immersive-mode') || isResultView || spinner?.classList.contains('active')) return;
 
+        // [수정] ui.pickupSelector(과거 참조) 대신 현재 DOM에 있는 배너를 직접 참조
+        const currentPickupSelector = document.getElementById('gacha-pickup-selector');
+
         playSound('gasya/slide.mp3');
         const outClass = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
         const inClass = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
-        const elements = [typeDisplay, btnPrev, btnNext];
+        
+        // [수정] 배너(currentPickupSelector)를 애니메이션 대상에 포함
+        const elements = [typeDisplay, btnPrev, btnNext, currentPickupSelector];
 
         elements.forEach(el => el?.classList.add(outClass));
         setTimeout(() => {
             let idx = types.indexOf(state.gachaType);
             idx = (direction === 'next') ? (idx + 1) % types.length : (idx - 1 + types.length) % types.length;
             setGachaType(types[idx]);
-            updateTypeUI(ui);
+
+            // [수정] 최신 배너 엘리먼트를 포함하여 UI 업데이트 호출
+            const latestUi = { ...ui, pickupSelector: currentPickupSelector };
+            updateTypeUI(latestUi);
+
             elements.forEach(el => {
                 if(el) { el.classList.remove(outClass); void el.offsetWidth; el.classList.add(inClass); }
             });
@@ -186,11 +195,11 @@ function initHeaderControls(ui) {
 }
 
 function updateTypeUI(ui) {
-    const types = ['normal', 'limited', 'unit', 'fes', 'platinum', 'selection'];
+    const types = ['normal', 'limited', 'unit', 'fes', 'selection'];
     const typeDisplayNames = {
         normal: state.currentLang === 'ko' ? '통상' : '恒常', limited: state.currentLang === 'ko' ? '한정' : '限定',
-        unit: state.currentLang === 'ko' ? '유닛' : 'ユニット', fes: state.currentLang === 'ko' ? '페스' : 'フェス',
-        platinum: state.currentLang === 'ko' ? '플래티넘' : 'プラチナ', selection: state.currentLang === 'ko' ? '셀렉션' : 'セレクション'
+        unit: state.currentLang === 'ko' ? '유닛' : 'ユニット', fes: state.currentLang === 'ko' ? '페스' : 'フェ스',
+        selection: state.currentLang === 'ko' ? '셀렉션' : 'セレクション'
     };
 
     const typeDisplay = document.getElementById('current-gacha-type-display');
@@ -254,7 +263,14 @@ function setupAnimationLogic(ui, contentArea) {
             }
             renderResults(ui, currentResults);
             const fixedBg = document.getElementById('fixed-bg');
-            if (fixedBg) { fixedBg.style.backgroundImage = "url('gasya/background.jpg')"; fixedBg.style.backgroundSize = "cover"; }
+            if (fixedBg) {
+                // [수정] 마스크를 제거하고 결과 전용 배경 이미지를 선명하게 표시
+                fixedBg.style.webkitMaskImage = 'none';
+                fixedBg.style.maskImage = 'none';
+                fixedBg.style.backgroundImage = "url('gasya/background.jpg')";
+                fixedBg.style.backgroundSize = "cover";
+                fixedBg.style.opacity = '1'; // 결과창 배경은 선명하게
+            }
             history.pushState({ target: 'gacha', view: 'result' }, "");
         }
     });

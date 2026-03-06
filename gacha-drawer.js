@@ -65,16 +65,9 @@ export function initGachaDrawer() {
             if (diffX < 10 && diffY < 10) {
                 const item = e.target.closest('.drawer-item');
                 if (item) handleItemClick(item.dataset.id, item);
-            } else {
-                // 드래그였을 경우: 자동 정렬이 시작됨을 알리고 저장 방지
-                isScrollingToItem = true;
-                setTimeout(() => {
-                    const activeItem = contentEl.querySelector('.active-item');
-                    if (activeItem) handleItemClick(activeItem.dataset.id, activeItem);
-                    // 정렬 애니메이션 완료 후 지연 뒤에 해제
-                    setTimeout(() => { isScrollingToItem = false; }, 600);
-                }, 50);
             }
+            // 드래그 종료 시에는 CSS Snap이 자동으로 정렬하므로 별도 로직 불필요
+            // handleDrawerScroll에서 정렬 완료 시점에 자연스럽게 업데이트함
         };
 
         contentEl.addEventListener('mouseleave', (e) => { isDown = false; contentEl.classList.remove('grabbing'); });

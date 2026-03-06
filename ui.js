@@ -627,11 +627,27 @@ window.showCardModal = showCardModal;
 
 // [추가] 즐겨찾기 기반 배경색 업데이트 함수
 export function updateGlobalBackgroundColor() {
+    const fixedBg = document.getElementById('fixed-bg');
     if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
-        const color = idolColors[state.favoriteIdol];
-        // 퍼스널 컬러를 배경으로 쓸 수 있게 옅게 적용 (약 15% 농도)
-        document.body.style.backgroundColor = color + "26"; 
+        let color = idolColors[state.favoriteIdol];
+        
+        // 릴리야(lilja)는 색상이 밝아 구분이 안 되므로 문양 컬러에 아주 연한 하늘색 계열을 사용
+        if (state.favoriteIdol === 'lilja') {
+            color = "#e6f9ff"; // 거의 흰색에 가까운 아주 연한 파스텔 하늘색
+            document.body.style.backgroundColor = "#ffffff";
+            if (fixedBg) fixedBg.style.opacity = '0.7'; // 조금 더 선명하게 (0.7)
+        } else {
+            document.body.style.backgroundColor = color + "00"; // 바탕 배경색 투명도를 0%로 (사실상 완전 흰색)
+            if (fixedBg) fixedBg.style.opacity = '0.2'; // 문양을 더 은은하게 (0.2)
+        }
+
+        if (fixedBg) {
+            fixedBg.style.backgroundColor = color; // 마스크 문양 색상 설정
+        }
     } else {
-        document.body.style.backgroundColor = "#ffffff"; // 기본값 흰색
+        if (fixedBg) {
+            fixedBg.style.backgroundColor = "transparent";
+        }
+        document.body.style.backgroundColor = "#ffffff";
     }
 }

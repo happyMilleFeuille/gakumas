@@ -1,5 +1,5 @@
 // calc.js
-import { state } from './state.js';
+import { state, idolColors } from './state.js';
 import { updatePageTranslations } from './utils.js';
 import { calcPlans } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
@@ -18,6 +18,7 @@ import { toggleSupportCardPanel, closeSupportCardPanel } from './calcModals.js';
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 
 export function initCalc() { 
+    window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
     renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia')); 
 }
 
@@ -27,12 +28,36 @@ function startWeeklyPlan(type) {
     
     const handlers = {
         setupAll: () => {
+            const grid = document.getElementById('idol-selector-grid');
+            if (grid) {
+                // 플랜 전환(센스/로직/어노말리)인 경우 기존 위치 유지
+                if (window._lastIdolScrollLeft !== undefined) {
+                    grid.scrollLeft = window._lastIdolScrollLeft;
+                } 
+                
+                // 메뉴에서 처음 들어왔거나, 위에서 위치를 잡았더라도 활성화된 아이돌 보장 로직
+                setTimeout(() => {
+                    const activeItem = grid.querySelector('.idol-sel-item.active');
+                    if (activeItem) {
+                        // [수정] 이미 구현된 클릭 핸들러의 스크롤 로직을 재사용하기 위해 클릭 이벤트 발생
+                        activeItem.click();
+                        
+                        // 스크롤 완료 후 위치 다시 저장
+                        setTimeout(() => { window._lastIdolScrollLeft = grid.scrollLeft; }, 300);
+                    }
+                }, 100);
+            }
+
             const backBtn = document.querySelector('.back-btn');
             if (backBtn) backBtn.onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
             
             document.querySelectorAll('.plan-type-btn').forEach(btn => {
                 btn.onclick = () => {
                     if (btn.classList.contains('active')) return;
+                    // [추가] 플랜 전환 직전에 현재 스크롤 위치 저장
+                    const currentGrid = document.getElementById('idol-selector-grid');
+                    if (currentGrid) window._lastIdolScrollLeft = currentGrid.scrollLeft;
+
                     calcStore.setPlanType(btn.dataset.type);
                     startWeeklyPlan(type); 
                 };
@@ -44,17 +69,60 @@ function startWeeklyPlan(type) {
                         e.preventDefault();
                         return;
                     }
-                    if (item.classList.contains('active')) return;
-                    calcStore.setSelectedIdol(item.dataset.id);
-                    document.querySelectorAll('.idol-sel-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
+                    
+                    // [수정] active 체크를 뒤로 미루거나, 스크롤은 항상 되도록 함
                     item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    
+                    if (item.classList.contains('active')) return;
+                    
+                    calcStore.setSelectedIdol(item.dataset.id);
+                    document.querySelectorAll('.idol-sel-item').forEach(i => {
+                        i.classList.remove('active');
+                        i.style.borderColor = '';
+                        i.style.boxShadow = '';
+                        i.style.transform = '';
+                    });
+                    item.classList.add('active');
+                    const getIdolColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
+                    const color = getIdolColor(item.dataset.id);
+                    item.style.borderColor = color;
+                    item.style.borderWidth = '3px';
+                    item.style.boxShadow = `0 0 12px ${color}b3`;
+                    item.style.transform = 'scale(1.1)';
+
+                    // [추가] 계획 보드의 모든 활성화된 아이콘 테두리 및 SP 배지 색상 변경
+                    document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
+                        if (w.classList.contains('large-icon')) {
+                            w.style.filter = `drop-shadow(0 0 8px ${color})`;
+                        } else {
+                            w.style.borderColor = color;
+                            w.style.boxShadow = `0 0 8px ${color}66`;
+                        }
+                        // SP 배지가 있다면 색상 즉시 업데이트
+                        const badge = w.querySelector('.sp-badge');
+                        if (badge) badge.style.backgroundColor = color;
+                    });
+
+                    // [추가] 플랜 타입 버튼의 활성화 테두리 색상도 변경
+                    document.querySelectorAll('.plan-type-btn.active').forEach(btn => {
+                        btn.style.borderColor = color;
+                        btn.style.boxShadow = `0 0 8px ${color}66`;
+                    });
+
+                    // [추가] 스탯 헤더 테두리 및 TOTAL 배경색 변경
+                    const statHeader = document.querySelector('.stat-header');
+                    if (statHeader) statHeader.style.borderColor = color;
+                    const totalContainer = document.getElementById('total-stats-sum-container');
+                    if (totalContainer) {
+                        totalContainer.style.backgroundColor = color;
+                        totalContainer.style.boxShadow = `0 2px 6px ${color}33`;
+                    }
+
                     refreshAll();
                 };
             });
 
-            // 아이돌 셀렉터 드래그 스크롤 복구
-            const grid = document.getElementById('idol-selector-grid');
+            // 아이돌 셀렉터 드래그 스크롤 복구 및 이벤트 바인딩
             if (grid) {
                 let isDown = false, startX, scrollLeft;
                 grid.addEventListener('mousedown', (e) => {
@@ -81,6 +149,8 @@ function startWeeklyPlan(type) {
                     const walk = (x - startX) * 2;
                     if (Math.abs(walk) > 5) window._isDraggingIdol = true;
                     grid.scrollLeft = scrollLeft - walk;
+                    // [추가] 드래그 중에도 위치 기억 (실시간 반영)
+                    window._lastIdolScrollLeft = grid.scrollLeft;
                 });
             }
 
@@ -96,7 +166,7 @@ function startWeeklyPlan(type) {
                         if (optsDef.some(o => o.type === 'checkbox') && !optsDef.some(o => savedOpts[o.id] === 'true')) {
                             calcStore.setWeekAction(week, '', {});
                             w.classList.remove('active');
-                            updateSPBadge(w); updateMainLabel(w);
+                            updateSPBadge(w, calcStore.selectedIdol); updateMainLabel(w);
                         }
                     });
                     refreshAll();
@@ -112,17 +182,28 @@ function startWeeklyPlan(type) {
                         calcStore.setWeekAction(weekNum, '', {});
                         wrapper.classList.remove('active');
                         Object.keys(wrapper.dataset).forEach(k => { if(k.startsWith('opt')) delete wrapper.dataset[k]; });
-                        updateSPBadge(wrapper); updateMainLabel(wrapper);
+                        updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
                         removeAllTooltips();
                     } else {
+                        const idolColor = idolColors[calcStore.selectedIdol] || "#ff4d8d";
                         wrapper.closest('.week-row').querySelectorAll('.plan-icon-wrapper').forEach(w => {
                             w.classList.remove('active');
+                            w.style.borderColor = '';
+                            w.style.boxShadow = '';
                             Object.keys(w.dataset).forEach(k => { if(k.startsWith('opt')) delete w.dataset[k]; });
                             w.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
                         });
                         calcStore.setWeekAction(weekNum, val, {});
                         wrapper.classList.add('active');
-                        updateSPBadge(wrapper); updateMainLabel(wrapper);
+                        
+                        if (wrapper.classList.contains('large-icon')) {
+                            wrapper.style.filter = `drop-shadow(0 0 8px ${idolColor})`;
+                        } else {
+                            wrapper.style.borderColor = idolColor;
+                            wrapper.style.boxShadow = `0 0 8px ${idolColor}66`;
+                        }
+                        
+                        updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
                         removeAllTooltips(wrapper);
 
                         const opts = activityOptions[val];
@@ -158,7 +239,7 @@ function startWeeklyPlan(type) {
                                     }
                                     calcStore.updateWeekOpt(weekNum, optId, chk.checked);
                                     wrapper.dataset[`opt${optId}`] = String(chk.checked);
-                                    updateSPBadge(wrapper); updateMainLabel(wrapper);
+                                    updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
                                     if (chk.checked && opts.find(o => o.id === optId)?.subOptions) showSubTooltip(optDef, weekNum, wrapper, tooltip);
                                     else if (!opts.some(o => o.type === 'counter')) setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
                                     refreshAll();

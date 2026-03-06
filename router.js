@@ -1,5 +1,6 @@
 // router.js
-import { renderHome, renderIdolList, renderCalc, renderSupport } from './ui.js';
+import { state, idolColors } from './state.js';
+import { renderHome, renderIdolList, renderCalc, renderSupport, updateGlobalBackgroundColor } from './ui.js';
 import { renderGacha, stopBGM } from './gacha.js';
 
 export function handleNavigation(target, isBack = false) {
@@ -28,14 +29,31 @@ export function handleNavigation(target, isBack = false) {
         }
     });
 
-    // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 초기화
-    if (target !== 'gacha') {
-        stopBGM('all'); // 모든 오디오(BGM 및 효과음) 즉시 중단
-        
-        const fixedBg = document.getElementById('fixed-bg');
+    // 가챠 탭 전용 배경 처리 추가
+    const fixedBg = document.getElementById('fixed-bg');
+    if (target === 'gacha') {
         if (fixedBg) {
+            fixedBg.style.webkitMaskImage = 'none';
+            fixedBg.style.maskImage = 'none';
+            fixedBg.style.backgroundImage = '';
+            fixedBg.style.backgroundColor = 'transparent';
+        }
+        if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
+            document.body.style.backgroundColor = idolColors[state.favoriteIdol] + "1a"; // 10% 농도
+        } else {
+            document.body.style.backgroundColor = "#ffffff";
+        }
+    } else {
+        // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 문양 복구
+        stopBGM('all'); 
+        if (fixedBg) {
+            const maskUrl = "url('images/background.webp')";
+            fixedBg.style.webkitMaskImage = maskUrl;
+            fixedBg.style.maskImage = maskUrl;
             fixedBg.style.backgroundImage = '';
             fixedBg.style.filter = '';
+            // 전역 배경색 업데이트 함수 호출하여 문양 색상 복구
+            updateGlobalBackgroundColor();
         }
     }
 

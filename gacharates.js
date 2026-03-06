@@ -5,8 +5,8 @@ import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_
 import { produceList } from './producedata.js';
 import translations from './i18n.js';
 
-const typeDisplayNames = {
-    normal: '통상', limited: '한정', unit: '유닛', fes: '페스', platinum: '플래티넘', selection: '셀렉션'
+const typeNames = {
+    normal: '통상', limited: '한정', unit: '유닛', fes: '페스', selection: '셀렉션'
 };
 
 const charNameMap = {

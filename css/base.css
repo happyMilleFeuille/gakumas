@@ -42,7 +42,6 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     word-break: break-word;
-    transition: background-color 0.5s ease; /* 배경색 전환 효과 추가 */
 }
 
 img {
@@ -128,6 +127,10 @@ h1 {
 }
 
 @media (max-width: 768px) {
+    #fixed-bg {
+        -webkit-mask-size: 300px; /* 모바일용 배경 크기 */
+        mask-size: 300px;
+    }
     .main-logo-img {
         max-width: 320px;
     }
@@ -138,9 +141,12 @@ h1 {
     top: 0; left: 0;
     width: 100%; height: 100dvh;
     z-index: -1;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+    -webkit-mask-position: top left;
+    mask-position: top left;
+    -webkit-mask-size: 500px;
+    mask-size: 500px;
     pointer-events: none;
 }
 

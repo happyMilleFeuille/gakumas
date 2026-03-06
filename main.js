@@ -14,7 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. 초기화
     updatePageTranslations();
     initMobileHeightFix();
-    updateGlobalBackgroundColor(); // [추가] 초기 배경색 설정
+    
+    // [전역 배경 및 색상 설정]
+    const fixedBg = document.getElementById('fixed-bg');
+    if (fixedBg) {
+        const maskUrl = "url('images/background.webp')";
+        fixedBg.style.webkitMaskImage = maskUrl;
+        fixedBg.style.maskImage = maskUrl;
+        fixedBg.style.opacity = (state.favoriteIdol === 'lilja') ? '0.7' : '0.2';
+    }
+    
+    // [중요] 초기화 직후 즉시 배경색 동기화 호출
+    import('./ui.js').then(m => {
+        m.updateGlobalBackgroundColor();
+    });
 
     // 모든 언어 버튼 상태 동기화 함수
     const syncLangBtns = () => {

@@ -76,10 +76,9 @@ export const GACHA_STRATEGIES = {
     normal: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'normal') },
     limited: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'limited') },
     unit: { rates: UNIT_RATES, guaranteed: UNIT_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'unit') },
-    fes: { rates: FES_RATES, guaranteed: FES_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'fes') },
-    platinum: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) },
+    fes: { rates: FES_RATES, guaranteed: FES_GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) },
     selection: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) }
-};
+    };
 
 function isReleased(card) {
     if (!card.releasedAt) return true;

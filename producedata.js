@@ -80,7 +80,7 @@ export const produceList = [
     { id: "ssrkotone_1st8another", name: "고금동서 식은 죽 먹기",name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal",releasedAt: "2025-05-09", another: true },
     { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR",releasedAt: "2025-05-29", plan: "logic", source: "limited" , another: true},    
     { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!",name_ja: "ミラクルナナウ(˚∀˚)!",releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
-    { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited",jumpTime2:7.2 ,releasedAt: "2026-02-27",another: true},
+    { id: "ssrkotone_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited",jumpTime2:7.2 ,releasedAt: "2026-02-27",another: true},
     { id: "ssrkotone_2nd", name: "Yellow Big Bang!", rarity: "PSSR", plan: "sense",releasedAt: "2024-06-10", source: "normal",jumpTime2:10.3, youtube_url: "https://youtu.be/xjqsnpsFQE4?si=BnSGynUjPWdAepGr"},
     { id: "ssrkotone_3rd", name: "자기긍정감 떡상↑↑ 슈키슈키송",name_ja:"自己肯定感爆上げ↑↑しゅきしゅきソング",releasedAt: "2025-08-12", rarity: "PSSR", plan: "sense", source: "normal",jumpTime2:8.1 ,youtube_url: "https://youtu.be/WCDLyXJgbIo?si=sUASzokNaAkg68Ho"},        
 
@@ -195,9 +195,9 @@ export const produceList = [
     { id: "ssrume_campusfes", name: "Campus mode!!", rarity: "PSSR", plan: "anomaly", source: "limited_f" ,releasedAt: "2025-01-09",youtube_url: "https://youtu.be/_Xd2EtB-Gi0?si=1L7whpJT07_gaUB2"},                    
 
     // 한정 (Limited)
-    { id: "ssrmao_summerdist", name: "너와 세미블루",name_ja: "キミトセミブルー",releasedAt: "2024-07-01", rarity: "PSSR", plan: "sense", source: "dist",youtube_url: "https://youtu.be/YsYrh_51cC4?si=7fqiKeQbBK_qzVpT"},   
-    { id: "ssrrinami_summerlimited", name: "너와 세미블루",name_ja: "キミトセミブルー",releasedAt: "2024-07-12", rarity: "PSSR", plan: "sense", source: "limited",jumpTime2:10.4,youtube_url: "https://youtu.be/YsYrh_51cC4?si=7fqiKeQbBK_qzVpT"},   
-    { id: "ssrsumika_summerlimited", name: "너와 세미블루",name_ja: "キミトセミブルー",releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", source: "limited",youtube_url: "https://youtu.be/YsYrh_51cC4?si=7fqiKeQbBK_qzVpT"},      
+    { id: "ssrmao_summerdist", name: "너와 세미블루",name_ja: "キミトセミブルー",releasedAt: "2024-07-01", rarity: "PSSR", plan: "sense", source: "dist",youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6"},   
+    { id: "ssrrinami_summerlimited", name: "너와 세미블루",name_ja: "キミトセミブルー",releasedAt: "2024-07-12", rarity: "PSSR", plan: "sense", source: "limited",jumpTime2:10.4,youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6"},   
+    { id: "ssrsumika_summerlimited", name: "너와 세미블루",name_ja: "キミトセミブルー",releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", source: "limited",youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6"},      
     { id: "ssrsaki_kanmuridist", name: "관국",name_ja: "冠菊",releasedAt: "2024-08-01", rarity: "PSSR", plan: "logic", source: "dist" ,youtube_url: "https://youtu.be/AsnMofieWkQ?si=p1zxPhmz9PQbgFNt"},        
     { id: "ssrkotone_kanmurilimited", name: "관국",name_ja: "冠菊",releasedAt: "2024-08-11", rarity: "PSSR", plan: "logic", source: "limited" ,youtube_url: "https://youtu.be/AsnMofieWkQ?si=p1zxPhmz9PQbgFNt"},    
     { id: "ssrlilja_kanmurilimited", name: "관국",name_ja: "冠菊", rarity: "PSSR",releasedAt: "2024-08-01", plan: "sense", source: "limited" ,jumpTime2:9.3,youtube_url: "https://youtu.be/AsnMofieWkQ?si=p1zxPhmz9PQbgFNt"},    
@@ -227,6 +227,7 @@ export const produceList = [
     { id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！",releasedAt: "2025-10-10", rarity: "PSSR", plan: "logic", source: "limited",youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H" },         
     { id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "dist" ,releasedAt: "2026-02-27",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
     { id: "ssrume_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited" ,jumpTime2:7.4,releasedAt: "2026-02-27",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
+    { id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "anomaly", source: "limited" ,releasedAt: "2026-03-09",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
 
 
     // 유닛 (unit)

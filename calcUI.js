@@ -1,5 +1,5 @@
 // calcUI.js
-import { state } from './state.js';
+import { state, idolColors } from './state.js';
 import { activityOptions } from './calcOptions.js';
 import { idolData } from './calcStats.js';
 import { cardList } from './carddata.js';
@@ -197,16 +197,35 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
     const root = document.getElementById('calc-root');
     const planData = calcPlans[store.type];
     
-    const idolsHtml = idolList.map(name => `<div class="idol-sel-item ${store.selectedIdol === name ? 'active' : ''}" data-id="${name}"><img src="icons/idolicons/${name}.png" onerror="this.src='icons/idol.png'"></div>`).join('');
+    const getIdolDisplayColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
     
+    const idolsHtml = idolList.map(name => {
+        const isActive = store.selectedIdol === name;
+        const color = getIdolDisplayColor(name);
+        const style = isActive ? `style="border-color: ${color}; border-width: 3px; box-shadow: 0 0 12px ${color}b3; transform: scale(1.1);"` : '';
+        return `<div class="idol-sel-item ${isActive ? 'active' : ''}" data-id="${name}" ${style}><img src="icons/idolicons/${name}.png" onerror="this.src='icons/idol.png'"></div>`;
+    }).join('');
+    
+    const idolColor = getIdolDisplayColor(store.selectedIdol);
     const weekNumbers = Object.keys(planData.weeks).map(Number).sort((a, b) => b - a);
     const weeksHtml = weekNumbers.map(i => {
         const options = planData.weeks[i] || [];
         const savedWeek = store.weeks[i] || {};
         const optionsHtml = options.map(opt => {
             const isActive = savedWeek.value === opt.value;
+            const isLarge = ['audition', 'test', 'oikomi'].includes(opt.value);
             let optAttrs = isActive && savedWeek.opts ? Object.keys(savedWeek.opts).map(k => ` data-opt${k}="${savedWeek.opts[k]}"`).join('') : '';
-            return `<div class="plan-icon-wrapper ${['audition', 'test', 'oikomi'].includes(opt.value) ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs}><img src="icons/cal/${opt.value}.webp" class="plan-icon-img"></div>`;
+            
+            let activeStyle = '';
+            if (isActive) {
+                if (isLarge) {
+                    activeStyle = `style="filter: drop-shadow(0 0 8px ${idolColor});"`;
+                } else {
+                    activeStyle = `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66;"`;
+                }
+            }
+            
+            return `<div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}><img src="icons/cal/${opt.value}.webp" class="plan-icon-img"></div>`;
         }).join('');
         return `<div class="week-row" data-week="${i}"><div class="week-header"><span class="week-label">${i}주</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
     }).join('');
@@ -220,11 +239,15 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 </div>
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
                 <div class="plan-type-selector">
-                    ${['sense', 'logic', 'anomaly'].map(pt => `<div class="plan-type-btn ${store.planType === pt ? 'active' : ''}" data-type="${pt}"><img src="icons/${pt}.webp"></div>`).join('')}
+                    ${['sense', 'logic', 'anomaly'].map(pt => {
+                        const isActive = store.planType === pt;
+                        const activeStyle = isActive ? `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66; opacity: 1; transform: scale(1.1);"` : '';
+                        return `<div class="plan-type-btn ${isActive ? 'active' : ''}" data-type="${pt}" ${activeStyle}><img src="icons/${pt}.webp"></div>`;
+                    }).join('')}
                 </div>
 
-                <div class="stat-header">
-                    <div class="total-stats-sum" id="total-stats-sum-container">
+                <div class="stat-header" style="border-color: ${idolColor};">
+                    <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
                         <span class="sum-label">TOTAL</span>
                         <span id="total-stats-sum-value">0</span>
                     </div>
@@ -252,17 +275,23 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
     `;
 
     root.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
-        updateSPBadge(w);
+        updateSPBadge(w, store.selectedIdol);
         updateMainLabel(w);
     });
 
     handlers.setupAll();
 }
 
-export function updateSPBadge(w) { 
+export function updateSPBadge(w, currentIdolId) { 
     w.querySelector('.sp-badge')?.remove(); 
     if (w.dataset.optsp === 'true') { 
-        const b = document.createElement('div'); b.className = 'sp-badge'; b.textContent = 'SP'; w.appendChild(b); 
+        const b = document.createElement('div'); b.className = 'sp-badge'; b.textContent = 'SP'; 
+        
+        // 현재 선택된 아이돌의 색상 적용 (릴리야 보정 포함)
+        const getIdolDisplayColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
+        b.style.backgroundColor = getIdolDisplayColor(currentIdolId || 'saki');
+
+        w.appendChild(b); 
     } 
 }
 

@@ -1,13 +1,6 @@
 // gachaconfig.js
 // 현재 가챠 픽업 설정 (ID 및 캐릭터 식별자)
 export const CURRENT_PICKUPS = {
-
-    platinum: { 
-        date: "2025-05-16",
-        pssr: [],
-        sssr: [],
-        sr_card: []
-    }
 };
 
 // 페스 가챠 상세 설정
