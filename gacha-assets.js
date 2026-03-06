@@ -24,8 +24,31 @@ export const GACHA_ASSETS = [
 
 let isAssetsLoading = false;
 let assetsLoadedPromise = null;
+export let isAllLoaded = false;
+
+/**
+ * 서버에 HEAD 요청을 보내 실제 파일 크기를 합산 (완전 자동)
+ */
+export async function fetchTotalAssetSizeMB() {
+    try {
+        const sizePromises = GACHA_ASSETS.map(src => 
+            fetch(src, { method: 'HEAD' })
+                .then(res => parseInt(res.headers.get('content-length') || 0))
+                .catch(() => 0)
+        );
+        const sizes = await Promise.all(sizePromises);
+        const totalBytes = sizes.reduce((acc, s) => acc + s, 0);
+        
+        // 0인 경우(체크 실패 등) 기본값 70MB 반환
+        if (totalBytes === 0) return "70.0";
+        return (totalBytes / (1024 * 1024)).toFixed(1);
+    } catch (e) {
+        return "70.0";
+    }
+}
 
 export async function loadGachaAssets() {
+    if (isAllLoaded) return Promise.resolve();
     if (assetsLoadedPromise) return assetsLoadedPromise;
     if (isAssetsLoading) return;
 
@@ -70,6 +93,7 @@ export async function loadGachaAssets() {
 
         await Promise.allSettled(loadTasks);
         isAssetsLoading = false;
+        isAllLoaded = true;
         if (progressText) progressText.textContent = '0%';
     })();
 

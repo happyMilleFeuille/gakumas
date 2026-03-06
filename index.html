@@ -83,6 +83,7 @@
             </div>
             <div id="jewel-container" class="jewel-container hidden">
                 <div class="jewel-box">
+                    <img src="icons/jewel.png" alt="" class="jewel-icon">
                     <span id="jewel-count">0</span>
                     <button id="btn-add-jewel" class="add-jewel-btn">+</button>
                 </div>
@@ -245,6 +246,24 @@
             </div>
 
             <div class="support-grid"></div>
+        </div>
+    </template>
+
+    <!-- 가챠 다운로드 확인 모달 템플릿 -->
+    <template id="tpl-gacha-confirm">
+        <div id="gacha-confirm-modal" class="gacha-confirm-overlay">
+            <div class="gacha-confirm-content">
+                <div class="gacha-confirm-header">리소스 다운로드</div>
+                <div class="gacha-confirm-body">
+                    <p>가챠 연출 및 음원 리소스를 다운로드합니다. (약 70MB)</p>
+                    <p class="gacha-confirm-sub">캐릭터 연출에 따라 추가 데이터 다운로드가 있을 수 있습니다.</p>
+                    <p class="gacha-confirm-sub">Wi-Fi 환경에서 권장하며, 데이터 요금이 발생할 수 있습니다.</p>
+                </div>
+                <div class="gacha-confirm-footer">
+                    <button id="btn-gacha-cancel" class="gacha-confirm-btn cancel">취소</button>
+                    <button id="btn-gacha-start" class="gacha-confirm-btn start">다운로드 시작</button>
+                </div>
+            </div>
         </div>
     </template>
 

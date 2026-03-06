@@ -64,7 +64,17 @@ export function handleNavigation(target, isBack = false) {
         }
     }
 
-    switch(target) {
+    // 가챠 관련 UI 초기화 (가챠 탭이 아닐 때 숨김 처리)
+    const jewelContainer = document.getElementById('jewel-container');
+    if (jewelContainer) jewelContainer.classList.add('hidden');
+
+    const gachaHeaderControls = document.getElementById('gacha-header-controls');
+    if (gachaHeaderControls) gachaHeaderControls.classList.add('hidden');
+
+    const gachaFixedButtons = document.getElementById('gacha-fixed-buttons');
+    if (gachaFixedButtons) gachaFixedButtons.classList.add('hidden');
+
+    switch (target) {
         case 'home': renderHome(); break;
         case 'idol': renderIdolList(); break;
         case 'calc': renderCalc(); break;

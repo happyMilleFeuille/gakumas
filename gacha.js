@@ -5,10 +5,11 @@ import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
-import { audioCtx, assetBlobs, loadGachaAssets, playSound, stopBGM, playMainBGM } from './gacha-assets.js';
+import { audioCtx, assetBlobs, loadGachaAssets, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
 import { renderPickupSelector, renderResults } from './gacha-ui-render.js';
+import { handleNavigation } from './router.js';
 
 export { audioCtx, playSound, stopBGM, playMainBGM };
 
@@ -22,6 +23,47 @@ export function renderGacha(isRefresh = false) {
     const contentArea = document.getElementById('content-area');
     if (!contentArea) return;
 
+    // 이미 로드되었거나, 이번 세션에서 이미 승인했거나, 새로고침인 경우 바로 진행
+    const isApproved = sessionStorage.getItem('gachaAssetsApproved') === 'true';
+    if (isAllLoaded || isApproved || isRefresh) {
+        startGachaUI(contentArea, isRefresh);
+    } else {
+        showDownloadConfirm(contentArea);
+    }
+}
+
+function showDownloadConfirm(contentArea) {
+    const tpl = document.getElementById('tpl-gacha-confirm');
+    if (!tpl) return startGachaUI(contentArea, false);
+
+    contentArea.innerHTML = '';
+    contentArea.appendChild(tpl.content.cloneNode(true));
+    updatePageTranslations();
+
+    // 동적 용량 표시 (비동기 계산)
+    const sizeMsg = contentArea.querySelector('.gacha-confirm-body p:first-child');
+    if (sizeMsg) {
+        sizeMsg.textContent = `가챠 리소스 용량 확인 중...`;
+        fetchTotalAssetSizeMB().then(size => {
+            sizeMsg.textContent = `가챠 연출 및 음원 리소스를 다운로드합니다. (약 ${size}MB)`;
+        });
+    }
+
+    const startBtn = document.getElementById('btn-gacha-start');
+    const cancelBtn = document.getElementById('btn-gacha-cancel');
+
+    if (startBtn) {
+        startBtn.onclick = () => {
+            sessionStorage.setItem('gachaAssetsApproved', 'true');
+            startGachaUI(contentArea, false);
+        };
+    }
+    if (cancelBtn) {
+        cancelBtn.onclick = () => handleNavigation('home');
+    }
+}
+
+function startGachaUI(contentArea, isRefresh) {
     const fixedBtnArea = setupFixedButtons();
     const tpl = document.getElementById('tpl-gacha');
     if (!tpl) return;
