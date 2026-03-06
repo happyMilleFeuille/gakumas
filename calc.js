@@ -402,8 +402,17 @@ function updateSidePanelBonuses(panel, counts) {
                             const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
                             let tCount = 0;
                             triggers.forEach(t => {
-                                if (t === 'lesson') tCount += (counts.lessons.vocal.normal + counts.lessons.vocal.sp + counts.lessons.dance.normal + counts.lessons.dance.sp + counts.lessons.visual.normal + counts.lessons.visual.sp);
-                                else tCount += (counts.total[t] || 0);
+                                if (t === 'lesson') {
+                                    tCount += (counts.lessons.vocal.normal + counts.lessons.vocal.sp + counts.lessons.dance.normal + counts.lessons.dance.sp + counts.lessons.visual.normal + counts.lessons.visual.sp);
+                                } else if (t === 'class') {
+                                    tCount += (counts.total['class_hajime'] || 0) + (counts.total['class_nia'] || 0);
+                                } else if (t === 'gift') {
+                                    tCount += (counts.total['gift_hajime'] || 0) + (counts.total['gift_nia'] || 0);
+                                } else if (t === 'goout') {
+                                    tCount += (counts.total['goout_hajime'] || 0) + (counts.total['goout_nia'] || 0);
+                                } else {
+                                    tCount += (counts.total[t] || 0);
+                                }
                             });
                             multiplier = Math.min(tCount, counter);
                         }
