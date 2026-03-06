@@ -12,6 +12,7 @@ export const calcStore = {
     planCards: { sense: [], logic: [], anomaly: [] },
     planSkills: { sense: {}, logic: {}, anomaly: {} },
     cardChecked: {},
+    cardExtraChecked: {}, // 엑스트라 옵션(강화/삭제/체인지) 체크
     itemCounters: {},
     manualEnhance: { m: 0, a: 0 },
     manualDelete: { m: 0, a: 0 },
@@ -31,6 +32,7 @@ export const calcStore = {
         this.planCards = saved.planCards || { sense: [], logic: [], anomaly: [] };
         this.planSkills = saved.planSkills || { sense: {}, logic: {}, anomaly: {} };
         this.cardChecked = saved.cardChecked || {};
+        this.cardExtraChecked = saved.cardExtraChecked || {};
         this.itemCounters = saved.itemCounters || {};
         this.manualEnhance = saved.manualEnhance || { m: 0, a: 0 };
         this.manualDelete = saved.manualDelete || { m: 0, a: 0 };

@@ -14,6 +14,7 @@ export function initGlobalDistListener(refreshAll, getBoardPools) {
         if (!board) return;
 
         const cardCheckBtn = e.target.closest('.card-slot-check');
+        const cardOptCheckBtn = e.target.closest('.card-opt-check');
         const cardRemoveBtn = e.target.closest('.card-slot-remove');
         const distBtn = e.target.closest('.dist-btn');
         const tuneBtn = e.target.closest('#btn-other-tune');
@@ -27,13 +28,22 @@ export function initGlobalDistListener(refreshAll, getBoardPools) {
             return;
         }
 
+        // 1-2. 카드 엑스트라 옵션 체크박스
+        if (cardOptCheckBtn) {
+            calcStore.cardExtraChecked[cardOptCheckBtn.dataset.id] = cardOptCheckBtn.checked;
+            calcStore.save();
+            refreshAll();
+            return;
+        }
+
         // 2. 카드 슬롯에서 제거
         if (cardRemoveBtn) {
             const id = cardRemoveBtn.dataset.id;
             const plan = calcStore.planType;
             calcStore.planCards[plan] = (calcStore.planCards[plan] || []).filter(cid => cid !== id);
             delete calcStore.cardChecked[id];
-            
+            delete calcStore.cardExtraChecked[id];
+
             // 사이드 패널 동기화
             const item = document.querySelector(`.side-card-item[data-id="${id}"]`);
             if (item) { item.classList.remove('selected'); delete item.dataset.selectTime; }
@@ -49,9 +59,12 @@ export function initGlobalDistListener(refreshAll, getBoardPools) {
             const card = cardList.find(c => c.id === id);
             if (!card) return;
 
+            // carddata.js의 item_effects 중 max 값이 있는 첫 번째 효과를 기준으로 제한 (없으면 99)
+            const maxVal = card.item_effects?.find(e => e.max)?.max || 99;
+
             let count = calcStore.itemCounters[id] || 0;
             if (counterBtn.classList.contains('plus')) {
-                if (count < 99) count++;
+                if (count < maxVal) count++;
             } else {
                 if (count > 0) count--;
             }

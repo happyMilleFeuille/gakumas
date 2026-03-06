@@ -209,6 +209,7 @@ function startWeeklyPlan(type) {
     };
 
     renderWeeklyPlan(calcStore, calcPlans, idolList, handlers);
+    window.refreshAll = refreshAll;
     refreshAll();
 }
 
@@ -332,36 +333,58 @@ function setupPItemSelector() {
             e.stopPropagation();
             document.querySelectorAll('.p-item-tooltip').forEach(t => t.remove());
             
+            const isMobile = window.innerWidth <= 768;
             const tooltip = document.createElement('div');
             tooltip.className = 'calc-tooltip p-item-tooltip';
-            tooltip.style.cssText = 'flex-direction:row; flex-wrap:wrap; width:210px; min-width:180px; gap:8px; justify-content:flex-start; padding:12px;';
+            const tooltipPadding = isMobile ? '8px' : '12px';
+            const targetWidth = isMobile ? '170px' : '210px';
+            tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:140px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box;`;
 
+            const btnSize = isMobile ? '32px' : '40px';
             const clearBtn = document.createElement('div');
-            clearBtn.textContent = 'X'; clearBtn.className = 'calc-btn'; clearBtn.style.cssText = 'width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#f8f9fa; color:#888; border:1px solid #ddd; cursor:pointer;';
-            clearBtn.onclick = () => { 
-                calcStore.pItems[idx] = null; 
-                slot.innerHTML = '<span class="p-item-placeholder">+</span>'; 
-                calcStore.save(); refreshAll(); tooltip.remove(); 
+            clearBtn.textContent = 'X'; clearBtn.className = 'calc-btn-square'; // 충돌 방지를 위해 클래스명 변경 또는 커스텀
+            clearBtn.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; padding:0; display:flex; align-items:center; justify-content:center; font-size:${isMobile ? '1rem' : '1.2rem'}; background:#f8f9fa; color:#888; border:1px solid #ddd; cursor:pointer; box-sizing:border-box; border-radius:4px;`;
+            clearBtn.onclick = () => {
+                calcStore.pItems[idx] = null;
+                slot.innerHTML = '<span class="p-item-placeholder">+</span>';
+                calcStore.save(); refreshAll(); tooltip.remove();
             };
             tooltip.appendChild(clearBtn);
 
             const slotItems = itemsBySlot[idx] || [];
             slotItems.forEach(item => {
                 const img = document.createElement('img');
-                img.src = `icons/cal/${item}.webp`; img.style.cssText = 'width:40px; height:40px; cursor:pointer; border:1px solid #eee; border-radius:4px;';
-                img.onclick = () => { 
-                    calcStore.pItems[idx] = item; 
-                    slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`; 
-                    calcStore.save(); refreshAll(); tooltip.remove(); 
+                img.src = `icons/cal/${item}.webp`; 
+                img.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; cursor:pointer; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;`;
+                img.onclick = () => {
+                    calcStore.pItems[idx] = item;
+                    slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`;
+                    calcStore.save(); refreshAll(); tooltip.remove();
                 };
                 tooltip.appendChild(img);
             });
-
             document.body.appendChild(tooltip);
             const rect = slot.getBoundingClientRect();
-            tooltip.style.left = `${rect.left + rect.width / 2}px`;
-            tooltip.style.top = `${rect.top + window.scrollY - 10}px`;
-            tooltip.style.transform = 'translate(-50%, -100%)';
+            const tooltipWidth = tooltip.offsetWidth;
+            const tooltipHeight = tooltip.offsetHeight;
+
+            let left = rect.left + rect.width / 2 - tooltipWidth / 2;
+            let top = rect.top + window.scrollY - tooltipHeight - 10;
+
+            // 가로 위치 보정
+            if (left < 10) left = 10;
+            if (left + tooltipWidth > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipWidth - 10;
+            }
+
+            // 세로 위치 보정 (위에 공간이 없으면 아래로 표시)
+            if (rect.top - tooltipHeight - 20 < 0) {
+                top = rect.bottom + window.scrollY + 10;
+            }
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+            tooltip.style.transform = 'none'; // 기존 transform 제거하고 직접 좌표 지정
         };
     });
 
@@ -370,21 +393,27 @@ function setupPItemSelector() {
         infoBtn.onclick = (e) => {
             e.stopPropagation();
             if (document.querySelector('.p-item-info-tooltip')) { document.querySelector('.p-item-info-tooltip').remove(); return; }
+            
+            const isMobile = window.innerWidth <= 768;
             const tooltip = document.createElement('div');
             tooltip.className = 'calc-tooltip p-item-info-tooltip';
-            tooltip.style.cssText = 'position: absolute; width: max-content; max-width: 90vw; padding: 12px 15px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(4px); border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.85rem; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;';
+            tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: ${isMobile ? '0.65rem' : '0.85rem'}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
+            
+            const imgSize = isMobile ? '16px' : '24px';
+            const gap = isMobile ? '4px' : '8px';
+
             tooltip.innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia1-1.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>특별수업 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia1-2.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>상담 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
-                    <div style="height: 1px; background: #eee; margin: 2px 0;"></div>
-                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia2-1.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>영업(강화카드) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia2-2.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>영업(P포인트) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: 8px;"><img src="icons/cal/nia2-3.webp" style="width: 24px; height: 24px; border-radius: 4px;"><span>영업(드링크) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; flex-direction: column; gap: ${gap};">
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>특별수업 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>상담 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="height: 1px; background: #eee; margin: 1px 0;"></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>영업(강화카드) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>영업(P포인트) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-3.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>영업(드링크) 시 카드 삭제/획득 +1 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};">
                         <div style="display: flex; gap: 2px;">
-                            <img src="icons/cal/nia3-1.webp" style="width: 24px; height: 24px; border-radius: 4px;">
-                            <img src="icons/cal/nia3-2.webp" style="width: 24px; height: 24px; border-radius: 4px;">
+                            <img src="icons/cal/nia3-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">
+                            <img src="icons/cal/nia3-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">
                         </div>
                         <span>오디션 종료 시 카드 삭제 +1 / 복제 (프로듀스 중 2회)</span>
                     </div>
@@ -392,10 +421,25 @@ function setupPItemSelector() {
             `;
             document.body.appendChild(tooltip);
             const rect = infoBtn.getBoundingClientRect();
-            let left = rect.left;
             const tooltipWidth = tooltip.offsetWidth;
-            if (left + tooltipWidth > window.innerWidth) { left = window.innerWidth - tooltipWidth - 10; }
-            tooltip.style.left = `${Math.max(10, left)}px`; tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+            const tooltipHeight = tooltip.offsetHeight;
+
+            let left = rect.left;
+            let top = rect.bottom + window.scrollY + 8;
+
+            // 가로 위치 보정
+            if (left + tooltipWidth > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipWidth - 10;
+            }
+            if (left < 10) left = 10;
+
+            // 세로 위치 보정 (화면 하단을 벗어나면 위로 띄움)
+            if (rect.bottom + tooltipHeight + 20 > window.innerHeight) {
+                top = rect.top + window.scrollY - tooltipHeight - 8;
+            }
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
         };
     }
 }

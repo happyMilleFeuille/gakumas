@@ -125,6 +125,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideModal() {
         if (!modal.classList.contains('hidden')) {
             modal.classList.add('hidden');
+            
+            // 돌파 수치 변화 감지 및 계산기 갱신
+            if (window._modalCardId) {
+                const currentLB = state.supportLB[window._modalCardId] || 0;
+                if (currentLB !== window._modalInitialLB) {
+                    if (typeof window.refreshAll === 'function') {
+                        window.refreshAll();
+                    }
+                }
+                // 상태 초기화
+                window._modalCardId = null;
+                window._modalInitialLB = null;
+            }
         }
     }
 

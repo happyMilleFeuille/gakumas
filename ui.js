@@ -476,10 +476,13 @@ function updateSupportGrid(container) {
 // 모달 표시 함수
 export function showCardModal(card, displayName, imgSrc) {
     const modal = document.getElementById('card-modal');
-    if (!modal) return; 
+    if (!modal) return;
 
-    const mImg = document.getElementById('modal-img');
-    const mTitle = document.getElementById('modal-title');
+    // 초기 상태 저장 (닫을 때 변화 감지용)
+    window._modalCardId = card.id;
+    window._modalInitialLB = state.supportLB[card.id] || 0;
+
+    const mImg = document.getElementById('modal-img');    const mTitle = document.getElementById('modal-title');
     const mRarity = document.getElementById('modal-rarity');
     const mPlan = document.getElementById('modal-plan');
     const mType = document.getElementById('modal-type');

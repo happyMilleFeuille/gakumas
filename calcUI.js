@@ -91,7 +91,7 @@ export function updateActivityCountsUI(store, counts) {
         <div class="counter-divider"></div>
         <div class="extra-text-counts" style="font-size: 0.75rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
             <div class="text-count-item">${renderDist('강화', counts.total.enhance || 0, counts.total.enhance_m || 0, counts.total.enhance_a || 0, '#ff4d8d', 'rgba(255, 77, 141, 0.05)', 'e')}</div>
-            <div class="text-count-item">${renderDist('삭제', counts.total.delete || 0, counts.total.delete_m || 0, counts.total.delete_a || 0, '#555', 'rgba(0,0,0,0.05)', 'd')}</div>
+            <div class="text-count-item">${renderDist('삭제', (counts.total.delete || 0) + (counts.total.delete_t || 0), counts.total.delete_m || 0, counts.total.delete_a || 0, '#555', 'rgba(0,0,0,0.05)', 'd')}</div>
             <div class="text-count-item">
                 <div class="enhance-item-content" style="background: rgba(255, 152, 0, 0.05); border-color: rgba(255, 152, 0, 0.2);">
                     <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">카드획득 <span class="counter-count">${counts.total.get || 0}</span></span>
@@ -118,12 +118,15 @@ export function updateSelectedCardsUI(store) {
     if (!container) return;
 
     const selectedIds = store.planCards[store.planType] || [];
+    const isAllEmpty = selectedIds.every(id => !id);
 
     container.innerHTML = Array.from({length: 6}, (_, i) => {
         const cardId = selectedIds[i];
         if (cardId) {
+            // ... (기존 로직 유지) ...
             const cardData = cardList.find(c => c.id === cardId);
             const checked = store.cardChecked[cardId] ? 'checked' : '';
+            const optChecked = store.cardExtraChecked[cardId] ? 'checked' : '';
             const counter = store.itemCounters[cardId] || 0;
             
             let counterHtml = '';
@@ -136,8 +139,28 @@ export function updateSelectedCardsUI(store) {
                     </div>
                 `;
             }
+
+            // extra2 옵션 라벨 결정
+            let optLabel = '';
+            if (cardData?.extra2) {
+                const e2 = cardData.extra2;
+                if (e2.includes('enhance')) optLabel = '강화';
+                else if (e2.includes('change')) optLabel = '체인지';
+                else if (e2.includes('del')) optLabel = '삭제';
+                else optLabel = '옵션';
+            }
+            
+            const optCheckHtml = cardData?.extra2 ? `
+                <div class="card-opt-row">
+                    <label class="opt-check-label">
+                        <input type="checkbox" class="card-opt-check" data-id="${cardId}" ${optChecked}>
+                        <span>${optLabel}</span>
+                    </label>
+                </div>
+            ` : `<div class="card-opt-row no-opt"></div>`;
             
             return `<div class="selected-card-slot filled" data-id="${cardId}">
+                        ${optCheckHtml}
                         <div class="slot-frame">
                             <img src="images/support/${cardId}_card.webp" onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
                             <div class="card-slot-remove" data-id="${cardId}">×</div>
@@ -146,7 +169,12 @@ export function updateSelectedCardsUI(store) {
                         ${counterHtml}
                     </div>`;
         }
-        return `<div class="selected-card-slot empty"><div class="slot-frame"></div></div>`;
+        
+        // 전부 비어있으면 공백 제거, 하나라도 있으면 공백 유지
+        return `<div class="selected-card-slot empty">
+                    ${isAllEmpty ? '' : '<div class="card-opt-row no-opt"></div>'}
+                    <div class="slot-frame"></div>
+                </div>`;
     }).join('');
 }
 
@@ -194,7 +222,19 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 <div class="plan-type-selector">
                     ${['sense', 'logic', 'anomaly'].map(pt => `<div class="plan-type-btn ${store.planType === pt ? 'active' : ''}" data-type="${pt}"><img src="icons/${pt}.webp"></div>`).join('')}
                 </div>
-                
+
+                <div class="stat-header">
+                    <div class="total-stats-sum" id="total-stats-sum-container">
+                        <span class="sum-label">TOTAL</span>
+                        <span id="total-stats-sum-value">0</span>
+                    </div>
+                    <div class="stat-items-row">
+                        <div class="stat-item item-vocal"><img src="icons/vocal.png"><span id="total-vocal">0</span><span id="sp-vocal-percent" class="sp-percent-label"></span></div>
+                        <div class="stat-item item-dance"><img src="icons/dance.png"><span id="total-dance">0</span><span id="sp-dance-percent" class="sp-percent-label"></span></div>
+                        <div class="stat-item item-visual"><img src="icons/visual.png"><span id="total-visual">0</span><span id="sp-visual-percent" class="sp-percent-label"></span></div>
+                    </div>
+                </div>
+
                 ${(store.type === 'nia' || store.type === 'hajime') ? `
                 <div class="p-item-container" id="p-item-container">
                     <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: white; font-size: 12px; cursor: pointer; flex-shrink: 0;">?</button>
@@ -205,13 +245,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 ` : ''}
 
                 <div class="selected-support-container" id="selected-support-container"></div>
-                <div class="stat-header">
-                    <div class="stat-item item-vocal"><img src="icons/vocal.png"><span id="total-vocal">0</span><span id="sp-vocal-percent" class="sp-percent-label"></span></div>
-                    <div class="stat-item item-dance"><img src="icons/dance.png"><span id="total-dance">0</span><span id="sp-dance-percent" class="sp-percent-label"></span></div>
-                    <div class="stat-item item-visual"><img src="icons/visual.png"><span id="total-visual">0</span><span id="sp-visual-percent" class="sp-percent-label"></span></div>
-                </div>
-                <div class="activity-counter" id="activity-counter"></div>
-                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? '주간 행동 열기 ▼' : '주간 행동 닫기 ▲'}</div>
+                <div class="activity-counter" id="activity-counter"></div>                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? '주간 행동 열기 ▼' : '주간 행동 닫기 ▲'}</div>
                 <div class="unified-plan-board ${store.isBoardCollapsed ? 'collapsed-board' : ''}" data-calc-type="${store.type}">${weeksHtml}</div>
             </div>
         </div>
@@ -245,12 +279,16 @@ export function updateStatHeaderUI(store, cardBonusTotal, spTotals) {
     const attrs = ['vocal', 'dance', 'visual'];
     const idolInfo = idolData[store.selectedIdol];
 
+    let sum = 0;
     attrs.forEach(attr => {
         const totalEl = document.getElementById(`total-${attr}`);
         const spEl = document.getElementById(`sp-${attr}-percent`);
         const itemEl = document.querySelector(`.stat-item.item-${attr}`);
-        
-        if (totalEl) totalEl.textContent = cardBonusTotal[attr] > 0 ? `+${cardBonusTotal[attr]}` : '0';
+
+        const val = cardBonusTotal[attr] || 0;
+        sum += val;
+
+        if (totalEl) totalEl.textContent = val > 0 ? `+${val}` : '0';
         if (spEl) spEl.textContent = `sp (+${spTotals[attr]}%)`;
 
         // 특화 순위(Rank) 클래스 적용
@@ -260,4 +298,7 @@ export function updateStatHeaderUI(store, cardBonusTotal, spTotals) {
             if (rank > 0) itemEl.classList.add(`rank-${rank}`);
         }
     });
+
+    const sumEl = document.getElementById('total-stats-sum-value');
+    if (sumEl) sumEl.textContent = sum > 0 ? `+${sum}` : '0';
 }
