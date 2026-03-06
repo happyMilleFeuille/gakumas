@@ -5,8 +5,12 @@ import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_
 import { produceList } from './producedata.js';
 import translations from './i18n.js';
 
-const typeNames = {
+const typeDisplayNames = {
     normal: '통상', limited: '한정', unit: '유닛', fes: '페스', selection: '셀렉션'
+};
+
+const gachaTypeJaMap = {
+    normal: '恒常', limited: '限定', unit: 'ユニット', fes: 'フェス', selection: 'セレクション'
 };
 
 const charNameMap = {
@@ -94,9 +98,10 @@ export function openGachaRatesModal() {
     }
 
     const rateKeys = { PSSR: 'PSSR', SSSR: 'SSSR', PSR: 'PSR', SR_CARD: 'SSR_CARD', PR: 'PR', R_CARD: 'R_CARD' };
-    const typeName = lang === 'ja' ? 
-        { normal:'恒常', limited:'限定', unit:'ユニット', fes:'フェス', platinum:'プラチナ', selection:'セレクション' }[type] || type : 
-        typeDisplayNames[type] || type;
+    
+    // i18n.js에 있는 filter_ 키를 활용하여 안전하게 타입 이름 결정
+    const i18nKey = `filter_${type}`;
+    const typeName = translations[lang][i18nKey] || type;
 
     const titleSuffix = activeName ? ` (${activeName})` : "";
     if (title) title.textContent = typeName + titleSuffix + " " + (translations[lang].rates_title || '가챠 확률 정보');

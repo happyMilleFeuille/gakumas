@@ -252,7 +252,7 @@
         min-height: 70vh;
         max-height: 85vh;
     }
-    .rates-title { font-size: 0.9rem; padding: 0 25px; }
+    .rates-title { font-size: 0.8rem; padding: 0 25px; }
     .rates-table th, .rates-table td { padding: 5px 1px; font-size: 0.65rem; }
     .sub-label { padding-left: 10px !important; }
     .detail-card-img { width: 40px !important; height: 24px !important; }
