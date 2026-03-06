@@ -93,7 +93,7 @@ function startWeeklyPlan(type) {
                     // [추가] 계획 보드의 모든 활성화된 아이콘 테두리 및 SP 배지 색상 변경
                     document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
                         if (w.classList.contains('large-icon')) {
-                            w.style.filter = `drop-shadow(0 0 8px ${color})`;
+                            w.style.filter = `drop-shadow(1.5px 0 0 ${color}) drop-shadow(-1.5px 0 0 ${color}) drop-shadow(0 1.5px 0 ${color}) drop-shadow(0 -1.5px 0 ${color})`;
                         } else {
                             w.style.borderColor = color;
                             w.style.boxShadow = `0 0 8px ${color}66`;
@@ -164,8 +164,12 @@ function startWeeklyPlan(type) {
                         const week = w.closest('.week-row').dataset.week;
                         const savedOpts = calcStore.weeks[week]?.opts || {};
                         if (optsDef.some(o => o.type === 'checkbox') && !optsDef.some(o => savedOpts[o.id] === 'true')) {
-                            calcStore.setWeekAction(week, '', {});
+                            calcStore.setWeekAction(weekNum, '', {});
                             w.classList.remove('active');
+                            // [수정] 스타일 초기화 추가
+                            w.style.filter = '';
+                            w.style.borderColor = '';
+                            w.style.boxShadow = '';
                             updateSPBadge(w, calcStore.selectedIdol); updateMainLabel(w);
                         }
                     });
@@ -182,6 +186,10 @@ function startWeeklyPlan(type) {
                         calcStore.setWeekAction(weekNum, '', {});
                         wrapper.classList.remove('active');
                         Object.keys(wrapper.dataset).forEach(k => { if(k.startsWith('opt')) delete wrapper.dataset[k]; });
+                        // [수정] 필터와 모든 스타일 초기화
+                        wrapper.style.filter = '';
+                        wrapper.style.borderColor = '';
+                        wrapper.style.boxShadow = '';
                         updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
                         removeAllTooltips();
                     } else {
@@ -197,7 +205,8 @@ function startWeeklyPlan(type) {
                         wrapper.classList.add('active');
                         
                         if (wrapper.classList.contains('large-icon')) {
-                            wrapper.style.filter = `drop-shadow(0 0 8px ${idolColor})`;
+                            // 이미지 외곽을 따라가는 선명한 테두리 (여러 방향 중첩)
+                            wrapper.style.filter = `drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor})`;
                         } else {
                             wrapper.style.borderColor = idolColor;
                             wrapper.style.boxShadow = `0 0 8px ${idolColor}66`;

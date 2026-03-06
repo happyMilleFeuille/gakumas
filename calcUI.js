@@ -219,7 +219,8 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
             let activeStyle = '';
             if (isActive) {
                 if (isLarge) {
-                    activeStyle = `style="filter: drop-shadow(0 0 8px ${idolColor});"`;
+                    // 이미지 외곽을 따라가는 선명한 테두리 (여러 방향 중첩)
+                    activeStyle = `style="filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor});"`;
                 } else {
                     activeStyle = `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66;"`;
                 }
