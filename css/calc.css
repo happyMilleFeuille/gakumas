@@ -5,16 +5,44 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: 70vh; /* 화면의 수직 중앙에 배치하기 위해 높이 설정 */
     gap: 1.5rem;
-    padding-top: 1rem;
+    padding-top: 0; /* 중앙 정렬을 위해 기존 패딩 제거 */
 }
 
 .calc-buttons {
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 4rem; /* 로고 간 간격을 시원하게 확대 */
+    align-items: center;
     justify-content: center;
+}
+
+.calc-menu-img {
+    width: 380px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s, border-color 0.2s, box-shadow 0.2s;
+    
+    /* [수정] 우측 상단과 좌측 하단만 둥글게 (대각선 대칭) */
+    border-radius: 0 50px 0 50px; 
+    border: 3px solid transparent; 
+    filter: none;
+}
+
+.calc-menu-img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05); /* 마우스 올리면 약간 밝게 */
+}
+
+.calc-menu-img:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+    .calc-menu-img {
+        width: 300px; /* 모바일에서도 큼직하게 확대 */
+    }
 }
 
 /* ★★★ 레이아웃 핵심 ★★★ */

@@ -82,8 +82,17 @@ export function renderIdolList() {
 
         img.addEventListener('click', (e) => {
             // [추가] 선택된 아이콘 스타일링
-            document.querySelectorAll('.idol-icon').forEach(icon => icon.classList.remove('selected'));
+            document.querySelectorAll('.idol-icon').forEach(icon => {
+                icon.classList.remove('selected');
+                icon.style.borderColor = ''; // 기존 스타일 초기화
+                icon.style.boxShadow = '';
+            });
+            
             img.classList.add('selected');
+            const getIdolDisplayColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
+            const color = getIdolDisplayColor(name);
+            img.style.borderColor = color;
+            img.style.boxShadow = `0 0 15px ${color}66`;
 
             // Center the clicked icon
             const clickedItem = e.currentTarget.parentElement.parentElement;
@@ -154,7 +163,15 @@ function renderProduceCards(idolName, container) {
 
         const personalColor = idolColors[idolName] || "#ffffff";
         const infoBox = item.querySelector('.pssr-info');
-        infoBox.style.backgroundColor = personalColor + "26"; 
+        
+        // [수정] 카드 전체와 정보창의 색상을 완벽하게 일치시킴 (불투명 처리)
+        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`; // 약 15% 농도
+        cardEl.style.backgroundColor = "#ffffff";
+        cardEl.style.backgroundImage = mixedBg;
+        
+        infoBox.style.backgroundColor = "transparent"; // 정보창 배경을 투명하게 하여 카드 배경이 그대로 보이게 함
+        infoBox.style.backgroundImage = "none";
+        
         name.style.color = '#333'; 
         imgWrapper.style.backgroundColor = personalColor + "11"; 
 

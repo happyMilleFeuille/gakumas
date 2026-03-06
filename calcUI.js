@@ -184,7 +184,19 @@ export function updateSelectedCardsUI(store) {
 export function renderCalcMenu(updatePageTranslations, onHajime, onNia) {
     const root = document.getElementById('calc-root');
     if (!root) return;
-    root.innerHTML = `<div class="calc-menu-container"><h2 data-i18n="calc_title">계산기 메뉴</h2><div class="calc-buttons"><button class="primary-btn" id="btn-hajime">Hajime</button><button class="primary-btn" id="btn-nia">N.i.a</button></div></div>`;
+    
+    // 즐겨찾기 아이돌 색상 가져오기 (릴리야 보정 포함)
+    const favIdol = state.favoriteIdol || 'saki';
+    const getIdolDisplayColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
+    const color = getIdolDisplayColor(favIdol);
+
+    root.innerHTML = `
+        <div class="calc-menu-container">
+            <div class="calc-buttons">
+                <img src="images/hajime.webp" id="btn-hajime" class="calc-menu-img" alt="Hajime" style="border-color: ${color}; box-shadow: 0 4px 15px ${color}33;">
+                <img src="images/nia.webp" id="btn-nia" class="calc-menu-img" alt="N.i.a" style="border-color: ${color}; box-shadow: 0 4px 15px ${color}33;">
+            </div>
+        </div>`;
     updatePageTranslations();
     document.getElementById('btn-hajime').onclick = onHajime;
     document.getElementById('btn-nia').onclick = onNia;
@@ -219,8 +231,8 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
             let activeStyle = '';
             if (isActive) {
                 if (isLarge) {
-                    // 이미지 외곽을 따라가는 선명한 테두리 (여러 방향 중첩)
-                    activeStyle = `style="filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor});"`;
+                    // 이미지 외곽을 따라가는 선명한 테두리 + 캐릭터 색상의 얕은 그림자
+                    activeStyle = `style="filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 5px ${idolColor});"`;
                 } else {
                     activeStyle = `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66;"`;
                 }
@@ -235,7 +247,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         <div class="calc-container">
             <div class="calc-main-wrapper">
                 <div class="calc-actions top">
-                    <button class="calc-btn primary-btn" id="btn-run-calc">계산</button>
+                    <button class="calc-btn primary-btn" id="btn-run-calc" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">계산</button>
                     <button class="back-btn primary-btn">뒤로가기</button>
                 </div>
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>

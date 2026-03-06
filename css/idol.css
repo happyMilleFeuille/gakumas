@@ -79,8 +79,9 @@
 .idol-icon:hover { transform: scale(1.05); }
 
 .idol-icon.selected {
-    border: 1px solid #ff4081;
-    box-shadow: 0 0 15px rgba(255, 64, 129, 0.4);
+    border-width: 2px;
+    border-style: solid;
+    /* [수정] JS에서 동적으로 색상 설정 */
     transform: translateY(-5px) scale(1.05);
     z-index: 5;
 }
@@ -163,6 +164,9 @@
     gap: 5px;
     position: relative;
     transition: background-color 0.3s;
+    /* [수정] 늘어난 칸 안에서 내용이 수직 중앙에 오도록 함 */
+    justify-content: center;
+    min-height: 60px; /* 카드의 최소 높이 유지를 위해 필요 */
 }
 
 .pssr-name-wrap {
@@ -223,8 +227,9 @@
         gap: 1rem;
     }
     .pssr-img-wrapper { padding-top: 166.66%; }
-    .pssr-name { font-size: 0.75rem; }
+    .pssr-name { font-size: 0.65rem; }
     .pssr-plan-icon { width: 24px; height: 24px; top: -12px; }
+    .pssr-rarity-icon { height: 14px; }
 }
 
 /* calc.css */

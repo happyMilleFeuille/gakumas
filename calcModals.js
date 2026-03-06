@@ -196,7 +196,20 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
         const boardGetCount = counts.total.get || 0;
         const currentPlan = calcStore.planType;
         const skills = calcStore.planSkills[currentPlan] || {};
-        const total = Object.values(skills).reduce((a, b) => a + b, 0);
+        
+        // 1. 모달에서 직접 선택한 스킬 카드 수 합계
+        let total = Object.values(skills).reduce((a, b) => a + b, 0);
+        
+        // 2. [추가] 서포트 카드 체크로 획득한 카드 수 합산
+        const selectedIds = calcStore.planCards[currentPlan] || [];
+        selectedIds.forEach(id => {
+            if (calcStore.cardChecked[id]) {
+                const card = cardList.find(c => c.id === id);
+                if (card && card.have?.startsWith('card_')) {
+                    total++;
+                }
+            }
+        });
         
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
