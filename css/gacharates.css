@@ -64,14 +64,16 @@
 .rates-table th {
     background-color: #f9f9f9;
     color: #666;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
+    letter-spacing: -0.02em;
 }
 
 .rarity-label {
     font-weight: 900;
     text-align: left !important;
     padding-left: 15px !important;
+    width: 40%;
 }
 
 /* 등급별 색상 정의 */
@@ -152,7 +154,7 @@
 }
 
 .header-name { flex: 1; text-align: center; }
-.header-rate { width: 70px; text-align: center; }
+.header-rate { width: 80px; text-align: center; }
 
 .detail-item {
     display: flex;
@@ -205,17 +207,18 @@
 .detail-rate-group {
     display: flex;
     gap: 10px;
-    width: 140px;
+    width: 160px;
     justify-content: flex-end;
     flex-shrink: 0;
 }
 
 .detail-rate {
-    width: 70px;
+    width: 80px;
     text-align: center;
-    font-family: monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 0.8rem;
     color: #666;
+    letter-spacing: 0;
 }
 
 .is-pickup .detail-name { color: #ff4081; }

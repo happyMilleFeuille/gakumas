@@ -6,8 +6,11 @@ import { renderGacha, stopBGM } from './gacha.js';
 export function handleNavigation(target, isBack = false) {
     if (!target) return;
     
-    // 현재 활성화된 탭과 동일한 경우 무시 (중복 렌더링 및 음악 재시작 방지)
-    if (history.state && history.state.target === target && !isBack) {
+    const contentArea = document.getElementById('content-area');
+    const isContentEmpty = contentArea && contentArea.innerHTML.trim() === '';
+
+    // 현재 활성화된 탭과 동일하고, 화면이 비어있지 않은 경우만 무시
+    if (history.state && history.state.target === target && !isBack && !isContentEmpty) {
         return;
     }
 

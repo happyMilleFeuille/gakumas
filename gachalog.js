@@ -1,5 +1,6 @@
 import { state } from './state.js';
 import { currencyData } from './currency.js';
+import translations from './i18n.js';
 
 export function openGachaLogModal() {
     const modal = document.getElementById('gacha-log-modal');
@@ -7,12 +8,14 @@ export function openGachaLogModal() {
     const list = document.getElementById('gacha-log-list');
     if (!modal || !list || !statsArea) return;
 
+    const t = translations[state.currentLang];
+
     list.innerHTML = '';
     statsArea.innerHTML = '';
     const currentLog = state.gachaLog[state.gachaType] || [];
 
     if (currentLog.length === 0) {
-        list.innerHTML = '<p style="text-align:center; padding: 2rem; width: 100%; color: #888;">기록이 없습니다.</p>';
+        list.innerHTML = `<p style="text-align:center; padding: 2rem; width: 100%; color: #888;">${t.gacha_log_empty}</p>`;
         modal.classList.remove('hidden');
         return;
     }
@@ -99,6 +102,7 @@ export function openGachaLogModal() {
 
 function renderStats(container, total, stats, topChar) {
     const isJa = state.currentLang === 'ja';
+    const t = translations[state.currentLang];
     const totalJewels = total * 250;
     const yenPerJewel = 1.1951;
     let priceDisplay = isJa ? 
@@ -106,9 +110,12 @@ function renderStats(container, total, stats, topChar) {
         `${totalJewels.toLocaleString()} (₩${Math.round(totalJewels * yenPerJewel * currencyData.rate).toLocaleString()})`;
 
     const getPerc = (c) => ((c / total) * 100).toFixed(1) + '%';
-    const labels = isJa ? 
-        { total: '総ガチャ回数', all: ['全体 SSR', '全体 SR', '全体 R'], p: 'プロデュースアイドル詳細', s: 'サポートカード詳細' } : 
-        { total: '총 뽑기 횟수', all: ['전체 SSR', '전체 SR', '전체 R'], p: '프로듀스 아이돌 상세', s: '서포트 카드 상세' };
+    const labels = {
+        total: t.gacha_log_total_count,
+        all: [t.gacha_log_all_ssr, t.gacha_log_all_sr, t.gacha_log_all_r],
+        p: t.gacha_log_p_detail,
+        s: t.gacha_log_s_detail
+    };
 
     const charThumb = topChar ? `
         <div class="stat-header-thumb-container">

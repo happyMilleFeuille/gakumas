@@ -38,13 +38,14 @@ export function updateActivityCountsUI(store, counts) {
     });
     html += '</div>';
 
+    const isJa = state.currentLang === 'ja';
     // 2. 분배기 및 기타 수치 (강화, 삭제, 카드획득, 드링크, 특수 스탯)
     const renderDist = (label, total, m, a, color = '#ff4d8d', bg = 'rgba(255, 77, 141, 0.05)', type = 'e') => `
         <div class="enhance-item-content" style="background: ${bg}; border-color: ${color}33;">
             <span class="dist-label" style="opacity: ${total > 0 ? 1 : 0.3}; color: ${color};">${label} <span class="counter-count">${total}</span></span>
             <div class="dist-group" style="opacity: ${total > 0 ? 1 : 0.3};">
-                <div class="dist-unit"><span>멘탈</span><span class="dist-val">${m}</span><button class="dist-btn plus" data-dist="${type}m">+</button></div>
-                <div class="dist-unit"><span>액티브</span><span class="dist-val">${a}</span><button class="dist-btn plus" data-dist="${type}a">+</button></div>
+                <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val">${m}</span><button class="dist-btn plus" data-dist="${type}m">+</button></div>
+                <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val">${a}</span><button class="dist-btn plus" data-dist="${type}a">+</button></div>
             </div>
         </div>
     `;
@@ -53,10 +54,10 @@ export function updateActivityCountsUI(store, counts) {
     const drinkTotal = (counts.total.get_drink || 0) + (counts.total.purchase_drink || 0);
     const drinkDisplay = `
         <div class="enhance-item-content" style="background: rgba(76, 175, 80, 0.05); border-color: rgba(76, 175, 80, 0.2);">
-            <span class="dist-label" style="opacity: ${drinkTotal > 0 ? 1 : 0.3}; color: #4caf50;">드링크 <span class="counter-count">${drinkTotal}</span></span>
+            <span class="dist-label" style="opacity: ${drinkTotal > 0 ? 1 : 0.3}; color: #4caf50;">${isJa ? 'ドリンク' : '드링크'} <span class="counter-count">${drinkTotal}</span></span>
             <div class="dist-group" style="opacity: ${drinkTotal > 0 ? 1 : 0.3};">
-                <div class="dist-unit"><span>획득</span><span class="dist-val" style="color: #4caf50;">${counts.total.get_drink || 0}</span></div>
-                <div class="dist-unit"><span>구매</span><span class="dist-val" style="color: #4caf50;">${counts.total.purchase_drink || 0}</span></div>
+                <div class="dist-unit"><span>${isJa ? '獲得' : '획득'}</span><span class="dist-val" style="color: #4caf50;">${counts.total.get_drink || 0}</span></div>
+                <div class="dist-unit"><span>${isJa ? '交換' : '구매'}</span><span class="dist-val" style="color: #4caf50;">${counts.total.purchase_drink || 0}</span></div>
             </div>
         </div>
     `;
@@ -69,13 +70,13 @@ export function updateActivityCountsUI(store, counts) {
         </div>
     `;
 
-    let otherGetItems = renderOtherUnit('SSR', 'get_ssr', '#673ab7') + renderOtherUnit('원기', 'get_genki', '#ff5722');
+    let otherGetItems = renderOtherUnit('SSR', 'get_ssr', '#673ab7') + renderOtherUnit(isJa ? '元気' : '원기', 'get_genki', '#ff5722');
     if (store.planType === 'sense') {
-        otherGetItems += renderOtherUnit('호조', 'get_goodcondition', '#e91e63') + renderOtherUnit('집중', 'get_concentration', '#e91e63');
+        otherGetItems += renderOtherUnit(isJa ? '好調' : '호조', 'get_goodcondition', '#e91e63') + renderOtherUnit(isJa ? '集中' : '집중', 'get_concentration', '#e91e63');
     } else if (store.planType === 'logic') {
-        otherGetItems += renderOtherUnit('의욕', 'get_motivation', '#2196f3') + renderOtherUnit('호인상', 'get_goodimpression', '#2196f3');
+        otherGetItems += renderOtherUnit(isJa ? 'やる気' : '의욕', 'get_motivation', '#2196f3') + renderOtherUnit(isJa ? '好印象' : '호인상', 'get_goodimpression', '#2196f3');
     } else if (store.planType === 'anomaly') {
-        otherGetItems += renderOtherUnit('온존', 'get_preservation', '#9c27b0') + renderOtherUnit('강기', 'get_enthusiasm', '#9c27b0') + renderOtherUnit('전력', 'get_fullpower', '#9c27b0');
+        otherGetItems += renderOtherUnit(isJa ? '温存' : '온존', 'get_preservation', '#9c27b0') + renderOtherUnit(isJa ? '強気' : '강기', 'get_enthusiasm', '#9c27b0') + renderOtherUnit(isJa ? '全力' : '전력', 'get_fullpower', '#9c27b0');
     }
 
     const otherGetDisplay = `
@@ -83,28 +84,28 @@ export function updateActivityCountsUI(store, counts) {
             <div class="dist-group" style="flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 8px;">
                 ${otherGetItems}
             </div>
-            <button class="other-tune-btn" id="btn-other-tune" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; background: #9c27b0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem;">조정</button>
+            <button class="other-tune-btn" id="btn-other-tune" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); min-width: 26px; width: auto; height: 26px; padding: 0 4px; background: #9c27b0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem; white-space: nowrap;">${isJa ? '調整' : '조정'}</button>
         </div>
     `;
 
     html += `
         <div class="counter-divider"></div>
         <div class="extra-text-counts" style="font-size: 0.75rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
-            <div class="text-count-item">${renderDist('강화', counts.total.enhance || 0, counts.total.enhance_m || 0, counts.total.enhance_a || 0, '#ff4d8d', 'rgba(255, 77, 141, 0.05)', 'e')}</div>
-            <div class="text-count-item">${renderDist('삭제', (counts.total.delete || 0) + (counts.total.delete_t || 0), counts.total.delete_m || 0, counts.total.delete_a || 0, '#555', 'rgba(0,0,0,0.05)', 'd')}</div>
+            <div class="text-count-item">${renderDist(isJa ? '強化' : '강화', counts.total.enhance || 0, counts.total.enhance_m || 0, counts.total.enhance_a || 0, '#ff4d8d', 'rgba(255, 77, 141, 0.05)', 'e')}</div>
+            <div class="text-count-item">${renderDist(isJa ? '削除' : '삭제', (counts.total.delete || 0) + (counts.total.delete_t || 0), counts.total.delete_m || 0, counts.total.delete_a || 0, '#555', 'rgba(0,0,0,0.05)', 'd')}</div>
             <div class="text-count-item">
                 <div class="enhance-item-content" style="background: rgba(255, 152, 0, 0.05); border-color: rgba(255, 152, 0, 0.2);">
-                    <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">카드획득 <span class="counter-count">${counts.total.get || 0}</span></span>
+                    <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">${isJa ? 'カード獲得' : '카드획득'} <span class="counter-count">${counts.total.get || 0}</span></span>
                     <div class="dist-group" style="opacity: ${counts.total.get > 0 ? 1 : 0.3};">
-                        <div class="dist-unit"><span>멘탈</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_m || 0}</span></div>
-                        <div class="dist-unit"><span>액티브</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_a || 0}</span></div>
+                        <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_m || 0}</span></div>
+                        <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_a || 0}</span></div>
                     </div>
                 </div>
             </div>
             <div class="text-count-item">${drinkDisplay}</div>
             <div class="text-count-item">${otherGetDisplay}</div>
-            <div class="text-count-item" style="opacity: ${counts.total.get_item > 0 ? 1 : 0.3}">아이템 <span class="counter-count">${counts.total.get_item || 0}</span></div>
-            <div class="text-count-item" style="opacity: ${counts.total.change > 0 ? 1 : 0.3}">체인지 <span class="counter-count">${counts.total.change || 0}</span></div>
+            <div class="text-count-item" style="opacity: ${counts.total.get_item > 0 ? 1 : 0.3}">${isJa ? 'アイテム' : '아이템'} <span class="counter-count">${counts.total.get_item || 0}</span></div>
+            <div class="text-count-item" style="opacity: ${counts.total.change > 0 ? 1 : 0.3}">${isJa ? 'チェンジ' : '체인지'} <span class="counter-count">${counts.total.change || 0}</span></div>
         </div>
     `;
     counterContainer.innerHTML = html;
@@ -142,12 +143,13 @@ export function updateSelectedCardsUI(store) {
 
             // extra2 옵션 라벨 결정
             let optLabel = '';
+            const isJa = state.currentLang === 'ja';
             if (cardData?.extra2) {
                 const e2 = cardData.extra2;
-                if (e2.includes('enhance')) optLabel = '강화';
-                else if (e2.includes('change')) optLabel = '체인지';
-                else if (e2.includes('del')) optLabel = '삭제';
-                else optLabel = '옵션';
+                if (e2.includes('enhance')) optLabel = isJa ? '強化' : '강화';
+                else if (e2.includes('change')) optLabel = isJa ? 'チェンジ' : '체인지';
+                else if (e2.includes('del')) optLabel = isJa ? '削除' : '삭제';
+                else optLabel = isJa ? 'オプション' : '옵션';
             }
             
             const optCheckHtml = cardData?.extra2 ? `
@@ -218,6 +220,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         return `<div class="idol-sel-item ${isActive ? 'active' : ''}" data-id="${name}" ${style}><img src="icons/idolicons/${name}.png" onerror="this.src='icons/idol.png'"></div>`;
     }).join('');
     
+    const isJa = state.currentLang === 'ja';
     const idolColor = getIdolDisplayColor(store.selectedIdol);
     const weekNumbers = Object.keys(planData.weeks).map(Number).sort((a, b) => b - a);
     const weeksHtml = weekNumbers.map(i => {
@@ -240,15 +243,15 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
             
             return `<div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}><img src="icons/cal/${opt.value}.webp" class="plan-icon-img"></div>`;
         }).join('');
-        return `<div class="week-row" data-week="${i}"><div class="week-header"><span class="week-label">${i}주</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
+        return `<div class="week-row" data-week="${i}"><div class="week-header"><span class="week-label">${i}${isJa ? '週' : '주'}</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
     }).join('');
 
     root.innerHTML = `
         <div class="calc-container">
             <div class="calc-main-wrapper">
                 <div class="calc-actions top">
-                    <button class="calc-btn primary-btn" id="btn-run-calc" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">계산</button>
-                    <button class="back-btn primary-btn">뒤로가기</button>
+                    <button class="calc-btn primary-btn" id="btn-run-calc" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">${isJa ? '計算' : '계산'}</button>
+                    <button class="back-btn primary-btn">${isJa ? '戻る' : '뒤로가기'}</button>
                 </div>
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
                 <div class="plan-type-selector">
@@ -281,7 +284,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 ` : ''}
 
                 <div class="selected-support-container" id="selected-support-container"></div>
-                <div class="activity-counter" id="activity-counter"></div>                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? '주간 행동 열기 ▼' : '주간 행동 닫기 ▲'}</div>
+                <div class="activity-counter" id="activity-counter"></div>                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? (isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼') : (isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲')}</div>
                 <div class="unified-plan-board ${store.isBoardCollapsed ? 'collapsed-board' : ''}" data-calc-type="${store.type}">${weeksHtml}</div>
             </div>
         </div>

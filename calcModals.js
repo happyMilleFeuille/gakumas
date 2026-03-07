@@ -171,13 +171,14 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
             </div>`;
     };
 
+    const isJa = state.currentLang === 'ja';
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 95%; width: 600px; max-height: 85vh; padding: 15px; display: flex; flex-direction: column; position: relative;">
-            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 15px; text-align: center; color: #9c27b0;"></h3>
-            <div class="tune-card-grid">${cardGroups.map(g => g.length > 1 ? `<div class="tune-card-group-box" data-group="${g.join(',')}">${g.map(renderCardItem).join('')}</div>` : renderCardItem(g[0])).join('')}</div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 10px; border-radius: 8px;">전체 초기화</button>
-                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 10px; border-radius: 8px;">닫기</button>
+        <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
+            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: #9c27b0; font-size: 1rem;"></h3>
+            <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => g.length > 1 ? `<div class="tune-card-group-box" data-group="${g.join(',')}">${g.map(renderCardItem).join('')}</div>` : renderCardItem(g[0])).join('')}</div>
+            <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%; box-sizing: border-box;">
+                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${isJa ? '一括初期化' : '전체 초기화'}</button>
+                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${isJa ? '閉じる' : '닫기'}</button>
             </div>
         </div>`;
 
@@ -213,7 +214,8 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
         
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
-            titleEl.textContent = `${currentPlan.toUpperCase()} 카드 선택 (${total} / ${boardGetCount})`;
+            const planLabel = isJa ? (currentPlan === 'sense' ? 'センス' : (currentPlan === 'logic' ? 'ロジック' : 'アノマリー')) : currentPlan.toUpperCase();
+            titleEl.textContent = isJa ? `${planLabel}カード選択 (${total} / ${boardGetCount})` : `${currentPlan.toUpperCase()} 카드 선택 (${total} / ${boardGetCount})`;
         }
     };
     updateTitle();
@@ -260,7 +262,8 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
     });
 
     document.getElementById('reset-all-skills').onclick = () => {
-        if (!confirm('초기화할까요?')) return;
+        const resetConfirm = isJa ? '初期化しますか？' : '초기화할까요?';
+        if (!confirm(resetConfirm)) return;
         
         // 1. 데이터 초기화 및 저장
         calcStore.planSkills[activePlan] = {}; 

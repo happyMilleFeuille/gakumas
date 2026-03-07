@@ -306,7 +306,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
     if (type === 'selection') {
         currentCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         favColor = idolColors[state.favoriteIdol] || "#ff4081";
-        displayName = currentCfg.name;
+        displayName = (state.currentLang === 'ja' && currentCfg.name_ja) ? currentCfg.name_ja : currentCfg.name;
         bannerImg = currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp';
         bgImg = bannerImg;
     } else if (type === 'normal') {

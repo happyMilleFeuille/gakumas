@@ -326,6 +326,7 @@ function renderPickupList(itemsLayer, indicatorLayer) {
 
 function renderNormalList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+    const isJa = state.currentLang === 'ja';
     NORMAL_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -334,8 +335,9 @@ function renderNormalList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
+        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};"></div>
-            <div class="drawer-item-name">${cfg.name || ''}</div>`;
+            <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
 
@@ -352,6 +354,7 @@ function renderNormalList(itemsLayer, indicatorLayer) {
 
 function renderLimitedList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+    const isJa = state.currentLang === 'ja';
     LIMITED_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -360,8 +363,9 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
+        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};"></div>
-            <div class="drawer-item-name">${cfg.name || ''}</div>`;
+            <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
 
@@ -378,6 +382,7 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
 
 function renderUnitList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+    const isJa = state.currentLang === 'ja';
     UNIT_CONFIG.forEach(cfg => {
         const pssrCount = cfg.pool?.pssr?.length || 0;
         const isDouble = pssrCount >= 2;
@@ -405,8 +410,9 @@ function renderUnitList(itemsLayer, indicatorLayer) {
             imgInnerHtml = `<div style="width: 100%; height: 100%; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top;"></div>`;
         }
         
+        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
         item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; overflow: hidden;">${imgInnerHtml}</div>
-            <div class="drawer-item-name">${cfg.name || ''}</div>`;
+            <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
 
@@ -422,14 +428,16 @@ function renderUnitList(itemsLayer, indicatorLayer) {
 }
 
 function renderSelectionList(itemsLayer, indicatorLayer) {
+    const isJa = state.currentLang === 'ja';
     SELECTION_CONFIG.forEach(cfg => {
         const item = document.createElement('div');
         item.className = 'drawer-item selection-type';
         item.dataset.id = cfg.id;
         const favColor = idolColors[state.favoriteIdol] || "#ff4081";
         
+        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
         item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${favColor}; overflow: hidden; background-image: url('${cfg.bannerImg}'); background-size: cover; background-position: top;"></div>
-            <div class="drawer-item-name">${cfg.name}</div>`;
+            <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
 
@@ -446,6 +454,7 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
 
 function renderFesList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+    const isJa = state.currentLang === 'ja';
     FES_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -454,8 +463,9 @@ function renderFesList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
+        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};"></div>
-            <div class="drawer-item-name">${cfg.name || ''}</div>`;
+            <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
 

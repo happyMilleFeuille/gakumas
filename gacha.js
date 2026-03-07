@@ -43,9 +43,10 @@ function showDownloadConfirm(contentArea) {
     // 동적 용량 표시 (비동기 계산)
     const sizeMsg = contentArea.querySelector('.gacha-confirm-body p:first-child');
     if (sizeMsg) {
-        sizeMsg.textContent = `가챠 리소스 용량 확인 중...`;
+        sizeMsg.textContent = translations[state.currentLang].gacha_loading_size;
         fetchTotalAssetSizeMB().then(size => {
-            sizeMsg.textContent = `가챠 연출 및 음원 리소스를 다운로드합니다. (약 ${size}MB)`;
+            const template = translations[state.currentLang].gacha_confirm_body;
+            sizeMsg.textContent = template.replace('{size}', size);
         });
     }
 
@@ -238,10 +239,13 @@ function initHeaderControls(ui) {
 
 function updateTypeUI(ui) {
     const types = ['normal', 'limited', 'unit', 'fes', 'selection'];
+    const t = translations[state.currentLang];
     const typeDisplayNames = {
-        normal: state.currentLang === 'ko' ? '통상' : '恒常', limited: state.currentLang === 'ko' ? '한정' : '限定',
-        unit: state.currentLang === 'ko' ? '유닛' : 'ユニット', fes: state.currentLang === 'ko' ? '페스' : 'フェ스',
-        selection: state.currentLang === 'ko' ? '셀렉션' : 'セレクション'
+        normal: t.gacha_type_normal,
+        limited: t.gacha_type_limited,
+        unit: t.gacha_type_unit,
+        fes: t.gacha_type_fes,
+        selection: t.gacha_type_selection
     };
 
     const typeDisplay = document.getElementById('current-gacha-type-display');
@@ -374,13 +378,14 @@ async function handleGachaClick(ui, mode, animation) {
 function updateGachaButtonsState(ui) {
     const isResultView = ui.fixedBtnArea?.classList.contains('view-result');
     const currentPulls = state.totalPulls[state.gachaType] || 0;
+    const t = translations[state.currentLang];
 
     if (ui.btn1) {
         if (!isResultView && state.gachaType === 'selection') ui.btn1.style.display = 'none';
         else {
             ui.btn1.style.display = 'block';
             ui.btn1.disabled = isResultView ? false : (state.jewels < 250);
-            if (!isResultView) ui.btn1.innerHTML = `${state.currentLang === 'ko' ? '1회 뽑기' : '1회引く'}<br><span class='btn-cost'>250</span>`;
+            if (!isResultView) ui.btn1.innerHTML = `${t.gacha_1pull}<br><span class='btn-cost'>250</span>`;
         }
     }
     
@@ -393,14 +398,14 @@ function updateGachaButtonsState(ui) {
             ui.btn10.style.display = 'block';
             if (currentPulls >= maxPulls) { ui.btn10.disabled = true; ui.btn10.style.opacity = '0.5'; }
             else { ui.btn10.disabled = (state.jewels < cost); ui.btn10.style.opacity = '1'; }
-            const label = state.currentLang === 'ko' ? `${pullCount}회 뽑기` : `${pullCount}회引く`;
+            const label = t.gacha_pull_count.replace('{count}', pullCount);
             ui.btn10.innerHTML = `${label}<br><span class='btn-cost'>${cost}</span>`;
             ui.btn10.onclick = () => handleGachaClick(ui, pullCount, ui.animationInstance);
         } else {
             ui.btn10.style.display = 'block'; ui.btn10.style.opacity = '1';
             const cost = 2500; ui.btn10.disabled = (state.jewels < cost);
             if (!isResultView) {
-                ui.btn10.innerHTML = `${state.currentLang === 'ko' ? '10회 뽑기' : '10회引く'}<br><span class='btn-cost'>${cost}</span>`;
+                ui.btn10.innerHTML = `${t.gacha_10pull}<br><span class='btn-cost'>${cost}</span>`;
                 ui.btn10.onclick = () => handleGachaClick(ui, 10, ui.animationInstance);
             }
         }

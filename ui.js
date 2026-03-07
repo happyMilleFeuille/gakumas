@@ -346,6 +346,14 @@ function setupStaticListeners(container) {
 
     const sortSelect = container.querySelector('#support-sort');
     if (sortSelect) {
+        const isJa = state.currentLang === 'ja';
+        sortSelect.innerHTML = `
+            <option value="id-desc">${isJa ? '最新順' : '최신순'}</option>
+            <option value="id-asc">${isJa ? '古い順' : '과거순'}</option>
+            <option value="lb-desc">${isJa ? '特訓順' : '돌파순'}</option>
+            <option value="name-asc">${isJa ? '名前順' : '이름순'}</option>
+        `;
+        sortSelect.value = state.sortBy;
         sortSelect.addEventListener('change', (e) => {
             state.sortBy = e.target.value;
             renderSupport();
@@ -354,8 +362,11 @@ function setupStaticListeners(container) {
 
     const allMaxBtn = container.querySelector('#btn-all-max-lb');
     if (allMaxBtn) {
+        const isJa = state.currentLang === 'ja';
+        allMaxBtn.textContent = isJa ? '全カード完凸' : '모든 카드 풀돌';
         allMaxBtn.addEventListener('click', () => {
-            if (!confirm('모든 카드를 4단계 돌파(풀돌) 상태로 변경하시겠습니까?')) return;
+            const confirmMsg = isJa ? 'すべてのカードを完凸状態に変更しますか？' : '모든 카드를 4단계 돌파(풀돌) 상태로 변경하시겠습니까?';
+            if (!confirm(confirmMsg)) return;
             cardList.forEach(card => {
                 setSupportLB(card.id, 4);
             });

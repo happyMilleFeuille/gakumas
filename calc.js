@@ -323,7 +323,12 @@ function startWeeklyPlan(type) {
                     calcStore.isBoardCollapsed = !calcStore.isBoardCollapsed;
                     calcStore.save();
                     board?.classList.toggle('collapsed-board', calcStore.isBoardCollapsed);
-                    toggleBar.textContent = calcStore.isBoardCollapsed ? '주간 행동 열기 ▼' : '주간 행동 닫기 ▲';
+                    const isJa = state.currentLang === 'ja';
+                    if (calcStore.isBoardCollapsed) {
+                        toggleBar.textContent = isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼';
+                    } else {
+                        toggleBar.textContent = isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲';
+                    }
                 };
             }
         }
@@ -532,20 +537,21 @@ function setupPItemSelector() {
             const imgSize = isMobile ? '16px' : '24px';
             const gap = isMobile ? '4px' : '8px';
 
+            const isJa = state.currentLang === 'ja';
             tooltip.innerHTML = `
                 <div style="display: flex; flex-direction: column; gap: ${gap};">
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>특별수업 시 카드 삭제 및 획득 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>상담 시 카드 삭제 및 획득 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '特別レッスン時にカード削除および獲得 (プロデュース中2回)' : '특별수업 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '相談時にカード削除および獲得 (プロデュース中2回)' : '상담 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
                     <div style="height: 1px; background: #eee; margin: 1px 0;"></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>영업(강화카드) 시 카드 삭제 및 획득 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>영업(P포인트) 시 카드 삭제 및 획득 (프로듀스 중 2회)</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-3.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>영업(드링크) 시 카드 삭제 및 획득 (프로듀스 중 2회)</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '営業(強化カード)時にカード削除および獲得 (プロデュース中2回)' : '영업(강화카드) 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '営業(Pポイント)時にカード削除および獲得 (プロデュース中2回)' : '영업(P포인트) 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
+                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-3.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '営業(ドリンク)時にカード削除および獲得 (プロデュース中2回)' : '영업(드링크) 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
                     <div style="display: flex; align-items: center; gap: ${gap};">
                         <div style="display: flex; gap: 2px;">
                             <img src="icons/cal/nia3-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">
                             <img src="icons/cal/nia3-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">
                         </div>
-                        <span>오디션 종료 시 카드 삭제 및 복제 (프로듀스 중 2회)</span>
+                        <span>${isJa ? 'オーディション終了時にカード削除およびコピー (プロデュース中2回)' : '오디션 종료 시 카드 삭제 및 복제 (프로듀스 중 2회)'}</span>
                     </div>
                 </div>
             `;

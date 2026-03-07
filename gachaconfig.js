@@ -555,6 +555,7 @@ export const SELECTION_CONFIG = [
         {
         id: 'ongakusai_day2',
         name: '초성음악제 DAY2',
+        name_ja: '初星音楽祭 DAY2',
         display_date:'2026-03-02',
         date: '2025-05-16',
         bannerImg: 'gasya/gasya_ongakusai2.webp',
@@ -570,6 +571,7 @@ export const SELECTION_CONFIG = [
     {
         id: 'ongakusai_day1',
         name: '초성음악제 DAY1',
+        name_ja: '初星音楽祭 DAY1',
         display_date:'2026-03-01',
         date: '2025-05-16',
         bannerImg: 'gasya/gasya_ongakusai1.webp',

@@ -5,13 +5,9 @@ import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_
 import { produceList } from './producedata.js';
 import translations from './i18n.js';
 
-const typeDisplayNames = {
-    normal: '통상', limited: '한정', unit: '유닛', fes: '페스', selection: '셀렉션'
-};
 
-const gachaTypeJaMap = {
-    normal: '恒常', limited: '限定', unit: 'ユニット', fes: 'フェス', selection: 'セレクション'
-};
+
+
 
 const charNameMap = {
     rinami_: { ko: '히메사키 리나미', ja: '姫崎 莉波' },
@@ -42,6 +38,7 @@ export function openGachaRatesModal() {
     if (!modal || !body) return;
 
     const lang = state.currentLang;
+    const t = translations[lang];
     const type = state.gachaType;
     let strategy = { ...(GACHA_STRATEGIES[type] || GACHA_STRATEGIES.normal) };
     const pool = getGachaPool(type);
@@ -99,12 +96,12 @@ export function openGachaRatesModal() {
 
     const rateKeys = { PSSR: 'PSSR', SSSR: 'SSSR', PSR: 'PSR', SR_CARD: 'SSR_CARD', PR: 'PR', R_CARD: 'R_CARD' };
     
-    // i18n.js에 있는 filter_ 키를 활용하여 안전하게 타입 이름 결정
-    const i18nKey = `filter_${type}`;
-    const typeName = translations[lang][i18nKey] || type;
+    // i18n.js에 있는 gacha_type_ 키를 활용하여 안전하게 타입 이름 결정
+    const i18nKey = `gacha_type_${type}`;
+    const typeName = t[i18nKey] || type;
 
     const titleSuffix = activeName ? ` (${activeName})` : "";
-    if (title) title.textContent = typeName + titleSuffix + " " + (translations[lang].rates_title || '가챠 확률 정보');
+    if (title) title.textContent = typeName + titleSuffix + " " + t.rates_title;
 
     const formatPercent = (val) => {
         const isMobile = window.innerWidth <= 768;
@@ -214,7 +211,7 @@ export function openGachaRatesModal() {
 
     body.innerHTML = `
         <table class="rates-table">
-            <thead><tr><th>등급</th><th>일반 확률</th><th>확정 슬롯</th></tr></thead>
+            <thead><tr><th>${t.gacha_rates_header_rarity}</th><th>${t.gacha_rates_header_normal}</th><th>${t.gacha_rates_header_guaranteed}</th></tr></thead>
             <tbody id="rates-accordion-body">
                 ${mainGroups.map(group => {
                     const tN = group.subRarities.reduce((s, r) => s + (strategy.rates[rateKeys[r.key]] || 0), 0), tG = group.subRarities.reduce((s, r) => s + (strategy.guaranteed[rateKeys[r.key]] || 0), 0);
@@ -224,7 +221,7 @@ export function openGachaRatesModal() {
                                 const sN = strategy.rates[rateKeys[sub.key]] || 0, sG = strategy.guaranteed[rateKeys[sub.key]] || 0, cards = getIndividualCardData(sub.key);
                                 let cC = sub.key.toLowerCase(); if (cC === 'sr_card') cC = 'sr'; if (cC === 'r_card') cC = 'r';
                                 return `<tr class="rate-row sub-group expandable" data-target="detail-${sub.key}"><td class="sub-label rarity-${cC}"><span class="expand-icon">▶</span> ${sub.label}</td><td>${formatPercent(sN)}</td><td>${sG > 0 ? formatPercent(sG) : '-'}</td></tr>
-                                    <tr class="detail-row hidden" id="detail-${sub.key}"><td colspan="3"><div class="detail-container"><div class="detail-header"><span class="header-name">${lang === 'ja' ? '名前' : '이름'}</span><span class="header-rate">${lang === 'ja' ? '通常' : '일반'}</span><span class="header-rate">${lang === 'ja' ? '確定' : '확정'}</span></div>
+                                    <tr class="detail-row hidden" id="detail-${sub.key}"><td colspan="3"><div class="detail-container"><div class="detail-header"><span class="header-name">${t.gacha_rates_header_name}</span><span class="header-rate">${lang === 'ja' ? '通常' : '일반'}</span><span class="header-rate">${lang === 'ja' ? '確定' : '확정'}</span></div>
                                     <div class="detail-list">${cards.map(c => {
                                         if (!c || !c.card) return "";
                                         const isSupport = c.rarity.includes('CARD') || c.rarity === 'SSSR', imgTag = isSupport ? `<img src="images/support/${c.card.id}.webp" class="detail-card-img" onerror="this.style.display='none'" alt="">` : "";
@@ -238,7 +235,7 @@ export function openGachaRatesModal() {
                 }).join('')}
             </tbody>
         </table>
-        <div class="rates-footer"><p class="rates-notice">* 등급 이름을 클릭하면 상세 항목을 볼 수 있습니다.</p><p class="rates-notice">* 확정 슬롯은 10회 뽑기의 마지막 1회에 적용되는 확률입니다.</p></div>
+        <div class="rates-footer"><p class="rates-notice">${t.gacha_rates_notice_1}</p><p class="rates-notice">${t.gacha_rates_notice_2}</p></div>
     `;
 
     const setupEvents = () => {

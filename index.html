@@ -34,24 +34,7 @@
 
     <main>
         <section id="idol">
-            <div id="content-area">
-                <h1 data-i18n="main_title" class="main-logo-h1">
-                    <img src="icons/title.webp" alt="Title" class="main-logo-img">
-                </h1>
-                <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
-                
-                <div class="disclaimer-container">
-                    <p data-i18n="disclaimer_1">이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.</p>
-                    <p data-i18n="disclaimer_2">사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.</p>
-                </div>
-
-                <div class="lang-switch-container">
-                    <div class="lang-switch">
-                        <button id="lang-ko" class="lang-btn active">KO</button>
-                        <button id="lang-ja" class="lang-btn">JA</button>
-                    </div>
-                </div>
-            </div>
+            <div id="content-area"></div>
             <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
             <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
                 <div class="total-pulls-box">
@@ -72,8 +55,8 @@
                     </div>
                     <button id="btn-next-gacha" class="type-nav-btn circle-btn"><span></span></button>
                 </div>
-                <button class="primary-btn gacha-btn" id="btn-1pull-fixed">1회 뽑기</button>
-                <button class="primary-btn gacha-btn" id="btn-10pull-fixed">10회 뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-1pull-fixed" data-i18n="gacha_1pull">1회 뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-10pull-fixed" data-i18n="gacha_10pull">10회 뽑기</button>
             </div>
             <div class="gacha-sub-buttons">
                 <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">가챠 기록</button>
@@ -185,7 +168,6 @@
         <h1 data-i18n="main_title" class="main-logo-h1">
             <img src="icons/title.webp" alt="Title" class="main-logo-img">
         </h1>
-        <p data-i18n="main_subtitle">이곳에 프로젝트 내용을 채워 넣어 보세요.</p>
         
         <div class="disclaimer-container">
             <p data-i18n="disclaimer_1">이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.</p>
@@ -213,7 +195,7 @@
                     <button class="filter-btn" data-val="visual" data-i18n="filter_visual">Visual</button>
                 </div>
                 <div class="filter-group" id="filter-plan">
-                    <button class="filter-btn" data-val="free" data-i18n="filter_free">프리</button>
+                    <button class="filter-btn" data-val="free"><img src="icons/free.webp" alt="Free" class="filter-icon"></button>
                     <button class="filter-btn" data-val="sense"><img src="icons/sense.webp" alt="Sense" class="filter-icon"></button>
                     <button class="filter-btn" data-val="logic"><img src="icons/logic.webp" alt="Logic" class="filter-icon"></button>
                     <button class="filter-btn" data-val="anomaly"><img src="icons/anomaly.webp" alt="Anomaly" class="filter-icon"></button>
@@ -253,15 +235,15 @@
     <template id="tpl-gacha-confirm">
         <div id="gacha-confirm-modal" class="gacha-confirm-overlay">
             <div class="gacha-confirm-content">
-                <div class="gacha-confirm-header">리소스 다운로드</div>
+                <div class="gacha-confirm-header" data-i18n="gacha_confirm_title">리소스 다운로드</div>
                 <div class="gacha-confirm-body">
-                    <p>가챠 연출 및 음원 리소스를 다운로드합니다. (약 70MB)</p>
-                    <p class="gacha-confirm-sub">캐릭터 연출에 따라 추가 데이터 다운로드가 있을 수 있습니다.</p>
-                    <p class="gacha-confirm-sub">Wi-Fi 환경에서 권장하며, 데이터 요금이 발생할 수 있습니다.</p>
+                    <p data-i18n="gacha_confirm_body">가챠 연출 및 음원 리소스를 다운로드합니다. (약 70MB)</p>
+                    <p class="gacha-confirm-sub" data-i18n="gacha_confirm_sub1">캐릭터 연출에 따라 추가 데이터 다운로드가 있을 수 있습니다.</p>
+                    <p class="gacha-confirm-sub" data-i18n="gacha_confirm_sub2">Wi-Fi 환경에서 권장하며, 데이터 요금이 발생할 수 있습니다.</p>
                 </div>
                 <div class="gacha-confirm-footer">
-                    <button id="btn-gacha-cancel" class="gacha-confirm-btn cancel">취소</button>
-                    <button id="btn-gacha-start" class="gacha-confirm-btn start">다운로드 시작</button>
+                    <button id="btn-gacha-cancel" class="gacha-confirm-btn cancel" data-i18n="gacha_confirm_cancel">취소</button>
+                    <button id="btn-gacha-start" class="gacha-confirm-btn start" data-i18n="gacha_confirm_start">다운로드 시작</button>
                 </div>
             </div>
         </div>
