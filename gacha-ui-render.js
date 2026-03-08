@@ -33,8 +33,9 @@ export function renderPickupSelector(ui) {
                 <div class="selector-bg-item ${isMulti ? 'unit-bg' : 'single-bg'}" style="background-image: url('${bgImg}'); background-position: top;"></div>
             </div>
             <div class="pickup-wrapper ${ (isSelection || isMulti) ? 'selection-wrapper' : ''}">
-                <div class="pickup-item ${itemClass}" style="box-shadow: 0 0 20px 5px ${favColor}99;">
-                    <div class="pickup-img-wrapper idol-main-img" style="border: 1px solid ${favColor}; ${isMulti ? 'display: flex; position: relative;' : 'position: relative;'}">
+                <div class="pickup-item ${itemClass}">
+                    <div class="pickup-name">${displayName}</div>
+                    <div class="pickup-img-wrapper idol-main-img" style="border: 1px solid ${favColor}; ${isMulti ? 'display: flex; position: relative;' : 'position: relative;'} box-shadow: 0 0 20px 5px ${favColor}99;">
                         ${ isMulti ? 
                             currentCfg.pool.pssr.map((p, idx) => {
                                 const pid = typeof p === 'string' ? p : p.id;
@@ -42,11 +43,17 @@ export function renderPickupSelector(ui) {
                                 const cardData = produceList.find(c => c.id === pid);
                                 const isMobile = window.innerWidth <= 768;
                                 const planIconSize = isMobile ? '22px' : '30px';
+                                const rarityIconSize = isMobile ? '25px' : '45px';
                                 const planIcon = (cardData?.plan && !isSelection) ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2;">` : '';
+                                
+                                // 등급 아이콘 매핑 (PSSR -> ssr, SR -> sr 등)
+                                const rarityKey = (cardData?.rarity || 'ssr').toLowerCase().replace('p', '');
+                                const rarityIcon = cardData?.rarity ? `<img src="icons/${rarityKey}.png" class="pickup-rarity-icon" style="position: absolute; bottom: 6px; right: 6px; width: ${rarityIconSize}; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : '';
                                 
                                 return `
                                 <div style="flex: 1; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative; ${idx < currentCfg.pool.pssr.length - 1 ? `border-right: 1px solid ${favColor}88;` : ''}">
                                     ${planIcon}
+                                    ${rarityIcon}
                                 </div>`;
                             }).join('')
                             : `
@@ -56,7 +63,15 @@ export function renderPickupSelector(ui) {
                                 const cardData = produceList.find(c => c.id === pid);
                                 const isMobile = window.innerWidth <= 768;
                                 const planIconSize = isMobile ? '25px' : '35px';
-                                return cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2;">` : '';
+                                const rarityIconSize = isMobile ? '30px' : '60px';
+                                
+                                const planIcon = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2;">` : '';
+                                
+                                // 등급 아이콘 매핑
+                                const rarityKey = (cardData?.rarity || 'ssr').toLowerCase().replace('p', '');
+                                const rarityIcon = cardData?.rarity ? `<img src="icons/${rarityKey}.png" class="pickup-rarity-icon" style="position: absolute; bottom: 8px; right: 8px; width: ${rarityIconSize}; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">` : '';
+                                
+                                return `${planIcon}${rarityIcon}`;
                             })() : '' }
                             `
                         }
@@ -64,11 +79,6 @@ export function renderPickupSelector(ui) {
                     <div class="pickup-support-column">
                         ${sssrPickups.map(id => `<div class="support-pickup-mini" data-rarity="SSR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
                         ${srPickups.map(id => `<div class="support-pickup-mini" data-rarity="SR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
-                    </div>
-                </div>
-                <div class="pickup-footer">
-                    <div class="pickup-name-container">
-                        <div class="pickup-name">${displayName}</div>
                     </div>
                 </div>
             </div>
@@ -135,7 +145,16 @@ function setupSupportTooltips(container) {
     const planIcon = tooltip.querySelector('.tooltip-plan-icon');
     const nameLabel = tooltip.querySelector('.tooltip-card-name');
 
+    // 이미지 로드 실패 시 툴팁 자동 닫기
+    tImg.onerror = () => {
+        tooltip.style.opacity = '0';
+        setTimeout(() => { tooltip.style.display = 'none'; }, 150);
+    };
+
     const showTooltip = (e, clientX, clientY) => {
+        // 드래그 중일 때는 툴팁을 표시하지 않음
+        if (window.isGlobalDragging) return;
+
         const item = e.target.closest('.support-pickup-mini');
         if (!item) return;
 
@@ -161,6 +180,7 @@ function setupSupportTooltips(container) {
         }
 
         tImg.style.opacity = '0';
+        tImg.src = `images/support/${cardId}.webp`; // 이미지 로드 시도
         tImg.onload = () => tImg.style.opacity = '1';
         tImg.src = bgImgPath;
         

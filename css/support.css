@@ -1,5 +1,11 @@
 /* support.css */
-.support-container { padding: 2rem 1rem; text-align: center; }
+.support-container { 
+    padding: 2rem 1rem; 
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8); /* 흰색 배경 투명도 80% */
+    border-radius: 15px;
+    margin: 10px;
+}
 .support-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -194,7 +200,8 @@
 .sort-controls {
     margin-bottom: 1rem;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* 좌우 끝으로 정렬 */
+    align-items: center;
     width: 100%;
     max-width: 1000px;
     margin-left: auto;
@@ -220,6 +227,18 @@
     height: 24px;
     object-fit: contain;
     filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
+}
+
+.filter-icon-rarity {
+    height: 20px;
+    width: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .filter-icon-rarity {
+        height: 16px;
+    }
 }
 
 /* 보댄비 활성화 시 고유 색상 */

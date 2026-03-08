@@ -101,6 +101,12 @@ export function initGachaDrawer() {
             overlayEl.classList.add('active');
 
             const type = state.gachaType;
+            // 가로형 타입인 경우 전용 클래스 추가
+            if (type === 'selection' || type === 'unit') {
+                drawerEl.classList.add('drawer-horizontal-mode');
+            } else {
+                drawerEl.classList.remove('drawer-horizontal-mode');
+            }
 
             // 다음 프레임에서 위치 복원 (렌더링 완료 보장)
             requestAnimationFrame(() => {

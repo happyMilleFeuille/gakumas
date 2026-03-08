@@ -410,9 +410,16 @@ function syncFilterUI(container) {
     filterGroups.forEach(type => {
         const btns = container.querySelectorAll(`#filter-${type} .filter-btn`);
         btns.forEach(btn => {
-            const isActive = Array.isArray(state.filters[type]) 
-                ? state.filters[type].includes(btn.dataset.val)
-                : state.filters[type] === btn.dataset.val;
+            const val = btn.dataset.val;
+            let isActive = false;
+            
+            if (val === 'all') {
+                // 배열이 비어있으면 '전체' 활성화
+                isActive = (state.filters[type].length === 0);
+            } else {
+                // 배열 내에 값이 포함되어 있으면 활성화
+                isActive = state.filters[type].includes(val);
+            }
             btn.classList.toggle('active', isActive);
         });
     });
@@ -441,8 +448,8 @@ function updateSupportGrid(container) {
 
         const planMatch = (state.filters.plan.length === 0) || (state.filters.plan.includes(cPlan));
         const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
-        const sourceMatch = (state.filters.source === 'all') || (cSource === state.filters.source);
-        const rarityMatch = (state.filters.rarity === 'all') || (cRarity === state.filters.rarity);
+        const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
+        const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
 
         return planMatch && attrMatch && sourceMatch && rarityMatch;
     });

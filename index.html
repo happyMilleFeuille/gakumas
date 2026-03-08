@@ -203,8 +203,8 @@
                 </div>
                 <div id="extra-filters" class="extra-filters-wrapper hidden">
                     <div class="filter-group" id="filter-rarity">
-                        <button class="filter-btn" data-val="SSR">SSR</button>
-                        <button class="filter-btn" data-val="SR">SR</button>
+                        <button class="filter-btn" data-val="SSR"><img src="icons/ssr.png" alt="SSR" class="filter-icon-rarity"></button>
+                        <button class="filter-btn" data-val="SR"><img src="icons/sr.png" alt="SR" class="filter-icon-rarity"></button>
                     </div>
                     <div class="filter-group" id="filter-source">
                         <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
@@ -218,13 +218,13 @@
             </div>
 
             <div class="sort-controls">
+                <button id="btn-all-max-lb" class="calc-btn">모든 카드 풀돌</button>
                 <select id="support-sort" class="sort-select">
                     <option value="id-desc">최신순</option>
                     <option value="id-asc">과거순</option>
                     <option value="lb-desc">돌파순</option>
                     <option value="name-asc">이름순</option>
                 </select>
-                <button id="btn-all-max-lb" class="calc-btn" style="margin-left: 10px;">모든 카드 풀돌</button>
             </div>
 
             <div class="support-grid"></div>

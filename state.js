@@ -37,8 +37,8 @@ export const state = {
     filters: {
         plan: [],
         attr: [],
-        source: 'all',
-        rarity: 'all'
+        source: [],
+        rarity: []
     },
     sortBy: 'id-desc',
     extraFiltersOpen: false,
@@ -101,6 +101,11 @@ export function setGachaType(type) {
 
 export function setFilter(type, value) {
     if (state.filters[type] !== undefined) {
+        if (value === 'all') {
+            state.filters[type] = [];
+            return;
+        }
+        
         if (Array.isArray(state.filters[type])) {
             const index = state.filters[type].indexOf(value);
             if (index > -1) {

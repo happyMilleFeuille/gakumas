@@ -190,22 +190,87 @@ function initNavigation(ui) {
 
     // 통합 스와이프 핸들러
     const onSwipe = (endX, startX) => {
-        if (startX === null || startX === undefined) return;
+        if (startX === null || startX === undefined) return false;
         const diff = endX - startX;
-        if (Math.abs(diff) > 50) animateChange(diff > 0 ? 'prev' : 'next');
+        if (Math.abs(diff) > 50) {
+            animateChange(diff > 0 ? 'prev' : 'next');
+            return true; // 스와이프 발생함
+        }
+        return false;
     };
 
     // 공통 이벤트 바인딩 로직
     const bindSwipeEvents = (target) => {
         if (!target || target.dataset.swipeInitialized) return;
         target.dataset.swipeInitialized = "true";
-        let sX = null;
+        let sX = null, sY = null;
+        let isMoving = false;
 
-        target.addEventListener('touchstart', (e) => { sX = e.changedTouches[0].screenX; }, { passive: true });
-        target.addEventListener('touchend', (e) => { if (sX !== null) onSwipe(e.changedTouches[0].screenX, sX); sX = null; }, { passive: true });
-        target.addEventListener('mousedown', (e) => { sX = e.screenX; });
-        target.addEventListener('mouseup', (e) => { if (sX !== null) onSwipe(e.screenX, sX); sX = null; });
+        target.addEventListener('touchstart', (e) => { 
+            sX = e.changedTouches[0].screenX; 
+            sY = e.changedTouches[0].screenY;
+            isMoving = false;
+        }, { passive: true });
+
+        target.addEventListener('touchmove', (e) => {
+            const moveX = e.changedTouches[0].screenX;
+            const moveY = e.changedTouches[0].screenY;
+            if (Math.abs(moveX - sX) > 10 || Math.abs(moveY - sY) > 10) {
+                isMoving = true;
+            }
+        }, { passive: true });
+
+        target.addEventListener('touchend', (e) => { 
+            if (sX !== null) onSwipe(e.changedTouches[0].screenX, sX); 
+            sX = null; 
+            // 드래그가 발생했다면 아주 짧은 시간 동안 클릭 이벤트를 무시하기 위한 플래그
+            if (isMoving) {
+                target.dataset.preventClick = "true";
+                setTimeout(() => target.dataset.preventClick = "false", 50);
+            }
+        }, { passive: true });
+
+        target.addEventListener('mousedown', (e) => { 
+            sX = e.screenX; 
+            sY = e.screenY;
+            isMoving = false;
+            window.isGlobalDragging = false; 
+        });
+
+        target.addEventListener('mousemove', (e) => {
+            if (sX !== null) {
+                const moveDist = Math.sqrt(Math.pow(e.screenX - sX, 2) + Math.pow(e.screenY - sY, 2));
+                if (moveDist > 7) { // 10px보다 약간 더 민감하게 드래그 판정
+                    isMoving = true;
+                    window.isGlobalDragging = true;
+                }
+            }
+        });
+
+        target.addEventListener('mouseup', (e) => { 
+            if (sX !== null) onSwipe(e.screenX, sX); 
+            sX = null; 
+            if (isMoving) {
+                target.dataset.preventClick = "true";
+                // PC에서는 click 이벤트가 mouseup 직후에 발생하므로 딜레이를 150ms로 늘림
+                setTimeout(() => { 
+                    target.dataset.preventClick = "false"; 
+                    window.isGlobalDragging = false; 
+                }, 150);
+            } else {
+                window.isGlobalDragging = false;
+            }
+        });
+
         target.addEventListener('mouseleave', () => { sX = null; });
+        
+        // [수정] 캡처링 단계에서 불필요한 클릭만 가로채기
+        target.addEventListener('click', (e) => {
+            if (target.dataset.preventClick === "true") {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            }
+        }, true);
     };
 
     [ui.fixedBtnArea, gachaContainer].forEach(bindSwipeEvents);
@@ -275,12 +340,20 @@ function setupAnimationLogic(ui, contentArea) {
     return setupGachaAnimation(contentArea, assetBlobs, {
         onStart: (mode, actualPrevPulls) => {
             prevPulls = actualPrevPulls;
-            ui.pickupSelector?.classList.add('hidden');
+            
+            // 모든 가챠 배너 및 배경 요소 즉시 숨기기 (참조 문제 방지)
+            document.querySelectorAll('.gacha-pickup-selector, .selector-bg-container').forEach(el => {
+                el.classList.add('hidden');
+                el.style.display = 'none';
+            });
+            
             const muteControls = document.getElementById('gacha-header-controls');
             if (muteControls) muteControls.style.display = 'none';
+            
             ['btn-gacha-log', 'btn-gacha-rates', 'btn-gacha-reset', 'jewel-container', 'gacha-controls-top'].forEach(id => {
                 document.getElementById(id)?.classList.add('hidden');
-                const el = document.querySelector('.' + id); if (el) el.classList.add('hidden');
+                const el = document.querySelector('.' + id); 
+                if (el) el.classList.add('hidden');
             });
         },
         onFinish: (currentResults, gachaMode) => {
@@ -307,15 +380,19 @@ function setupAnimationLogic(ui, contentArea) {
                 ui.btn1.style.pointerEvents = ui.btn10.style.pointerEvents = 'none';
                 setTimeout(() => { ui.btn1.style.pointerEvents = ui.btn10.style.pointerEvents = 'auto'; updateGachaButtonsState(ui); }, 300);
             }
-            renderResults(ui, currentResults);
+            
+            // [수정] 최신 결과 컨테이너를 다시 찾아서 렌더링
+            const latestResultsContainer = document.getElementById('gacha-results');
+            const latestUi = { ...ui, resultsContainer: latestResultsContainer };
+            renderResults(latestUi, currentResults);
+
             const fixedBg = document.getElementById('fixed-bg');
             if (fixedBg) {
-                // [수정] 마스크를 제거하고 결과 전용 배경 이미지를 선명하게 표시
                 fixedBg.style.webkitMaskImage = 'none';
                 fixedBg.style.maskImage = 'none';
                 fixedBg.style.backgroundImage = "url('gasya/background.jpg')";
                 fixedBg.style.backgroundSize = "cover";
-                fixedBg.style.opacity = '1'; // 결과창 배경은 선명하게
+                fixedBg.style.opacity = '1'; 
             }
             history.pushState({ target: 'gacha', view: 'result' }, "");
         }
@@ -336,11 +413,22 @@ function bindGachaActions(ui, animation) {
 }
 
 async function handleGachaClick(ui, mode, animation) {
+    // 스와이프 애니메이션 중이거나 이미 클릭된 경우 방지
+    const typeDisplay = document.getElementById('current-gacha-type-display');
+    if (typeDisplay?.classList.contains('slide-out-left') || 
+        typeDisplay?.classList.contains('slide-out-right') ||
+        ui.btn1?.style.pointerEvents === 'none') return;
+
     playSound('gasya/gasyaclick.mp3');
     const cost = mode === 1 ? 250 : 2500;
-    if (ui.jewelCount) ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
+    
+    // 즉시 버튼 비활성화 및 스피너 표시
     if (ui.btn1) ui.btn1.style.pointerEvents = 'none';
     if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
+    const spinner = document.getElementById('gacha-spinner');
+    if (spinner) spinner.classList.add('active');
+
+    if (ui.jewelCount) ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
 
     let customPool = null;
     if (state.gachaType === 'selection') {
@@ -362,16 +450,24 @@ async function handleGachaClick(ui, mode, animation) {
 
     const results = animation.prepareResults(mode, customPool); 
     const pssrCards = results.filter(c => c.rarity === 'PSSR');
+    
+    // PSSR 영상 및 기본 가챠 시작 영상 프리로딩 확인
+    const essentialAssets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4'];
     if (pssrCards.length > 0) {
-        const loadPromises = pssrCards.map(card => {
-            const videoPath = `gasya/pssr/${card.id}.mp4`;
-            if (assetBlobs[videoPath]) return Promise.resolve();
-            return fetch(videoPath).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
-                .then(buf => { assetBlobs[videoPath] = URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })); })
-                .catch(() => {});
-        });
-        await Promise.allSettled(loadPromises);
+        pssrCards.forEach(card => essentialAssets.push(`gasya/pssr/${card.id}.mp4`));
     }
+
+    const loadPromises = essentialAssets.map(path => {
+        if (assetBlobs[path]) return Promise.resolve();
+        return fetch(path).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+            .then(buf => { assetBlobs[path] = URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })); })
+            .catch(() => {});
+    });
+
+    await Promise.allSettled(loadPromises);
+    
+    // 프리로딩 완료 후 스피너 제거 및 애니메이션 시작
+    if (spinner) spinner.classList.remove('active');
     setTimeout(() => animation.startGacha(mode, results), 50);
 }
 

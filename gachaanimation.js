@@ -15,21 +15,26 @@ const States = {
 };
 
 export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
-    const videoContainer = contentArea.querySelector('#gacha-video-container');
-    const videoMain = contentArea.querySelector('#gacha-video-main');
-    const videoNext = contentArea.querySelector('#gacha-video-next'); 
-    const skipBtn = contentArea.querySelector('#skip-button');
-    const muteControls = document.getElementById('gacha-header-controls');
+    // 요소를 찾는 헬퍼 함수 (매번 최신 상태를 반영하기 위함)
+    const getElements = () => {
+        const container = document.getElementById('gacha-video-container');
+        return {
+            videoContainer: container,
+            videoMain: document.getElementById('gacha-video-main'),
+            videoNext: document.getElementById('gacha-video-next'),
+            skipBtn: document.getElementById('skip-button'),
+            imgOverlay: document.getElementById('gacha-card-overlay') || createOverlay('img', 'gacha-card-overlay', container),
+            nameOverlay: document.getElementById('gacha-name-overlay') || createOverlay('div', 'gacha-name-overlay', container),
+            newBadgeOverlay: document.getElementById('gacha-new-badge') || createOverlay('div', 'gacha-new-badge', container)
+        };
+    };
 
-    const imgOverlay = document.getElementById('gacha-card-overlay') || createOverlay('img', 'gacha-card-overlay');
-    const nameOverlay = document.getElementById('gacha-name-overlay') || createOverlay('div', 'gacha-name-overlay');
-    const newBadgeOverlay = document.getElementById('gacha-new-badge') || createOverlay('div', 'gacha-new-badge');
-
-    function createOverlay(tag, id) {
+    function createOverlay(tag, id, container) {
+        if (!container) return null;
         const el = document.createElement(tag);
         el.id = id;
         if (tag === 'div' && id === 'gacha-new-badge') el.textContent = 'NEW';
-        if (videoContainer) videoContainer.appendChild(el);
+        container.appendChild(el);
         return el;
     }
 
@@ -39,7 +44,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     let currentVideoSrc = "";
     let gachaMode = 0;
     let canClick = false;
-    let clickTimer = null; // 클릭 잠금 타이머
+    let clickTimer = null; 
     let activeStepSfx = null;
     let blackoutScheduled = null;
     let gachaBgmStartTime = 0;
@@ -55,32 +60,44 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const clearVideoHandlers = (video) => {
         if (!video) return;
+        video.pause();
+        video.removeAttribute('src'); 
+        video.load();
         video.onplaying = null;
         video.onended = null;
         video.onclick = null;
+        video.oncanplay = null;
     };
 
     const resetOverlays = () => {
+        const { imgOverlay, nameOverlay, newBadgeOverlay } = getElements();
         [imgOverlay, nameOverlay, newBadgeOverlay].forEach(el => {
-            el.classList.remove('visible');
+            if (el) el.classList.remove('visible');
         });
     };
 
     const transitionTo = (newState, params = {}) => {
         console.log(`Transitioning: ${currentState} -> ${newState}`);
-        if (clickTimer) clearTimeout(clickTimer); // 상태 전환 시 타이머 청소
+        const { videoContainer, videoMain, videoNext } = getElements();
+        
+        if (clickTimer) clearTimeout(clickTimer); 
         
         currentState = newState;
         currentStep = params.step || 0;
         canClick = false;
         
-        clearVideoHandlers(videoMain);
-        clearVideoHandlers(videoNext);
+        if (newState === States.IDLE || newState === States.FINISHED) {
+            clearVideoHandlers(videoMain);
+            clearVideoHandlers(videoNext);
+        }
 
         switch (newState) {
             case States.IDLE:
                 resetOverlays();
-                if (videoContainer) videoContainer.classList.add('hidden');
+                if (videoContainer) {
+                    videoContainer.classList.add('hidden');
+                    videoContainer.style.display = 'none';
+                }
                 document.body.classList.remove('immersive-mode');
                 break;
             case States.STARTING:
@@ -105,23 +122,56 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     const playStartingVideo = () => {
+        const { videoContainer, videoMain, videoNext } = getElements();
         const highest = getHighestRarity(currentResults);
         let src = (gachaMode === 1) ? 'gasya/start_r.mp4' : 'gasya/start_sr.mp4';
         if (highest === 'SSR' && Math.random() < 0.6) src = 'gasya/start_ssr.mp4';
         else if (gachaMode === 10 && Math.random() < 0.2) src = 'gasya/start_r.mp4';
 
         currentVideoSrc = src;
-        if (videoContainer) videoContainer.classList.remove('hidden');
-        playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
-        gachaBgmStartTime = Date.now();
+        
+        if (videoContainer) {
+            videoContainer.classList.remove('hidden');
+            videoContainer.style.display = 'flex';
+        }
 
-        videoMain.src = assetBlobs[src] || src;
-        videoMain.classList.remove('hidden');
-        videoMain.onended = () => transitionTo(States.PROMOTION, { step: 1 });
-        videoMain.onclick = () => { if (canClick) transitionTo(States.SEQUEL); };
+        if (videoMain) {
+            videoMain.pause();
+            videoMain.onplaying = null;
+            videoMain.onended = null;
+            videoMain.onclick = null;
+            videoMain.src = assetBlobs[src] || src;
+            videoMain.load();
+
+            playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
+            gachaBgmStartTime = Date.now();
+
+            videoMain.oncanplay = () => {
+                if (currentState !== States.STARTING) return;
+                videoMain.oncanplay = null;
+                
+                videoMain.classList.remove('hidden');
+                videoMain.style.display = 'block';
+                if (videoNext) {
+                    videoNext.classList.add('hidden');
+                    videoNext.style.display = 'none';
+                }
+
+                videoMain.play().then(() => {
+                    requestAnimationFrame(checkLoop);
+                    setTimeout(() => { if (currentState === States.STARTING) canClick = true; }, 600);
+                }).catch(err => {
+                    console.error("Video play failed:", err);
+                    setTimeout(() => transitionTo(States.SHOWING_INDIVIDUAL), 500);
+                });
+            };
+
+            videoMain.onended = () => transitionTo(States.PROMOTION, { step: 1 });
+            videoMain.onclick = () => { if (canClick) transitionTo(States.SEQUEL); };
+        }
 
         const checkLoop = () => {
-            if (currentState !== States.STARTING) return;
+            if (currentState !== States.STARTING || !videoMain) return;
             const isSsr = currentVideoSrc.includes('start_ssr');
             const isSr = currentVideoSrc.includes('start_sr');
             let loopEnd = isSsr ? 13.8 : (isSr ? 8.6 : 9.7);
@@ -129,14 +179,12 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             if (videoMain.currentTime >= loopEnd) videoMain.currentTime = loopStart;
             requestAnimationFrame(checkLoop);
         };
-
-        videoMain.play().then(() => {
-            requestAnimationFrame(checkLoop);
-            setTimeout(() => { if (currentState === States.STARTING) canClick = true; }, 600);
-        }).catch(finishGacha);
     };
 
     const playSequelVideo = () => {
+        const { videoMain } = getElements();
+        if (!videoMain) return;
+
         const isSsr = currentVideoSrc.includes('start_ssr');
         const isSr = currentVideoSrc.includes('start_sr');
         let jumpTime = isSsr ? 13.9 : (isSr ? 8.6 : 9.8);
@@ -165,6 +213,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     const playPromotionVideo = (step, prevType) => {
+        const { videoMain, videoNext } = getElements();
+        if (!videoNext) return;
+
         const highest = getHighestRarity(currentResults);
         let nextType = "", nextSrc = "", soundPlayed = false;
 
@@ -189,24 +240,29 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         }
 
         videoNext.src = assetBlobs[nextSrc] || nextSrc;
-                videoNext.onplaying = () => {
-                    if (currentState !== States.PROMOTION || currentStep !== step) return;
-        
-                    videoMain.classList.add('hidden');
-                    videoNext.classList.remove('hidden');
-                    videoMain.pause();
-                    
-                    if (!state.gachaMuted && !soundPlayed) {
-                        let sfx = "";
-                        if (step === 2) sfx = (nextType === "r" ? 'gasya/screen_r2.mp3' : 'gasya/screen_sr2.mp3');
-                        else if (step === 3 && nextType !== "r") sfx = 'gasya/screen_sr3.mp3';
-                        
-                        if (sfx) {
-                            stopStepSfx(); // 새로운 단계의 소리가 있을 때만 정지 후 재생
-                            activeStepSfx = playSound(sfx);
-                            soundPlayed = true;
-                        }
-                    }
+        videoNext.onplaying = () => {
+            if (currentState !== States.PROMOTION || currentStep !== step) return;
+
+            if (videoMain) {
+                videoMain.classList.add('hidden');
+                videoMain.style.display = 'none';
+                videoMain.pause();
+            }
+            
+            videoNext.classList.remove('hidden');
+            videoNext.style.display = 'block';
+            
+            if (!state.gachaMuted && !soundPlayed) {
+                let sfx = "";
+                if (step === 2) sfx = (nextType === "r" ? 'gasya/screen_r2.mp3' : 'gasya/screen_sr2.mp3');
+                else if (step === 3 && nextType !== "r") sfx = 'gasya/screen_sr3.mp3';
+                
+                if (sfx) {
+                    stopStepSfx(); 
+                    activeStepSfx = playSound(sfx);
+                    soundPlayed = true;
+                }
+            }
             if (clickTimer) clearTimeout(clickTimer);
             clickTimer = setTimeout(() => { if (currentState === States.PROMOTION && currentStep === step) canClick = true; }, step === 1 ? 800 : (step === 2 ? 1200 : 1400));
             if (blackoutScheduled && blackoutScheduled.step === step) {
@@ -229,6 +285,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     const playBlackoutVideo = (char) => {
+        const { videoNext } = getElements();
+        if (!videoNext) return;
+
         stopBGM('gacha');
         videoNext.src = assetBlobs['gasya/blackout.mp4'] || 'gasya/blackout.mp4';
         
@@ -251,19 +310,25 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                     if (currentState !== States.BLACKOUT) return; 
                     stopStepSfx();
                     activeStepSfx = playSound('gasya/blackoutresult.mp3'); 
+                    videoNext.style.display = 'block'; 
                 };
                 videoNext.onended = () => transitionTo(States.SHOWING_INDIVIDUAL);
                 videoNext.load();
                 videoNext.play().catch(() => transitionTo(States.SHOWING_INDIVIDUAL));
             } else { transitionTo(States.SHOWING_INDIVIDUAL); }
         };
-        videoNext.play().then(() => { requestAnimationFrame(checkLoop); setTimeout(() => { if (currentState === States.BLACKOUT) canClick = true; }, 1000); });
+        videoNext.play().then(() => { 
+            videoNext.style.display = 'block';
+            requestAnimationFrame(checkLoop); 
+            setTimeout(() => { if (currentState === States.BLACKOUT) canClick = true; }, 1000); 
+        });
     };
 
     const playIndividualResults = (index) => {
+        const { videoMain, videoNext, imgOverlay, nameOverlay, newBadgeOverlay } = getElements();
         resetOverlays();
         canClick = false; 
-        if (index >= currentResults.length) { transitionTo(States.FINISHED); return; }
+        if (index >= currentResults.length || !videoNext) { transitionTo(States.FINISHED); return; }
 
         const card = currentResults[index];
         const isRevealTarget = (card.type === 'produce' || card.type === 'support' || !!card.rarity);
@@ -289,28 +354,32 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         videoNext.src = assetBlobs[getSrc] || getSrc;
         subState = (card.rarity === 'PSSR') ? "pssr_intro" : "normal";
 
-        imgOverlay.classList.remove('produce-card', 'landscape-card');
-        imgOverlay.classList.add(isSupport ? 'landscape-card' : 'produce-card');
-        nameOverlay.classList.remove('produce-name', 'landscape-name');
-        nameOverlay.classList.add(isSupport ? 'landscape-name' : 'produce-name');
-
-        if (card.type === 'produce') {
-            imgOverlay.src = `idols/${card.id}1.webp`;
-        } else {
-            imgOverlay.src = `images/support/${card.id}.webp`;
+        if (imgOverlay) {
+            imgOverlay.classList.remove('produce-card', 'landscape-card');
+            imgOverlay.classList.add(isSupport ? 'landscape-card' : 'produce-card');
+            if (card.type === 'produce') imgOverlay.src = `idols/${card.id}1.webp`;
+            else imgOverlay.src = `images/support/${card.id}.webp`;
         }
-        nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
-        nameOverlay.style.background = (card.displayRarity === 'SSR' ? '#a335ee' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
+
+        if (nameOverlay) {
+            nameOverlay.classList.remove('produce-name', 'landscape-name');
+            nameOverlay.classList.add(isSupport ? 'landscape-name' : 'produce-name');
+            nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+            nameOverlay.style.background = (card.displayRarity === 'SSR' ? '#a335ee' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
+        }
 
         videoNext.onplaying = () => {
             if (currentState !== States.SHOWING_INDIVIDUAL) return;
             
-            // [추가] 스킵으로 바로 넘어온 경우를 대비해 비디오 레이어 교체
-            if (videoMain && !videoMain.classList.contains('hidden')) {
+            if (videoMain) {
                 videoMain.classList.add('hidden');
+                videoMain.style.display = 'none';
                 videoMain.pause();
             }
-            if (videoNext) videoNext.classList.remove('hidden');
+            if (videoNext) {
+                videoNext.classList.remove('hidden');
+                videoNext.style.display = 'block';
+            }
 
             if (!state.gachaMuted && !soundPlayed) {
                 const sfx = (card.rarity === 'PSSR' || card.displayRarity === 'SSR') ? 'gasya/get_pssr.mp3' : (card.displayRarity === 'SR' ? 'gasya/spotget_sr.mp3' : 'gasya/spotget_r.mp3');
@@ -321,8 +390,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             if (card.rarity !== 'PSSR') {
                 setTimeout(() => {
                     if (currentState !== States.SHOWING_INDIVIDUAL) return;
-                    imgOverlay.classList.add('visible'); nameOverlay.classList.add('visible');
-                    if (isNew) { newBadgeOverlay.classList.add('visible'); }
+                    if (imgOverlay) imgOverlay.classList.add('visible'); 
+                    if (nameOverlay) nameOverlay.classList.add('visible');
+                    if (isNew && newBadgeOverlay) newBadgeOverlay.classList.add('visible');
                 }, 350);
             }
             const lockTime = (card.displayRarity === 'SSR' || card.rarity === 'PSSR') ? 1300 : 500;
@@ -337,10 +407,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 if (clickTimer) clearTimeout(clickTimer);
                 
                 videoNext.src = assetBlobs[`gasya/pssr/${card.id}.mp4`];
-                videoNext.muted = state.gachaMuted; // PSSR 영상 음소거 동기화
+                videoNext.muted = state.gachaMuted; 
                 videoNext.onplaying = () => { 
                     if (currentState !== States.SHOWING_INDIVIDUAL) return; 
                     subState = "pssr_special"; 
+                    videoNext.style.display = 'block';
                     if (clickTimer) clearTimeout(clickTimer);
                     clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 1000); 
                 };
@@ -375,16 +446,29 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     const finishGacha = () => {
+        const { videoContainer, videoMain, videoNext } = getElements();
         stopBGM('gacha'); stopBGM('main'); stopBGM('blackout'); stopStepSfx();
         resetOverlays();
-        canClick = false; // 종료 시 즉시 클릭 차단
+        canClick = false; 
         if (clickTimer) clearTimeout(clickTimer);
         
+        const muteControls = document.getElementById('gacha-header-controls');
         if (!state.gachaMuted) playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
         playSound(gachaMode === 1 ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3');
-        if (videoMain) { videoMain.pause(); videoMain.src = ""; videoMain.classList.add('hidden'); }
-        if (videoNext) { videoNext.pause(); videoNext.src = ""; videoNext.classList.add('hidden'); }
-        if (videoContainer) videoContainer.classList.add('hidden');
+        if (videoMain) { 
+            videoMain.pause(); videoMain.src = ""; 
+            videoMain.classList.add('hidden'); 
+            videoMain.style.display = 'none';
+        }
+        if (videoNext) { 
+            videoNext.pause(); videoNext.src = ""; 
+            videoNext.classList.add('hidden'); 
+            videoNext.style.display = 'none';
+        }
+        if (videoContainer) {
+            videoContainer.classList.add('hidden');
+            videoContainer.style.display = 'none';
+        }
         document.body.classList.remove('immersive-mode');
         if (muteControls) { muteControls.classList.remove('hidden'); muteControls.style.display = 'flex'; }
         if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode);
@@ -392,12 +476,42 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     const startGacha = (mode, results) => {
+        const { videoContainer, videoMain, videoNext, skipBtn } = getElements();
         stopBGM('main'); 
-        // 비디오 음소거 상태 동기화
-        if (videoMain) videoMain.muted = state.gachaMuted;
-        if (videoNext) videoNext.muted = state.gachaMuted;
+        
+        // 스킵 버튼 이벤트 바인딩 (매번 최신 요소에 적용)
+        if (skipBtn) {
+            skipBtn.onclick = () => {
+                if (!canClick || currentState === States.IDLE || currentState === States.FINISHED) return;
 
-        // 상태 초기화
+                if (currentState !== States.SHOWING_INDIVIDUAL) {
+                    const firstSSRIndex = currentResults.findIndex(c => c.displayRarity === 'SSR');
+                    if (firstSSRIndex !== -1) {
+                        for (let i = 0; i < firstSSRIndex; i++) {
+                            existingIdsSet.add(currentResults[i].id);
+                        }
+                        transitionTo(States.SHOWING_INDIVIDUAL, { index: firstSSRIndex });
+                        return;
+                    }
+                }
+                transitionTo(States.FINISHED);
+            };
+        }
+
+        if (videoContainer) {
+            videoContainer.classList.remove('hidden');
+            videoContainer.style.display = 'flex';
+        }
+
+        if (videoMain) {
+            videoMain.muted = state.gachaMuted;
+            videoMain.classList.remove('hidden');
+        }
+        if (videoNext) {
+            videoNext.muted = state.gachaMuted;
+            videoNext.classList.add('hidden');
+        }
+
         canClick = false;
         if (clickTimer) clearTimeout(clickTimer);
         currentStep = 0;
@@ -411,7 +525,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         currentResults = results;
         const currentLog = state.gachaLog[state.gachaType] || [];
         existingIdsSet = new Set(currentLog.map(item => item.id));
-        // 현재 활성화된 가챠의 상세 설정 가져오기 (픽업 정보 추출용)
+        
         const type = state.gachaType;
         let activeCfg = CURRENT_PICKUPS[type] || { pssr: [] };
         if (type === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
@@ -438,29 +552,6 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const prepareResults = (mode, customPool = null) => pickGacha(mode, state.currentGachaType || state.gachaType, customPool);
 
-    if (skipBtn) {
-        skipBtn.onclick = () => {
-            if (!canClick || currentState === States.IDLE || currentState === States.FINISHED) return;
-
-            // [추가] 개별 연출 진입 전(시작/승격/블랙아웃)에 스킵을 누른 경우
-            if (currentState !== States.SHOWING_INDIVIDUAL) {
-                const firstSSRIndex = currentResults.findIndex(c => c.displayRarity === 'SSR');
-                
-                // SSR이 결과에 포함되어 있다면 해당 지점으로 점프
-                if (firstSSRIndex !== -1) {
-                    // 건너뛰는 카드들의 ID를 기존 목록에 추가 (NEW 뱃지 계산용)
-                    for (let i = 0; i < firstSSRIndex; i++) {
-                        existingIdsSet.add(currentResults[i].id);
-                    }
-                    transitionTo(States.SHOWING_INDIVIDUAL, { index: firstSSRIndex });
-                    return;
-                }
-            }
-
-            // 그 외(이미 연출 중이거나 SSR이 없음)의 경우는 즉시 종료
-            transitionTo(States.FINISHED);
-        };
-    }
-
     return { startGacha, prepareResults };
 }
+

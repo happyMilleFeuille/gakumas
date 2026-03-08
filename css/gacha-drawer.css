@@ -100,6 +100,7 @@
     cursor: pointer;
     transition: transform 0.3s, opacity 0.3s;
     scroll-snap-align: center;
+    position: relative; /* 자식 요소 absolute 배치를 위함 */
 }
 
 /* 중앙 강조 효과 */
@@ -111,20 +112,26 @@
     aspect-ratio: 1 / 1.25;
     background-size: cover;
     background-position: top;
-    border-radius: 0 30px 0 0;
+    border-radius: 0 50px 0 50px; /* 우상단과 좌하단 라운딩 */
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     margin-bottom: 12px;
+    z-index: 5;
 }
 
 .drawer-item.selection-type { width: 280px; }
-.drawer-item.selection-type .drawer-card-img { aspect-ratio: 16 / 9; }
+.drawer-item.selection-type .drawer-card-img { 
+    aspect-ratio: 16 / 9; 
+    border-radius: 0 50px 0 50px; /* 우상단과 좌하단 라운딩 */
+}
 
 .drawer-item-name {
     color: #fff; font-size: 0.85rem; font-weight: bold;
     height: 2.4rem; display: flex; align-items: center; justify-content: center; text-align: center;
     margin-bottom: 4px;
 }
+
+
 
 .drawer-diamond {
     width: 6px; height: 6px;
@@ -152,10 +159,19 @@
 .drawer-overlay.active { visibility: visible; opacity: 1; }
 
 @media (max-width: 768px) {
-    .gacha-drawer { height: 38vh; }
-    .drawer-card-img { width: 100%; margin-bottom: 10px; } /* 130px -> 100%로 수정 */
+    .gacha-drawer { height: 38vh; } /* 기본 높이 38vh 복구 */
+    .gacha-drawer.drawer-horizontal-mode { height: 34vh; } /* 32vh에서 34vh로 조정 */
+    
+    .drawer-card-img { 
+        width: 100%; 
+        margin-bottom: 10px; 
+        border-radius: 0 30px 0 30px; /* 모바일 우상단/좌하단 라운딩 */
+    } 
     .drawer-item { width: 130px; }
-    .drawer-item.selection-type { width: 290px; } /* 330px -> 290px 조정 */
+    .drawer-item.selection-type { width: 180px; } /* 200px에서 180px로 최종 축소 */
+    .drawer-item.selection-type .drawer-card-img {
+        border-radius: 0 30px 0 30px; /* 모바일 우상단/좌하단 라운딩 */
+    }
     .drawer-content-scroll { padding: 15px 50vw 0; }
     .drawer-item-name { font-size: 0.8rem; width: 100%; height: 2.2rem; } 
     .drawer-item.selection-type .drawer-item-name { width: 100%; }
@@ -169,7 +185,7 @@
         padding-bottom: 17.5px; 
     }
     .drawer-diamond-wrapper.selection-diamond {
-        width: 290px; /* 유닛 다이아몬드 영역도 일치 */
+        width: 180px; /* 아이템 너비와 동일하게 180px로 축소 */
     }
     .drawer-indicator-line { 
         bottom: 20px; 

@@ -5,9 +5,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 70vh; /* 화면의 수직 중앙에 배치하기 위해 높이 설정 */
+    height: 70vh; 
     gap: 1.5rem;
-    padding-top: 0; /* 중앙 정렬을 위해 기존 패딩 제거 */
+    padding-top: 0;
 }
 
 .calc-buttons {
