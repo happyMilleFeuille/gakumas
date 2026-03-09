@@ -318,14 +318,13 @@ function openSlotModal() {
                 <div class="slot-modal-item">
                     <div class="slot-modal-info">
                         <span class="slot-modal-name">Slot ${i}</span>
-                        <span class="slot-modal-date">${info || (isJa ? 'データなし' : '저장 데이터 없음')}</span>
+                        <span class="slot-modal-date">${info || (isJa ? 'データなし' : '데이터 없음')}</span>
                     </div>
                     <div class="slot-modal-actions">
-                        <button class="slot-btn save" data-slot="${i}">${isJa ? '保存' : '저장'}</button>
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''}>${isJa ? '로드' : '로드'}</button>
+                        <button class="slot-btn save" data-slot="${i}">${isJa ? 'セーブ' : '저장'}</button>
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''}>${isJa ? 'ロード' : '로드'}</button>
                         <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''}>&times;</button>
-                        </div>
-
+                    </div>
                 </div>`;
         }
         return slotsHtml;
@@ -334,11 +333,13 @@ function openSlotModal() {
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 350px;">
             <span class="close-modal">&times;</span>
-            <h3 style="margin-top:0; color:#ff4d8d; font-size:1.1rem;">${isJa ? 'セッティング保存/ロード' : '카드 세팅 저장/로드'}</h3>
+            <h3 style="margin-top:0; color:#ff4d8d; font-size:1.1rem;">${isJa ? 'セーブ / ロード' : '프리셋 저장/로드'}</h3>
             <div class="slot-modal-list">
                 ${renderSlots()}
             </div>
         </div>`;
+
+
 
     document.body.appendChild(modal);
     modal.style.display = 'flex';

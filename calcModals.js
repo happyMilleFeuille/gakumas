@@ -21,8 +21,10 @@ export function showStatDetailModal(breakdown) {
     }
 
     // 공통 레이아웃 스타일 (Label: 120px, Values: 1fr씩)
-    const rowStyle = `display: grid; grid-template-columns: 120px repeat(3, 1fr); align-items: center; padding: 10px 0;`;
-    const valStyle = `text-align: center; font-family: monospace; font-weight: bold;`;
+    const rowStyle = `display: grid; grid-template-columns: 120px repeat(3, 1fr); align-items: center; padding: 6px 0;`;
+    const jpFont = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    const valStyle = `text-align: center; font-family: ${isJa ? jpFont : 'monospace'}; font-weight: bold; line-height: 1.2;`;
+
 
     const renderRow = (label, values, isTotal = false, isBase = false, subValues = null) => {
         const getValHtml = (val, sub, color) => {
@@ -75,11 +77,11 @@ export function showStatDetailModal(breakdown) {
                 <span style="text-align: center; color: #fcc75e;">${isJa ? 'Vi' : '비주얼'}</span>
             </div>
             <div class="stat-detail-body">
-                ${renderRow(isJa ? '基礎' : '기초 스탯', breakdown.base, false, true)}
-                <div style="font-size: 0.65rem; color: #999; margin: 8px 0 4px 5px; font-weight: bold;">${isJa ? '▼ ボーナス合計' : '▼ 보너스 내역 (기초 제외)'}</div>
-                ${renderRow(isJa ? 'アイドル' : '아이돌 보너스', breakdown.idol, false, false, breakdown.idol.percent)}
-                ${renderRow(isJa ? 'サポ(固定)' : '서포트 (고정)', breakdown.supportFixed, false, false, null)}
-                ${renderRow(isJa ? 'サ포(倍率)' : '서포트 (비율)', breakdown.supportPercent, false, false, breakdown.supportPercent.factors)}
+                ${renderRow(isJa ? 'レッスン・試験' : '레슨/시험', breakdown.base, false, true)}
+                <div style="font-size: 0.65rem; color: #999; margin: 8px 0 4px 5px; font-weight: bold;">${isJa ? '▼ ボーナス' : '▼ 보너스'}</div>
+                ${renderRow(isJa ? 'アイドル(%)' : '아이돌 (%)', breakdown.idol, false, false, breakdown.idol.percent)}
+                ${renderRow(isJa ? 'サポカ(固定)' : '서포트 (고정)', breakdown.supportFixed, false, false, null)}
+                ${renderRow(isJa ? 'サポカ(%)' : '서포트 (%)', breakdown.supportPercent, false, false, breakdown.supportPercent.factors)}
                 ${renderRow(isJa ? 'アイテム' : '아이템 보너스', breakdown.item, false, false, null)}
                 ${renderRow(isJa ? 'ボーナス合計' : '최종 보너스 합계', bonusTotal, true, false, null)}
             </div>
