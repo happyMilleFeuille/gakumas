@@ -252,7 +252,10 @@ export function getTriggerCounts(store) {
  */
 export function calculateTotals(store, detailedCounts) {
     let baseTotal = { vocal: 0, dance: 0, visual: 0 };
-    let cardBonusTotal = { vocal: 0, dance: 0, visual: 0 };
+    let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
+    let supportFixedTotal = { vocal: 0, dance: 0, visual: 0 };
+    let supportPercentTotal = { vocal: 0, dance: 0, visual: 0 };
+    let itemBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     let percentBonuses = { vocal: 0, dance: 0, visual: 0 };
 
     Object.keys(store.weeks).forEach(weekNum => {
@@ -276,25 +279,23 @@ export function calculateTotals(store, detailedCounts) {
 
     const currentIdolData = idolData[store.selectedIdol];
     if (currentIdolData) {
-        cardBonusTotal.vocal += Math.floor(baseTotal.vocal * (currentIdolData.vocalBonus / 100));
-        cardBonusTotal.dance += Math.floor(baseTotal.dance * (currentIdolData.danceBonus / 100));
-        cardBonusTotal.visual += Math.floor(baseTotal.visual * (currentIdolData.visualBonus / 100));
+        idolBonusTotal.vocal = Math.floor(baseTotal.vocal * (currentIdolData.vocalBonus / 100));
+        idolBonusTotal.dance = Math.floor(baseTotal.dance * (currentIdolData.danceBonus / 100));
+        idolBonusTotal.visual = Math.floor(baseTotal.visual * (currentIdolData.visualBonus / 100));
     }
 
     const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(cardId => {
-        // 비활성화된 카드는 무시
         if (state.disabledCards[cardId]) return;
-
         const card = cardList.find(c => c.id === cardId); if (!card) return;
         const lb = state.supportLB[cardId] || 0, bonus = calculateCardBonus(card, detailedCounts, lb);
-        cardBonusTotal.vocal += bonus.vocal || 0; cardBonusTotal.dance += bonus.dance || 0; cardBonusTotal.visual += bonus.visual || 0;
+        supportFixedTotal.vocal += bonus.vocal || 0; supportFixedTotal.dance += bonus.dance || 0; supportFixedTotal.visual += bonus.visual || 0;
         if (bonus.percent > 0) percentBonuses[card.type] += bonus.percent;
 
         if (card.item_effects && store.cardChecked[cardId]) {
             const counter = store.itemCounters[cardId] || 0;
             card.item_effects.forEach(eff => {
-                if (eff.type === 'fixed' && eff.stats) { cardBonusTotal.vocal += eff.stats.vocal || 0; cardBonusTotal.dance += eff.stats.dance || 0; cardBonusTotal.visual += eff.stats.visual || 0; }
+                if (eff.type === 'fixed' && eff.stats) { itemBonusTotal.vocal += eff.stats.vocal || 0; itemBonusTotal.dance += eff.stats.dance || 0; itemBonusTotal.visual += eff.stats.visual || 0; }
                 else if (eff.type === 'action' && eff.stats && counter > 0) {
                     let multiplier = counter;
                     if (eff.trigger) {
@@ -313,28 +314,56 @@ export function calculateTotals(store, detailedCounts) {
                                 else if (card.type === 'visual') totalTriggerCount += detailedCounts.lessons.visual.sp;
                                 else totalTriggerCount += (detailedCounts.lessons.vocal.sp + detailedCounts.lessons.dance.sp + detailedCounts.lessons.visual.sp);
                             }
-                            else if (t === 'class') {
-                                totalTriggerCount += (detailedCounts.total['class_hajime'] || 0) + (detailedCounts.total['class_nia'] || 0);
-                            }
-                            else if (t === 'gift') {
-                                totalTriggerCount += (detailedCounts.total['gift_hajime'] || 0) + (detailedCounts.total['gift_nia'] || 0);
-                            }
-                            else if (t === 'goout') {
-                                totalTriggerCount += (detailedCounts.total['goout_hajime'] || 0) + (detailedCounts.total['goout_nia'] || 0);
-                            }
+                            else if (t === 'class') { totalTriggerCount += (detailedCounts.total['class_hajime'] || 0) + (detailedCounts.total['class_nia'] || 0); }
+                            else if (t === 'gift') { totalTriggerCount += (detailedCounts.total['gift_hajime'] || 0) + (detailedCounts.total['gift_nia'] || 0); }
+                            else if (t === 'goout') { totalTriggerCount += (detailedCounts.total['goout_hajime'] || 0) + (detailedCounts.total['goout_nia'] || 0); }
                             else totalTriggerCount += (detailedCounts.total[t] || 0);
                         });
                         multiplier = Math.min(totalTriggerCount, multiplier);
                     }
-                    if (multiplier > 0) { cardBonusTotal.vocal += (eff.stats.vocal || 0) * multiplier; cardBonusTotal.dance += (eff.stats.dance || 0) * multiplier; cardBonusTotal.visual += (eff.stats.visual || 0) * multiplier; }
+                    if (multiplier > 0) { itemBonusTotal.vocal += (eff.stats.vocal || 0) * multiplier; itemBonusTotal.dance += (eff.stats.dance || 0) * multiplier; itemBonusTotal.visual += (eff.stats.visual || 0) * multiplier; }
                 }
             });
         }
     });
 
-    cardBonusTotal.vocal += Math.round(baseTotal.vocal * (percentBonuses.vocal / 100));
-    cardBonusTotal.dance += Math.round(baseTotal.dance * (percentBonuses.dance / 100));
-    cardBonusTotal.visual += Math.round(baseTotal.visual * (percentBonuses.visual / 100));
+    supportPercentTotal.vocal = Math.round(baseTotal.vocal * (percentBonuses.vocal / 100));
+    supportPercentTotal.dance = Math.round(baseTotal.dance * (percentBonuses.dance / 100));
+    supportPercentTotal.visual = Math.round(baseTotal.visual * (percentBonuses.visual / 100));
 
-    return { baseTotal, cardBonusTotal };
-}
+    const cardBonusTotal = {
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal,
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance,
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual
+    };
+
+    return { 
+        baseTotal, 
+        cardBonusTotal,
+        breakdown: {
+            base: baseTotal,
+            idol: {
+                vocal: idolBonusTotal.vocal,
+                dance: idolBonusTotal.dance,
+                visual: idolBonusTotal.visual,
+                percent: {
+                    vocal: currentIdolData ? currentIdolData.vocalBonus : 0,
+                    dance: currentIdolData ? currentIdolData.danceBonus : 0,
+                    visual: currentIdolData ? currentIdolData.visualBonus : 0
+                }
+            },
+            supportFixed: supportFixedTotal,
+            supportPercent: {
+                vocal: supportPercentTotal.vocal,
+                dance: supportPercentTotal.dance,
+                visual: supportPercentTotal.visual,
+                factors: {
+                    vocal: percentBonuses.vocal,
+                    dance: percentBonuses.dance,
+                    visual: percentBonuses.visual
+                }
+            },
+            item: itemBonusTotal
+        }
+    };
+    }

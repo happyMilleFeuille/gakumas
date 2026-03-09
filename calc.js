@@ -13,7 +13,7 @@ import {
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel 
 } from './calcUI.js';
 import { initGlobalDistListener } from './calcEvents.js';
-import { toggleSupportCardPanel, closeSupportCardPanel } from './calcModals.js';
+import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal } from './calcModals.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 
@@ -345,7 +345,8 @@ function startWeeklyPlan(type) {
 function refreshAll() {
     try {
         const counts = getTriggerCounts(calcStore);
-        const { cardBonusTotal } = calculateTotals(calcStore, counts);
+        const { cardBonusTotal, breakdown } = calculateTotals(calcStore, counts);
+        window._lastStatBreakdown = breakdown; // 상세 모달용 데이터
         
         const spTotals = { vocal: 0, dance: 0, visual: 0 };
         const selectedIds = calcStore.planCards[calcStore.planType] || [];
@@ -364,6 +365,14 @@ function refreshAll() {
         updateStatHeaderUI(calcStore, cardBonusTotal, spTotals);
         updateActivityCountsUI(calcStore, counts);
         updateSelectedCardsUI(calcStore);
+
+        // 스탯 정보 버튼 리스너
+        const infoBtn = document.getElementById('btn-stat-info');
+        if (infoBtn) {
+            infoBtn.onclick = () => {
+                if (window._lastStatBreakdown) showStatDetailModal(window._lastStatBreakdown);
+            };
+        }
 
         // 사이드 패널 업데이트 (에러 격리)
         const panel = document.getElementById('calc-side-panel');

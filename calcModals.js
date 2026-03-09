@@ -8,6 +8,93 @@ import { updateSelectedCardsUI } from './calcUI.js';
 import { calcStore } from './calcStore.js';
 
 /**
+ * 스탯 상세 내역 모달 표시
+ */
+export function showStatDetailModal(breakdown) {
+    const isJa = state.currentLang === 'ja';
+    const modalId = 'stat-detail-modal';
+    let modal = document.getElementById(modalId);
+    if (!modal) {
+        modal = document.createElement('div'); modal.id = modalId; 
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+
+    // 공통 레이아웃 스타일 (Label: 120px, Values: 1fr씩)
+    const rowStyle = `display: grid; grid-template-columns: 120px repeat(3, 1fr); align-items: center; padding: 10px 0;`;
+    const valStyle = `text-align: center; font-family: monospace; font-weight: bold;`;
+
+    const renderRow = (label, values, isTotal = false, isBase = false, subValues = null) => {
+        const getValHtml = (val, sub, color) => {
+            const hasSub = sub !== null && sub !== undefined;
+            return `
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    ${hasSub ? `<span style="font-size: 0.6rem; color: #999; margin-bottom: -2px; opacity: 0.8;">${Number(sub || 0).toFixed(1)}%</span>` : ''}
+                    <span style="${valStyle} color: ${color}; font-size: ${isTotal ? '1rem' : '0.85rem'};">${Math.round(val || 0)}</span>
+                </div>`;
+        };
+
+        return `
+            <div class="stat-detail-row" style="${rowStyle} ${isTotal ? 'border-top: 2px solid #ff4d8d; margin-top: 8px; padding-top: 10px;' : (isBase ? 'background: #fdf2f7; border-bottom: 2px solid #ff4d8d; margin-bottom: 5px;' : 'border-bottom: 1px solid #f5f5f5;')} position: relative;">
+                <span style="color: #333; font-weight: ${isTotal || isBase ? 'bold' : 'normal'}; padding-left: 5px; font-size: 0.85rem;">${label}</span>
+                ${getValHtml(values?.vocal, subValues?.vocal, '#ff4d8d')}
+                ${getValHtml(values?.dance, subValues?.dance, '#46a4f3')}
+                ${getValHtml(values?.visual, subValues?.visual, '#fcc75e')}
+            </div>`;
+    };
+
+    // 기초 스탯을 제외한 보너스 합계만 계산
+    const bonusTotal = {
+        vocal: breakdown.idol.vocal + breakdown.supportFixed.vocal + breakdown.supportPercent.vocal + breakdown.item.vocal,
+        dance: breakdown.idol.dance + breakdown.supportFixed.dance + breakdown.supportPercent.dance + breakdown.item.dance,
+        visual: breakdown.idol.visual + breakdown.supportFixed.visual + breakdown.supportPercent.visual + breakdown.item.visual
+    };
+
+    const finalTotal = {
+        vocal: breakdown.base.vocal + bonusTotal.vocal,
+        dance: breakdown.base.dance + bonusTotal.dance,
+        visual: breakdown.base.visual + bonusTotal.visual
+    };
+
+    const allBonusSum = Math.round(bonusTotal.vocal + bonusTotal.dance + bonusTotal.visual);
+
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 380px; padding: 20px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0; color: #ff4d8d; font-size: 1rem;">
+                    ${isJa ? 'ステータス詳細' : '스탯 상세 내역'} 
+                    <span style="font-size: 0.8rem; color: #666; font-weight: normal; margin-left: 5px;">(+${allBonusSum})</span>
+                </h3>
+
+                <span class="modal-close" style="cursor: pointer; font-size: 24px; color: #aaa;" onclick="document.getElementById('stat-detail-modal').style.display='none'">&times;</span>
+            </div>
+            <div class="stat-detail-header" style="${rowStyle} border-bottom: 1px solid #eee; margin-bottom: 2px; font-weight: bold; font-size: 0.8rem; color: #666;">
+                <span></span>
+                <span style="text-align: center; color: #ff4d8d;">${isJa ? 'Vo' : '보컬'}</span>
+                <span style="text-align: center; color: #46a4f3;">${isJa ? 'Da' : '댄스'}</span>
+                <span style="text-align: center; color: #fcc75e;">${isJa ? 'Vi' : '비주얼'}</span>
+            </div>
+            <div class="stat-detail-body">
+                ${renderRow(isJa ? '基礎' : '기초 스탯', breakdown.base, false, true)}
+                <div style="font-size: 0.65rem; color: #999; margin: 8px 0 4px 5px; font-weight: bold;">${isJa ? '▼ ボーナス合計' : '▼ 보너스 내역 (기초 제외)'}</div>
+                ${renderRow(isJa ? 'アイドル' : '아이돌 보너스', breakdown.idol, false, false, breakdown.idol.percent)}
+                ${renderRow(isJa ? 'サポ(固定)' : '서포트 (고정)', breakdown.supportFixed, false, false, null)}
+                ${renderRow(isJa ? 'サ포(倍率)' : '서포트 (비율)', breakdown.supportPercent, false, false, breakdown.supportPercent.factors)}
+                ${renderRow(isJa ? 'アイテム' : '아이템 보너스', breakdown.item, false, false, null)}
+                ${renderRow(isJa ? 'ボーナス合計' : '최종 보너스 합계', bonusTotal, true, false, null)}
+            </div>
+
+
+        </div>`;
+
+    modal.style.display = 'flex';
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    
+    // 뒤로가기 대응을 위한 히스토리 상태 추가
+    history.pushState({ modalOpen: modalId }, "");
+}
+
+/**
  * 서포트 카드 선택 패널 렌더링
  */
 export function renderSidePanelContent(panel, selectedPlan) {

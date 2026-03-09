@@ -267,6 +267,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
                         <span class="sum-label">TOTAL</span>
                         <span id="total-stats-sum-value">0</span>
+                        <div class="stat-info-btn" id="btn-stat-info">i</div>
                     </div>
                     <div class="stat-items-row">
                         <div class="stat-item item-vocal"><img src="icons/vocal.png"><span id="total-vocal">0</span><span id="sp-vocal-percent" class="sp-percent-label"></span></div>

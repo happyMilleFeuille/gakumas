@@ -206,6 +206,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 브라우저 뒤로가기 버튼 처리
     window.addEventListener('popstate', (event) => {
+        // 0. 범용 모달(.modal) 처리 (추가)
+        const activeModals = document.querySelectorAll('.modal');
+        let modalClosed = false;
+        activeModals.forEach(m => {
+            if (m.style.display === 'flex' || m.id === 'slot-modal' || m.id === 'stat-detail-modal') {
+                m.style.display = 'none';
+                if (m.id === 'slot-modal' || m.id === 'stat-detail-modal') m.remove(); // 동적으로 생성된 것은 제거
+                modalClosed = true;
+            }
+        });
+        if (modalClosed) return;
+
         const cardModal = document.getElementById('card-modal');
         const gachaLogModal = document.getElementById('gacha-log-modal');
         const gachaRatesModal = document.getElementById('gacha-rates-modal');
