@@ -83,6 +83,7 @@ const translations = {
         btn_home: "ホーム",
         btn_calc: "計算機",
         btn_gacha: "ガシャ",
+        btn_manage_slots:"プリセット",
         nav_idol: "アイドル",
         nav_support: "サポートカード",
         nav_calc: "計算機",

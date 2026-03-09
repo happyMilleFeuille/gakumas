@@ -227,7 +227,7 @@ export const produceList = [
     { id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!",name_ja:"がむしゃらに行こう！",releasedAt: "2025-10-10", rarity: "PSSR", plan: "logic", source: "limited",youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H" },         
     { id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "dist" ,releasedAt: "2026-02-27",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
     { id: "ssrume_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited" ,jumpTime2:7.4,releasedAt: "2026-02-27",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
-    { id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "anomaly", source: "limited" ,releasedAt: "2026-03-09",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
+    { id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", rarity: "PSSR", plan: "anomaly", source: "limited" ,jumpTime2:7.3,releasedAt: "2026-03-09",youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7"},    
 
 
     // 유닛 (unit)

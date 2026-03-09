@@ -673,7 +673,7 @@ export const cardList = [
             "delete",
             "event_paraup"
         ]        
-    },    
+    },       
     { 
     id: "vocal_fesanomaly1", 
     name: "자, 모두 함께♪", 
@@ -1936,7 +1936,29 @@ export const cardList = [
             "delete_mental3",
             "event_paraup"
         ]        
+    },    
+    { 
+    id: "visual_limitedanomaly4", 
+    name: "나의 승리, 에요~!", 
+    name_ja: "あたしの勝ち、ですね~!",     
+    type: "visual", 
+    releasedAt: "2026-03-09",        
+    plan: "anomaly", 
+    have:"card_a",
+    rarity: "SSR",     
+    source:"limited",
+    extra1: "param", extra2:"ranenhance",    
+        abilities: 
+        [
+            "fixedparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "gift",
+            "get_ssr",
+            "event_paraup"
+        ]        
     },                    
+                        
     
     
 
@@ -2382,6 +2404,7 @@ export const cardList = [
     type: "vocal", 
     releasedAt: "2025-09-08",         
     plan: "anomaly", 
+    source:"limited",       
     have:"item",
     item_effects: [{ type: "action", trigger: ["get_preservation"], target:"delete_t", max: 1}], 
     rarity: "SR",             
@@ -2395,7 +2418,29 @@ export const cardList = [
             "delete",
             "event_paraup"
         ]        
-    },         
+    },
+    { 
+    id: "vocal_limitedanomaly2", 
+    name: "☆친해지자는 표시☆", 
+    name_ja: "☆お近づきの印☆",     
+    type: "vocal", 
+    plan: "anomaly", 
+    have:"item",
+    item_effects: [{ type: "action", trigger: ["get_preservation"], stats: { vocal: 20 },target:"enhance",max:1}],    
+    releasedAt: "2026-03-09",    
+    rarity: "SR", 
+    source:"limited",    
+    extra1: "param",    
+        abilities: 
+        [
+            "percentparam",
+            "sp_lessonup",
+            "supportrateup", 
+            "sp_param",
+            "advice",
+            "event_paraup"
+        ]        
+    },                
     
     
 

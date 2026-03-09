@@ -340,6 +340,16 @@ export const NORMAL_CONFIG = [
 // 한정 가챠 상세 설정
 export const LIMITED_CONFIG = [
     {
+        id: 'ssrsena_endlesslimited',
+        date: '2026-03-09',
+        bannerImg: 'idols/ssrsena_endlesslimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsena_endlesslimited', char: 'sena' }],
+            sssr: ['visual_limitedanomaly4'],
+            sr_card: ['vocal_limitedanomaly2']
+        }
+    },    
+    {
         id: 'ssrume_endlesslimited',
         date: '2026-02-27',
         bannerImg: 'idols/ssrume_endlesslimited1.webp',
