@@ -430,8 +430,9 @@ function updateSidePanelBonuses(panel, counts) {
 
             const bonusEl = item.querySelector('.bonus-val');
             if (bonusEl) {
-                // 수치가 0보다 클 때만 표시, 아니면 비움
-                bonusEl.textContent = totalVal > 0 ? `+${totalVal}` : '';
+                // 수치가 0보다 클 때만 표시, 소수점은 반올림하여 정수로 처리
+                const displayVal = Math.round(totalVal);
+                bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '';
                 
                 // SP 강조 효과 처리
                 bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
