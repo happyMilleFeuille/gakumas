@@ -11,7 +11,13 @@ import { calcStore } from './calcStore.js';
  * 서포트 카드 선택 패널 렌더링
  */
 export function renderSidePanelContent(panel, selectedPlan) {
-    const filtered = cardList.filter(c => (c.plan === selectedPlan || c.plan === 'free') && c.rarity !== 'R' && c.type !== 'assist');
+    // state.disabledCards에 포함된 비활성화된 카드는 목록에서 제외
+    const filtered = cardList.filter(c => 
+        (c.plan === selectedPlan || c.plan === 'free') && 
+        c.rarity !== 'R' && 
+        c.type !== 'assist' &&
+        !state.disabledCards[c.id]
+    );
     const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
         const lb = state.supportLB[c.id] || 0;
         return `

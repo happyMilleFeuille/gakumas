@@ -26,10 +26,26 @@
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    position: relative; /* 자식 요소 절대 위치 지정을 위해 추가 */
     /* 렌더링 최적화: 화면 밖 요소 렌더링 생략 */
     contain: layout style;
     content-visibility: auto;
     contain-intrinsic-size: 150px 100px; /* 카드의 대략적인 크기 지정 */
+}
+
+/* 비활성화 상태 서포트 카드 스타일 */
+.support-card.is-disabled {
+    filter: brightness(0.6) grayscale(0.5);
+}
+
+.support-card.is-disabled::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 100;
 }
 
 .support-card.rarity-ssr { 
@@ -195,6 +211,214 @@
 .filter-btn:last-child { border-radius: 0 4px 4px 0; }
 
 .filter-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); font-weight: bold; z-index: 1; }
+
+/* 슬롯 관리 UI */
+.slot-management {
+    max-width: 1000px;
+    margin: 0 auto 1.5rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.slot-header {
+    font-weight: bold;
+    color: #ff4d8d;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.slot-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.slot-item {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.slot-name {
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+.slot-date {
+    font-size: 0.65rem;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.slot-btns {
+    display: flex;
+    gap: 5px;
+}
+
+.slot-btn {
+    flex: 1;
+    border: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slot-btn.save {
+    background: #e1f5fe;
+    color: #0288d1;
+}
+
+.slot-btn.load {
+    background: #f1f8e9;
+    color: #558b2f;
+}
+
+.slot-btn:hover {
+    filter: brightness(0.9);
+}
+
+.slot-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .slot-group {
+        grid-template-columns: 1fr;
+    }
+    .slot-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .slot-btns {
+        width: 120px;
+    }
+}
+
+.slot-management-simple {
+    margin-bottom: 1rem;
+}
+
+#btn-open-slot-modal {
+    background: #0288d1;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#btn-open-slot-modal:hover {
+    filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+    #btn-open-slot-modal {
+        padding: 5px 12px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+    }
+}
+
+/* 슬롯 관리 모달 스타일 */
+.slot-modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.slot-modal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+
+.slot-modal-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: left;
+}
+
+.slot-modal-name {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.slot-modal-date {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.slot-modal-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.slot-modal-actions .slot-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slot-modal-actions .slot-btn.save {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.slot-modal-actions .slot-btn.load {
+    background: #f1f8e9;
+    color: #689f38;
+}
+
+.slot-modal-actions .slot-btn.load:disabled {
+    background: #eee;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.slot-modal-actions .slot-btn.delete {
+    background: #ffebee;
+    color: #ef5350;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
+    line-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.slot-modal-actions .slot-btn:hover:not(:disabled) {
+    filter: brightness(0.9);
+}
 
 /* 정렬 컨트롤 */
 .sort-controls {
@@ -479,6 +703,7 @@
     }
 
     .card-plan-icon {
+
         width: 16px;
         height: 16px;
         top: 3px; /* 왼쪽 위로 이동 */

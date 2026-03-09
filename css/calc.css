@@ -71,6 +71,7 @@
     width: 85%;
     max-width: 400px;
     height: 100vh;
+    height: 100dvh; /* 최신 브라우저 대응 (Dynamic Viewport Height) */
     background: white;
     border-right: 1px solid #ddd;
     box-shadow: 4px 0 20px rgba(0,0,0,0.2);
@@ -78,6 +79,9 @@
     flex-direction: column;
     z-index: 20000; /* 오버레이(19999)보다 높게 설정 */
     overflow: hidden;
+    
+    /* 하단 안전 영역 확보 */
+    padding-bottom: env(safe-area-inset-bottom, 20px);
     
     /* 애니메이션 설정 */
     transform: translateX(-100%);
@@ -613,6 +617,7 @@
     flex: 1; overflow-y: auto; overflow-x: hidden; padding: 15px 10px; display: grid; 
     grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-content: flex-start;
     position: relative; min-height: 200px;
+    padding-bottom: 80px; /* 모바일 하단바/주소창 대비 여백 추가 */
 }
 
 /* 스피너 스타일 */

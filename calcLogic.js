@@ -106,6 +106,9 @@ export function getTriggerCounts(store) {
     let activePlan = store.planType || 'sense';
     let selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(id => {
+        // 비활성화된 카드는 무시
+        if (state.disabledCards[id]) return;
+        
         if (store.cardExtraChecked[id]) {
             const card = cardList.find(c => c.id === id);
             if (card && card.extra2) {
@@ -131,6 +134,9 @@ export function getTriggerCounts(store) {
 
     selectedIds = store.planCards?.[activePlan] || [];
     selectedIds.forEach(id => {
+        // 비활성화된 카드는 무시
+        if (state.disabledCards[id]) return;
+
         if (store.cardChecked?.[id]) {
             const card = cardList.find(c => c.id === id);
             if (card) {
@@ -147,6 +153,9 @@ export function getTriggerCounts(store) {
 
     // 5. 아이템 효과(Item Effects) 보너스 트리거 반영
     selectedIds.forEach(cardId => {
+        // 비활성화된 카드는 무시
+        if (state.disabledCards[cardId]) return;
+
         const card = cardList.find(c => c.id === cardId);
         if (card && card.item_effects && store.cardChecked?.[cardId]) {
             const counter = store.itemCounters[cardId] || 0;
@@ -274,6 +283,9 @@ export function calculateTotals(store, detailedCounts) {
 
     const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(cardId => {
+        // 비활성화된 카드는 무시
+        if (state.disabledCards[cardId]) return;
+
         const card = cardList.find(c => c.id === cardId); if (!card) return;
         const lb = state.supportLB[cardId] || 0, bonus = calculateCardBonus(card, detailedCounts, lb);
         cardBonusTotal.vocal += bonus.vocal || 0; cardBonusTotal.dance += bonus.dance || 0; cardBonusTotal.visual += bonus.visual || 0;

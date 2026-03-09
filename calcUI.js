@@ -118,9 +118,10 @@ export function updateSelectedCardsUI(store) {
     const container = document.getElementById('selected-support-container');
     if (!container) return;
 
-    const selectedIds = store.planCards[store.planType] || [];
-    const isAllEmpty = selectedIds.every(id => !id);
-
+    // 메인 탭에서 비활성화된 카드는 아예 제외하고 가져옴
+    const selectedIds = (store.planCards[store.planType] || []).filter(id => !state.disabledCards[id]);
+    const isAllEmpty = selectedIds.length === 0;
+    
     container.innerHTML = Array.from({length: 6}, (_, i) => {
         const cardId = selectedIds[i];
         if (cardId) {

@@ -50,6 +50,7 @@ export const state = {
     gachaType: localStorage.getItem('gachaType') || 'normal',
     pssrIndex: JSON.parse(localStorage.getItem('pssrIndex')) || {},
     favoriteIdol: localStorage.getItem('favoriteIdol') || '',
+    disabledCards: JSON.parse(localStorage.getItem('disabledCards')) || {},
     selectedPickup: safeParse('selectedPickup', {}),
     activeSelectionId: localStorage.getItem('activeSelectionId') || 'ongakusai_day1',
     activeNormalId: localStorage.getItem('activeNormalId') || 'normal_default',
@@ -154,4 +155,44 @@ export function setPSSRIndex(cardId, index) {
 export function setFavoriteIdol(name) {
     state.favoriteIdol = (state.favoriteIdol === name) ? '' : name;
     localStorage.setItem('favoriteIdol', state.favoriteIdol);
+}
+
+export function toggleDisabledCard(cardId) {
+    if (state.disabledCards[cardId]) {
+        delete state.disabledCards[cardId];
+    } else {
+        state.disabledCards[cardId] = true;
+    }
+    localStorage.setItem('disabledCards', JSON.stringify(state.disabledCards));
+}
+
+// [추가] 슬롯 저장/로드 기능
+export function saveToSlot(slotId) {
+    const saveData = {
+        supportLB: state.supportLB,
+        disabledCards: state.disabledCards,
+        timestamp: new Date().toLocaleString()
+    };
+    localStorage.setItem(`support_slot_${slotId}`, JSON.stringify(saveData));
+}
+
+export function loadFromSlot(slotId) {
+    const saved = JSON.parse(localStorage.getItem(`support_slot_${slotId}`));
+    if (!saved) return false;
+    
+    state.supportLB = saved.supportLB || {};
+    state.disabledCards = saved.disabledCards || {};
+    
+    localStorage.setItem('supportLB', JSON.stringify(state.supportLB));
+    localStorage.setItem('disabledCards', JSON.stringify(state.disabledCards));
+    return true;
+}
+
+export function deleteSlot(slotId) {
+    localStorage.removeItem(`support_slot_${slotId}`);
+}
+
+export function getSlotInfo(slotId) {
+    const saved = JSON.parse(localStorage.getItem(`support_slot_${slotId}`));
+    return saved ? saved.timestamp : null;
 }

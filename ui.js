@@ -1,10 +1,11 @@
 // ui.js
-import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors } from './state.js';
+import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, loadFromSlot, getSlotInfo, deleteSlot } from './state.js';
 import { updatePageTranslations } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
 import { abilityData } from './abilitydata.js';
 import { initCalc } from './calc.js';
+import { calcStore } from './calcStore.js';
 import translations from './i18n.js';
 
 const contentArea = document.getElementById('content-area');
@@ -300,6 +301,88 @@ function renderProduceCards(idolName, container) {
     });
 }
 
+function openSlotModal() {
+    const isJa = state.currentLang === 'ja';
+    let modal = document.getElementById('slot-modal');
+    if (modal) modal.remove();
+
+    modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'slot-modal';
+    
+    const renderSlots = () => {
+        let slotsHtml = '';
+        for (let i = 1; i <= 3; i++) {
+            const info = getSlotInfo(i);
+            slotsHtml += `
+                <div class="slot-modal-item">
+                    <div class="slot-modal-info">
+                        <span class="slot-modal-name">Slot ${i}</span>
+                        <span class="slot-modal-date">${info || (isJa ? 'データなし' : '저장 데이터 없음')}</span>
+                    </div>
+                    <div class="slot-modal-actions">
+                        <button class="slot-btn save" data-slot="${i}">${isJa ? '保存' : '저장'}</button>
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''}>${isJa ? '로드' : '로드'}</button>
+                        <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''}>&times;</button>
+                        </div>
+
+                </div>`;
+        }
+        return slotsHtml;
+    };
+
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 350px;">
+            <span class="close-modal">&times;</span>
+            <h3 style="margin-top:0; color:#ff4d8d; font-size:1.1rem;">${isJa ? 'セッティング保存/ロード' : '카드 세팅 저장/로드'}</h3>
+            <div class="slot-modal-list">
+                ${renderSlots()}
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+
+    modal.querySelector('.close-modal').onclick = () => modal.remove();
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+    modal.addEventListener('click', (e) => {
+        const saveBtn = e.target.closest('.save');
+        const loadBtn = e.target.closest('.load');
+        const deleteBtn = e.target.closest('.delete');
+        
+        if (saveBtn) {
+            const slotId = saveBtn.dataset.slot;
+            if (confirm(isJa ? `スロット ${slotId} に現在の状態を保存しますか？` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
+                saveToSlot(slotId);
+                modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
+            }
+        }
+        
+        if (loadBtn) {
+            const slotId = loadBtn.dataset.slot;
+            if (confirm(isJa ? `スロット ${slotId} のデータを読み込みますか？` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
+                if (loadFromSlot(slotId)) {
+                    renderSupport();
+                    modal.remove();
+                }
+            }
+        }
+
+        if (deleteBtn) {
+            const slotId = deleteBtn.dataset.slot;
+            if (confirm(isJa ? `スロット ${slotId} 의 데이터를 삭제하시겠습니까?` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
+                deleteSlot(slotId);
+                modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
+            }
+        }
+    });
+}
+
+function syncSlotUI(container) {
+    // 기존 슬롯 UI 동기화 기능은 모달로 대체됨 (빈 함수로 유지하거나 삭제 가능)
+}
+
 export function renderSupport() {
     if (!contentArea) return;
 
@@ -313,6 +396,7 @@ export function renderSupport() {
     }
 
     syncFilterUI(container);
+    syncSlotUI(container); // [추가] 슬롯 정보 업데이트
     updateSupportGrid(container);
 }
 
@@ -375,8 +459,114 @@ function setupStaticListeners(container) {
         });
     }
 
+    // 슬롯 관리 모달 열기
+    const openSlotBtn = container.querySelector('#btn-open-slot-modal');
+    if (openSlotBtn) {
+        openSlotBtn.addEventListener('click', () => {
+            openSlotModal();
+        });
+    }
+
+    if (false) {
+        slotContainer.addEventListener('click', (e) => {
+            const saveBtn = e.target.closest('.slot-btn.save');
+            const loadBtn = e.target.closest('.slot-btn.load');
+            const isJa = state.currentLang === 'ja';
+
+            if (saveBtn) {
+                const slotId = saveBtn.dataset.slot;
+                const confirmMsg = isJa ? `スロット ${slotId} 에 현재 상태를 저장하시겠습니까?` : `슬롯 ${slotId} 에 현재 상태(돌파/비활성화)를 저장하시겠습니까?`;
+                if (!confirm(confirmMsg)) return;
+                
+                import('./state.js').then(m => {
+                    m.saveToSlot(slotId);
+                    syncSlotUI(container);
+                    alert(isJa ? '保存されました。' : '저장되었습니다.');
+                });
+            }
+
+            if (loadBtn) {
+                const slotId = loadBtn.dataset.slot;
+                const confirmMsg = isJa ? `スロット ${slotId} 의 데이터를 불러오시겠습니까? 현재 상태는 덮어씌워집니다.` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까? 현재 설정된 상태가 모두 바뀝니다.`;
+                if (!confirm(confirmMsg)) return;
+
+                import('./state.js').then(m => {
+                    if (m.loadFromSlot(slotId)) {
+                        renderSupport();
+                        alert(isJa ? '読み込みが完了しました。' : '데이터를 불러왔습니다.');
+                    } else {
+                        alert(isJa ? '保存된 데이터가 없습니다.' : '저장된 데이터가 없습니다.');
+                    }
+                });
+            }
+        });
+    }
+
     const grid = container.querySelector('.support-grid');
+    let longPressTimer;
+    let isLongPress = false;
+
+    grid.addEventListener('mousedown', (e) => {
+        const cardEl = e.target.closest('.support-card');
+        if (!cardEl) return;
+        isLongPress = false;
+        longPressTimer = setTimeout(() => {
+            isLongPress = true;
+            const cardId = cardEl.dataset.id;
+            toggleDisabledCard(cardId);
+            
+            // [추가] 계산기 선택 목록에서도 실제로 제거 (선택 취소)
+            if (state.disabledCards[cardId]) {
+                ['sense', 'logic', 'anomaly'].forEach(plan => {
+                    if (calcStore.planCards[plan]) {
+                        calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== cardId);
+                    }
+                });
+                calcStore.save(); // 변경사항 저장
+            }
+
+            renderSupport();
+            if (navigator.vibrate) navigator.vibrate(50);
+        }, 600);
+    });
+
+    grid.addEventListener('touchstart', (e) => {
+        const cardEl = e.target.closest('.support-card');
+        if (!cardEl) return;
+        isLongPress = false;
+        longPressTimer = setTimeout(() => {
+            isLongPress = true;
+            const cardId = cardEl.dataset.id;
+            toggleDisabledCard(cardId);
+
+            // [추가] 계산기 선택 목록에서도 실제로 제거 (선택 취소)
+            if (state.disabledCards[cardId]) {
+                ['sense', 'logic', 'anomaly'].forEach(plan => {
+                    if (calcStore.planCards[plan]) {
+                        calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== cardId);
+                    }
+                });
+                calcStore.save(); // 변경사항 저장
+            }
+
+            renderSupport();
+            if (navigator.vibrate) navigator.vibrate(50);
+        }, 600);
+    }, { passive: true });
+
+    const cancelLongPress = () => clearTimeout(longPressTimer);
+    grid.addEventListener('mouseup', cancelLongPress);
+    grid.addEventListener('mouseleave', cancelLongPress);
+    grid.addEventListener('touchend', cancelLongPress);
+    grid.addEventListener('touchmove', cancelLongPress);
+
     grid.addEventListener('click', (e) => {
+        if (isLongPress) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
         const star = e.target.closest('.card-star');
         const cardEl = e.target.closest('.support-card');
         
@@ -459,7 +649,12 @@ function updateSupportGrid(container) {
         return match ? parseInt(match[0], 10) : 0;
     };
 
+    // 정렬 로직 수정: 비활성화된 카드는 항상 맨 뒤로
     filteredList.sort((a, b) => {
+        const aDisabled = !!state.disabledCards[a.id];
+        const bDisabled = !!state.disabledCards[b.id];
+        if (aDisabled !== bDisabled) return aDisabled ? 1 : -1;
+
         const dateA = a.releasedAt || "";
         const dateB = b.releasedAt || "";
         if (state.sortBy === 'id-desc') {
@@ -490,8 +685,11 @@ function updateSupportGrid(container) {
             const cardEl = item.querySelector('.support-card');
             const cardId = card.id;
             const currentLB = state.supportLB[cardId] || 0;
+            const isDeactivated = !!state.disabledCards[cardId];
+
             cardEl.dataset.id = cardId;
             cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
+            if (isDeactivated) cardEl.classList.add('is-disabled');
             
             const imgSrc = card.image || `images/support/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
