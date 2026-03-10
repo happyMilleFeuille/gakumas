@@ -12,7 +12,8 @@ import { calculateCardBonus } from './simulator-engine.js';
 import { 
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel,
-    showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip
+    showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip,
+    getIdolDisplayColor
 } from './calcUI.js';import { initGlobalDistListener } from './calcEvents.js';
 import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal } from './calcModals.js';
 
@@ -120,7 +121,7 @@ function startWeeklyPlan(type) {
                     const container = btn.closest('.icon-outer-container');
                     if (container) {
                         const idolId = calcStore.selectedIdol;
-                        const idolColor = (idolId === 'lilja') ? "#a0e6ff" : (idolColors[idolId] || "#ff4d8d");
+                        const idolColor = idolColors[idolId] || "#ff4d8d";
                         
                         container.appendChild(tooltip);
                         tooltip.style.left = '50%';
@@ -169,7 +170,7 @@ function startWeeklyPlan(type) {
                         i.style.transform = '';
                     });
                     item.classList.add('active');
-                    const getIdolColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
+                    const getIdolColor = (id) => (idolColors[id] || "#ff4d8d");
                     const color = getIdolColor(item.dataset.id);
                     item.style.borderColor = color;
                     item.style.borderWidth = '3px';
@@ -214,6 +215,29 @@ function startWeeklyPlan(type) {
                     if (totalContainer) {
                         totalContainer.style.backgroundColor = color;
                         totalContainer.style.boxShadow = `0 2px 6px ${color}33`;
+                    }
+
+                    // [추가] P-아이템 슬롯 테두리 즉시 업데이트 (아이템 있으면 투명, 없으면 회색)
+                    document.querySelectorAll('.p-item-slot').forEach(slot => {
+                        const hasImg = slot.querySelector('img');
+                        slot.style.borderColor = hasImg ? 'transparent' : '#ddd';
+                        const placeholder = slot.querySelector('.p-item-placeholder');
+                        if (placeholder) placeholder.style.color = '#ccc';
+                    });
+
+                    // [추가] P-아이템 정보 버튼(i) 색상 유지 (회색)
+                    const pItemInfoBtn = document.querySelector('.p-item-info-btn');
+                    if (pItemInfoBtn) {
+                        pItemInfoBtn.style.backgroundColor = '#f8f9fa';
+                        pItemInfoBtn.style.color = '#666';
+                    }
+
+                    // [추가] 서포트 패널이 열려있다면 선택된 카드들의 테두리 색상도 즉시 업데이트
+                    const sidePanel = document.getElementById('calc-side-panel');
+                    if (sidePanel) {
+                        sidePanel.querySelectorAll('.side-card-item.selected').forEach(card => {
+                            card.style.borderColor = color;
+                        });
                     }
 
                     refreshAll();
@@ -325,7 +349,7 @@ function startWeeklyPlan(type) {
                             
                             // [추가] 아이돌 색상 적용
                             const idolId = calcStore.selectedIdol;
-                            const idolColor = (idolId === 'lilja') ? "#a0e6ff" : (idolColors[idolId] || "#ff4d8d");
+                            const idolColor = idolColors[idolId] || "#ff4d8d";
                             tooltip.style.borderColor = idolColor;
 
                             tooltip.innerHTML = opts.map(o => {
@@ -518,10 +542,17 @@ function setupPItemSelector() {
     
     const currentType = calcStore.type;
     const itemsBySlot = pItemSlots[currentType] || [];
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
     container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
         const val = calcStore.pItems[idx];
+        slot.style.borderColor = val ? 'transparent' : '#ddd';
         slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
+        
+        // Hover 효과 (JS로 추가)
+        slot.onmouseenter = () => { slot.style.backgroundColor = `${idolColor}11`; };
+        slot.onmouseleave = () => { slot.style.backgroundColor = 'white'; };
+
         slot.onclick = (e) => {
             e.stopPropagation();
             showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll);

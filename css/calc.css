@@ -186,6 +186,7 @@
 }
 
 .p-item-slot {
+    position: relative;
     width: 50px;
     height: auto;
     aspect-ratio: 1 / 1;
@@ -196,18 +197,19 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    overflow: hidden;
     transition: all 0.2s;
 }
 
 .p-item-slot:hover {
-    border-color: #ff4d8d;
-    background: #fff0f5;
+    border-color: #bbb;
+    background: #fdfdfd;
 }
 
 .p-item-slot img {
     width: 100%;
     height: 100%;
+    border-radius: 8px;
+}
     object-fit: contain;
 }
 
@@ -305,8 +307,8 @@
 }
 
 .opt-check-label:hover {
-    border-color: #ff4d8d;
-    background: #fff0f5;
+    border-color: #bbb;
+    background: #fdfdfd;
 }
 
 .card-opt-check {
@@ -362,8 +364,9 @@
     height: 16px;
     cursor: pointer;
     z-index: 10;
-    accent-color: #ff4d8d;
     margin: 0;
+    opacity: 0.85;
+    accent-color: #ff4d8d;
 }
 
 .selected-card-slot img {
@@ -374,8 +377,9 @@
 }
 
 .side-card-item.selected {
-    border: 2px solid #ffc400;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    border: 2px solid transparent;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    z-index: 50;
 }
 
 .side-card-item.selected .card-bonus-overlay {
@@ -693,7 +697,9 @@
 .side-panel-column { display: flex; flex-direction: column; gap: clamp(2px, 1vw, 10px); }
 .side-card-item {
     position: relative; display: flex; flex-direction: column; aspect-ratio: 16 / 9; width: 100%;
-    border: 1px solid #eee; border-radius: 6px; cursor: pointer; overflow: hidden; transition: transform 0.2s;
+    border: 1px solid #eee; border-radius: 6px; cursor: pointer; overflow: hidden; 
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
 }
 .side-card-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 

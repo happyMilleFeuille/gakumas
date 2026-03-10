@@ -9,7 +9,7 @@ import { calcStore } from './calcStore.js';
 /**
  * 아이돌별 표시 색상 반환 (릴리야 보정 포함)
  */
-export const getIdolDisplayColor = (id) => (id === 'lilja') ? "#a0e6ff" : (idolColors[id] || "#ff4d8d");
+export const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
 
 /**
  * 하단 활동 카운터 UI 업데이트
@@ -142,6 +142,7 @@ export function updateSelectedCardsUI(store) {
 
     const selectedIds = (store.planCards[store.planType] || []).filter(id => !state.disabledCards[id]);
     const isAllEmpty = selectedIds.length === 0;
+    const idolColor = getIdolDisplayColor(store.selectedIdol || 'saki');
     
     container.innerHTML = Array.from({length: 6}, (_, i) => {
         const cardId = selectedIds[i];
@@ -183,7 +184,7 @@ export function updateSelectedCardsUI(store) {
             
             return `<div class="selected-card-slot filled" data-id="${cardId}">
                         ${optCheckHtml}
-                        <div class="slot-frame">
+                        <div class="slot-frame" style="border-color: transparent;">
                             <img src="images/support/${cardId}_card.webp" onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
                             <div class="card-slot-remove" data-id="${cardId}">×</div>
                             <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked}>
@@ -300,9 +301,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 ${(store.type === 'nia' || store.type === 'hajime') ? `
                 <div class="p-item-container" id="p-item-container">
-                    <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: white; font-size: 12px; cursor: pointer; flex-shrink: 0;">?</button>
+                    <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
                     ${Array.from({length: store.type === 'nia' ? 5 : 4}).map((_, i) => `
-                        <div class="p-item-slot" data-idx="${i}"></div>
+                        <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
                     `).join('')}
                 </div>
                 ` : ''}
@@ -417,11 +418,13 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
     document.querySelectorAll('.p-item-tooltip').forEach(t => t.remove());
     
     const isMobile = window.innerWidth <= 768;
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-tooltip';
     const tooltipPadding = isMobile ? '8px' : '12px';
     const targetWidth = isMobile ? '170px' : '210px';
-    tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:140px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box;`;
+    tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:140px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
 
     const btnSize = isMobile ? '32px' : '40px';
     const clearBtn = document.createElement('div');
@@ -444,17 +447,35 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
             slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`;
             calcStore.save(); refreshAll(); tooltip.remove();
         };
-        tooltip.appendChild(img);
+    tooltip.appendChild(img);
     });
 
-    slot.appendChild(tooltip);
-    tooltip.style.left = '50%';
-    tooltip.style.bottom = '100%';
-    tooltip.style.top = 'auto'; 
-    tooltip.style.marginBottom = '10px';
-    tooltip.style.transform = 'translateX(-50%)';
+    document.body.appendChild(tooltip);
+    const rect = slot.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    
+    let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+    let top = rect.bottom + window.scrollY + 8;
+
+    // 화면 밖으로 나가지 않게 조정
+    if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
+    if (left < 10) left = 10;
+
     tooltip.style.position = 'absolute';
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
     tooltip.style.zIndex = '1000';
+
+    // 바깥 클릭 시 닫기
+    setTimeout(() => {
+        const closeTooltip = (e) => {
+            if (!tooltip.contains(e.target) && e.target !== slot) {
+                tooltip.remove();
+                document.removeEventListener('click', closeTooltip);
+            }
+        };
+        document.addEventListener('click', closeTooltip);
+    }, 0);
 }
 
 /**
@@ -464,9 +485,11 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     if (document.querySelector('.p-item-info-tooltip')) { document.querySelector('.p-item-info-tooltip').remove(); return; }
     
     const isMobile = window.innerWidth <= 768;
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-info-tooltip';
-    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: ${isMobile ? '0.65rem' : '0.85rem'}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
+    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${isMobile ? '0.65rem' : '0.85rem'}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
     
     const imgSize = isMobile ? '16px' : '24px';
     const gap = isMobile ? '4px' : '8px';

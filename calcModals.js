@@ -4,7 +4,7 @@ import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { calculateCardBonus } from './simulator-engine.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
-import { updateSelectedCardsUI } from './calcUI.js';
+import { updateSelectedCardsUI, getIdolDisplayColor } from './calcUI.js';
 import { calcStore } from './calcStore.js';
 
 // 모달 및 상세 내역 스타일 상수
@@ -97,10 +97,15 @@ export function renderSidePanelContent(panel, selectedPlan) {
         c.type !== 'assist' &&
         !state.disabledCards[c.id]
     );
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+    const planCards = calcStore.planCards[selectedPlan] || [];
+
     const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
         const lb = state.supportLB[c.id] || 0;
+        const isSelected = planCards.includes(c.id);
+        const style = isSelected ? `style="border-color: transparent; border-width: 2px;"` : '';
         return `
-            <div class="side-card-item" data-id="${c.id}">
+            <div class="side-card-item ${isSelected ? 'selected' : ''}" data-id="${c.id}" ${style}>
                 <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
                 <img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;">
                 <div class="calc-card-stars">${Array.from({length:4}, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
@@ -146,9 +151,11 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                 const cardId = item.dataset.id, isSelected = item.classList.contains('selected');
                 const plan = calcStore.planType;
                 let currentPlanCards = calcStore.planCards[plan] || [];
+                const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
                 if (isSelected) { 
                     item.classList.remove('selected'); delete item.dataset.selectTime;
+                    item.style.borderColor = '#ddd';
                     calcStore.planCards[plan] = currentPlanCards.filter(id => id !== cardId);
                     if (calcStore.cardChecked[cardId]) delete calcStore.cardChecked[cardId];
                 } else {
@@ -157,10 +164,12 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                         const oldest = sorted[0];
                         if (oldest) {
                             oldest.classList.remove('selected'); delete oldest.dataset.selectTime;
+                            oldest.style.borderColor = '#ddd';
                             calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== oldest.dataset.id);
                         }
                     }
                     item.classList.add('selected'); item.dataset.selectTime = Date.now();
+                    item.style.borderColor = idolColor;
                     calcStore.planCards[plan].push(cardId);
                     calcStore.cardChecked[cardId] = false;
                 }
