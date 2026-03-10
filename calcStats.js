@@ -98,4 +98,34 @@ export const idolData = {
     'rinami': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 11.0, danceBonus: 21.5, visualBonus: 23.5 }
 };
 
+// [참조용] 심사 기준 비율 (툴팁 그래프 전용, 계산에 반영되지 않음)
+// circle: 동그라미 컷, triangle: 세모 컷
+// 수치 의미: [1순위 스탯, 2순위 스탯, 3순위 스탯]
+export const judgingRatios = {
+    hajime: {
+        1: { 
+            protruded: { circle: [625, 441, 341] },
+            balanced: { circle: [560, 419,370] }
+        },
+        2: { 
+            protruded: { circle: [1924, 1281, 1065]},
+            balanced: { circle: [1834, 1361, 1065] }
+        }
+    },
+    nia: {
+        1: { 
+            protruded: { circle: [332, 200, 133] },
+            balanced: { circle: [264, 218, 179] }
+        },
+        2: { 
+            protruded: { circle: [738, 443, 296]},
+            balanced: { circle: [587, 484, 397] }
+        },
+        3: { 
+            protruded: { circle: [1389, 834, 556] },
+            balanced: { circle: [1105, 912, 746] }
+        }
+    }
+};
+
     

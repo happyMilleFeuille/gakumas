@@ -231,19 +231,37 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
     const rarities = ['r', 'sr', 'ssr'];
     if (calcStore.type === 'hajime') rarities.push('legend');
 
-    const maxNums = { ssr: 13, sr: 21, r: 14, legend: 3 };
-    const freeMaxNums = { ssr: 9, sr: 3, r: 2 };
-
+    // [개선] 하드코딩된 maxNums 대신 실제 skillCardList 데이터에서 동적으로 추출
+    const allCardIds = Object.keys(skillCardList);
+    
     rarities.forEach(r => {
-        const planMax = maxNums[r] || 0;
-        for(let i=1; i<=planMax; i++) {
-            const group = [`${activePlan}-${r}${i}`];
-            if (skillCardList[`${activePlan}-${r}${i}alt`]) group.push(`${activePlan}-${r}${i}alt`);
+        // 1. 해당 플랜 전용 카드 필터링 (예: logic-ssr)
+        // 번호순 정렬을 위해 숫자 추출 후 정렬
+        const planCards = allCardIds
+            .filter(id => id.startsWith(`${activePlan}-${r}`) && !id.endsWith('alt'))
+            .sort((a, b) => {
+                const numA = parseInt(a.match(/\d+$/)[0]);
+                const numB = parseInt(b.match(/\d+$/)[0]);
+                return numA - numB;
+            });
+
+        planCards.forEach(baseId => {
+            const group = [baseId];
+            if (skillCardList[`${baseId}alt`]) group.push(`${baseId}alt`);
             cardGroups.push(group);
-        }
+        });
+
+        // 2. 공통(Free) 카드 필터링 (Legend 등급 제외)
         if (r !== 'legend') {
-            const freeMax = freeMaxNums[r] || 0;
-            for(let i=1; i<=freeMax; i++) cardGroups.push([`free-${r}${i}`]);
+            const freeCards = allCardIds
+                .filter(id => id.startsWith(`free-${r}`))
+                .sort((a, b) => {
+                    const numA = parseInt(a.match(/\d+$/)[0]);
+                    const numB = parseInt(b.match(/\d+$/)[0]);
+                    return numA - numB;
+                });
+            
+            freeCards.forEach(id => cardGroups.push([id]));
         }
     });
 
@@ -257,6 +275,14 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
     modal.addEventListener('click', (e) => e.stopPropagation());
     
     const renderCardItem = (id) => {
+        if (id === 'trouble') {
+            const tCount = counts.total.get_t || 0;
+            return `
+                <div class="tune-card-item selected" data-id="trouble" style="pointer-events: none; opacity: 0.9; filter: saturate(1.2);">
+                    <img src="icons/cal/card/trouble.webp">
+                    <div class="card-count-badge ${tCount > 1 ? '' : 'hidden'}">x${tCount}</div>
+                </div>`;
+        }
         const skill = skillCardList[id] || {}, count = selectedSkills[id] || 0, isSelected = count > 0;
         return `
             <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${skill.multi ? 'data-multi="true"' : ''}>
@@ -265,6 +291,11 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
                 <div class="card-reset-btn ${isSelected && skill.multi ? '' : 'hidden'}">×</div>
             </div>`;
     };
+
+    // 트러블 카드가 있다면 목록 맨 앞에 추가
+    if (counts.total.get_t > 0) {
+        cardGroups.unshift(['trouble']);
+    }
 
     const isJa = state.currentLang === 'ja';
     modal.innerHTML = `
@@ -296,11 +327,15 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
         // 1. 모달에서 직접 선택한 스킬 카드 수 합계
         let total = Object.values(skills).reduce((a, b) => a + b, 0);
         
+        // 1-2. 보드에서 행동 결과로 얻은 트러블 카드 수 합산 (분자에 포함)
+        total += (counts.total.get_t || 0);
+        
         // 2. [추가] 서포트 카드 체크로 획득한 카드 수 합산
         const selectedIds = calcStore.planCards[currentPlan] || [];
         selectedIds.forEach(id => {
             if (calcStore.cardChecked[id]) {
                 const card = cardList.find(c => c.id === id);
+                // card_a, card_m, card_t 등 모든 카드 획득 케이스 포함
                 if (card && card.have?.startsWith('card_')) {
                     total++;
                 }
@@ -346,6 +381,7 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
             // 모달 내 아이템 UI 즉시 갱신
             modal.querySelectorAll('.tune-card-item').forEach(el => {
                 const cid = el.dataset.id;
+                if (cid === 'trouble') return; // 트러블 카드는 갱신하지 않음
                 const count = skills[cid] || 0;
                 el.classList.toggle('selected', count > 0);
                 const badge = el.querySelector('.card-count-badge');
@@ -370,6 +406,9 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
         // 3. 모달 내 헤더 제목 및 개별 아이템 UI 즉시 갱신
         updateTitle();
         modal.querySelectorAll('.tune-card-item').forEach(el => {
+            const cid = el.dataset.id;
+            if (cid === 'trouble') return; // 트러블 카드는 초기화에서 제외
+            
             el.classList.remove('selected');
             const badge = el.querySelector('.card-count-badge');
             if (badge) badge.classList.add('hidden');

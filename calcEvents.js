@@ -82,17 +82,25 @@ export function initGlobalDistListener(refreshAll, getBoardPools) {
 
         // 5. 분배기 (강화/삭제/획득) 조정
         if (distBtn) {
-            const target = distBtn.dataset.dist; // 'em', 'ea', 'dm', 'da', 'gm', 'ga'
+            const target = distBtn.dataset.dist; // 'em', 'ea', 'dm', 'da', 'dt', 'gm', 'ga', 'gt'
             if (!target) return;
 
             const type = target[0]; // 'e', 'd', 'g'
-            const sub = target[1]; // 'm', 'a'
+            const sub = target[1]; // 'm', 'a', 't'
             const storeKey = type === 'e' ? 'manualEnhance' : (type === 'd' ? 'manualDelete' : 'manualGet');
-            const otherSub = sub === 'm' ? 'a' : 'm';
+            
+            // 삭제(d)의 경우 m, a, t 삼각 교체 / 나머지는 m, a 양방향 교체
+            let sourceSub = '';
+            if (type === 'd') {
+                if (sub === 'm') sourceSub = calcStore[storeKey].a > 0 ? 'a' : 't';
+                else if (sub === 'a') sourceSub = calcStore[storeKey].t > 0 ? 't' : 'm';
+                else if (sub === 't') sourceSub = calcStore[storeKey].m > 0 ? 'm' : 'a';
+            } else {
+                sourceSub = sub === 'm' ? 'a' : 'm';
+            }
 
-            // 간단한 교체 로직: 반대쪽에서 하나 가져옴
-            if (calcStore[storeKey][otherSub] > 0) {
-                calcStore[storeKey][otherSub]--;
+            if (calcStore[storeKey][sourceSub] > 0) {
+                calcStore[storeKey][sourceSub]--;
                 calcStore[storeKey][sub]++;
                 calcStore.save();
                 refreshAll();

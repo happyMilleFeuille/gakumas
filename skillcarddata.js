@@ -116,7 +116,7 @@ export const skillCardList = {
     "logic-ssr1": { type: "active", attrs: ["goodimpression"], rarity: "SSR" },
     "logic-ssr1alt": { type: "active", attrs: ["goodimpression"], rarity: "SSR" },    
     "logic-ssr2": { type: "active", attrs: ["motivation"], rarity: "SSR" },
-    "logic-ssr1alt": { type: "active", attrs: ["genki"], rarity: "SSR" },    
+    "logic-ssr2alt": { type: "active", attrs: ["genki"], rarity: "SSR" },    
     "logic-ssr3": { type: "mental", attrs: [], rarity: "SSR" },
     "logic-ssr4": { type: "mental", attrs: ["goodimpression"], rarity: "SSR" },
     "logic-ssr5": { type: "mental", attrs: ["goodimpression","motivation"], rarity: "SSR" },

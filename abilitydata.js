@@ -273,7 +273,7 @@ export const abilityData = {
             "SSR": {1: 4,2: 5},     
             "SSR_DIST": {1: 0, 2: 0},                   
             "SR": {1: 0, 2: 0 }},               
-            trigger: ["get_drink"],
+            trigger: ["get_drink","purchase_drink"],
     },   
     "purchase_drink": {
         format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}" },

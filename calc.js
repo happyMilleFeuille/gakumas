@@ -6,8 +6,10 @@ import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
+import { pItemDescriptions } from './pItemData.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { calculateCardBonus } from './simulator-engine.js';
+import { baseStats, getNiaLessonStat, getHajimeLessonStat, idolData, niaAuditionStats, judgingRatios } from './calcStats.js';
 import { 
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel 
@@ -47,6 +49,91 @@ function startWeeklyPlan(type) {
                     }
                 }, 100);
             }
+
+            // [추가] 정보 버튼(i) 이벤트 바인딩
+            document.querySelectorAll('.info-i-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    const actionType = btn.dataset.type; // 'test' or 'audition'
+                    const weekRow = btn.closest('.week-row');
+                    if (!weekRow) return;
+                    const weekNum = parseInt(weekRow.dataset.week);
+                    
+                    // 1. 수치 데이터 추출 로직 (참조용 비율 데이터만 사용)
+                    let circleStats = { vocal: 0, dance: 0, visual: 0 };
+                    const idolInfo = idolData[calcStore.selectedIdol];
+                    const ratios = judgingRatios[calcStore.type];
+                    
+                    if (idolInfo && ratios) {
+                        let stageIdx = 0;
+                        if (calcStore.type === 'nia') {
+                            if (weekNum <= 10) stageIdx = 1;
+                            else if (weekNum <= 20) stageIdx = 2;
+                            else stageIdx = 3;
+                        } else {
+                            // 하지메: 6주차 부근은 1단계(중간), 그 이후(13주차 부근)는 2단계(기말)
+                            stageIdx = (weekNum <= 10) ? 1 : 2;
+                        }
+                        
+                        const stageData = ratios[stageIdx];
+                        if (stageData) {
+                            const data = idolInfo.growthType === 'protruded' ? stageData.protruded : stageData.balanced;
+                            // 동그라미 수치 배분
+                            idolInfo.priority.forEach((attr, idx) => {
+                                if (data && data.circle) {
+                                    circleStats[attr] = data.circle[idx] || 0;
+                                } else if (Array.isArray(data)) {
+                                    circleStats[attr] = data[idx] || 0;
+                                }
+                            });
+                        }
+                    }
+
+                    document.querySelectorAll('.stat-graph-tooltip').forEach(t => t.remove());
+
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'calc-tooltip stat-graph-tooltip';
+                    
+                    const isJa = state.currentLang === 'ja';
+                    const maxVal = Math.max(circleStats.vocal, circleStats.dance, circleStats.visual, 1); // 0 방지
+                    
+                    const renderColumn = (val, color, icon) => {
+                        const height = Math.min(100, (val/maxVal)*100);
+                        return `
+                        <div class="graph-column">
+                            <span class="graph-val" style="color: ${color}">${val}</span>
+                            <div class="graph-bar-bg">
+                                <div class="graph-bar-fill" style="height: ${height}%; background: ${color};"></div>
+                            </div>
+                            <div class="graph-icon"><img src="icons/${icon}.png"></div>
+                        </div>`;
+                    };
+
+                    tooltip.innerHTML = `
+                        <div class="graph-container">
+                            ${renderColumn(circleStats.vocal, '#ff4d8d', 'vocal')}
+                            ${renderColumn(circleStats.dance, '#46a4f3', 'dance')}
+                            ${renderColumn(circleStats.visual, '#fcc75e', 'visual')}
+                        </div>
+                    `;
+
+                    // [수정] body가 아닌 공통 부모(icon-outer-container)에 추가하여 버튼과 함께 스크롤되게 함
+                    const container = btn.closest('.icon-outer-container');
+                    if (container) {
+                        const idolId = calcStore.selectedIdol;
+                        const idolColor = (idolId === 'lilja') ? "#a0e6ff" : (idolColors[idolId] || "#ff4d8d");
+                        
+                        container.appendChild(tooltip);
+                        tooltip.style.left = '50%';
+                        tooltip.style.top = '-5px';
+                        tooltip.style.transform = 'translate(-50%, -100%)';
+                        tooltip.style.borderColor = idolColor;
+                    }
+
+                    const closeTooltip = (ev) => { if (!tooltip.contains(ev.target)) { tooltip.remove(); document.removeEventListener('mousedown', closeTooltip); } };
+                    setTimeout(() => document.addEventListener('mousedown', closeTooltip), 10);
+                };
+            });
 
             const backBtn = document.querySelector('.back-btn');
             if (backBtn) backBtn.onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
@@ -101,6 +188,11 @@ function startWeeklyPlan(type) {
                         // SP 배지가 있다면 색상 즉시 업데이트
                         const badge = w.querySelector('.sp-badge');
                         if (badge) badge.style.backgroundColor = color;
+                    });
+
+                    // [추가] 정보 버튼(i) 색상도 즉시 업데이트
+                    document.querySelectorAll('.info-i-btn').forEach(iBtn => {
+                        iBtn.style.backgroundColor = color;
                     });
 
                     // [추가] 플랜 타입 버튼의 활성화 테두리 색상도 변경
@@ -231,6 +323,12 @@ function startWeeklyPlan(type) {
                             const tooltip = document.createElement('div');
                             tooltip.className = 'calc-tooltip';
                             tooltip.onclick = (te) => te.stopPropagation(); // 툴팁 내부 클릭 시 닫힘 방지
+                            
+                            // [추가] 아이돌 색상 적용
+                            const idolId = calcStore.selectedIdol;
+                            const idolColor = (idolId === 'lilja') ? "#a0e6ff" : (idolColors[idolId] || "#ff4d8d");
+                            tooltip.style.borderColor = idolColor;
+
                             tooltip.innerHTML = opts.map(o => {
                                 const label = o[`label_${state.currentLang}`] || o.label_ko;
                                 const savedVal = calcStore.weeks[weekNum].opts[o.id];
@@ -240,28 +338,18 @@ function startWeeklyPlan(type) {
                                     return `<div class="tooltip-option"><span>${label}</span><div class="counter-controls" data-id="${o.id}"><button class="cnt-btn minus">-</button><span class="cnt-val">${savedVal || 0}</span><button class="cnt-btn plus">+</button></div></div>`;
                                 }
                             }).join('');
-                            document.body.appendChild(tooltip);
+                            wrapper.appendChild(tooltip);
                             
-                            const rect = wrapper.getBoundingClientRect();
                             const tooltipWidth = tooltip.offsetWidth;
                             const tooltipHeight = tooltip.offsetHeight;
                             
-                            let left = rect.left + rect.width / 2 - tooltipWidth / 2;
-                            let top = rect.top + window.scrollY + rect.height / 2 - tooltipHeight / 2;
-
-                            // 화면 경계 보정 로직 (모바일 대응)
-                            if (left < 10) left = 10;
-                            if (left + tooltipWidth > window.innerWidth - 10) {
-                                left = window.innerWidth - tooltipWidth - 10;
-                            }
-                            // 상단 경계 보정 (너무 위에 있으면 아래로 보냄)
-                            if (top < window.scrollY + 10) {
-                                top = rect.bottom + window.scrollY + 10;
-                            }
-
-                            tooltip.style.left = `${left}px`;
-                            tooltip.style.top = `${top}px`;
-                            tooltip.style.transform = 'none';
+                            // 부모(wrapper) 기준 중앙 정렬
+                            tooltip.style.left = '50%';
+                            tooltip.style.top = '50%';
+                            tooltip.style.transform = 'translate(-50%, -50%)';
+                            tooltip.style.position = 'absolute';
+                            tooltip.style.width = 'max-content';
+                            tooltip.style.zIndex = '1000';
 
                             tooltip.querySelectorAll('input[type="checkbox"]').forEach(chk => {
                                 chk.onchange = () => {
@@ -508,28 +596,15 @@ function setupPItemSelector() {
                 };
                 tooltip.appendChild(img);
             });
-            document.body.appendChild(tooltip);
-            const rect = slot.getBoundingClientRect();
-            const tooltipWidth = tooltip.offsetWidth;
-            const tooltipHeight = tooltip.offsetHeight;
-
-            let left = rect.left + rect.width / 2 - tooltipWidth / 2;
-            let top = rect.top + window.scrollY - tooltipHeight - 10;
-
-            // 가로 위치 보정
-            if (left < 10) left = 10;
-            if (left + tooltipWidth > window.innerWidth - 10) {
-                left = window.innerWidth - tooltipWidth - 10;
-            }
-
-            // 세로 위치 보정 (위에 공간이 없으면 아래로 표시)
-            if (rect.top - tooltipHeight - 20 < 0) {
-                top = rect.bottom + window.scrollY + 10;
-            }
-
-            tooltip.style.left = `${left}px`;
-            tooltip.style.top = `${top}px`;
-            tooltip.style.transform = 'none'; // 기존 transform 제거하고 직접 좌표 지정
+            // [수정] body가 아닌 slot에 추가하여 스크롤 연동
+            slot.appendChild(tooltip);
+            tooltip.style.left = '50%';
+            tooltip.style.bottom = '100%';
+            tooltip.style.top = 'auto'; // 기존 top 설정 제거
+            tooltip.style.marginBottom = '10px';
+            tooltip.style.transform = 'translateX(-50%)';
+            tooltip.style.position = 'absolute';
+            tooltip.style.zIndex = '1000';
         };
     });
 
@@ -548,23 +623,18 @@ function setupPItemSelector() {
             const gap = isMobile ? '4px' : '8px';
 
             const isJa = state.currentLang === 'ja';
-            tooltip.innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: ${gap};">
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '特別レッスン時にカード削除および獲得 (プロデュース中2回)' : '특별수업 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia1-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '相談時にカード削除および獲得 (プロデュース中2回)' : '상담 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
-                    <div style="height: 1px; background: #eee; margin: 1px 0;"></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '営業(強化カード)時にカード削除および獲得 (プロデュース中2回)' : '영업(강화카드) 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '営業(Pポイント)時にカード削除および獲得 (プロデュース中2回)' : '영업(P포인트) 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};"><img src="icons/cal/nia2-3.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;"><span>${isJa ? '営業(ドリンク)時にカード削除および獲得 (プロデュース中2回)' : '영업(드링크) 시 카드 삭제 및 획득 (프로듀스 중 2회)'}</span></div>
-                    <div style="display: flex; align-items: center; gap: ${gap};">
-                        <div style="display: flex; gap: 2px;">
-                            <img src="icons/cal/nia3-1.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">
-                            <img src="icons/cal/nia3-2.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">
-                        </div>
-                        <span>${isJa ? 'オーディション終了時にカード削除およびコピー (プロデュース中2回)' : '오디션 종료 시 카드 삭제 및 복제 (프로듀스 중 2회)'}</span>
-                    </div>
-                </div>
-            `;
+            const items = pItemDescriptions[calcStore.type] || [];
+            
+            let contentHtml = items.map(item => {
+                if (item.type === 'separator') return `<div style="height: 1px; background: #eee; margin: 1px 0;"></div>`;
+                const iconsHtml = item.icons.map(icon => `<img src="icons/cal/${icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">`).join('<div style="width:2px;"></div>');
+                return `<div style="display: flex; align-items: center; gap: ${gap};">
+                            <div style="display: flex; align-items: center; gap: 2px;">${iconsHtml}</div>
+                            <span>${isJa ? (item.ja || item.ko) : item.ko}</span>
+                        </div>`;
+            }).join('');
+
+            tooltip.innerHTML = `<div style="display: flex; flex-direction: column; gap: ${gap};">${contentHtml}</div>`;
             document.body.appendChild(tooltip);
             const rect = infoBtn.getBoundingClientRect();
             const tooltipWidth = tooltip.offsetWidth;
@@ -591,7 +661,7 @@ function setupPItemSelector() {
 }
 
 function getBoardPools(type, store) {
-    const resArr = { enhance: { generic: 0, m: 0, a: 0 }, delete: { generic: 0, m: 0, a: 0 }, get: { generic: 0, m: 0, a: 0 } };
+    const resArr = { enhance: { generic: 0, m: 0, a: 0 }, delete: { generic: 0, m: 0, a: 0 }, get: { generic: 0, m: 0, a: 0, t: 0 } };
     Object.values(store.weeks).forEach(week => {
         const val = week.value; if(!val) return;
         const opts = week.opts || {};
@@ -610,6 +680,7 @@ function getBoardPools(type, store) {
             else if (id === 'get') resArr.get.generic++;
             else if (id === 'get_m') resArr.get.m++;
             else if (id === 'get_a') resArr.get.a++;
+            else if (id === 'get_t') resArr.get.t++;
         });
     });
     if (type === 'nia' && store.pItems) {
@@ -629,9 +700,23 @@ function getBoardPools(type, store) {
 }
 
 function showSubTooltip(parent, week, wrapper, pTooltip) {
-    const sub = document.createElement('div'); sub.className = 'calc-tooltip calc-sub-tooltip'; sub.style.zIndex = '1100'; sub.style.backgroundColor = '#fefefe'; sub.style.border = '1px solid #ff4d8d';
+    const sub = document.createElement('div'); sub.className = 'calc-tooltip calc-sub-tooltip'; sub.style.zIndex = '1100'; sub.style.backgroundColor = '#fefefe'; 
+    
+    // [추가] 아이돌 색상 적용
+    const idolId = calcStore.selectedIdol;
+    const idolColor = (idolId === 'lilja') ? "#a0e6ff" : (idolColors[idolId] || "#ff4d8d");
+    sub.style.border = `1px solid ${idolColor}`;
+
     sub.innerHTML = parent.subOptions.map(o => `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${calcStore.weeks[week].opts[o.id] === 'true' ? 'checked' : ''}><span>${o[`label_${state.currentLang}`] || o.label_ko}</span></label>`).join('');
-    document.body.appendChild(sub); const rect = pTooltip.getBoundingClientRect(); sub.style.left = `${rect.left + rect.width / 2}px`; sub.style.top = `${rect.top + window.scrollY + rect.height / 2}px`; sub.style.transform = 'translate(-50%, -50%)';
+    
+    // [수정] wrapper에 추가하여 스크롤 연동
+    wrapper.appendChild(sub); 
+    sub.style.left = '50%'; 
+    sub.style.top = '50%'; 
+    sub.style.transform = 'translate(-50%, -50%)';
+    sub.style.position = 'absolute';
+    sub.style.width = 'max-content';
+
     sub.querySelectorAll('input[type="checkbox"]').forEach(chk => {
         chk.onchange = () => {
             if (chk.checked) {

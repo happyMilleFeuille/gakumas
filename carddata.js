@@ -1945,6 +1945,7 @@ export const cardList = [
     releasedAt: "2026-03-09",        
     plan: "anomaly", 
     have:"card_a",
+    attrs:["preservation","fullpower","enthusiasm"],
     rarity: "SSR",     
     source:"limited",
     extra1: "param", extra2:"ranenhance",    
@@ -2558,7 +2559,7 @@ export const cardList = [
     plan: "free", 
     have:"item",
     item_effects: [{ type: "action", trigger: ["sp"], target: "get_drink", max: 2}],     
-    releasedAt: "2024-01-22",     
+    releasedAt: "2025-01-22",     
     rarity: "SR",             
     extra1: "param",    
         abilities: 

@@ -92,13 +92,31 @@ export function updateActivityCountsUI(store, counts) {
         <div class="counter-divider"></div>
         <div class="extra-text-counts" style="font-size: 0.75rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
             <div class="text-count-item">${renderDist(isJa ? '強化' : '강화', counts.total.enhance || 0, counts.total.enhance_m || 0, counts.total.enhance_a || 0, '#ff4d8d', 'rgba(255, 77, 141, 0.05)', 'e')}</div>
-            <div class="text-count-item">${renderDist(isJa ? '削除' : '삭제', (counts.total.delete || 0) + (counts.total.delete_t || 0), counts.total.delete_m || 0, counts.total.delete_a || 0, '#555', 'rgba(0,0,0,0.05)', 'd')}</div>
+            <div class="text-count-item">
+                <div class="enhance-item-content" style="background: rgba(0,0,0,0.05); border-color: #555333;">
+                    <span class="dist-label" style="opacity: ${((counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)) > 0 ? 1 : 0.3}; color: #555;">${isJa ? '削除' : '삭제'} <span class="counter-count">${(counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)}</span></span>
+                    <div class="dist-group" style="opacity: ${((counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)) > 0 ? 1 : 0.3};">
+                        <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val">${counts.total.delete_m || 0}</span><button class="dist-btn plus" data-dist="dm">+</button></div>
+                        <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val">${counts.total.delete_a || 0}</span><button class="dist-btn plus" data-dist="da">+</button></div>
+                        <div class="dist-unit">
+                            <span>${isJa ? 'トラブル' : '트러블'}</span>
+                            <span class="dist-val">${counts.total.delete_t || 0}${(() => {
+                                const rawTotal = (counts.total.delete_t_before_cap || counts.total.delete_t);
+                                const excess = Math.max(0, rawTotal - counts.total.delete_t);
+                                return excess > 0 ? `<span style="color: #ff4d8d; font-size: 0.6rem; margin-left: 1px; font-weight: normal;">(-${excess})</span>` : '';
+                            })()}</span>
+                            <button class="dist-btn plus" data-dist="dt">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="text-count-item">
                 <div class="enhance-item-content" style="background: rgba(255, 152, 0, 0.05); border-color: rgba(255, 152, 0, 0.2);">
                     <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">${isJa ? 'カード獲得' : '카드획득'} <span class="counter-count">${counts.total.get || 0}</span></span>
                     <div class="dist-group" style="opacity: ${counts.total.get > 0 ? 1 : 0.3};">
                         <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_m || 0}</span></div>
                         <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_a || 0}</span></div>
+                        <div class="dist-unit"><span>${isJa ? 'トラブル' : '트러블'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_t || 0}</span></div>
                     </div>
                 </div>
             </div>
@@ -242,7 +260,16 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 }
             }
             
-            return `<div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}><img src="icons/cal/${opt.value}.webp" class="plan-icon-img"></div>`;
+            const isTestOrAudition = ['test', 'audition'].includes(opt.value);
+            const infoBtnHtml = isTestOrAudition ? `<div class="info-i-btn" data-type="${opt.value}" style="background-color: ${idolColor};">i</div>` : '';
+            
+            return `
+                <div class="icon-outer-container ${isLarge ? 'large-container' : ''}">
+                    <div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}>
+                        <img src="icons/cal/${opt.value}.webp" class="plan-icon-img">
+                    </div>
+                    ${infoBtnHtml}
+                </div>`;
         }).join('');
         return `<div class="week-row" data-week="${i}"><div class="week-header"><span class="week-label">${i}${isJa ? '週' : '주'}</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
     }).join('');

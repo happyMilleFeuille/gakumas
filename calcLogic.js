@@ -1,4 +1,4 @@
-// calcLogic.js
+﻿// calcLogic.js
 import { state } from './state.js';
 import { calcPlans } from './calcData.js';
 import { cardList } from './carddata.js';
@@ -31,14 +31,12 @@ export function getTriggerCounts(store) {
             actionDef.results.forEach(rid => {
                 const id = rid.trim();
                 if (id === 'get') counts.total.get++;
+                else if (id === 'get_t') counts.total.get_t++;
+                else if (id === 'delete') counts.total.delete++;
+                else if (id === 'delete_t') counts.total.delete_t++;
                 else if (id === 'get_drink') counts.total.get_drink++;
                 else counts.total[id] = (counts.total[id] || 0) + 1;
             });
-        }
-
-        const optDefMain = (activityOptions[actionId] || []).find(o => o.value === actionId);
-        if (optDefMain && optDefMain.results) {
-            optDefMain.results.forEach(rid => { counts.total[rid] = (counts.total[rid] || 0) + 1; });
         }
 
         if (actionId === 'lessonvo') { if (isSP) counts.lessons.vocal.sp++; else counts.lessons.vocal.normal++; }
@@ -191,12 +189,14 @@ export function getTriggerCounts(store) {
                         multiplier = Math.min(totalTriggerCount, counter);
                     }
                     if (multiplier > 0) {
+                        const bonusValue = (eff.value || 1) * (eff.max ? Math.min(multiplier, eff.max) : multiplier);
                         const rawTarget = eff.target || eff.targets; // target 우선, targets 하위호환
                         const targetList = Array.isArray(rawTarget) ? rawTarget : (rawTarget ? [rawTarget] : []);
 
                         targetList.forEach(t => {
-                            if (counts.total.hasOwnProperty(t)) counts.total[t] += ((eff.value || 1) * multiplier);
-                            else counts.total[t] = (counts.total[t] || 0) + ((eff.value || 1) * multiplier);
+                            if (t === 'delete_t' || t === 'get_t') counts.total[t] += bonusValue;
+                            else if (counts.total.hasOwnProperty(t)) counts.total[t] += bonusValue;
+                            else counts.total[t] = (counts.total[t] || 0) + bonusValue;
                         });
                     }
                 }
@@ -232,22 +232,27 @@ export function getTriggerCounts(store) {
     const currentDeletePool = counts.total.delete || 0;
     let dm = Number(store.manualDelete?.m) || 0;
     let da = Number(store.manualDelete?.a) || 0;
-    if (currentDeletePool === 0) { dm = 0; da = 0; }
+    let dt = Number(store.manualDelete?.t) || 0;
+    if (currentDeletePool === 0) { dm = 0; da = 0; dt = 0; }
     else {
-        let diffD = currentDeletePool - (dm + da);
+        let diffD = currentDeletePool - (dm + da + dt);
         if (diffD > 0) dm += diffD;
         else if (diffD < 0) {
-            const reduceM = Math.min(dm, Math.abs(diffD)); dm -= reduceM; diffD += reduceM;
-            if (diffD < 0) da = Math.max(0, da + diffD);
+            let absDiff = Math.abs(diffD);
+            const redM = Math.min(dm, absDiff); dm -= redM; absDiff -= redM;
+            const redA = Math.min(da, absDiff); da -= redA; absDiff -= redA;
+            if (absDiff > 0) dt = Math.max(0, dt - absDiff);
         }
     }
-    store.manualDelete = { m: dm, a: da };
-    counts.total.delete_m += dm; counts.total.delete_a += da;
+    store.manualDelete = { m: dm, a: da, t: dt };
+    counts.total.delete_m += dm; counts.total.delete_a += da; 
+
+    // [잠금] 최종 트러블 삭제량은 획득량을 절대로 넘을 수 없음
+    counts.total.delete_t_before_cap = (counts.total.delete_t || 0) + dt;
+    counts.total.delete_t = Math.min(counts.total.delete_t_before_cap, counts.total.get_t || 0);
 
     return counts;
-}
-
-/**
+}/**
  * 전역 상태를 바탕으로 최종 합계 스탯 계산
  */
 export function calculateTotals(store, detailedCounts) {
@@ -317,6 +322,12 @@ export function calculateTotals(store, detailedCounts) {
                             else if (t === 'class') { totalTriggerCount += (detailedCounts.total['class_hajime'] || 0) + (detailedCounts.total['class_nia'] || 0); }
                             else if (t === 'gift') { totalTriggerCount += (detailedCounts.total['gift_hajime'] || 0) + (detailedCounts.total['gift_nia'] || 0); }
                             else if (t === 'goout') { totalTriggerCount += (detailedCounts.total['goout_hajime'] || 0) + (detailedCounts.total['goout_nia'] || 0); }
+                            else if (t === 'del' || t === 'delete') {
+                                totalTriggerCount += (detailedCounts.total.delete || 0);
+                            }
+                            else if (t === 'get') {
+                                totalTriggerCount += (detailedCounts.total.get || 0);
+                            }
                             else totalTriggerCount += (detailedCounts.total[t] || 0);
                         });
                         multiplier = Math.min(totalTriggerCount, multiplier);
