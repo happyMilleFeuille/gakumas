@@ -1,20 +1,19 @@
 // calc.js
 import { state, idolColors } from './state.js';
 import { updatePageTranslations } from './utils.js';
-import { calcPlans } from './calcData.js';
+import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
-import { pItemDescriptions } from './pItemData.js';
-import { getTriggerCounts, calculateTotals } from './calcLogic.js';
+import { pItemDescriptions, pItemSlots } from './pItemData.js';
+import { getTriggerCounts, calculateTotals, getNiaLessonStat, getHajimeLessonStat } from './calcLogic.js';
 import { calculateCardBonus } from './simulator-engine.js';
-import { baseStats, getNiaLessonStat, getHajimeLessonStat, idolData, niaAuditionStats, judgingRatios } from './calcStats.js';
 import { 
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
-    renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel 
-} from './calcUI.js';
-import { initGlobalDistListener } from './calcEvents.js';
+    renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel,
+    showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip
+} from './calcUI.js';import { initGlobalDistListener } from './calcEvents.js';
 import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal } from './calcModals.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
@@ -26,7 +25,7 @@ export function initCalc() {
 
 function startWeeklyPlan(type) {
     calcStore.init(type);
-    initGlobalDistListener(refreshAll, getBoardPools);
+    initGlobalDistListener(refreshAll);
     
     const handlers = {
         setupAll: () => {
@@ -486,58 +485,24 @@ function updateSidePanelBonuses(panel, counts) {
             if (!card) return;
             
             const lb = state.supportLB[cardId] || 0;
-            const bonus = calculateCardBonus(card, counts, lb);
+            const itemCounter = calcStore.itemCounters[cardId] || 0;
+            const bonus = calculateCardBonus(card, counts, lb, itemCounter);
             
             let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
             if (bonus.percent > 0 && card.type && baseTotal[card.type]) {
                 totalVal += Math.round(baseTotal[card.type] * (bonus.percent / 100));
             }
 
-            if (card.item_effects) {
-                const counter = calcStore.itemCounters[cardId] || 0;
-                card.item_effects.forEach(eff => {
-                    if (eff.type === 'fixed' && eff.stats) {
-                        totalVal += (eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0);
-                    } else if (eff.type === 'action' && eff.stats && counter > 0) {
-                        let multiplier = counter;
-                        if (eff.trigger) {
-                            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-                            let tCount = 0;
-                            triggers.forEach(t => {
-                                if (t === 'lesson') {
-                                    tCount += (counts.lessons.vocal.normal + counts.lessons.vocal.sp + counts.lessons.dance.normal + counts.lessons.dance.sp + counts.lessons.visual.normal + counts.lessons.visual.sp);
-                                } else if (t === 'class') {
-                                    tCount += (counts.total['class_hajime'] || 0) + (counts.total['class_nia'] || 0);
-                                } else if (t === 'gift') {
-                                    tCount += (counts.total['gift_hajime'] || 0) + (counts.total['gift_nia'] || 0);
-                                } else if (t === 'goout') {
-                                    tCount += (counts.total['goout_hajime'] || 0) + (counts.total['goout_nia'] || 0);
-                                } else {
-                                    tCount += (counts.total[t] || 0);
-                                }
-                            });
-                            multiplier = Math.min(tCount, counter);
-                        }
-                        if (multiplier > 0) {
-                            totalVal += ((eff.stats.vocal || 0) + (eff.stats.dance || 0) + (eff.stats.visual || 0)) * multiplier;
-                        }
-                    }
-                });
-            }
-
             const bonusEl = item.querySelector('.bonus-val');
             if (bonusEl) {
-                // 수치가 0보다 클 때만 표시, 소수점은 반올림하여 정수로 처리
                 const displayVal = Math.round(totalVal);
                 bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '';
                 
-                // SP 강조 효과 처리
                 bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
                 if (card.abilities?.includes('sp_lessonup')) {
                     bonusEl.classList.add(`sp-${card.type}`);
                 }
             }
-            // 정렬 순서 강제 적용
             item.style.order = Math.floor(-totalVal);
         });
     } catch (err) {
@@ -551,60 +516,15 @@ function setupPItemSelector() {
 
     if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
     
-    // 캐릭터별 아이템 구성
-    const niaItemsBySlot = [['nia1-1', 'nia1-2'], ['nia2-1', 'nia2-2', 'nia2-3'], ['nia3-1', 'nia3-2'], ['nia4-1', 'nia4-2', 'nia4-3'], ['nia5-1', 'nia5-2', 'nia5-3']];
-    const hajimeItemsBySlot = [['hajime1'], ['hajime2'], ['hajime3'], ['hajime4-1', 'hajime4-2', 'hajime4-3']];
-    
     const currentType = calcStore.type;
-    const itemsBySlot = currentType === 'nia' ? niaItemsBySlot : hajimeItemsBySlot;
+    const itemsBySlot = pItemSlots[currentType] || [];
 
     container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
         const val = calcStore.pItems[idx];
         slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
-        
         slot.onclick = (e) => {
             e.stopPropagation();
-            document.querySelectorAll('.p-item-tooltip').forEach(t => t.remove());
-            
-            const isMobile = window.innerWidth <= 768;
-            const tooltip = document.createElement('div');
-            tooltip.className = 'calc-tooltip p-item-tooltip';
-            const tooltipPadding = isMobile ? '8px' : '12px';
-            const targetWidth = isMobile ? '170px' : '210px';
-            tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:140px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box;`;
-
-            const btnSize = isMobile ? '32px' : '40px';
-            const clearBtn = document.createElement('div');
-            clearBtn.textContent = 'X'; clearBtn.className = 'calc-btn-square'; // 충돌 방지를 위해 클래스명 변경 또는 커스텀
-            clearBtn.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; padding:0; display:flex; align-items:center; justify-content:center; font-size:${isMobile ? '1rem' : '1.2rem'}; background:#f8f9fa; color:#888; border:1px solid #ddd; cursor:pointer; box-sizing:border-box; border-radius:4px;`;
-            clearBtn.onclick = () => {
-                calcStore.pItems[idx] = null;
-                slot.innerHTML = '<span class="p-item-placeholder">+</span>';
-                calcStore.save(); refreshAll(); tooltip.remove();
-            };
-            tooltip.appendChild(clearBtn);
-
-            const slotItems = itemsBySlot[idx] || [];
-            slotItems.forEach(item => {
-                const img = document.createElement('img');
-                img.src = `icons/cal/${item}.webp`; 
-                img.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; cursor:pointer; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;`;
-                img.onclick = () => {
-                    calcStore.pItems[idx] = item;
-                    slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`;
-                    calcStore.save(); refreshAll(); tooltip.remove();
-                };
-                tooltip.appendChild(img);
-            });
-            // [수정] body가 아닌 slot에 추가하여 스크롤 연동
-            slot.appendChild(tooltip);
-            tooltip.style.left = '50%';
-            tooltip.style.bottom = '100%';
-            tooltip.style.top = 'auto'; // 기존 top 설정 제거
-            tooltip.style.marginBottom = '10px';
-            tooltip.style.transform = 'translateX(-50%)';
-            tooltip.style.position = 'absolute';
-            tooltip.style.zIndex = '1000';
+            showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll);
         };
     });
 
@@ -612,130 +532,12 @@ function setupPItemSelector() {
     if (infoBtn) {
         infoBtn.onclick = (e) => {
             e.stopPropagation();
-            if (document.querySelector('.p-item-info-tooltip')) { document.querySelector('.p-item-info-tooltip').remove(); return; }
-            
-            const isMobile = window.innerWidth <= 768;
-            const tooltip = document.createElement('div');
-            tooltip.className = 'calc-tooltip p-item-info-tooltip';
-            tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: ${isMobile ? '0.65rem' : '0.85rem'}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
-            
-            const imgSize = isMobile ? '16px' : '24px';
-            const gap = isMobile ? '4px' : '8px';
-
-            const isJa = state.currentLang === 'ja';
-            const items = pItemDescriptions[calcStore.type] || [];
-            
-            let contentHtml = items.map(item => {
-                if (item.type === 'separator') return `<div style="height: 1px; background: #eee; margin: 1px 0;"></div>`;
-                const iconsHtml = item.icons.map(icon => `<img src="icons/cal/${icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">`).join('<div style="width:2px;"></div>');
-                return `<div style="display: flex; align-items: center; gap: ${gap};">
-                            <div style="display: flex; align-items: center; gap: 2px;">${iconsHtml}</div>
-                            <span>${isJa ? (item.ja || item.ko) : item.ko}</span>
-                        </div>`;
-            }).join('');
-
-            tooltip.innerHTML = `<div style="display: flex; flex-direction: column; gap: ${gap};">${contentHtml}</div>`;
-            document.body.appendChild(tooltip);
-            const rect = infoBtn.getBoundingClientRect();
-            const tooltipWidth = tooltip.offsetWidth;
-            const tooltipHeight = tooltip.offsetHeight;
-
-            let left = rect.left;
-            let top = rect.bottom + window.scrollY + 8;
-
-            // 가로 위치 보정
-            if (left + tooltipWidth > window.innerWidth - 10) {
-                left = window.innerWidth - tooltipWidth - 10;
-            }
-            if (left < 10) left = 10;
-
-            // 세로 위치 보정 (화면 하단을 벗어나면 위로 띄움)
-            if (rect.bottom + tooltipHeight + 20 > window.innerHeight) {
-                top = rect.top + window.scrollY - tooltipHeight - 8;
-            }
-
-            tooltip.style.left = `${left}px`;
-            tooltip.style.top = `${top}px`;
+            showPItemInfoTooltip(infoBtn, pItemDescriptions);
         };
     }
 }
 
-function getBoardPools(type, store) {
-    const resArr = { enhance: { generic: 0, m: 0, a: 0 }, delete: { generic: 0, m: 0, a: 0 }, get: { generic: 0, m: 0, a: 0, t: 0 } };
-    Object.values(store.weeks).forEach(week => {
-        const val = week.value; if(!val) return;
-        const opts = week.opts || {};
-        const res = (Object.keys(opts).filter(k => opts[k] === 'true' || !isNaN(opts[k])).flatMap(optId => {
-            const countInc = (opts[optId] === 'true' ? 1 : parseInt(opts[optId]));
-            const optDef = (activityOptions[val] || []).find(o => o.id === optId) || (activityOptions[val] || []).flatMap(o => o.subOptions || []).find(so => so.id === optId);
-            return Array(countInc).fill((optDef && optDef.results) ? optDef.results : [optId]).flat();
-        }));
-        res.forEach(id => {
-            if (['enhance', 'ranenhance'].includes(id)) resArr.enhance.generic++;
-            else if (id === 'enhance_m') resArr.enhance.m++;
-            else if (id === 'enhance_a') resArr.enhance.a++;
-            else if (id === 'delete') resArr.delete.generic++;
-            else if (id === 'delete_m') resArr.delete.m++;
-            else if (id === 'delete_a') resArr.delete.a++;
-            else if (id === 'get') resArr.get.generic++;
-            else if (id === 'get_m') resArr.get.m++;
-            else if (id === 'get_a') resArr.get.a++;
-            else if (id === 'get_t') resArr.get.t++;
-        });
-    });
-    if (type === 'nia' && store.pItems) {
-        const boardCounts = {};
-        Object.values(store.weeks).forEach(w => { if(w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
-        let niaBonusGet = 0, niaBonusDelete = 0, niaBonusEnhance = 0;
-        if (store.pItems.includes('nia1-1')) { const b = Math.min(boardCounts['spclass'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
-        if (store.pItems.includes('nia1-2')) { const b = Math.min(boardCounts['advice'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
-        let n21 = 0, n41 = 0;
-        Object.keys(store.weeks).forEach(wNum => {
-            const week = store.weeks[wNum]; if(week.value === 'class_nia' && week.opts.get_enhancedcard === 'true') { n21++; if (parseInt(wNum) >= 10) n41++; }
-        });
-        if (store.pItems.includes('nia2-1')) { const b = Math.min(n21, 2); niaBonusGet += b; niaBonusDelete += b; }
-        resArr.get.generic += niaBonusGet; resArr.delete.generic += niaBonusDelete; resArr.enhance.generic += niaBonusEnhance;
-    }
-    return resArr;
-}
 
-function showSubTooltip(parent, week, wrapper, pTooltip) {
-    const sub = document.createElement('div'); sub.className = 'calc-tooltip calc-sub-tooltip'; sub.style.zIndex = '1100'; sub.style.backgroundColor = '#fefefe'; 
-    
-    // [추가] 아이돌 색상 적용
-    const idolId = calcStore.selectedIdol;
-    const idolColor = (idolId === 'lilja') ? "#a0e6ff" : (idolColors[idolId] || "#ff4d8d");
-    sub.style.border = `1px solid ${idolColor}`;
-
-    sub.innerHTML = parent.subOptions.map(o => `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${calcStore.weeks[week].opts[o.id] === 'true' ? 'checked' : ''}><span>${o[`label_${state.currentLang}`] || o.label_ko}</span></label>`).join('');
-    
-    // [수정] wrapper에 추가하여 스크롤 연동
-    wrapper.appendChild(sub); 
-    sub.style.left = '50%'; 
-    sub.style.top = '50%'; 
-    sub.style.transform = 'translate(-50%, -50%)';
-    sub.style.position = 'absolute';
-    sub.style.width = 'max-content';
-
-    sub.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-        chk.onchange = () => {
-            if (chk.checked) {
-                sub.querySelectorAll('input[type="checkbox"]').forEach(other => {
-                    if (other !== chk && other.checked) {
-                        other.checked = false;
-                        calcStore.updateWeekOpt(week, other.dataset.id, false);
-                        wrapper.dataset[`opt${other.dataset.id}`] = 'false';
-                    }
-                });
-            }
-            calcStore.updateWeekOpt(week, chk.dataset.id, chk.checked);
-            wrapper.dataset[`opt${chk.dataset.id}`] = String(chk.checked);
-            updateMainLabel(wrapper);
-            setTimeout(() => { document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip').forEach(t => t.remove()); }, 100);
-            refreshAll();
-        };
-    });
-}
 
 // 화면 리사이즈 감지 (768px 경계 안정화)
 let lastWidth = window.innerWidth;

@@ -12,3 +12,8 @@ export const pItemDescriptions = {
         { icons: ['hajime2'], ko: '수업 시 카드 획득 (프로듀스 중 2회)', ja: '授業時にカード獲得 (プロデュース中2回)' }
     ]
 };
+
+export const pItemSlots = {
+    nia: [['nia1-1', 'nia1-2'], ['nia2-1', 'nia2-2', 'nia2-3'], ['nia3-1', 'nia3-2'], ['nia4-1', 'nia4-2', 'nia4-3'], ['nia5-1', 'nia5-2', 'nia5-3']],
+    hajime: [['hajime1'], ['hajime2'], ['hajime3'], ['hajime4-1', 'hajime4-2', 'hajime4-3']]
+};

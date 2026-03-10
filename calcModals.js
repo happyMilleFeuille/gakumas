@@ -7,6 +7,15 @@ import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { updateSelectedCardsUI } from './calcUI.js';
 import { calcStore } from './calcStore.js';
 
+// 모달 및 상세 내역 스타일 상수
+const MODAL_STYLES = {
+    row: `display: grid; grid-template-columns: 120px repeat(3, 1fr); align-items: center; padding: 6px 0;`,
+    jpFont: "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace",
+    val: (isJa) => `text-align: center; font-family: ${isJa ? MODAL_STYLES.jpFont : 'monospace'}; font-weight: bold; line-height: 1.2;`,
+    content: `max-width: 380px; padding: 20px;`,
+    header: `display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;`
+};
+
 /**
  * 스탯 상세 내역 모달 표시
  */
@@ -20,24 +29,18 @@ export function showStatDetailModal(breakdown) {
         document.body.appendChild(modal);
     }
 
-    // 공통 레이아웃 스타일 (Label: 120px, Values: 1fr씩)
-    const rowStyle = `display: grid; grid-template-columns: 120px repeat(3, 1fr); align-items: center; padding: 6px 0;`;
-    const jpFont = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    const valStyle = `text-align: center; font-family: ${isJa ? jpFont : 'monospace'}; font-weight: bold; line-height: 1.2;`;
-
-
     const renderRow = (label, values, isTotal = false, isBase = false, subValues = null) => {
         const getValHtml = (val, sub, color) => {
             const hasSub = sub !== null && sub !== undefined;
             return `
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     ${hasSub ? `<span style="font-size: 0.6rem; color: #999; margin-bottom: -2px; opacity: 0.8;">${Number(sub || 0).toFixed(1)}%</span>` : ''}
-                    <span style="${valStyle} color: ${color}; font-size: ${isTotal ? '1rem' : '0.85rem'};">${Math.round(val || 0)}</span>
+                    <span style="${MODAL_STYLES.val(isJa)} color: ${color}; font-size: ${isTotal ? '1rem' : '0.85rem'};">${Math.round(val || 0)}</span>
                 </div>`;
         };
 
         return `
-            <div class="stat-detail-row" style="${rowStyle} ${isTotal ? 'border-top: 2px solid #ff4d8d; margin-top: 8px; padding-top: 10px;' : (isBase ? 'background: #fdf2f7; border-bottom: 2px solid #ff4d8d; margin-bottom: 5px;' : 'border-bottom: 1px solid #f5f5f5;')} position: relative;">
+            <div class="stat-detail-row" style="${MODAL_STYLES.row} ${isTotal ? 'border-top: 2px solid #ff4d8d; margin-top: 8px; padding-top: 10px;' : (isBase ? 'background: #fdf2f7; border-bottom: 2px solid #ff4d8d; margin-bottom: 5px;' : 'border-bottom: 1px solid #f5f5f5;')} position: relative;">
                 <span style="color: #333; font-weight: ${isTotal || isBase ? 'bold' : 'normal'}; padding-left: 5px; font-size: 0.85rem;">${label}</span>
                 ${getValHtml(values?.vocal, subValues?.vocal, '#ff4d8d')}
                 ${getValHtml(values?.dance, subValues?.dance, '#46a4f3')}
@@ -45,32 +48,24 @@ export function showStatDetailModal(breakdown) {
             </div>`;
     };
 
-    // 기초 스탯을 제외한 보너스 합계만 계산
     const bonusTotal = {
-        vocal: breakdown.idol.vocal + breakdown.supportFixed.vocal + breakdown.supportPercent.vocal + breakdown.item.vocal,
-        dance: breakdown.idol.dance + breakdown.supportFixed.dance + breakdown.supportPercent.dance + breakdown.item.dance,
-        visual: breakdown.idol.visual + breakdown.supportFixed.visual + breakdown.supportPercent.visual + breakdown.item.visual
-    };
-
-    const finalTotal = {
-        vocal: breakdown.base.vocal + bonusTotal.vocal,
-        dance: breakdown.base.dance + bonusTotal.dance,
-        visual: breakdown.base.visual + bonusTotal.visual
+        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportFixed.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (breakdown.item?.vocal || 0),
+        dance: (breakdown.idol.dance || 0) + (breakdown.supportFixed.dance || 0) + (breakdown.supportPercent.dance || 0) + (breakdown.item?.dance || 0),
+        visual: (breakdown.idol.visual || 0) + (breakdown.supportFixed.visual || 0) + (breakdown.supportPercent.visual || 0) + (breakdown.item?.visual || 0)
     };
 
     const allBonusSum = Math.round(bonusTotal.vocal + bonusTotal.dance + bonusTotal.visual);
 
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 380px; padding: 20px;">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div class="modal-content" style="${MODAL_STYLES.content}">
+            <div class="modal-header" style="${MODAL_STYLES.header}">
                 <h3 style="margin: 0; color: #ff4d8d; font-size: 1rem;">
                     ${isJa ? 'ステータス詳細' : '스탯 상세 내역'} 
                     <span style="font-size: 0.8rem; color: #666; font-weight: normal; margin-left: 5px;">(+${allBonusSum})</span>
                 </h3>
-
                 <span class="modal-close" style="cursor: pointer; font-size: 24px; color: #aaa;" onclick="document.getElementById('stat-detail-modal').style.display='none'">&times;</span>
             </div>
-            <div class="stat-detail-header" style="${rowStyle} border-bottom: 1px solid #eee; margin-bottom: 2px; font-weight: bold; font-size: 0.8rem; color: #666;">
+            <div class="stat-detail-header" style="${MODAL_STYLES.row} border-bottom: 1px solid #eee; margin-bottom: 2px; font-weight: bold; font-size: 0.8rem; color: #666;">
                 <span></span>
                 <span style="text-align: center; color: #ff4d8d;">${isJa ? 'Vo' : '보컬'}</span>
                 <span style="text-align: center; color: #46a4f3;">${isJa ? 'Da' : '댄스'}</span>
@@ -80,19 +75,15 @@ export function showStatDetailModal(breakdown) {
                 ${renderRow(isJa ? 'レッスン・試験' : '레슨/시험', breakdown.base, false, true)}
                 <div style="font-size: 0.65rem; color: #999; margin: 8px 0 4px 5px; font-weight: bold;">${isJa ? '▼ ボーナス' : '▼ 보너스'}</div>
                 ${renderRow(isJa ? 'アイドル(%)' : '아이돌 (%)', breakdown.idol, false, false, breakdown.idol.percent)}
-                ${renderRow(isJa ? 'サポカ(固定)' : '서포트 (고정)', breakdown.supportFixed, false, false, null)}
-                ${renderRow(isJa ? 'サポカ(%)' : '서포트 (%)', breakdown.supportPercent, false, false, breakdown.supportPercent.factors)}
-                ${renderRow(isJa ? 'アイテム' : '아이템 보너스', breakdown.item, false, false, null)}
+                ${renderRow(isJa ? 'サ포카(固定)' : '서포트 (고정)', breakdown.supportFixed, false, false, null)}
+                ${renderRow(isJa ? 'サ포카(%)' : '서포트 (%)', breakdown.supportPercent, false, false, breakdown.supportPercent.factors)}
+                ${(breakdown.item?.vocal || breakdown.item?.dance || breakdown.item?.visual) ? renderRow(isJa ? 'アイテム' : '아이템 보너스', breakdown.item, false, false, null) : ''}
                 ${renderRow(isJa ? 'ボーナス合計' : '최종 보너스 합계', bonusTotal, true, false, null)}
             </div>
-
-
         </div>`;
 
     modal.style.display = 'flex';
     modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
-    
-    // 뒤로가기 대응을 위한 히스토리 상태 추가
     history.pushState({ modalOpen: modalId }, "");
 }
 
@@ -100,7 +91,6 @@ export function showStatDetailModal(breakdown) {
  * 서포트 카드 선택 패널 렌더링
  */
 export function renderSidePanelContent(panel, selectedPlan) {
-    // state.disabledCards에 포함된 비활성화된 카드는 목록에서 제외
     const filtered = cardList.filter(c => 
         (c.plan === selectedPlan || c.plan === 'free') && 
         c.rarity !== 'R' && 
@@ -172,9 +162,8 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                     }
                     item.classList.add('selected'); item.dataset.selectTime = Date.now();
                     calcStore.planCards[plan].push(cardId);
-                    calcStore.cardChecked[cardId] = false; // 기본 체크 해제 상태로 추가
+                    calcStore.cardChecked[cardId] = false;
                 }
-                
                 calcStore.save();
                 updateSelectedCardsUI(calcStore); 
                 refreshAll();
@@ -188,8 +177,6 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
     }
     
     renderSidePanelContent(panel, selectedPlan);
-    
-    // 선택 상태 복원
     const planCards = calcStore.planCards[selectedPlan] || [];
     planCards.forEach(id => {
         const item = panel.querySelector(`.side-card-item[data-id="${id}"]`);
@@ -219,24 +206,16 @@ window.closeSupportCardPanel = closeSupportCardPanel;
 /**
  * 스킬 카드 선택(조정) 모달
  */
-export function showOtherTuneModal(refreshAll, getBoardPools) {
+export function showOtherTuneModal(refreshAll) {
     const activePlan = calcStore.planType;
     const selectedSkills = calcStore.planSkills[activePlan] || {};
-    
-    // 보드에서의 카드 획득 수치 계산 (실제 calcLogic과 동일하게 counts.total.get 기반으로 계산)
     const counts = getTriggerCounts(calcStore);
-    let boardGetCount = counts.total.get || 0;
-    
     const cardGroups = [];
     const rarities = ['r', 'sr', 'ssr'];
     if (calcStore.type === 'hajime') rarities.push('legend');
 
-    // [개선] 하드코딩된 maxNums 대신 실제 skillCardList 데이터에서 동적으로 추출
     const allCardIds = Object.keys(skillCardList);
-    
     rarities.forEach(r => {
-        // 1. 해당 플랜 전용 카드 필터링 (예: logic-ssr)
-        // 번호순 정렬을 위해 숫자 추출 후 정렬
         const planCards = allCardIds
             .filter(id => id.startsWith(`${activePlan}-${r}`) && !id.endsWith('alt'))
             .sort((a, b) => {
@@ -244,14 +223,11 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
                 const numB = parseInt(b.match(/\d+$/)[0]);
                 return numA - numB;
             });
-
         planCards.forEach(baseId => {
             const group = [baseId];
             if (skillCardList[`${baseId}alt`]) group.push(`${baseId}alt`);
             cardGroups.push(group);
         });
-
-        // 2. 공통(Free) 카드 필터링 (Legend 등급 제외)
         if (r !== 'legend') {
             const freeCards = allCardIds
                 .filter(id => id.startsWith(`free-${r}`))
@@ -260,7 +236,6 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
                     const numB = parseInt(b.match(/\d+$/)[0]);
                     return numA - numB;
                 });
-            
             freeCards.forEach(id => cardGroups.push([id]));
         }
     });
@@ -268,9 +243,7 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
     const modal = document.createElement('div');
     modal.className = 'modal'; 
     modal.style.display = 'flex'; 
-    modal.style.zIndex = '40000'; // 패널(20000)보다 훨씬 높게 설정
-    
-    // 모달 내부 클릭이 외부로 전파되어 다른 리스너를 트리거하지 않도록 설정
+    modal.style.zIndex = '40000';
     modal.addEventListener('mousedown', (e) => e.stopPropagation());
     modal.addEventListener('click', (e) => e.stopPropagation());
     
@@ -292,10 +265,7 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
             </div>`;
     };
 
-    // 트러블 카드가 있다면 목록 맨 앞에 추가
-    if (counts.total.get_t > 0) {
-        cardGroups.unshift(['trouble']);
-    }
+    if (counts.total.get_t > 0) cardGroups.unshift(['trouble']);
 
     const isJa = state.currentLang === 'ja';
     modal.innerHTML = `
@@ -309,39 +279,22 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
         </div>`;
 
     document.body.appendChild(modal);
-
-    // [추가] 배경 클릭 시 모달 닫기
-    modal.onclick = (e) => {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    };
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 
     const updateTitle = () => {
-        // 실시간으로 counts를 다시 가져와서 분모 업데이트
         const counts = getTriggerCounts(calcStore);
         const boardGetCount = counts.total.get || 0;
         const currentPlan = calcStore.planType;
         const skills = calcStore.planSkills[currentPlan] || {};
-        
-        // 1. 모달에서 직접 선택한 스킬 카드 수 합계
         let total = Object.values(skills).reduce((a, b) => a + b, 0);
-        
-        // 1-2. 보드에서 행동 결과로 얻은 트러블 카드 수 합산 (분자에 포함)
         total += (counts.total.get_t || 0);
-        
-        // 2. [추가] 서포트 카드 체크로 획득한 카드 수 합산
         const selectedIds = calcStore.planCards[currentPlan] || [];
         selectedIds.forEach(id => {
             if (calcStore.cardChecked[id]) {
                 const card = cardList.find(c => c.id === id);
-                // card_a, card_m, card_t 등 모든 카드 획득 케이스 포함
-                if (card && card.have?.startsWith('card_')) {
-                    total++;
-                }
+                if (card && card.have?.startsWith('card_')) total++;
             }
         });
-        
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
             const planLabel = isJa ? (currentPlan === 'sense' ? 'センス' : (currentPlan === 'logic' ? 'ロジック' : 'アノマリー')) : currentPlan.toUpperCase();
@@ -352,36 +305,21 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
 
     modal.querySelectorAll('.tune-card-item').forEach(item => {
         item.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // 중복 처리 방지
-
+            e.preventDefault(); e.stopPropagation();
             const id = item.dataset.id, skill = skillCardList[id] || {}, resetBtn = e.target.closest('.card-reset-btn');
             const currentPlan = calcStore.planType;
-            
             if (!calcStore.planSkills[currentPlan]) calcStore.planSkills[currentPlan] = {};
             const skills = calcStore.planSkills[currentPlan];
-
-            if (resetBtn) {
-                delete skills[id];
-            }
+            if (resetBtn) delete skills[id];
             else {
                 const groupBox = item.closest('.tune-card-group-box');
-                if (groupBox) {
-                    groupBox.dataset.group.split(',').forEach(gid => { if (gid !== id) delete skills[gid]; });
-                }
+                if (groupBox) groupBox.dataset.group.split(',').forEach(gid => { if (gid !== id) delete skills[gid]; });
                 if (skill.multi) skills[id] = (skills[id] || 0) + 1;
                 else if (skills[id]) delete skills[id]; else skills[id] = 1;
             }
-
-            // [중요] 스토어에 데이터 반영 및 저장
-            calcStore.save();
-            refreshAll(); 
-            updateTitle();
-
-            // 모달 내 아이템 UI 즉시 갱신
+            calcStore.save(); refreshAll(); updateTitle();
             modal.querySelectorAll('.tune-card-item').forEach(el => {
-                const cid = el.dataset.id;
-                if (cid === 'trouble') return; // 트러블 카드는 갱신하지 않음
+                const cid = el.dataset.id; if (cid === 'trouble') return;
                 const count = skills[cid] || 0;
                 el.classList.toggle('selected', count > 0);
                 const badge = el.querySelector('.card-count-badge');
@@ -395,25 +333,12 @@ export function showOtherTuneModal(refreshAll, getBoardPools) {
     document.getElementById('reset-all-skills').onclick = () => {
         const resetConfirm = isJa ? '初期化しますか？' : '초기화할까요?';
         if (!confirm(resetConfirm)) return;
-        
-        // 1. 데이터 초기화 및 저장
-        calcStore.planSkills[activePlan] = {}; 
-        calcStore.save(); 
-        
-        // 2. 전체 UI 갱신 (하단 대시보드 등)
-        refreshAll(); 
-        
-        // 3. 모달 내 헤더 제목 및 개별 아이템 UI 즉시 갱신
-        updateTitle();
+        calcStore.planSkills[activePlan] = {}; calcStore.save(); refreshAll(); updateTitle();
         modal.querySelectorAll('.tune-card-item').forEach(el => {
-            const cid = el.dataset.id;
-            if (cid === 'trouble') return; // 트러블 카드는 초기화에서 제외
-            
+            const cid = el.dataset.id; if (cid === 'trouble') return;
             el.classList.remove('selected');
-            const badge = el.querySelector('.card-count-badge');
-            if (badge) badge.classList.add('hidden');
-            const rb = el.querySelector('.card-reset-btn');
-            if (rb) rb.classList.add('hidden');
+            const badge = el.querySelector('.card-count-badge'); if (badge) badge.classList.add('hidden');
+            const rb = el.querySelector('.card-reset-btn'); if (rb) rb.classList.add('hidden');
         });
     };
     document.getElementById('close-tune-modal').onclick = () => modal.remove();

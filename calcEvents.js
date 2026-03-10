@@ -6,7 +6,7 @@ import { calcStore } from './calcStore.js';
 /**
  * 전역 분배기 및 카드 카운터 리스너 설정
  */
-export function initGlobalDistListener(refreshAll, getBoardPools) {
+export function initGlobalDistListener(refreshAll) {
     if (window._distInit) return;
     
     document.addEventListener('click', (e) => {
@@ -76,7 +76,7 @@ export function initGlobalDistListener(refreshAll, getBoardPools) {
 
         // 4. 스킬 카드 조정 모달 열기
         if (tuneBtn) {
-            showOtherTuneModal(refreshAll, getBoardPools);
+            showOtherTuneModal(refreshAll);
             return;
         }
 

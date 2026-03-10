@@ -1,11 +1,58 @@
 ﻿// calcLogic.js
 import { state } from './state.js';
-import { calcPlans } from './calcData.js';
+import { calcPlans, baseStats, idolData, niaAuditionStats } from './calcData.js';
 import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { activityOptions } from './calcOptions.js';
 import { calculateCardBonus } from './simulator-engine.js';
-import { baseStats, getNiaLessonStat, getHajimeLessonStat, idolData, niaAuditionStats } from './calcStats.js';
+
+/**
+ * 하지메(Hajime) 전용 레슨 수치 로직
+ */
+export const getHajimeLessonStat = (actionId, isSP, week) => {
+    let stats = { vocal: 0, dance: 0, visual: 0 };
+    let values = [0, 0, 0]; // [주속성, 부속성, 부속성]
+
+    if (week === 4) {
+        values = isSP ? [140, 55, 55] : [110, 50, 50];
+    } else if (week === 7) {
+        values = isSP ? [180, 60, 60] : [144, 53, 53];
+    } else if (week === 12) {
+        values = isSP ? [260, 70, 70] : [214, 58, 58];
+    } else if (week === 14) {
+        values = isSP ? [370, 90, 90] : [320, 75, 75];
+    } else if (week === 16) {
+        values = isSP ? [570, 115, 115] : [504, 108, 108];
+    } else {
+        return null;
+    }
+
+    if (actionId === 'lessonvo') {
+        stats.vocal = values[0]; stats.dance = values[1]; stats.visual = values[2];
+    } else if (actionId === 'lessondan') {
+        stats.dance = values[0]; stats.vocal = values[1]; stats.visual = values[2];
+    } else if (actionId === 'lessonvi') {
+        stats.visual = values[0]; stats.vocal = values[1]; stats.dance = values[2];
+    }
+    return stats;
+};
+
+/**
+ * 니아(NIA) 전용 레슨 수치 로직
+ */
+export const getNiaLessonStat = (actionId, isSP, week) => {
+    let val = 0;
+    if (week <= 8) val = isSP ? 100 : 80;
+    else if (week <= 16) val = isSP ? 120 : 100;
+    else if (week <= 25) val = isSP ? 150 : 120;
+    else val = isSP ? 150 : 120;
+
+    return {
+        vocal: actionId === 'lessonvo' ? val : 0,
+        dance: actionId === 'lessondan' ? val : 0,
+        visual: actionId === 'lessonvi' ? val : 0
+    };
+};
 
 /**
  * 전역 상태(Store) 객체를 바탕으로 트리거 횟수를 정밀하게 집계
@@ -293,49 +340,17 @@ export function calculateTotals(store, detailedCounts) {
     selectedIds.forEach(cardId => {
         if (state.disabledCards[cardId]) return;
         const card = cardList.find(c => c.id === cardId); if (!card) return;
-        const lb = state.supportLB[cardId] || 0, bonus = calculateCardBonus(card, detailedCounts, lb);
-        supportFixedTotal.vocal += bonus.vocal || 0; supportFixedTotal.dance += bonus.dance || 0; supportFixedTotal.visual += bonus.visual || 0;
+        
+        // --- 리팩토링: 공통 엔진을 사용하여 모든 고정 보너스(어빌리티 + 아이템) 통합 계산 ---
+        const lb = state.supportLB[cardId] || 0;
+        const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
+        const bonus = calculateCardBonus(card, detailedCounts, lb, itemCounter);
+        
+        supportFixedTotal.vocal += bonus.vocal || 0; 
+        supportFixedTotal.dance += bonus.dance || 0; 
+        supportFixedTotal.visual += bonus.visual || 0;
+        
         if (bonus.percent > 0) percentBonuses[card.type] += bonus.percent;
-
-        if (card.item_effects && store.cardChecked[cardId]) {
-            const counter = store.itemCounters[cardId] || 0;
-            card.item_effects.forEach(eff => {
-                if (eff.type === 'fixed' && eff.stats) { itemBonusTotal.vocal += eff.stats.vocal || 0; itemBonusTotal.dance += eff.stats.dance || 0; itemBonusTotal.visual += eff.stats.visual || 0; }
-                else if (eff.type === 'action' && eff.stats && counter > 0) {
-                    let multiplier = counter;
-                    if (eff.trigger) {
-                        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-                        let totalTriggerCount = 0;
-                        triggers.forEach(t => { 
-                            if (t === 'lesson') {
-                                if (card.type === 'vocal') totalTriggerCount += (detailedCounts.lessons.vocal.normal + detailedCounts.lessons.vocal.sp);
-                                else if (card.type === 'dance') totalTriggerCount += (detailedCounts.lessons.dance.normal + detailedCounts.lessons.dance.sp);
-                                else if (card.type === 'visual') totalTriggerCount += (detailedCounts.lessons.visual.normal + detailedCounts.lessons.visual.sp);
-                                else totalTriggerCount += (detailedCounts.lessons.vocal.normal + detailedCounts.lessons.vocal.sp + detailedCounts.lessons.dance.normal + detailedCounts.lessons.dance.sp + detailedCounts.lessons.visual.normal + detailedCounts.lessons.visual.sp);
-                            }
-                            else if (t === 'sp') {
-                                if (card.type === 'vocal') totalTriggerCount += detailedCounts.lessons.vocal.sp;
-                                else if (card.type === 'dance') totalTriggerCount += detailedCounts.lessons.dance.sp;
-                                else if (card.type === 'visual') totalTriggerCount += detailedCounts.lessons.visual.sp;
-                                else totalTriggerCount += (detailedCounts.lessons.vocal.sp + detailedCounts.lessons.dance.sp + detailedCounts.lessons.visual.sp);
-                            }
-                            else if (t === 'class') { totalTriggerCount += (detailedCounts.total['class_hajime'] || 0) + (detailedCounts.total['class_nia'] || 0); }
-                            else if (t === 'gift') { totalTriggerCount += (detailedCounts.total['gift_hajime'] || 0) + (detailedCounts.total['gift_nia'] || 0); }
-                            else if (t === 'goout') { totalTriggerCount += (detailedCounts.total['goout_hajime'] || 0) + (detailedCounts.total['goout_nia'] || 0); }
-                            else if (t === 'del' || t === 'delete') {
-                                totalTriggerCount += (detailedCounts.total.delete || 0);
-                            }
-                            else if (t === 'get') {
-                                totalTriggerCount += (detailedCounts.total.get || 0);
-                            }
-                            else totalTriggerCount += (detailedCounts.total[t] || 0);
-                        });
-                        multiplier = Math.min(totalTriggerCount, multiplier);
-                    }
-                    if (multiplier > 0) { itemBonusTotal.vocal += (eff.stats.vocal || 0) * multiplier; itemBonusTotal.dance += (eff.stats.dance || 0) * multiplier; itemBonusTotal.visual += (eff.stats.visual || 0) * multiplier; }
-                }
-            });
-        }
     });
 
     supportPercentTotal.vocal = Math.round(baseTotal.vocal * (percentBonuses.vocal / 100));
@@ -343,9 +358,9 @@ export function calculateTotals(store, detailedCounts) {
     supportPercentTotal.visual = Math.round(baseTotal.visual * (percentBonuses.visual / 100));
 
     const cardBonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal,
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance,
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal,
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance,
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual
     };
 
     return { 

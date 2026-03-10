@@ -25,37 +25,83 @@ export function getTriggerCounts(calcState) {
  * @param {Object} card - 카드 객체
  * @param {Object} triggerData - 집계된 트리거 데이터 (total, lessons 정보 포함)
  * @param {number} lb - 카드의 돌파 수치 (0~4)
+ * @param {number} itemCounter - (선택) 아이템 효과 카운터 값
  */
-export function calculateCardBonus(card, triggerData, lb = 4) {
+export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0) {
     const results = { vocal: 0, dance: 0, visual: 0, percent: 0 };
     const rarity = card.rarity;
     const isDist = card.source === 'dist';
     const cardType = card.type; // vocal, dance, visual
     
-    if (!card.abilities) return results;
-
-    const totalCounts = triggerData.total || triggerData;
-    const lessonCounts = triggerData.lessons || { vocal: {normal:0, sp:0}, dance: {normal:0, sp:0}, visual: {normal:0, sp:0} };
-
     // --- 1. 등급별 기본 보너스 및 event_paraup 적용 ---
     let baseBonus = rarity === 'SSR' ? 20 : (rarity === 'SR' ? 15 : 0);
     
-    // event_paraup 어빌리티가 있는지 확인하여 기본 보너스 강화
-    if (card.abilities.includes('event_paraup')) {
+    if (card.abilities?.includes('event_paraup')) {
         const epAbility = abilityData['event_paraup'];
         if (epAbility) {
-            // lb에 따른 레벨 결정 (ui.js 규칙: SSR은 0돌:Lv1, 1-3돌:Lv2, 4돌:Lv3 / SR은 0-1돌:Lv1, 2-3돌:Lv2, 4돌:Lv3)
             let epLv = 1;
             if (rarity === 'SSR') epLv = (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1));
             else if (rarity === 'SR') epLv = (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
             
-            const epVal = epAbility.levels[epLv] || 0; // 50, 75, 100 등
+            const epVal = epAbility.levels[epLv] || 0;
             baseBonus = baseBonus * (1 + (epVal / 100));
         }
     }
     applyStat(results, cardType, baseBonus);
 
-    // --- 2. 나머지 어빌리티 계산 ---
+    // --- 2. 아이템 효과(Item Effects) 계산 ---
+    if (card.item_effects) {
+        const totalCounts = triggerData.total || triggerData;
+        const lessonCounts = triggerData.lessons || { vocal: {normal:0, sp:0}, dance: {normal:0, sp:0}, visual: {normal:0, sp:0} };
+
+        card.item_effects.forEach(eff => {
+            if (eff.type === 'fixed' && eff.stats) {
+                applyStat(results, 'vocal', eff.stats.vocal || 0);
+                applyStat(results, 'dance', eff.stats.dance || 0);
+                applyStat(results, 'visual', eff.stats.visual || 0);
+            } else if (eff.type === 'action' && eff.stats && itemCounter > 0) {
+                let multiplier = itemCounter;
+                if (eff.trigger) {
+                    const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                    let totalTriggerCount = 0;
+                    triggers.forEach(t => {
+                        if (t === 'lesson') {
+                            if (card.type === 'vocal') totalTriggerCount += (lessonCounts.vocal.normal + lessonCounts.vocal.sp);
+                            else if (card.type === 'dance') totalTriggerCount += (lessonCounts.dance.normal + lessonCounts.dance.sp);
+                            else if (card.type === 'visual') totalTriggerCount += (lessonCounts.visual.normal + lessonCounts.visual.sp);
+                            else totalTriggerCount += (lessonCounts.vocal.normal + lessonCounts.vocal.sp + lessonCounts.dance.normal + lessonCounts.dance.sp + lessonCounts.visual.normal + lessonCounts.visual.sp);
+                        } else if (t === 'sp') {
+                            if (card.type === 'vocal') totalTriggerCount += lessonCounts.vocal.sp;
+                            else if (card.type === 'dance') totalTriggerCount += lessonCounts.dance.sp;
+                            else if (card.type === 'visual') totalTriggerCount += lessonCounts.visual.sp;
+                            else totalTriggerCount += (lessonCounts.vocal.sp + lessonCounts.dance.sp + lessonCounts.visual.sp);
+                        } else if (t === 'class') {
+                            totalTriggerCount += (totalCounts['class_hajime'] || 0) + (totalCounts['class_nia'] || 0);
+                        } else if (t === 'gift') {
+                            totalTriggerCount += (totalCounts['gift_hajime'] || 0) + (totalCounts['gift_nia'] || 0);
+                        } else if (t === 'goout') {
+                            totalTriggerCount += (totalCounts['goout_hajime'] || 0) + (totalCounts['goout_nia'] || 0);
+                        } else {
+                            totalTriggerCount += (totalCounts[t] || 0);
+                        }
+                    });
+                    multiplier = Math.min(totalTriggerCount, itemCounter);
+                }
+                if (multiplier > 0) {
+                    applyStat(results, 'vocal', (eff.stats.vocal || 0) * multiplier);
+                    applyStat(results, 'dance', (eff.stats.dance || 0) * multiplier);
+                    applyStat(results, 'visual', (eff.stats.visual || 0) * multiplier);
+                }
+            }
+        });
+    }
+
+    if (!card.abilities) return results;
+
+    const totalCounts = triggerData.total || triggerData;
+    const lessonCounts = triggerData.lessons || { vocal: {normal:0, sp:0}, dance: {normal:0, sp:0}, visual: {normal:0, sp:0} };
+
+    // --- 3. 나머지 어빌리티 계산 ---
     const excludedAbilities = [
         'hpmax', 'supportrateup', 'event_paraup', // event_paraup은 위에서 처리함
         'event_recoveryup', 'alllesson_ppoint', 'ppoint', 'sp_ppoint',
