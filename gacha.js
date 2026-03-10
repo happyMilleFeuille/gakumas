@@ -422,11 +422,10 @@ async function handleGachaClick(ui, mode, animation) {
     playSound('gasya/gasyaclick.mp3');
     const cost = mode === 1 ? 250 : 2500;
     
-    // 즉시 버튼 비활성화 및 스피너 표시
+    // 즉시 버튼 비활성화 (스피너 표시 제거)
     if (ui.btn1) ui.btn1.style.pointerEvents = 'none';
     if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
     const spinner = document.getElementById('gacha-spinner');
-    if (spinner) spinner.classList.add('active');
 
     if (ui.jewelCount) ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
 
