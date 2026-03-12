@@ -13,7 +13,7 @@ import {
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel,
     showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip,
-    getIdolDisplayColor
+    getIdolDisplayColor, updateMemorySlotsUI
 } from './calcUI.js';import { initGlobalDistListener } from './calcEvents.js';
 import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal } from './calcModals.js';
 
@@ -97,23 +97,34 @@ function startWeeklyPlan(type) {
                     const isJa = state.currentLang === 'ja';
                     const maxVal = Math.max(circleStats.vocal, circleStats.dance, circleStats.visual, 1); // 0 방지
                     
-                    const renderColumn = (val, color, icon) => {
+                    const getBarPart = (val, color, icon) => {
                         const height = Math.min(100, (val/maxVal)*100);
                         return `
                         <div class="graph-column">
-                            <span class="graph-val" style="color: ${color}">${val}</span>
                             <div class="graph-bar-bg">
                                 <div class="graph-bar-fill" style="height: ${height}%; background: ${color};"></div>
+                                <div class="graph-icon" style="bottom: ${height}%;"><img src="icons/${icon}.png"></div>
                             </div>
-                            <div class="graph-icon"><img src="icons/${icon}.png"></div>
                         </div>`;
                     };
+                    const getValPart = (val, color) => `
+                        <div class="graph-val-column">
+                            <span class="graph-val" style="color: ${color}">${val}</span>
+                        </div>`;
 
                     tooltip.innerHTML = `
                         <div class="graph-container">
-                            ${renderColumn(circleStats.vocal, '#ff4d8d', 'vocal')}
-                            ${renderColumn(circleStats.dance, '#46a4f3', 'dance')}
-                            ${renderColumn(circleStats.visual, '#fcc75e', 'visual')}
+                            <div class="graph-bars-area">
+                                ${getBarPart(circleStats.vocal, '#ff4d8d', 'vocal')}
+                                ${getBarPart(circleStats.dance, '#46a4f3', 'dance')}
+                                ${getBarPart(circleStats.visual, '#fcc75e', 'visual')}
+                            </div>
+                            <div class="graph-baseline"></div>
+                            <div class="graph-vals-area">
+                                ${getValPart(circleStats.vocal, '#ff4d8d')}
+                                ${getValPart(circleStats.dance, '#46a4f3')}
+                                ${getValPart(circleStats.visual, '#fcc75e')}
+                            </div>
                         </div>
                     `;
 
@@ -344,7 +355,8 @@ function startWeeklyPlan(type) {
                         const opts = activityOptions[val];
                         if (opts?.length > 0) {
                             const tooltip = document.createElement('div');
-                            tooltip.className = 'calc-tooltip';
+                            const isClass = val === 'class_hajime' || val === 'class_nia';
+                            tooltip.className = `calc-tooltip ${isClass ? 'split-layout' : ''}`;
                             tooltip.onclick = (te) => te.stopPropagation(); // 툴팁 내부 클릭 시 닫힘 방지
                             
                             // [추가] 아이돌 색상 적용
@@ -352,15 +364,65 @@ function startWeeklyPlan(type) {
                             const idolColor = idolColors[idolId] || "#ff4d8d";
                             tooltip.style.borderColor = idolColor;
 
-                            tooltip.innerHTML = opts.map(o => {
+                            const savedOpts = calcStore.weeks[weekNum].opts || {};
+                            const selectedAttr = savedOpts.selectedAttr || '';
+
+                            const optionsHtml = opts.map(o => {
                                 const label = o[`label_${state.currentLang}`] || o.label_ko;
-                                const savedVal = calcStore.weeks[weekNum].opts[o.id];
+                                const savedVal = savedOpts[o.id];
                                 if (o.type === 'checkbox') {
                                     return `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${savedVal === 'true' ? 'checked' : ''}><span>${label}${o.subOptions ? ' ▶' : ''}</span></label>`;
                                 } else {
                                     return `<div class="tooltip-option"><span>${label}</span><div class="counter-controls" data-id="${o.id}"><button class="cnt-btn minus">-</button><span class="cnt-val">${savedVal || 0}</span><button class="cnt-btn plus">+</button></div></div>`;
                                 }
                             }).join('');
+
+                            if (isClass) {
+                                const attrColumn = `
+                                    <div class="tooltip-attr-column">
+                                        <div class="attr-icon-button ${selectedAttr === 'vocal' ? 'active' : ''}" data-attr="vocal" title="보컬">
+                                            <img src="icons/vocal.png" alt="Vo">
+                                        </div>
+                                        <div class="attr-icon-button ${selectedAttr === 'dance' ? 'active' : ''}" data-attr="dance" title="댄스">
+                                            <img src="icons/dance.png" alt="Da">
+                                        </div>
+                                        <div class="attr-icon-button ${selectedAttr === 'visual' ? 'active' : ''}" data-attr="visual" title="비주얼">
+                                            <img src="icons/visual.png" alt="Vi">
+                                        </div>
+                                    </div>`;
+                                tooltip.innerHTML = `
+                                    ${attrColumn}
+                                    <div class="tooltip-divider"></div>
+                                    <div class="tooltip-options-column">
+                                        ${optionsHtml}
+                                    </div>`;
+
+                                tooltip.querySelectorAll('.attr-icon-button').forEach(btn => {
+                                    btn.onclick = () => {
+                                        const attr = btn.dataset.attr;
+                                        const isActive = btn.classList.contains('active');
+                                        tooltip.querySelectorAll('.attr-icon-button').forEach(b => b.classList.remove('active'));
+                                        
+                                        if (!isActive) {
+                                            btn.classList.add('active');
+                                            calcStore.weeks[weekNum].opts.selectedAttr = attr;
+                                            
+                                            // [추가] 체크박스도 이미 선택되어 있다면 툴팁 닫기
+                                            const anyChecked = tooltip.querySelector('input[type="checkbox"]:checked');
+                                            if (anyChecked) {
+                                                setTimeout(() => removeAllTooltips(), 100);
+                                            }
+                                        } else {
+                                            delete calcStore.weeks[weekNum].opts.selectedAttr;
+                                        }
+                                        updateMainLabel(wrapper);
+                                        calcStore.save();
+                                        refreshAll();
+                                    };
+                                });
+                            } else {
+                                tooltip.innerHTML = optionsHtml;
+                            }
                             wrapper.appendChild(tooltip);
                             
                             const tooltipWidth = tooltip.offsetWidth;
@@ -390,8 +452,20 @@ function startWeeklyPlan(type) {
                                     calcStore.updateWeekOpt(weekNum, optId, chk.checked);
                                     wrapper.dataset[`opt${optId}`] = String(chk.checked);
                                     updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
-                                    if (chk.checked && currentOptDef?.subOptions) showSubTooltip(currentOptDef, weekNum, wrapper, tooltip);
-                                    else if (!opts.some(o => o.type === 'counter')) setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
+                                    
+                                    if (chk.checked && currentOptDef?.subOptions) {
+                                        showSubTooltip(currentOptDef, weekNum, wrapper, tooltip);
+                                    } else if (!opts.some(o => o.type === 'counter')) {
+                                        // 클래스인 경우 속성도 선택되어 있어야 닫음
+                                        const hasAttr = !!calcStore.weeks[weekNum].opts.selectedAttr;
+                                        if (isClass) {
+                                            if (chk.checked && hasAttr) {
+                                                setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
+                                            }
+                                        } else {
+                                            setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
+                                        }
+                                    }
                                     refreshAll();
                                 };
                             });
@@ -438,7 +512,7 @@ function startWeeklyPlan(type) {
                     if (calcStore.isBoardCollapsed) {
                         toggleBar.textContent = isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼';
                     } else {
-                        toggleBar.textContent = isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲';
+                        toggleBar.textContent = isJa ? 'スケジュール를 닫기 ▲' : '주간 행동 닫기 ▲';
                     }
                 };
             }
@@ -456,7 +530,9 @@ function startWeeklyPlan(type) {
 function refreshAll() {
     try {
         const counts = getTriggerCounts(calcStore);
-        const { cardBonusTotal, breakdown } = calculateTotals(calcStore, counts);
+        const { bonusTotal, finalTotal, breakdown } = calculateTotals(calcStore, counts);
+        calcStore.bonusTotal = bonusTotal;
+        calcStore.finalTotal = finalTotal;
         window._lastStatBreakdown = breakdown; // 상세 모달용 데이터
         
         const spTotals = { vocal: 0, dance: 0, visual: 0 };
@@ -472,10 +548,12 @@ function refreshAll() {
                 }
             }
         });
+        window._lastSpTotals = spTotals;
 
-        updateStatHeaderUI(calcStore, cardBonusTotal, spTotals);
+        updateStatHeaderUI(calcStore, breakdown);
         updateActivityCountsUI(calcStore, counts);
         updateSelectedCardsUI(calcStore);
+        updateMemorySlotsUI(calcStore);
 
         // 스탯 정보 버튼 리스너
         const infoBtn = document.getElementById('btn-stat-info');
@@ -490,6 +568,8 @@ function refreshAll() {
         if (panel && panel.classList.contains('open')) {
             updateSidePanelBonuses(panel, counts);
         }
+
+        setupMemorySelector();
     } catch (err) {
         console.error("Critical error in refreshAll:", err);
     }
@@ -500,7 +580,7 @@ function refreshAll() {
  */
 function updateSidePanelBonuses(panel, counts) {
     try {
-        const { baseTotal } = calculateTotals(calcStore, counts);
+        const { baseTotal, bonusTotal } = calculateTotals(calcStore, counts);
         const bonusItems = panel.querySelectorAll('.side-card-item');
         
         bonusItems.forEach(item => {
@@ -538,6 +618,16 @@ function setupPItemSelector() {
     const container = document.getElementById('p-item-container');
     if (!container) return;
 
+    const checkbox = document.getElementById('p-item-checkbox');
+    if (checkbox) {
+        checkbox.checked = (calcStore.pItemChecked === true || calcStore.pItemChecked === 'true');
+        checkbox.onchange = (e) => {
+            calcStore.pItemChecked = e.target.checked;
+            calcStore.save();
+            refreshAll();
+        };
+    }
+
     if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
     
     const currentType = calcStore.type;
@@ -568,7 +658,17 @@ function setupPItemSelector() {
     }
 }
 
-
+// Memory Slots Event Binding
+function setupMemorySelector() {
+    import('./calcModals.js').then(({ showMemorySelectModal }) => {
+        document.querySelectorAll('.memory-slot').forEach((slot, idx) => {
+            slot.onclick = (e) => {
+                e.stopPropagation();
+                showMemorySelectModal(idx, window.refreshAll);
+            };
+        });
+    });
+}
 
 // 화면 리사이즈 감지 (768px 경계 안정화)
 let lastWidth = window.innerWidth;

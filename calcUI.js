@@ -5,6 +5,7 @@ import { idolData } from './calcData.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
+import { showMemorySelectModal } from './calcModals.js';
 
 /**
  * 아이돌별 표시 색상 반환 (릴리야 보정 포함)
@@ -142,62 +143,118 @@ export function updateSelectedCardsUI(store) {
 
     const selectedIds = (store.planCards[store.planType] || []).filter(id => !state.disabledCards[id]);
     const isAllEmpty = selectedIds.length === 0;
-    const idolColor = getIdolDisplayColor(store.selectedIdol || 'saki');
-    
-    container.innerHTML = Array.from({length: 6}, (_, i) => {
+    const isJa = state.currentLang === 'ja';
+
+    // Initialize 6 empty slots if they don't exist yet
+    if (container.children.length !== 6) {
+        container.innerHTML = Array.from({length: 6}, () => `
+            <div class="selected-card-slot empty">
+                <div class="card-opt-row no-opt"></div>
+                <div class="slot-frame"></div>
+                <!-- counter goes here -->
+            </div>
+        `).join('');
+    }
+
+    // Update each of the 6 slots
+    for (let i = 0; i < 6; i++) {
+        const slotEl = container.children[i];
         const cardId = selectedIds[i];
+
         if (cardId) {
             const cardData = cardList.find(c => c.id === cardId);
-            const checked = store.cardChecked[cardId] ? 'checked' : '';
-            const optChecked = store.cardExtraChecked[cardId] ? 'checked' : '';
+            const checked = store.cardChecked[cardId];
+            const optChecked = store.cardExtraChecked[cardId];
             const counter = store.itemCounters[cardId] || 0;
-            
-            let counterHtml = '';
-            if (cardData?.item_effects?.some(e => e.type === 'action' || e.type === 'add_count')) {
-                counterHtml = `
-                    <div class="card-item-counter">
-                        <button class="card-counter-btn minus" data-id="${cardId}">-</button>
-                        <span class="card-counter-val">${counter}</span>
-                        <button class="card-counter-btn plus" data-id="${cardId}">+</button>
-                    </div>
-                `;
-            }
 
-            let optLabel = '';
-            const isJa = state.currentLang === 'ja';
+            // Update slot base attributes
+            slotEl.dataset.id = cardId;
+            slotEl.classList.remove('empty');
+            slotEl.classList.add('filled');
+
+            // 1. Opt check row
+            let optCheckHtml = '<div class="card-opt-row no-opt"></div>';
             if (cardData?.extra2) {
+                let optLabel = '';
                 const e2 = cardData.extra2;
                 if (e2.includes('enhance')) optLabel = isJa ? '強化' : '강화';
                 else if (e2.includes('change')) optLabel = isJa ? 'チェンジ' : '체인지';
                 else if (e2.includes('del')) optLabel = isJa ? '削除' : '삭제';
                 else optLabel = isJa ? 'オプション' : '옵션';
+
+                optCheckHtml = `
+                    <div class="card-opt-row">
+                        <label class="opt-check-label">
+                            <input type="checkbox" class="card-opt-check" data-id="${cardId}" ${optChecked ? 'checked' : ''}>
+                            <span>${optLabel}</span>
+                        </label>
+                    </div>
+                `;
             }
-            
-            const optCheckHtml = cardData?.extra2 ? `
-                <div class="card-opt-row">
-                    <label class="opt-check-label">
-                        <input type="checkbox" class="card-opt-check" data-id="${cardId}" ${optChecked}>
-                        <span>${optLabel}</span>
-                    </label>
-                </div>
-            ` : `<div class="card-opt-row no-opt"></div>`;
-            
-            return `<div class="selected-card-slot filled" data-id="${cardId}">
-                        ${optCheckHtml}
-                        <div class="slot-frame" style="border-color: transparent;">
-                            <img src="images/support/${cardId}_card.webp" onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
-                            <div class="card-slot-remove" data-id="${cardId}">×</div>
-                            <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked}>
+            let optRow = slotEl.querySelector('.card-opt-row');
+            if (optRow) optRow.outerHTML = optCheckHtml;
+
+            // 2. Slot frame (Image and check/remove controls)
+            let frame = slotEl.querySelector('.slot-frame');
+            if (!frame.querySelector('img')) {
+                // If it was empty, construct inner elements
+                frame.style.borderColor = 'transparent';
+                frame.innerHTML = `
+                    <img src="images/support/${cardId}_card.webp" onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
+                    <div class="card-slot-remove" data-id="${cardId}">×</div>
+                    <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked ? 'checked' : ''}>
+                `;
+            } else {
+                // Targeted update
+                const img = frame.querySelector('img');
+                const targetSrc = `images/support/${cardId}_card.webp`;
+                // Only update src if the card changed, to prevent flickering
+                if (!img.src.endsWith(targetSrc)) {
+                    img.src = targetSrc;
+                    img.onerror = function() { this.src = 'images/support/' + cardId + '_item.webp'; this.onerror = null; };
+                }
+                frame.querySelector('.card-slot-remove').dataset.id = cardId;
+                const slotCheck = frame.querySelector('.card-slot-check');
+                slotCheck.dataset.id = cardId;
+                slotCheck.checked = !!checked;
+            }
+
+            // 3. Counter
+            let counterContainer = slotEl.querySelector('.card-item-counter');
+            if (cardData?.item_effects?.some(e => e.type === 'action' || e.type === 'add_count')) {
+                if (!counterContainer) {
+                    slotEl.insertAdjacentHTML('beforeend', `
+                        <div class="card-item-counter">
+                            <button class="card-counter-btn minus" data-id="${cardId}">-</button>
+                            <span class="card-counter-val">${counter}</span>
+                            <button class="card-counter-btn plus" data-id="${cardId}">+</button>
                         </div>
-                        ${counterHtml}
-                    </div>`;
+                    `);
+                } else {
+                    counterContainer.querySelector('.card-counter-val').textContent = counter;
+                    counterContainer.querySelectorAll('.card-counter-btn').forEach(b => b.dataset.id = cardId);
+                }
+            } else {
+                if (counterContainer) counterContainer.remove();
+            }
+
+        } else {
+            // Empty slot
+            delete slotEl.dataset.id;
+            slotEl.classList.remove('filled');
+            slotEl.classList.add('empty');
+            
+            let optRow = slotEl.querySelector('.card-opt-row');
+            if (optRow) optRow.outerHTML = isAllEmpty ? '<div class="card-opt-row no-opt" style="display:none;"></div>' : '<div class="card-opt-row no-opt"></div>';
+            
+            let frame = slotEl.querySelector('.slot-frame');
+            frame.innerHTML = ''; // clear image and controls
+            frame.style.borderColor = '';
+
+            let counterContainer = slotEl.querySelector('.card-item-counter');
+            if (counterContainer) counterContainer.remove();
         }
-        
-        return `<div class="selected-card-slot empty">
-                    ${isAllEmpty ? '' : '<div class="card-opt-row no-opt"></div>'}
-                    <div class="slot-frame"></div>
-                </div>`;
-    }).join('');
+    }
 }
 
 /**
@@ -206,7 +263,7 @@ export function updateSelectedCardsUI(store) {
 export function renderCalcMenu(updatePageTranslations, onHajime, onNia) {
     const root = document.getElementById('calc-root');
     if (!root) return;
-    
+
     const favIdol = state.favoriteIdol || 'saki';
     const color = getIdolDisplayColor(favIdol);
 
@@ -221,7 +278,6 @@ export function renderCalcMenu(updatePageTranslations, onHajime, onNia) {
     document.getElementById('btn-hajime').onclick = onHajime;
     document.getElementById('btn-nia').onclick = onNia;
 }
-
 /**
  * 계산기 전체 화면 렌더링
  */
@@ -293,18 +349,65 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         <div class="stat-info-btn" id="btn-stat-info">i</div>
                     </div>
                     <div class="stat-items-row">
-                        <div class="stat-item item-vocal"><img src="icons/vocal.png"><span id="total-vocal">0</span><span id="sp-vocal-percent" class="sp-percent-label"></span></div>
-                        <div class="stat-item item-dance"><img src="icons/dance.png"><span id="total-dance">0</span><span id="sp-dance-percent" class="sp-percent-label"></span></div>
-                        <div class="stat-item item-visual"><img src="icons/visual.png"><span id="total-visual">0</span><span id="sp-visual-percent" class="sp-percent-label"></span></div>
+                        <div class="stat-item item-vocal">
+                            <img src="icons/vocal.png">
+                            <span id="final-vocal" class="final-stat-label" style="font-size: 1.0rem; font-weight: bold; color: #ff4d8d;">0</span>
+                            <span id="total-vocal" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
+                            <span id="sp-vocal-percent" class="sp-percent-label"></span>
+                        </div>
+                        <div class="stat-item item-dance">
+                            <img src="icons/dance.png">
+                            <span id="final-dance" class="final-stat-label" style="font-size: 1.0rem; font-weight: bold; color: #46a4f3;">0</span>
+                            <span id="total-dance" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
+                            <span id="sp-dance-percent" class="sp-percent-label"></span>
+                        </div>
+                        <div class="stat-item item-visual">
+                            <img src="icons/visual.png">
+                            <span id="final-visual" class="final-stat-label" style="font-size: 1.0rem; font-weight: bold; color: #fcc75e;">0</span>
+                            <span id="total-visual" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
+                            <span id="sp-visual-percent" class="sp-percent-label"></span>
+                        </div>
                     </div>
                 </div>
 
                 ${(store.type === 'nia' || store.type === 'hajime') ? `
-                <div class="p-item-container" id="p-item-container">
-                    <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
-                    ${Array.from({length: store.type === 'nia' ? 5 : 4}).map((_, i) => `
-                        <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
-                    `).join('')}
+                <div class="p-item-container" id="p-item-container" style="display: flex; flex-direction: column; width: 100%; margin-bottom: 1rem; padding: 10px; background: white; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box;">
+                    
+                    <!-- P-Item Row -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
+                        <label style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; margin: 0 2px;">
+                            <span class="p-item-check-txt">${isJa ? '才能開花 3' : '재능개화 3'}</span>
+                            <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''} style="margin: 0; accent-color: #ff4d8d; transform: scale(1.0); cursor: pointer;">
+                        </label>
+                        <div style="width: 1px; height: 24px; background-color: #ddd; margin: 0 4px;"></div>
+                        <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
+                        ${Array.from({length: store.type === 'nia' ? 5 : 4}).map((_, i) => `
+                            <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="width: 100%; height: 1px; background-color: #eee; margin: 12px 0;"></div>
+
+                    <!-- Memory Row -->
+                    <div class="memory-container" id="memory-container" style="width: 100%;">
+                        ${Array.from({length: 4}).map((_, i) => {
+                            const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
+                            let linesHtml = '';
+                            for (let j = 0; j < 3; j++) {
+                                const memKey = memArray[j];
+                                const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
+                                const text = opt ? (isJa ? opt.label_ja : opt.label_ko) : '-';
+                                linesHtml += `<div class="memory-slot-line title" style="${opt ? 'color: #ff4d8d;' : ''}">${text}</div>`;
+                            }
+                            return `
+                            <div class="memory-slot" data-idx="${i}">
+                                ${linesHtml}
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+
                 </div>
                 ` : ''}
 
@@ -335,6 +438,21 @@ export function updateSPBadge(w, currentIdolId) {
 
 export function updateMainLabel(w) {
     w.querySelector('.main-label-text')?.remove();
+    w.querySelector('.class-attr-badge')?.remove();
+
+    const weekNum = w.closest('.week-row')?.dataset.week;
+    const week = weekNum ? calcStore.weeks[weekNum] : null;
+    const savedOpts = week ? week.opts : {};
+    
+    // 속성 아이콘 추가 (Hajime/Nia 수업 전용)
+    if (savedOpts && savedOpts.selectedAttr) {
+        const attr = savedOpts.selectedAttr;
+        const b = document.createElement('div');
+        b.className = 'class-attr-badge';
+        b.innerHTML = `<img src="icons/${attr}.png" alt="${attr}">`;
+        w.appendChild(b);
+    }
+
     const opts = activityOptions[w.dataset.value] || [];
     const labels = opts.filter(o => o.mainlabel && (o.type === 'counter' ? parseInt(w.dataset[`opt${o.id}`]) > 0 : w.dataset[`opt${o.id}`] === 'true')).map(o => o.type === 'counter' ? `${o.mainlabel} ${w.dataset[`opt${o.id}`]}` : o.mainlabel);
     if (labels.length > 0) { 
@@ -342,21 +460,40 @@ export function updateMainLabel(w) {
     }
 }
 
-export function updateStatHeaderUI(store, cardBonusTotal, spTotals) {
+export function updateStatHeaderUI(store, breakdown) {
     const attrs = ['vocal', 'dance', 'visual'];
     const idolInfo = idolData[store.selectedIdol];
+    const maxStat = store.type === 'hajime' ? 2800 : (store.type === 'nia' ? 2600 : 0);
 
     let sum = 0;
     attrs.forEach(attr => {
         const totalEl = document.getElementById(`total-${attr}`);
+        const finalEl = document.getElementById(`final-${attr}`);
         const spEl = document.getElementById(`sp-${attr}-percent`);
         const itemEl = document.querySelector(`.stat-item.item-${attr}`);
 
-        const val = cardBonusTotal[attr] || 0;
-        sum += val;
+        const bonusVal = (store.bonusTotal && store.bonusTotal[attr]) || 0;
+        if (totalEl) totalEl.textContent = bonusVal > 0 ? `+${bonusVal}` : '0';
+        
+        const finalStat = (store.finalTotal && store.finalTotal[attr]) || 0;
+        if (finalEl) {
+            if (maxStat > 0) {
+                finalEl.innerHTML = `<span style="color: ${finalStat >= maxStat ? '#ff4d8d' : 'inherit'};">${finalStat}</span> <span style="font-size: 0.7rem; color: #888; font-weight: normal;">/ ${maxStat}</span>`;
+                if (finalStat >= maxStat) {
+                    finalEl.classList.add('max-stat-glow');
+                } else {
+                    finalEl.classList.remove('max-stat-glow');
+                }
+            } else {
+                finalEl.textContent = finalStat;
+            }
+        }
+        sum += finalStat;
 
-        if (totalEl) totalEl.textContent = val > 0 ? `+${val}` : '0';
-        if (spEl) spEl.textContent = `sp (+${spTotals[attr]}%)`;
+        // SP lesson up total display
+        if (spEl && window._lastSpTotals) {
+            spEl.textContent = `sp (+${window._lastSpTotals[attr]}%)`;
+        }
 
         if (itemEl && idolInfo) {
             const rank = idolInfo.priority.indexOf(attr) + 1;
@@ -365,8 +502,27 @@ export function updateStatHeaderUI(store, cardBonusTotal, spTotals) {
         }
     });
 
-    const sumEl = document.getElementById('total-stats-sum-value');
-    if (sumEl) sumEl.textContent = sum > 0 ? `+${sum}` : '0';
+    const sumValueEl = document.getElementById('total-stats-sum-value');
+    if (sumValueEl) sumValueEl.textContent = sum;
+}
+
+export function updateMemorySlotsUI(store) {
+    const isJa = state.currentLang === 'ja';
+    const container = document.getElementById('memory-container');
+    if (!container) return;
+
+    const slots = container.querySelectorAll('.memory-slot');
+    slots.forEach((slot, i) => {
+        const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
+        let linesHtml = '';
+        for (let j = 0; j < 3; j++) {
+            const memKey = memArray[j];
+            const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
+            const text = opt ? (isJa ? opt.label_ja : opt.label_ko) : '-';
+            linesHtml += `<div class="memory-slot-line title" style="${opt ? 'color: #ff4d8d;' : ''}">${text}</div>`;
+        }
+        slot.innerHTML = linesHtml;
+    });
 }
 
 /**

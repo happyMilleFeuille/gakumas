@@ -1,6 +1,6 @@
-﻿// calcLogic.js
+// calcLogic.js
 import { state } from './state.js';
-import { calcPlans, baseStats, idolData, niaAuditionStats } from './calcData.js';
+import { calcPlans, baseStats, idolData, niaAuditionStats, hajimeLessonStats, niaLessonStats, hajimeClassStats, niaClassStats } from './calcData.js';
 import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { activityOptions } from './calcOptions.js';
@@ -11,21 +11,9 @@ import { calculateCardBonus } from './simulator-engine.js';
  */
 export const getHajimeLessonStat = (actionId, isSP, week) => {
     let stats = { vocal: 0, dance: 0, visual: 0 };
-    let values = [0, 0, 0]; // [주속성, 부속성, 부속성]
-
-    if (week === 4) {
-        values = isSP ? [140, 55, 55] : [110, 50, 50];
-    } else if (week === 7) {
-        values = isSP ? [180, 60, 60] : [144, 53, 53];
-    } else if (week === 12) {
-        values = isSP ? [260, 70, 70] : [214, 58, 58];
-    } else if (week === 14) {
-        values = isSP ? [370, 90, 90] : [320, 75, 75];
-    } else if (week === 16) {
-        values = isSP ? [570, 115, 115] : [504, 108, 108];
-    } else {
-        return null;
-    }
+    const weekData = hajimeLessonStats[week];
+    if (!weekData) return null;
+    const values = isSP ? weekData.sp : weekData.normal;
 
     if (actionId === 'lessonvo') {
         stats.vocal = values[0]; stats.dance = values[1]; stats.visual = values[2];
@@ -41,11 +29,8 @@ export const getHajimeLessonStat = (actionId, isSP, week) => {
  * 니아(NIA) 전용 레슨 수치 로직
  */
 export const getNiaLessonStat = (actionId, isSP, week) => {
-    let val = 0;
-    if (week <= 8) val = isSP ? 100 : 80;
-    else if (week <= 16) val = isSP ? 120 : 100;
-    else if (week <= 25) val = isSP ? 150 : 120;
-    else val = isSP ? 150 : 120;
+    const step = niaLessonStats.find(s => week <= s.maxWeek) || niaLessonStats[niaLessonStats.length - 1];
+    let val = isSP ? step.sp : step.normal;
 
     return {
         vocal: actionId === 'lessonvo' ? val : 0,
@@ -62,7 +47,7 @@ export function getTriggerCounts(store) {
         total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_drink: 0, purchase_drink: 0, get_item: (store.type === 'nia' ? 1 : 0), change: 0 },
         lessons: { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } }
     };
-    
+
     // 1. 보드 행동(Weeks) 분석 및 기본 풀(Pool) 집계
     Object.keys(store.weeks).forEach(weekNum => {
         const week = store.weeks[weekNum];
@@ -118,7 +103,7 @@ export function getTriggerCounts(store) {
     // 2. Nia 전용 P-아이템 보너스
     if (store.type === 'nia' && store.pItems) {
         const boardCounts = {};
-        Object.values(store.weeks).forEach(w => { if(w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
+        Object.values(store.weeks).forEach(w => { if (w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
         let niaBonusGet = 0, niaBonusDelete = 0, niaBonusEnhance = 0;
         if (store.pItems.includes('nia1-1')) { const b = Math.min(boardCounts['spclass'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
         if (store.pItems.includes('nia1-2')) { const b = Math.min(boardCounts['advice'] || 0, 2); niaBonusGet += b; niaBonusDelete += b; }
@@ -138,7 +123,7 @@ export function getTriggerCounts(store) {
         if (store.pItems.includes('nia4-1')) niaBonusEnhance += Math.min(n41, 2);
         if (store.pItems.includes('nia4-2')) {
             let n42 = 0;
-            Object.values(store.weeks).forEach(w => { if(w.value === 'class_nia' && w.opts.get_drink === 'true') n42++; });
+            Object.values(store.weeks).forEach(w => { if (w.value === 'class_nia' && w.opts.get_drink === 'true') n42++; });
             counts.total.get_drink = (counts.total.get_drink || 0) + (Math.min(n42, 2) * 2);
         }
         if (store.pItems.includes('nia5-1')) { if (Object.keys(store.weeks).some(w => parseInt(w) > 17 && store.weeks[w].opts.sp === 'true')) niaBonusEnhance += 1; }
@@ -153,7 +138,7 @@ export function getTriggerCounts(store) {
     selectedIds.forEach(id => {
         // 비활성화된 카드는 무시
         if (state.disabledCards[id]) return;
-        
+
         if (store.cardExtraChecked[id]) {
             const card = cardList.find(c => c.id === id);
             if (card && card.extra2) {
@@ -255,7 +240,7 @@ export function getTriggerCounts(store) {
     if (store.type === 'hajime' && store.pItems) {
         if (store.pItems.includes('hajime2')) {
             const classCount = counts.total['class_hajime'] || 0;
-            const bonus = Math.min(classCount, 2);
+            const bonus = Math.min(classCount, 3);
             counts.total.get += bonus;
         }
     }
@@ -292,7 +277,7 @@ export function getTriggerCounts(store) {
         }
     }
     store.manualDelete = { m: dm, a: da, t: dt };
-    counts.total.delete_m += dm; counts.total.delete_a += da; 
+    counts.total.delete_m += dm; counts.total.delete_a += da;
 
     // [잠금] 최종 트러블 삭제량은 획득량을 절대로 넘을 수 없음
     counts.total.delete_t_before_cap = (counts.total.delete_t || 0) + dt;
@@ -304,6 +289,10 @@ export function getTriggerCounts(store) {
  */
 export function calculateTotals(store, detailedCounts) {
     let baseTotal = { vocal: 0, dance: 0, visual: 0 };
+    let lessonTotal = { vocal: 0, dance: 0, visual: 0 };
+    let examTotal = { vocal: 0, dance: 0, visual: 0 };
+    let examFlatTotal = { vocal: 0, dance: 0, visual: 0 };
+    let classTotal = { vocal: 0, dance: 0, visual: 0 };
     let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     let supportFixedTotal = { vocal: 0, dance: 0, visual: 0 };
     let supportPercentTotal = { vocal: 0, dance: 0, visual: 0 };
@@ -311,7 +300,7 @@ export function calculateTotals(store, detailedCounts) {
     let percentBonuses = { vocal: 0, dance: 0, visual: 0 };
 
     Object.keys(store.weeks).forEach(weekNum => {
-        const week = store.weeks[weekNum]; if(!week || !week.value) return;
+        const week = store.weeks[weekNum]; if (!week || !week.value) return;
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
         let stats = null;
         if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
@@ -325,31 +314,97 @@ export function calculateTotals(store, detailedCounts) {
                     stats = { vocal: 0, dance: 0, visual: 0 }; data.priority.forEach((attr, idx) => { stats[attr] = vals[idx]; });
                 }
             }
+        } else if (actionId === 'class_hajime' || actionId === 'class_nia') {
+            const selectedAttr = week.opts.selectedAttr;
+            stats = { vocal: 0, dance: 0, visual: 0 };
+            if (selectedAttr) {
+                let baseVal = 100;
+                if (actionId === 'class_hajime') {
+                    baseVal = hajimeClassStats[wInt] || 100;
+                } else if (actionId === 'class_nia') {
+                    baseVal = niaClassStats[wInt] || 100;
+                }
+                stats[selectedAttr] = baseVal;
+            }
         } else stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
-        if (stats) { baseTotal.vocal += stats.vocal || 0; baseTotal.dance += stats.dance || 0; baseTotal.visual += stats.visual || 0; }
+
+        if (stats) {
+            if (actionId === 'class_hajime' || actionId === 'class_nia') {
+                classTotal.vocal += stats.vocal || 0;
+                classTotal.dance += stats.dance || 0;
+                classTotal.visual += stats.visual || 0;
+            } else {
+                baseTotal.vocal += stats.vocal || 0;
+                baseTotal.dance += stats.dance || 0;
+                baseTotal.visual += stats.visual || 0;
+
+                if (actionId === 'test' || actionId === 'audition') {
+                    examTotal.vocal += stats.vocal || 0;
+                    examTotal.dance += stats.dance || 0;
+                    examTotal.visual += stats.visual || 0;
+
+                    if (store.type === 'hajime') {
+                        let bonusVal = 0;
+                        if (wInt === 10) bonusVal = 80;
+                        else if (wInt === 18) bonusVal = 120;
+                        if (bonusVal > 0) {
+                            examFlatTotal.vocal += bonusVal;
+                            examFlatTotal.dance += bonusVal;
+                            examFlatTotal.visual += bonusVal;
+                        }
+                    }
+                } else {
+                    lessonTotal.vocal += stats.vocal || 0;
+                    lessonTotal.dance += stats.dance || 0;
+                    lessonTotal.visual += stats.visual || 0;
+                }
+            }
+        }
     });
 
     const currentIdolData = idolData[store.selectedIdol];
+    // 아이돌별 기본 고정 스탯 (별도 분리)
+    let idolBaseTotal = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
-        idolBonusTotal.vocal = Math.floor(baseTotal.vocal * (currentIdolData.vocalBonus / 100));
-        idolBonusTotal.dance = Math.floor(baseTotal.dance * (currentIdolData.danceBonus / 100));
-        idolBonusTotal.visual = Math.floor(baseTotal.visual * (currentIdolData.visualBonus / 100));
+        idolBaseTotal.vocal = currentIdolData.baseVocal || 0;
+        idolBaseTotal.dance = currentIdolData.baseDance || 0;
+        idolBaseTotal.visual = currentIdolData.baseVisual || 0;
+    }
+
+    let idolVBonus = 0;
+    let idolDBonus = 0;
+    let idolViBonus = 0;
+
+    if (currentIdolData) {
+        idolVBonus = currentIdolData.vocalBonus;
+        idolDBonus = currentIdolData.danceBonus;
+        idolViBonus = currentIdolData.visualBonus;
+
+        if (store.pItemChecked) {
+            if (currentIdolData.vocalBonus3) idolVBonus = currentIdolData.vocalBonus3;
+            if (currentIdolData.danceBonus3) idolDBonus = currentIdolData.danceBonus3;
+            if (currentIdolData.visualBonus3) idolViBonus = currentIdolData.visualBonus3;
+        }
+
+        idolBonusTotal.vocal = Math.floor(baseTotal.vocal * (idolVBonus / 100));
+        idolBonusTotal.dance = Math.floor(baseTotal.dance * (idolDBonus / 100));
+        idolBonusTotal.visual = Math.floor(baseTotal.visual * (idolViBonus / 100));
     }
 
     const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(cardId => {
         if (state.disabledCards[cardId]) return;
         const card = cardList.find(c => c.id === cardId); if (!card) return;
-        
+
         // --- 리팩토링: 공통 엔진을 사용하여 모든 고정 보너스(어빌리티 + 아이템) 통합 계산 ---
         const lb = state.supportLB[cardId] || 0;
         const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
         const bonus = calculateCardBonus(card, detailedCounts, lb, itemCounter);
-        
-        supportFixedTotal.vocal += bonus.vocal || 0; 
-        supportFixedTotal.dance += bonus.dance || 0; 
+
+        supportFixedTotal.vocal += bonus.vocal || 0;
+        supportFixedTotal.dance += bonus.dance || 0;
         supportFixedTotal.visual += bonus.visual || 0;
-        
+
         if (bonus.percent > 0) percentBonuses[card.type] += bonus.percent;
     });
 
@@ -363,19 +418,68 @@ export function calculateTotals(store, detailedCounts) {
         visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual
     };
 
-    return { 
-        baseTotal, 
-        cardBonusTotal,
+    let memoryBonusTotal = { vocal: 0, dance: 0, visual: 0 };
+    let memoryPercentTotal = { vocal: 0, dance: 0, visual: 0 };
+    if (store.memories) {
+        store.memories.forEach(memArray => {
+            if (!memArray) return;
+            const keys = Array.isArray(memArray) ? memArray : [memArray];
+            keys.forEach(memKey => {
+                if (!memKey) return;
+                const opt = window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
+                if (opt) {
+                    if (opt.isPercent) {
+                        if (Array.isArray(opt.stat)) {
+                            opt.stat.forEach(s => { memoryPercentTotal[s] += opt.value; });
+                        } else {
+                            memoryPercentTotal[opt.stat] += opt.value;
+                        }
+                    } else {
+                        if (Array.isArray(opt.stat)) {
+                            opt.stat.forEach(s => { memoryBonusTotal[s] += opt.value; });
+                        } else {
+                            memoryBonusTotal[opt.stat] += opt.value;
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    const bonusTotal = {
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + memoryBonusTotal.vocal + Math.round(baseTotal.vocal * (memoryPercentTotal.vocal / 100)),
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + memoryBonusTotal.dance + Math.round(baseTotal.dance * (memoryPercentTotal.dance / 100)),
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + memoryBonusTotal.visual + Math.round(baseTotal.visual * (memoryPercentTotal.visual / 100))
+    };
+
+    const finalTotal = {
+        vocal: idolBaseTotal.vocal + baseTotal.vocal + classTotal.vocal + examFlatTotal.vocal + bonusTotal.vocal,
+        dance: idolBaseTotal.dance + baseTotal.dance + classTotal.dance + examFlatTotal.dance + bonusTotal.dance,
+        visual: idolBaseTotal.visual + baseTotal.visual + classTotal.visual + examFlatTotal.visual + bonusTotal.visual
+    };
+
+    return {
+        baseTotal,
+        bonusTotal,
+        finalTotal,
         breakdown: {
             base: baseTotal,
+            lesson: lessonTotal,
+            exam: {
+                vocal: examTotal.vocal + examFlatTotal.vocal,
+                dance: examTotal.dance + examFlatTotal.dance,
+                visual: examTotal.visual + examFlatTotal.visual
+            },
+            class: classTotal,
+            idolBase: idolBaseTotal,
             idol: {
                 vocal: idolBonusTotal.vocal,
                 dance: idolBonusTotal.dance,
                 visual: idolBonusTotal.visual,
                 percent: {
-                    vocal: currentIdolData ? currentIdolData.vocalBonus : 0,
-                    dance: currentIdolData ? currentIdolData.danceBonus : 0,
-                    visual: currentIdolData ? currentIdolData.visualBonus : 0
+                    vocal: idolVBonus,
+                    dance: idolDBonus,
+                    visual: idolViBonus
                 }
             },
             supportFixed: supportFixedTotal,
@@ -389,7 +493,16 @@ export function calculateTotals(store, detailedCounts) {
                     visual: percentBonuses.visual
                 }
             },
-            item: itemBonusTotal
+            item: itemBonusTotal,
+            memory: {
+                fixed: memoryBonusTotal,
+                percent: {
+                    vocal: Math.round(baseTotal.vocal * (memoryPercentTotal.vocal / 100)),
+                    dance: Math.round(baseTotal.dance * (memoryPercentTotal.dance / 100)),
+                    visual: Math.round(baseTotal.visual * (memoryPercentTotal.visual / 100)),
+                    factors: memoryPercentTotal
+                }
+            }
         }
     };
-    }
+}
