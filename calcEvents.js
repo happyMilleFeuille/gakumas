@@ -15,6 +15,7 @@ export function initGlobalDistListener(refreshAll) {
 
         const cardCheckBtn = e.target.closest('.card-slot-check');
         const cardOptCheckBtn = e.target.closest('.card-opt-check');
+        const cardEventCheckBtn = e.target.closest('.card-event-check');
         const cardRemoveBtn = e.target.closest('.card-slot-remove');
         const distBtn = e.target.closest('.dist-btn');
         const tuneBtn = e.target.closest('#btn-other-tune');
@@ -36,6 +37,14 @@ export function initGlobalDistListener(refreshAll) {
             return;
         }
 
+        // 1-3. 카드 이벤트(Option 1) 체크박스
+        if (cardEventCheckBtn) {
+            calcStore.cardEventChecked[cardEventCheckBtn.dataset.id] = cardEventCheckBtn.checked;
+            calcStore.save();
+            refreshAll();
+            return;
+        }
+
         // 2. 카드 슬롯에서 제거
         if (cardRemoveBtn) {
             const id = cardRemoveBtn.dataset.id;
@@ -43,6 +52,7 @@ export function initGlobalDistListener(refreshAll) {
             calcStore.planCards[plan] = (calcStore.planCards[plan] || []).filter(cid => cid !== id);
             delete calcStore.cardChecked[id];
             delete calcStore.cardExtraChecked[id];
+            delete calcStore.cardEventChecked[id];
 
             // 사이드 패널 동기화
             const item = document.querySelector(`.side-card-item[data-id="${id}"]`);

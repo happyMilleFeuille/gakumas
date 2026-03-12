@@ -26,28 +26,31 @@ export function getTriggerCounts(calcState) {
  * @param {Object} triggerData - 집계된 트리거 데이터 (total, lessons 정보 포함)
  * @param {number} lb - 카드의 돌파 수치 (0~4)
  * @param {number} itemCounter - (선택) 아이템 효과 카운터 값
+ * @param {boolean} includeBase - (선택) 기본 보너스(Option 1) 포함 여부
  */
-export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0) {
+export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, includeBase = false) {
     const results = { vocal: 0, dance: 0, visual: 0, percent: 0 };
     const rarity = card.rarity;
     const isDist = card.source === 'dist';
     const cardType = card.type; // vocal, dance, visual
     
     // --- 1. 등급별 기본 보너스 및 event_paraup 적용 ---
-    let baseBonus = rarity === 'SSR' ? 20 : (rarity === 'SR' ? 15 : 0);
-    
-    if (card.abilities?.includes('event_paraup')) {
-        const epAbility = abilityData['event_paraup'];
-        if (epAbility) {
-            let epLv = 1;
-            if (rarity === 'SSR') epLv = (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1));
-            else if (rarity === 'SR') epLv = (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
-            
-            const epVal = epAbility.levels[epLv] || 0;
-            baseBonus = baseBonus * (1 + (epVal / 100));
+    if (includeBase) {
+        let baseBonus = rarity === 'SSR' ? 20 : (rarity === 'SR' ? 15 : 0);
+        
+        if (card.abilities?.includes('event_paraup')) {
+            const epAbility = abilityData['event_paraup'];
+            if (epAbility) {
+                let epLv = 1;
+                if (rarity === 'SSR') epLv = (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1));
+                else if (rarity === 'SR') epLv = (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
+                
+                const epVal = epAbility.levels[epLv] || 0;
+                baseBonus = baseBonus * (1 + (epVal / 100));
+            }
         }
+        applyStat(results, cardType, baseBonus);
     }
-    applyStat(results, cardType, baseBonus);
 
     // --- 2. 아이템 효과(Item Effects) 계산 ---
     if (card.item_effects) {

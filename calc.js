@@ -590,7 +590,8 @@ function updateSidePanelBonuses(panel, counts) {
             
             const lb = state.supportLB[cardId] || 0;
             const itemCounter = calcStore.itemCounters[cardId] || 0;
-            const bonus = calculateCardBonus(card, counts, lb, itemCounter);
+            const includeEvent = !!calcStore.cardEventChecked[cardId];
+            const bonus = calculateCardBonus(card, counts, lb, itemCounter, includeEvent);
             
             let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
             if (bonus.percent > 0 && card.type && baseTotal[card.type]) {

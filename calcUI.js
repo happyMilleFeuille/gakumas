@@ -165,6 +165,7 @@ export function updateSelectedCardsUI(store) {
             const cardData = cardList.find(c => c.id === cardId);
             const checked = store.cardChecked[cardId];
             const optChecked = store.cardExtraChecked[cardId];
+            const eventChecked = store.cardEventChecked[cardId];
             const counter = store.itemCounters[cardId] || 0;
 
             // Update slot base attributes
@@ -173,7 +174,7 @@ export function updateSelectedCardsUI(store) {
             slotEl.classList.add('filled');
 
             // 1. Opt check row
-            let optCheckHtml = '<div class="card-opt-row no-opt"></div>';
+            let extraOptHtml = '';
             if (cardData?.extra2) {
                 let optLabel = '';
                 const e2 = cardData.extra2;
@@ -182,15 +183,26 @@ export function updateSelectedCardsUI(store) {
                 else if (e2.includes('del')) optLabel = isJa ? '削除' : '삭제';
                 else optLabel = isJa ? 'オプション' : '옵션';
 
-                optCheckHtml = `
-                    <div class="card-opt-row">
-                        <label class="opt-check-label">
-                            <input type="checkbox" class="card-opt-check" data-id="${cardId}" ${optChecked ? 'checked' : ''}>
-                            <span>${optLabel}</span>
-                        </label>
-                    </div>
+                extraOptHtml = `
+                    <label class="opt-check-label">
+                        <input type="checkbox" class="card-opt-check" data-id="${cardId}" ${optChecked ? 'checked' : ''}>
+                        <span>${optLabel}</span>
+                    </label>
                 `;
             }
+
+            const optCheckHtml = `
+                <div class="card-opt-row">
+                    <div class="opt-line">${extraOptHtml || ''}</div>
+                    <div class="opt-line">
+                        <label class="opt-check-label">
+                            <input type="checkbox" class="card-event-check" data-id="${cardId}" ${eventChecked ? 'checked' : ''}>
+                            <span>${isJa ? 'イベント' : '이벤트'}</span>
+                        </label>
+                    </div>
+                </div>
+            `;
+            
             let optRow = slotEl.querySelector('.card-opt-row');
             if (optRow) optRow.outerHTML = optCheckHtml;
 
@@ -245,7 +257,16 @@ export function updateSelectedCardsUI(store) {
             slotEl.classList.add('empty');
 
             let optRow = slotEl.querySelector('.card-opt-row');
-            if (optRow) optRow.outerHTML = isAllEmpty ? '<div class="card-opt-row no-opt" style="display:none;"></div>' : '<div class="card-opt-row no-opt"></div>';
+            if (optRow) {
+                // 카드가 하나라도 선택되어 있다면 빈 슬롯도 높이를 맞춰야 함
+                if (isAllEmpty) {
+                    optRow.style.display = 'none';
+                    optRow.innerHTML = '';
+                } else {
+                    optRow.style.display = 'flex';
+                    optRow.innerHTML = '<div class="opt-line"></div><div class="opt-line"></div>';
+                }
+            }
 
             let frame = slotEl.querySelector('.slot-frame');
             frame.innerHTML = ''; // clear image and controls

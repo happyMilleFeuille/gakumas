@@ -278,27 +278,34 @@
 }
 
 .card-opt-row {
-    margin-bottom: 4px;
-    /* 아래 카드 이미지와의 간격 */
+    margin-bottom: 6px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     width: 100%;
-    height: 22px;
-    /* 체크박스 라벨의 높이에 맞춰 고정 */
+    gap: 3px; /* 행 사이 간격 */
+}
+
+.opt-line {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    width: 100%;
+    height: 18px; /* 고정 높이 설정 */
 }
 
 .opt-check-label {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.65rem;
+    font-size: 0.62rem; /* 폰트 소폭 축소하여 공간 확보 */
     color: #555;
     cursor: pointer;
     background: #fff;
-    padding: 2px 6px;
+    padding: 1px 6px;
     border: 1px solid #eee;
-    border-radius: 12px;
+    border-radius: 10px;
     transition: all 0.2s;
     white-space: nowrap;
 }

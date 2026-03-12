@@ -320,7 +320,8 @@ export function calculateTotals(store, detailedCounts) {
         const card = cardList.find(c => c.id === cardId); if (!card) return;
         const lb = state.supportLB[cardId] || 0;
         const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
-        const bonusResult = calculateCardBonus(card, detailedCounts, lb, itemCounter);
+        const includeEvent = !!store.cardEventChecked[cardId];
+        const bonusResult = calculateCardBonus(card, detailedCounts, lb, itemCounter, includeEvent);
 
         supportFixedTotal.vocal += bonusResult.vocal || 0;
         supportFixedTotal.dance += bonusResult.dance || 0;
@@ -440,15 +441,15 @@ export function calculateTotals(store, detailedCounts) {
         idolBaseTotal.dance = currentIdolData.baseDance || 0;
         idolBaseTotal.visual = currentIdolData.baseVisual || 0;
 
-        idolBonusTotal.vocal = Math.floor(baseTotal.vocal * (idolPercs.vocal / 100));
-        idolBonusTotal.dance = Math.floor(baseTotal.dance * (idolPercs.dance / 100));
-        idolBonusTotal.visual = Math.floor(baseTotal.visual * (idolPercs.visual / 100));
+        idolBonusTotal.vocal = Math.round(baseTotal.vocal * (idolPercs.vocal / 100));
+        idolBonusTotal.dance = Math.round(baseTotal.dance * (idolPercs.dance / 100));
+        idolBonusTotal.visual = Math.round(baseTotal.visual * (idolPercs.visual / 100));
     }
 
     let supportPercentTotal = {
-        vocal: Math.floor(baseTotal.vocal * (supportPercs.vocal / 100)),
-        dance: Math.floor(baseTotal.dance * (supportPercs.dance / 100)),
-        visual: Math.floor(baseTotal.visual * (supportPercs.visual / 100))
+        vocal: Math.round(baseTotal.vocal * (supportPercs.vocal / 100)),
+        dance: Math.round(baseTotal.dance * (supportPercs.dance / 100)),
+        visual: Math.round(baseTotal.visual * (supportPercs.visual / 100))
     };
 
     // --- 5. P-아이템 효과 합산 ---
@@ -463,9 +464,9 @@ export function calculateTotals(store, detailedCounts) {
     }
 
     const bonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + Math.floor(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + Math.floor(baseTotal.dance * (memoryPercentFactors.dance / 100)),
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + Math.floor(baseTotal.visual * (memoryPercentFactors.visual / 100))
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + Math.round(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + Math.round(baseTotal.dance * (memoryPercentFactors.dance / 100)),
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + Math.round(baseTotal.visual * (memoryPercentFactors.visual / 100))
     };
 
     const finalTotal = {
@@ -513,9 +514,9 @@ export function calculateTotals(store, detailedCounts) {
             memory: {
                 fixed: memoryBonusTotal,
                 percent: {
-                    vocal: Math.floor(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
-                    dance: Math.floor(baseTotal.dance * (memoryPercentFactors.dance / 100)),
-                    visual: Math.floor(baseTotal.visual * (memoryPercentFactors.visual / 100)),
+                    vocal: Math.round(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
+                    dance: Math.round(baseTotal.dance * (memoryPercentFactors.dance / 100)),
+                    visual: Math.round(baseTotal.visual * (memoryPercentFactors.visual / 100)),
                     factors: memoryPercentFactors
                 }
             },
