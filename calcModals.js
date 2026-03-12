@@ -31,14 +31,14 @@ export function showStatDetailModal(breakdown) {
     }
 
     const renderRow = (label, values, subValues = null, rowClass = '') => {
-        const rowSum = Math.round((values?.vocal || 0) + (values?.dance || 0) + (values?.visual || 0));
-        
+        const rowSum = Math.floor((values?.vocal || 0) + (values?.dance || 0) + (values?.visual || 0));
+
         const getCell = (val, sub, colorClass) => {
             const hasSub = sub !== null && sub !== undefined;
             return `
                 <div class="stat-val-cell ${colorClass}">
                     ${hasSub ? `<span class="stat-sub-val">${Number(sub || 0).toFixed(1)}%</span>` : ''}
-                    <span class="stat-main-val">${Math.round(val || 0)}</span>
+                    <span class="stat-main-val">${Math.floor(val || 0)}</span>
                 </div>`;
         };
 
@@ -72,7 +72,7 @@ export function showStatDetailModal(breakdown) {
                 </div>
                 
                 ${renderRow(isJa ? 'アイドル(初期)' : '아이돌 (초기)', breakdown.idolBase, null, 'row-base')}
-                ${calcStore.type === 'hajime' ? `
+                ${(calcStore.type === 'hajime' || calcStore.type === 'nia') ? `
                     ${renderRow(isJa ? '授業' : '수업', breakdown.class, null, 'row-base')}
                     ${renderRow(isJa ? '試験' : '시험', breakdown.exam, null, 'row-base')}
                     ${renderRow(isJa ? 'レッスン' : '레슨', breakdown.lesson, null, 'row-base')}
@@ -89,24 +89,27 @@ export function showStatDetailModal(breakdown) {
                     ${renderRow(isJa ? 'サポート(固定)' : '서포트 (고정)', breakdown.supportFixed, null, 'row-sub-item')}
                     ${renderRow(isJa ? 'メモリー(%)' : '메모리 (%)', breakdown.memory?.percent, breakdown.memory?.percent?.factors, 'row-sub-item')}
                     ${renderRow(isJa ? 'メモリー(固定)' : '메모리 (고정)', breakdown.memory?.fixed, null, 'row-sub-item')}
-                    ${renderRow(isJa ? 'Pアイテム' : 'P아이템 보너스', breakdown.item, null, 'row-sub-item')}
+                    ${renderRow(isJa ? 'Pアイテム' : (calcStore.type === 'nia' ? 'p아이템 (55%)' : 'p아이템'), breakdown.item, null, 'row-sub-item')}
                 </div>
             </div>
             ${renderRow(isJa ? '総合計' : '최종 합계', {
-                vocal: breakdown.base.vocal + breakdown.idolBase.vocal + bonusTotal.vocal,
-                dance: breakdown.base.dance + breakdown.idolBase.dance + bonusTotal.dance,
-                visual: breakdown.base.visual + breakdown.idolBase.visual + bonusTotal.visual
-            }, null, 'row-total')}
+        vocal: breakdown.base.vocal + breakdown.idolBase.vocal + bonusTotal.vocal,
+        dance: breakdown.base.dance + breakdown.idolBase.dance + bonusTotal.dance,
+        visual: breakdown.base.visual + breakdown.idolBase.visual + bonusTotal.visual
+    }, null, 'row-total')}
         </div>`;
 
-    // 종합계 수치 직접 수정 (breakdown.class 포함)
+    // 종합계 수치 직접 수정 (breakdown.class + lesson + exam 포함)
     const finalTotalRow = modal.querySelector('.row-total');
     if (finalTotalRow) {
-        const tVo = Math.round(breakdown.base.vocal + breakdown.idolBase.vocal + (breakdown.class?.vocal || 0) + bonusTotal.vocal);
-        const tDa = Math.round(breakdown.base.dance + breakdown.idolBase.dance + (breakdown.class?.dance || 0) + bonusTotal.dance);
-        const tVi = Math.round(breakdown.base.visual + breakdown.idolBase.visual + (breakdown.class?.visual || 0) + bonusTotal.visual);
+        const baseVo = (breakdown.lesson?.vocal || 0) + (breakdown.exam?.vocal || 0);
+        const baseDa = (breakdown.lesson?.dance || 0) + (breakdown.exam?.dance || 0);
+        const baseVi = (breakdown.lesson?.visual || 0) + (breakdown.exam?.visual || 0);
+        const tVo = Math.floor(baseVo + breakdown.idolBase.vocal + (breakdown.class?.vocal || 0) + bonusTotal.vocal);
+        const tDa = Math.floor(baseDa + breakdown.idolBase.dance + (breakdown.class?.dance || 0) + bonusTotal.dance);
+        const tVi = Math.floor(baseVi + breakdown.idolBase.visual + (breakdown.class?.visual || 0) + bonusTotal.visual);
         const tSum = tVo + tDa + tVi;
-        
+
         const cells = finalTotalRow.querySelectorAll('.stat-main-val');
         if (cells.length >= 3) {
             cells[0].textContent = tVo;

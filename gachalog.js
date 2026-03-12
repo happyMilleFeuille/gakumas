@@ -106,8 +106,8 @@ function renderStats(container, total, stats, topChar) {
     const totalJewels = total * 250;
     const yenPerJewel = 1.1951;
     let priceDisplay = isJa ? 
-        `${totalJewels.toLocaleString()} (￥${Math.round(totalJewels * yenPerJewel).toLocaleString()})` : 
-        `${totalJewels.toLocaleString()} (₩${Math.round(totalJewels * yenPerJewel * currencyData.rate).toLocaleString()})`;
+        `${totalJewels.toLocaleString()} (￥${Math.floor(totalJewels * yenPerJewel).toLocaleString()})` : 
+        `${totalJewels.toLocaleString()} (₩${Math.floor(totalJewels * yenPerJewel * currencyData.rate).toLocaleString()})`;
 
     const getPerc = (c) => ((c / total) * 100).toFixed(1) + '%';
     const labels = {

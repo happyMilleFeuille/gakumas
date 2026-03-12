@@ -22,7 +22,7 @@ export function updateActivityCountsUI(store, counts) {
     // 1. 메인 활동 아이콘들 (레슨, 휴식 등)
     const allPossibleValues = Array.from(new Set(Object.values(store.weeks).map(w => w.value))).filter(v => v);
     const sortOrder = ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'];
-    
+
     allPossibleValues.sort((a, b) => {
         let indexA = sortOrder.indexOf(a), indexB = sortOrder.indexOf(b);
         return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
@@ -32,7 +32,7 @@ export function updateActivityCountsUI(store, counts) {
     allPossibleValues.forEach(val => {
         const count = counts.total[val] || 0;
         const spCount = (val === 'lessonvo' ? counts.lessons.vocal.sp : (val === 'lessondan' ? counts.lessons.dance.sp : (val === 'lessonvi' ? counts.lessons.visual.sp : 0)));
-        
+
         html += `
             <div class="counter-item" style="position: relative; flex-direction: column; height: 36px; min-width: 32px;">
                 <div style="display: flex; align-items: center; gap: 2px; opacity: ${count > 0 ? 1 : 0.3};">
@@ -46,7 +46,7 @@ export function updateActivityCountsUI(store, counts) {
     html += '</div>';
 
     const isJa = state.currentLang === 'ja';
-    
+
     const renderDist = (label, total, m, a, color = '#ff4d8d', bg = 'rgba(255, 77, 141, 0.05)', type = 'e') => `
         <div class="enhance-item-content" style="background: ${bg}; border-color: ${color}33;">
             <span class="dist-label" style="opacity: ${total > 0 ? 1 : 0.3}; color: ${color};">${label} <span class="counter-count">${total}</span></span>
@@ -106,10 +106,10 @@ export function updateActivityCountsUI(store, counts) {
                         <div class="dist-unit">
                             <span>${isJa ? 'トラブル' : '트러블'}</span>
                             <span class="dist-val">${counts.total.delete_t || 0}${(() => {
-                                const rawTotal = (counts.total.delete_t_before_cap || counts.total.delete_t);
-                                const excess = Math.max(0, rawTotal - counts.total.delete_t);
-                                return excess > 0 ? `<span style="color: #ff4d8d; font-size: 0.6rem; margin-left: 1px; font-weight: normal;">(-${excess})</span>` : '';
-                            })()}</span>
+            const rawTotal = (counts.total.delete_t_before_cap || counts.total.delete_t);
+            const excess = Math.max(0, rawTotal - counts.total.delete_t);
+            return excess > 0 ? `<span style="color: #ff4d8d; font-size: 0.6rem; margin-left: 1px; font-weight: normal;">(-${excess})</span>` : '';
+        })()}</span>
                             <button class="dist-btn plus" data-dist="dt">+</button>
                         </div>
                     </div>
@@ -147,7 +147,7 @@ export function updateSelectedCardsUI(store) {
 
     // Initialize 6 empty slots if they don't exist yet
     if (container.children.length !== 6) {
-        container.innerHTML = Array.from({length: 6}, () => `
+        container.innerHTML = Array.from({ length: 6 }, () => `
             <div class="selected-card-slot empty">
                 <div class="card-opt-row no-opt"></div>
                 <div class="slot-frame"></div>
@@ -211,7 +211,7 @@ export function updateSelectedCardsUI(store) {
                 // Only update src if the card changed, to prevent flickering
                 if (!img.src.endsWith(targetSrc)) {
                     img.src = targetSrc;
-                    img.onerror = function() { this.src = 'images/support/' + cardId + '_item.webp'; this.onerror = null; };
+                    img.onerror = function () { this.src = 'images/support/' + cardId + '_item.webp'; this.onerror = null; };
                 }
                 frame.querySelector('.card-slot-remove').dataset.id = cardId;
                 const slotCheck = frame.querySelector('.card-slot-check');
@@ -243,10 +243,10 @@ export function updateSelectedCardsUI(store) {
             delete slotEl.dataset.id;
             slotEl.classList.remove('filled');
             slotEl.classList.add('empty');
-            
+
             let optRow = slotEl.querySelector('.card-opt-row');
             if (optRow) optRow.outerHTML = isAllEmpty ? '<div class="card-opt-row no-opt" style="display:none;"></div>' : '<div class="card-opt-row no-opt"></div>';
-            
+
             let frame = slotEl.querySelector('.slot-frame');
             frame.innerHTML = ''; // clear image and controls
             frame.style.borderColor = '';
@@ -286,14 +286,14 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
     const planData = calcPlans[store.type];
     const isJa = state.currentLang === 'ja';
     const idolColor = getIdolDisplayColor(store.selectedIdol);
-    
+
     const idolsHtml = idolList.map(name => {
         const isActive = store.selectedIdol === name;
         const color = getIdolDisplayColor(name);
         const style = isActive ? `style="border-color: ${color}; border-width: 3px; box-shadow: 0 0 12px ${color}b3; transform: scale(1.1);"` : '';
         return `<div class="idol-sel-item ${isActive ? 'active' : ''}" data-id="${name}" ${style}><img src="icons/idolicons/${name}.png" onerror="this.src='icons/idol.png'"></div>`;
     }).join('');
-    
+
     const weekNumbers = Object.keys(planData.weeks).map(Number).sort((a, b) => b - a);
     const weeksHtml = weekNumbers.map(i => {
         const options = planData.weeks[i] || [];
@@ -302,7 +302,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
             const isActive = savedWeek.value === opt.value;
             const isLarge = ['audition', 'test', 'oikomi'].includes(opt.value);
             let optAttrs = isActive && savedWeek.opts ? Object.keys(savedWeek.opts).map(k => ` data-opt${k}="${savedWeek.opts[k]}"`).join('') : '';
-            
+
             let activeStyle = '';
             if (isActive) {
                 if (isLarge) {
@@ -311,10 +311,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     activeStyle = `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66;"`;
                 }
             }
-            
+
             const isTestOrAudition = ['test', 'audition'].includes(opt.value);
             const infoBtnHtml = isTestOrAudition ? `<div class="info-i-btn" data-type="${opt.value}" style="background-color: ${idolColor};">i</div>` : '';
-            
+
             return `
                 <div class="icon-outer-container ${isLarge ? 'large-container' : ''}">
                     <div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}>
@@ -336,10 +336,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
                 <div class="plan-type-selector">
                     ${['sense', 'logic', 'anomaly'].map(pt => {
-                        const isActive = store.planType === pt;
-                        const activeStyle = isActive ? `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66; opacity: 1; transform: scale(1.1);"` : '';
-                        return `<div class="plan-type-btn ${isActive ? 'active' : ''}" data-type="${pt}" ${activeStyle}><img src="icons/${pt}.webp"></div>`;
-                    }).join('')}
+        const isActive = store.planType === pt;
+        const activeStyle = isActive ? `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66; opacity: 1; transform: scale(1.1);"` : '';
+        return `<div class="plan-type-btn ${isActive ? 'active' : ''}" data-type="${pt}" ${activeStyle}><img src="icons/${pt}.webp"></div>`;
+    }).join('')}
                 </div>
 
                 <div class="stat-header" style="border-color: ${idolColor};">
@@ -351,19 +351,25 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div class="stat-items-row">
                         <div class="stat-item item-vocal">
                             <img src="icons/vocal.png">
-                            <span id="final-vocal" class="final-stat-label" style="font-size: 1.0rem; font-weight: bold; color: #ff4d8d;">0</span>
+                            <span id="final-vocal" class="final-stat-label" style="font-size: 0.8rem; color: #ff4d8d;">0</span>
+                            <span id="total-perc-vocal" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
+                            <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
                             <span id="total-vocal" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
                             <span id="sp-vocal-percent" class="sp-percent-label"></span>
                         </div>
                         <div class="stat-item item-dance">
                             <img src="icons/dance.png">
-                            <span id="final-dance" class="final-stat-label" style="font-size: 1.0rem; font-weight: bold; color: #46a4f3;">0</span>
+                            <span id="final-dance" class="final-stat-label" style="font-size: 0.8rem; color: #46a4f3;">0</span>
+                            <span id="total-perc-dance" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
+                            <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
                             <span id="total-dance" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
                             <span id="sp-dance-percent" class="sp-percent-label"></span>
                         </div>
                         <div class="stat-item item-visual">
                             <img src="icons/visual.png">
-                            <span id="final-visual" class="final-stat-label" style="font-size: 1.0rem; font-weight: bold; color: #fcc75e;">0</span>
+                            <span id="final-visual" class="final-stat-label" style="font-size: 0.8rem; color: #fcc75e;">0</span>
+                            <span id="total-perc-visual" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
+                            <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
                             <span id="total-visual" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
                             <span id="sp-visual-percent" class="sp-percent-label"></span>
                         </div>
@@ -381,7 +387,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         </label>
                         <div style="width: 1px; height: 24px; background-color: #ddd; margin: 0 4px;"></div>
                         <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
-                        ${Array.from({length: store.type === 'nia' ? 5 : 4}).map((_, i) => `
+                        ${Array.from({ length: store.type === 'nia' ? 5 : 4 }).map((_, i) => `
                             <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
                         `).join('')}
                     </div>
@@ -390,22 +396,28 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div style="width: 100%; height: 1px; background-color: #eee; margin: 12px 0;"></div>
 
                     <!-- Memory Row -->
-                    <div class="memory-container" id="memory-container" style="width: 100%;">
-                        ${Array.from({length: 4}).map((_, i) => {
-                            const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
-                            let linesHtml = '';
-                            for (let j = 0; j < 3; j++) {
-                                const memKey = memArray[j];
-                                const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
-                                const text = opt ? (isJa ? opt.label_ja : opt.label_ko) : '-';
-                                linesHtml += `<div class="memory-slot-line title" style="${opt ? 'color: #ff4d8d;' : ''}">${text}</div>`;
-                            }
-                            return `
+                    <div class="memory-container" id="memory-container" style="width: 100%; --idol-color: ${idolColor}; --idol-color-transparent: ${idolColor}26;">
+                        ${Array.from({ length: 4 }).map((_, i) => {
+        const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
+        let linesHtml = '';
+        for (let j = 0; j < 3; j++) {
+            const memKey = memArray[j];
+            const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
+            if (opt) {
+                const attrColor = opt.stat === 'vocal' ? '#ff4d8d' : (opt.stat === 'dance' ? '#46a4f3' : '#fcc75e');
+                const icon = `<img src="icons/${opt.stat}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
+                const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
+                linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
+            } else {
+                linesHtml += `<div class="memory-slot-line title">-</div>`;
+            }
+        }
+        return `
                             <div class="memory-slot" data-idx="${i}">
                                 ${linesHtml}
                             </div>
                             `;
-                        }).join('')}
+    }).join('')}
                     </div>
 
                 </div>
@@ -427,13 +439,13 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
     handlers.setupAll();
 }
 
-export function updateSPBadge(w, currentIdolId) { 
-    w.querySelector('.sp-badge')?.remove(); 
-    if (w.dataset.optsp === 'true') { 
-        const b = document.createElement('div'); b.className = 'sp-badge'; b.textContent = 'SP'; 
+export function updateSPBadge(w, currentIdolId) {
+    w.querySelector('.sp-badge')?.remove();
+    if (w.dataset.optsp === 'true') {
+        const b = document.createElement('div'); b.className = 'sp-badge'; b.textContent = 'SP';
         b.style.backgroundColor = getIdolDisplayColor(currentIdolId || 'saki');
-        w.appendChild(b); 
-    } 
+        w.appendChild(b);
+    }
 }
 
 export function updateMainLabel(w) {
@@ -443,7 +455,7 @@ export function updateMainLabel(w) {
     const weekNum = w.closest('.week-row')?.dataset.week;
     const week = weekNum ? calcStore.weeks[weekNum] : null;
     const savedOpts = week ? week.opts : {};
-    
+
     // 속성 아이콘 추가 (Hajime/Nia 수업 전용)
     if (savedOpts && savedOpts.selectedAttr) {
         const attr = savedOpts.selectedAttr;
@@ -455,8 +467,8 @@ export function updateMainLabel(w) {
 
     const opts = activityOptions[w.dataset.value] || [];
     const labels = opts.filter(o => o.mainlabel && (o.type === 'counter' ? parseInt(w.dataset[`opt${o.id}`]) > 0 : w.dataset[`opt${o.id}`] === 'true')).map(o => o.type === 'counter' ? `${o.mainlabel} ${w.dataset[`opt${o.id}`]}` : o.mainlabel);
-    if (labels.length > 0) { 
-        const l = document.createElement('div'); l.className = 'main-label-text'; l.textContent = labels.join(' '); w.appendChild(l); 
+    if (labels.length > 0) {
+        const l = document.createElement('div'); l.className = 'main-label-text'; l.textContent = labels.join(' '); w.appendChild(l);
     }
 }
 
@@ -472,13 +484,22 @@ export function updateStatHeaderUI(store, breakdown) {
         const spEl = document.getElementById(`sp-${attr}-percent`);
         const itemEl = document.querySelector(`.stat-item.item-${attr}`);
 
-        const bonusVal = (store.bonusTotal && store.bonusTotal[attr]) || 0;
+        const bonusVal = (breakdown.supportFixed?.[attr] || 0) + (breakdown.supportPercent?.[attr] || 0);
         if (totalEl) totalEl.textContent = bonusVal > 0 ? `+${bonusVal}` : '0';
-        
+
+        const percEl = document.getElementById(`total-perc-${attr}`);
+        if (percEl && breakdown.totalPercs) {
+            percEl.textContent = `${breakdown.totalPercs[attr].toFixed(1)}%`;
+        }
+
         const finalStat = (store.finalTotal && store.finalTotal[attr]) || 0;
         if (finalEl) {
             if (maxStat > 0) {
-                finalEl.innerHTML = `<span style="color: ${finalStat >= maxStat ? '#ff4d8d' : 'inherit'};">${finalStat}</span> <span style="font-size: 0.7rem; color: #888; font-weight: normal;">/ ${maxStat}</span>`;
+                if (finalStat >= maxStat) {
+                    finalEl.innerHTML = `<span style="color: #e53935; font-weight: bold; font-size: 1rem;">${finalStat}</span> <span style="font-size: 0.7rem; color: #888; font-weight: normal;">/ ${maxStat}</span>`;
+                } else {
+                    finalEl.innerHTML = `${finalStat} <span style="font-size: 0.7rem; color: #888; font-weight: normal;">/ ${maxStat}</span>`;
+                }
                 if (finalStat >= maxStat) {
                     finalEl.classList.add('max-stat-glow');
                 } else {
@@ -511,6 +532,10 @@ export function updateMemorySlotsUI(store) {
     const container = document.getElementById('memory-container');
     if (!container) return;
 
+    const idolColor = getIdolDisplayColor(store.selectedIdol || 'saki');
+    container.style.setProperty('--idol-color', idolColor);
+    container.style.setProperty('--idol-color-transparent', idolColor + '26');
+
     const slots = container.querySelectorAll('.memory-slot');
     slots.forEach((slot, i) => {
         const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
@@ -518,8 +543,14 @@ export function updateMemorySlotsUI(store) {
         for (let j = 0; j < 3; j++) {
             const memKey = memArray[j];
             const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
-            const text = opt ? (isJa ? opt.label_ja : opt.label_ko) : '-';
-            linesHtml += `<div class="memory-slot-line title" style="${opt ? 'color: #ff4d8d;' : ''}">${text}</div>`;
+            if (opt) {
+                const attrColor = opt.stat === 'vocal' ? '#ff4d8d' : (opt.stat === 'dance' ? '#46a4f3' : '#fcc75e');
+                const icon = `<img src="icons/${opt.stat}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
+                const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
+                linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
+            } else {
+                linesHtml += `<div class="memory-slot-line title">-</div>`;
+            }
         }
         slot.innerHTML = linesHtml;
     });
@@ -529,17 +560,17 @@ export function updateMemorySlotsUI(store) {
  * 보드판 서브 옵션 툴팁 표시
  */
 export function showSubTooltip(parent, week, wrapper, pTooltip) {
-    const sub = document.createElement('div'); sub.className = 'calc-tooltip calc-sub-tooltip'; sub.style.zIndex = '1100'; sub.style.backgroundColor = '#fefefe'; 
-    
+    const sub = document.createElement('div'); sub.className = 'calc-tooltip calc-sub-tooltip'; sub.style.zIndex = '1100'; sub.style.backgroundColor = '#fefefe';
+
     const idolId = calcStore.selectedIdol;
     const idolColor = getIdolDisplayColor(idolId);
     sub.style.border = `1px solid ${idolColor}`;
 
     sub.innerHTML = parent.subOptions.map(o => `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${calcStore.weeks[week].opts[o.id] === 'true' ? 'checked' : ''}><span>${o[`label_${state.currentLang}`] || o.label_ko}</span></label>`).join('');
-    
-    wrapper.appendChild(sub); 
-    sub.style.left = '50%'; 
-    sub.style.top = '50%'; 
+
+    wrapper.appendChild(sub);
+    sub.style.left = '50%';
+    sub.style.top = '50%';
     sub.style.transform = 'translate(-50%, -50%)';
     sub.style.position = 'absolute';
     sub.style.width = 'max-content';
@@ -572,14 +603,14 @@ export function showSubTooltip(parent, week, wrapper, pTooltip) {
  */
 export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
     document.querySelectorAll('.p-item-tooltip').forEach(t => t.remove());
-    
+
     const isMobile = window.innerWidth <= 768;
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-tooltip';
     const tooltipPadding = isMobile ? '8px' : '12px';
-    const targetWidth = isMobile ? '170px' : '210px';
+    const targetWidth = isMobile ? '175px' : '215px';
     tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:140px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
 
     const btnSize = isMobile ? '32px' : '40px';
@@ -596,20 +627,20 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
     const slotItems = itemsBySlot[idx] || [];
     slotItems.forEach(item => {
         const img = document.createElement('img');
-        img.src = `icons/cal/${item}.webp`; 
+        img.src = `icons/cal/${item}.webp`;
         img.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; cursor:pointer; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;`;
         img.onclick = () => {
             calcStore.pItems[idx] = item;
             slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`;
             calcStore.save(); refreshAll(); tooltip.remove();
         };
-    tooltip.appendChild(img);
+        tooltip.appendChild(img);
     });
 
     document.body.appendChild(tooltip);
     const rect = slot.getBoundingClientRect();
     const tooltipWidth = tooltip.offsetWidth;
-    
+
     let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
     let top = rect.bottom + window.scrollY + 8;
 
@@ -639,14 +670,14 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
  */
 export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     if (document.querySelector('.p-item-info-tooltip')) { document.querySelector('.p-item-info-tooltip').remove(); return; }
-    
+
     const isMobile = window.innerWidth <= 768;
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-info-tooltip';
     tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${isMobile ? '0.65rem' : '0.85rem'}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
-    
+
     const imgSize = isMobile ? '16px' : '24px';
     const gap = isMobile ? '4px' : '8px';
     const isJa = state.currentLang === 'ja';
@@ -663,7 +694,7 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
 
     tooltip.innerHTML = `<div style="display: flex; flex-direction: column; gap: ${gap};">${contentHtml}</div>`;
     document.body.appendChild(tooltip);
-    
+
     const rect = infoBtn.getBoundingClientRect();
     const tooltipWidth = tooltip.offsetWidth;
     const tooltipHeight = tooltip.offsetHeight;

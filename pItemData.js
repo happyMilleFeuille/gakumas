@@ -9,11 +9,15 @@ export const pItemDescriptions = {
         { icons: ['nia3-1', 'nia3-2'], ko: '오디션 종료 시 카드 삭제 및 복제 (프로듀스 중 2회)', ja: 'オーディション終了時にカード削除およびコピー (プロデュース中2回)' }
     ],
     hajime: [
+        { icons: ['hajime1-1'], ko: '카드 획득 시 보컬 +15 (프로듀스 중 5회)', ja: 'カード獲得時Vo+15 (プロデュース中5回)' },
+        { icons: ['hajime1-2'], ko: '카드 획득 시 댄스 +15 (프로듀스 중 5회)', ja: 'カード獲得時Da+15 (プロデュース中5回)' },
+        { icons: ['hajime1-3'], ko: '카드 획득 시 비주얼 +15 (프로듀스 중 5회)', ja: 'カード獲得時Vi+15 (プロデュース中5回)' },
+        { type: 'separator' },
         { icons: ['hajime2'], ko: '수업 시 카드 획득 (프로듀스 중 3회)', ja: '授業時にカード獲得 (プロデュース中3回)' }
     ]
 };
 
 export const pItemSlots = {
     nia: [['nia1-1', 'nia1-2'], ['nia2-1', 'nia2-2', 'nia2-3'], ['nia3-1', 'nia3-2'], ['nia4-1', 'nia4-2', 'nia4-3'], ['nia5-1', 'nia5-2', 'nia5-3']],
-    hajime: [['hajime1'], ['hajime2'], ['hajime3'], ['hajime4-1', 'hajime4-2', 'hajime4-3']]
+    hajime: [['hajime1-1', 'hajime1-2', 'hajime1-3'], ['hajime2'], ['hajime3'], ['hajime4-1', 'hajime4-2', 'hajime4-3']]
 };

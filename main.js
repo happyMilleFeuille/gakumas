@@ -138,19 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideModal() {
         if (!modal.classList.contains('hidden')) {
             modal.classList.add('hidden');
+            modal.style.display = 'none';
             
-            // 돌파 수치 변화 감지 및 계산기 갱신
-            if (window._modalCardId) {
-                const currentLB = state.supportLB[window._modalCardId] || 0;
-                if (currentLB !== window._modalInitialLB) {
-                    if (typeof window.refreshAll === 'function') {
-                        window.refreshAll();
-                    }
+            // [수정] 모달이 닫힐 때 계산기가 활성화된 상태라면 무조건 갱신
+            if (document.querySelector('.stat-header') || window._modalCardId) {
+                if (typeof window.refreshAll === 'function') {
+                    window.refreshAll();
                 }
-                // 상태 초기화
-                window._modalCardId = null;
-                window._modalInitialLB = null;
             }
+            // 상태 초기화
+            window._modalCardId = null;
+            window._modalInitialLB = null;
         }
     }
 
@@ -210,9 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeModals = document.querySelectorAll('.modal');
         let modalClosed = false;
         activeModals.forEach(m => {
-            if (m.style.display === 'flex' || m.id === 'slot-modal' || m.id === 'stat-detail-modal') {
+            if (m.id === 'card-modal') return; // 상세 모달은 아래에서 별도로 처리 (refreshAll 포함)
+            if (m.style.display === 'flex' || m.id === 'slot-modal' || m.id === 'stat-detail-modal' || m.id === 'gacha-log-modal' || m.id === 'gacha-rates-modal') {
                 m.style.display = 'none';
-                if (m.id === 'slot-modal' || m.id === 'stat-detail-modal') m.remove(); // 동적으로 생성된 것은 제거
+                if (m.classList.contains('modal')) m.classList.add('hidden');
+                if (m.id === 'slot-modal' || m.id === 'stat-detail-modal') m.remove();
                 modalClosed = true;
             }
         });

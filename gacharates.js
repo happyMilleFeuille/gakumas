@@ -104,8 +104,7 @@ export function openGachaRatesModal() {
     if (title) title.textContent = typeName + titleSuffix + " " + t.rates_title;
 
     const formatPercent = (val) => {
-        const isMobile = window.innerWidth <= 768;
-        return (val * 100).toFixed(isMobile ? 2 : 3) + "%";
+        return (val * 100).toFixed(3) + "%";
     };
 
     const getIndividualCardData = (rarityKey) => {

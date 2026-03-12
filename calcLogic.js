@@ -288,17 +288,76 @@ export function getTriggerCounts(store) {
  * 전역 상태를 바탕으로 최종 합계 스탯 계산
  */
 export function calculateTotals(store, detailedCounts) {
+    let itemBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     let baseTotal = { vocal: 0, dance: 0, visual: 0 };
     let lessonTotal = { vocal: 0, dance: 0, visual: 0 };
     let examTotal = { vocal: 0, dance: 0, visual: 0 };
     let examFlatTotal = { vocal: 0, dance: 0, visual: 0 };
     let classTotal = { vocal: 0, dance: 0, visual: 0 };
-    let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
-    let supportFixedTotal = { vocal: 0, dance: 0, visual: 0 };
-    let supportPercentTotal = { vocal: 0, dance: 0, visual: 0 };
-    let itemBonusTotal = { vocal: 0, dance: 0, visual: 0 };
-    let percentBonuses = { vocal: 0, dance: 0, visual: 0 };
 
+    // --- [Pre-calculate Percentage Bonuses] ---
+    // 1. Idol Percentages
+    const currentIdolData = idolData[store.selectedIdol];
+    let idolPercs = { vocal: 0, dance: 0, visual: 0 };
+    if (currentIdolData) {
+        idolPercs.vocal = currentIdolData.vocalBonus;
+        idolPercs.dance = currentIdolData.danceBonus;
+        idolPercs.visual = currentIdolData.visualBonus;
+        if (store.pItemChecked) {
+            if (currentIdolData.vocalBonus3) idolPercs.vocal = currentIdolData.vocalBonus3;
+            if (currentIdolData.danceBonus3) idolPercs.dance = currentIdolData.danceBonus3;
+            if (currentIdolData.visualBonus3) idolPercs.visual = currentIdolData.visualBonus3;
+        }
+    }
+
+    // 2. Support Card Percentages
+    const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
+    let supportPercs = { vocal: 0, dance: 0, visual: 0 };
+    let supportFixedTotal = { vocal: 0, dance: 0, visual: 0 };
+
+    selectedIds.forEach(cardId => {
+        if (state.disabledCards[cardId]) return;
+        const card = cardList.find(c => c.id === cardId); if (!card) return;
+        const lb = state.supportLB[cardId] || 0;
+        const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
+        const bonusResult = calculateCardBonus(card, detailedCounts, lb, itemCounter);
+
+        supportFixedTotal.vocal += bonusResult.vocal || 0;
+        supportFixedTotal.dance += bonusResult.dance || 0;
+        supportFixedTotal.visual += bonusResult.visual || 0;
+        if (bonusResult.percent > 0) supportPercs[card.type] += bonusResult.percent;
+    });
+
+    // 3. Memory Percentages
+    let memoryPercentFactors = { vocal: 0, dance: 0, visual: 0 };
+    let memoryBonusTotal = { vocal: 0, dance: 0, visual: 0 };
+    if (store.memories) {
+        store.memories.forEach(memArray => {
+            if (!memArray) return;
+            const keys = Array.isArray(memArray) ? memArray : [memArray];
+            keys.forEach(memKey => {
+                const opt = window.calcData?.memoryOptions?.[memKey];
+                if (opt) {
+                    if (opt.isPercent) {
+                        if (Array.isArray(opt.stat)) opt.stat.forEach(s => { memoryPercentFactors[s] += opt.value; });
+                        else memoryPercentFactors[opt.stat] += opt.value;
+                    } else {
+                        if (Array.isArray(opt.stat)) opt.stat.forEach(s => { memoryBonusTotal[s] += opt.value; });
+                        else memoryBonusTotal[opt.stat] += opt.value;
+                    }
+                }
+            });
+        });
+    }
+
+    // Total Percentage sum for Nia calculation
+    const totalPercs = {
+        vocal: idolPercs.vocal + supportPercs.vocal + memoryPercentFactors.vocal,
+        dance: idolPercs.dance + supportPercs.dance + memoryPercentFactors.dance,
+        visual: idolPercs.visual + supportPercs.visual + memoryPercentFactors.visual
+    };
+
+    // --- [Weekly Loop] ---
     Object.keys(store.weeks).forEach(weekNum => {
         const week = store.weeks[weekNum]; if (!week || !week.value) return;
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
@@ -311,7 +370,18 @@ export function calculateTotals(store, detailedCounts) {
                 const stage = wInt === 9 ? 1 : (wInt === 17 ? 2 : (wInt === 26 ? 3 : 0)), stageStats = niaAuditionStats[stage];
                 if (stageStats) {
                     const vals = data.growthType === 'protruded' ? stageStats.protruded : stageStats.balanced;
-                    stats = { vocal: 0, dance: 0, visual: 0 }; data.priority.forEach((attr, idx) => { stats[attr] = vals[idx]; });
+                    stats = { vocal: 0, dance: 0, visual: 0 };
+                    data.priority.forEach((attr, idx) => {
+                        const baseVal = vals[idx];
+                        stats[attr] = baseVal;
+                        // 니아 오디션 수치 보너스 (상세공식 반영)
+                        // 1. 기본 보너스: floor(기본 수치 * 0.55)
+                        const bonusA = Math.floor(baseVal * 0.55);
+                        // 2. % 추가분 보너스: floor(floor(기본 수치 * 총%합산 / 100) * 0.55)
+                        const bonusB = Math.floor(Math.floor(baseVal * (totalPercs[attr] / 100)) * 0.55);
+                        
+                        itemBonusTotal[attr] += (bonusA + bonusB);
+                    });
                 }
             }
         } else if (actionId === 'class_hajime' || actionId === 'class_nia') {
@@ -362,94 +432,40 @@ export function calculateTotals(store, detailedCounts) {
         }
     });
 
-    const currentIdolData = idolData[store.selectedIdol];
-    // 아이돌별 기본 고정 스탯 (별도 분리)
+    // 아이돌별 기본 고정 스탯 및 % 보너스 합계
     let idolBaseTotal = { vocal: 0, dance: 0, visual: 0 };
+    let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
         idolBaseTotal.vocal = currentIdolData.baseVocal || 0;
         idolBaseTotal.dance = currentIdolData.baseDance || 0;
         idolBaseTotal.visual = currentIdolData.baseVisual || 0;
+
+        idolBonusTotal.vocal = Math.floor(baseTotal.vocal * (idolPercs.vocal / 100));
+        idolBonusTotal.dance = Math.floor(baseTotal.dance * (idolPercs.dance / 100));
+        idolBonusTotal.visual = Math.floor(baseTotal.visual * (idolPercs.visual / 100));
     }
 
-    let idolVBonus = 0;
-    let idolDBonus = 0;
-    let idolViBonus = 0;
-
-    if (currentIdolData) {
-        idolVBonus = currentIdolData.vocalBonus;
-        idolDBonus = currentIdolData.danceBonus;
-        idolViBonus = currentIdolData.visualBonus;
-
-        if (store.pItemChecked) {
-            if (currentIdolData.vocalBonus3) idolVBonus = currentIdolData.vocalBonus3;
-            if (currentIdolData.danceBonus3) idolDBonus = currentIdolData.danceBonus3;
-            if (currentIdolData.visualBonus3) idolViBonus = currentIdolData.visualBonus3;
-        }
-
-        idolBonusTotal.vocal = Math.floor(baseTotal.vocal * (idolVBonus / 100));
-        idolBonusTotal.dance = Math.floor(baseTotal.dance * (idolDBonus / 100));
-        idolBonusTotal.visual = Math.floor(baseTotal.visual * (idolViBonus / 100));
-    }
-
-    const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
-    selectedIds.forEach(cardId => {
-        if (state.disabledCards[cardId]) return;
-        const card = cardList.find(c => c.id === cardId); if (!card) return;
-
-        // --- 리팩토링: 공통 엔진을 사용하여 모든 고정 보너스(어빌리티 + 아이템) 통합 계산 ---
-        const lb = state.supportLB[cardId] || 0;
-        const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
-        const bonus = calculateCardBonus(card, detailedCounts, lb, itemCounter);
-
-        supportFixedTotal.vocal += bonus.vocal || 0;
-        supportFixedTotal.dance += bonus.dance || 0;
-        supportFixedTotal.visual += bonus.visual || 0;
-
-        if (bonus.percent > 0) percentBonuses[card.type] += bonus.percent;
-    });
-
-    supportPercentTotal.vocal = Math.round(baseTotal.vocal * (percentBonuses.vocal / 100));
-    supportPercentTotal.dance = Math.round(baseTotal.dance * (percentBonuses.dance / 100));
-    supportPercentTotal.visual = Math.round(baseTotal.visual * (percentBonuses.visual / 100));
-
-    const cardBonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal,
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance,
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual
+    let supportPercentTotal = {
+        vocal: Math.floor(baseTotal.vocal * (supportPercs.vocal / 100)),
+        dance: Math.floor(baseTotal.dance * (supportPercs.dance / 100)),
+        visual: Math.floor(baseTotal.visual * (supportPercs.visual / 100))
     };
 
-    let memoryBonusTotal = { vocal: 0, dance: 0, visual: 0 };
-    let memoryPercentTotal = { vocal: 0, dance: 0, visual: 0 };
-    if (store.memories) {
-        store.memories.forEach(memArray => {
-            if (!memArray) return;
-            const keys = Array.isArray(memArray) ? memArray : [memArray];
-            keys.forEach(memKey => {
-                if (!memKey) return;
-                const opt = window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
-                if (opt) {
-                    if (opt.isPercent) {
-                        if (Array.isArray(opt.stat)) {
-                            opt.stat.forEach(s => { memoryPercentTotal[s] += opt.value; });
-                        } else {
-                            memoryPercentTotal[opt.stat] += opt.value;
-                        }
-                    } else {
-                        if (Array.isArray(opt.stat)) {
-                            opt.stat.forEach(s => { memoryBonusTotal[s] += opt.value; });
-                        } else {
-                            memoryBonusTotal[opt.stat] += opt.value;
-                        }
-                    }
-                }
-            });
+    // --- 5. P-아이템 효과 합산 ---
+    if (store.pItemChecked && store.pItems) {
+        store.pItems.forEach(itemId => {
+            if (!itemId) return;
+            const cardGetCount = detailedCounts.total.get || 0;
+            if (itemId === 'hajime1-1') itemBonusTotal.vocal += 15 * Math.min(cardGetCount, 5);
+            else if (itemId === 'hajime1-2') itemBonusTotal.dance += 15 * Math.min(cardGetCount, 5);
+            else if (itemId === 'hajime1-3') itemBonusTotal.visual += 15 * Math.min(cardGetCount, 5);
         });
     }
 
     const bonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + memoryBonusTotal.vocal + Math.round(baseTotal.vocal * (memoryPercentTotal.vocal / 100)),
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + memoryBonusTotal.dance + Math.round(baseTotal.dance * (memoryPercentTotal.dance / 100)),
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + memoryBonusTotal.visual + Math.round(baseTotal.visual * (memoryPercentTotal.visual / 100))
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + Math.floor(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + Math.floor(baseTotal.dance * (memoryPercentFactors.dance / 100)),
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + Math.floor(baseTotal.visual * (memoryPercentFactors.visual / 100))
     };
 
     const finalTotal = {
@@ -477,9 +493,9 @@ export function calculateTotals(store, detailedCounts) {
                 dance: idolBonusTotal.dance,
                 visual: idolBonusTotal.visual,
                 percent: {
-                    vocal: idolVBonus,
-                    dance: idolDBonus,
-                    visual: idolViBonus
+                    vocal: idolPercs.vocal,
+                    dance: idolPercs.dance,
+                    visual: idolPercs.visual
                 }
             },
             supportFixed: supportFixedTotal,
@@ -488,21 +504,22 @@ export function calculateTotals(store, detailedCounts) {
                 dance: supportPercentTotal.dance,
                 visual: supportPercentTotal.visual,
                 factors: {
-                    vocal: percentBonuses.vocal,
-                    dance: percentBonuses.dance,
-                    visual: percentBonuses.visual
+                    vocal: supportPercs.vocal,
+                    dance: supportPercs.dance,
+                    visual: supportPercs.visual
                 }
             },
             item: itemBonusTotal,
             memory: {
                 fixed: memoryBonusTotal,
                 percent: {
-                    vocal: Math.round(baseTotal.vocal * (memoryPercentTotal.vocal / 100)),
-                    dance: Math.round(baseTotal.dance * (memoryPercentTotal.dance / 100)),
-                    visual: Math.round(baseTotal.visual * (memoryPercentTotal.visual / 100)),
-                    factors: memoryPercentTotal
+                    vocal: Math.floor(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
+                    dance: Math.floor(baseTotal.dance * (memoryPercentFactors.dance / 100)),
+                    visual: Math.floor(baseTotal.visual * (memoryPercentFactors.visual / 100)),
+                    factors: memoryPercentFactors
                 }
-            }
+            },
+            totalPercs: totalPercs
         }
     };
 }

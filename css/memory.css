@@ -1,17 +1,18 @@
 /* memory.css */
 .memory-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
     width: 100%;
     padding: 0 4px;
+    box-sizing: border-box;
 }
 
 .memory-slot {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 6px;
-    padding: 6px 8px;
+    padding: 4px 2px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,8 +25,8 @@
 }
 
 .memory-slot:hover {
-    border-color: #ff4d8d;
-    box-shadow: 0 2px 6px rgba(255, 77, 141, 0.15);
+    border-color: var(--idol-color, #ff4d8d);
+    box-shadow: 0 2px 6px var(--idol-color-transparent, rgba(255, 77, 141, 0.15));
 }
 
 .memory-slot-line {
@@ -42,5 +43,5 @@
 .memory-slot-line.title {
     font-weight: bold;
     color: #333;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }

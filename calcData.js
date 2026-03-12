@@ -72,15 +72,15 @@ export const niaAuditionStats = {
 };
 
 export const hajimeLessonStats = {
-    4:  { sp: [140, 55, 55], normal: [110, 50, 50] },
-    7:  { sp: [180, 60, 60], normal: [144, 53, 53] },
+    4: { sp: [140, 55, 55], normal: [110, 50, 50] },
+    7: { sp: [180, 60, 60], normal: [144, 53, 53] },
     12: { sp: [260, 70, 70], normal: [214, 58, 58] },
     14: { sp: [370, 90, 90], normal: [320, 75, 75] },
     16: { sp: [570, 115, 115], normal: [504, 108, 108] }
 };
 
 export const niaLessonStats = [
-    { maxWeek: 8,  sp: 100, normal: 80 },
+    { maxWeek: 8, sp: 100, normal: 80 },
     { maxWeek: 16, sp: 120, normal: 100 },
     { maxWeek: 99, sp: 150, normal: 120 }
 ];
@@ -106,7 +106,7 @@ export const idolData = {
     'saki': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 16.5, danceBonus: 16.5, visualBonus: 20.5, baseVocal: 100, baseDance: 100, baseVisual: 105, vocalBonus3: 19.5, danceBonus3: 19.5, visualBonus3: 22.5 },
     'temari': { priority: ['vocal', 'dance', 'visual'], growthType: 'protruded', vocalBonus: 24.0, danceBonus: 21.5, visualBonus: 8.5, baseVocal: 120, baseDance: 100, baseVisual: 80, vocalBonus3: 27, danceBonus3: 26.5, visualBonus3: 8.5 },
     'kotone': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 8.0, danceBonus: 24.5, visualBonus: 22.5, vocalBonus3: 8, danceBonus3: 29.5, visualBonus3: 25.5, baseVocal: 90, baseDance: 90, baseVisual: 120 },
-    'tsubame': { priority: ['dance', 'vocal', 'visual'], growthType: 'protruded', vocalBonus: 15, danceBonus: 20, visualBonus: 12, vocalBonus3: 19, danceBonus3: 24, visualBonus3: 12, baseVocal: 115, baseDance: 140, baseVisual: 110 },
+    'tsubame': { priority: ['dance', 'vocal', 'visual'], growthType: 'protruded', vocalBonus: 17, danceBonus: 20, visualBonus: 13, vocalBonus3: 19, danceBonus3: 24, visualBonus3: 13, baseVocal: 115, baseDance: 140, baseVisual: 110 },
     'mao': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded', vocalBonus: 22.0, danceBonus: 8.0, visualBonus: 23.0, vocalBonus3: 25, danceBonus3: 8, visualBonus3: 28, baseVocal: 125, baseDance: 90, baseVisual: 100 },
     'lilja': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 18.0, danceBonus: 20.0, visualBonus: 18.0, vocalBonus3: 18, danceBonus3: 25, visualBonus3: 21, baseVocal: 80, baseDance: 100, baseVisual: 115 },
     'china': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 10.0, danceBonus: 24.0, visualBonus: 20.5, vocalBonus3: 10, danceBonus3: 29, visualBonus3: 23.5, baseVocal: 75, baseDance: 115, baseVisual: 125 },

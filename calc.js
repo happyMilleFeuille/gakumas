@@ -594,12 +594,12 @@ function updateSidePanelBonuses(panel, counts) {
             
             let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
             if (bonus.percent > 0 && card.type && baseTotal[card.type]) {
-                totalVal += Math.round(baseTotal[card.type] * (bonus.percent / 100));
+                totalVal += Math.floor(baseTotal[card.type] * (bonus.percent / 100));
             }
 
             const bonusEl = item.querySelector('.bonus-val');
             if (bonusEl) {
-                const displayVal = Math.round(totalVal);
+                const displayVal = Math.floor(totalVal);
                 bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '';
                 
                 bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
