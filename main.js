@@ -168,37 +168,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
-            if (history.state && history.state.modalOpen === true) history.back(); 
-            else hideModal();
+            hideModal();
+            if (history.state && history.state.modalOpen === true) history.back();
         });
     }
 
     if (closeGachaLogModal) {
         closeGachaLogModal.addEventListener('click', () => {
+            hideGachaLogModal();
             if (history.state && history.state.modalOpen === 'gachaLog') history.back();
-            else hideGachaLogModal();
         });
     }
 
     if (closeGachaRatesModal) {
         closeGachaRatesModal.addEventListener('click', () => {
+            hideGachaRatesModal();
             if (history.state && history.state.modalOpen === 'rates') history.back();
-            else hideGachaRatesModal();
         });
     }
 
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
+            hideModal();
             if (history.state && history.state.modalOpen === true) history.back();
-            else hideModal();
         }
         if (event.target === gachaLogModal) {
+            hideGachaLogModal();
             if (history.state && history.state.modalOpen === 'gachaLog') history.back();
-            else hideGachaLogModal();
         }
         if (event.target === gachaRatesModal) {
+            hideGachaRatesModal();
             if (history.state && history.state.modalOpen === 'rates') history.back();
-            else hideGachaRatesModal();
         }
     });
 
