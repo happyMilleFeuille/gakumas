@@ -315,12 +315,37 @@
     background: #fdfdfd;
 }
 
-.card-opt-check {
+.card-opt-check, .card-event-check {
     width: 12px;
     height: 12px;
-    margin: 0;
+    margin: 0 !important;
     cursor: pointer;
     accent-color: #ff4d8d;
+}
+
+@media (max-width: 768px) {
+    .opt-check-label {
+        font-size: 0.55rem !important;
+        padding: 1px 2px !important;
+        gap: 1px !important;
+    }
+    .card-opt-check, .card-event-check {
+        width: 9px !important;
+        height: 9px !important;
+    }
+    .card-slot-check {
+        width: 14px !important;
+        height: 14px !important;
+        top: 1px !important;
+        right: 1px !important;
+    }
+    .card-opt-row {
+        gap: 5px !important;
+        margin-bottom: 4px !important;
+    }
+    .opt-line {
+        height: auto !important; /* 고정 높이 제거하여 간격이 잘 보이도록 수정 */
+    }
 }
 
 
@@ -683,6 +708,42 @@
     gap: 0.5rem;
     padding: 0.4rem 0.5rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+@media (max-width: 480px) {
+    .unified-plan-board {
+        padding: 0.5rem 0.25rem !important;
+        gap: 0.1rem !important;
+    }
+    .week-row {
+        padding: 0.2rem 0.35rem !important;
+        gap: 0.3rem !important;
+    }
+    .week-header {
+        min-width: 35px !important;
+    }
+    .week-label {
+        font-size: 0.7rem !important;
+    }
+    .plan-icon-wrapper {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .plan-icons-container {
+        gap: 0.35rem !important;
+    }
+    .main-label-text {
+        font-size: 0.55rem !important;
+        bottom: -3px !important;
+        right: -3px !important;
+        padding: 1px 3px !important;
+    }
+    .sp-badge {
+        font-size: 0.6rem !important;
+        padding: 1px 4px !important;
+        top: -6px !important;
+        right: -6px !important;
+    }
 }
 
 .week-header {
@@ -1484,11 +1545,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    background: rgba(255, 77, 141, 0.05);
+    gap: 6px;
+    background: white;
     padding: 6px 8px;
     border-radius: 8px;
     border: 1px solid rgba(255, 77, 141, 0.1);
+    min-width: 100px; /* PC 데스크탑 기본 최소 너비 설정 */
 }
 
 .dist-label {
@@ -1501,10 +1563,17 @@
     padding-bottom: 2px;
 }
 
+.counter-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
 .dist-group {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     font-size: 0.7rem;
     align-items: center;
     width: 100%;
@@ -1548,6 +1617,13 @@
     color: #ff4d8d;
 }
 
+.counter-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.06), transparent);
+    margin: 4px 0;
+}
+
 .class-attr-badge {
     position: absolute;
     top: -8px;
@@ -1559,6 +1635,58 @@
     justify-content: center;
     z-index: 5;
     pointer-events: none;
+}
+
+@media (max-width: 480px) {
+    .extra-text-counts {
+        gap: 8px !important; /* 전체 간격 축소 */
+    }
+    .counter-column {
+        gap: 8px !important;
+    }
+    .enhance-item-content.compact-dist {
+        padding: 1px 3px !important;
+        min-width: 80px !important; /* 65px -> 80px로 확대 */
+        gap: 1px !important;
+    }
+    .enhance-item-content.compact-dist .dist-label {
+        font-size: 0.65rem !important; /* 0.54rem -> 0.65rem로 확대 */
+        padding-bottom: 2px !important;
+    }
+    .enhance-item-content.compact-dist .dist-group {
+        gap: 1.5px !important;
+        font-size: 0.6rem !important; /* 0.52rem -> 0.6rem로 확대 */
+    }
+    .enhance-item-content.compact-dist .dist-unit {
+        gap: 1px !important;
+    }
+    .enhance-item-content.compact-dist .dist-btn {
+        width: 10px !important;
+        height: 10px !important;
+        font-size: 0.5rem !important;
+        border-radius: 1px !important;
+    }
+    .enhance-item-content.compact-dist .other-tune-btn {
+        width: 85% !important; /* 가로 너비 축소 */
+        height: 16px !important;
+        font-size: 0.5rem !important;
+        margin: 4px auto 6px !important; /* 2px -> 6px로 하단 여백 추가 확대 */
+        display: block !important;
+        border-radius: 2px !important;
+    }
+    .counter-count {
+        font-size: 0.68rem !important; /* 0.72rem -> 0.68rem로 소폭 축소하여 라벨과 밸런스 조정 */
+    }
+    .main-counts {
+        gap: 4px !important;
+    }
+    .counter-item img {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .counter-divider {
+        margin: 2px 0 !important;
+    }
 }
 
 .class-attr-badge img {

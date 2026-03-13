@@ -6,7 +6,7 @@
     padding: 24px;
     background: #fff;
     border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     position: relative;
     border: 1px solid #eee;
     display: flex;
@@ -51,6 +51,7 @@
 .stat-detail-grid::-webkit-scrollbar {
     width: 4px;
 }
+
 .stat-detail-grid::-webkit-scrollbar-thumb {
     background: #eee;
     border-radius: 4px;
@@ -93,16 +94,19 @@
 
 /* 값 표시 */
 .stat-val-cell {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 34px;
 }
 
 .stat-sub-val {
+    position: absolute;
+    top: -2px;
     font-size: 0.65rem;
     color: #aaa;
-    margin-bottom: -3px;
     font-weight: 600;
     line-height: 1;
 }
@@ -127,9 +131,17 @@
 }
 
 /* 속성별 색상 */
-.color-vo { color: #ff4d8d; }
-.color-da { color: #46a4f3; }
-.color-vi { color: #fcc75e; }
+.color-vo {
+    color: #ff4d8d;
+}
+
+.color-da {
+    color: #46a4f3;
+}
+
+.color-vi {
+    color: #fcc75e;
+}
 
 /* 특수 행 스타일 */
 .row-base {
@@ -218,19 +230,23 @@
 /* 모바일 대응 (가장 하단 배치하여 우선순위 확보) */
 @media (max-width: 480px) {
     .stat-detail-modal-content {
-        padding: 8px 4px; /* 패딩 추가 축소 */
+        padding: 8px 4px;
+        /* 패딩 추가 축소 */
         width: 90%;
         border-radius: 12px;
     }
 
     .stat-detail-close {
-        top: 4px; /* 위치 조정하여 겹침 방지 */
+        top: 4px;
+        /* 위치 조정하여 겹침 방지 */
         right: 8px;
-        font-size: 22px; /* 크기 축소 */
+        font-size: 22px;
+        /* 크기 축소 */
     }
 
     .stat-grid-header {
-        font-size: 0.6rem !important; /* 헤더 폰트 대폭 축소 */
+        font-size: 0.6rem !important;
+        /* 헤더 폰트 대폭 축소 */
         padding: 6px 0 !important;
     }
 
@@ -238,8 +254,9 @@
         padding-left: 0 !important;
     }
 
-    .stat-grid-header, .stat-detail-row {
-        grid-template-columns: 1fr 48px 48px 48px 52px !important; 
+    .stat-grid-header,
+    .stat-detail-row {
+        grid-template-columns: 1fr 48px 48px 48px 52px !important;
         padding: 4px 0 !important;
     }
 
@@ -263,24 +280,30 @@
     }
 
     .stat-sub-val {
-        font-size: 0.45rem !important;
+        position: absolute !important;
+        top: -0.5px !important;
+        font-size: 0.35rem !important;
     }
 
     .stat-sum-cell {
         font-size: 0.72rem !important;
-        min-height: 24px !important; /* 28px에서 축소 */
+        min-height: 24px !important;
+        /* 28px에서 축소 */
     }
 
     .row-sub-item {
-        padding: 1px 0 !important; /* 1.5px에서 축소 */
+        padding: 1px 0 !important;
+        /* 1.5px에서 축소 */
     }
 
     .row-sub-item .stat-val-cell {
-        min-height: 20px !important; /* 하위 항목 셀 높이 축소 */
+        min-height: 20px !important;
+        /* 하위 항목 셀 높이 축소 */
     }
 
     .row-sub-item .stat-sum-cell {
-        min-height: 20px !important; /* 하위 항목 합계 셀 높이 축소 */
+        min-height: 20px !important;
+        /* 하위 항목 합계 셀 높이 축소 */
     }
 
     .row-sub-item .stat-detail-label::before {
@@ -296,7 +319,8 @@
         font-size: 0.8rem !important;
     }
 
-    .row-total .stat-main-val, .row-total .stat-sum-cell {
+    .row-total .stat-main-val,
+    .row-total .stat-sum-cell {
         font-size: 0.85rem !important;
     }
 }

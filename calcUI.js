@@ -48,7 +48,7 @@ export function updateActivityCountsUI(store, counts) {
     const isJa = state.currentLang === 'ja';
 
     const renderDist = (label, total, m, a, color = '#ff4d8d', bg = 'rgba(255, 77, 141, 0.05)', type = 'e') => `
-        <div class="enhance-item-content" style="background: ${bg}; border-color: ${color}33;">
+        <div class="enhance-item-content compact-dist" style="background: ${bg}; border-color: ${color}33;">
             <span class="dist-label" style="opacity: ${total > 0 ? 1 : 0.3}; color: ${color};">${label} <span class="counter-count">${total}</span></span>
             <div class="dist-group" style="opacity: ${total > 0 ? 1 : 0.3};">
                 <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val">${m}</span><button class="dist-btn plus" data-dist="${type}m">+</button></div>
@@ -59,7 +59,7 @@ export function updateActivityCountsUI(store, counts) {
 
     const drinkTotal = (counts.total.get_drink || 0) + (counts.total.purchase_drink || 0);
     const drinkDisplay = `
-        <div class="enhance-item-content" style="background: rgba(76, 175, 80, 0.05); border-color: rgba(76, 175, 80, 0.2);">
+        <div class="enhance-item-content compact-dist" style="background: rgba(76, 175, 80, 0.05); border-color: rgba(76, 175, 80, 0.2);">
             <span class="dist-label" style="opacity: ${drinkTotal > 0 ? 1 : 0.3}; color: #4caf50;">${isJa ? 'ドリンク' : '드링크'} <span class="counter-count">${drinkTotal}</span></span>
             <div class="dist-group" style="opacity: ${drinkTotal > 0 ? 1 : 0.3};">
                 <div class="dist-unit"><span>${isJa ? '獲得' : '획득'}</span><span class="dist-val" style="color: #4caf50;">${counts.total.get_drink || 0}</span></div>
@@ -69,9 +69,9 @@ export function updateActivityCountsUI(store, counts) {
     `;
 
     const renderOtherUnit = (label, key, color) => `
-        <div class="dist-unit" style="width: auto; gap: 4px; align-items: center;">
-            <span style="font-size: 0.75rem;">${label}</span>
-            <span class="dist-val" style="color: ${color}; min-width:12px;">${counts.total[key] || 0}</span>
+        <div class="dist-unit">
+            <span>${label}</span>
+            <span class="dist-val" style="color: ${color};">${counts.total[key] || 0}</span>
         </div>
     `;
 
@@ -85,7 +85,7 @@ export function updateActivityCountsUI(store, counts) {
     }
 
     const otherGetDisplay = `
-        <div class="enhance-item-content" style="background: rgba(156, 39, 176, 0.05); border-color: rgba(156, 39, 176, 0.2); padding-right: 35px; position: relative; min-width: 140px;">
+        <div class="enhance-item-content compact-dist has-tune-btn" style="background: rgba(156, 39, 176, 0.05); border-color: rgba(156, 39, 176, 0.2); position: relative; min-width: 140px;">
             <div class="dist-group" style="flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 8px;">
                 ${otherGetItems}
             </div>
@@ -95,40 +95,68 @@ export function updateActivityCountsUI(store, counts) {
 
     html += `
         <div class="counter-divider"></div>
-        <div class="extra-text-counts" style="font-size: 0.75rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
-            <div class="text-count-item">${renderDist(isJa ? '強化' : '강화', counts.total.enhance || 0, counts.total.enhance_m || 0, counts.total.enhance_a || 0, '#ff4d8d', 'rgba(255, 77, 141, 0.05)', 'e')}</div>
-            <div class="text-count-item">
-                <div class="enhance-item-content" style="background: rgba(0,0,0,0.05); border-color: #555333;">
-                    <span class="dist-label" style="opacity: ${((counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)) > 0 ? 1 : 0.3}; color: #555;">${isJa ? '削除' : '삭제'} <span class="counter-count">${(counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)}</span></span>
-                    <div class="dist-group" style="opacity: ${((counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)) > 0 ? 1 : 0.3};">
-                        <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val">${counts.total.delete_m || 0}</span><button class="dist-btn plus" data-dist="dm">+</button></div>
-                        <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val">${counts.total.delete_a || 0}</span><button class="dist-btn plus" data-dist="da">+</button></div>
-                        <div class="dist-unit">
-                            <span>${isJa ? 'トラブル' : '트러블'}</span>
-                            <span class="dist-val">${counts.total.delete_t || 0}${(() => {
+        <div class="extra-text-counts" style="font-size: 0.75rem; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: flex-start;">
+            <!-- Column 1: Enhance & Delete -->
+            <div class="counter-column">
+                <div class="text-count-item">${renderDist(isJa ? '強化' : '강화', counts.total.enhance || 0, counts.total.enhance_m || 0, counts.total.enhance_a || 0, '#ff4d8d', 'rgba(255, 77, 141, 0.05)', 'e')}</div>
+                <div class="text-count-item">
+                    <div class="enhance-item-content compact-dist" style="background: rgba(0,0,0,0.05); border-color: #555333;">
+                        <span class="dist-label" style="opacity: ${((counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)) > 0 ? 1 : 0.3}; color: #555;">${isJa ? '削除' : '삭제'} <span class="counter-count">${(counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)}</span></span>
+                        <div class="dist-group" style="opacity: ${((counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0)) > 0 ? 1 : 0.3};">
+                            <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val">${counts.total.delete_m || 0}</span><button class="dist-btn plus" data-dist="dm">+</button></div>
+                            <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val">${counts.total.delete_a || 0}</span><button class="dist-btn plus" data-dist="da">+</button></div>
+                            <div class="dist-unit">
+                                <span>${isJa ? 'トラブル' : '트러블'}</span>
+                                <span class="dist-val">${counts.total.delete_t || 0}${(() => {
             const rawTotal = (counts.total.delete_t_before_cap || counts.total.delete_t);
             const excess = Math.max(0, rawTotal - counts.total.delete_t);
             return excess > 0 ? `<span style="color: #ff4d8d; font-size: 0.6rem; margin-left: 1px; font-weight: normal;">(-${excess})</span>` : '';
         })()}</span>
-                            <button class="dist-btn plus" data-dist="dt">+</button>
+                                <button class="dist-btn plus" data-dist="dt">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="text-count-item">
-                <div class="enhance-item-content" style="background: rgba(255, 152, 0, 0.05); border-color: rgba(255, 152, 0, 0.2);">
-                    <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">${isJa ? 'カード獲得' : '카드획득'} <span class="counter-count">${counts.total.get || 0}</span></span>
-                    <div class="dist-group" style="opacity: ${counts.total.get > 0 ? 1 : 0.3};">
-                        <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_m || 0}</span></div>
-                        <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_a || 0}</span></div>
-                        <div class="dist-unit"><span>${isJa ? 'トラブル' : '트러블'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_t || 0}</span></div>
+
+            <!-- Column 2: Drink & Item/Change -->
+            <div class="counter-column">
+                <div class="text-count-item">${drinkDisplay}</div>
+                <div class="text-count-item">
+                    <div class="enhance-item-content compact-dist" style="background: rgba(33, 150, 243, 0.05); border-color: rgba(33, 150, 243, 0.2);">
+                        <div class="dist-group">
+                            <div class="dist-unit" style="opacity: ${counts.total.get_item > 0 ? 1 : 0.3}">
+                                <span>${isJa ? 'アイテム' : '아이템'}</span>
+                                <span class="dist-val" style="color: #2196f3;">${counts.total.get_item || 0}</span>
+                            </div>
+                            <div class="dist-unit" style="opacity: ${counts.total.change > 0 ? 1 : 0.3}">
+                                <span>${isJa ? 'チェンジ' : '체인지'}</span>
+                                <span class="dist-val" style="color: #2196f3;">${counts.total.change || 0}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="text-count-item">${drinkDisplay}</div>
-            <div class="text-count-item">${otherGetDisplay}</div>
-            <div class="text-count-item" style="opacity: ${counts.total.get_item > 0 ? 1 : 0.3}">${isJa ? 'アイテム' : '아이템'} <span class="counter-count">${counts.total.get_item || 0}</span></div>
-            <div class="text-count-item" style="opacity: ${counts.total.change > 0 ? 1 : 0.3}">${isJa ? 'チェンジ' : '체인지'} <span class="counter-count">${counts.total.change || 0}</span></div>
+
+            <!-- Column 3: Card Get -->
+            <div class="counter-column">
+                <div class="text-count-item">
+                    <div class="enhance-item-content compact-dist has-tune-btn" style="background: rgba(255, 152, 0, 0.05); border-color: rgba(255, 152, 0, 0.2); position: relative;">
+                        <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">${isJa ? 'カード獲得' : '카드획득'} <span class="counter-count">${counts.total.get || 0}</span></span>
+                        <div class="dist-group" style="opacity: ${counts.total.get > 0 ? 1 : 0.3};">
+                            <div class="dist-unit"><span>${isJa ? 'メンタル' : '멘탈'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_m || 0}</span></div>
+                            <div class="dist-unit"><span>${isJa ? 'アクティブ' : '액티브'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_a || 0}</span></div>
+                            <div class="dist-unit"><span>${isJa ? 'トラブル' : '트러블'}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_t || 0}</span></div>
+                        </div>
+                        <div style="width: 100%; height: 1px; background: rgba(255,152,0,0.1); margin: 4px 0;"></div>
+                        <div class="dist-group">
+                            ${otherGetItems}
+                        </div>
+                        <div style="width: 100%; height: 1px; background: rgba(156,39,176,0.1); margin: 4px 0;"></div>
+                        <button class="other-tune-btn" id="btn-other-tune" style="width: 85%; height: 26px; margin: 6px auto 8px; display: block; background: #9c27b0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem;">${isJa ? '選択' : '선택'}</button>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
     counterContainer.innerHTML = html;
@@ -202,7 +230,7 @@ export function updateSelectedCardsUI(store) {
                     </div>
                 </div>
             `;
-            
+
             let optRow = slotEl.querySelector('.card-opt-row');
             if (optRow) optRow.outerHTML = optCheckHtml;
 
@@ -403,7 +431,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <!-- P-Item Row -->
                     <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
                         <label style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; margin: 0 2px;">
-                            <span class="p-item-check-txt">${isJa ? '才能開花 3' : '재능개화 3'}</span>
+                            <span class="p-item-check-txt">${isJa ? '재능개화 3' : '재능개화 3'}</span>
                             <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''} style="margin: 0; accent-color: #ff4d8d; transform: scale(1.0); cursor: pointer;">
                         </label>
                         <div style="width: 1px; height: 24px; background-color: #ddd; margin: 0 4px;"></div>
@@ -421,20 +449,21 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         ${Array.from({ length: 4 }).map((_, i) => {
         const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
         let linesHtml = '';
-        for (let j = 0; j < 3; j++) {
-            const memKey = memArray[j];
-            const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
+        ['vocal', 'dance', 'visual'].forEach(sName => {
+            const memKey = memArray.find(k => window.calcData?.memoryOptions?.[k]?.stat === sName);
+            const opt = memKey ? window.calcData.memoryOptions[memKey] : null;
             if (opt) {
-                const attrColor = opt.stat === 'vocal' ? '#ff4d8d' : (opt.stat === 'dance' ? '#46a4f3' : '#fcc75e');
-                const icon = `<img src="icons/${opt.stat}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
+                const attrColor = (sName === 'vocal' ? '#ff4d8d' : (sName === 'dance' ? '#46a4f3' : '#fcc75e'));
+                const icon = `<img src="icons/${sName}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
                 const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
                 linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
             } else {
                 linesHtml += `<div class="memory-slot-line title">-</div>`;
             }
-        }
+        });
         return `
                             <div class="memory-slot" data-idx="${i}">
+                                <div class="memory-slot-badge">memory ${i + 1}</div>
                                 ${linesHtml}
                             </div>
                             `;
@@ -561,19 +590,19 @@ export function updateMemorySlotsUI(store) {
     slots.forEach((slot, i) => {
         const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
         let linesHtml = '';
-        for (let j = 0; j < 3; j++) {
-            const memKey = memArray[j];
-            const opt = memKey && window.calcData?.memoryOptions ? window.calcData.memoryOptions[memKey] : null;
+        ['vocal', 'dance', 'visual'].forEach(sName => {
+            const memKey = memArray.find(k => window.calcData?.memoryOptions?.[k]?.stat === sName);
+            const opt = memKey ? window.calcData.memoryOptions[memKey] : null;
             if (opt) {
-                const attrColor = opt.stat === 'vocal' ? '#ff4d8d' : (opt.stat === 'dance' ? '#46a4f3' : '#fcc75e');
-                const icon = `<img src="icons/${opt.stat}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
+                const attrColor = (sName === 'vocal' ? '#ff4d8d' : (sName === 'dance' ? '#46a4f3' : '#fcc75e'));
+                const icon = `<img src="icons/${sName}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
                 const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
                 linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
             } else {
                 linesHtml += `<div class="memory-slot-line title">-</div>`;
             }
-        }
-        slot.innerHTML = linesHtml;
+        });
+        slot.innerHTML = `<div class="memory-slot-badge">memory ${i + 1}</div>${linesHtml}`;
     });
 }
 
@@ -676,13 +705,17 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
 
     // 바깥 클릭 시 닫기
     setTimeout(() => {
+        const idolContainer = document.getElementById('idol');
         const closeTooltip = (e) => {
-            if (!tooltip.contains(e.target) && e.target !== slot) {
+            if (!tooltip.parentElement) return;
+            if (e.type === 'scroll' || (!tooltip.contains(e.target) && e.target !== slot)) {
                 tooltip.remove();
                 document.removeEventListener('click', closeTooltip);
+                if (idolContainer) idolContainer.removeEventListener('scroll', closeTooltip);
             }
         };
         document.addEventListener('click', closeTooltip);
+        if (idolContainer) idolContainer.addEventListener('scroll', closeTooltip, { passive: true });
     }, 0);
 }
 
@@ -729,4 +762,14 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
+
+    // 스크롤 시 닫기 리스너 추가
+    setTimeout(() => {
+        const idolContainer = document.getElementById('idol');
+        const onScrollClose = () => {
+            tooltip.remove();
+            if (idolContainer) idolContainer.removeEventListener('scroll', onScrollClose);
+        };
+        if (idolContainer) idolContainer.addEventListener('scroll', onScrollClose, { passive: true });
+    }, 0);
 }

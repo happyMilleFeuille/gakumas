@@ -453,7 +453,7 @@ export function calculateTotals(store, detailedCounts) {
     };
 
     // --- 5. P-아이템 효과 합산 ---
-    if (store.pItemChecked && store.pItems) {
+    if (store.pItems) {
         store.pItems.forEach(itemId => {
             if (!itemId) return;
             const cardGetCount = detailedCounts.total.get || 0;

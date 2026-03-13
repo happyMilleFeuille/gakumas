@@ -71,7 +71,7 @@ export function showStatDetailModal(breakdown) {
                     <span style="border-left: 1px solid transparent;">Total</span>
                 </div>
                 
-                ${renderRow(isJa ? 'アイドル(初期)' : '아이돌 (초기)', breakdown.idolBase, null, 'row-base')}
+                ${renderRow(isJa ? 'アイドル(固定)' : '아이돌 (고정)', breakdown.idolBase, null, 'row-base')}
                 ${(calcStore.type === 'hajime' || calcStore.type === 'nia') ? `
                     ${renderRow(isJa ? '授業' : '수업', breakdown.class, null, 'row-base')}
                     ${renderRow(isJa ? '試験' : '시험', breakdown.exam, null, 'row-base')}
@@ -426,12 +426,6 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
     content.style.maxHeight = '80vh';
     content.style.overflowY = 'auto';
 
-    const header = document.createElement('h3');
-    header.style.marginTop = '0';
-    header.style.color = '#ff4d8d';
-    header.style.borderBottom = '1px solid #ddd';
-    header.style.paddingBottom = '8px';
-    header.textContent = isJa ? `メモリー ${slotIndex + 1} 選択` : `메모리 ${slotIndex + 1} 선택`;
 
     // calcStore.memories[slotIndex]는 이제 배열 형태여야 함
     let currentSelections = Array.isArray(calcStore.memories[slotIndex]) ? [...calcStore.memories[slotIndex]] : [];
@@ -454,8 +448,6 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
             el.style.borderColor = '#ddd';
         });
     };
-    content.appendChild(header);
-    content.appendChild(clearBtn);
 
     // 모달 닫기 로직: 닫을 때 스토어 저장 및 새로고침
     const closeModalAndSave = () => {
@@ -539,35 +531,30 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
                         }
                     }
 
-                    if (currentSelections.length >= 3) {
-                        alert(isJa ? '最大3つまで選択できます。' : '최대 3개까지만 선택 가능합니다.');
-                        return;
-                    }
                     currentSelections.push(key);
                     btn.style.background = bgColors[type];
                     btn.style.borderColor = colors[type];
+
+                    // 3개 선택 시 자동 닫기
+                    if (currentSelections.length === 3) {
+                        setTimeout(() => {
+                            closeModalAndSave();
+                        }, 100);
+                    }
                 }
             };
             btn.dataset.key = key; // 기존 버튼을 찾기 위해 key 저장
             columns[type].appendChild(btn);
         });
+
+        // 비우기 버튼 (해제)을 옵션 리스트 아래로 이동
+        clearBtn.style.marginTop = '12px';
+        content.appendChild(clearBtn);
     });
 
     modal.appendChild(content);
     modal.onclick = (e) => { if (e.target === modal) closeModalAndSave(); };
 
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = '✕';
-    closeBtn.style.position = 'absolute';
-    closeBtn.style.top = '10px';
-    closeBtn.style.right = '10px';
-    closeBtn.style.background = 'transparent';
-    closeBtn.style.border = 'none';
-    closeBtn.style.fontSize = '20px';
-    closeBtn.style.color = '#aaa';
-    closeBtn.style.cursor = 'pointer';
-    closeBtn.onclick = () => closeModalAndSave();
-    content.appendChild(closeBtn);
 
     document.body.appendChild(modal);
 }
