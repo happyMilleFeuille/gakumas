@@ -180,7 +180,8 @@ function initNavigation(ui) {
             setGachaType(types[idx]);
 
             const currentPickupSelector = document.getElementById('gacha-pickup-selector');
-            const latestUi = { ...ui, pickupSelector: currentPickupSelector };
+            const currentBgLayer = document.getElementById('gacha-bg-layer');
+            const latestUi = { ...ui, pickupSelector: currentPickupSelector, gachaBgLayer: currentBgLayer };
             updateTypeUI(latestUi);
 
             elements.forEach(el => {
