@@ -726,6 +726,13 @@ export function showCardModal(card, displayName, imgSrc) {
     const mAbilities = document.getElementById('modal-abilities');
     const stars = document.querySelectorAll('.star');
 
+    // 이전 데이터 비우기 (반짝임 방지)
+    mImg.src = '';
+    mRarity.src = '';
+    mPlan.src = '';
+    mType.src = '';
+    mExtraIcon.src = '';
+
     mImg.src = imgSrc;
     mTitle.textContent = displayName;
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;

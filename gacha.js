@@ -76,7 +76,13 @@ function startGachaUI(contentArea, isRefresh) {
     initGachaDrawer();
 
     const fixedBg = document.getElementById('fixed-bg');
-    if (fixedBg) { fixedBg.style.transition = 'none'; fixedBg.style.backgroundImage = ''; fixedBg.style.filter = ''; }
+    if (fixedBg) { 
+        fixedBg.style.transition = 'none'; 
+        fixedBg.style.backgroundImage = ''; 
+        fixedBg.style.webkitMaskImage = "url('images/background.webp')";
+        fixedBg.style.maskImage = "url('images/background.webp')";
+        import('./ui.js').then(m => m.updateGlobalBackgroundColor());
+    }
 
     const ui = {
         btn1: document.getElementById('btn-1pull-fixed'),

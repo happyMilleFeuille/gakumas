@@ -4,17 +4,88 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 1.5rem; 
+    padding-top: 1.5rem;
     gap: 1.5rem;
     text-align: center;
-    height: 85%;
+    height: 95%;
     min-height: 500px;
     position: relative;
-    overflow: hidden !important;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    margin: 0 1rem;
+    padding-bottom: 2rem;
 }
+
+/* 상단 UI 요소들을 위한 내부 래퍼 */
+.gacha-top-ui-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    z-index: 200;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    align-items: flex-start;
+    /* 좌측 버튼들을 상단에 고정 */
+}
+
+.gacha-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: auto;
+}
+
+.gacha-right-ui-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* 우측 정렬 */
+    gap: 8px;
+    /* 쥬얼칸과 음소거 버튼 사이 간격 */
+    pointer-events: auto;
+}
+
+.jewel-container {
+    position: static;
+    display: flex;
+    align-items: center;
+}
+
+.mute-toggle-btn {
+    position: static !important;
+    /* absolute 해제 */
+    margin: 0;
+}
+
+/* 내부 버튼들이 absolute 속성 때문에 겹치는 것을 방지 */
+.gacha-header-controls .log-btn {
+    position: static !important;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .gacha-container {
+        width: calc(100% - 1rem);
+        /* 너비를 미세하게 줄임 */
+        margin: 0 auto;
+        /* 중앙 정렬 */
+        height: 100%;
+        min-height: 500px;
+        overflow: visible !important;
+        /* 삐져나온 컨텐츠(서포트카드)가 보이도록 함 */
+    }
+}
+
 .gacha-pickup-selector {
     position: absolute;
-    top: 40%;
+    top: 37%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -24,7 +95,7 @@
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    align-items: flex-start; 
+    align-items: flex-start;
 }
 
 .pickup-wrapper {
@@ -32,55 +103,56 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-   
+
 }
 
 
 .selector-bg-container {
     position: absolute;
-    top: 25%; 
+    top: 22%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 60px;
-    z-index: 1; 
+    z-index: 1;
     pointer-events: none;
     justify-content: center;
-    align-items: flex-start; 
+    align-items: flex-start;
     width: 100%;
     height: 100%;
 }
 
 .selector-bg-item {
-    width: 230px; 
+    width: 230px;
     aspect-ratio: 1 / 1.15;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    filter: blur(1.5px) brightness(1.2); 
+    filter: blur(1.5px) brightness(1.2);
     opacity: 0.4;
     transition: all 0.4s ease;
-    transform: scale(2.3); 
+    transform: scale(2.3);
     margin: 0;
 }
 
 /* 셀렉션/가로형 아이템 스타일 */
 .pickup-item.selection-item {
-    width: 500px; 
+    width: 500px;
     height: auto;
     border-radius: 0 50px 0 50px;
 }
 
 .pickup-item.selection-item .pickup-img-wrapper {
-    aspect-ratio: 16 / 9; 
+    aspect-ratio: 16 / 9;
     border-radius: 0 50px 0 50px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
     .pickup-item.selection-item {
-        width: 300px; 
+        width: 300px;
     }
+
     .pickup-item.selection-item .pickup-img-wrapper {
         border-radius: 0 30px 0 30px;
     }
@@ -91,25 +163,29 @@
     width: 100%;
 }
 
-.selector-bg-item:first-child, .selector-bg-item:last-child { margin: 0; }
+.selector-bg-item:first-child,
+.selector-bg-item:last-child {
+    margin: 0;
+}
+
 @media (max-width: 768px) {
     .gacha-pickup-selector {
-        gap: 25px; 
+        gap: 25px;
     }
 
     .selector-bg-item {
         width: 130px;
-        aspect-ratio: 1 / 1.5; 
-        filter: blur(2px) brightness(1.2); 
+        aspect-ratio: 1 / 1.5;
+        filter: blur(2px) brightness(1.2);
     }
 }
 
 /* Pickup Group (Unit) */
 .pickup-group {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
-    gap: 0; 
+    gap: 0;
     padding: 0;
     background: none;
     border-radius: 8px;
@@ -117,7 +193,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    z-index: 10; 
+    z-index: 10;
 }
 
 .pickup-group:hover .pickup-images-inner {
@@ -138,15 +214,15 @@
 
 .pickup-name {
     position: absolute;
-    top: -28px; 
-    left: 5px;  
+    top: -28px;
+    left: 5px;
     color: #fff;
     font-size: 0.9rem;
     font-weight: bold;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
     white-space: nowrap;
     padding: 0;
-    z-index: 20; 
+    z-index: 20;
     pointer-events: none;
     text-align: left;
 }
@@ -168,8 +244,15 @@
     margin: 0;
 }
 
-.pickup-item-inner:first-child .pickup-img-wrapper { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
-.pickup-item-inner:last-child .pickup-img-wrapper { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+.pickup-item-inner:first-child .pickup-img-wrapper {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.pickup-item-inner:last-child .pickup-img-wrapper {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
 
 .pickup-item-inner .pickup-img-wrapper {
     margin-bottom: 0;
@@ -219,8 +302,9 @@
 
 .pickup-item {
     position: relative;
-    width: 260px; 
-    aspect-ratio: 1 / 1.1; /* 세로 비율을 줄여서 너무 길어지지 않게 조정 */
+    width: 260px;
+    aspect-ratio: 1 / 1.1;
+    /* 세로 비율을 줄여서 너무 길어지지 않게 조정 */
 }
 
 .pickup-item.selection-item {
@@ -230,8 +314,10 @@
 
 .idol-main-img {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border-radius: inherit;
     overflow: hidden;
     z-index: 10;
@@ -241,13 +327,16 @@
 /* 픽업 서포트 카드 컬럼 - 기본 위치 (우측 하단 바깥 세로 나열) */
 .pickup-support-column {
     position: absolute;
-    bottom: 0; /* 배너 하단 라인에 맞춤 */
-    left: 110%; /* 배너 이미지 오른쪽으로 뺌 */
+    bottom: 0;
+    /* 배너 하단 라인에 맞춤 */
+    left: 110%;
+    /* 배너 이미지 오른쪽으로 뺌 */
     top: auto;
     transform: none;
     width: auto;
     display: flex;
-    flex-direction: column; /* 기본은 세로 나열 */
+    flex-direction: column;
+    /* 기본은 세로 나열 */
     align-items: center;
     gap: 15px;
     z-index: 20;
@@ -259,13 +348,16 @@
     left: auto;
     right: 0;
     top: auto;
-    bottom: -85px; /* -75px에서 -85px로 조정 */
+    bottom: -85px;
+    /* -75px에서 -85px로 조정 */
     transform: none;
-    flex-direction: row; /* 유닛은 가로 나열 */
+    flex-direction: row;
+    /* 유닛은 가로 나열 */
     gap: 15px;
 }
 
 @media (max-width: 768px) {
+
     /* 모바일 기본 배너: 우측 바깥 */
     .pickup-support-column {
         left: 105%;
@@ -298,7 +390,8 @@
 }
 
 .support-pickup-mini {
-    width: 70px; /* PC 크기 70px로 축소 */
+    width: 70px;
+    /* PC 크기 70px로 축소 */
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     border: 2px solid #fff;
@@ -307,23 +400,35 @@
     background-position: center;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
     pointer-events: auto;
-    transform: none; 
+    transform: none;
     transition: transform 0.2s ease;
 }
 
-.support-pickup-mini[data-rarity="SSR"] { border-color: #d4a5ff !important; box-shadow: 0 0 15px rgba(212, 165, 255, 0.4); }
-.support-pickup-mini[data-rarity="SR"] { border-color: #ffe082 !important; box-shadow: 0 0 12px rgba(255, 224, 130, 0.3); }
+.support-pickup-mini[data-rarity="SSR"] {
+    border-color: #d4a5ff !important;
+    box-shadow: 0 0 15px rgba(212, 165, 255, 0.4);
+}
+
+.support-pickup-mini[data-rarity="SR"] {
+    border-color: #ffe082 !important;
+    box-shadow: 0 0 12px rgba(255, 224, 130, 0.3);
+}
 
 @media (max-width: 768px) {
-    .pickup-item { 
-        width: 150px; 
-        aspect-ratio: 1 / 1.25 !important; /* 모바일은 더 길쭉하게 변경 */
+    .pickup-item {
+        width: 150px;
+        aspect-ratio: 1 / 1.25 !important;
+        /* 모바일은 더 길쭉하게 변경 */
     }
-    .pickup-item.selection-item { width: 280px; aspect-ratio: 3 / 2 !important; }
-    
+
+    .pickup-item.selection-item {
+        width: 280px;
+        aspect-ratio: 3 / 2 !important;
+    }
+
 
     .pickup-support-column {
-        left: 120%; 
+        left: 120%;
         gap: 30px;
     }
 
@@ -346,19 +451,7 @@
 }
 
 
-.gacha-header-controls {
-    position: absolute;
-    top: 48px;
-    left: 10px;
-    z-index: 150;
-}
 
-@media (max-width: 768px) {
-    .gacha-header-controls {
-        top: 30px;
-        left: 5px;
-    }
-}
 
 .mute-toggle-btn {
     background: rgba(255, 255, 255, 0.8);
@@ -371,10 +464,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
 }
-.mute-toggle-btn:hover { background: #fff; transform: scale(1.1); }
+
+.mute-toggle-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
 
 .back-btn {
     background: #333;
@@ -384,11 +481,17 @@
     padding: 8px 20px;
     font-size: 0.9rem;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s;
 }
-.back-btn:hover { background: #000; }
-.back-btn.hidden { display: none; }
+
+.back-btn:hover {
+    background: #000;
+}
+
+.back-btn.hidden {
+    display: none;
+}
 
 
 .gacha-controls-top {
@@ -403,12 +506,12 @@
     transform-style: flat;
 }
 
-.gacha-buttons { 
-    display: flex; 
+.gacha-buttons {
+    display: flex;
     column-gap: 1.5rem;
     row-gap: 4px;
-    justify-content: center; 
-    flex-wrap: wrap; 
+    justify-content: center;
+    flex-wrap: wrap;
     position: absolute;
     bottom: 0px;
     left: 0;
@@ -419,18 +522,38 @@
     transition: opacity 0.15s ease-in-out;
 }
 
-.gacha-buttons.loading-shift { opacity: 0 !important; }
+.gacha-buttons.loading-shift {
+    opacity: 0 !important;
+}
 
 
-.gacha-buttons.view-main .gacha-controls-top { order: 0; }
-.gacha-buttons.view-main .gacha-btn { order: 1; }
-.gacha-buttons.view-main .total-pulls-box { order: 2; margin-top: 10px; }
+.gacha-buttons.view-main .gacha-controls-top {
+    order: 0;
+}
 
-.gacha-buttons.view-result .gacha-controls-top { order: 0; }
-.gacha-buttons.view-result .total-pulls-box { order: 1; margin-bottom: 10px; }
-.gacha-buttons.view-result .gacha-btn { order: 2; }
+.gacha-buttons.view-main .gacha-btn {
+    order: 1;
+}
 
-.gacha-btn { 
+.gacha-buttons.view-main .total-pulls-box {
+    order: 2;
+    margin-top: 10px;
+}
+
+.gacha-buttons.view-result .gacha-controls-top {
+    order: 0;
+}
+
+.gacha-buttons.view-result .total-pulls-box {
+    order: 1;
+    margin-bottom: 10px;
+}
+
+.gacha-buttons.view-result .gacha-btn {
+    order: 2;
+}
+
+.gacha-btn {
     width: 180px;
     height: 70px;
     background: url('../icons/gasya.png') no-repeat center;
@@ -438,11 +561,11 @@
     border: none;
     cursor: pointer;
     transition: transform 0.1s ease;
-    color: #fff; 
+    color: #fff;
     font-weight: bold;
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     padding-top: 8px;
@@ -452,13 +575,13 @@
 }
 
 .btn-cost {
-    padding-left: 60px; 
+    padding-left: 60px;
     font-size: 0.95rem;
 }
 
 .gacha-btn.close-style {
     background: #ffffff !important;
-    color: #444; 
+    color: #444;
     text-shadow: none;
     border: 1px solid #dcdcdc;
     border-radius: 35px;
@@ -467,13 +590,13 @@
     letter-spacing: 0.5px;
     display: flex;
     flex-direction: row !important;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
-    padding-top: 18px; 
+    padding-top: 18px;
     filter: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
-    gap: 8px; 
+    gap: 8px;
     white-space: nowrap;
 }
 
@@ -498,7 +621,7 @@
 }
 
 .gacha-sub-buttons .log-btn {
-    position: static !important; 
+    position: static !important;
     margin: 0;
 }
 
@@ -534,7 +657,9 @@
 }
 
 
-.view-main #total-pull-count { min-width: 120px; }
+.view-main #total-pull-count {
+    min-width: 120px;
+}
 
 #btn-gacha-reset {
     position: static;
@@ -548,20 +673,14 @@
     transition: all 0.2s;
     box-shadow: none;
 }
+
 #btn-gacha-reset:hover {
     background: rgba(0, 0, 0, 0.8);
     transform: scale(1.05);
 }
 
 
-.jewel-container {
-    position: absolute;
-    top: 10px; right: 10px;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+
 
 .jewel-container.hidden {
     display: none !important;
@@ -589,7 +708,11 @@
     flex-shrink: 0;
 }
 
-#jewel-count { flex-grow: 1; text-align: right; margin: 0; }
+#jewel-count {
+    flex-grow: 1;
+    text-align: right;
+    margin: 0;
+}
 
 .add-jewel-btn {
     background: none !important;
@@ -601,15 +724,21 @@
     font-size: 1.2rem;
     line-height: 1;
     cursor: pointer;
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    justify-content: center;
     align-items: center;
     font-weight: bold;
     padding: 0 0 0 4px;
     transition: transform 0.1s, opacity 0.1s;
 }
-.add-jewel-btn:hover { opacity: 0.8; }
-.add-jewel-btn:active { transform: scale(0.9); }
+
+.add-jewel-btn:hover {
+    opacity: 0.8;
+}
+
+.add-jewel-btn:active {
+    transform: scale(0.9);
+}
 
 
 /* 상단 중복 스타일 제거됨 - 하단 통합 관리 구역 사용 */
@@ -622,39 +751,58 @@
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
-    width: 80px; height: 80px;
-    display: flex; align-items: center; justify-content: center;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transform: translateY(20px);
     will-change: transform, width, opacity;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
-.type-nav-btn.circle-btn:hover, .type-nav-btn.circle-btn:active { transform: translateY(20px); }
 
-.capsule-container {
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
+.type-nav-btn.circle-btn:hover,
+.type-nav-btn.circle-btn:active {
+    transform: translateY(20px);
 }
 
-.gacha-type-indicator { display: flex; gap: 8px; }
+.capsule-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.gacha-type-indicator {
+    display: flex;
+    gap: 8px;
+}
 
 .gacha-type-indicator .dot {
-    width: 6px; height: 6px;
-    background: rgba(150, 150, 150, 0.6); 
+    width: 6px;
+    height: 6px;
+    background: rgba(150, 150, 150, 0.6);
     border-radius: 0;
     transform: rotate(45deg);
     transition: all 0.2s;
 }
+
 .gacha-type-indicator .dot.active {
-    background: #FF9800; 
+    background: #FF9800;
     box-shadow: 0 0 6px rgba(255, 152, 0, 0.8);
-    transform: rotate(45deg); 
+    transform: rotate(45deg);
 }
 
-.current-type-display.capsule-box span, .type-nav-btn.circle-btn span {
-    display: flex; align-items: center; justify-content: center;
-    width: 100%; height: 100%;
+.current-type-display.capsule-box span,
+.type-nav-btn.circle-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
 }
 
@@ -663,48 +811,104 @@
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50px;
-    min-width: 240px; height: 100px;
+    min-width: 240px;
+    height: 100px;
     line-height: 100px;
     text-align: center;
     font-size: 1.8rem;
     font-weight: bold;
     user-select: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     position: relative;
     --base-trans: translateY(0);
 }
 
-.slide-out-left span { animation: textOutLeft 0.1s ease-in forwards; }
-.slide-in-right span { animation: textInRight 0.1s ease-out forwards; }
-.slide-out-right span { animation: textOutRight 0.1s ease-in forwards; }
-.slide-in-left span { animation: textInLeft 0.1s ease-out forwards; }
+.slide-out-left span {
+    animation: textOutLeft 0.1s ease-in forwards;
+}
+
+.slide-in-right span {
+    animation: textInRight 0.1s ease-out forwards;
+}
+
+.slide-out-right span {
+    animation: textOutRight 0.1s ease-in forwards;
+}
+
+.slide-in-left span {
+    animation: textInLeft 0.1s ease-out forwards;
+}
 
 /* 텍스트 슬라이드 애니메이션 복구 */
-@keyframes textOutLeft { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-40px); } }
-@keyframes textInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes textOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
-@keyframes textInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes textOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+}
+
+@keyframes textInRight {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes textOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+}
+
+@keyframes textInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
 
 /* Spinner Overlay */
 .spinner {
     display: none;
 }
+
 .spinner.active {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: #ffffff !important; 
+    background: #ffffff !important;
     z-index: 9990 !important;
     margin: 0 !important;
     padding: 0 !important;
     touch-action: none;
     user-select: none;
     pointer-events: all;
-    display: block !important; 
+    display: block !important;
 }
 
 .spinner.active::after {
@@ -724,7 +928,7 @@
 
 #gacha-progress-text {
     position: absolute;
-    top: calc(50% + 55px); 
+    top: calc(50% + 55px);
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--primary-color);
@@ -733,12 +937,23 @@
     z-index: 10001;
 }
 
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 /* Gacha Download Confirmation Modal */
 .gacha-confirm-overlay {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: transparent;
     display: flex;
     justify-content: center;
@@ -753,14 +968,21 @@
     border-radius: 20px;
     padding: 2rem;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     border: 2px solid #ff4d8d;
     animation: gachaConfirmPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes gachaConfirmPop {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .gacha-confirm-header {
@@ -822,16 +1044,28 @@
     .gacha-confirm-content {
         padding: 1.5rem 1rem;
     }
-    .gacha-confirm-header { font-size: 1.1rem; }
-    .gacha-confirm-body p { font-size: 0.9rem; }
-    .gacha-confirm-btn { padding: 8px 20px; font-size: 0.8rem; }
+
+    .gacha-confirm-header {
+        font-size: 1.1rem;
+    }
+
+    .gacha-confirm-body p {
+        font-size: 0.9rem;
+    }
+
+    .gacha-confirm-btn {
+        padding: 8px 20px;
+        font-size: 0.8rem;
+    }
 }
 
 /* 가챠 애니메이션 연출 요소 */
 #gacha-video-container {
     position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background: #000;
     z-index: 1000;
     display: flex;
@@ -841,7 +1075,8 @@
 }
 
 .gacha-vid {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 
@@ -849,22 +1084,28 @@
     position: absolute;
     left: 50%;
     z-index: 1010;
-    width: 45vh; 
-    max-width: 100%; 
+    width: 45vh;
+    max-width: 100%;
     height: auto;
     pointer-events: none;
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.1);
 }
 
-#gacha-card-overlay.produce-card { top: 43.5%; }
+#gacha-card-overlay.produce-card {
+    top: 43.5%;
+}
+
 #gacha-card-overlay.produce-card.visible {
     opacity: 1;
     transform: translate(-50%, -50%) scale(0.60);
     transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
 }
 
-#gacha-card-overlay.landscape-card { top: 45%; }
+#gacha-card-overlay.landscape-card {
+    top: 45%;
+}
+
 #gacha-card-overlay.landscape-card.visible {
     opacity: 1;
     transform: translate(-50%, -50%) scale(0.9);
@@ -886,8 +1127,13 @@
     transform: translate(-50%, -50%) translateY(20px);
 }
 
-#gacha-name-overlay.produce-name { top: 78%; }
-#gacha-name-overlay.landscape-name { top: 66%; }
+#gacha-name-overlay.produce-name {
+    top: 78%;
+}
+
+#gacha-name-overlay.landscape-name {
+    top: 66%;
+}
 
 #gacha-name-overlay.visible {
     opacity: 1;
@@ -897,7 +1143,8 @@
 
 #gacha-new-badge {
     position: absolute;
-    top: 15%; left: 50%; 
+    top: 15%;
+    left: 50%;
     z-index: 1012;
     background: none;
     color: white;
@@ -917,7 +1164,8 @@
 
 .skip-btn {
     position: absolute;
-    bottom: 25px; right: 20px;
+    bottom: 25px;
+    right: 20px;
     z-index: 1020;
     background: rgba(0, 0, 0, 0.4);
     color: rgba(255, 255, 255, 0.8);
@@ -932,37 +1180,45 @@
 /* Immersive Mode */
 body.immersive-mode .button-group.horizontal,
 body.immersive-mode #gacha-fixed-buttons,
-body.immersive-mode #fixed-bg, 
+body.immersive-mode #fixed-bg,
 body.immersive-mode header,
 body.immersive-mode footer {
     display: none !important;
 }
-body.immersive-mode { background-color: #000 !important; overflow: hidden; }
+
+body.immersive-mode {
+    background-color: #000 !important;
+    overflow: hidden;
+}
 
 /* Mobile Media Queries */
 @media (max-width: 768px) {
     .gacha-container {
-        padding-top: 0 !important; 
+        padding-top: 0 !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: center !important; 
+        justify-content: center !important;
         height: 90% !important;
         min-height: 45vh !important;
         width: 100% !important;
     }
-    .gacha-buttons { gap: 10px; bottom: 5px; }
-    
-    .gacha-btn { 
-        width: 130px !important; 
-        min-width: 0 !important; 
-        height: 55px; 
-        padding-top: 5px; 
-        font-size: 0.75rem; 
+
+    .gacha-buttons {
+        gap: 10px;
+        bottom: 5px;
+    }
+
+    .gacha-btn {
+        width: 130px !important;
+        min-width: 0 !important;
+        height: 55px;
+        padding-top: 5px;
+        font-size: 0.75rem;
         line-height: 2;
-        background-size: 130px 55px !important; 
+        background-size: 130px 55px !important;
         overflow: visible;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        white-space: nowrap; 
+        white-space: nowrap;
     }
 
     .btn-cost {
@@ -974,46 +1230,93 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         width: 90px !important;
         height: 45px;
         border-radius: 25px;
-        padding-top: 13px !important; 
+        padding-top: 13px !important;
         display: flex !important;
-        align-items: center; 
+        align-items: center;
         justify-content: center;
         margin-top: 5px;
         background: #ffffff !important;
         font-size: 0.75rem;
     }
-    .gacha-btn.close-style > * {
-        transform: none !important; 
+
+    .gacha-btn.close-style>* {
+        transform: none !important;
     }
+
     .close-x {
-        transform: translateY(-1px) !important; 
+        transform: translateY(-1px) !important;
         margin-right: 4px;
     }
 
-    .mute-toggle-btn { width: 30px; height: 30px; font-size: 0.9rem; }
-    
-    .jewel-container { top: 5px; right: 5px; }
-    .jewel-box { width: 100px; padding: 3px 8px; font-size: 0.75rem; gap: 2px; }
-    .add-jewel-btn { width: 16px; height: 16px; font-size: 0.8rem; }
-    #total-pull-count { min-width: 130px; font-size: 0.75rem; }
-    #btn-gacha-reset { padding: 1px 6px; font-size: 0.6rem; }
-    
-    .gacha-controls-top { gap: 10px; margin-bottom: 25px; }
-    .type-nav-btn.circle-btn { 
-        width: 45px; height: 45px; font-size: 0.8rem; 
-        transform: translateY(20px); 
+    .mute-toggle-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
     }
-    .type-nav-btn.circle-btn:hover, .type-nav-btn.circle-btn:active { transform: translateY(20px); }
-    .current-type-display.capsule-box { min-width: 130px; height: 60px; line-height: 60px; font-size: 1.1rem; }
+
+    .jewel-container {
+        top: 5px;
+        right: 5px;
+    }
+
+    .jewel-box {
+        width: 100px;
+        padding: 3px 8px;
+        font-size: 0.75rem;
+        gap: 2px;
+    }
+
+    .add-jewel-btn {
+        width: 16px;
+        height: 16px;
+        font-size: 0.8rem;
+    }
+
+    #total-pull-count {
+        min-width: 130px;
+        font-size: 0.75rem;
+    }
+
+    #btn-gacha-reset {
+        padding: 1px 6px;
+        font-size: 0.6rem;
+    }
+
+    .gacha-controls-top {
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    .type-nav-btn.circle-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 0.8rem;
+        transform: translateY(20px);
+    }
+
+    .type-nav-btn.circle-btn:hover,
+    .type-nav-btn.circle-btn:active {
+        transform: translateY(20px);
+    }
+
+    .current-type-display.capsule-box {
+        min-width: 130px;
+        height: 60px;
+        line-height: 60px;
+        font-size: 1.1rem;
+    }
 
     /* 모바일 서포트 카드 위치 및 크기 설정 */
     .pickup-support-column {
-        left: 102% !important; /* 기본 배너: 우측 바깥 */
+        left: 102% !important;
+        /* 기본 배너: 우측 바깥 */
         right: auto !important;
-        bottom: 0 !important; /* 하단 라인에 맞춤 */
+        bottom: 0 !important;
+        /* 하단 라인에 맞춤 */
         top: auto !important;
         transform: none !important;
-        flex-direction: column !important; /* 기본 배너: 세로 나열 */
+        flex-direction: column !important;
+        /* 기본 배너: 세로 나열 */
         gap: 6px !important;
     }
 
@@ -1029,9 +1332,10 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
     }
 
     .support-pickup-mini {
-        width: 45px !important; /* 모바일 크기 45px로 더 축소 */
-        border-radius: 50% !important; 
-        transform: none !important; 
+        width: 45px !important;
+        /* 모바일 크기 45px로 더 축소 */
+        border-radius: 50% !important;
+        transform: none !important;
     }
 
     /* 위치 보정 */
@@ -1039,6 +1343,7 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
         left: 102% !important;
         gap: 6px !important;
     }
+
     .pickup-item.selection-item .pickup-support-column {
         bottom: -55px !important;
         gap: 6px !important;
@@ -1060,6 +1365,3 @@ body.immersive-mode { background-color: #000 !important; overflow: hidden; }
 .pickup-images-inner {
     transition: transform 0.3s ease !important;
 }
-
-
-

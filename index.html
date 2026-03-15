@@ -259,6 +259,27 @@
 
     <template id="tpl-gacha">
         <div class="gacha-container">
+            <!-- 상단 UI 영역 (컨테이너 내부에 고정) -->
+            <div class="gacha-top-ui-wrapper">
+                <!-- 왼쪽: 기록, 확률 버튼 -->
+                <div id="gacha-header-controls" class="gacha-header-controls">
+                    <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">기록</button>
+                    <button id="btn-gacha-rates" class="log-btn rates-btn hidden" data-i18n="gacha_rates">확률</button>
+                </div>
+
+                <!-- 오른쪽: 쥬얼칸 + 음소거 버튼 -->
+                <div class="gacha-right-ui-group">
+                    <div id="jewel-container" class="jewel-container hidden">
+                        <div class="jewel-box">
+                            <img src="icons/jewel.png" alt="Jewel" class="jewel-icon">
+                            <span id="jewel-count">0</span>
+                            <button id="btn-add-jewel" class="add-jewel-btn">+</button>
+                        </div>
+                    </div>
+                    <button id="gacha-mute-btn" class="mute-toggle-btn">🔊</button>
+                </div>
+            </div>
+
             <div id="gacha-pickup-selector" class="gacha-pickup-selector hidden"></div>
             <div id="gacha-video-container" class="gacha-video-overlay hidden">
                 <video id="gacha-video-main" class="gacha-vid" playsinline></video>

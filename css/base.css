@@ -184,14 +184,14 @@ footer {
     justify-content: center;
     align-items: flex-start;
     gap: 0.5rem;
-    width: 540px;
+    width: 100%;
     position: fixed;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    transform: none;
     z-index: 10000;
-    padding-top: 15px;
-    padding-bottom: 2rem;
+    padding-top: 10px;
+    padding-bottom: 15px;
     /* 배경 설정을 직접 추가 */
     background: rgba(255, 255, 255, 0.95);
     border-top: 1px solid #ffe0ea;
