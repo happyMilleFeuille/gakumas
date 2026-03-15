@@ -809,31 +809,19 @@ body.gacha-result-active .gacha-container {
     --base-trans: translateY(0);
 }
 
-.slide-out-left span,
-.slide-out-left .pickup-img-wrapper,
-.slide-out-left .pickup-name,
-.slide-out-left .pickup-support-column {
+.slide-out-left span {
     animation: textOutLeft 0.1s ease-in forwards;
 }
 
-.slide-in-right span,
-.slide-in-right .pickup-img-wrapper,
-.slide-in-right .pickup-name,
-.slide-in-right .pickup-support-column {
+.slide-in-right span {
     animation: textInRight 0.1s ease-out forwards;
 }
 
-.slide-out-right span,
-.slide-out-right .pickup-img-wrapper,
-.slide-out-right .pickup-name,
-.slide-out-right .pickup-support-column {
+.slide-out-right span {
     animation: textOutRight 0.1s ease-in forwards;
 }
 
-.slide-in-left span,
-.slide-in-left .pickup-img-wrapper,
-.slide-in-left .pickup-name,
-.slide-in-left .pickup-support-column {
+.slide-in-left span {
     animation: textInLeft 0.1s ease-out forwards;
 }
 
