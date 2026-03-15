@@ -168,13 +168,14 @@ function initNavigation(ui) {
 
         // [수정] ui.pickupSelector(과거 참조) 대신 현재 DOM에 있는 배너를 직접 참조
         const currentPickupSelector = document.getElementById('gacha-pickup-selector');
+        const currentBgLayer = document.getElementById('gacha-bg-layer');
 
         playSound('gasya/slide.mp3');
         const outClass = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
         const inClass = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
         
-        // [수정] 배너(currentPickupSelector)를 애니메이션 대상에 포함
-        const elements = [typeDisplay, btnPrev, btnNext, currentPickupSelector];
+        // [수정] 배너와 배경 레이어를 애니메이션 대상에 포함
+        const elements = [typeDisplay, btnPrev, btnNext, currentPickupSelector, currentBgLayer];
 
         elements.forEach(el => el?.classList.add(outClass));
         setTimeout(() => {

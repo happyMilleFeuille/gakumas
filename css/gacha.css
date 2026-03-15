@@ -123,8 +123,8 @@ body.gacha-result-active .gacha-container {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center bottom;
-    filter: brightness(1.15);
-    opacity: 0.4;
+    filter: brightness(1.1);
+    opacity: 0.5;
     transition: all 0.4s ease;
     margin: 0;
 }
@@ -809,19 +809,31 @@ body.gacha-result-active .gacha-container {
     --base-trans: translateY(0);
 }
 
-.slide-out-left span {
+.slide-out-left span,
+.slide-out-left .pickup-img-wrapper,
+.slide-out-left .pickup-name,
+.slide-out-left .pickup-support-column {
     animation: textOutLeft 0.1s ease-in forwards;
 }
 
-.slide-in-right span {
+.slide-in-right span,
+.slide-in-right .pickup-img-wrapper,
+.slide-in-right .pickup-name,
+.slide-in-right .pickup-support-column {
     animation: textInRight 0.1s ease-out forwards;
 }
 
-.slide-out-right span {
+.slide-out-right span,
+.slide-out-right .pickup-img-wrapper,
+.slide-out-right .pickup-name,
+.slide-out-right .pickup-support-column {
     animation: textOutRight 0.1s ease-in forwards;
 }
 
-.slide-in-left span {
+.slide-in-left span,
+.slide-in-left .pickup-img-wrapper,
+.slide-in-left .pickup-name,
+.slide-in-left .pickup-support-column {
     animation: textInLeft 0.1s ease-out forwards;
 }
 
