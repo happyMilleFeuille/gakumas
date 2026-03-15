@@ -1,8 +1,8 @@
 /* idol.css */
 .idol-grid {
-    display: flex; 
-    flex-wrap: nowrap; 
-    overflow-x: auto; 
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 1rem;
     padding: 1.5rem 1rem;
     width: 100%;
@@ -12,14 +12,20 @@
     scrollbar-width: none;
     cursor: grab;
 }
-.idol-grid::-webkit-scrollbar { display: none; }
-.idol-grid:active { cursor: grabbing; }
 
-.idol-item { 
+.idol-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.idol-grid:active {
+    cursor: grabbing;
+}
+
+.idol-item {
     flex: 0 0 auto;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .idol-icon-wrapper {
@@ -28,7 +34,8 @@
 }
 
 .idol-icon {
-    width: 80px; height: 110px;
+    width: 80px;
+    height: 110px;
     border-radius: 12px;
     background: #fff;
     padding: 3px;
@@ -51,7 +58,7 @@
     z-index: 10;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     opacity: 0.4;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     transform: scale(0.8);
 }
 
@@ -63,12 +70,14 @@
 .fav-star-svg {
     width: 24px;
     height: 24px;
-    color: #ccc; /* 비활성화 시 회색 */
+    color: #ccc;
+    /* 비활성화 시 회색 */
     transition: color 0.3s;
 }
 
 .fav-star-btn.active .fav-star-svg {
-    color: #fbc02d; /* 활성화 시 노란색 */
+    color: #fbc02d;
+    /* 활성화 시 노란색 */
 }
 
 .fav-star-btn:hover {
@@ -76,7 +85,9 @@
     transform: scale(1.1);
 }
 
-.idol-icon:hover { transform: scale(1.05); }
+.idol-icon:hover {
+    transform: scale(1.05);
+}
 
 .idol-icon.selected {
     border-width: 2px;
@@ -87,14 +98,18 @@
 }
 
 @media (max-width: 768px) {
-    .idol-icon { width: 65px; height: 90px; }
-    
+    .idol-icon {
+        width: 65px;
+        height: 90px;
+    }
+
     .fav-star-btn {
         width: 22px;
         height: 22px;
         top: 1px;
         right: 1px;
     }
+
     .fav-star-svg {
         width: 18px;
         height: 18px;
@@ -107,9 +122,11 @@
     width: 100%;
     padding: 0 1rem 5rem;
 }
+
 .pssr-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 최소 너비 220px로 확대 */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    /* 최소 너비 220px로 확대 */
     gap: 1.5rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -119,7 +136,7 @@
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
     display: flex;
     flex-direction: column;
@@ -128,15 +145,19 @@
 .pssr-img-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 166.66%; 
+    padding-top: 200%;
     overflow: hidden;
     background: #eee;
-    transition: background-color 0.3s ease; /* 배경색 전환 부드럽게 */
+    transition: background-color 0.3s ease;
+    /* 배경색 전환 부드럽게 */
 }
+
 .pssr-img {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     transform: translateX(0);
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
@@ -158,7 +179,8 @@
 
 .pssr-info {
     padding: 10px;
-    background: #fff; /* JS에서 퍼스널 컬러로 덮어씀 */
+    background: #fff;
+    /* JS에서 퍼스널 컬러로 덮어씀 */
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -166,7 +188,8 @@
     transition: background-color 0.3s;
     /* [수정] 늘어난 칸 안에서 내용이 수직 중앙에 오도록 함 */
     justify-content: center;
-    min-height: 60px; /* 카드의 최소 높이 유지를 위해 필요 */
+    min-height: 60px;
+    /* 카드의 최소 높이 유지를 위해 필요 */
 }
 
 .pssr-name-wrap {
@@ -218,7 +241,7 @@
     right: 10px;
     width: 30px;
     height: 30px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 @media (max-width: 768px) {
@@ -226,10 +249,24 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
-    .pssr-img-wrapper { padding-top: 166.66%; }
-    .pssr-name { font-size: 0.65rem; }
-    .pssr-plan-icon { width: 24px; height: 24px; top: -12px; }
-    .pssr-rarity-icon { height: 14px; }
+
+    .pssr-img-wrapper {
+        padding-top: 200%;
+    }
+
+    .pssr-name {
+        font-size: 0.65rem;
+    }
+
+    .pssr-plan-icon {
+        width: 24px;
+        height: 24px;
+        top: -12px;
+    }
+
+    .pssr-rarity-icon {
+        height: 14px;
+    }
 }
 
 /* calc.css */
@@ -242,4 +279,10 @@
     gap: 2rem;
     padding-top: 4rem;
 }
-.calc-buttons { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+.calc-buttons {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}

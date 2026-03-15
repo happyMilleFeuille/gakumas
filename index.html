@@ -259,6 +259,9 @@
 
     <template id="tpl-gacha">
         <div class="gacha-container">
+            <!-- 가터 전체 배경 레이어 -->
+            <div id="gacha-bg-layer" class="selector-bg-container"></div>
+
             <!-- 상단 UI 영역 (컨테이너 내부에 고정) -->
             <div class="gacha-top-ui-wrapper">
                 <!-- 왼쪽: 기록, 확률 버튼 -->
@@ -281,12 +284,13 @@
             </div>
 
             <div id="gacha-pickup-selector" class="gacha-pickup-selector hidden"></div>
-            <div id="gacha-video-container" class="gacha-video-overlay hidden">
-                <video id="gacha-video-main" class="gacha-vid" playsinline></video>
-                <video id="gacha-video-next" class="gacha-vid hidden" playsinline></video>
-                <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
-            </div>
             <div id="gacha-results" class="gacha-results"></div>
+        </div>
+
+        <div id="gacha-video-container" class="gacha-video-overlay hidden">
+            <video id="gacha-video-main" class="gacha-vid" playsinline></video>
+            <video id="gacha-video-next" class="gacha-vid hidden" playsinline></video>
+            <button id="skip-button" class="skip-btn" data-i18n="gacha_skip">SKIP</button>
         </div>
     </template>
 

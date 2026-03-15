@@ -28,10 +28,14 @@ export function renderPickupSelector(ui) {
         const sssrPickups = currentCfg.pool?.sssr || [];
         const srPickups = currentCfg.pool?.sr_card || [];
 
+        // 배경 레이어 업데이트
+        if (ui.gachaBgLayer) {
+            ui.gachaBgLayer.innerHTML = `
+                <div class="selector-bg-item ${isMulti ? 'unit-bg' : 'single-bg'}" style="background-image: url('${bgImg}');"></div>
+            `;
+        }
+
         ui.pickupSelector.innerHTML = `
-            <div class="selector-bg-container">
-                <div class="selector-bg-item ${isMulti ? 'unit-bg' : 'single-bg'}" style="background-image: url('${bgImg}'); background-position: top;"></div>
-            </div>
             <div class="pickup-wrapper ${ (isSelection || isMulti) ? 'selection-wrapper' : ''}">
                 <div class="pickup-item ${itemClass}">
                     <div class="pickup-name">${displayName}</div>

@@ -70,6 +70,7 @@ function startGachaUI(contentArea, isRefresh) {
     if (!tpl) return;
     
     contentArea.innerHTML = '';
+    document.body.classList.remove('gacha-result-active');
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
 
@@ -91,6 +92,7 @@ function startGachaUI(contentArea, isRefresh) {
         totalPullCount: document.getElementById('total-pull-count'),
         muteBtn: document.getElementById('gacha-mute-btn'),
         pickupSelector: contentArea.querySelector('#gacha-pickup-selector'),
+        gachaBgLayer: contentArea.querySelector('#gacha-bg-layer'),
         resultsContainer: contentArea.querySelector('#gacha-results'),
         fixedBtnArea
     };
