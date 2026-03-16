@@ -73,6 +73,13 @@ const translations = {
         gacha_rates_notice_2: "* 확정 슬롯은 10회 뽑기의 마지막 1회에 적용되는 확률입니다.",
         disclaimer_1: "이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.",
         disclaimer_2: "사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.",
+        pssr_roadmap_title: "PSSR 출시 로드맵",
+        roadmap_exclude_another: "어나더 제외", // 기존 키 유지하되 새로 추가
+        roadmap_show_another: "어나더",
+        roadmap_show_dist: "배포",
+        roadmap_show_fes: "페스",
+        roadmap_show_limited: "한정",
+        roadmap_show_normal: "통상",
         footer: ""
     },
     ja: {
@@ -108,7 +115,7 @@ const translations = {
         extra_del: "スキルカードを選択して削除",
         extra_enhance: "スキルカードを選択して強化",
         extra_ranenhance: "ランダムなスキルカードを強化",
-        extra_ranchange: "ランダムな名前に「基本」を含むスキルカードを別のカードに変換",
+        extra_ranchange: "ランダムな名전에 「基本」が含まれるスキルカードを別のカードに変換",
         extra_troubledel: "ランダムなトラブルカードを削除",
         extra_param: "{type}上昇+{val}",
         gacha_title: "ガシャシミュレーション",
@@ -147,8 +154,14 @@ const translations = {
         gacha_rates_header_name: "名前",
         gacha_rates_notice_1: "* レアリティ名をクリックすると詳細が表示されます。",
         gacha_rates_notice_2: "* 確定枠は10連ガシャの最後の1回に適用される確率です。",
-        disclaimer_1: "このサイトは、学園アイドルマスター（Gakuen Idolmaster）のファンが運営する非営利サイトです。",
+        disclaimer_1: "このサイトは、学園アイドルマスター（Gakuen Idolmaster）のファンが運営する、非営利サイトです。",
         disclaimer_2: "サイトで使用されているすべてのゲーム画像、データ、キャラクター等の権利は、©Bandai Namco Entertainment Inc.および関連する権利者に帰属します。",
+        pssr_roadmap_title: "PSSR 実装ロードマップ",
+        roadmap_show_another: "アナザー",
+        roadmap_show_dist: "配布",
+        roadmap_show_fes: "フェス",
+        roadmap_show_limited: "限定",
+        roadmap_show_normal: "恒常",
         footer: ""
     }
 };

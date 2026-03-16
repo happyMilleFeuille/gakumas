@@ -26,6 +26,179 @@ export function renderHome() {
     contentArea.innerHTML = '';
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
+    
+    // PSSR 출시 로드맵 렌더링 (최초 로드 시에만 스크롤)
+    renderPSSRRoadmap(true);
+}
+
+/**
+ * PSSR 출시 이력을 세로 위쪽 방향의 그래프(로드맵) 형식으로 렌더링합니다.
+ * 하단이 과거, 상단이 최신입니다.
+ */
+function renderPSSRRoadmap(shouldScroll = false) {
+    const listContainer = document.getElementById('pssr-roadmap-list');
+    const anotherToggle = document.getElementById('pssr-another-toggle');
+    const distToggle = document.getElementById('pssr-dist-toggle');
+    const fesToggle = document.getElementById('pssr-fes-toggle');
+    const limitedToggle = document.getElementById('pssr-limited-toggle');
+    const normalToggle = document.getElementById('pssr-normal-toggle');
+    if (!listContainer) return;
+
+    // 이벤트 리스너 등록
+    const registerToggle = (el) => {
+        if (el && !el.dataset.listener) {
+            el.addEventListener('change', () => renderPSSRRoadmap(false));
+            el.dataset.listener = 'true';
+        }
+    };
+    [anotherToggle, distToggle, fesToggle, limitedToggle, normalToggle].forEach(registerToggle);
+
+    const showAnother = anotherToggle ? anotherToggle.checked : true;
+    const showDist = distToggle ? distToggle.checked : true;
+    const showFes = fesToggle ? fesToggle.checked : true;
+    const showLimited = limitedToggle ? limitedToggle.checked : true;
+    const showNormal = normalToggle ? normalToggle.checked : true;
+
+    // [정밀 정렬] 기준 날짜 (24년 5월 ~ 26년 4월)
+    const start = new Date(2024, 4, 1, 0, 0, 0, 0); 
+    const end = new Date(2026, 3, 1, 0, 0, 0, 0);   
+    const rangeMs = end.getTime() - start.getTime();
+    const GRAPH_HEIGHT = 3200; // 표 전체 높이 확장 (여유로운 뷰)
+
+    // 필터링 적용 (체크된 항목만 노출하도록 변경)
+    let roadmapData = produceList.filter(p => p.rarity === 'PSSR' && p.releasedAt);
+    
+    if (!showAnother) {
+        roadmapData = roadmapData.filter(p => !p.another);
+    }
+    if (!showDist) {
+        roadmapData = roadmapData.filter(p => p.source !== 'dist');
+    }
+    if (!showFes) {
+        roadmapData = roadmapData.filter(p => p.source !== 'limited_f');
+    }
+    if (!showLimited) {
+        roadmapData = roadmapData.filter(p => p.source !== 'limited' && p.source !== 'limited_u');
+    }
+    if (!showNormal) {
+        roadmapData = roadmapData.filter(p => p.source !== 'normal');
+    }
+
+    listContainer.innerHTML = '';
+    
+    const graphWrapper = document.createElement('div');
+    graphWrapper.className = 'roadmap-graph-wrapper';
+    graphWrapper.style.height = `${GRAPH_HEIGHT}px`;
+
+    // 1. 날짜 전용 1열(컬럼) 및 그리드 생성
+    const dateColumn = document.createElement('div');
+    dateColumn.className = 'roadmap-date-column';
+    graphWrapper.appendChild(dateColumn);
+    
+    for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+        d.setDate(1); d.setHours(0, 0, 0, 0);
+        const ratio = (d.getTime() - start.getTime()) / rangeMs;
+        const bottomOffset = ratio * GRAPH_HEIGHT;
+        
+        // 가로 그리드 선 (전체 너비)
+        const marker = document.createElement('div');
+        marker.className = 'time-marker';
+        marker.style.bottom = `${bottomOffset}px`;
+        
+        // 날짜 라벨 (1열 전용)
+        marker.innerHTML = `<span class="time-label">${d.getFullYear()}.${d.getMonth() + 1}</span>`;
+        graphWrapper.appendChild(marker);
+    }
+
+    // 2. 캐릭터별 컬럼 및 노드 배치
+    idolList.forEach(idolName => {
+        const column = document.createElement('div');
+        column.className = 'roadmap-column';
+        
+        // 아이돌 고유 컬러 가져오기 (없으면 기본 회색)
+        const idolColor = idolColors[idolName] || '#f1f3f5';
+        column.style.setProperty('--idol-theme-color', idolColor);
+        
+        const header = document.createElement('div');
+        header.className = 'roadmap-column-header';
+        const iconName = idolName === 'tsubame' ? 'tsubame' : idolName;
+
+        const idolPSSRs = roadmapData.filter(p => p.id.startsWith(`ssr${idolName}_`));
+        
+        // 마지막 PSSR로부터 경과일 계산
+        let daysText = "";
+        if (idolPSSRs.length > 0) {
+            const latestCard = [...idolPSSRs].sort((a, b) => new Date(b.releasedAt) - new Date(a.releasedAt))[0];
+            const lastDate = new Date(latestCard.releasedAt);
+            lastDate.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const diffMs = today - lastDate;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            daysText = diffDays >= 0 ? `+${diffDays}일` : `${diffDays}일`;
+        }
+
+        header.innerHTML = `
+            <img src="icons/idolicons/${iconName}_c.png" class="column-idol-icon" title="${idolName}">
+            ${daysText ? `<div class="idol-header-tooltip">${daysText}</div>` : ''}
+        `;
+        column.appendChild(header);
+        
+        // 캐릭터의 첫 번째(가장 오래된) PSSR 위치계산하여 선 시작점 설정
+        let minBottom = GRAPH_HEIGHT;
+        if (idolPSSRs.length > 0) {
+            idolPSSRs.forEach(card => {
+                const cardDate = new Date(card.releasedAt);
+                cardDate.setHours(0, 0, 0, 0);
+                const ratio = (cardDate.getTime() - start.getTime()) / rangeMs;
+                const bottomOffset = ratio * GRAPH_HEIGHT;
+                if (bottomOffset < minBottom) minBottom = bottomOffset;
+            });
+            column.style.setProperty('--line-start', `${minBottom}px`);
+        } else {
+            column.style.setProperty('--line-start', '100%'); // 데이터 없으면 선 안보이게 처리
+        }
+        
+        idolPSSRs.forEach(card => {
+            const cardDate = new Date(card.releasedAt);
+            cardDate.setHours(0, 0, 0, 0); // 시간 정규화 필수
+            
+            const ratio = (cardDate.getTime() - start.getTime()) / rangeMs;
+            const bottomOffset = ratio * GRAPH_HEIGHT;
+            
+            const node = document.createElement('div');
+            node.className = 'roadmap-node';
+            node.style.bottom = `${bottomOffset}px`;
+            
+            const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+            node.innerHTML = `
+                <img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}">
+                <div class="roadmap-tooltip">
+                    <img src="idols/${card.id}1.webp" class="tooltip-card-img">
+                    <div class="tooltip-text">
+                        <strong>${displayName}</strong>
+                        <span>${card.releasedAt}</span>
+                    </div>
+                </div>
+            `;
+            column.appendChild(node);
+        });
+
+        graphWrapper.appendChild(column);
+    });
+
+    listContainer.appendChild(graphWrapper);
+
+    // 최신 날짜로 자동 스크롤 (최초 로드 시에만 수행)
+    if (shouldScroll) {
+        setTimeout(() => {
+            const scrollContainer = document.getElementById('idol');
+            const targetElement = document.getElementById('pssr-roadmap-container');
+            if (scrollContainer && targetElement) {
+                scrollContainer.scrollTop = targetElement.offsetTop;
+            }
+        }, 150);
+    }
 }
 
 export function renderCalc() {
