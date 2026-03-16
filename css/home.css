@@ -8,88 +8,126 @@
 }
 
 .pssr-roadmap-container {
-    margin: 1rem auto 4rem;
+    margin: 0 auto 4rem;
     max-width: 980px;
     width: 95%;
     background: var(--roadmap-bg);
-    border-radius: 32px;
+    border-radius: 16px;
     border: 1px solid #eee;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* 가로 스크롤(툴팁 등) 방지 */
+    overflow: visible !important;
     container-type: inline-size;
 }
 
-/* 헤더: 항상 상단 고정 */
-.roadmap-header {
-    background: #fff;
-    padding: clamp(0.75rem, 3cqw, 2.25rem) clamp(0.75rem, 4cqw, 2.5rem);
-    /* 모바일에서 헤더 패딩 대폭 축소 */
-    border-bottom: 3px solid #f8f9fa;
-    /* 경계선도 조금 더 고급스럽게 */
+/* 필터 감싸는 영역 */
+.roadmap-filter-wrap {
+    max-width: 980px;
+    width: 95%;
+    margin: 1rem auto 0.5rem;
     display: flex;
-    justify-content: center; /* 제목이 없으므로 컨트롤을 중앙 정렬 */
-    align-items: center;
-    border-radius: 32px 32px 0 0;
+    justify-content: flex-end;
 }
 
 
-/* 필터 토글: 깔끔하게 하나만 나오도록 */
-.roadmap-controls {
+/* 필터 버튼 및 드롭다운 */
+.roadmap-filter-container {
+    position: relative;
+}
+
+.roadmap-filter-btn {
     display: flex;
     align-items: center;
-    justify-content: center; /* 중앙 정렬 */
-    flex-wrap: wrap; /* 모바일에서 자동 줄바꿈 */
-    gap: clamp(10px, 2cqw, 15px);
-    width: 100%;
+    gap: 4px;
+    padding: 6px 14px;
+    background: #fff;
+    border: 2px solid #f0f0f0;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.roadmap-filter-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.roadmap-filter-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.roadmap-filter-btn.active svg {
+    transform: rotate(180deg);
+}
+
+.roadmap-filter-dropdown {
+    position: absolute;
+    bottom: calc(100% + 12px); /* 위로 표시 */
+    right: 0;
+    /* 오른쪽 끝 맞춤 */
+    transform: translateY(-10px);
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: none;
+    z-index: 2100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    min-width: 280px;
+}
+
+.roadmap-filter-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.roadmap-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
 .toggle-container {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
     cursor: pointer;
-    user-select: none;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.toggle-container:hover {
+    background: #fff;
+    border-color: var(--primary-color);
+    box-shadow: none;
+}
+
+.toggle-container input[type="checkbox"] {
+    display: block !important;
+    appearance: auto !important;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
 }
 
 .toggle-label {
-    font-size: clamp(0.6rem, 2.5vw, 0.9rem); /* 모바일 라벨 크기 하향 */
+    font-size: 0.8rem;
+    color: #555;
     font-weight: 700;
-    color: #666;
-}
-
-.toggle-container input {
-    display: none !important;
-}
-
-.toggle-slider {
-    position: relative;
-    width: clamp(28px, 6cqw, 44px); /* 더 극단적으로 축소 */
-    height: clamp(14px, 3.5cqw, 24px);
-    background: #e0e0e0;
-    border-radius: 20px;
-    transition: 0.3s;
-}
-
-.toggle-slider:before {
-    content: "";
-    position: absolute;
-    width: clamp(14px, 2.5cqw, 18px);
-    height: clamp(14px, 2.5cqw, 18px);
-    left: 2px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 50%;
-    transition: 0.3s;
-}
-
-input:checked+.toggle-slider {
-    background: var(--primary-color);
-}
-
-input:checked+.toggle-slider:before {
-    left: calc(100% - clamp(14px, 2.5cqw, 18px) - 2px);
+    white-space: nowrap;
 }
 
 /* 리스트 영역: 전체 화면 스크롤 사용 */
@@ -102,23 +140,28 @@ input:checked+.toggle-slider:before {
 .roadmap-graph-wrapper {
     position: relative;
     width: 100%;
-    min-width: 800px;
+    min-width: 100%;
+    /* 고정 너비 제거하여 768~1000 구간에서 유동적으로 축소되게 함 */
     background-color: transparent;
     margin-bottom: 20px;
     container-type: inline-size;
-    will-change: transform;
-    transform: translateZ(0);
+    /* 전체를 하나의 레이어로 통합 */
     display: flex;
-    justify-content: center; /* 왼쪽 쏠림 대신 가운데 정렬로 변경 */
-    padding: 0 10px; /* 고정 패딩으로 균형 확보 */
-    margin: clamp(80px, 15cqw, 120px) auto 40px; 
-    /* 캐릭터 아이콘(top: -80px)이 헤더를 침범하지 않도록 충분한 여백 확보 */
+    justify-content: center;
+    /* 왼쪽 쏠림 대신 가운데 정렬로 변경 */
+    padding: 0 10px;
+    /* 고정 패딩으로 균형 확보 */
+    margin: clamp(85px, 10cqw, 100px) auto 40px;
+    /* 캐릭터 아이콘(top: -80px)이 헤더를 침범하지 않도록 최소 85px 안전 여백 확보 */
+    image-rendering: -webkit-optimize-contrast;
+    /* z-index 제거하여 툴팁 해방 */
 }
 
 /* 1열 날짜 컬럼 */
 .roadmap-date-column {
     position: relative;
-    flex: 0 0 clamp(35px, 10vw, 70px); /* 날짜 컬럼 폭 유동화 */
+    flex: 0 0 clamp(35px, 10vw, 70px);
+    /* 날짜 컬럼 폭 유동화 */
     height: 100%;
     z-index: 5;
 }
@@ -128,7 +171,7 @@ input:checked+.toggle-slider:before {
     left: 0;
     width: 100%;
     height: 0;
-    border-top: 1px solid #f1f3f5;
+    border-top: 1px solid #e9ecef; /* 가로선 색상을 더 진하게 변경 */
     display: flex;
     align-items: center;
     pointer-events: none;
@@ -137,7 +180,8 @@ input:checked+.toggle-slider:before {
 }
 
 .time-label {
-    width: clamp(35px, 10vw, 70px); /* 날짜 컬럼 폭과 동일하게 설정 */
+    width: clamp(35px, 10vw, 70px);
+    /* 날짜 컬럼 폭과 동일하게 설정 */
     text-align: center;
     font-size: clamp(0.55rem, 1.8vw, 0.7rem);
     font-weight: 800;
@@ -158,8 +202,7 @@ input:checked+.toggle-slider:before {
     height: 100%;
     z-index: 2;
     transition: z-index 0s;
-    /* 성능을 유지하되 부작용이 적은 가속만 남김 */
-    transform: translateZ(0); 
+    /* 개별 가속 제거 (상위 wrapper에서 처리) */
 }
 
 .roadmap-column:hover {
@@ -167,62 +210,63 @@ input:checked+.toggle-slider:before {
     /* 헤더(5000)보다 높게 설정하여 툴팁이 가려지지 않게 함 */
 }
 
-/* 기둥 중심선 */
+/* 기둥 중심선: 아이콘 아래에서 멈추도록 수정 */
 .roadmap-column::before {
     content: '';
     position: absolute;
-    top: clamp(-35px, -10cqw, -55px); /* 일수 텍스트까지 닿지 않도록 아이콘 높이로 조정 */
-    bottom: var(--line-start, -30px); /* 첫 번째 PSSR 위치에서 시작 */
+    top: -25px;
+    /* D+ 텍스트에 닿지 않도록 끝지점을 낮춤 */
+    bottom: var(--line-start, -30px);
     left: 50%;
     width: 3px;
-    /* 조금 더 강조 */
-    background: var(--idol-theme-color, #f1f3f5);
-    /* 캐릭터 고유 컬러 적용 */
-    transform: translateX(-50%);
-    opacity: 0.6;
-    /* 너무 튀지 않게 살짝 투명도 유지 */
+    background-color: var(--idol-theme-color);
+    margin-left: -1.5px;
+    z-index: 1;
+    opacity: 1;
 }
-
 .roadmap-column-header {
     position: absolute;
-    top: clamp(-50px, -15cqw, -80px); 
+    top: clamp(-50px, -15cqw, -80px);
     /* 최대 크기 복구 및 최소 간격 유지 */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(2px, 1cqw, 8px); /* 아이콘과 텍스트 사이 간격 유동 조절 */
+    gap: clamp(2px, 1cqw, 8px);
+    /* 아이콘과 텍스트 사이 간격 유동 조절 */
     z-index: 100;
 }
 
+/* 아이콘 상단 D+ 경과일 표시: 스타일 복구 */
 .idol-header-tooltip {
     position: absolute;
-    bottom: calc(100% + 8px); /* 아이콘 위쪽에 배치 */
+    bottom: calc(100% + 8px);
+    /* 아이콘 위 여백 복구 */
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 64, 129, 0.1); /* 배경을 연하게 변경 */
-    color: #FF4081; /* 텍스트 강조 */
-    font-size: clamp(0.3rem, 1.5cqw, 0.75rem); /* 배율 상향하여 즉각 반응 유도 */
-    padding: clamp(0px, 0.5cqw, 2px) clamp(1px, 1cqw, 8px); 
+    background: color-mix(in srgb, var(--idol-theme-color), transparent 90%);
+    /* 개인색 반영 */
+    color: var(--idol-theme-color);
+    /* 개인색 반영 */
+    font-size: clamp(0.3rem, 1.5cqw, 0.75rem);
+    padding: clamp(0px, 0.5cqw, 2px) clamp(1px, 1cqw, 8px);
+    /* 유동 패딩 복구 */
     border-radius: 4px;
     white-space: nowrap;
-    opacity: 1; /* 항상 보이게 수정 */
+    border: 1px solid color-mix(in srgb, var(--idol-theme-color), transparent 80%);
+    /* 개인색 반영 */
+    font-weight: 700;
     pointer-events: none;
-    transition: none;
-    border: 1px solid rgba(255, 64, 129, 0.2);
-}
-
-/* 기존 호버 효과 제거 */
-.roadmap-column-header:hover .idol-header-tooltip {
-    transform: translateX(-50%);
 }
 
 .column-idol-icon {
-    width: clamp(12px, 4.5cqw, 44px);  /* 배율 조정으로 980px 이하부터 즉시 축소 */
+    width: clamp(12px, 4.5cqw, 44px);
+    /* 배율 조정으로 980px 이하부터 즉시 축소 */
     height: clamp(12px, 4.5cqw, 44px);
     border-radius: clamp(3px, 1cqw, 12px);
-    border: 2px solid var(--idol-theme-color, #f1f3f5); /* 테두리도 살짝 가늘게 유동적 */
+    border: 2px solid var(--idol-theme-color, #f1f3f5);
+    /* 테두리도 살짝 가늘게 유동적 */
     background: #fff;
 }
 
@@ -230,85 +274,111 @@ input:checked+.toggle-slider:before {
 .roadmap-node {
     position: absolute;
     left: 50%;
-    /* bottom 값은 JS에서 정확히 계산됨 */
     transform: translate(-50%, 50%);
-    /* 이미지 중앙을 날짜선에 일치시킴 */
-    width: clamp(10px, 6.2cqw, 60px);   /* 배율 조정으로 즉시 축소 적용 */
+    /* 초기 상태 */
+    width: clamp(10px, 6.2cqw, 60px);
     height: clamp(10px, 6.2cqw, 60px);
     z-index: 10;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s;
+}
+
+/* 이미지를 원형 안에 가두는 내부 상자 */
+.roadmap-node-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    border: 3px solid var(--idol-theme-color, #f1f3f5);
+    box-sizing: border-box;
+    transition: border-width 0.3s ease;
 }
 
 .roadmap-node-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
-    /* 사각형에서 원형으로 변경 */
-    border: 3.5px solid var(--idol-theme-color, #f1f3f5); /* 개인 색상 테두리 적용 */
-    background: #fff;
-    object-position: top; /* 캐릭터 얼굴이 잘 보이도록 상단 정렬 */
-    transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    object-position: center 14%;
+    transform: scale(2.5);
+    /* 기본 2.5배 클로즈업 */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    /* 노드 확장 시간과 동기화 */
     cursor: pointer;
+    image-rendering: -webkit-optimize-contrast;
+    will-change: transform;
+    backface-visibility: hidden;
+    opacity: 0;
+}
+
+.roadmap-node-img.loaded,
+.column-idol-icon.loaded {
+    opacity: 1;
 }
 
 .roadmap-node:hover {
-    z-index: 9000;
-    /* 모든 요소를 앞질러 툴팁 노출 보장 */
+    z-index: 9999;
+    transform: translate(-50%, 50%) scale(2.5);
+}
+
+.roadmap-node:hover .roadmap-node-inner {
+    border-width: 1px;
 }
 
 .roadmap-node:hover .roadmap-node-img {
-    transform: scale(1.25);
-    z-index: 9001;
+    transform: scale(1.5);
+    /* 커진 노드 안에서도 이미지를 1.5배로 더 키워 확실한 확대감 제공 */
 }
 
 /* 툴팁 */
+/* 툴팁 기본 (PC) */
 .roadmap-tooltip {
     position: absolute;
-    bottom: 110%;
+    top: 110%; /* 아래로 표시 롤백 */
     left: 50%;
-    transform: translateX(-50%) translateY(10px);
+    transform: translateX(-50%) translateY(-3px) scale(0.4);
+    transform-origin: top center;
     background: #fff;
     border: 2px solid var(--idol-theme-color, #eee);
-    /* 개인 색상 테두리 적용 */
-    border-radius: 14px;
-    padding: 10px;
-    width: 170px;
-    /* 툴팁 너비 확장 */
+    border-radius: 12px;
+    padding: 6px 12px;
+    width: max-content;
+    white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transition: 0.2s ease-out;
-    z-index: 10000;
-    /* 최상단 배치 */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10000 !important;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* PC는 보정 없이 무조건 중앙 정렬 */
 .roadmap-node:hover .roadmap-tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(2px) scale(0.4);
 }
 
+/* PC에서는 툴팁 이미지 숨김 */
 .tooltip-card-img {
-    width: 100%;
-    aspect-ratio: 1/1.8;
-    /* 1:1.8 비율 적용 */
-    object-fit: cover;
-    object-position: center;
-    /* 중앙 정렬로 노출 */
-    border-radius: 8px;
-    margin-bottom: 8px;
+    display: none;
 }
 
 .tooltip-text {
-    text-align: center; /* 텍스트 전체 가운데 정렬 */
+    text-align: center;
+    display: block;
 }
 
 .tooltip-text strong {
-    font-size: 0.86rem;
-    color: #222;
     display: block;
-    margin-bottom: 2px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.tooltip-text span {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
 }
 
 .tooltip-text span {
@@ -319,28 +389,187 @@ input:checked+.toggle-slider:before {
 }
 
 @media (max-width: 768px) {
-    .roadmap-header {
-        padding: 1.25rem 1rem;
-    }
-
-    /* 모바일에서 왼쪽 날짜 열 및 레벨 숨김 */
-    .roadmap-date-column,
-    .time-label {
-        display: none !important;
-    }
-
-    .roadmap-graph-wrapper {
-        min-width: 100%;
-        padding: 0; 
-        margin-bottom: 20px; /* 아래 여백 축소 */
-    }
-
-    .roadmap-list {
-        width: 100%; /* 전체 너비 사용 */
+    .main-logo-h1 {
+        margin: 0.5rem 0 0.5rem !important;
     }
 
     .pssr-roadmap-container {
-        margin-top: 5rem;
-        margin-bottom: 1rem; /* 하단 전체 마진 축소 */
+        margin: 0.5rem auto 0.5rem !important;
     }
+
+    .roadmap-filter-wrap {
+        margin: 1rem auto 0 !important;
+        padding: 0 10px;
+    }
+
+    .pssr-roadmap-list {
+        margin-top: -33px !important;
+        /* 다시 바짝 밀착 */
+    }
+
+    .roadmap-filter-btn {
+        padding: 5px 12px !important;
+        font-size: 0.72rem !important;
+        gap: 4px !important;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        z-index: 110;
+        /* 헤더 안에서 버튼이 툴팁보다 먼저 클릭될 수 있게 보호 */
+    }
+
+    .roadmap-filter-dropdown {
+        min-width: 200px;
+        /* 조금 더 넓게 */
+        padding: 12px;
+        border-radius: 16px;
+        top: calc(100% + 8px);
+        z-index: 10000 !important;
+        /* 드롭다운 메뉴는 여전히 최상단 유지 */
+    }
+
+    .roadmap-controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .toggle-container {
+        padding: 6px 8px !important;
+        border-radius: 6px !important;
+        background: #f8f9fa !important;
+        border: 1px solid #eee !important;
+        min-width: 0 !important;
+    }
+
+    .toggle-label {
+        font-size: 0.65rem !important;
+    }
+
+    .toggle-container input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+    }
+
+    .roadmap-date-column,
+    .time-label,
+    .roadmap-node::after,
+    .roadmap-node-inner {
+        display: none !important;
+    }
+
+    .column-idol-icon {
+        width: 20px !important;
+        height: 20px !important;
+        border-radius: 5px !important;
+        border-width: 1.5px !important;
+    }
+
+    .roadmap-column-header {
+        top: -32px !important;
+    }
+
+    .roadmap-column::before {
+        top: -15px !important;
+        width: 2px !important;
+        margin-left: -1px !important;
+    }
+
+    .idol-header-tooltip {
+        bottom: calc(100% + 2px) !important;
+        font-size: 0.4rem !important; /* 글자 크기 0.4rem으로 조정 */
+        padding: 0 !important; /* 배경이 없으므로 패딩 제거 */
+        display: block !important;
+        background: transparent !important; /* 배경 제거 */
+        border: none !important; /* 테두리 제거 */
+    }
+
+    /* 추가: 모바일에서 노드 이미지 숨기고 점으로 표시 */
+    /* 모바일에서는 PC용 테두리 레이어와 내부 이미지를 숨김 */
+    .roadmap-node::after,
+    .roadmap-node-inner {
+        display: none !important;
+    }
+
+    .roadmap-node {
+        width: 12px !important;
+        /* 다시 줄임 */
+        height: 12px !important;
+        background-color: #fff !important;
+        border: 2px solid var(--idol-theme-color) !important;
+        border-radius: 50%;
+        overflow: visible !important;
+        transition: transform 0.2s ease;
+    }
+
+    .roadmap-node:hover {
+        transform: translate(-50%, 50%) scale(1.1) !important;
+        /* 모바일은 꿀렁임 없이 살짝만 커지게 */
+        z-index: 9999;
+    }
+
+    /* 모바일 툴팁: 노드 위로 표시하여 손가락에 가려지지 않게 함 */
+    .roadmap-tooltip {
+        bottom: 130% !important;
+        top: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) translateY(0) scale(1) !important;
+        transform-origin: bottom center !important;
+        width: 130px !important;
+        min-width: 130px !important;
+        padding: 8px !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        white-space: normal !important;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 10000 !important;
+    }
+
+    .roadmap-node:hover .roadmap-tooltip {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateX(-50%) translateY(0) scale(1) !important;
+    }
+
+    /* 모바일 전용: 양옆 끝(1, 2번째) 툴팁이 화면 밖으로 나가지 않게 안쪽 정렬 */
+    .roadmap-column.is-first-col .roadmap-tooltip,
+    .roadmap-column.is-second-col .roadmap-tooltip {
+        left: 0 !important;
+        transform: translateX(0) scale(1) !important;
+        transform-origin: bottom left !important;
+    }
+
+    .roadmap-column.is-last-col .roadmap-tooltip,
+    .roadmap-column.is-second-last-col .roadmap-tooltip {
+        left: auto !important;
+        right: 0 !important;
+        transform: translateX(0) scale(1) !important;
+        transform-origin: bottom right !important;
+    }
+
+    /* 호버(터치) 시에도 위치 고정 */
+    .roadmap-column.is-first-col .roadmap-node:hover .roadmap-tooltip,
+    .roadmap-column.is-second-col .roadmap-node:hover .roadmap-tooltip,
+    .roadmap-column.is-last-col .roadmap-node:hover .roadmap-tooltip,
+    .roadmap-column.is-second-last-col .roadmap-node:hover .roadmap-tooltip {
+        transform: translateX(0) scale(1) !important;
+    }
+
+    .tooltip-card-img {
+        display: block !important;
+        width: 100% !important;
+        aspect-ratio: 1/1.8 !important;
+        object-fit: cover !important;
+        border-radius: 6px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .tooltip-text strong {
+        font-size: 0.72rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .tooltip-text span {
+        font-size: 0.6rem !important;
+    }
+
 }

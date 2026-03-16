@@ -44,7 +44,7 @@ export function handleNavigation(target, isBack = false) {
         if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
             document.body.style.backgroundColor = idolColors[state.favoriteIdol] + "1a"; // 10% 농도
         } else {
-            document.body.style.backgroundColor = "#ffffff";
+            document.body.style.backgroundColor = "#8888881a"; // 미선택 시 회색 10% 농도
         }
     } else {
         // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 문양 복구
@@ -76,6 +76,16 @@ export function handleNavigation(target, isBack = false) {
 
     const gachaFixedButtons = document.getElementById('gacha-fixed-buttons');
     if (gachaFixedButtons) gachaFixedButtons.classList.add('hidden');
+
+    // [추가] 언어 전환 버튼: 홈 화면일 때만 표시
+    const langSwitch = document.querySelector('.lang-switch-container');
+    if (langSwitch) {
+        if (target === 'home') {
+            langSwitch.classList.remove('hidden');
+        } else {
+            langSwitch.classList.add('hidden');
+        }
+    }
 
     switch (target) {
         case 'home': renderHome(); break;

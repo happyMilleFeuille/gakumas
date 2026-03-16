@@ -5,6 +5,11 @@ import { handleNavigation } from './router.js';
 import { renderSupport, updateGlobalBackgroundColor } from './ui.js';
 import { renderGacha } from './gacha.js';
 
+// Idol Grid Drag-to-Scroll Implementation (글로벌 스코프로 이동하여 에러 방지)
+let isDown = false;
+let startX;
+let scrollLeft;
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. 요소 선택
     const langBtns = document.querySelectorAll('.lang-btn');
@@ -77,6 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         syncLangBtns();
         
         // 현재 화면 상태에 따라 추가 렌더링
+        if (document.querySelector('.pssr-roadmap-container')) {
+            import('./ui.js').then(m => m.renderHome());
+        }
         if (document.querySelector('.support-grid')) {
             renderSupport();
         }
@@ -92,10 +100,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Idol Grid Drag-to-Scroll Implementation
-    let isDown = false;
-    let startX;
-    let scrollLeft;
+    // [반응형 대응] 주요 경계(768px, 1024px)를 넘나들 때 로드맵 재렌더링
+    const getLayoutStage = (w) => {
+        if (w <= 768) return 'mobile';
+        if (w <= 1024) return 'tablet';
+        return 'pc';
+    };
+    
+    let currentStage = getLayoutStage(window.innerWidth);
+    window.addEventListener('resize', () => {
+        const nextStage = getLayoutStage(window.innerWidth);
+        if (currentStage !== nextStage) {
+            currentStage = nextStage;
+            // 로드맵 컨테이너가 존재하는 경우에만 재렌더링
+            if (document.getElementById('pssr-roadmap-list')) {
+                import('./roadmap.js').then(m => {
+                    m.renderPSSRRoadmap(false);
+                });
+            }
+        }
+    });
+
+    // [Declaration moved to top level]
+
+    // 로드맵 필터 버튼 토글
+    document.addEventListener('click', (e) => {
+        const filterBtn = e.target.closest('#roadmap-filter-btn');
+        const container = e.target.closest('.roadmap-filter-container'); // ID가 아닌 클래스로 수정
+        const dropdown = document.getElementById('roadmap-filter-dropdown');
+        
+        if (filterBtn) {
+            filterBtn.classList.toggle('active');
+            dropdown?.classList.toggle('active');
+        } else if (!container && dropdown?.classList.contains('active')) {
+            document.getElementById('roadmap-filter-btn')?.classList.remove('active');
+            dropdown.classList.remove('active');
+        }
+    });
 
     document.addEventListener('mousedown', (e) => {
         const grid = e.target.closest('.idol-grid');

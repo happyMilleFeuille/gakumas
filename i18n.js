@@ -74,10 +74,12 @@ const translations = {
         disclaimer_1: "이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.",
         disclaimer_2: "사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.",
         pssr_roadmap_title: "PSSR 출시 로드맵",
+        roadmap_filter: "필터",
         roadmap_exclude_another: "어나더 제외", // 기존 키 유지하되 새로 추가
         roadmap_show_another: "어나더",
         roadmap_show_dist: "배포",
         roadmap_show_fes: "페스",
+        roadmap_show_unit: "유닛",
         roadmap_show_limited: "한정",
         roadmap_show_normal: "통상",
         footer: ""
@@ -157,9 +159,11 @@ const translations = {
         disclaimer_1: "このサイトは、学園アイドルマスター（Gakuen Idolmaster）のファンが運営する、非営利サイトです。",
         disclaimer_2: "サイトで使用されているすべてのゲーム画像、データ、キャラクター等の権利は、©Bandai Namco Entertainment Inc.および関連する権利者に帰属します。",
         pssr_roadmap_title: "PSSR 実装ロードマップ",
+        roadmap_filter: "フィルター",
         roadmap_show_another: "アナザー",
         roadmap_show_dist: "配布",
         roadmap_show_fes: "フェス",
+        roadmap_show_unit: "ユニット",
         roadmap_show_limited: "限定",
         roadmap_show_normal: "恒常",
         footer: ""

@@ -27,6 +27,13 @@
         <div id="gacha-progress-text">0%</div>
     </div>
 
+    <div class="lang-switch-container">
+        <div class="lang-switch">
+            <button id="lang-ko" class="lang-btn active">KO</button>
+            <button id="lang-ja" class="lang-btn">JA</button>
+        </div>
+    </div>
+
     <!-- 가챠 선택 서랍 (최상위 배치) -->
     <div id="gacha-drawer" class="gacha-drawer">
         <div class="drawer-header">
@@ -184,44 +191,44 @@
                 있습니다.</p>
         </div>
 
-        <div class="lang-switch-container">
-            <div class="lang-switch">
-                <button id="lang-ko" class="lang-btn active">KO</button>
-                <button id="lang-ja" class="lang-btn">JA</button>
-            </div>
-        </div>
-
         <!-- PSSR 출시 로드맵 -->
-        <div id="pssr-roadmap-container" class="pssr-roadmap-container">
-            <div class="roadmap-header">
-                <div class="roadmap-controls">
-                    <label class="toggle-container">
-                        <span class="toggle-label" data-i18n="roadmap_show_another">어나더</span>
-                        <input type="checkbox" id="pssr-another-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <label class="toggle-container">
-                        <span class="toggle-label" data-i18n="roadmap_show_dist">배포</span>
-                        <input type="checkbox" id="pssr-dist-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <label class="toggle-container">
-                        <span class="toggle-label" data-i18n="roadmap_show_fes">페스</span>
-                        <input type="checkbox" id="pssr-fes-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <label class="toggle-container">
-                        <span class="toggle-label" data-i18n="roadmap_show_limited">한정</span>
-                        <input type="checkbox" id="pssr-limited-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <label class="toggle-container">
-                        <span class="toggle-label" data-i18n="roadmap_show_normal">통상</span>
-                        <input type="checkbox" id="pssr-normal-toggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
+        <div class="roadmap-filter-wrap">
+            <div class="roadmap-filter-container">
+                <button id="roadmap-filter-btn" class="roadmap-filter-btn">
+                    <span data-i18n="roadmap_filter">필터</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div id="roadmap-filter-dropdown" class="roadmap-filter-dropdown">
+                    <div class="roadmap-controls">
+                        <label class="toggle-container">
+                            <input type="checkbox" id="pssr-another-toggle" checked>
+                            <span class="toggle-label" data-i18n="roadmap_show_another">어나더</span>
+                        </label>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="pssr-dist-toggle" checked>
+                            <span class="toggle-label" data-i18n="roadmap_show_dist">배포</span>
+                        </label>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="pssr-fes-toggle" checked>
+                            <span class="toggle-label" data-i18n="roadmap_show_fes">페스</span>
+                        </label>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="pssr-limited-toggle" checked>
+                            <span class="toggle-label" data-i18n="roadmap_show_limited">한정</span>
+                        </label>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="pssr-unit-toggle" checked>
+                            <span class="toggle-label" data-i18n="roadmap_show_unit">유닛</span>
+                        </label>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="pssr-normal-toggle" checked>
+                            <span class="toggle-label" data-i18n="roadmap_show_normal">통상</span>
+                        </label>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div id="pssr-roadmap-container" class="pssr-roadmap-container">
             <div id="pssr-roadmap-list" class="pssr-roadmap-list"></div>
         </div>
     </template>

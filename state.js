@@ -40,6 +40,14 @@ export const state = {
         source: [],
         rarity: []
     },
+    roadmapFilters: safeParse('roadmapFilters', {
+        another: true,
+        dist: true,
+        fes: true,
+        limited: true,
+        unit: true,
+        normal: true
+    }),
     sortBy: 'id-desc',
     extraFiltersOpen: false,
     gachaMuted: true,
@@ -87,6 +95,11 @@ export function setActiveLimitedId(id) {
 export function setSelectedPickup(type, id) {
     state.selectedPickup[type] = id;
     localStorage.setItem('selectedPickup', JSON.stringify(state.selectedPickup));
+}
+
+export function setRoadmapFilter(type, value) {
+    state.roadmapFilters[type] = value;
+    localStorage.setItem('roadmapFilters', JSON.stringify(state.roadmapFilters));
 }
 
 export function setLanguage(lang) {

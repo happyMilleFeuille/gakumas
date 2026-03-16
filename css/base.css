@@ -28,7 +28,9 @@
     -ms-user-select: none;
 }
 
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 *:focus {
     outline: none !important;
@@ -50,27 +52,56 @@ img {
 }
 
 .lang-switch-container {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 40px;
+    /* 상단 영역 확보 */
+    margin-bottom: -10px;
+    /* 로고와의 간격 좁힘 */
 }
 
 .lang-switch {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    margin-left: 70px;
+    /* 모바일 기준 우측 픽셀 이동 */
     display: flex;
-    gap: 0.5rem;
-    padding: 10px;
+    gap: 4px;
+    padding: 2px;
 }
 
 .lang-btn {
-    background: var(--white);
+    background: rgba(255, 255, 255, 0.8);
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
-    padding: 6px 16px;
-    border-radius: 8px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.2s;
+}
+
+/* PC 화면 전용 스타일 */
+@media (min-width: 769px) {
+    .lang-switch-container {
+        height: 60px;
+    }
+
+    .lang-switch {
+        top: 30px;
+        margin-left: 250px;
+        /* PC 기준 중앙에서 우측으로 200px 이동 */
+        gap: 8px;
+        padding: 4px;
+    }
+
+    .lang-btn {
+        padding: 6px 14px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
 }
 
 .lang-btn.active {
@@ -84,17 +115,19 @@ img {
 
 main {
     max-width: var(--max-width);
-    margin: 1rem auto 0; /* 하단 auto를 0으로 변경하여 여백 제거 */
+    margin: 1rem auto 0;
+    /* 하단 auto를 0으로 변경하여 여백 제거 */
     padding: 0 1rem;
 }
 
 #idol {
     text-align: center;
-    padding: 1.5rem 1rem 0; 
+    padding: 1.5rem 1rem 0;
     border-radius: 15px;
     position: relative;
-    height: 85vh; /* 80vh에서 85vh로 늘려 컨텐츠 영역 확대 */
-    display: flex; 
+    height: 85vh;
+    /* 80vh에서 85vh로 늘려 컨텐츠 영역 확대 */
+    display: flex;
     flex-direction: column;
     overflow-y: auto;
 }
@@ -102,7 +135,8 @@ main {
 #content-area {
     position: relative;
     z-index: 1;
-    flex: 1; /* 남은 모든 공간(바닥까지)을 차지하게 함 */
+    flex: 1;
+    /* 남은 모든 공간(바닥까지)을 차지하게 함 */
     width: 100%;
 }
 
@@ -128,9 +162,11 @@ h1 {
 
 @media (max-width: 768px) {
     #fixed-bg {
-        -webkit-mask-size: 300px; /* 모바일용 배경 크기 */
+        -webkit-mask-size: 300px;
+        /* 모바일용 배경 크기 */
         mask-size: 300px;
     }
+
     .main-logo-img {
         max-width: 320px;
     }
@@ -138,8 +174,10 @@ h1 {
 
 #fixed-bg {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100dvh;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
     z-index: -1;
     -webkit-mask-repeat: repeat;
     mask-repeat: repeat;
@@ -153,7 +191,8 @@ h1 {
 footer {
     text-align: center;
     padding: 2rem;
-    padding-bottom: 60px; /* 120px에서 60px로 축소 */
+    padding-bottom: 60px;
+    /* 120px에서 60px로 축소 */
     color: #777;
 }
 
@@ -168,7 +207,7 @@ footer {
     color: var(--white);
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .primary-btn:disabled {
@@ -199,7 +238,8 @@ footer {
 }
 
 .button-group.horizontal::before {
-    display: none; /* 기존 가상 요소 배경 제거 */
+    display: none;
+    /* 기존 가상 요소 배경 제거 */
 }
 
 .menu-btn {
@@ -237,31 +277,48 @@ footer {
     h1 {
         font-size: 1.6rem;
     }
+
     #idol {
-        height: 80vh; 
-        padding: 0; /* 모든 여백 제거 (좌우 패딩 포함) */
-        overflow-y: auto; 
+        height: 80vh;
+        padding: 0;
+        /* 모든 여백 제거 (좌우 패딩 포함) */
+        overflow-y: auto;
     }
+
     #content-area {
         min-height: 35vh;
         height: 100%;
     }
-    .button-group.horizontal { width: 100%; height: 80px; }
-    .button-group.horizontal::before { height: 100%; }
-    .btn-icon { width: 24px; height: 24px; }
+
+    .button-group.horizontal {
+        width: 100%;
+        height: 80px;
+    }
+
+    .button-group.horizontal::before {
+        height: 100%;
+    }
+
+    .btn-icon {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 /* Scrollbar Style */
 #idol::-webkit-scrollbar {
     width: 6px;
 }
+
 #idol::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.05);
 }
+
 #idol::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
+
 #idol::-webkit-scrollbar-thumb:hover {
     background: var(--primary-color);
 }
@@ -278,16 +335,19 @@ footer {
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.75rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
 }
+
 .log-btn:hover {
     background: #fff;
     transform: scale(1.05);
 }
+
 .reset-btn {
     left: 110px;
 }
+
 @media (max-width: 768px) {
     .log-btn {
         padding: 3px 6px;
@@ -295,6 +355,7 @@ footer {
         top: 5px;
         left: 5px;
     }
+
     .reset-btn {
         left: 75px;
     }
@@ -305,21 +366,24 @@ footer {
     margin-top: 1.5rem;
     padding: 0.5rem;
     background: transparent;
-    font-size: 0.65rem; 
+    font-size: 0.65rem;
     color: #bbb;
     line-height: 1.2;
     text-align: center;
 }
+
 /* 가챠 결과 화면에서 하단 메뉴만 숨김 */
 body.gacha-result-active .button-group.horizontal {
     display: none !important;
 }
 
-.disclaimer-container p { margin: 1px 0; }
+.disclaimer-container p {
+    margin: 1px 0;
+}
 
 @media (max-width: 768px) {
     .disclaimer-container {
-        font-size: 0.45rem; 
+        font-size: 0.45rem;
         margin-top: 0.8rem;
         color: #ccc;
     }
@@ -328,34 +392,38 @@ body.gacha-result-active .button-group.horizontal {
 /* Video Modal Styles */
 .video-modal-content {
     position: relative;
-    width: 80%; 
+    width: 80%;
     max-width: 850px;
-    background: transparent; 
-    border-radius: 0; /* 테두리를 각지게 설정 */
+    background: transparent;
+    border-radius: 0;
+    /* 테두리를 각지게 설정 */
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     margin: 60px auto;
     border: 1px solid #ff4d8d;
-    padding: 10px; 
+    padding: 10px;
 }
 
 .video-container {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
     border: 1px solid #ff4d8d;
     box-sizing: border-box;
 }
 
 .video-container iframe {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 @media (max-width: 768px) {
-    .video-modal-content { 
-        width: 92%; 
+    .video-modal-content {
+        width: 92%;
         margin: 40px auto;
     }
 }

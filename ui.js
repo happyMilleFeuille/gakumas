@@ -3,10 +3,11 @@ import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColo
 import { updatePageTranslations } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
-import { abilityData } from './abilitydata.js';
 import { initCalc } from './calc.js';
 import { calcStore } from './calcStore.js';
 import translations from './i18n.js';
+import { renderPSSRRoadmap, idolList } from './roadmap.js';
+import { showCardModal } from './cardModal.js';
 
 const contentArea = document.getElementById('content-area');
 
@@ -15,194 +16,36 @@ window.addEventListener('renderCalcRequested', () => {
     renderCalc();
 });
 
-const idolList = [
-    'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 
-    'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
-];
+
+
+let homeCachedContent = null;
+let lastRenderedLang = null;
 
 export function renderHome() {
     if (!contentArea) return;
-    const tpl = document.getElementById('tpl-home');
-    contentArea.innerHTML = '';
-    contentArea.appendChild(tpl.content.cloneNode(true));
-    updatePageTranslations();
-    
-    // PSSR 출시 로드맵 렌더링 (최초 로드 시에만 스크롤)
-    renderPSSRRoadmap(true);
-}
 
-/**
- * PSSR 출시 이력을 세로 위쪽 방향의 그래프(로드맵) 형식으로 렌더링합니다.
- * 하단이 과거, 상단이 최신입니다.
- */
-function renderPSSRRoadmap(shouldScroll = false) {
+    const isFirstVisit = !homeCachedContent;
+
+    // 언어가 바뀌었거나 캐시가 없으면 새로 렌더링
+    if (!homeCachedContent || lastRenderedLang !== state.currentLang) {
+        const tpl = document.getElementById('tpl-home');
+        contentArea.innerHTML = '';
+        contentArea.appendChild(tpl.content.cloneNode(true));
+        updatePageTranslations(contentArea);
+        
+        // 로드맵 렌더링 (자동 스크롤 제거)
+        renderPSSRRoadmap(false);
+        
+        homeCachedContent = contentArea.innerHTML;
+        lastRenderedLang = state.currentLang;
+        return;
+    }
+
+    // 캐시가 있어도 로드맵 영역은 비우고 다시 그려서 새로운 높이/JS 반영
+    contentArea.innerHTML = homeCachedContent;
     const listContainer = document.getElementById('pssr-roadmap-list');
-    const anotherToggle = document.getElementById('pssr-another-toggle');
-    const distToggle = document.getElementById('pssr-dist-toggle');
-    const fesToggle = document.getElementById('pssr-fes-toggle');
-    const limitedToggle = document.getElementById('pssr-limited-toggle');
-    const normalToggle = document.getElementById('pssr-normal-toggle');
-    if (!listContainer) return;
-
-    // 이벤트 리스너 등록
-    const registerToggle = (el) => {
-        if (el && !el.dataset.listener) {
-            el.addEventListener('change', () => renderPSSRRoadmap(false));
-            el.dataset.listener = 'true';
-        }
-    };
-    [anotherToggle, distToggle, fesToggle, limitedToggle, normalToggle].forEach(registerToggle);
-
-    const showAnother = anotherToggle ? anotherToggle.checked : true;
-    const showDist = distToggle ? distToggle.checked : true;
-    const showFes = fesToggle ? fesToggle.checked : true;
-    const showLimited = limitedToggle ? limitedToggle.checked : true;
-    const showNormal = normalToggle ? normalToggle.checked : true;
-
-    // [정밀 정렬] 기준 날짜 (24년 5월 ~ 26년 4월)
-    const start = new Date(2024, 4, 1, 0, 0, 0, 0); 
-    const end = new Date(2026, 3, 1, 0, 0, 0, 0);   
-    const rangeMs = end.getTime() - start.getTime();
-
-    // [유동적 높이 계산] 월 수에 따라 비례하도록 변경
-    const monthDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
-    const HEIGHT_PER_MONTH = window.innerWidth <= 768 ? 100 : 140; 
-    const GRAPH_HEIGHT = monthDiff * HEIGHT_PER_MONTH; 
-
-    // 필터링 적용 (체크된 항목만 노출하도록 변경)
-    let roadmapData = produceList.filter(p => p.rarity === 'PSSR' && p.releasedAt);
-    
-    if (!showAnother) {
-        roadmapData = roadmapData.filter(p => !p.another);
-    }
-    if (!showDist) {
-        roadmapData = roadmapData.filter(p => p.source !== 'dist');
-    }
-    if (!showFes) {
-        roadmapData = roadmapData.filter(p => p.source !== 'limited_f');
-    }
-    if (!showLimited) {
-        roadmapData = roadmapData.filter(p => p.source !== 'limited' && p.source !== 'limited_u');
-    }
-    if (!showNormal) {
-        roadmapData = roadmapData.filter(p => p.source !== 'normal');
-    }
-
-    listContainer.innerHTML = '';
-    
-    const graphWrapper = document.createElement('div');
-    graphWrapper.className = 'roadmap-graph-wrapper';
-    graphWrapper.style.height = `${GRAPH_HEIGHT}px`;
-
-    // 1. 날짜 전용 1열(컬럼) 및 그리드 생성
-    const dateColumn = document.createElement('div');
-    dateColumn.className = 'roadmap-date-column';
-    graphWrapper.appendChild(dateColumn);
-    
-    for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
-        d.setDate(1); d.setHours(0, 0, 0, 0);
-        const ratio = (d.getTime() - start.getTime()) / rangeMs;
-        const bottomOffset = ratio * GRAPH_HEIGHT;
-        
-        // 가로 그리드 선 (전체 너비)
-        const marker = document.createElement('div');
-        marker.className = 'time-marker';
-        marker.style.bottom = `${bottomOffset}px`;
-        
-        // 날짜 라벨 (1열 전용)
-        marker.innerHTML = `<span class="time-label">${d.getFullYear()}.${d.getMonth() + 1}</span>`;
-        graphWrapper.appendChild(marker);
-    }
-
-    // 2. 캐릭터별 컬럼 및 노드 배치
-    idolList.forEach(idolName => {
-        const column = document.createElement('div');
-        column.className = 'roadmap-column';
-        
-        // 아이돌 고유 컬러 가져오기 (없으면 기본 회색)
-        const idolColor = idolColors[idolName] || '#f1f3f5';
-        column.style.setProperty('--idol-theme-color', idolColor);
-        
-        const header = document.createElement('div');
-        header.className = 'roadmap-column-header';
-        const iconName = idolName === 'tsubame' ? 'tsubame' : idolName;
-
-        const idolPSSRs = roadmapData.filter(p => p.id.startsWith(`ssr${idolName}_`));
-        
-        // 마지막 PSSR로부터 경과일 계산
-        let daysText = "";
-        if (idolPSSRs.length > 0) {
-            const latestCard = [...idolPSSRs].sort((a, b) => new Date(b.releasedAt) - new Date(a.releasedAt))[0];
-            const lastDate = new Date(latestCard.releasedAt);
-            lastDate.setHours(0, 0, 0, 0);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const diffMs = today - lastDate;
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            daysText = diffDays >= 0 ? `+${diffDays}일` : `${diffDays}일`;
-        }
-
-        header.innerHTML = `
-            <img src="icons/idolicons/${iconName}_c.png" class="column-idol-icon" title="${idolName}" decoding="async">
-            ${daysText ? `<div class="idol-header-tooltip">${daysText}</div>` : ''}
-        `;
-        column.appendChild(header);
-        
-        // 캐릭터의 첫 번째(가장 오래된) PSSR 위치계산하여 선 시작점 설정
-        let minBottom = GRAPH_HEIGHT;
-        if (idolPSSRs.length > 0) {
-            idolPSSRs.forEach(card => {
-                const cardDate = new Date(card.releasedAt);
-                cardDate.setHours(0, 0, 0, 0);
-                const ratio = (cardDate.getTime() - start.getTime()) / rangeMs;
-                const bottomOffset = ratio * GRAPH_HEIGHT;
-                if (bottomOffset < minBottom) minBottom = bottomOffset;
-            });
-            column.style.setProperty('--line-start', `${minBottom}px`);
-        } else {
-            column.style.setProperty('--line-start', '100%'); // 데이터 없으면 선 안보이게 처리
-        }
-        
-        idolPSSRs.forEach(card => {
-            const cardDate = new Date(card.releasedAt);
-            cardDate.setHours(0, 0, 0, 0); // 시간 정규화 필수
-            
-            const ratio = (cardDate.getTime() - start.getTime()) / rangeMs;
-            const bottomOffset = ratio * GRAPH_HEIGHT;
-            
-            const node = document.createElement('div');
-            node.className = 'roadmap-node';
-            node.style.bottom = `${bottomOffset}px`;
-            
-            const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
-            node.innerHTML = `
-                <img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" decoding="async">
-                <div class="roadmap-tooltip">
-                    <img src="idols/${card.id}1.webp" class="tooltip-card-img">
-                    <div class="tooltip-text">
-                        <strong>${displayName}</strong>
-                        <span>${card.releasedAt}</span>
-                    </div>
-                </div>
-            `;
-            column.appendChild(node);
-        });
-
-        graphWrapper.appendChild(column);
-    });
-
-    listContainer.appendChild(graphWrapper);
-
-    // 최신 날짜로 자동 스크롤 (최초 로드 시에만 수행)
-    if (shouldScroll) {
-        setTimeout(() => {
-            const scrollContainer = document.getElementById('idol');
-            const targetElement = document.getElementById('pssr-roadmap-container');
-            if (scrollContainer && targetElement) {
-                scrollContainer.scrollTop = targetElement.offsetTop;
-            }
-        }, 150);
-    }
+    if (listContainer) listContainer.innerHTML = ''; 
+    renderPSSRRoadmap(false);
 }
 
 export function renderCalc() {
@@ -884,164 +727,7 @@ function updateSupportGrid(container) {
     updatePageTranslations(container);
 }
 
-// 모달 표시 함수
-export function showCardModal(card, displayName, imgSrc) {
-    const modal = document.getElementById('card-modal');
-    if (!modal) return;
 
-    // 초기 상태 저장 (닫을 때 변화 감지용)
-    window._modalCardId = card.id;
-    window._modalInitialLB = state.supportLB[card.id] || 0;
-
-    const mImg = document.getElementById('modal-img');    const mTitle = document.getElementById('modal-title');
-    const mRarity = document.getElementById('modal-rarity');
-    const mPlan = document.getElementById('modal-plan');
-    const mType = document.getElementById('modal-type');
-    const mExtraIcon = document.getElementById('modal-extra-icon');
-    const mExtra1 = document.getElementById('modal-extra-1');
-    const mExtra2 = document.getElementById('modal-extra-2');
-    const mAbilities = document.getElementById('modal-abilities');
-    const stars = document.querySelectorAll('.star');
-
-    // 이전 데이터 비우기 (반짝임 방지)
-    mImg.src = '';
-    mRarity.src = '';
-    mPlan.src = '';
-    mType.src = '';
-    mExtraIcon.src = '';
-
-    mImg.src = imgSrc;
-    mTitle.textContent = displayName;
-    mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
-    mPlan.src = `icons/${(card.plan || 'free').toLowerCase()}.webp`;
-    mType.src = `icons/${card.type.toLowerCase()}.png`;
-
-    mTitle.classList.remove('title-vocal', 'title-dance', 'title-visual', 'title-assist');
-    mTitle.classList.add(`title-${card.type.toLowerCase()}`);
-
-    const baseIconPath = `images/support/${card.id}`;
-    mExtraIcon.src = `${baseIconPath}_card.webp`;
-    mExtraIcon.onerror = () => {
-        mExtraIcon.src = `${baseIconPath}_item.webp`;
-        mExtraIcon.onerror = null;
-    };
-
-    const highlightNumbers = (text, type) => {
-        if (!text) return '';
-        const colorClass = `highlight-${type.toLowerCase()}`;
-        return text.replace(/([0-9]+[0-9.]*[%]*)/g, `<span class="${colorClass}">$1</span>`);
-    };    
-
-    const getExtraText = (val) => {
-        if (!val) return '';
-        let resultText = '';
-        if (val === 'param') {
-            const rarity = card.rarity || 'SSR';
-            const valNum = (rarity === 'SSR') ? 20 : 15;
-            const attrKey = `attr_${card.type.toLowerCase()}`;
-            const translatedType = translations[state.currentLang][attrKey] || card.type;
-            const format = translations[state.currentLang]['extra_param'] || '{type} 상승+{val}';
-            resultText = format.replace('{type}', translatedType).replace('{val}', valNum);
-        } else {
-            const key = `extra_${val}`;
-            resultText = translations[state.currentLang][key] || val;
-        }
-        return highlightNumbers(resultText, card.type);
-    };
-
-    mExtra1.innerHTML = getExtraText(card.extra1);
-    if (card.rarity === 'SSR') {
-        mExtra2.innerHTML = getExtraText(card.extra2);
-        mExtra2.classList.remove('hidden');
-    } else {
-        mExtra2.innerHTML = '';
-        mExtra2.classList.add('hidden');
-    }
-
-    let currentLB = state.supportLB[card.id] || 0;
-
-    const updateAbilities = (lb) => {
-        mAbilities.innerHTML = '';
-        if (card.abilities && card.abilities.length > 0) {
-            card.abilities.forEach((abId, index) => {
-                const data = abilityData[abId];
-                if (data) {
-                    const rarity = card.rarity || 'SSR';
-                    const isDist = card.source === 'dist';
-                    let rarityKey = rarity;
-                    if (rarity === 'SSR' && isDist && data.levels['SSR_DIST']) rarityKey = 'SSR_DIST';
-
-                    let val = 0;
-                    if (abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam') {
-                        const targetLv = lb + 1;
-                        const bonusLevels = data.levels[rarity] || data.levels;
-                        val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length-1];
-                    } else if (abId === 'event_paraup' || abId === 'event_recoveryup') {
-                        let targetLv = (rarity === 'SSR') ? (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1)) : (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
-                        val = data.levels[targetLv] || data.levels[1];
-                    } else {
-                        let targetLv = 1;
-                        if (index === 1) targetLv = (rarity === 'SSR' ? (lb >= 2 ? 2 : 1) : (lb >= 1 ? 2 : 1));
-                        else if (index === 3) targetLv = ((rarity === 'SSR' && !isDist) ? (lb >= 3 ? 2 : 1) : (lb >= 4 ? 2 : 1));
-                        else if (index === 4) targetLv = ((rarity === 'SSR' && !isDist) ? (lb >= 4 ? 2 : 1) : (lb >= 3 ? 2 : 1));
-                        else targetLv = (lb >= 2 ? 2 : 1);
-
-                        const bonusLevels = data.levels[rarityKey] || data.levels[rarity] || data.levels;
-                        val = bonusLevels[targetLv] || bonusLevels[1];
-                    }
-
-                    const format = data.format[state.currentLang] || data.format['ko'];
-                    const attrKey = `attr_${card.type.toLowerCase()}`;
-                    const translatedType = translations[state.currentLang][attrKey] || card.type;
-                    const rawText = format.replaceAll('{val}', val).replaceAll('{type}', translatedType);
-                    const highlightedText = highlightNumbers(rawText, card.type);
-                    
-                    const abEl = document.createElement('div');
-                    abEl.className = `ability-item border-${card.type.toLowerCase()}`;
-                    const shrinkClass = rawText.length > 35 ? 'shrink' : '';
-                    abEl.innerHTML = `<div class="ability-text ${shrinkClass}">${highlightedText}</div>`;
-                    mAbilities.appendChild(abEl);
-                }
-            });
-        }
-    };
-
-    const updateStars = (lb) => {
-        stars.forEach((s, idx) => s.classList.toggle('active', idx < lb));
-        updateAbilities(lb);
-    };
-
-    updateStars(currentLB);
-
-    stars.forEach((s, idx) => {
-        s.onclick = () => {
-            const newLB = (idx + 1 === currentLB) ? 0 : idx + 1;
-            currentLB = newLB;
-            setSupportLB(card.id, currentLB);
-            updateStars(currentLB);
-            if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
-            if (typeof window.updateActivityCounts === 'function') window.updateActivityCounts();
-            
-            // 1. 서포트 카드 그리드 업데이트
-            const cardInGrid = document.querySelector(`.support-card[data-id="${card.id}"]`);
-            if (cardInGrid) {
-                cardInGrid.querySelectorAll('.card-star').forEach((cs, cIdx) => cs.classList.toggle('active', cIdx < currentLB));
-            }
-
-            // 2. 계산기 사이드 패널 업데이트 (추가)
-            const cardInSidePanel = document.querySelector(`.side-card-item[data-id="${card.id}"]`);
-            if (cardInSidePanel) {
-                cardInSidePanel.querySelectorAll('.calc-card-star').forEach((cs, cIdx) => cs.classList.toggle('active', cIdx < currentLB));
-            }
-        };
-    });
-
-    modal.classList.remove('hidden');
-    modal.style.display = 'flex';
-    modal.style.zIndex = '30001';
-    history.pushState({ modalOpen: true }, "");
-}
-window.showCardModal = showCardModal;
 
 // [추가] 즐겨찾기 기반 배경색 업데이트 함수
 export function updateGlobalBackgroundColor() {
@@ -1057,8 +743,9 @@ export function updateGlobalBackgroundColor() {
         }
     } else {
         if (fixedBg) {
-            fixedBg.style.backgroundColor = "transparent";
+            fixedBg.style.backgroundColor = "#adb5bd"; // 기본 문양 색상: 회색
+            fixedBg.style.opacity = '0.2'; // 다른 캐릭터와 동일한 투명도
         }
-        document.body.style.backgroundColor = "#ffffff";
+        document.body.style.backgroundColor = "#ffffff"; // 다른 캐릭터와 동일하게 배경은 흰색
     }
 }
