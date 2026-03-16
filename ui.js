@@ -63,7 +63,11 @@ function renderPSSRRoadmap(shouldScroll = false) {
     const start = new Date(2024, 4, 1, 0, 0, 0, 0); 
     const end = new Date(2026, 3, 1, 0, 0, 0, 0);   
     const rangeMs = end.getTime() - start.getTime();
-    const GRAPH_HEIGHT = 3200; // 표 전체 높이 확장 (여유로운 뷰)
+
+    // [유동적 높이 계산] 월 수에 따라 비례하도록 변경
+    const monthDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+    const HEIGHT_PER_MONTH = window.innerWidth <= 768 ? 100 : 140; 
+    const GRAPH_HEIGHT = monthDiff * HEIGHT_PER_MONTH; 
 
     // 필터링 적용 (체크된 항목만 노출하도록 변경)
     let roadmapData = produceList.filter(p => p.rarity === 'PSSR' && p.releasedAt);
@@ -139,7 +143,7 @@ function renderPSSRRoadmap(shouldScroll = false) {
         }
 
         header.innerHTML = `
-            <img src="icons/idolicons/${iconName}_c.png" class="column-idol-icon" title="${idolName}">
+            <img src="icons/idolicons/${iconName}_c.png" class="column-idol-icon" title="${idolName}" decoding="async">
             ${daysText ? `<div class="idol-header-tooltip">${daysText}</div>` : ''}
         `;
         column.appendChild(header);
@@ -172,7 +176,7 @@ function renderPSSRRoadmap(shouldScroll = false) {
             
             const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
             node.innerHTML = `
-                <img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}">
+                <img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" decoding="async">
                 <div class="roadmap-tooltip">
                     <img src="idols/${card.id}1.webp" class="tooltip-card-img">
                     <div class="tooltip-text">

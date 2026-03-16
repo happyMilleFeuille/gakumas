@@ -102,7 +102,12 @@ input:checked+.toggle-slider:before {
 .roadmap-graph-wrapper {
     position: relative;
     width: 100%;
-    min-width: 155px; /* 초소형 기기 대응 (320px 미만까지 고려) */
+    min-width: 800px;
+    background-color: transparent;
+    margin-bottom: 20px;
+    container-type: inline-size;
+    will-change: transform;
+    transform: translateZ(0);
     display: flex;
     justify-content: center; /* 왼쪽 쏠림 대신 가운데 정렬로 변경 */
     padding: 0 10px; /* 고정 패딩으로 균형 확보 */
@@ -153,6 +158,8 @@ input:checked+.toggle-slider:before {
     height: 100%;
     z-index: 2;
     transition: z-index 0s;
+    /* 성능을 유지하되 부작용이 적은 가속만 남김 */
+    transform: translateZ(0); 
 }
 
 .roadmap-column:hover {
@@ -316,11 +323,24 @@ input:checked+.toggle-slider:before {
         padding: 1.25rem 1rem;
     }
 
+    /* 모바일에서 왼쪽 날짜 열 및 레벨 숨김 */
+    .roadmap-date-column,
+    .time-label {
+        display: none !important;
+    }
+
     .roadmap-graph-wrapper {
-        min-width: 100%; /* 너비에 맞게 유동적 */
+        min-width: 100%;
+        padding: 0; 
+        margin-bottom: 20px; /* 아래 여백 축소 */
+    }
+
+    .roadmap-list {
+        width: 100%; /* 전체 너비 사용 */
     }
 
     .pssr-roadmap-container {
         margin-top: 5rem;
+        margin-bottom: 1rem; /* 하단 전체 마진 축소 */
     }
 }

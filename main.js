@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 2. 초기화
     updatePageTranslations();
-    initMobileHeightFix();
+    // initMobileHeightFix(); // 내부 스크롤 구조이므로 더 이상 필요하지 않음
     
     // [전역 배경 및 색상 설정]
     const fixedBg = document.getElementById('fixed-bg');
