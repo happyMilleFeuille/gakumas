@@ -19,6 +19,21 @@
     <link rel="stylesheet" href="css/stat-detail.css">
     <link rel="stylesheet" href="css/memory.css">
     <link rel="stylesheet" href="css/home.css">
+    
+    <!-- Character Icon Preload for Performance -->
+    <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/temari_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/kotone_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/tsubame_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/mao_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/lilja_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/china_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/sumika_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/hiro_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/sena_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/misuzu_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/ume_c.png">
+    <link rel="preload" as="image" href="icons/idolicons/rinami_c.png">
 </head>
 
 <body>
@@ -27,12 +42,7 @@
         <div id="gacha-progress-text">0%</div>
     </div>
 
-    <div class="lang-switch-container">
-        <div class="lang-switch">
-            <button id="lang-ko" class="lang-btn active">KO</button>
-            <button id="lang-ja" class="lang-btn">JA</button>
-        </div>
-    </div>
+
 
     <!-- 가챠 선택 서랍 (최상위 배치) -->
     <div id="gacha-drawer" class="gacha-drawer">
@@ -46,6 +56,12 @@
 
     <main>
         <section id="idol">
+            <div class="lang-switch-container">
+                <div class="lang-switch">
+                    <button id="lang-ko" class="lang-btn active">KO</button>
+                    <button id="lang-ja" class="lang-btn">JA</button>
+                </div>
+            </div>
             <div id="content-area"></div>
             <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
             <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
@@ -193,6 +209,10 @@
 
         <!-- PSSR 출시 로드맵 -->
         <div class="roadmap-filter-wrap">
+            <button id="btn-roadmap-expand" class="roadmap-expand-btn">
+                <span id="roadmap-expand-text" data-i18n="roadmap_expand">더 보기</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
             <div class="roadmap-filter-container">
                 <button id="roadmap-filter-btn" class="roadmap-filter-btn">
                     <span data-i18n="roadmap_filter">필터</span>
@@ -228,7 +248,8 @@
                 </div>
             </div>
         </div>
-        <div id="pssr-roadmap-container" class="pssr-roadmap-container">
+        <div id="pssr-roadmap-container" class="pssr-roadmap-container is-collapsed">
+            <div id="pssr-roadmap-header" class="roadmap-header-area"></div>
             <div id="pssr-roadmap-list" class="pssr-roadmap-list"></div>
         </div>
     </template>

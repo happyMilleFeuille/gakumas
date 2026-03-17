@@ -82,6 +82,8 @@ const translations = {
         roadmap_show_unit: "유닛",
         roadmap_show_limited: "한정",
         roadmap_show_normal: "통상",
+        roadmap_expand: "더 보기 (전체 펼치기)",
+        roadmap_collapse: "접기",
         footer: ""
     },
     ja: {
@@ -166,6 +168,8 @@ const translations = {
         roadmap_show_unit: "ユニット",
         roadmap_show_limited: "限定",
         roadmap_show_normal: "恒常",
+        roadmap_expand: "もっと見る (全展開)",
+        roadmap_collapse: "折りたたむ",
         footer: ""
     }
 };

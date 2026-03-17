@@ -136,6 +136,41 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('roadmap-filter-btn')?.classList.remove('active');
             dropdown.classList.remove('active');
         }
+
+        // 로드맵 펼치기/접기 버튼
+        const expandBtn = e.target.closest('#btn-roadmap-expand');
+        if (expandBtn) {
+            const roadmapContainer = document.getElementById('pssr-roadmap-container');
+            const expandText = document.getElementById('roadmap-expand-text');
+            if (roadmapContainer && expandText) {
+                const isCollapsed = roadmapContainer.classList.toggle('is-collapsed');
+                
+                // 번역 키를 사용하여 텍스트 변경
+                import('./utils.js').then(m => {
+                    expandText.dataset.i18n = isCollapsed ? 'roadmap_expand' : 'roadmap_collapse';
+                    m.updatePageTranslations(roadmapContainer);
+                });
+
+                // 펼칠 때 렌더링 실행
+                if (!isCollapsed) {
+                    import('./roadmap.js').then(m => m.renderPSSRRoadmap(false));
+                } else {
+                    // 접을 때 상단으로 스크롤
+                    roadmapContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        }
+    });
+
+    // 로드맵 필터 변경 (이벤트 위임)
+    document.addEventListener('change', (e) => {
+        if (e.target.id && e.target.id.startsWith('pssr-')) {
+            const filterType = e.target.id.replace('pssr-', '').replace('-toggle', '');
+            import('./state.js').then(s => {
+                s.setRoadmapFilter(filterType, e.target.checked);
+                import('./roadmap.js').then(m => m.renderPSSRRoadmap(false));
+            });
+        }
     });
 
     document.addEventListener('mousedown', (e) => {
