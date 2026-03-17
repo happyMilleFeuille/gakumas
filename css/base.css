@@ -60,27 +60,70 @@ img {
     /* 로고와의 간격 좁힘 */
 }
 
-.lang-switch {
+.lang-toggle-wrap {
     position: absolute;
     left: 50%;
     top: 20px;
-    margin-left: 70px;
-    /* 모바일 기준 우측 픽셀 이동 */
+    margin-left: 60px;
     display: flex;
-    gap: 4px;
+    background: #fff; /* 배경은 흰색 */
     padding: 2px;
+    border-radius: 50px;
+    width: 65px;
+    height: 26px;
+    position: relative;
+    user-select: none;
+    cursor: pointer;
+    border: 1.5px solid #eee; /* 흰색 배경이므로 옅은 테두리 추가 */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+    transition: border-color 0.3s ease;
 }
 
-.lang-btn {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 3px 8px;
-    font-size: 0.7rem;
-    border-radius: 6px;
+.lang-toggle-wrap:hover {
+    border-color: var(--idol-theme-color, var(--primary-color));
+}
+
+.lang-toggle-wrap input {
+    display: none;
+}
+
+.lang-label {
+    flex: 1;
+    z-index: 2;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-weight: 700;
-    transition: all 0.2s;
+    transition: color 0.3s ease;
+}
+
+.lang-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 28px; /* 보더 두께 때문에 미세 조절 */
+    height: 19px;
+    background: var(--idol-theme-color, var(--primary-color)); /* 캐릭터 개인색 적용 */
+    border-radius: 50px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+#lang-ko:checked ~ .lang-slider {
+    left: 2px;
+}
+
+#lang-ja:checked ~ .lang-slider {
+    left: 33px;
+}
+
+#lang-ko:checked ~ label[for="lang-ko"],
+#lang-ja:checked ~ label[for="lang-ja"] {
+    color: #fff;
 }
 
 /* PC 화면 전용 스타일 */
@@ -89,28 +132,28 @@ img {
         height: 60px;
     }
 
-    .lang-switch {
+    .lang-toggle-wrap {
         top: 30px;
-        margin-left: 250px;
-        /* PC 기준 중앙에서 우측으로 200px 이동 */
-        gap: 8px;
+        margin-left: 240px;
+        width: 100px;
+        height: 38px;
         padding: 4px;
     }
 
-    .lang-btn {
-        padding: 6px 14px;
-        font-size: 0.9rem;
-        border-radius: 8px;
+    .lang-label {
+        font-size: 0.85rem;
     }
-}
 
-.lang-btn.active {
-    background-color: var(--primary-color);
-    color: var(--white);
-}
+    .lang-slider {
+        top: 4px;
+        left: 4px;
+        width: 46px;
+        height: 30px;
+    }
 
-.lang-btn:hover:not(.active) {
-    background-color: #fff0f5;
+    #lang-ja:checked ~ .lang-slider {
+        left: 50px;
+    }
 }
 
 main {
@@ -383,7 +426,7 @@ body.gacha-result-active .button-group.horizontal {
 
 @media (max-width: 768px) {
     .disclaimer-container {
-        font-size: 0.45rem;
+        font-size: 0.38rem;
         margin-top: 0.8rem;
         color: #ccc;
     }

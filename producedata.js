@@ -155,7 +155,7 @@ export const produceList = [
     { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2025-05-09", another: true, jumpTime2: 6.3 },
     { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-05-29", another: true },
     { id: "ssrume_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-08-29", another: true },
-    { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-11-07", another: true },
+    { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrume_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrume_2nd", name: "구-스-피-", name_ja: "グースーピー", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-11-28", youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn" },
 
@@ -208,7 +208,7 @@ export const produceList = [
     { id: "ssrlilja_christmaslimited", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-12-09", plan: "logic", source: "limited", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_" },
     { id: "ssrhiro_valentinedist", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd" },
     { id: "ssrrinami_valentinelimited", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd" },
-    { id: "ssrsena_valentinelimited", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", source: "limited", jumpTime2: 9.8, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd" },
+    { id: "ssrsena_valentinelimited", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.8, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd" },
     { id: "ssrtemari_yukidokenidist", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "dist", youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
     { id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
     { id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
@@ -230,9 +230,9 @@ export const produceList = [
 
 
     // 유닛 (unit)
-    { id: "ssrsena_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
+    { id: "ssrsena_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
     { id: "ssrume_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 10.4, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
-    { id: "ssrmisuzu_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 11.0, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
+    { id: "ssrmisuzu_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 11.0, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
     { id: "ssrsaki_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "logic", source: "limited_u", jumpTime2: 10.1, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
     { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
     { id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "anomaly", source: "limited_u", jumpTime2: 9.4, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },

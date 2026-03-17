@@ -735,6 +735,9 @@ export function updateGlobalBackgroundColor() {
     if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
         let color = idolColors[state.favoriteIdol];
         
+        // CSS 변수 설정
+        document.documentElement.style.setProperty('--idol-theme-color', color);
+        
         document.body.style.backgroundColor = color + "00"; // 바탕 배경색 투명도를 0%로 (사실상 완전 흰색)
         if (fixedBg) fixedBg.style.opacity = '0.2'; // 문양을 더 은은하게 (0.2)
 
@@ -742,6 +745,8 @@ export function updateGlobalBackgroundColor() {
             fixedBg.style.backgroundColor = color; // 마스크 문양 색상 설정
         }
     } else {
+        document.documentElement.style.setProperty('--idol-theme-color', '#ff4081'); // 기본 핑크색
+
         if (fixedBg) {
             fixedBg.style.backgroundColor = "#adb5bd"; // 기본 문양 색상: 회색
             fixedBg.style.opacity = '0.2'; // 다른 캐릭터와 동일한 투명도

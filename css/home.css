@@ -58,8 +58,42 @@
     padding: 0 10px;
 }
 
-#btn-roadmap-expand {
+/* 펼치기/접기 버튼 */
+.roadmap-expand-btn {
     grid-column: 2;
+    display: flex;
+    justify-content: center;
+    width: 155px;
+    padding: 6px 0;
+    background: #fff;
+    border: 2px solid #f0f0f0;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.roadmap-expand-btn:hover {
+    border-color: var(--idol-theme-color, var(--primary-color));
+    color: var(--idol-theme-color, var(--primary-color));
+    transform: translateY(-1px);
+}
+
+.roadmap-expand-btn:active {
+    transform: translateY(0);
+}
+
+.roadmap-expand-btn svg {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 컨테이너가 펼쳐진 상태일 때 아이콘 회전 */
+.roadmap-expand-btn.active svg {
+    transform: rotate(180deg);
 }
 
 .roadmap-filter-container {
@@ -92,8 +126,8 @@
 }
 
 .roadmap-filter-btn:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+    border-color: var(--idol-theme-color, var(--primary-color));
+    color: var(--idol-theme-color, var(--primary-color));
     transform: translateY(-1px);
 }
 
@@ -139,28 +173,39 @@
 .toggle-container {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
-    background: #f8f9fa;
-    border-radius: 10px;
+    justify-content: center;
+    padding: 6px 12px;
+    background: #fff;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #f2f2f2; /* 기본 미선택 상태 테두리 */
+    min-width: 90px;
 }
 
-.toggle-container:hover {
-    background: #fff;
-    border-color: var(--primary-color);
-    box-shadow: none;
+.filter-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: #eee;
+    margin: 4px 0;
 }
+
+.plan-icon-small {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.toggle-container:has(input:checked) {
+    border-color: var(--idol-theme-color, var(--primary-color));
+    background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)), transparent 95%);
+    color: var(--idol-theme-color, var(--primary-color));
+}
+
 
 .toggle-container input[type="checkbox"] {
-    display: block !important;
-    appearance: auto !important;
-    width: 16px;
-    height: 16px;
-    accent-color: var(--primary-color);
-    cursor: pointer;
+    display: none !important;
 }
 
 .toggle-label {
@@ -402,16 +447,20 @@
 }
 
 .tooltip-text span {
-    display: block;
-    font-size: 0.75rem;
-    color: #888;
+    font-size: 0.76rem;
+    color: var(--idol-theme-color, #888); /* 캐릭터 색상으로 변경 */
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 2px;
 }
 
-.tooltip-text span {
-    font-size: 0.76rem;
-    color: var(--primary-color);
-    font-weight: 700;
-    display: block;
+.plan-icon-tooltip {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
 }
 
 @media (max-width: 768px) {
@@ -437,46 +486,75 @@
         /* 다시 바짝 밀착 */
     }
 
+    .roadmap-expand-btn {
+        padding: 3px 0 !important; /* 가로 패딩 제거 (너비 고정) */
+        width: 120px !important;
+        font-size: 0.65rem !important; /* 글자 크기 축소 */
+        background: #fff !important;
+    }
+
+    .roadmap-expand-btn svg {
+        width: 9px !important; /* 아이콘 크기 축소 */
+        height: 9px !important;
+    }
+
     .roadmap-filter-btn {
-        padding: 5px 12px !important;
-        font-size: 0.72rem !important;
-        gap: 4px !important;
+        padding: 3px 10px !important; /* 버튼 크기 축소 */
+        font-size: 0.65rem !important; /* 글자 크기 축소 */
+        gap: 2px !important;           /* 간격 축소 */
         -webkit-tap-highlight-color: transparent;
         position: relative;
         z-index: 110;
         /* 헤더 안에서 버튼이 툴팁보다 먼저 클릭될 수 있게 보호 */
     }
 
+    .roadmap-filter-btn svg {
+        width: 10px !important; /* 아이콘 크기 축소 */
+        height: 10px !important;
+    }
+
     .roadmap-filter-dropdown {
-        min-width: 200px;
-        /* 조금 더 넓게 */
-        padding: 12px;
-        border-radius: 16px;
-        top: calc(100% + 8px);
+        min-width: 180px; /* 3열 정렬을 위해 너비 확보 */
+        padding: 6px;     /* 패딩 최소화 */
+        border-radius: 10px;
+        bottom: calc(100% + 6px); /* 간격도 살짝 줄임 */
+        top: auto !important;
         z-index: 10000 !important;
-        /* 드롭다운 메뉴는 여전히 최상단 유지 */
     }
 
     .roadmap-controls {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(3, 1fr); /* 3열로 정렬 */
+        gap: 3px; /* 간격 더 축소 */
     }
 
     .toggle-container {
-        padding: 6px 8px !important;
+        padding: 3px 5px !important; /* 모바일: 패딩 더 축소 */
         border-radius: 6px !important;
-        background: #f8f9fa !important;
-        border: 1px solid #eee !important;
-        min-width: 0 !important;
+        background: #fff !important;
+        border: 1.5px solid #f0f0f0 !important;
+        min-width: 52px !important; /* 3열에 들어갈 수 있게 너비 축소 */
+        justify-content: center !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .toggle-container:has(input:checked) {
+        border-color: var(--idol-theme-color, var(--primary-color)) !important;
+        background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)), transparent 95%) !important;
+        color: var(--idol-theme-color, var(--primary-color)) !important;
     }
 
     .toggle-label {
-        font-size: 0.65rem !important;
+        font-size: 0.5rem !important; /* 모바일: 글자 크기 더 축소 */
+        font-weight: 700 !important;
+    }
+
+    .plan-icon-small {
+        width: 13px !important; /* 모바일: 아이콘 크기도 비례해서 축소 */
+        height: 13px !important;
     }
 
     .toggle-container input[type="checkbox"] {
-        width: 14px;
-        height: 14px;
+        display: none !important;
     }
 
     .roadmap-date-column,
@@ -545,20 +623,21 @@
 
     /* 모바일 툴팁: 노드 위로 표시하여 손가락에 가려지지 않게 함 */
     .roadmap-tooltip {
-        bottom: 130% !important;
+        bottom: 17px !important; /* 사용자 요청에 따라 17px로 미세 조정 */
         top: auto !important;
         left: 50% !important;
         transform: translateX(-50%) translateY(0) scale(1) !important;
         transform-origin: bottom center !important;
-        width: 130px !important;
-        min-width: 130px !important;
-        padding: 8px !important;
+        width: 110px !important;
+        min-width: 110px !important;
+        padding: 6px !important;
         background: #fff !important;
         box-shadow: none !important;
         white-space: normal !important;
         opacity: 0;
         visibility: hidden;
         z-index: 10000 !important;
+        border-width: 2px !important; /* 테두리 두께 2px로 복구 */
     }
 
     .roadmap-node:hover .roadmap-tooltip {
@@ -597,16 +676,27 @@
         aspect-ratio: 1/1.8 !important;
         object-fit: cover !important;
         border-radius: 6px !important;
-        margin-bottom: 6px !important;
+        margin-bottom: 4px !important;
     }
 
     .tooltip-text strong {
-        font-size: 0.72rem !important;
+        font-size: 0.65rem !important;
         line-height: 1.2 !important;
     }
 
     .tooltip-text span {
-        font-size: 0.6rem !important;
+        font-size: 0.55rem !important;
+        color: var(--idol-theme-color, #888) !important; /* 캐릭터 색상 적용 */
+        font-weight: 700 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 2px !important;
+    }
+
+    .plan-icon-tooltip {
+        width: 12px !important;
+        height: 12px !important;
     }
 
 }

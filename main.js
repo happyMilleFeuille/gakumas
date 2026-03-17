@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const langBtns = document.querySelectorAll('.lang-btn');
     const idolSection = document.getElementById('idol'); // 배경이 적용될 섹션 (혹은 fixedBg)
     const logo = document.querySelector('.logo');
-    
+
     // 2. 초기화
     updatePageTranslations();
     // initMobileHeightFix(); // 내부 스크롤 구조이므로 더 이상 필요하지 않음
-    
+
     // [전역 배경 및 색상 설정]
     const fixedBg = document.getElementById('fixed-bg');
     if (fixedBg) {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fixedBg.style.maskImage = maskUrl;
         fixedBg.style.opacity = (state.favoriteIdol === 'lilja') ? '0.7' : '0.2';
     }
-    
+
     // [중요] 초기화 직후 즉시 배경색 동기화 호출
     import('./ui.js').then(m => {
         m.updateGlobalBackgroundColor();
@@ -36,9 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 모든 언어 버튼 상태 동기화 함수
     const syncLangBtns = () => {
-        document.querySelectorAll('.lang-btn').forEach(b => {
-            b.classList.toggle('active', b.id === `lang-${state.currentLang}`);
-        });
+        const radio = document.getElementById(`lang-${state.currentLang}`);
+        if (radio) radio.checked = true;
     };
 
     // 전역 UI 상태 동기화 (배경, 버튼 등)
@@ -68,19 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 언어 변경 (이벤트 위임 방식)
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.lang-btn');
-        if (!btn) return;
+    document.addEventListener('change', (e) => {
+        const radio = e.target.closest('input[name="lang"]');
+        if (!radio) return;
 
-        const newLang = btn.id.split('-')[1];
-        if (!newLang) return;
-
+        const newLang = radio.value;
         setLanguage(newLang);
         updatePageTranslations();
 
-        // UI 업데이트 (모든 언어 버튼들의 활성화 상태 갱신)
+        // UI 업데이트
         syncLangBtns();
-        
+
         // 현재 화면 상태에 따라 추가 렌더링
         if (document.querySelector('.pssr-roadmap-container')) {
             import('./ui.js').then(m => m.renderHome());
@@ -106,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (w <= 1024) return 'tablet';
         return 'pc';
     };
-    
+
     let currentStage = getLayoutStage(window.innerWidth);
     window.addEventListener('resize', () => {
         const nextStage = getLayoutStage(window.innerWidth);
@@ -128,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterBtn = e.target.closest('#roadmap-filter-btn');
         const container = e.target.closest('.roadmap-filter-container'); // ID가 아닌 클래스로 수정
         const dropdown = document.getElementById('roadmap-filter-dropdown');
-        
+
         if (filterBtn) {
             filterBtn.classList.toggle('active');
             dropdown?.classList.toggle('active');
@@ -144,11 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const expandText = document.getElementById('roadmap-expand-text');
             if (roadmapContainer && expandText) {
                 const isCollapsed = roadmapContainer.classList.toggle('is-collapsed');
-                
+                expandBtn.classList.toggle('active', !isCollapsed); // active 클래스 토글 추가
+
                 // 번역 키를 사용하여 텍스트 변경
                 import('./utils.js').then(m => {
                     expandText.dataset.i18n = isCollapsed ? 'roadmap_expand' : 'roadmap_collapse';
-                    m.updatePageTranslations(roadmapContainer);
+                    m.updatePageTranslations(); // 전체 문서 대상으로 업데이트
                 });
 
                 // 펼칠 때 렌더링 실행
@@ -210,12 +208,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.querySelector('.close-modal');
     const closeGachaLogModal = document.querySelector('.close-log-modal');
     const closeGachaRatesModal = document.querySelector('.close-rates-modal');
-    
+
     function hideModal() {
         if (!modal.classList.contains('hidden')) {
             modal.classList.add('hidden');
             modal.style.display = 'none';
-            
+
             // [수정] 모달이 닫힐 때 계산기가 활성화된 상태라면 무조건 갱신
             if (document.querySelector('.stat-header') || window._modalCardId) {
                 if (typeof window.refreshAll === 'function') {
@@ -300,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoModal = document.getElementById('video-modal');
         const resultsContainer = document.querySelector('#gacha-results');
         const calcPanel = document.getElementById('calc-side-panel');
-        
+
         // 1. 영상 재생 중 예외 처리 (가챠 애니메이션)
         if (document.body.classList.contains('immersive-mode')) {
             history.pushState({ target: 'gacha', view: 'playing' }, "");

@@ -3,76 +3,79 @@ export const abilityData = {
     "hpmax": {
         format: { ko: "최대체력상승+{val}", ja: "最大体力上昇+{val}" },
         levels: {
-            "SSR": {1: 9, 2: 9,},
-            "SSR_DIST": {1: 9, 2: 9},
-            "SR": {1: 3, 2: 3},
+            "SSR": { 1: 9, 2: 9, },
+            "SSR_DIST": { 1: 9, 2: 9 },
+            "SR": { 1: 3, 2: 3 },
         }
     },
     "percentparam": {
         format: { ko: "{type} 파라미터 보너스+{val}%", ja: "{type}パラメータボーナス+{val}%" },
         levels: {
-            "SSR": {1: 6.5,2: 7,3: 7.5,4: 8,5: 8.5},            
-            "SR": {1: 4.4, 2: 4.9,3: 5.4,4: 5.9,5: 6.4},               
+            "SSR": { 1: 6.5, 2: 7, 3: 7.5, 4: 8, 5: 8.5 },
+            "SR": { 1: 4.4, 2: 4.9, 3: 5.4, 4: 5.9, 5: 6.4 },
         }
     },
     "fixedparam": {
         format: { ko: "초기 {type} 상승+{val}", ja: "初期{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 51,2: 56, 3: 59,4: 62,5: 65},            
-            "SR": {1: 37, 2: 40,3: 43,4: 46,5: 49},               
+            "SSR": { 1: 52, 2: 56, 3: 59, 4: 62, 5: 65 },
+            "SR": { 1: 37, 2: 40, 3: 43, 4: 46, 5: 49 },
         }
-    },           
+    },
     "allsp_lessonup": {
         format: { ko: "보컬, 댄스, 비쥬얼 모든 SP레슨 발생률+{val}%", ja: "ボーカル、ダンス、ビジュアルすべてのSPレッスン発生率+{val}%" },
         levels: {
-            "SSR": {1: 10.5, 2: 14 },
-            "SSR_DIST": {1: 0, 2: 0 },
+            "SSR": { 1: 10.5, 2: 14 },
+            "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 },
         }
     },
     "sp_lessonup": {
         format: { ko: "{type} SP레슨 발생률+{val}%", ja: "{type}SPレッスン発生率+{val}%" },
         levels: {
-            "SSR": {1: 21, 2: 28 },
-            "SSR_DIST": {1: 14, 2: 21 },
-            "SR": { 1: 10.5, 2:21 },
+            "SSR": { 1: 21, 2: 28 },
+            "SSR_DIST": { 1: 14, 2: 21 },
+            "SR": { 1: 10.5, 2: 21 },
         }
-    },    
+    },
     "sp_param": {
         format: { ko: "{type} SP레슨 종료시 {type} 상승+{val}", ja: "{type}SPレッスン終了時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 13, 2: 17 },
-            "SSR_DIST": {1: 9, 2: 13 },
-            "SR": { 1: 7, 2:13 },
+            "SSR": { 1: 13, 2: 17 },
+            "SSR_DIST": { 1: 9, 2: 13 },
+            "SR": { 1: 7, 2: 13 },
         },
-    },  
+    },
     "sp_param20": {
         format: { ko: "SP레슨 종료시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロヂュース中4回)" },
         levels: {
-            "SSR": {1: 15, 2: 21},
-            "SSR_DIST": {1: 0, 2: 0 },
-            "SR": { 1: 8, 2: 15 }},
-            trigger: ["sp"],max:4,             
-    },      
+            "SSR": { 1: 15, 2: 21 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 8, 2: 15 }
+        },
+        trigger: ["sp"], max: 4,
+    },
     "lesson_param": {
         format: { ko: "{type} 레슨 종료시 {type} 상승+{val}", ja: "{type}レッスン終了時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 4, 2: 6 },
-            "SSR_DIST": {1: 3, 2: 4 },
-            "SR": { 1: 2, 2:4 }},     
-    },            
+            "SSR": { 1: 4, 2: 6 },
+            "SSR_DIST": { 1: 3, 2: 4 },
+            "SR": { 1: 2, 2: 4 }
+        },
+    },
     "normallesson_param": {
         format: { ko: "{type} 통상레슨 종료시 {type} 상승+{val}", ja: "{type}通常レッスン終了時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 0, 2: 0 },
-            "SSR_DIST": {1: 0, 2: 0 },
-            "SR": { 1: 7, 2:13 }},         
-    },     
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 7, 2: 13 }
+        },
+    },
     "supportrateup": {
         format: { ko: "해당 서포트 카드의 스킬 카드 서포트 발생률 {val}% 증가", ja: "このサポートカードのスキルカードサポート発生率を{val}%増加" },
         levels: {
-            "SSR": {1: 66.1,2: 74.6,3: 83.1,4: 91.5,5: 100},            
-            "SR": {1: 59.2, 2: 69.4,3: 79.6,4: 89.8,5: 100},               
+            "SSR": { 1: 66.1, 2: 74.6, 3: 83.1, 4: 91.5, 5: 100 },
+            "SR": { 1: 59.2, 2: 69.4, 3: 79.6, 4: 89.8, 5: 100 },
         }
     },
     "event_paraup": {
@@ -90,306 +93,336 @@ export const abilityData = {
             2: 75,
             3: 100
         }
-    },    
+    },
     "alllesson_ppoint": {
         format: { ko: "레슨종료 시 P포인트 획득량 증가 +{val}%", ja: "レッスン終了時、Pポイント獲得量増加+{val}%" },
         levels: {
-            "SSR": {1: 16.5,2: 22},     
-            "SSR_DIST": {1: 0, 2: 0 },                   
-            "SR": {1: 8.3, 2: 16.5 },         
+            "SSR": { 1: 16.5, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 8.3, 2: 16.5 },
         }
     },
     "ppoint": {
         format: { ko: "초기 P포인트+{val}", ja: "初期Pポイント+{val}" },
         levels: {
-            "SSR": {1: 30,2: 40},     
-            "SSR_DIST": {1: 15, 2: 30 },                   
-            "SR": {1: 15, 2: 30 },         
+            "SSR": { 1: 30, 2: 40 },
+            "SSR_DIST": { 1: 15, 2: 30 },
+            "SR": { 1: 15, 2: 30 },
         }
     },
     "sp_ppoint": {
         format: { ko: "{type} SP레슨 종료 시, P포인트 획득량 증가+{val}%", ja: "{type}SPレッスン終了時、Pポイント獲得量増加+{val}%" },
         levels: {
-            "SSR": {1: 33,2: 45},     
-            "SSR_DIST": {1: 22, 2: 33 },                   
-            "SR": {1: 0, 2: 0 },               
+            "SSR": { 1: 33, 2: 45 },
+            "SSR_DIST": { 1: 22, 2: 33 },
+            "SR": { 1: 0, 2: 0 },
         }
-    },     
+    },
     "allsp_recovery": {
         format: { ko: "SP레슨 종료 시, 체력회복+{val}", ja: "SPレッスン終了時、体力回復+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 0, 2:  0},                   
-            "SR": {1: 0, 2: 0 },              
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 },
         }
     },
     "sp_recovery": {
         format: { ko: "{type} SP레슨 종료 시, 체력회복+{val}", ja: "{type}SPレッスン終了時、体力回復+{val}" },
         levels: {
-            "SSR": {1: 5,2: 7},     
-            "SSR_DIST": {1: 4, 2: 5 },                   
-            "SR": {1: 3, 2: 5 },    
+            "SSR": { 1: 5, 2: 7 },
+            "SSR_DIST": { 1: 4, 2: 5 },
+            "SR": { 1: 3, 2: 5 },
         }
-    },    
+    },
     "test_recovery": {
         format: { ko: "시험・오디션 종료 시, 체력회복+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、体力回復+{val} (プロヂュース中1回)" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 6 },                   
-            "SR": {1: 0, 2: 0 }, 
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 6 },
+            "SR": { 1: 0, 2: 0 },
         }
-    } ,  
+    },
     "enhance": {
         format: { ko: "카드 강화 시 {type} 상승+{val}", ja: "スキルカード強化時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3 },                   
-            "SR": {1: 2, 2: 3 }},    
-            trigger: ["enhance_m","enhance_a"],                             
-    },         
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["enhance_m", "enhance_a"],
+    },
     "enhance_mental": {
         format: { ko: "멘탈 카드 강화 시 {type} 상승+{val}", ja: "メンタルスキルカード強化時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 7,2: 9},     
-            "SSR_DIST": {1: 5, 2: 7 },                   
-            "SR": {1: 4, 2: 6 }},    
-            trigger: ["enhance_m"],                         
-    },     
+            "SSR": { 1: 7, 2: 9 },
+            "SSR_DIST": { 1: 5, 2: 7 },
+            "SR": { 1: 4, 2: 6 }
+        },
+        trigger: ["enhance_m"],
+    },
     "enhance_active": {
         format: { ko: "액티브 카드 강화 시 {type} 상승+{val}", ja: "アクティブスキルカード強化時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 7,2: 9},     
-            "SSR_DIST": {1: 5, 2: 7 },                   
-            "SR": {1: 4, 2: 6 }},      
-            trigger: ["enhance_a"],                  
+            "SSR": { 1: 7, 2: 9 },
+            "SSR_DIST": { 1: 5, 2: 7 },
+            "SR": { 1: 4, 2: 6 }
+        },
+        trigger: ["enhance_a"],
     },
     "get": {
         format: { ko: "카드 획득 시 {type} 상승+{val}", ja: "スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 0,2: 0},     
-            "SSR_DIST": {1: 0, 2: 0 },                   
-            "SR": {1: 1, 2: 2 }},
-        trigger: ["get_t","get_m","get_a","purchase_m","purchase_a"], 
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 1, 2: 2 }
+        },
+        trigger: ["get_t", "get_m", "get_a", "purchase_m", "purchase_a"],
     },
     "get_mental": {
         format: { ko: "멘탈 카드 획득 시 {type} 상승+{val}", ja: "メンタルスキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 2,2: 3},     
-            "SSR_DIST": {1: 1, 2: 2},                   
-            "SR": {1: 1, 2: 2 }},
+            "SSR": { 1: 2, 2: 3 },
+            "SSR_DIST": { 1: 1, 2: 2 },
+            "SR": { 1: 1, 2: 2 }
+        },
         trigger: ["get_m"],
     },
     "get_active": {
         format: { ko: "액티브 카드 획득 시 {type} 상승+{val}", ja: "アクティブスキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 2,2: 3},     
-            "SSR_DIST": {1: 1, 2: 2},                   
-            "SR": {1: 1, 2: 2 }},
-            trigger: ["get_a"],                 
+            "SSR": { 1: 2, 2: 3 },
+            "SSR_DIST": { 1: 1, 2: 2 },
+            "SR": { 1: 1, 2: 2 }
+        },
+        trigger: ["get_a"],
     },
     "get_goodcondition": {
         format: { ko: "호조 카드 획득 시 {type} 상승+{val}", ja: "好調キルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},
-            trigger: ["get_goodcondition"],                          
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_goodcondition"],
     },
     "get_concentration": {
         format: { ko: "집중 카드 획득 시 {type} 상승+{val}", ja: "集中スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},      
-            trigger: ["get_concentration"],                           
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_concentration"],
     },
     "get_goodimpression": {
         format: { ko: "호인상 카드 획득 시 {type} 상승+{val}", ja: "好印象スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},      
-            trigger: ["get_goodimpression"],                      
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_goodimpression"],
     },
     "get_motivation": {
         format: { ko: "의욕 카드 획득 시 {type} 상승+{val}", ja: "やる気スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }}, 
-            trigger: ["get_motivation"],                              
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_motivation"],
     },
     "get_genki": {
         format: { ko: "원기 카드 획득 시 {type} 상승+{val}", ja: "元気スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},      
-            trigger: ["get_genki"],                         
-    },                                 
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_genki"],
+    },
     "get_enthusiasm": {
         format: { ko: "강기 카드 획득 시 {type} 상승+{val}", ja: "強気スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},    
-            trigger: ["get_enthusiasm"],                             
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_enthusiasm"],
     },
     "get_preservation": {
         format: { ko: "온존 카드 획득 시 {type} 상승+{val}", ja: "温存スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},    
-            trigger: ["get_preservation"],
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_preservation"],
     },
     "get_fullpower": {
         format: { ko: "전력 카드 획득 시 {type} 상승+{val}", ja: "全力スキルカード獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 3,2: 4},     
-            "SSR_DIST": {1: 2, 2: 3},                   
-            "SR": {1: 2, 2: 3 }},          
-            trigger: ["get_fullpower"],      
+            "SSR": { 1: 3, 2: 4 },
+            "SSR_DIST": { 1: 2, 2: 3 },
+            "SR": { 1: 2, 2: 3 }
+        },
+        trigger: ["get_fullpower"],
     },
     "get_ssr": {
         format: { ko: "SSR 카드 획득 시 {type} 상승+{val}", ja: "スキルカード(SSR)獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 5,2: 6},     
-            "SSR_DIST": {1: 3, 2: 5},                   
-            "SR": {1: 3, 2: 5 }},     
-            trigger: ["get_ssr"],            
+            "SSR": { 1: 5, 2: 6 },
+            "SSR_DIST": { 1: 3, 2: 5 },
+            "SR": { 1: 3, 2: 5 }
+        },
+        trigger: ["get_ssr"],
     },
     "get_item6": {
         format: { ko: "P아이템 획득 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "Pアイテム獲得時、{type}上昇+{val} (プロヂュース中6回)" },
         levels: {
-            "SSR": {1: 11,2: 15},     
-            "SSR_DIST": {1: 8, 2: 11},                   
-            "SR": {1: 6, 2: 11 }},     
-            trigger: ["get_item"],max:6,             
-    },    
+            "SSR": { 1: 11, 2: 15 },
+            "SSR_DIST": { 1: 8, 2: 11 },
+            "SR": { 1: 6, 2: 11 }
+        },
+        trigger: ["get_item"], max: 6,
+    },
     "get_drink": {
         format: { ko: "P드링크 획득 시 {type} 상승+{val}", ja: "Pドリンク獲得時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 4,2: 5},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 0, 2: 0 }},               
-            trigger: ["get_drink","purchase_drink"],
-    },   
+            "SSR": { 1: 4, 2: 5 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get_drink", "purchase_drink"],
+    },
     "purchase_drink": {
         format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 8,2: 11},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 4, 2: 8 }},       
-            trigger: ["purchase_drink"],         
-    },         
+            "SSR": { 1: 8, 2: 11 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 4, 2: 8 }
+        },
+        trigger: ["purchase_drink"],
+    },
     "gift": {
         format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val}", ja: "活動支給・差し入れ選択時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 12,2: 17},     
-            "SSR_DIST": {1: 9, 2: 12},                   
-            "SR": {1: 6, 2: 11 }},  
-            trigger: ["gift_hajime","gift_nia"],
+            "SSR": { 1: 12, 2: 17 },
+            "SSR_DIST": { 1: 9, 2: 12 },
+            "SR": { 1: 6, 2: 11 }
+        },
+        trigger: ["gift_hajime", "gift_nia"],
     },
     "gift_recovery": {
         format: { ko: "활동지급・사시이레 선택 시 체력회복+{val}", ja: "活動支給・差し入れ選択時、体力回復+{val}" },
         levels: {
-            "SSR": {1: 0,2: 0},     
-            "SSR_DIST": {1: 3, 2: 4},                   
-            "SR": {1: 0, 2: 0 },                
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 3, 2: 4 },
+            "SR": { 1: 0, 2: 0 },
         }
-    },    
+    },
     "goout": {
         format: { ko: "외출 종료 시 {type} 상승+{val}", ja: "おでかけ終了時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 11,2: 15},     
-            "SSR_DIST": {1: 8, 2: 11},                   
-            "SR": {1: 5, 2: 10 }},
-            trigger: ["goout_hajime","goout_nia"],                
+            "SSR": { 1: 11, 2: 15 },
+            "SSR_DIST": { 1: 8, 2: 11 },
+            "SR": { 1: 5, 2: 10 }
+        },
+        trigger: ["goout_hajime", "goout_nia"],
     },
     "class": {
         format: { ko: "수업・영업 종료 시 {type} 상승+{val}", ja: "授業・営業終了時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 5,2: 7},     
-            "SSR_DIST": {1: 4, 2: 5},                   
-            "SR": {1: 3, 2: 5 }},    
-            trigger: ["class_hajime","class_nia"],                
+            "SSR": { 1: 5, 2: 7 },
+            "SSR_DIST": { 1: 4, 2: 5 },
+            "SR": { 1: 3, 2: 5 }
+        },
+        trigger: ["class_hajime", "class_nia"],
     },
     "advice": {
         format: { ko: "상담 선택 시 {type} 상승+{val}", ja: "相談選択時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 14,2: 18},     
-            "SSR_DIST": {1: 9, 2: 14},                   
-            "SR": {1: 7, 2: 14 }},       
-            trigger: ["advice"],         
+            "SSR": { 1: 14, 2: 18 },
+            "SSR_DIST": { 1: 9, 2: 14 },
+            "SR": { 1: 7, 2: 14 }
+        },
+        trigger: ["advice"],
     },
     "rest": {
         format: { ko: "휴식 선택 시 {type} 상승+{val}", ja: "休む選択時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 17,2: 22},     
-            "SSR_DIST": {1: 11, 2: 17},                   
-            "SR": {1: 9, 2: 17 }},        
-            trigger: ["rest"],         
-    } ,
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 11, 2: 17 },
+            "SR": { 1: 9, 2: 17 }
+        },
+        trigger: ["rest"],
+    },
     "test": {
         format: { ko: "시험・오디션 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "試験・オーディション終了時、{type}上昇+{val} (プロヂュース中2回)" },
         levels: {
-            "SSR": {1: 17,2: 22},     
-            "SSR_DIST": {1: 11, 2: 17},                   
-            "SR": {1: 9, 2: 17 }},   
-            trigger: ["test","audition"],max:2,               
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 11, 2: 17 },
+            "SR": { 1: 9, 2: 17 }
+        },
+        trigger: ["test", "audition"], max: 2,
     },
     "spclass": {
         format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)" },
         levels: {
-            "SSR": {1: 0,2: 0},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 9, 2: 18 }},   
-            trigger: ["spclass"],max:3,               
-    },    
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 9, 2: 18 }
+        },
+        trigger: ["spclass"], max: 3,
+    },
     "delete": {
         format: { ko: "카드 삭제 시 {type} 상승+{val}", ja: "スキルカード削除時、{type}上昇+{val}" },
         levels: {
-            "SSR": {1: 8,2: 11},     
-            "SSR_DIST": {1: 6, 2: 8},                   
-            "SR": {1: 4, 2: 8 }},              
-            trigger: ["delete"],                   
-        
+            "SSR": { 1: 8, 2: 11 },
+            "SSR_DIST": { 1: 6, 2: 8 },
+            "SR": { 1: 4, 2: 8 }
+        },
+        trigger: ["delete"],
+
     },
     "delete_mental3": {
         format: { ko: "멘탈카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "アクティブスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
         levels: {
-            "SSR": {1: 17,2: 22},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 8, 2: 16 }},
-            trigger: ["delete_m"],max:3,
-        
-    },  
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 8, 2: 16 }
+        },
+        trigger: ["delete_m"], max: 3,
+
+    },
     "delete_active3": {
         format: { ko: "액티브카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "メンタルスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
         levels: {
-            "SSR": {1: 17,2: 22},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 8, 2: 16 }},        
-            trigger: ["delete_a"],max:3,          
-        
-    },           
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 8, 2: 16 }
+        },
+        trigger: ["delete_a"], max: 3,
+
+    },
     "change3": {
         format: { ko: "카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)" },
         levels: {
-            "SSR": {1: 16,2: 21},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 8, 2: 16 }},  
-            trigger: ["change"],max:3,                
-        
-    },             
+            "SSR": { 1: 16, 2: 21 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 8, 2: 16 }
+        },
+        trigger: ["change"], max: 3,
+
+    },
     "customize6": {
         format: { ko: "카드 개조 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "スキルカードカスタマイズ時、{type}上昇+{val} (プロヂュース中6回)" },
         levels: {
-            "SSR": {1: 8,2: 11},     
-            "SSR_DIST": {1: 0, 2: 0},                   
-            "SR": {1: 4, 2: 8 }},  
-            trigger: ["customize"],max:6,                
-        
-    }                                                                      
+            "SSR": { 1: 8, 2: 11 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 4, 2: 8 }
+        },
+        trigger: ["customize"], max: 6,
+
+    }
 };

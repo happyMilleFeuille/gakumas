@@ -21,7 +21,7 @@ export const idolColors = {
     temari: "#0C7BBB",
     kotone: "#F8C112",
     mao: "#7F1184",
-    lilja: "#C2E5F2",
+    lilja: "#7BC8F6",
     china: "#F68B1F",
     sumika: "#82E255",
     hiro: "#00AFCC",
@@ -46,7 +46,10 @@ export const state = {
         fes: true,
         limited: true,
         unit: true,
-        normal: true
+        normal: true,
+        logic: true,
+        sense: true,
+        anomaly: true
     }),
     sortBy: 'id-desc',
     extraFiltersOpen: false,
@@ -119,7 +122,7 @@ export function setFilter(type, value) {
             state.filters[type] = [];
             return;
         }
-        
+
         if (Array.isArray(state.filters[type])) {
             const index = state.filters[type].indexOf(value);
             if (index > -1) {
@@ -192,10 +195,10 @@ export function saveToSlot(slotId) {
 export function loadFromSlot(slotId) {
     const saved = JSON.parse(localStorage.getItem(`support_slot_${slotId}`));
     if (!saved) return false;
-    
+
     state.supportLB = saved.supportLB || {};
     state.disabledCards = saved.disabledCards || {};
-    
+
     localStorage.setItem('supportLB', JSON.stringify(state.supportLB));
     localStorage.setItem('disabledCards', JSON.stringify(state.disabledCards));
     return true;

@@ -38,6 +38,9 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     const unitToggle = document.getElementById('pssr-unit-toggle');
     const limitedToggle = document.getElementById('pssr-limited-toggle');
     const normalToggle = document.getElementById('pssr-normal-toggle');
+    const senseToggle = document.getElementById('pssr-sense-toggle');
+    const logicToggle = document.getElementById('pssr-logic-toggle');
+    const anomalyToggle = document.getElementById('pssr-anomaly-toggle');
 
     const registerToggle = (el, filterType) => {
         if (el) {
@@ -51,6 +54,9 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     registerToggle(unitToggle, 'unit');
     registerToggle(limitedToggle, 'limited');
     registerToggle(normalToggle, 'normal');
+    registerToggle(senseToggle, 'sense');
+    registerToggle(logicToggle, 'logic');
+    registerToggle(anomalyToggle, 'anomaly');
 
     const showAnother = state.roadmapFilters.another;
     const showDist = state.roadmapFilters.dist;
@@ -58,6 +64,9 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     const showUnit = state.roadmapFilters.unit;
     const showLimited = state.roadmapFilters.limited;
     const showNormal = state.roadmapFilters.normal;
+    const showSense = state.roadmapFilters.sense;
+    const showLogic = state.roadmapFilters.logic;
+    const showAnomaly = state.roadmapFilters.anomaly;
 
     // 2. 날짜 및 높이 계산
     const start = new Date(2024, 4, 1, 0, 0, 0, 0);
@@ -87,6 +96,13 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
         const idolPSSRs = produceList.filter(p => {
             if (p.rarity !== 'PSSR' || !p.releasedAt || !p.id.startsWith(`ssr${idolName}_`)) return false;
+            
+            // 1차: 플랜별 필터 (Sense, Logic, Anomaly)
+            if (p.plan === 'sense' && !showSense) return false;
+            if (p.plan === 'logic' && !showLogic) return false;
+            if (p.plan === 'anomaly' && !showAnomaly) return false;
+
+            // 2차: 출처별 필터
             if (p.another) return showAnother;
             if (p.source === 'dist') return showDist;
             if (p.source === 'limited_f') return showFes;
@@ -125,6 +141,12 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
     let roadmapData = produceList.filter(p => p.rarity === 'PSSR' && p.releasedAt);
     roadmapData = roadmapData.filter(p => {
+        // 1차: 플랜별 필터
+        if (p.plan === 'sense' && !showSense) return false;
+        if (p.plan === 'logic' && !showLogic) return false;
+        if (p.plan === 'anomaly' && !showAnomaly) return false;
+
+        // 2차: 출처별 필터
         if (p.another) return showAnother;
         if (p.source === 'dist') return showDist;
         if (p.source === 'limited_f') return showFes;
@@ -192,7 +214,13 @@ export function renderPSSRRoadmap(shouldScroll = false) {
                 <div class="roadmap-node-inner"><img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
                 <div class="roadmap-tooltip">
                     <img src="idols/${card.id}1.webp" class="tooltip-card-img" decoding="async">
-                    <div class="tooltip-text"><strong>${displayName}</strong><span>${card.releasedAt}</span></div>
+                    <div class="tooltip-text">
+                        <strong>${displayName}</strong>
+                        <span>
+                            ${card.releasedAt}
+                            <img src="icons/${card.plan}.webp" class="plan-icon-tooltip" alt="${card.plan}">
+                        </span>
+                    </div>
                 </div>
             `;
             column.appendChild(node);
