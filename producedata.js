@@ -25,6 +25,7 @@ export const produceList = [
     { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 9.3, releasedAt: "2026-02-27", another: true },
     { id: "ssrsaki_2nd", name: "Boom Boom Pow", rarity: "PSSR", releasedAt: "2024-06-19", plan: "logic", source: "normal", jumpTime2: 9.3, youtube_url: "https://youtu.be/gSjzH8FxYuA?si=SxE6cGHrYfFz6mlY" },
+    { id: "ssrsaki_3rd", name: "Wildest Flower", rarity: "PSSR", releasedAt: "2026-03-19", plan: "logic", source: "normal", jumpTime2: 9.3, youtube_url: "https://youtu.be/iiiLtE4w2pE?si=1LC4wWMxbAt-huak" },
 
 
     // --- 치나 SSR (PSSR) ---
