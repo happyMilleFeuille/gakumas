@@ -63,6 +63,7 @@
     grid-column: 2;
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 155px;
     padding: 6px 0;
     background: #fff;

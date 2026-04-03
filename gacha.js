@@ -5,7 +5,7 @@ import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
-import { audioCtx, assetBlobs, loadGachaAssets, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
+import { audioCtx, assetBlobs, audioBuffers, loadGachaAssets, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
 import { renderPickupSelector, renderResults } from './gacha-ui-render.js';
@@ -456,17 +456,41 @@ async function handleGachaClick(ui, mode, animation) {
     const results = animation.prepareResults(mode, customPool); 
     const pssrCards = results.filter(c => c.rarity === 'PSSR');
     
-    // PSSR 영상 및 기본 가챠 시작 영상 프리로딩 확인
+    // PSSR 영상 및 연출 리소스(고유 BGM 포함) 동적 프리로딩
     const essentialAssets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4'];
     if (pssrCards.length > 0) {
-        pssrCards.forEach(card => essentialAssets.push(`gasya/pssr/${card.id}.mp4`));
+        let activeCfg = CURRENT_PICKUPS[state.gachaType] || {};
+        if (state.gachaType === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || {};
+        else if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || {};
+        else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || {};
+        else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || {};
+        else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || {};
+        
+        const pssrPickups = activeCfg.pssr || (activeCfg.pool?.pssr || []);
+
+        pssrCards.forEach(card => {
+            essentialAssets.push(`gasya/pssr/${card.id}.mp4`);
+            const p = pssrPickups.find(p => (typeof p === 'string' ? p : p.id) === card.id);
+            if (p) {
+                const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
+                if (char) essentialAssets.push(`bgm/bgm${char}.mp3`);
+            }
+        });
     }
 
     const loadPromises = essentialAssets.map(path => {
-        if (assetBlobs[path]) return Promise.resolve();
-        return fetch(path).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
-            .then(buf => { assetBlobs[path] = URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })); })
-            .catch(() => {});
+        if (path.endsWith('.mp3')) {
+            if (audioBuffers[path]) return Promise.resolve();
+            return fetch(path).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+                .then(buf => audioCtx.decodeAudioData(buf))
+                .then(decoded => { audioBuffers[path] = decoded; })
+                .catch(() => {});
+        } else {
+            if (assetBlobs[path]) return Promise.resolve();
+            return fetch(path).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+                .then(buf => { assetBlobs[path] = URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })); })
+                .catch(() => {});
+        }
     });
 
     await Promise.allSettled(loadPromises);

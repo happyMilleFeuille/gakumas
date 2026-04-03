@@ -30,6 +30,19 @@ export const FES_CONFIG = [
 // 유닛 가챠 상세 설정
 export const UNIT_CONFIG = [
     {
+        id: 'dokimekiunit',
+        date: '2026-04-01',
+        bannerImg: 'idols/ssrlilja_dokimekiunit1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrlilja_dokimekiunit', char: 'lilja' },
+                { id: 'ssrsumika_dokimekiunit', char: 'sumika' }
+            ],
+            sssr: ['vocal_unitsense1'],
+            sr_card: ['vocal_srunitanomaly1']
+        }
+    },
+    {
         id: 'michinaruunit',
         date: '2026-01-27',
         bannerImg: 'idols/ssrchina_michinaruunit1.webp',

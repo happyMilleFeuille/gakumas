@@ -70,12 +70,20 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
     // 2. 날짜 및 높이 계산
     const start = new Date(2024, 4, 1, 0, 0, 0, 0);
-    const end = new Date(2026, 3, 1, 0, 0, 0, 0);
-    const rangeMs = end.getTime() - start.getTime();
-    const monthDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+    const now = new Date();
+    
     const width = window.innerWidth;
+    // PC는 +10일, 모바일(768px 이하)은 +30일 여유 공간 배분
+    const paddingDays = width <= 768 ? 30 : 10;
+    const end = new Date(now.getTime() + paddingDays * 24 * 60 * 60 * 1000);
+    
+    const rangeMs = end.getTime() - start.getTime();
+    
+    // 일(Day)을 기준으로 소수점까지 부드럽게 늘어나도록 높이 계산
+    const totalDays = rangeMs / (1000 * 60 * 60 * 24);
+    
     let HEIGHT_PER_MONTH = width <= 768 ? 50 : (width <= 1024 ? 120 : 200);
-    const GRAPH_HEIGHT = monthDiff * HEIGHT_PER_MONTH;
+    const GRAPH_HEIGHT = (totalDays / 30.43) * HEIGHT_PER_MONTH;
 
     // 3. 헤더 렌더링 (항상 노출되는 영역)
     headerContainer.innerHTML = '';

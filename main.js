@@ -138,16 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const expandBtn = e.target.closest('#btn-roadmap-expand');
         if (expandBtn) {
             const roadmapContainer = document.getElementById('pssr-roadmap-container');
-            const expandText = document.getElementById('roadmap-expand-text');
-            if (roadmapContainer && expandText) {
+            if (roadmapContainer) {
                 const isCollapsed = roadmapContainer.classList.toggle('is-collapsed');
                 expandBtn.classList.toggle('active', !isCollapsed); // active 클래스 토글 추가
-
-                // 번역 키를 사용하여 텍스트 변경
-                import('./utils.js').then(m => {
-                    expandText.dataset.i18n = isCollapsed ? 'roadmap_expand' : 'roadmap_collapse';
-                    m.updatePageTranslations(); // 전체 문서 대상으로 업데이트
-                });
 
                 // 펼칠 때 렌더링 실행
                 if (!isCollapsed) {

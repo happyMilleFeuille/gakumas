@@ -105,14 +105,20 @@ export function playSound(name, options = {}) {
 
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
-    const { loop = false, isBGM = false, bgmType = null, offset = 0 } = options;
+    const { loop = false, isBGM = false, bgmType = null, offset = 0, volume = 1.0 } = options;
 
     if (bgmType) stopBGM(bgmType);
 
     const source = audioCtx.createBufferSource();
     source.buffer = audioBuffers[name];
     source.loop = loop;
-    source.connect(audioCtx.destination);
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.value = volume;
+    
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
     source.start(0, offset);
 
     if (isBGM && bgmType) activeNodes[bgmType] = source;

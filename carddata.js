@@ -168,7 +168,7 @@ export const cardList = [
             ]
     },
     {
-        id: "vocal_free8",
+        id: "vocal_free7",
         name: "두 사람이라면 눈 깜짝할 새네",
         name_ja: "二人ならあっという間だね",
         type: "vocal",
@@ -188,50 +188,7 @@ export const cardList = [
             ]
     },
     {
-        id: "vocal_free9",
-        name: "자, 한 판 더!",
-        name_ja: "さあ、もう一戦！",
-        type: "vocal",
-        plan: "free",
-        have: "card_m",
-        attrs: ["genki"],
-        releasedAt: "2025-04-11",
-        rarity: "SSR",
-        source: "dist",
-        extra1: "param", extra2: "ranchange",
-        abilities:
-            [
-                "percentparam",
-                "sp_recovery",
-                "supportrateup",
-                "sp_param",
-                "get_mental",
-                "event_paraup"
-            ]
-    },
-    {
-        id: "vocal_free10",
-        name: "화해하죠",
-        name_ja: "仲直りしましょう",
-        type: "vocal",
-        releasedAt: "2025-08-01",
-        plan: "free",
-        rarity: "SSR",
-        have: "card_m",
-        source: "dist",
-        extra1: "param", extra2: "troubledel",
-        abilities:
-            [
-                "fixedparam",
-                "ppoint",
-                "supportrateup",
-                "class",
-                "delete",
-                "event_paraup"
-            ]
-    },
-    {
-        id: "vocal_free11",
+        id: "vocal_free8",
         name: "대운동회, 개최!",
         name_ja: "大運動会、開催っ！",
         type: "vocal",
@@ -248,27 +205,6 @@ export const cardList = [
                 "supportrateup",
                 "class",
                 "sp_param20",
-                "event_paraup"
-            ]
-    },
-    {
-        id: "vocal_free12",
-        name: "꼭 뽑고 말거야!",
-        name_ja: "ぜったいにとるんだ！",
-        type: "vocal",
-        plan: "free",
-        have: "item",
-        releasedAt: "2025-11-10",
-        rarity: "SSR",
-        source: "dist",
-        extra1: "param", extra2: "ranchange",
-        abilities:
-            [
-                "fixedparam",
-                "sp_lessonup",
-                "supportrateup",
-                "get_ssr",
-                "gift_recovery",
                 "event_paraup"
             ]
     },
@@ -290,6 +226,70 @@ export const cardList = [
                 "supportrateup",
                 "sp_recovery",
                 "advice",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_distfree2",
+        name: "자, 한 판 더!",
+        name_ja: "さあ、もう一戦！",
+        type: "vocal",
+        plan: "free",
+        have: "card_m",
+        attrs: ["genki"],
+        releasedAt: "2025-04-11",
+        rarity: "SSR",
+        source: "dist",
+        extra1: "param", extra2: "ranchange",
+        abilities:
+            [
+                "percentparam",
+                "sp_recovery",
+                "supportrateup",
+                "sp_param",
+                "get_mental",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_distfree3",
+        name: "화해하죠",
+        name_ja: "仲直りしましょう",
+        type: "vocal",
+        releasedAt: "2025-08-01",
+        plan: "free",
+        rarity: "SSR",
+        have: "card_m",
+        source: "dist",
+        extra1: "param", extra2: "troubledel",
+        abilities:
+            [
+                "fixedparam",
+                "ppoint",
+                "supportrateup",
+                "class",
+                "delete",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_distfree4",
+        name: "꼭 뽑고 말거야!",
+        name_ja: "ぜったいにとるんだ！",
+        type: "vocal",
+        plan: "free",
+        have: "item",
+        releasedAt: "2025-11-10",
+        rarity: "SSR",
+        source: "dist",
+        extra1: "param", extra2: "ranchange",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "get_ssr",
+                "gift_recovery",
                 "event_paraup"
             ]
     },
@@ -417,6 +417,27 @@ export const cardList = [
                 "supportrateup",
                 "sp_param",
                 "class",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_unitsense1",
+        name: "긴 여행 수고했어!",
+        name_ja: "長旅おつかれさま！",
+        type: "vocal",
+        plan: "sense",
+        have: "item",
+        releasedAt: "2026-04-01",
+        rarity: "SSR",
+        source: "limited_u",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "get_goodcondition",
+                "sp_param20",
                 "event_paraup"
             ]
     },
@@ -1346,6 +1367,27 @@ export const cardList = [
                 "sp_lessonup",
                 "supportrateup",
                 "gift_recovery",
+                "test",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "dance_distanomaly2",
+        name: "파티 기대되네!",
+        name_ja: "パーティー楽しみだねっ！",
+        type: "dance",
+        plan: "anomaly",
+        have: "item",
+        releasedAt: "2026-04-01",
+        source: "dist",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranchange",
+        abilities:
+            [
+                "percentparam",
+                "sp_recovery",
+                "supportrateup",
+                "enhance_active",
                 "test",
                 "event_paraup"
             ]
@@ -2459,6 +2501,28 @@ export const cardList = [
                 "supportrateup",
                 "sp_param",
                 "advice",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_srunitanomaly1",
+        name: "잡아당기기 스트레칭",
+        name_ja: "ひっぱりじゅーなん",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["advice"], stats: { vocal: 30 }, max: 1 }],
+        releasedAt: "2026-04-01",
+        rarity: "SR",
+        source: "limited_u",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "gift",
+                "supportrateup",
+                "get_preservation",
+                "get_item6",
                 "event_paraup"
             ]
     },

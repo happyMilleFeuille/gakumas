@@ -164,8 +164,12 @@ function renderProduceCards(idolName, container) {
     });
 
     produceCards.sort((a, b) => {
-        if (a.rarity === b.rarity) return 0;
-        return a.rarity === 'PSSR' ? -1 : 1;
+        if (a.rarity !== b.rarity) {
+            return a.rarity === 'PSSR' ? -1 : 1;
+        }
+        const dateA = a.releasedAt || "";
+        const dateB = b.releasedAt || "";
+        return dateB.localeCompare(dateA); // 2차 정렬: 최신순(내림차순)
     });
 
     if (produceCards.length === 0) {
@@ -259,6 +263,26 @@ function renderProduceCards(idolName, container) {
 
         const rarityKey = card.rarity.toLowerCase().replace('p', ''); 
         rarityIcon.src = `icons/${rarityKey}.png`;
+
+        const sourceBadge = item.querySelector('.pssr-source-badge');
+        if (sourceBadge) {
+            const isJa = state.currentLang === 'ja';
+            const sourceMap = {
+                'limited': isJa ? '限定' : '한정',
+                'limited_f': isJa ? 'フェス' : '페스',
+                'limited_u': isJa ? 'ユニット' : '유닛',
+                'normal': isJa ? '恒常' : '통상',
+                'dist': isJa ? '配布' : '배포'
+            };
+            const cSource = card.source || 'normal';
+            if (sourceMap[cSource]) {
+                sourceBadge.textContent = sourceMap[cSource];
+                sourceBadge.style.display = 'inline-block';
+            } else {
+                sourceBadge.style.display = 'none';
+            }
+        }
+
         const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
         name.textContent = displayName;
 
@@ -680,9 +704,17 @@ function updateSupportGrid(container) {
         const dateB = b.releasedAt || "";
         if (state.sortBy === 'id-desc') {
             if (dateA !== dateB) return dateB.localeCompare(dateA);
+            const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
+            const rA = rarityOrder[a.rarity] || 0;
+            const rB = rarityOrder[b.rarity] || 0;
+            if (rA !== rB) return rB - rA; // SSR 먼저
             return getNumericId(b.id) - getNumericId(a.id) || b.id.localeCompare(a.id);
         } else if (state.sortBy === 'id-asc') {
             if (dateA !== dateB) return dateA.localeCompare(dateB);
+            const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
+            const rA = rarityOrder[a.rarity] || 0;
+            const rB = rarityOrder[b.rarity] || 0;
+            if (rA !== rB) return rB - rA; // SSR 먼저
             return getNumericId(a.id) - getNumericId(b.id) || a.id.localeCompare(b.id);
         } else if (state.sortBy === 'lb-desc') {
             const lbA = state.supportLB[a.id] || 0;

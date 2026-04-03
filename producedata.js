@@ -235,10 +235,13 @@ export const produceList = [
     { id: "ssrume_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 10.4, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
     { id: "ssrmisuzu_starmineunit", name: "Star-mine", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 11.0, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
     { id: "ssrsaki_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "logic", source: "limited_u", jumpTime2: 10.1, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
-    { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
+    { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", jumpTime2: 10.2, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
     { id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스", name_ja: "雨上がりのアイリス", rarity: "PSSR", releasedAt: "2025-05-01", plan: "anomaly", source: "limited_u", jumpTime2: 9.4, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
     { id: "ssrchina_michinaruunit", name: "미지로 펼쳐지는", name_ja: "みちなるひろがる", releasedAt: "2026-01-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.2, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO" },
     { id: "ssrhiro_michinaruunit", name: "미지로 펼쳐지는", name_ja: "みちなるひろがる", releasedAt: "2026-01-27", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO" },
+    { id: "ssrlilja_dokimekiunit", name: "두근두근 이모션", name_ja: "どきめきエモーション", releasedAt: "2026-04-01", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-" },
+    { id: "ssrsumika_dokimekiunit", name: "두근두근 이모션", name_ja: "どきめきエモーション", releasedAt: "2026-04-01", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-" },
+
 
     // --- PSR (Produce SR) ---
     { id: "srrinami_1sr", name: "『나다움』의 시작", name_ja: "『私らしさ』のはじまり", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },

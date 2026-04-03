@@ -207,8 +207,8 @@
         <!-- PSSR 출시 로드맵 -->
         <div class="roadmap-filter-wrap">
             <button id="btn-roadmap-expand" class="roadmap-expand-btn">
-                <span data-i18n="roadmap_since_release">실장으로부터 (</span><span id="roadmap-expand-text" data-i18n="roadmap_expand">펼치기</span>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;"><path d="m6 9 6 6 6-6"/></svg><span>)</span>
+                <span data-i18n="roadmap_since_release">실장 로드맵</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;"><path d="m6 9 6 6 6-6"/></svg>
             </button>
             <div class="roadmap-filter-container">
                 <button id="roadmap-filter-btn" class="roadmap-filter-btn">
@@ -413,7 +413,10 @@
                 <img src="" alt="" class="pssr-img">
             </div>
             <div class="pssr-info">
-                <img src="" alt="" class="pssr-rarity-icon">
+                <div class="pssr-rarity-wrap" style="display: flex; align-items: center; gap: 6px; align-self: flex-start; margin-bottom: 2px;">
+                    <img src="" alt="" class="pssr-rarity-icon" style="align-self: auto;">
+                    <span class="pssr-source-badge" style="font-size: 0.65rem; font-weight: bold; color: #666; display: none; white-space: nowrap;"></span>
+                </div>
                 <img src="" alt="" class="pssr-plan-icon">
                 <div class="pssr-name-wrap">
                     <span class="pssr-name"></span>
