@@ -188,6 +188,9 @@
 #filter-attr {
     gap: 0.6rem;
     /* 버튼 사이 간격 복구 */
+    position: relative;
+    z-index: 1000;
+    /* Ensure tooltip appears above other filter groups */
 }
 
 #filter-attr .filter-btn {
@@ -378,31 +381,16 @@
     }
 }
 
-.slot-management-simple {
-    margin-bottom: 1rem;
-}
-
+/* Preset button specific color override */
 #btn-open-slot-modal {
-    background: #0288d1;
+    background-color: #0288d1;
     color: white;
-    padding: 8px 20px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
+    border-color: #0288d1;
 }
 
 #btn-open-slot-modal:hover {
+    background-color: #0277bd;
     filter: brightness(1.1);
-}
-
-@media (max-width: 768px) {
-    #btn-open-slot-modal {
-        padding: 5px 12px;
-        font-size: 0.75rem;
-        border-radius: 4px;
-    }
 }
 
 /* 슬롯 관리 모달 스타일 */
@@ -447,13 +435,14 @@
 }
 
 .slot-modal-actions .slot-btn {
-    padding: 6px 14px;
+    padding: 6px 10px;
     border-radius: 6px;
     font-size: 0.8rem;
     border: none;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .slot-modal-actions .slot-btn.save {
@@ -490,6 +479,57 @@
     filter: brightness(0.9);
 }
 
+@media (max-width: 768px) {
+    .slot-modal-item {
+        padding: 8px 10px;
+        gap: 5px;
+    }
+
+    .slot-modal-info {
+        gap: 2px;
+    }
+
+    .slot-modal-name {
+        font-size: 0.8rem;
+    }
+
+    .slot-modal-date {
+        font-size: 0.65rem;
+    }
+
+    .slot-modal-actions {
+        gap: 5px;
+    }
+
+    .slot-modal-actions .slot-btn {
+        padding: 4px 6px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+
+    .slot-modal-actions .slot-btn.delete {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 1rem;
+    }
+
+    /* Support sort controls mobile sizing */
+    .sort-select {
+        height: 19px !important;
+        min-height: 19px !important;
+        font-size: 0.6rem !important;
+        padding: 0 4px !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+    }
+
+    .sort-controls {
+        padding: 0 0.5rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
 /* 정렬 컨트롤 */
 .sort-controls {
     margin-bottom: 1rem;
@@ -505,14 +545,17 @@
 }
 
 .sort-select {
-    padding: 0.4rem 0.8rem;
+    padding: 4px 10px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     background: #fff;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    font-weight: bold;
     color: #333;
     cursor: pointer;
     outline: none;
+    height: 27px;
+    box-sizing: border-box;
 }
 
 .sort-select:hover {
@@ -860,7 +903,8 @@
     .support-card {
         border-width: 1px !important;
         /* 모바일은 1px 고정 */
-        box-shadow: none !important; /* 그림자 제거로 스크롤 성능 향상 */
+        box-shadow: none !important;
+        /* 그림자 제거로 스크롤 성능 향상 */
     }
 
     /* 모바일에서 필터 버튼 크기 다시 축소 */
@@ -1003,5 +1047,106 @@
         height: 24px !important;
         top: 8px !important;
         left: 8px !important;
+    }
+}
+
+/* Support Info Button & Tooltip */
+.support-info-wrapper {
+    position: absolute;
+    right: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+}
+
+.support-info-btn {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #999;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: serif;
+    padding: 0;
+    line-height: 1;
+}
+
+.support-info-btn:hover {
+    border-color: #ff4d8d;
+    color: #ff4d8d;
+    background: #fff0f5;
+}
+
+.support-info-tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 145%;
+    /* Show BELOW the button */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    white-space: normal;
+    /* Allow wrapping */
+    min-width: 325px;
+    /* Wider for PC */
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+    pointer-events: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.support-info-tooltip p {
+    margin: 6px 0;
+    line-height: 1.5;
+    white-space: normal;
+}
+
+.support-info-tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgba(0, 0, 0, 0.85) transparent;
+}
+
+.support-info-wrapper:hover .support-info-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .support-info-wrapper {
+        right: -18px;
+    }
+
+    .support-info-btn {
+        width: 15px;
+        height: 15px;
+        font-size: 8px;
+    }
+
+    .support-info-tooltip {
+        font-size: 0.52rem;
+        padding: 6px 8px;
+        top: 130%;
+        min-width: 155px;
+        /* Keep mobile compact */
     }
 }

@@ -187,7 +187,7 @@ export function saveToSlot(slotId) {
     const saveData = {
         supportLB: state.supportLB,
         disabledCards: state.disabledCards,
-        timestamp: new Date().toLocaleString()
+        timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     };
     localStorage.setItem(`support_slot_${slotId}`, JSON.stringify(saveData));
 }

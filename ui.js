@@ -32,10 +32,10 @@ export function renderHome() {
         contentArea.innerHTML = '';
         contentArea.appendChild(tpl.content.cloneNode(true));
         updatePageTranslations(contentArea);
-        
+
         // 로드맵 렌더링 (자동 스크롤 제거)
         renderPSSRRoadmap(false);
-        
+
         homeCachedContent = contentArea.innerHTML;
         lastRenderedLang = state.currentLang;
         return;
@@ -44,7 +44,7 @@ export function renderHome() {
     // 캐시가 있어도 로드맵 영역은 비우고 다시 그려서 새로운 높이/JS 반영
     contentArea.innerHTML = homeCachedContent;
     const listContainer = document.getElementById('pssr-roadmap-list');
-    if (listContainer) listContainer.innerHTML = ''; 
+    if (listContainer) listContainer.innerHTML = '';
     renderPSSRRoadmap(false);
 }
 
@@ -60,12 +60,12 @@ export function renderCalc() {
 export function renderIdolList() {
     if (!contentArea) return;
     contentArea.innerHTML = '';
-    
+
     const gridTpl = document.getElementById('tpl-idol-grid');
     const itemTpl = document.getElementById('tpl-idol-item');
     const view = gridTpl.content.cloneNode(true);
     const grid = view.querySelector('.idol-grid');
-    
+
     // PSSR 컨테이너 추가
     const pssrArea = document.createElement('div');
     pssrArea.className = 'pssr-container';
@@ -76,7 +76,7 @@ export function renderIdolList() {
         const item = itemTpl.content.cloneNode(true);
         const img = item.querySelector('.idol-icon');
         const favBtn = item.querySelector('.fav-star-btn');
-        
+
         img.src = `icons/idolicons/${name}.png`;
         img.alt = name;
 
@@ -88,7 +88,7 @@ export function renderIdolList() {
         favBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // 카드 클릭 이벤트 방지
             setFavoriteIdol(name);
-            
+
             // 모든 별 버튼 상태 업데이트
             document.querySelectorAll('.fav-star-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -108,7 +108,7 @@ export function renderIdolList() {
                 icon.style.borderColor = ''; // 기존 스타일 초기화
                 icon.style.boxShadow = '';
             });
-            
+
             img.classList.add('selected');
             const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
             const color = getIdolDisplayColor(name);
@@ -154,13 +154,13 @@ function renderProduceCards(idolName, container) {
     const produceCards = produceList.filter(p => {
         // ID가 ssr이름_ 혹은 sr이름_ 형식으로 시작하는지 정교하게 체크
         // 예: ssrchina_... 는 china에게만 매칭되고, ssrhiro_michinaru... 는 hiro에게만 매칭됨
-        const nameMatch = p.id.startsWith(`ssr${idolName}_`) || 
-                          p.id.startsWith(`sr${idolName}_`) || 
-                          p.id.startsWith(`r${idolName}_`);
-        
-        return nameMatch && 
-               (p.rarity === 'PSSR' || p.rarity === 'PSR') && 
-               p.another !== true;
+        const nameMatch = p.id.startsWith(`ssr${idolName}_`) ||
+            p.id.startsWith(`sr${idolName}_`) ||
+            p.id.startsWith(`r${idolName}_`);
+
+        return nameMatch &&
+            (p.rarity === 'PSSR' || p.rarity === 'PSR') &&
+            p.another !== true;
     });
 
     produceCards.sort((a, b) => {
@@ -188,23 +188,23 @@ function renderProduceCards(idolName, container) {
 
         const personalColor = idolColors[idolName] || "#ffffff";
         const infoBox = item.querySelector('.pssr-info');
-        
+
         // [수정] 카드 전체와 정보창의 색상을 완벽하게 일치시킴 (불투명 처리)
         const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`; // 약 15% 농도
         cardEl.style.backgroundColor = "#ffffff";
         cardEl.style.backgroundImage = mixedBg;
-        
+
         infoBox.style.backgroundColor = "transparent"; // 정보창 배경을 투명하게 하여 카드 배경이 그대로 보이게 함
         infoBox.style.backgroundImage = "none";
-        
-        name.style.color = '#333'; 
-        imgWrapper.style.backgroundColor = personalColor + "11"; 
+
+        name.style.color = '#333';
+        imgWrapper.style.backgroundColor = personalColor + "11";
 
         const imageList = [
             `idols/${card.id}1.webp`,
             `idols/${card.id}2.webp`
         ];
-        
+
         const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
         anothers.forEach(a => {
             imageList.push(`idols/${a.id}1.webp`);
@@ -222,17 +222,17 @@ function renderProduceCards(idolName, container) {
         cardEl.addEventListener('click', (e) => {
             e.stopPropagation();
             img.classList.add('slide-out');
-            imgWrapper.style.backgroundColor = personalColor; 
-            
+            imgWrapper.style.backgroundColor = personalColor;
+
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % imageList.length;
                 setPSSRIndex(card.id, currentIndex);
-                
+
                 img.style.transition = 'none';
                 img.classList.remove('slide-out');
                 img.classList.add('slide-prepare');
                 img.src = imageList[currentIndex];
-                
+
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         img.style.transition = '';
@@ -253,7 +253,7 @@ function renderProduceCards(idolName, container) {
                 img.src = imageList[currentIndex];
             }
         };
-        
+
         if (card.plan) {
             planIcon.src = `icons/${card.plan}.webp`;
             planIcon.style.display = 'block';
@@ -261,7 +261,7 @@ function renderProduceCards(idolName, container) {
             planIcon.style.display = 'none';
         }
 
-        const rarityKey = card.rarity.toLowerCase().replace('p', ''); 
+        const rarityKey = card.rarity.toLowerCase().replace('p', '');
         rarityIcon.src = `icons/${rarityKey}.png`;
 
         const sourceBadge = item.querySelector('.pssr-source-badge');
@@ -293,7 +293,7 @@ function renderProduceCards(idolName, container) {
                 youtubeLink.onclick = (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     const videoModal = document.getElementById('video-modal');
                     const iframe = document.getElementById('video-iframe');
                     if (!videoModal || !iframe) return;
@@ -309,30 +309,30 @@ function renderProduceCards(idolName, container) {
                         embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
                     }
 
-                                                    iframe.src = embedUrl;
-                                    
-                                                    // 캐릭터별 테두리 색상 적용
-                                                    const modalContent = videoModal.querySelector('.video-modal-content');
-                                                    const innerContainer = videoModal.querySelector('.video-container');
-                                                    const personalColor = idolColors[idolName] || '#ff4d8d';
-                                                    if (modalContent) modalContent.style.borderColor = personalColor;
-                                                    if (innerContainer) innerContainer.style.borderColor = personalColor;
-                                    
-                                                    // 로딩 지연 및 싱크 개선: 약간의 시간차를 두고 모달 표시
-                                                    setTimeout(() => {
-                                                        videoModal.classList.remove('hidden');
-                                                        videoModal.style.display = 'flex';
-                                                    }, 100);
-                                                    
-                                                    const hideVideoModal = () => {
-                                                        videoModal.classList.add('hidden');
-                                                        videoModal.style.display = 'none';
-                                                        iframe.src = '';
-                                                    };
-                                                    window.hideVideoModal = hideVideoModal;
-                    
+                    iframe.src = embedUrl;
+
+                    // 캐릭터별 테두리 색상 적용
+                    const modalContent = videoModal.querySelector('.video-modal-content');
+                    const innerContainer = videoModal.querySelector('.video-container');
+                    const personalColor = idolColors[idolName] || '#ff4d8d';
+                    if (modalContent) modalContent.style.borderColor = personalColor;
+                    if (innerContainer) innerContainer.style.borderColor = personalColor;
+
+                    // 로딩 지연 및 싱크 개선: 약간의 시간차를 두고 모달 표시
+                    setTimeout(() => {
+                        videoModal.classList.remove('hidden');
+                        videoModal.style.display = 'flex';
+                    }, 100);
+
+                    const hideVideoModal = () => {
+                        videoModal.classList.add('hidden');
+                        videoModal.style.display = 'none';
+                        iframe.src = '';
+                    };
+                    window.hideVideoModal = hideVideoModal;
+
                     videoModal.onclick = (ev) => { if (ev.target === videoModal) hideVideoModal(); };
-                    
+
                     history.pushState({ modalOpen: 'video' }, "");
                 };
                 youtubeLink.classList.remove('hidden');
@@ -340,7 +340,7 @@ function renderProduceCards(idolName, container) {
                 youtubeLink.classList.add('hidden');
             }
         }
-        
+
         container.appendChild(item);
     });
 }
@@ -353,7 +353,7 @@ function openSlotModal() {
     modal = document.createElement('div');
     modal.className = 'modal';
     modal.id = 'slot-modal';
-    
+
     const renderSlots = () => {
         let slotsHtml = '';
         for (let i = 1; i <= 3; i++) {
@@ -365,8 +365,8 @@ function openSlotModal() {
                         <span class="slot-modal-date">${info || (isJa ? 'データなし' : '데이터 없음')}</span>
                     </div>
                     <div class="slot-modal-actions">
-                        <button class="slot-btn save" data-slot="${i}">${isJa ? 'セーブ' : '저장'}</button>
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''}>${isJa ? 'ロード' : '로드'}</button>
+                        <button class="slot-btn save" data-slot="${i}">${isJa ? 'Save' : '저장'}</button>
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''}>${isJa ? 'Load' : '로드'}</button>
                         <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''}>&times;</button>
                     </div>
                 </div>`;
@@ -374,10 +374,12 @@ function openSlotModal() {
         return slotsHtml;
     };
 
+    const isMobile = window.innerWidth <= 768;
+
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 350px;">
-            <span class="close-modal">&times;</span>
-            <h3 style="margin-top:0; color:#ff4d8d; font-size:1.1rem;">${isJa ? 'セーブ / ロード' : '프리셋 저장/로드'}</h3>
+        <div class="modal-content" style="max-width: 350px; padding: ${isMobile ? '15px' : '20px'};">
+            <span class="close-modal" style="${isMobile ? 'top: 5px; right: 15px;' : ''}">&times;</span>
+            <h3 style="margin-top:0; color:#ff4d8d; font-size:${isMobile ? '0.95rem' : '1.1rem'};">${isJa ? 'Save / Load' : '프리셋 저장/로드'}</h3>
             <div class="slot-modal-list">
                 ${renderSlots()}
             </div>
@@ -395,18 +397,18 @@ function openSlotModal() {
         const saveBtn = e.target.closest('.save');
         const loadBtn = e.target.closest('.load');
         const deleteBtn = e.target.closest('.delete');
-        
+
         if (saveBtn) {
             const slotId = saveBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} に現在の状態を保存しますか？` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} に現在の状態をセーブしますか？` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
                 saveToSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
         }
-        
+
         if (loadBtn) {
             const slotId = loadBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} のデータを読み込みますか？` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} のデータをロードしますか？` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
                 if (loadFromSlot(slotId)) {
                     renderSupport();
                     modal.remove();
@@ -416,7 +418,7 @@ function openSlotModal() {
 
         if (deleteBtn) {
             const slotId = deleteBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} 의 데이터를 삭제하시겠습니까?` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} のデータを削除しますか？` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
                 deleteSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
@@ -454,7 +456,7 @@ function setupStaticListeners(container) {
             const btn = e.target.closest('.filter-btn');
             if (!btn) return;
             setFilter(type, btn.dataset.val);
-            renderSupport(); 
+            renderSupport();
         });
     });
 
@@ -495,12 +497,14 @@ function setupStaticListeners(container) {
         allMaxBtn.textContent = isJa ? '全カード完凸' : '모든 카드 풀돌';
         allMaxBtn.addEventListener('click', () => {
             const confirmMsg = isJa ? 'すべてのカードを完凸状態に変更しますか？' : '모든 카드를 4단계 돌파(풀돌) 상태로 변경하시겠습니까?';
-            if (!confirm(confirmMsg)) return;
-            cardList.forEach(card => {
-                setSupportLB(card.id, 4);
+
+            showCustomConfirm(confirmMsg, () => {
+                cardList.forEach(card => {
+                    setSupportLB(card.id, 4);
+                });
+                renderSupport();
+                if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
             });
-            renderSupport();
-            if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
         });
     }
 
@@ -522,7 +526,7 @@ function setupStaticListeners(container) {
                 const slotId = saveBtn.dataset.slot;
                 const confirmMsg = isJa ? `スロット ${slotId} 에 현재 상태를 저장하시겠습니까?` : `슬롯 ${slotId} 에 현재 상태(돌파/비활성화)를 저장하시겠습니까?`;
                 if (!confirm(confirmMsg)) return;
-                
+
                 import('./state.js').then(m => {
                     m.saveToSlot(slotId);
                     syncSlotUI(container);
@@ -559,7 +563,7 @@ function setupStaticListeners(container) {
             isLongPress = true;
             const cardId = cardEl.dataset.id;
             toggleDisabledCard(cardId);
-            
+
             // [추가] 계산기 선택 목록에서도 실제로 제거 (선택 취소)
             if (state.disabledCards[cardId]) {
                 ['sense', 'logic', 'anomaly'].forEach(plan => {
@@ -614,14 +618,14 @@ function setupStaticListeners(container) {
 
         const star = e.target.closest('.card-star');
         const cardEl = e.target.closest('.support-card');
-        
+
         if (star && cardEl) {
             e.stopPropagation();
             const cardId = cardEl.dataset.id;
             const starIdx = parseInt(star.dataset.star, 10);
             const currentLB = state.supportLB[cardId] || 0;
             const newLB = (starIdx === currentLB) ? 0 : starIdx;
-            
+
             setSupportLB(cardId, newLB);
             const stars = cardEl.querySelectorAll('.card-star');
             stars.forEach((s, idx) => s.classList.toggle('active', idx < newLB));
@@ -647,7 +651,7 @@ function syncFilterUI(container) {
         btns.forEach(btn => {
             const val = btn.dataset.val;
             let isActive = false;
-            
+
             if (val === 'all') {
                 // 배열이 비어있으면 '전체' 활성화
                 isActive = (state.filters[type].length === 0);
@@ -673,7 +677,7 @@ function syncFilterUI(container) {
 function updateSupportGrid(container) {
     const grid = container.querySelector('.support-grid');
     const itemTpl = document.getElementById('tpl-support-item');
-    
+
     let filteredList = cardList.filter(card => {
         if (card.encyclopedia === false) return false;
         const cPlan = (card.plan || 'free').toLowerCase();
@@ -743,11 +747,11 @@ function updateSupportGrid(container) {
             cardEl.dataset.id = cardId;
             cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
             if (isDeactivated) cardEl.classList.add('is-disabled');
-            
+
             const imgSrc = card.image || `images/support/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
             item.querySelectorAll('.card-star').forEach((s, idx) => s.classList.toggle('active', idx < currentLB));
-            
+
             const plan = (card.plan || 'free').toLowerCase();
             item.querySelector('.card-plan-icon').src = `icons/${plan}.webp`;
             item.querySelector('.card-type-icon').src = `icons/${card.type.toLowerCase()}.png`;
@@ -766,10 +770,10 @@ export function updateGlobalBackgroundColor() {
     const fixedBg = document.getElementById('fixed-bg');
     if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
         let color = idolColors[state.favoriteIdol];
-        
+
         // CSS 변수 설정
         document.documentElement.style.setProperty('--idol-theme-color', color);
-        
+
         document.body.style.backgroundColor = color + "00"; // 바탕 배경색 투명도를 0%로 (사실상 완전 흰색)
         if (fixedBg) fixedBg.style.opacity = '0.2'; // 문양을 더 은은하게 (0.2)
 
@@ -785,4 +789,45 @@ export function updateGlobalBackgroundColor() {
         }
         document.body.style.backgroundColor = "#ffffff"; // 다른 캐릭터와 동일하게 배경은 흰색
     }
+}
+
+function showCustomConfirm(message, onConfirmCallback) {
+    let modal = document.getElementById('custom-confirm-modal');
+    if (modal) modal.remove();
+
+    const isJa = state.currentLang === 'ja';
+    const isMobile = window.innerWidth <= 768;
+
+    modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'custom-confirm-modal';
+    modal.style.zIndex = '40000';
+
+    const pSize = isMobile ? '0.8rem' : '0.95rem';
+    const pad = isMobile ? '20px 15px' : '25px 20px';
+    const btnSize = '0.75rem';
+
+    const modalWidth = isMobile ? '320px' : '400px';
+
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: ${modalWidth}; text-align: center; padding: ${pad};">
+            <p style="margin-bottom: 20px; font-size: ${pSize}; color: #333; line-height: 1.5; font-weight: bold; word-break: keep-all;">${message}</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="calc-btn cancel-btn" style="background:#eee; color:#666 !important; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? 'キャンセル' : '취소'}</button>
+                <button class="calc-btn confirm-btn" style="min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? '確認' : '확인'}</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+
+    modal.querySelector('.cancel-btn').addEventListener('click', () => modal.remove());
+    modal.querySelector('.confirm-btn').addEventListener('click', () => {
+        modal.remove();
+        onConfirmCallback();
+    });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
 }

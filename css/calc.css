@@ -13,28 +13,87 @@
 .calc-buttons {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
-    /* 로고 간 간격을 시원하게 확대 */
+    gap: 3.5rem; /* 아이템 간 간격 */
     align-items: center;
     justify-content: center;
+}
+
+.calc-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 (텍스트 때문에) */
+    gap: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.calc-menu-item:hover {
+    transform: scale(1.03);
+}
+
+.calc-menu-item:active {
+    transform: scale(0.98);
+}
+
+.calc-menu-label {
+    font-size: 1.1rem;
+    font-weight: 900;
+    font-style: normal;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 10px;
+    border-left: 4px solid var(--idol-theme-color, #ff4081);
+    line-height: 1.2;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-badge {
+    font-size: 0.8rem;
+    padding: 2px 10px;
+    border-radius: 4px;
+    color: white;
+    font-style: normal;
+    font-weight: 900;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.badge-legend {
+    background: #673ab7; /* 보라색 */
+}
+
+.badge-master {
+    background: #ff4d8d; /* 핫핑크 */
 }
 
 .calc-menu-img {
     width: 380px;
     height: auto;
-    cursor: pointer;
-    transition: transform 0.2s, filter 0.2s, border-color 0.2s, box-shadow 0.2s;
+    transition: filter 0.2s, border-color 0.2s, box-shadow 0.2s;
 
-    /* [수정] 우측 상단과 좌측 하단만 둥글게 (대각선 대칭) */
-    border-radius: 0 50px 0 50px;
-    border: 3px solid transparent;
+    /* [수정] 우측 상단과 좌측 하단만 둥글게 (대각선 대칭) - 더 샤프한 25px로 조정 */
+    border-radius: 0 25px 0 25px;
+    border: 3px solid var(--idol-theme-color, #ff4081); /* 최종 3px로 테두리 강조 조정 */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     filter: none;
 }
 
-.calc-menu-img:hover {
-    transform: scale(1.05);
+.calc-menu-item:hover .calc-menu-img {
     filter: brightness(1.05);
-    /* 마우스 올리면 약간 밝게 */
+}
+
+@media (max-width: 768px) {
+    .calc-menu-img {
+        width: 300px;
+    }
+    .calc-menu-label {
+        font-size: 0.9rem;
+    }
 }
 
 .calc-menu-img:active {
@@ -999,12 +1058,17 @@
     background-color: #ff4d8d;
     color: white !important;
     border: none;
-    padding: 4px 15px;
+    padding: 0 15px;
     font-size: 0.75rem;
     font-weight: bold;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s;
+    height: 27px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .calc-btn:hover {
@@ -1408,11 +1472,15 @@
 
     .calc-btn,
     .back-btn {
-        padding: 4px 8px;
-        font-size: 0.7rem;
+        padding: 0 4px;
+        font-size: 0.6rem;
         width: auto;
-        min-width: 60px;
+        min-width: 45px;
+        height: 19px;
         text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .p-item-check-txt {

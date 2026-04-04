@@ -319,8 +319,14 @@ export function renderCalcMenu(updatePageTranslations, onHajime, onNia) {
     root.innerHTML = `
         <div class="calc-menu-container">
             <div class="calc-buttons">
-                <img src="images/hajime.webp" id="btn-hajime" class="calc-menu-img" alt="Hajime" style="border-color: ${color}; box-shadow: 0 4px 15px ${color}33;">
-                <img src="images/nia.webp" id="btn-nia" class="calc-menu-img" alt="N.i.a" style="border-color: ${color}; box-shadow: 0 4px 15px ${color}33;">
+                <div class="calc-menu-item" id="btn-hajime">
+                    <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_legend">HAJIME LEGEND</div>
+                    <img src="images/hajime.webp" class="calc-menu-img" alt="Hajime" style="border-color: ${color};">
+                </div>
+                <div class="calc-menu-item" id="btn-nia">
+                    <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_master">NIA MASTER</div>
+                    <img src="images/nia.webp" class="calc-menu-img" alt="N.i.a" style="border-color: ${color};">
+                </div>
             </div>
         </div>`;
     updatePageTranslations();
@@ -436,7 +442,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         </label>
                         <div style="width: 1px; height: 24px; background-color: #ddd; margin: 0 4px;"></div>
                         <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
-                        ${Array.from({ length: store.type === 'nia' ? 5 : 4 }).map((_, i) => `
+                        ${Array.from({ length: store.type === 'nia' ? 5 : 2 }).map((_, i) => `
                             <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
                         `).join('')}
                     </div>
@@ -660,19 +666,12 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-tooltip';
     const tooltipPadding = isMobile ? '8px' : '12px';
-    const targetWidth = isMobile ? '175px' : '215px';
-    tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:140px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
+    const targetWidth = isMobile ? '135px' : '165px';
+    tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:130px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
 
     const btnSize = isMobile ? '32px' : '40px';
-    const clearBtn = document.createElement('div');
-    clearBtn.textContent = 'X'; clearBtn.className = 'calc-btn-square';
-    clearBtn.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; padding:0; display:flex; align-items:center; justify-content:center; font-size:${isMobile ? '1rem' : '1.2rem'}; background:#f8f9fa; color:#888; border:1px solid #ddd; cursor:pointer; box-sizing:border-box; border-radius:4px;`;
-    clearBtn.onclick = () => {
-        calcStore.pItems[idx] = null;
-        slot.innerHTML = '<span class="p-item-placeholder">+</span>';
-        calcStore.save(); refreshAll(); tooltip.remove();
-    };
-    tooltip.appendChild(clearBtn);
+
+    // X 버튼(지우기) 제거됨
 
     const slotItems = itemsBySlot[idx] || [];
     slotItems.forEach(item => {

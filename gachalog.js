@@ -119,7 +119,7 @@ function renderStats(container, total, stats, topChar) {
 
     const charThumb = topChar ? `
         <div class="stat-header-thumb-container">
-            <img src="./icons/idolicons/${topChar.charId}.png" class="stat-header-thumb">
+            <img src="./icons/idolicons/${topChar.charId}_c.png" class="stat-header-thumb">
         </div>` : '';
 
     container.innerHTML = `

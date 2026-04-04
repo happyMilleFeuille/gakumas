@@ -19,6 +19,8 @@ export function renderPickupSelector(ui) {
         ui.pickupSelector.classList.remove('hidden');
         const { currentCfg, favColor, displayName, bannerImg, bgImg } = getDrawerTypeDisplayData(type, checkHasCard);
         
+        const gachaDate = currentCfg.display_date || currentCfg.date || ''; // display_date가 있으면 우선 사용
+        
         // 셀렉션이거나 유닛/페스 더블 픽업일 때만 가로 스타일 적용
         const isSelection = type === 'selection';
         const isMulti = ( (type === 'unit' || type === 'fes') && currentCfg.pool?.pssr?.length >= 2);
@@ -80,6 +82,7 @@ export function renderPickupSelector(ui) {
                             `
                         }
                     </div>
+                    ${gachaDate ? `<div class="pickup-date ${type === 'unit' ? 'is-unit' : ''}">${gachaDate}</div>` : ''}
                     <div class="pickup-support-column">
                         ${sssrPickups.map(id => `<div class="support-pickup-mini" data-rarity="SSR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
                         ${srPickups.map(id => `<div class="support-pickup-mini" data-rarity="SR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
@@ -136,10 +139,10 @@ function setupSupportTooltips(container) {
     tooltip.innerHTML = `
         <div class="tooltip-container" style="position: relative; width: 100%; height: 100%; overflow: hidden; display: block; background: #000;">
             <img src="" class="tooltip-main-img" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1;">
-            <img src="" class="tooltip-attr-icon" style="position: absolute; top: 8px; left: 8px; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-            <div class="tooltip-card-name" style="position: absolute; top: 8px; right: 8px; z-index: 10; color: #fff; font-weight: bold; text-shadow: 0 2px 6px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.5); padding: 2px 0; pointer-events: none; white-space: nowrap;"></div>
+            <img src="" class="tooltip-attr-icon" style="position: absolute; top: 8px; left: 8px; z-index: 5; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
+            <div class="tooltip-card-name" style="position: absolute; bottom: 8px; right: 8px; z-index: 10; color: #fff; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); padding: 2px 0; pointer-events: none; white-space: nowrap;"></div>
             <img src="" class="tooltip-rarity-img" style="position: absolute; bottom: 8px; left: 8px; z-index: 5;">
-            <img src="" class="tooltip-plan-icon" style="position: absolute; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            <img src="" class="tooltip-plan-icon" style="position: absolute; z-index: 5; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
         </div>
     `;
 
@@ -254,17 +257,17 @@ function setupSupportTooltips(container) {
             nameLabel.style.textShadow = '0 1px 3px rgba(0,0,0,1)';
         } else {
             attrIcon.style.width = '45px';
-            attrIcon.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))';
+            attrIcon.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))';
             
             rarityImg.style.width = '65px';
             
             planIcon.style.width = '38px';
             planIcon.style.bottom = '62px';
             planIcon.style.left = '15px';
-            planIcon.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))';
+            planIcon.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))';
             
             nameLabel.style.fontSize = '1.1rem';
-            nameLabel.style.textShadow = '0 2px 6px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.5)';
+            nameLabel.style.textShadow = '0 1px 3px rgba(0,0,0,1)';
         }
     };
 

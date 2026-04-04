@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/stat-detail.css">
     <link rel="stylesheet" href="css/memory.css">
     <link rel="stylesheet" href="css/home.css">
-    
+
     <!-- Character Icon Preload for Performance -->
     <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
     <link rel="preload" as="image" href="icons/idolicons/temari_c.png">
@@ -208,12 +208,18 @@
         <div class="roadmap-filter-wrap">
             <button id="btn-roadmap-expand" class="roadmap-expand-btn">
                 <span data-i18n="roadmap_since_release">실장 로드맵</span>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;"><path d="m6 9 6 6 6-6"/></svg>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;">
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
             </button>
             <div class="roadmap-filter-container">
                 <button id="roadmap-filter-btn" class="roadmap-filter-btn">
                     <span data-i18n="roadmap_filter">필터</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </button>
                 <div id="roadmap-filter-dropdown" class="roadmap-filter-dropdown">
                     <div class="roadmap-controls">
@@ -278,10 +284,17 @@
     <template id="tpl-support">
         <div class="support-container">
             <div class="filter-container">
-                <div class="filter-group" id="filter-attr">
+                <div class="filter-group" id="filter-attr" style="position: relative;">
                     <button class="filter-btn" data-val="vocal" data-i18n="filter_vocal">Vocal</button>
                     <button class="filter-btn" data-val="dance" data-i18n="filter_dance">Dance</button>
                     <button class="filter-btn" data-val="visual" data-i18n="filter_visual">Visual</button>
+                    <div class="support-info-wrapper">
+                        <button class="support-info-btn">i</button>
+                        <div class="support-info-tooltip">
+                            <p><span data-i18n="support_tooltip_1">• <b>꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.</b></span></p>
+                            <p><span data-i18n="support_tooltip_2">• <b>카드를 길게 누르면 비활성화되며,<br>리스트의 맨 아래로 이동하고 스텟계산에서 제외됩니다.</b></span></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="filter-group" id="filter-plan">
                     <button class="filter-btn" data-val="free"><img src="icons/free.webp" alt="Free"
@@ -312,14 +325,13 @@
                 </div>
             </div>
 
-            <div class="slot-management-simple">
-                <button id="btn-open-slot-modal">
-                    <span data-i18n="btn_manage_slots">프리셋</span>
-                </button>
-            </div>
-
             <div class="sort-controls">
-                <button id="btn-all-max-lb" class="calc-btn">모든 카드 풀돌</button>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button id="btn-all-max-lb" class="calc-btn" data-i18n="btn_all_max_lb">모든 카드 풀돌</button>
+                    <button id="btn-open-slot-modal" class="calc-btn">
+                        <span data-i18n="btn_manage_slots">프리셋</span>
+                    </button>
+                </div>
                 <select id="support-sort" class="sort-select">
                     <option value="id-desc">최신순</option>
                     <option value="id-asc">과거순</option>
@@ -413,9 +425,11 @@
                 <img src="" alt="" class="pssr-img">
             </div>
             <div class="pssr-info">
-                <div class="pssr-rarity-wrap" style="display: flex; align-items: center; gap: 6px; align-self: flex-start; margin-bottom: 2px;">
+                <div class="pssr-rarity-wrap"
+                    style="display: flex; align-items: center; gap: 6px; align-self: flex-start; margin-bottom: 2px;">
                     <img src="" alt="" class="pssr-rarity-icon" style="align-self: auto;">
-                    <span class="pssr-source-badge" style="font-size: 0.65rem; font-weight: bold; color: #666; display: none; white-space: nowrap;"></span>
+                    <span class="pssr-source-badge"
+                        style="font-size: 0.65rem; font-weight: bold; color: #666; display: none; white-space: nowrap;"></span>
                 </div>
                 <img src="" alt="" class="pssr-plan-icon">
                 <div class="pssr-name-wrap">

@@ -231,6 +231,13 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                     item.style.borderColor = idolColor;
                     calcStore.planCards[plan].push(cardId);
                     calcStore.cardChecked[cardId] = false;
+
+                    const selectedCardObj = cardList.find(c => c.id === cardId);
+                    if (selectedCardObj && selectedCardObj.abilities && selectedCardObj.abilities.includes('sp_param20')) {
+                        const isJa = state.currentLang === 'ja';
+                        const toastMsg = isJa ? "カード枚数(20枚以上)の条件は常に満たすものとします。" : "카드 갯수(20장 이상) 조건은 항상 만족함으로 취급합니다.";
+                        showTemporaryToast(toastMsg);
+                    }
                 }
                 calcStore.save();
                 updateSelectedCardsUI(calcStore);
@@ -557,4 +564,47 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
 
 
     document.body.appendChild(modal);
+}
+
+function showTemporaryToast(message) {
+    const tooltip = document.createElement('div');
+    const isMobile = window.innerWidth <= 768;
+    
+    tooltip.textContent = message;
+    tooltip.style.position = 'fixed';
+    tooltip.style.backgroundColor = 'rgba(0,0,0,0.85)';
+    tooltip.style.color = '#fff';
+    tooltip.style.padding = isMobile ? '6px 12px' : '12px 20px';
+    tooltip.style.borderRadius = '8px';
+    tooltip.style.fontSize = isMobile ? '0.7rem' : '0.95rem';
+    tooltip.style.fontWeight = 'bold';
+    tooltip.style.zIndex = '9999999';
+    tooltip.style.pointerEvents = 'none';
+    tooltip.style.whiteSpace = 'nowrap';
+    tooltip.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    
+    // 중앙 하단 고정
+    tooltip.style.left = '50%';
+    tooltip.style.bottom = isMobile ? '12%' : '10%';
+    tooltip.style.transform = 'translateX(-50%)';
+    
+    // 부드러운 페이드 효과를 위해 transition 사용 (keyframes 충돌 방지)
+    tooltip.style.opacity = '0';
+    tooltip.style.transition = 'opacity 0.3s ease-in-out';
+
+    document.body.appendChild(tooltip);
+
+    // 렌더링 후 투명도 1로 올려서 서서히 나타나게 함
+    requestAnimationFrame(() => {
+        tooltip.style.opacity = '1';
+    });
+
+    // 2초 뒤 다시 서서히 사라짐
+    setTimeout(() => {
+        tooltip.style.opacity = '0';
+        // 완전히 사라진 뒤 DOM 제거
+        setTimeout(() => {
+            if (tooltip.parentNode) tooltip.parentNode.removeChild(tooltip);
+        }, 300);
+    }, 2000);
 }
