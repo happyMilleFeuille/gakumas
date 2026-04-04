@@ -18,7 +18,7 @@ export const abilityData = {
     "fixedparam": {
         format: { ko: "초기 {type} 상승+{val}", ja: "初期{type}上昇+{val}" },
         levels: {
-            "SSR": { 1: 52, 2: 56, 3: 59, 4: 62, 5: 65 },
+            "SSR": { 1: 52, 2: 55, 3: 59, 4: 62, 5: 65 },
             "SR": { 1: 37, 2: 40, 3: 43, 4: 46, 5: 49 },
         }
     },
