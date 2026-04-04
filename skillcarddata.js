@@ -8,7 +8,7 @@ export const skillCardList = {
     "anomaly-legend2": { type: "mental", attrs: ["preservation"], rarity: "Legend" },
     "anomaly-legend3": { type: "mental", attrs: [], rarity: "Legend" },
     "anomaly-legend4": { type: "active", attrs: [], rarity: "Legend" },
-    "anomaly-legend5": { type: "mental", attrs: [], rarity: "Legend" },
+    "anomaly-legend5": { type: "mental", attrs: ["preservation"], rarity: "Legend" },
     "anomaly-r1": { type: "active", attrs: ["fullpower"], rarity: "R", multi: true },
     "anomaly-r2": { type: "active", attrs: ["enthusiasm"], rarity: "R", multi: true },
     "anomaly-r3": { type: "active", attrs: [], rarity: "R", multi: true },
