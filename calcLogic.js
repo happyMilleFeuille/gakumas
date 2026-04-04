@@ -433,14 +433,14 @@ export function calculateTotals(store, detailedCounts) {
         }
     });
 
-    // --- [4. Percentage Bonus Calculation (Unified Rounding)] ---
+    // --- [4. Percentage Bonus Calculation (Unified Truncation)] ---
     const calculateUnifiedBonus = (base, percs, unifiedTotal) => {
         if (unifiedTotal === 0) return { idol: 0, support: 0, memory: 0 };
         
-        // 1. Calculate raw rounded values
-        let idolVal = Math.round(base * (percs.idol / 100));
-        let supportVal = Math.round(base * (percs.support / 100));
-        let memoryVal = Math.round(base * (percs.memory / 100));
+        // 1. Calculate raw floored values
+        let idolVal = Math.floor(base * (percs.idol / 100));
+        let supportVal = Math.floor(base * (percs.support / 100));
+        let memoryVal = Math.floor(base * (percs.memory / 100));
         
         // 2. Adjust sum to match unifiedTotal
         const currentSum = idolVal + supportVal + memoryVal;
@@ -459,9 +459,9 @@ export function calculateTotals(store, detailedCounts) {
     };
 
     const unifiedBonus = {
-        vocal: calculateUnifiedBonus(baseTotal.vocal, { idol: idolPercs.vocal, support: supportPercs.vocal, memory: memoryPercentFactors.vocal }, Math.round(baseTotal.vocal * (totalPercs.vocal / 100))),
-        dance: calculateUnifiedBonus(baseTotal.dance, { idol: idolPercs.dance, support: supportPercs.dance, memory: memoryPercentFactors.dance }, Math.round(baseTotal.dance * (totalPercs.dance / 100))),
-        visual: calculateUnifiedBonus(baseTotal.visual, { idol: idolPercs.visual, support: supportPercs.visual, memory: memoryPercentFactors.visual }, Math.round(baseTotal.visual * (totalPercs.visual / 100)))
+        vocal: calculateUnifiedBonus(baseTotal.vocal, { idol: idolPercs.vocal, support: supportPercs.vocal, memory: memoryPercentFactors.vocal }, Math.floor(baseTotal.vocal * (totalPercs.vocal / 100))),
+        dance: calculateUnifiedBonus(baseTotal.dance, { idol: idolPercs.dance, support: supportPercs.dance, memory: memoryPercentFactors.dance }, Math.floor(baseTotal.dance * (totalPercs.dance / 100))),
+        visual: calculateUnifiedBonus(baseTotal.visual, { idol: idolPercs.visual, support: supportPercs.visual, memory: memoryPercentFactors.visual }, Math.floor(baseTotal.visual * (totalPercs.visual / 100)))
     };
 
     let idolBonusTotal = {
