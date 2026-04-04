@@ -359,10 +359,48 @@ export function calculateTotals(store, detailedCounts) {
     };
 
     // --- [Weekly Loop] ---
+    let lessonBonuses = { vocal: 0, dance: 0, visual: 0 };
+    let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
+    let supportPercentTotal = { vocal: 0, dance: 0, visual: 0 };
+    let memoryPercentTotal = { vocal: 0, dance: 0, visual: 0 };
+
+    const applyLessonBonus = (base, attr) => {
+        if (!base || base <= 0) return;
+        const totalP = totalPercs[attr];
+        const unifiedTotal = Math.floor(base * (totalP / 100));
+        
+        if (unifiedTotal === 0) return;
+
+        // Distribute within the unifiedTotal
+        const percs = {
+            idol: idolPercs[attr],
+            support: supportPercs[attr],
+            memory: memoryPercentFactors[attr]
+        };
+
+        let idolVal = Math.floor(base * (percs.idol / 100));
+        let supportVal = Math.floor(base * (percs.support / 100));
+        let memoryVal = Math.floor(base * (percs.memory / 100));
+        
+        const diff = unifiedTotal - (idolVal + supportVal + memoryVal);
+        if (diff !== 0) {
+            const raw = [base * (percs.idol / 100), base * (percs.support / 100), base * (percs.memory / 100)];
+            const maxIdx = raw.indexOf(Math.max(...raw));
+            if (maxIdx === 0) idolVal += diff;
+            else if (maxIdx === 1) supportVal += diff;
+            else memoryVal += diff;
+        }
+
+        idolBonusTotal[attr] += idolVal;
+        supportPercentTotal[attr] += supportVal;
+        memoryPercentTotal[attr] += memoryVal;
+    };
+
     Object.keys(store.weeks).forEach(weekNum => {
         const week = store.weeks[weekNum]; if (!week || !week.value) return;
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
         let stats = null;
+
         if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
         else if (store.type === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
         else if (store.type === 'nia' && actionId === 'audition') {
@@ -375,12 +413,8 @@ export function calculateTotals(store, detailedCounts) {
                     data.priority.forEach((attr, idx) => {
                         const baseVal = vals[idx];
                         stats[attr] = baseVal;
-                        // 니아 오디션 수치 보너스 (상세공식 반영)
-                        // 1. 기본 보너스: floor(기본 수치 * 0.55)
                         const bonusA = Math.floor(baseVal * 0.55);
-                        // 2. % 추가분 보너스: floor(floor(기본 수치 * 총%합산 / 100) * 0.55)
                         const bonusB = Math.floor(Math.floor(baseVal * (totalPercs[attr] / 100)) * 0.55);
-                        
                         itemBonusTotal[attr] += (bonusA + bonusB);
                     });
                 }
@@ -390,16 +424,18 @@ export function calculateTotals(store, detailedCounts) {
             stats = { vocal: 0, dance: 0, visual: 0 };
             if (selectedAttr) {
                 let baseVal = 100;
-                if (actionId === 'class_hajime') {
-                    baseVal = hajimeClassStats[wInt] || 100;
-                } else if (actionId === 'class_nia') {
-                    baseVal = niaClassStats[wInt] || 100;
-                }
+                if (actionId === 'class_hajime') baseVal = hajimeClassStats[wInt] || 100;
+                else if (actionId === 'class_nia') baseVal = niaClassStats[wInt] || 100;
                 stats[selectedAttr] = baseVal;
             }
         } else stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
 
         if (stats) {
+            // Apply percentage bonus to each stat gained this week
+            ['vocal', 'dance', 'visual'].forEach(attr => {
+                if (stats[attr] > 0) applyLessonBonus(stats[attr], attr);
+            });
+
             if (actionId === 'class_hajime' || actionId === 'class_nia') {
                 classTotal.vocal += stats.vocal || 0;
                 classTotal.dance += stats.dance || 0;
@@ -432,55 +468,6 @@ export function calculateTotals(store, detailedCounts) {
             }
         }
     });
-
-    // --- [4. Percentage Bonus Calculation (Unified Truncation)] ---
-    const calculateUnifiedBonus = (base, percs, unifiedTotal) => {
-        if (unifiedTotal === 0) return { idol: 0, support: 0, memory: 0 };
-        
-        // 1. Calculate raw floored values
-        let idolVal = Math.floor(base * (percs.idol / 100));
-        let supportVal = Math.floor(base * (percs.support / 100));
-        let memoryVal = Math.floor(base * (percs.memory / 100));
-        
-        // 2. Adjust sum to match unifiedTotal
-        const currentSum = idolVal + supportVal + memoryVal;
-        const diff = unifiedTotal - currentSum;
-        
-        if (diff !== 0) {
-            // Find the category with the highest raw contribution to absorb the difference
-            const raw = [base * (percs.idol / 100), base * (percs.support / 100), base * (percs.memory / 100)];
-            const maxIdx = raw.indexOf(Math.max(...raw));
-            if (maxIdx === 0) idolVal += diff;
-            else if (maxIdx === 1) supportVal += diff;
-            else memoryVal += diff;
-        }
-        
-        return { idol: idolVal, support: supportVal, memory: memoryVal };
-    };
-
-    const unifiedBonus = {
-        vocal: calculateUnifiedBonus(baseTotal.vocal, { idol: idolPercs.vocal, support: supportPercs.vocal, memory: memoryPercentFactors.vocal }, Math.floor(baseTotal.vocal * (totalPercs.vocal / 100))),
-        dance: calculateUnifiedBonus(baseTotal.dance, { idol: idolPercs.dance, support: supportPercs.dance, memory: memoryPercentFactors.dance }, Math.floor(baseTotal.dance * (totalPercs.dance / 100))),
-        visual: calculateUnifiedBonus(baseTotal.visual, { idol: idolPercs.visual, support: supportPercs.visual, memory: memoryPercentFactors.visual }, Math.floor(baseTotal.visual * (totalPercs.visual / 100)))
-    };
-
-    let idolBonusTotal = {
-        vocal: unifiedBonus.vocal.idol,
-        dance: unifiedBonus.dance.idol,
-        visual: unifiedBonus.visual.idol
-    };
-
-    let supportPercentTotal = {
-        vocal: unifiedBonus.vocal.support,
-        dance: unifiedBonus.dance.support,
-        visual: unifiedBonus.visual.support
-    };
-
-    let memoryPercentTotal = {
-        vocal: unifiedBonus.vocal.memory,
-        dance: unifiedBonus.dance.memory,
-        visual: unifiedBonus.visual.memory
-    };
 
     let idolBaseTotal = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
