@@ -433,24 +433,61 @@ export function calculateTotals(store, detailedCounts) {
         }
     });
 
-    // 아이돌별 기본 고정 스탯 및 % 보너스 합계
+    // --- [4. Percentage Bonus Calculation (Unified Rounding)] ---
+    const calculateUnifiedBonus = (base, percs, unifiedTotal) => {
+        if (unifiedTotal === 0) return { idol: 0, support: 0, memory: 0 };
+        
+        // 1. Calculate raw rounded values
+        let idolVal = Math.round(base * (percs.idol / 100));
+        let supportVal = Math.round(base * (percs.support / 100));
+        let memoryVal = Math.round(base * (percs.memory / 100));
+        
+        // 2. Adjust sum to match unifiedTotal
+        const currentSum = idolVal + supportVal + memoryVal;
+        const diff = unifiedTotal - currentSum;
+        
+        if (diff !== 0) {
+            // Find the category with the highest raw contribution to absorb the difference
+            const raw = [base * (percs.idol / 100), base * (percs.support / 100), base * (percs.memory / 100)];
+            const maxIdx = raw.indexOf(Math.max(...raw));
+            if (maxIdx === 0) idolVal += diff;
+            else if (maxIdx === 1) supportVal += diff;
+            else memoryVal += diff;
+        }
+        
+        return { idol: idolVal, support: supportVal, memory: memoryVal };
+    };
+
+    const unifiedBonus = {
+        vocal: calculateUnifiedBonus(baseTotal.vocal, { idol: idolPercs.vocal, support: supportPercs.vocal, memory: memoryPercentFactors.vocal }, Math.round(baseTotal.vocal * (totalPercs.vocal / 100))),
+        dance: calculateUnifiedBonus(baseTotal.dance, { idol: idolPercs.dance, support: supportPercs.dance, memory: memoryPercentFactors.dance }, Math.round(baseTotal.dance * (totalPercs.dance / 100))),
+        visual: calculateUnifiedBonus(baseTotal.visual, { idol: idolPercs.visual, support: supportPercs.visual, memory: memoryPercentFactors.visual }, Math.round(baseTotal.visual * (totalPercs.visual / 100)))
+    };
+
+    let idolBonusTotal = {
+        vocal: unifiedBonus.vocal.idol,
+        dance: unifiedBonus.dance.idol,
+        visual: unifiedBonus.visual.idol
+    };
+
+    let supportPercentTotal = {
+        vocal: unifiedBonus.vocal.support,
+        dance: unifiedBonus.dance.support,
+        visual: unifiedBonus.visual.support
+    };
+
+    let memoryPercentTotal = {
+        vocal: unifiedBonus.vocal.memory,
+        dance: unifiedBonus.dance.memory,
+        visual: unifiedBonus.visual.memory
+    };
+
     let idolBaseTotal = { vocal: 0, dance: 0, visual: 0 };
-    let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
         idolBaseTotal.vocal = currentIdolData.baseVocal || 0;
         idolBaseTotal.dance = currentIdolData.baseDance || 0;
         idolBaseTotal.visual = currentIdolData.baseVisual || 0;
-
-        idolBonusTotal.vocal = Math.round(baseTotal.vocal * (idolPercs.vocal / 100));
-        idolBonusTotal.dance = Math.round(baseTotal.dance * (idolPercs.dance / 100));
-        idolBonusTotal.visual = Math.round(baseTotal.visual * (idolPercs.visual / 100));
     }
-
-    let supportPercentTotal = {
-        vocal: Math.round(baseTotal.vocal * (supportPercs.vocal / 100)),
-        dance: Math.round(baseTotal.dance * (supportPercs.dance / 100)),
-        visual: Math.round(baseTotal.visual * (supportPercs.visual / 100))
-    };
 
     // --- 5. P-아이템 효과 합산 ---
     if (store.pItems) {
@@ -464,9 +501,9 @@ export function calculateTotals(store, detailedCounts) {
     }
 
     const bonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + Math.round(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + Math.round(baseTotal.dance * (memoryPercentFactors.dance / 100)),
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + Math.round(baseTotal.visual * (memoryPercentFactors.visual / 100))
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + memoryPercentTotal.vocal,
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + memoryPercentTotal.dance,
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + memoryPercentTotal.visual
     };
 
     const finalTotal = {
@@ -514,9 +551,9 @@ export function calculateTotals(store, detailedCounts) {
             memory: {
                 fixed: memoryBonusTotal,
                 percent: {
-                    vocal: Math.round(baseTotal.vocal * (memoryPercentFactors.vocal / 100)),
-                    dance: Math.round(baseTotal.dance * (memoryPercentFactors.dance / 100)),
-                    visual: Math.round(baseTotal.visual * (memoryPercentFactors.visual / 100)),
+                    vocal: memoryPercentTotal.vocal,
+                    dance: memoryPercentTotal.dance,
+                    visual: memoryPercentTotal.visual,
                     factors: memoryPercentFactors
                 }
             },
