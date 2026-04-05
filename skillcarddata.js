@@ -174,7 +174,7 @@ export const skillCardList = {
     "sense-sr17": { type: "mental", attrs: ["concentration", "genki"], rarity: "SR", multi: true },
     "sense-sr18": { type: "mental", attrs: ["goodcondition", "genki"], rarity: "SR", multi: true },
     "sense-sr19": { type: "active", attrs: ["genki"], rarity: "SR", multi: true },
-    "sense-sr20": { type: "active", attrs: ["goodcondition", "concentration"], rarity: "SR" },
+    "sense-sr20": { type: "active", attrs: ["concentration"], rarity: "SR" },
     "sense-sr21": { type: "mental", attrs: ["concentration", "genki"], rarity: "SR", multi: true },
     "sense-ssr1": { type: "active", attrs: [], rarity: "SSR" },
     "sense-ssr1alt": { type: "active", attrs: ["concentration"], rarity: "SSR" },
