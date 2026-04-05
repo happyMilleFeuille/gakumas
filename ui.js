@@ -172,17 +172,22 @@ function renderProduceCards(idolName, container) {
             p.id.startsWith(`r${idolName}_`);
 
         return nameMatch &&
-            (p.rarity === 'PSSR' || p.rarity === 'PSR') &&
+            (p.rarity === 'PSSR' || p.rarity === 'PSR' || p.rarity === 'PR') &&
             p.another !== true;
     });
 
     produceCards.sort((a, b) => {
-        if (a.rarity !== b.rarity) {
-            return a.rarity === 'PSSR' ? -1 : 1;
+        const rarityOrder = { 'PSSR': 3, 'PSR': 2, 'PR': 1 };
+        const rA = rarityOrder[a.rarity] || 0;
+        const rB = rarityOrder[b.rarity] || 0;
+        
+        if (rA !== rB) {
+            return rB - rA; // 등급 높은 순
         }
+        
         const dateA = a.releasedAt || "";
         const dateB = b.releasedAt || "";
-        return dateB.localeCompare(dateA); // 2차 정렬: 최신순(내림차순)
+        return dateB.localeCompare(dateA); // 같은 등급이면 최신순
     });
 
     if (produceCards.length === 0) {

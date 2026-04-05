@@ -48,9 +48,14 @@ export function renderPickupSelector(ui) {
                                 const imgVer = checkHasCard(pid) ? '2' : '1';
                                 const cardData = produceList.find(c => c.id === pid);
                                 const isMobile = window.innerWidth <= 768;
-                                const planIconSize = isMobile ? '22px' : '30px';
-                                const rarityIconSize = isMobile ? '25px' : '45px';
-                                const planIcon = (cardData?.plan && !isSelection) ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2;">` : '';
+                                const planIconSize = isMobile ? '28px' : '38px';
+                                const osusumeIconSize = isMobile ? '20px' : '28px';
+                                const rarityIconSize = isMobile ? '28px' : '52px'; // 등급 크기 약간 키움
+                                
+                                const shadowStyle = 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));';
+                                const planIcon = (cardData?.plan && !isSelection) ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2; ${shadowStyle}">` : '';
+                                // 딱 4px만 더 위로 (정밀 조정)
+                                const osusumeIcon = (cardData?.osusume && !isSelection) ? `<img src="icons/${cardData.osusume}.webp" class="pickup-osusume-icon" style="position: absolute; bottom: ${isMobile ? 32 : 44}px; right: 6px; width: ${osusumeIconSize}; z-index: 2; ${shadowStyle}">` : '';
                                 
                                 // 등급 아이콘 매핑 (PSSR -> ssr, SR -> sr 등)
                                 const rarityKey = (cardData?.rarity || 'ssr').toLowerCase().replace('p', '');
@@ -59,6 +64,7 @@ export function renderPickupSelector(ui) {
                                 return `
                                 <div style="flex: 1; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative; ${idx < currentCfg.pool.pssr.length - 1 ? `border-right: 1px solid ${favColor}88;` : ''}">
                                     ${planIcon}
+                                    ${osusumeIcon}
                                     ${rarityIcon}
                                 </div>`;
                             }).join('')
@@ -68,16 +74,20 @@ export function renderPickupSelector(ui) {
                                 const pid = typeof currentCfg.pool.pssr[0] === 'string' ? currentCfg.pool.pssr[0] : currentCfg.pool.pssr[0].id;
                                 const cardData = produceList.find(c => c.id === pid);
                                 const isMobile = window.innerWidth <= 768;
-                                const planIconSize = isMobile ? '25px' : '35px';
-                                const rarityIconSize = isMobile ? '30px' : '60px';
+                                const planIconSize = isMobile ? '32px' : '48px';
+                                const osusumeIconSize = isMobile ? '22px' : '32px';
+                                const rarityIconSize = isMobile ? '35px' : '70px';
                                 
-                                const planIcon = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2;">` : '';
+                                const shadowStyle = 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));';
+                                const planIcon = (cardData?.plan && !isSelection) ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 10px; left: 10px; width: ${planIconSize}; z-index: 2; ${shadowStyle}">` : '';
+                                // 딱 4px만 더 위로 (정밀 조정)
+                                const osusumeIcon = (cardData?.osusume && !isSelection) ? `<img src="icons/${cardData.osusume}.webp" class="pickup-osusume-icon" style="position: absolute; bottom: ${isMobile ? 38 : 56}px; right: 10px; width: ${osusumeIconSize}; z-index: 2; ${shadowStyle}">` : '';
                                 
                                 // 등급 아이콘 매핑
                                 const rarityKey = (cardData?.rarity || 'ssr').toLowerCase().replace('p', '');
                                 const rarityIcon = cardData?.rarity ? `<img src="icons/${rarityKey}.png" class="pickup-rarity-icon" style="position: absolute; bottom: 8px; right: 8px; width: ${rarityIconSize}; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">` : '';
                                 
-                                return `${planIcon}${rarityIcon}`;
+                                return `${planIcon}${osusumeIcon}${rarityIcon}`;
                             })() : '' }
                             `
                         }

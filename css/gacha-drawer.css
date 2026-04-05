@@ -191,3 +191,20 @@
         bottom: 20px; 
     }
 }
+
+/* 서랍 내 픽업/선택 아이템용 플랜 아이콘 */
+.drawer-plan-icon {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 24px;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .drawer-plan-icon {
+        width: 18px;
+        top: 4px;
+        left: 4px;
+    }
+}

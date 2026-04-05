@@ -10,15 +10,11 @@
     margin: 0 auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    cursor: grab;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* 하단 가로 경계선 */
 }
 
 .idol-grid::-webkit-scrollbar {
     display: none;
-}
-
-.idol-grid:active {
-    cursor: grabbing;
 }
 
 .idol-item {
@@ -238,20 +234,18 @@
 .pssr-plan-icon {
     position: absolute;
     top: -15px; /* 정보창 경계선 위로 원복 */
-    right: 10px;
+    right: 44px; /* osusume-icon(30px) + 간격(4px) + 우측 여백(10px) */
     width: 30px;
     height: 30px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     z-index: 10;
 }
 
 .pssr-osusume-icon {
     position: absolute;
     top: -15px;
-    right: 44px; /* plan-icon(30px) + 간격(4px) + 우측 여백(10px) */
+    right: 10px;
     width: 30px;
     height: 30px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     z-index: 10;
 }
 
@@ -273,14 +267,14 @@
         width: 24px;
         height: 24px;
         top: -12px;
-        right: 8px;
+        right: 36px; /* osusume-icon(24px) + 간격(4px) + 우측 여백(8px) */
     }
 
     .pssr-osusume-icon {
         width: 24px;
         height: 24px;
         top: -12px;
-        right: 36px; /* plan-icon(24px) + 간격(4px) + 우측 여백(8px) */
+        right: 8px;
     }
 
     .pssr-rarity-icon {

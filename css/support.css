@@ -23,7 +23,6 @@
     border-radius: 4px 25px 4px 4px;
     border: 2px solid #bbb;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
     cursor: pointer;
     display: flex;
@@ -67,7 +66,6 @@
 
 .support-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
 .card-image-wrapper {

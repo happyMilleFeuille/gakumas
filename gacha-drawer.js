@@ -315,7 +315,11 @@ function renderPickupList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = pid;
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('idols/${pid}${imgVer}.webp'); border: 1px solid ${color};"></div>
+        
+        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('idols/${pid}${imgVer}.webp'); border: 1px solid ${color};">
+                ${planIconHtml}
+            </div>
             <div class="drawer-item-name">${(state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || pid)}</div>`;
         item.onclick = () => handleItemClick(pid, item);
         itemsLayer.appendChild(item);
@@ -336,13 +340,18 @@ function renderNormalList(itemsLayer, indicatorLayer) {
     NORMAL_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
         const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
         const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};"></div>
+        
+        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};">
+                ${planIconHtml}
+            </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
@@ -364,13 +373,18 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
     LIMITED_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
         const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
         const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};"></div>
+        
+        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};">
+                ${planIconHtml}
+            </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
@@ -387,6 +401,7 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
 }
 
 function renderUnitList(itemsLayer, indicatorLayer) {
+    const isMobile = window.innerWidth <= 768;
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
     const isJa = state.currentLang === 'ja';
     UNIT_CONFIG.forEach(cfg => {
@@ -395,6 +410,7 @@ function renderUnitList(itemsLayer, indicatorLayer) {
         
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid); // 플랜 아이콘용 데이터
         const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
         
         const item = document.createElement('div');
@@ -408,16 +424,25 @@ function renderUnitList(itemsLayer, indicatorLayer) {
                 ${cfg.pool.pssr.map(p => {
                     const pid = typeof p === 'string' ? p : p.id;
                     const imgVer = checkHasCard(pid) ? '2' : '1';
-                    return `<div style="flex: 1; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top;"></div>`;
+                    const memberData = produceList.find(c => c.id === pid);
+                    const memberPlan = memberData?.plan ? `<img src="icons/${memberData.plan}.webp" class="drawer-plan-icon" style="top: 4px; left: 4px; width: ${isMobile ? '16px' : '20px'};">` : '';
+                    return `<div style="flex: 1; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative;">
+                        ${memberPlan}
+                    </div>`;
                 }).join('')}
             </div>`;
         } else {
             const imgVer = checkHasCard(pid) ? '2' : '1';
-            imgInnerHtml = `<div style="width: 100%; height: 100%; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top;"></div>`;
+            const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+            imgInnerHtml = `<div style="width: 100%; height: 100%; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative;">
+                ${planIconHtml}
+            </div>`;
         }
         
         const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
-        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; overflow: hidden;">${imgInnerHtml}</div>
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; overflow: hidden; position: relative;">
+                ${imgInnerHtml}
+            </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
@@ -441,8 +466,15 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
         item.dataset.id = cfg.id;
         const favColor = idolColors[state.favoriteIdol] || "#ff4081";
         
+        const firstPSSR = cfg.pool?.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : (firstPSSR?.id || '');
+        const cardData = produceList.find(c => c.id === pid);
+        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon" style="z-index: 20;">` : '';
+
         const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
-        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${favColor}; overflow: hidden; background-image: url('${cfg.bannerImg}'); background-size: cover; background-position: top;"></div>
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${favColor}; overflow: hidden; background-image: url('${cfg.bannerImg}'); background-size: cover; background-position: top; position: relative;">
+                ${planIconHtml}
+            </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
@@ -464,13 +496,18 @@ function renderFesList(itemsLayer, indicatorLayer) {
     FES_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
         const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
         const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};"></div>
+        
+        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color}; position: relative;">
+                ${planIconHtml}
+            </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
         itemsLayer.appendChild(item);
