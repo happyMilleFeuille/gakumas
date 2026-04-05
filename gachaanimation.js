@@ -541,7 +541,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         const pssrPickup = currentResults.find(c => pssrPickups.some(p => (typeof p === 'string' ? p : p.id) === c.id));
         
         blackoutScheduled = null;
-        if (pssrPickup && Math.random() < 0.9) {
+        if (pssrPickup && Math.random() < 0.6) {
             const p = pssrPickups.find(p => (typeof p === 'string' ? p : p.id) === pssrPickup.id);
             const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
             const highest = getHighestRarity(currentResults);
