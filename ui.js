@@ -135,14 +135,27 @@ export function renderIdolList() {
     contentArea.appendChild(view);
     contentArea.appendChild(pssrArea);
 
-    // [추가] 즐겨찾기 아이돌이 있다면 자동으로 선택
+    // [수정] 즐겨찾기 아이돌이 있다면 애니메이션 없이 즉시 선택 상태로 렌더링
     if (state.favoriteIdol) {
-        setTimeout(() => {
-            const favIcon = contentArea.querySelector(`.idol-icon[alt="${state.favoriteIdol}"]`);
-            if (favIcon) {
-                favIcon.click();
+        const favIcon = contentArea.querySelector(`.idol-icon[alt="${state.favoriteIdol}"]`);
+        if (favIcon) {
+            // 1. 선택 스타일 즉시 적용
+            favIcon.classList.add('selected');
+            const color = (idolColors[state.favoriteIdol] || "#ff4d8d");
+            favIcon.style.borderColor = color;
+            favIcon.style.boxShadow = `0 0 15px ${color}66`;
+
+            // 2. 스크롤 위치 즉시 이동 (Smooth 없이)
+            const clickedItem = favIcon.parentElement.parentElement;
+            const gridContainer = clickedItem.parentElement;
+            if (gridContainer) {
+                const scrollPos = clickedItem.offsetLeft - (gridContainer.offsetWidth / 2) + (clickedItem.offsetWidth / 2);
+                gridContainer.scrollTo({ left: scrollPos, behavior: 'auto' });
             }
-        }, 100); // 렌더링 후 안정적인 실행을 위해 짧은 지연
+
+            // 3. 하단 PSSR 리스트 즉시 렌더링
+            renderProduceCards(state.favoriteIdol, pssrGrid);
+        }
     }
 }
 
@@ -182,12 +195,9 @@ function renderProduceCards(idolName, container) {
         const cardEl = item.querySelector('.pssr-card');
         const img = item.querySelector('.pssr-img');
         const imgWrapper = item.querySelector('.pssr-img-wrapper');
-        const planIcon = item.querySelector('.pssr-plan-icon');
-        const rarityIcon = item.querySelector('.pssr-rarity-icon');
-        const name = item.querySelector('.pssr-name');
-
-        const personalColor = idolColors[idolName] || "#ffffff";
         const infoBox = item.querySelector('.pssr-info');
+        const name = item.querySelector('.pssr-name');
+        const personalColor = idolColors[idolName] || "#ffffff";
 
         // [수정] 카드 전체와 정보창의 색상을 완벽하게 일치시킴 (불투명 처리)
         const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`; // 약 15% 농도
@@ -199,6 +209,24 @@ function renderProduceCards(idolName, container) {
 
         name.style.color = '#333';
         imgWrapper.style.backgroundColor = personalColor + "11";
+
+        // 플랜 아이콘 (기존 방식 원복)
+        const planIcon = item.querySelector('.pssr-plan-icon');
+        if (card.plan) {
+            planIcon.src = `icons/${card.plan}.webp`;
+        } else {
+            planIcon.style.display = 'none';
+        }
+
+        // 오스스메 아이콘 추가 (플랜 옆에 삽입)
+        if (card.osusume) {
+            const osusumeIcon = document.createElement('img');
+            osusumeIcon.className = 'pssr-osusume-icon';
+            osusumeIcon.src = `icons/${card.osusume}.webp`;
+            planIcon.parentElement.insertBefore(osusumeIcon, planIcon);
+        }
+
+        const rarityIcon = item.querySelector('.pssr-rarity-icon');
 
         const imageList = [
             `idols/${card.id}1.webp`,
@@ -217,6 +245,7 @@ function renderProduceCards(idolName, container) {
 
         let currentIndex = state.pssrIndex[card.id] || 0;
         if (currentIndex >= imageList.length) currentIndex = 0;
+        
         img.src = imageList[currentIndex];
 
         cardEl.addEventListener('click', (e) => {
@@ -762,6 +791,7 @@ function updateSupportGrid(container) {
     }
     updatePageTranslations(container);
 }
+
 
 
 

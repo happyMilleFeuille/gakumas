@@ -97,6 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 홈 퀵 메뉴 바로가기 (이벤트 위임)
+    document.addEventListener('click', (e) => {
+        const quickBtn = e.target.closest('.home-quick-btn');
+        if (quickBtn) {
+            handleNavigation(quickBtn.dataset.target);
+        }
+    });
+
     // [반응형 대응] 주요 경계(768px, 1024px)를 넘나들 때 로드맵 재렌더링
     const getLayoutStage = (w) => {
         if (w <= 768) return 'mobile';

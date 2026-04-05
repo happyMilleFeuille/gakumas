@@ -49,6 +49,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     let blackoutScheduled = null;
     let gachaBgmStartTime = 0;
     let existingIdsSet = new Set();
+    let baselineIdsSet = new Set(); // 가챠 시작 시점의 순수 베이스라인 보관용
     let subState = "";
 
     const stopStepSfx = () => {
@@ -472,7 +473,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         }
         document.body.classList.remove('immersive-mode');
         if (muteControls) { muteControls.classList.remove('hidden'); muteControls.style.display = 'flex'; }
-        if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode);
+        if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode, baselineIdsSet);
         currentState = States.FINISHED;
     };
 
@@ -525,7 +526,8 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         gachaMode = mode;
         currentResults = results;
         const currentLog = state.gachaLog[state.gachaType] || [];
-        existingIdsSet = new Set(currentLog.map(item => item.id));
+        baselineIdsSet = new Set(currentLog.map(item => item.id)); // 원본 보존
+        existingIdsSet = new Set(baselineIdsSet); // 연출용 복사본
         
         const type = state.gachaType;
         let activeCfg = CURRENT_PICKUPS[type] || { pssr: [] };

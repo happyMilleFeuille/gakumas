@@ -362,7 +362,7 @@ function setupAnimationLogic(ui, contentArea) {
                 if (el) el.classList.add('hidden');
             });
         },
-        onFinish: (currentResults, gachaMode) => {
+        onFinish: (currentResults, gachaMode, existingIdsBeforePull) => {
             document.body.classList.add('gacha-result-active');
             updateTotalPullsUI(ui, prevPulls);
             ['btn-gacha-log', 'btn-gacha-rates', 'jewel-container'].forEach(id => {
@@ -387,10 +387,10 @@ function setupAnimationLogic(ui, contentArea) {
                 setTimeout(() => { ui.btn1.style.pointerEvents = ui.btn10.style.pointerEvents = 'auto'; updateGachaButtonsState(ui); }, 300);
             }
             
-            // [수정] 최신 결과 컨테이너를 다시 찾아서 렌더링
+            // [수정] 최신 결과 컨테이너를 다시 찾아서 렌더링 (NEW 판정용 기존 ID 세트 전달)
             const latestResultsContainer = document.getElementById('gacha-results');
             const latestUi = { ...ui, resultsContainer: latestResultsContainer };
-            renderResults(latestUi, currentResults);
+            renderResults(latestUi, currentResults, existingIdsBeforePull);
 
             const fixedBg = document.getElementById('fixed-bg');
             if (fixedBg) {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gakumas - New Project</title>
+    <title>Gakumas Note</title>
     <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16x16.png">
     <link rel="stylesheet" href="css/base.css">
@@ -42,8 +42,6 @@
         <div id="gacha-progress-text">0%</div>
     </div>
 
-
-
     <!-- 가챠 선택 서랍 (최상위 배치) -->
     <div id="gacha-drawer" class="gacha-drawer">
         <div class="drawer-header">
@@ -57,6 +55,7 @@
     <main>
         <section id="idol">
             <div class="lang-switch-container">
+                <img src="icons/title.webp" alt="Gakumas Note" class="main-logo-img">
                 <div class="lang-toggle-wrap">
                     <input type="radio" name="lang" id="lang-ko" value="ko">
                     <input type="radio" name="lang" id="lang-ja" value="ja">
@@ -106,30 +105,23 @@
             </div>
             <div class="button-group horizontal">
                 <button class="menu-btn" data-target="idol">
-                    <img src="icons/idol.png" alt="" class="btn-icon">
-                    <span data-i18n="btn_empty">아이돌</span>
+                    <img src="icons/idol.svg" alt="" class="btn-icon">
                 </button>
                 <button class="menu-btn" data-target="support">
-                    <img src="icons/card.png" alt="" class="btn-icon">
-                    <span data-i18n="btn_supporter">서포트</span>
+                    <img src="icons/card.svg" alt="" class="btn-icon">
                 </button>
                 <button class="menu-btn" data-target="home">
-                    <img src="icons/home.png" alt="" class="btn-icon">
-                    <span data-i18n="btn_home">홈</span>
+                    <img src="icons/home.svg" alt="" class="btn-icon">
                 </button>
                 <button class="menu-btn" data-target="calc">
-                    <img src="icons/caculation.png" alt="" class="btn-icon">
-                    <span data-i18n="btn_calc">계산기</span>
+                    <img src="icons/caculation.svg" alt="" class="btn-icon">
                 </button>
                 <button class="menu-btn" data-target="gacha">
-                    <img src="icons/gasha.png" alt="" class="btn-icon">
-                    <span data-i18n="btn_gacha">가챠</span>
+                    <img src="icons/gasha.svg" alt="" class="btn-icon">
                 </button>
             </div>
         </section>
     </main>
-
-
 
     <div id="card-modal" class="modal hidden">
         <div class="modal-content">
@@ -201,32 +193,48 @@
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
         <h1 data-i18n="main_title" class="main-logo-h1">
-            <img src="icons/title.webp" alt="Title" class="main-logo-img">
+            <div class="main-logo-sub">GAKUMAS NOTE</div>
         </h1>
+
+        <!-- 홈 퀵 메뉴 바로가기 -->
+        <div class="home-quick-nav">
+            <button class="home-quick-btn" data-target="idol">
+                <img src="icons/idol.svg" alt="" class="quick-btn-icon">
+                <span data-i18n="btn_empty">아이돌</span>
+            </button>
+            <button class="home-quick-btn" data-target="support">
+                <img src="icons/card.svg" alt="" class="quick-btn-icon">
+                <span data-i18n="btn_supporter">서포트카드</span>
+            </button>
+            <button class="home-quick-btn" data-target="calc">
+                <img src="icons/caculation.svg" alt="" class="quick-btn-icon">
+                <span data-i18n="btn_calc">계산기</span>
+            </button>
+            <button class="home-quick-btn" data-target="gacha">
+                <img src="icons/gasha.svg" alt="" class="quick-btn-icon">
+                <span data-i18n="btn_gacha">가챠 시뮬레이터</span>
+            </button>
+        </div>
 
         <!-- PSSR 출시 로드맵 -->
         <div class="roadmap-filter-wrap">
-            <button id="btn-roadmap-expand" class="roadmap-expand-btn">
-                <span data-i18n="roadmap_since_release">실장 로드맵</span>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                    stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;">
-                    <path d="m6 9 6 6 6-6" />
-                </svg>
-            </button>
-            <div class="roadmap-filter-container">
-                <button id="roadmap-filter-btn" class="roadmap-filter-btn">
-                    <span data-i18n="roadmap_filter">필터</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6" />
-                    </svg>
+            <div class="roadmap-control-group">
+                <button id="btn-roadmap-expand" class="roadmap-expand-btn">
+                    <span data-i18n="roadmap_since_release">실장 로드맵</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;"><path d="m6 9 6 6 6-6" /></svg>
                 </button>
-                <div id="roadmap-filter-dropdown" class="roadmap-filter-dropdown">
-                    <div class="roadmap-controls">
-                        <label class="toggle-container">
-                            <input type="checkbox" id="pssr-another-toggle" checked>
-                            <span class="toggle-label" data-i18n="roadmap_show_another">어나더</span>
-                        </label>
+                <div class="roadmap-v-divider"></div>
+                <div class="roadmap-filter-container">
+                    <button id="roadmap-filter-btn" class="roadmap-filter-btn">
+                        <span data-i18n="roadmap_filter">필터</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                    </button>
+                    <div id="roadmap-filter-dropdown" class="roadmap-filter-dropdown">
+                        <div class="roadmap-controls">
+                            <label class="toggle-container">
+                                <input type="checkbox" id="pssr-another-toggle" checked>
+                                <span class="toggle-label" data-i18n="roadmap_show_another">어나더</span>
+                            </label>
                         <label class="toggle-container">
                             <input type="checkbox" id="pssr-dist-toggle" checked>
                             <span class="toggle-label" data-i18n="roadmap_show_dist">배포</span>
@@ -264,6 +272,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
         <div id="pssr-roadmap-container" class="pssr-roadmap-container is-collapsed">
             <div id="pssr-roadmap-header" class="roadmap-header-area"></div>

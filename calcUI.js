@@ -1,5 +1,5 @@
-// calcUI.js
 import { state, idolColors } from './state.js';
+import { updatePageTranslations } from './utils.js';
 import { activityOptions } from './calcOptions.js';
 import { idolData } from './calcData.js';
 import { cardList } from './carddata.js';
@@ -388,6 +388,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <button class="calc-btn primary-btn" id="btn-run-calc" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">${isJa ? '計算' : '계산'}</button>
                     <button class="back-btn primary-btn">${isJa ? '戻る' : '뒤로가기'}</button>
                 </div>
+                <div class="idol-selection-info">
+                    <span data-i18n="calc_idol_desc">친애도 20 이상 기준</span>
+                </div>
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
                 <div class="plan-type-selector">
                     ${['sense', 'logic', 'anomaly'].map(pt => {
@@ -481,7 +484,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 <div class="selected-support-container" id="selected-support-container"></div>
                 <div class="activity-counter" id="activity-counter"></div>
-                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? (isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼') : (isJa ? 'スケジュールを 閉じる ▲' : '주간 행동 닫기 ▲')}</div>
+                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? (isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼') : (isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲')}</div>
                 <div class="unified-plan-board ${store.isBoardCollapsed ? 'collapsed-board' : ''}" data-calc-type="${store.type}">${weeksHtml}</div>
             </div>
         </div>
@@ -491,7 +494,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         updateSPBadge(w, store.selectedIdol);
         updateMainLabel(w);
     });
-
+    updatePageTranslations();
     handlers.setupAll();
 }
 

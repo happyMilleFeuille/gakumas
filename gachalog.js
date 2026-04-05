@@ -152,9 +152,9 @@ function renderStats(container, total, stats, topChar) {
             <span class="toggle-icon">▼</span>
         </div>
         <div id="stat-produce-content" class="stat-row-bottom hidden">
-            <div class="stat-item"><span class="stat-label">PSSR <small>(${getPerc(stats.produce.SSR)})</small></span><span class="stat-value">${stats.produce.SSR}</span></div>
-            <div class="stat-item"><span class="stat-label">PSR <small>(${getPerc(stats.produce.SR)})</small></span><span class="stat-value">${stats.produce.SR}</span></div>
-            <div class="stat-item"><span class="stat-label">PR <small>(${getPerc(stats.produce.R)})</small></span><span class="stat-value">${stats.produce.R}</span></div>
+            <div class="stat-item"><span class="stat-label">SSR <small>(${getPerc(stats.produce.SSR)})</small></span><span class="stat-value">${stats.produce.SSR}</span></div>
+            <div class="stat-item"><span class="stat-label">SR <small>(${getPerc(stats.produce.SR)})</small></span><span class="stat-value">${stats.produce.SR}</span></div>
+            <div class="stat-item"><span class="stat-label">R <small>(${getPerc(stats.produce.R)})</small></span><span class="stat-value">${stats.produce.R}</span></div>
         </div>
 
         <div class="stat-category-header" data-target="support"><span>${labels.s}</span><span class="toggle-icon">▼</span></div>

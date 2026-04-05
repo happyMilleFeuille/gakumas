@@ -295,22 +295,33 @@ function setupSupportTooltips(container) {
     if (isMobile) document.addEventListener('touchstart', globalHide, { passive: true });
 }
 
-export function renderResults(ui, currentResults) {
+export function renderResults(ui, currentResults, existingIdsBeforePull = null) {
     if (!ui.resultsContainer) return;
     ui.resultsContainer.innerHTML = '';
     const itemTpl = document.getElementById('tpl-gacha-result-item');
     ui.resultsContainer.classList.toggle('single-result', currentResults.length === 1);
-    const currentLog = state.gachaLog[state.gachaType] || [];
-    const prePullExistingIds = new Set(currentLog.slice(0, -currentResults.length).map(item => item.id));
+
+    // existingIdsBeforePull이 전달되면 그대로 사용, 아니면 로그에서 계산
+    let prePullExistingIds;
+    if (existingIdsBeforePull) {
+        prePullExistingIds = existingIdsBeforePull;
+    } else {
+        const currentLog = state.gachaLog[state.gachaType] || [];
+        const priorEntries = currentLog.filter((item, idx) => idx < currentLog.length - currentResults.length);
+        prePullExistingIds = new Set(priorEntries.map(item => item.id));
+    }
 
     currentResults.forEach((card, index) => {
         const clone = itemTpl.content.cloneNode(true);
         const cardEl = clone.querySelector('.gacha-result-card');
         cardEl.classList.add('animate', `${card.displayRarity.toLowerCase()}-bg`);
         cardEl.style.animationDelay = `${index * 0.08}s`;
+        // 이전 기록에 이 카드 ID가 없었으면 NEW 배지 표시
         if (!prePullExistingIds.has(card.id)) {
             const badge = document.createElement('div'); badge.className = 'new-badge'; badge.textContent = 'NEW'; cardEl.appendChild(badge);
         }
+
+
         const img = clone.querySelector('.result-card-img');
         if (card.type === 'produce') {
             img.src = `idols/${card.id}1.webp`; cardEl.classList.add('produce-card');

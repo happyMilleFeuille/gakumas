@@ -512,7 +512,7 @@ function startWeeklyPlan(type) {
                     if (calcStore.isBoardCollapsed) {
                         toggleBar.textContent = isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼';
                     } else {
-                        toggleBar.textContent = isJa ? 'スケジュール를 닫기 ▲' : '주간 행동 닫기 ▲';
+                        toggleBar.textContent = isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲';
                     }
                 };
             }
