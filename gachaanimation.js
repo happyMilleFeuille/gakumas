@@ -126,7 +126,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         const { videoContainer, videoMain, videoNext } = getElements();
         const highest = getHighestRarity(currentResults);
         let src = (gachaMode === 1) ? 'gasya/start_r.mp4' : 'gasya/start_sr.mp4';
-        if (highest === 'SSR' && Math.random() < 0.7) src = 'gasya/start_ssr.mp4';
+        if (highest === 'SSR' && Math.random() < 0.6) src = 'gasya/start_ssr.mp4';
         else if (gachaMode === 10 && Math.random() < 0.2) src = 'gasya/start_r.mp4';
 
         currentVideoSrc = src;
@@ -541,7 +541,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         const pssrPickup = currentResults.find(c => pssrPickups.some(p => (typeof p === 'string' ? p : p.id) === c.id));
 
         blackoutScheduled = null;
-        if (pssrPickup && Math.random() < 0.6) {
+        if (pssrPickup && Math.random() < 0.7) {
             const p = pssrPickups.find(p => (typeof p === 'string' ? p : p.id) === pssrPickup.id);
             const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
             const highest = getHighestRarity(currentResults);
