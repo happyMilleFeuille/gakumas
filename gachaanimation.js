@@ -305,7 +305,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             if (!canClick) return;
             isLooping = false; canClick = false; 
             const bgmSrc = char ? `bgm/bgm${char}.mp3` : 'gasya/blackoutbgm.mp3';
-            playSound(bgmSrc, { loop: true, isBGM: true, bgmType: 'blackout', volume: 0.55 });
+            playSound(bgmSrc, { loop: true, isBGM: true, bgmType: 'blackout', volume: 0.7 });
             if (char) {
                 videoNext.src = assetBlobs[`gasya/blackout${char}.mp4`] || `gasya/blackout${char}.mp4`;
                 videoNext.onplaying = () => { 
