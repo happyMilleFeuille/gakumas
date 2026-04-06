@@ -62,8 +62,8 @@ export const UNIT_CONFIG = [
         pool: {
             pssr: [
                 { id: 'ssrsena_starmineunit', char: 'sena' },
-                { id: 'ssrmisuzu_starmineunit', char: 'misuzu' },
                 { id: 'ssrume_starmineunit', char: 'ume' },
+                { id: 'ssrmisuzu_starmineunit', char: 'misuzu' },
 
             ],
             sssr: ['dance_unitfree2'],
