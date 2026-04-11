@@ -79,6 +79,7 @@ export function renderIdolList() {
 
         img.src = `icons/idolicons/${name}.png`;
         img.alt = name;
+        favBtn.style.setProperty('--fav-color', idolColors[name] || '#fbc02d');
 
         // 즐겨찾기 상태 반영
         if (state.favoriteIdol === name) {

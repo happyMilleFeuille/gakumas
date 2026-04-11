@@ -163,7 +163,7 @@ export const produceList = [
 
 
     // --- 미스즈 SSR (PSSR) ---
-    { id: "ssrmisuzu_1st", name: "달거북이", name_ja: "ツキノカメ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf" },
+    { id: "ssrmisuzu_1st", name: "달거북이", name_ja: "ツキノカメ", osusume: "preservation", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf" },
     { id: "ssrmisuzu_1st1another", name: "너와 세미블루", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-07-07", another: true },
     { id: "ssrmisuzu_1st2another", name: "관국", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-22", another: true },
     { id: "ssrmisuzu_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", releasedAt: "2025-08-29", source: "limited", another: true },
@@ -250,7 +250,7 @@ export const produceList = [
     { id: "srtsubame_1sr", name: "초지관철", name_ja: "初志貫徹", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2025-11-16" },
     { id: "srsena_1sr", name: "첫 번째 별", name_ja: "一番星", osusume: "fullpower", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2024-11-16" },
     { id: "srume_1sr", name: "아이돌 시작!", name_ja: "アイドル、はじめっ!", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
-    { id: "srmisuzu_1sr", name: "느긋하게, 한 걸음씩", name_ja: "ゆっくり、一歩ずつ", osusume: "enthusiasm", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16" },
+    { id: "srmisuzu_1sr", name: "느긋하게, 한 걸음씩", name_ja: "ゆっくり、一歩ずつ", osusume: "preservation", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16" },
     { id: "srhiro_1sr", name: "가장 적성에 안맞는 일", name_ja: "一番向いてないこと", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
     { id: "srlilja_1sr", name: "한 발 내딛은 앞에는", name_ja: "一つ踏み出した先に", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
     { id: "srmao_1sr", name: "시작은 멋있게", name_ja: "はじまりはカッコよく", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
@@ -269,7 +269,7 @@ export const produceList = [
     { id: "rsena_2r", name: "초전", name_ja: "初陣", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2025-07-04" },
     { id: "rume_1r", name: "학원생활", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
     { id: "rume_2r", name: "초전", name_ja: "初陣", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2025-07-04" },
-    { id: "rmisuzu_1r", name: "학원생활", name_ja: "学園生活", osusume: "fullpower", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16" },
+    { id: "rmisuzu_1r", name: "학원생활", name_ja: "学園生活", osusume: "preservation", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16" },
     { id: "rmisuzu_2r", name: "초전", name_ja: "初陣", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2025-07-04" },
     { id: "rsaki_1r", name: "학원생활", name_ja: "学園生活", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
     { id: "rsaki_2r", name: "초성", name_ja: "初声", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-08-10" },

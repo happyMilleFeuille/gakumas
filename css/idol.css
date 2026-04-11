@@ -72,8 +72,8 @@
 }
 
 .fav-star-btn.active .fav-star-svg {
-    color: #fbc02d;
-    /* 활성화 시 노란색 */
+    color: var(--fav-color, #fbc02d);
+    /* 활성화 시 아이돌 고유색 (기전 노란색 유지 가능) */
 }
 
 .fav-star-btn:hover {

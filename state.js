@@ -19,7 +19,7 @@ if (!storedLog) {
 export const idolColors = {
     saki: "#E30F25",
     temari: "#0C7BBB",
-    kotone: "#F8C112",
+    kotone: "#F3B005",
     mao: "#7F1184",
     lilja: "#7BC8F6",
     china: "#F68B1F",
