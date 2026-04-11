@@ -25,7 +25,7 @@ export const produceList = [
     { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 9.3, releasedAt: "2026-02-27", another: true },
     { id: "ssrsaki_2nd", name: "Boom Boom Pow", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2024-06-19", plan: "logic", source: "normal", jumpTime2: 9.3, youtube_url: "https://youtu.be/gSjzH8FxYuA?si=SxE6cGHrYfFz6mlY" },
-    { id: "ssrsaki_3rd", name: "Wildest Flower", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2026-03-19", plan: "logic", source: "normal", jumpTime2: 9.3, youtube_url: "https://youtu.be/iiiLtE4w2pE?si=1LC4wWMxbAt-huak" },
+    { id: "ssrsaki_3rd", name: "Wildest Flower", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2026-03-19", plan: "logic", source: "normal", jumpTime2: 7.2, youtube_url: "https://youtu.be/iiiLtE4w2pE?si=1LC4wWMxbAt-huak" },
 
 
     // --- 치나 SSR (PSSR) ---
@@ -159,6 +159,7 @@ export const produceList = [
     { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrume_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrume_2nd", name: "구-스-피-", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-11-28", youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn" },
+    { id: "ssrume_3rd", name: "새하얀 페이지와 수채의 주인공", name_ja: "真っ白いページと水彩の主人公", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-04-10", jumpTime2: 7.6, youtube_url: "https://youtu.be/zpDB6GzOXq0?si=lrT8tCS6sSxg6QB1" },
 
 
     // --- 미스즈 SSR (PSSR) ---

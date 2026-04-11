@@ -1161,6 +1161,27 @@ export const cardList = [
             ]
     },
     {
+        id: "dance_logic3",
+        name: "위인가!!",
+        name_ja: "上かッ！！",
+        type: "dance",
+        plan: "logic",
+        have: "card_m",
+        attrs: ["motivation"],
+        releasedAt: "2026-04-10",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "percentparam",
+                "sp_param20",
+                "supportrateup",
+                "sp_param",
+                "get_ssr",
+                "event_paraup"
+            ]
+    },
+    {
         id: "dance_distlogic1",
         name: "우리들, 하면 된다",
         name_ja: "わたしたち、やればできる",
@@ -2906,6 +2927,27 @@ export const cardList = [
                 "supportrateup",
                 "goout",
                 "gift",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "dance_srlogic2",
+        name: "와구와구 오물오물",
+        name_ja: "パクパクもぐもぐ",
+        type: "dance",
+        releasedAt: "2026-04-10",
+        plan: "logic",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_motivation"], target: "change", max: 2 }],
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "get",
+                "supportrateup",
+                "change3",
+                "get_item6",
                 "event_paraup"
             ]
     },

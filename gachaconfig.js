@@ -90,6 +90,16 @@ export const UNIT_CONFIG = [
 // 통상 가챠 상세 설정 (기간별 라인업 등)
 export const NORMAL_CONFIG = [
     {
+        id: 'ssrume_3rd',
+        date: '2026-04-10',
+        bannerImg: 'idols/ssrume_3rd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrume_3rd', char: 'ume' }],
+            sssr: ['dance_logic3'],
+            sr_card: ['dance_srlogic2']
+        }
+    },
+    {
         id: 'ssrsaki_3rd',
         date: '2026-03-19',
         bannerImg: 'idols/ssrsaki_3rd1.webp',

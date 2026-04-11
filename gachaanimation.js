@@ -51,6 +51,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     let existingIdsSet = new Set();
     let baselineIdsSet = new Set(); // 가챠 시작 시점의 순수 베이스라인 보관용
     let subState = "";
+    let gachaSessionId = 0; // 세션 ID: 이전 가챠의 잔여 타이머가 새 세션에 영향을 주는 것을 방지
 
     const stopStepSfx = () => {
         if (activeStepSfx) {
@@ -77,11 +78,25 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         });
     };
 
+    // canClick을 안전하게 설정하는 헬퍼 (세션 ID 검증 포함)
+    const scheduleCanClick = (delayMs, guardState = null) => {
+        if (clickTimer) clearTimeout(clickTimer);
+        const sessionAtSchedule = gachaSessionId;
+        clickTimer = setTimeout(() => {
+            // 세션이 바뀌었으면 무시 (이전 가챠에서 남은 타이머 방지)
+            if (sessionAtSchedule !== gachaSessionId) return;
+            // 상태 조건이 있으면 검증
+            if (guardState && currentState !== guardState) return;
+            canClick = true;
+        }, delayMs);
+    };
+
     const transitionTo = (newState, params = {}) => {
         console.log(`Transitioning: ${currentState} -> ${newState}`);
         const { videoContainer, videoMain, videoNext } = getElements();
 
         if (clickTimer) clearTimeout(clickTimer);
+        clickTimer = null;
 
         currentState = newState;
         currentStep = params.step || 0;
@@ -160,7 +175,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
                 videoMain.play().then(() => {
                     requestAnimationFrame(checkLoop);
-                    setTimeout(() => { if (currentState === States.STARTING) canClick = true; }, 600);
+                    scheduleCanClick(600, States.STARTING);
                 }).catch(err => {
                     console.error("Video play failed:", err);
                     setTimeout(() => transitionTo(States.SHOWING_INDIVIDUAL), 500);
@@ -210,7 +225,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         videoMain.onended = () => transitionTo(States.PROMOTION, { step: 1 });
         videoMain.onclick = () => { if (canClick) videoMain.onended(); };
         videoMain.play();
-        setTimeout(() => { if (currentState === States.SEQUEL) canClick = true; }, 2000);
+        scheduleCanClick(2000, States.SEQUEL);
     };
 
     const playPromotionVideo = (step, prevType) => {
@@ -264,8 +279,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                     soundPlayed = true;
                 }
             }
-            if (clickTimer) clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { if (currentState === States.PROMOTION && currentStep === step) canClick = true; }, step === 1 ? 800 : (step === 2 ? 1200 : 1400));
+            scheduleCanClick(step === 1 ? 800 : (step === 2 ? 1200 : 1400), States.PROMOTION);
             if (blackoutScheduled && blackoutScheduled.step === step) {
                 const checkBlackout = () => {
                     if (currentState !== States.PROMOTION || currentStep !== step) return;
@@ -322,7 +336,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         videoNext.play().then(() => {
             videoNext.style.display = 'block';
             requestAnimationFrame(checkLoop);
-            setTimeout(() => { if (currentState === States.BLACKOUT) canClick = true; }, 1000);
+            scheduleCanClick(1000, States.BLACKOUT);
         });
     };
 
@@ -398,8 +412,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 }, 350);
             }
             const lockTime = (card.displayRarity === 'SSR' || card.rarity === 'PSSR') ? 1300 : 500;
-            if (clickTimer) clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, lockTime);
+            scheduleCanClick(lockTime, States.SHOWING_INDIVIDUAL);
         };
 
         videoNext.onended = () => {
@@ -414,8 +427,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                     if (currentState !== States.SHOWING_INDIVIDUAL) return;
                     subState = "pssr_special";
                     videoNext.style.display = 'block';
-                    if (clickTimer) clearTimeout(clickTimer);
-                    clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 1000);
+                    scheduleCanClick(1000, States.SHOWING_INDIVIDUAL);
                 };
                 videoNext.play();
             } else { playIndividualResults(index + 1); }
@@ -429,16 +441,14 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 const cur = videoNext.currentTime;
                 if (cur < j1) {
                     canClick = false;
-                    if (clickTimer) clearTimeout(clickTimer);
                     videoNext.currentTime = j1;
-                    clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 1200);
+                    scheduleCanClick(1200, States.SHOWING_INDIVIDUAL);
                     return;
                 }
                 if (j2 && cur < j2) {
                     canClick = false;
-                    if (clickTimer) clearTimeout(clickTimer);
                     videoNext.currentTime = j2;
-                    clickTimer = setTimeout(() => { if (currentState === States.SHOWING_INDIVIDUAL) canClick = true; }, 500);
+                    scheduleCanClick(500, States.SHOWING_INDIVIDUAL);
                     return;
                 }
             }
@@ -448,11 +458,14 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     };
 
     const finishGacha = () => {
-        const { videoContainer, videoMain, videoNext } = getElements();
+        const { videoContainer, videoMain, videoNext, skipBtn } = getElements();
         stopBGM('gacha'); stopBGM('main'); stopBGM('blackout'); stopStepSfx();
         resetOverlays();
         canClick = false;
         if (clickTimer) clearTimeout(clickTimer);
+        clickTimer = null;
+        // skip 버튼 핸들러 명시적 해제 (다음 세션에서 잔존 방지)
+        if (skipBtn) skipBtn.onclick = null;
 
         const muteControls = document.getElementById('gacha-header-controls');
         if (!state.gachaMuted) playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
@@ -480,6 +493,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     const startGacha = (mode, results) => {
         const { videoContainer, videoMain, videoNext, skipBtn } = getElements();
         stopBGM('main');
+
+        // 새 세션 시작: 이전 세션의 잔여 타이머를 무효화
+        gachaSessionId++;
+        canClick = false;
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
 
         // 스킵 버튼 이벤트 바인딩 (매번 최신 요소에 적용)
         if (skipBtn) {
