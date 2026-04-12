@@ -2298,7 +2298,7 @@ export const cardList = [
         releasedAt: "2024-09-20",
         plan: "logic",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["get_goodimpression"], target: "get", display: "카드 복제", max: 1 }],
+        item_effects: [{ type: "action", trigger: ["get_goodimpression"], target: "get", display: { ko: "카드 복제", ja: "カードコピー" }, max: 1 }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3489,7 +3489,7 @@ export const cardList = [
         type: "visual",
         plan: "anomaly",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["get_fullpower"], stats: { visual: 15 }, target: "get", display: "카드 복제", max: 1 }],
+        item_effects: [{ type: "action", trigger: ["get_fullpower"], stats: { visual: 15 }, target: "get", display: { ko: "카드 복제", ja: "カードコピー" }, max: 1 }],
         releasedAt: "2025-12-08",
         rarity: "SR",
         extra1: "param",

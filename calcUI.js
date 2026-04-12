@@ -133,6 +133,10 @@ export function updateActivityCountsUI(store, counts) {
                                 <span>${isJa ? 'チェンジ' : '체인지'}</span>
                                 <span class="dist-val" style="color: #2196f3;">${counts.total.change || 0}</span>
                             </div>
+                            <div class="dist-unit" style="opacity: ${counts.total.customize > 0 ? 1 : 0.3}">
+                                <span>${isJa ? 'カスタマイズ' : '개조'}</span>
+                                <span class="dist-val" style="color: #2196f3;">${counts.total.customize || 0}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -839,7 +843,10 @@ export function showSupportItemTooltip(slot, cardId) {
                 effectDescParts.push(statsStr);
             }
             if (eff.target) {
-                let targetStr = eff.display || labels[eff.target] || eff.target;
+                let displayText = eff.display
+                    ? (typeof eff.display === 'object' ? (isJa ? eff.display.ja : eff.display.ko) : eff.display)
+                    : null;
+                let targetStr = displayText || labels[eff.target] || eff.target;
                 if (eff.value) targetStr += ` +${eff.value}`;
                 effectDescParts.push(targetStr);
             }

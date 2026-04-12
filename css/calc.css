@@ -416,8 +416,8 @@
     }
 
     .opt-line {
-        height: auto !important;
-        /* 고정 높이 제거하여 간격이 잘 보이도록 수정 */
+        height: 16px !important;
+        /* 고정 높이 유지하여 빈 슬롯과 정렬 맞춤 */
     }
 }
 
