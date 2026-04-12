@@ -775,3 +775,122 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
         if (idolContainer) idolContainer.addEventListener('scroll', onScrollClose, { passive: true });
     }, 0);
 }
+
+/**
+ * 서포트 카드의 아이템 효과 설명을 보여주는 툴팁
+ */
+export function showSupportItemTooltip(slot, cardId) {
+    document.querySelectorAll('.support-item-tooltip').forEach(t => t.remove());
+
+    const isJa = state.currentLang === 'ja';
+    const isMobile = window.innerWidth <= 768;
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+    const card = cardList.find(c => c.id === cardId);
+    if (!card || !card.item_effects) return;
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'calc-tooltip support-item-tooltip';
+
+    // 모바일 대응 스타일 조정
+    const padding = isMobile ? '6px 10px' : '10px 14px';
+    const borderWidth = isMobile ? '1.2px' : '2px';
+    const fontSize = isMobile ? '0.7rem' : '0.8rem';
+    const imgSize = isMobile ? '24px' : '32px';
+
+    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 85vw; padding: ${padding}; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: ${borderWidth} solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 10000; word-break: keep-all;`;
+
+    // 아이템 효과 텍스트 생성
+    const effects = card.item_effects.map(eff => {
+        const labels = isJa ? {
+            get: 'カード獲得', get_concentration: '集中カード獲得', get_goodcondition: '好調カード獲得',
+            get_motivation: 'やる気カード獲得', get_goodimpression: '好印象カード獲得',
+            get_genki: '元気カード獲得', get_preservation: '温存カード獲得',
+            get_enthusiasm: '強気カード獲得', get_fullpower: '全力カード獲得',
+            get_drink: 'ドリンク獲得', get_item: 'アイテム獲得', get_ssr: 'SSRカード獲得',
+            purchase_drink: 'ドリンク交換', gift: '活動支給・差し入れ', goout: 'おでかけ',
+            lesson: 'レッスン', sp: 'SPレッスン', sp_lesson: 'SPレッスン', audition: '試験/オーディション', advice: '相談',
+            rest: '休む', test: '試験/オーディション', class: '授業/営業', spclass: '特別指導',
+            enhance: 'カード強化', delete: 'カード削除', delete_t: 'トラブルカード削除', change: 'カードチェンジ'
+        } : {
+            get: '카드 획득', get_concentration: '집중 카드 획득', get_goodcondition: '호조 카드 획득',
+            get_motivation: '의욕 카드 획득', get_goodimpression: '호인상 카드 획득',
+            get_genki: '원기 카드 획득', get_preservation: '온존 카드 획득',
+            get_enthusiasm: '강기 카드 획득', get_fullpower: '전력 카드 획득',
+            get_drink: '드링크 획득', get_item: '아이템 획득', get_ssr: 'SSR 카드 획득',
+            purchase_drink: '드링크 구매', gift: '활동지급, 사시이레', goout: '외출',
+            lesson: '레슨', sp: 'SP 레슨', sp_lesson: 'SP 레슨', audition: '시험/오디션', advice: '상담',
+            rest: '휴식', test: '시험/오디션', class: '수업/영업', spclass: '특별지도',
+            enhance: '카드 강화', delete: '카드 삭제', delete_t: '트러블 카드 삭제', change: '카드 체인지'
+        };
+
+        const statLabels = isJa
+            ? { vocal: 'ボーカル', dance: 'ダンス', visual: 'ビジュアル' }
+            : { vocal: '보컬', dance: '댄스', visual: '비주얼' };
+
+        // 트리거 처리 (배열인 경우 첫 번째 값만 사용)
+        const rawTrigger = Array.isArray(eff.trigger) ? eff.trigger[0] : eff.trigger;
+        const trigger = labels[rawTrigger] || rawTrigger;
+        const maxSuffix = (eff.max && eff.max < 9) ? (isJa ? ` (プロデュース中${eff.max}回)` : ` (프로듀스 중 ${eff.max}회)`) : '';
+
+        if (eff.type === 'action') {
+            let effectDescParts = [];
+            if (eff.stats) {
+                const statsStr = Object.entries(eff.stats).map(([k, v]) => `${statLabels[k] || k.toUpperCase()} +${v}`).join(', ');
+                effectDescParts.push(statsStr);
+            }
+            if (eff.target) {
+                let targetStr = eff.display || labels[eff.target] || eff.target;
+                if (eff.value) targetStr += ` +${eff.value}`;
+                effectDescParts.push(targetStr);
+            }
+            const effectDesc = effectDescParts.join(', ');
+            return isJa ? `${trigger}時 ${effectDesc}${maxSuffix}` : `${trigger} 시 ${effectDesc}${maxSuffix}`;
+        } else if (eff.type === 'add_count') {
+            const target = labels[eff.target] || eff.target;
+            return `${target} +${eff.value}${maxSuffix}`;
+        }
+        return '';
+    }).filter(t => t).join('<br>');
+
+    tooltip.innerHTML = `
+        <div style="display: flex; align-items: center; gap: ${isMobile ? '6px' : '10px'};">
+            <img src="images/support/${cardId}_item.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; border: 1px solid #eee; flex-shrink: 0;" onerror="this.src='images/support/${cardId}.webp'; this.onerror=null;">
+            <div>
+                <div style="opacity: 0.9;">${effects}</div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(tooltip);
+
+    const rect = slot.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+
+    let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+    let top = rect.bottom + window.scrollY + 10;
+
+    if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
+    if (left < 10) left = 10;
+
+    if (rect.bottom + tooltipHeight + 50 > window.innerHeight) {
+        top = rect.top + window.scrollY - tooltipHeight - 10;
+    }
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    setTimeout(() => {
+        const idolContainer = document.getElementById('idol');
+        const closeTooltip = (e) => {
+            if (!tooltip.parentElement) return;
+            if (e.type === 'scroll' || (!tooltip.contains(e.target) && !slot.contains(e.target))) {
+                tooltip.remove();
+                document.removeEventListener('click', closeTooltip);
+                if (idolContainer) idolContainer.removeEventListener('scroll', closeTooltip);
+            }
+        };
+        document.addEventListener('click', closeTooltip);
+        if (idolContainer) idolContainer.addEventListener('scroll', closeTooltip, { passive: true });
+    }, 10);
+}

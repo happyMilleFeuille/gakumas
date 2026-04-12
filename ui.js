@@ -517,7 +517,6 @@ function setupStaticListeners(container) {
             <option value="id-desc">${isJa ? '最新順' : '최신순'}</option>
             <option value="id-asc">${isJa ? '古い順' : '과거순'}</option>
             <option value="lb-desc">${isJa ? '特訓順' : '돌파순'}</option>
-            <option value="name-asc">${isJa ? '名前順' : '이름순'}</option>
         `;
         sortSelect.value = state.sortBy;
         sortSelect.addEventListener('change', (e) => {
@@ -551,40 +550,8 @@ function setupStaticListeners(container) {
         });
     }
 
-    if (false) {
-        slotContainer.addEventListener('click', (e) => {
-            const saveBtn = e.target.closest('.slot-btn.save');
-            const loadBtn = e.target.closest('.slot-btn.load');
-            const isJa = state.currentLang === 'ja';
 
-            if (saveBtn) {
-                const slotId = saveBtn.dataset.slot;
-                const confirmMsg = isJa ? `スロット ${slotId} 에 현재 상태를 저장하시겠습니까?` : `슬롯 ${slotId} 에 현재 상태(돌파/비활성화)를 저장하시겠습니까?`;
-                if (!confirm(confirmMsg)) return;
 
-                import('./state.js').then(m => {
-                    m.saveToSlot(slotId);
-                    syncSlotUI(container);
-                    alert(isJa ? '保存されました。' : '저장되었습니다.');
-                });
-            }
-
-            if (loadBtn) {
-                const slotId = loadBtn.dataset.slot;
-                const confirmMsg = isJa ? `スロット ${slotId} 의 데이터를 불러오시겠습니까? 현재 상태는 덮어씌워집니다.` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까? 현재 설정된 상태가 모두 바뀝니다.`;
-                if (!confirm(confirmMsg)) return;
-
-                import('./state.js').then(m => {
-                    if (m.loadFromSlot(slotId)) {
-                        renderSupport();
-                        alert(isJa ? '読み込みが完了しました。' : '데이터를 불러왔습니다.');
-                    } else {
-                        alert(isJa ? '保存된 데이터가 없습니다.' : '저장된 데이터가 없습니다.');
-                    }
-                });
-            }
-        });
-    }
 
     const grid = container.querySelector('.support-grid');
     let longPressTimer;
@@ -759,10 +726,6 @@ function updateSupportGrid(container) {
             const lbA = state.supportLB[a.id] || 0;
             const lbB = state.supportLB[b.id] || 0;
             return lbB - lbA || getNumericId(b.id) - getNumericId(a.id);
-        } else if (state.sortBy === 'name-asc') {
-            const nameA = (state.currentLang === 'ja' && a.name_ja) ? a.name_ja : a.name;
-            const nameB = (state.currentLang === 'ja' && b.name_ja) ? b.name_ja : b.name;
-            return nameA.localeCompare(nameB);
         }
         return 0;
     });

@@ -126,7 +126,7 @@ const translations = {
         extra_del: "スキルカードを選択して削除",
         extra_enhance: "スキルカードを選択して強化",
         extra_ranenhance: "ランダムなスキルカードを強化",
-        extra_ranchange: "ランダムな名전에 「基本」が含まれるスキルカードを別のカードに変換",
+        extra_ranchange: "ランダムな名前に「基本」を含むスキルカードを異なるスキルカードにチェンジ",
         extra_troubledel: "ランダムなトラブルカードを削除",
         extra_param: "{type}上昇+{val}",
         gacha_title: "ガシャシミュレーション",

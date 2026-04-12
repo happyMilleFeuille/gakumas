@@ -383,6 +383,7 @@ function setupAnimationLogic(ui, contentArea) {
                     ui.btn10.innerHTML = `${translations[state.currentLang][is10 ? 'gacha_10pull' : 'gacha_1pull']}<br><span class='btn-cost'>${is10 ? "2500" : "250"}</span>`;
                     ui.btn10.onclick = () => handleGachaClick(ui, gachaMode, ui.animationInstance);
                 }
+                ui.btn1.disabled = false; // 닫기 버튼은 항상 활성화
                 ui.btn1.style.pointerEvents = ui.btn10.style.pointerEvents = 'none';
                 setTimeout(() => { ui.btn1.style.pointerEvents = ui.btn10.style.pointerEvents = 'auto'; updateGachaButtonsState(ui); }, 300);
             }
@@ -528,7 +529,10 @@ function updateGachaButtonsState(ui) {
             ui.btn10.onclick = () => handleGachaClick(ui, pullCount, ui.animationInstance);
         } else {
             ui.btn10.style.display = 'block'; ui.btn10.style.opacity = '1';
-            const cost = 2500; ui.btn10.disabled = (state.jewels < cost);
+            // 결과 화면에서는 현재 버튼에 표시된 비용(250 or 2500)으로 체크
+            const costSpan = ui.btn10.querySelector('.btn-cost');
+            const cost = (isResultView && costSpan) ? (parseInt(costSpan.textContent) || 2500) : 2500;
+            ui.btn10.disabled = (state.jewels < cost);
             if (!isResultView) {
                 ui.btn10.innerHTML = `${t.gacha_10pull}<br><span class='btn-cost'>${cost}</span>`;
                 ui.btn10.onclick = () => handleGachaClick(ui, 10, ui.animationInstance);

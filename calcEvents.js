@@ -2,6 +2,7 @@
 import { cardList } from './carddata.js';
 import { showOtherTuneModal } from './calcModals.js';
 import { calcStore } from './calcStore.js';
+import { showSupportItemTooltip } from './calcUI.js';
 
 /**
  * 전역 분배기 및 카드 카운터 리스너 설정
@@ -20,6 +21,20 @@ export function initGlobalDistListener(refreshAll) {
         const distBtn = e.target.closest('.dist-btn');
         const tuneBtn = e.target.closest('#btn-other-tune');
         const counterBtn = e.target.closest('.card-counter-btn');
+        const slotImg = e.target.closest('.slot-frame img');
+
+        // 0. 장착된 서포트 카드 이미지 클릭 (툴팁 표시)
+        if (slotImg) {
+            const slotEl = slotImg.closest('.selected-card-slot');
+            const cardId = slotEl?.dataset.id;
+            if (cardId) {
+                const card = cardList.find(c => c.id === cardId);
+                if (card?.item_effects) {
+                    showSupportItemTooltip(slotEl, cardId);
+                    return;
+                }
+            }
+        }
 
         // 1. 카드 활성화 체크박스
         if (cardCheckBtn) {

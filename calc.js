@@ -12,7 +12,7 @@ import { calculateCardBonus } from './simulator-engine.js';
 import { 
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel,
-    showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip,
+    showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip, showSupportItemTooltip,
     getIdolDisplayColor, updateMemorySlotsUI
 } from './calcUI.js';import { initGlobalDistListener } from './calcEvents.js';
 import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal } from './calcModals.js';
@@ -690,7 +690,7 @@ if (!window._calcGlobalInit) {
     document.addEventListener('click', (e) => {
         if (e.target.closest('.modal') || e.target.closest('.modal-content')) return;
         if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper, .dist-btn, .p-item-slot, .other-tune-btn')) {
-            document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip, .p-item-tooltip').forEach(t => t.remove());
+            document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip, .p-item-tooltip, .support-item-tooltip').forEach(t => t.remove());
         }
     });
     window._calcGlobalInit = true;
