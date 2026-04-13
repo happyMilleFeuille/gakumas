@@ -320,6 +320,14 @@ function renderProduceCards(idolName, container) {
 
         const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
         name.textContent = displayName;
+        
+        if (state.currentLang === 'ja') {
+            name.style.wordBreak = 'normal';
+            name.style.overflowWrap = 'anywhere';
+        } else {
+            name.style.wordBreak = 'keep-all';
+            name.style.overflowWrap = 'normal';
+        }
 
         // 유튜브 링크 설정
         const youtubeLink = item.querySelector('.pssr-youtube-link');
