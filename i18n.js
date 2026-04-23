@@ -167,7 +167,7 @@ const translations = {
         gacha_rates_header_name: "名前",
         gacha_rates_notice_1: "* レアリティ名をクリックすると詳細が表示されます。",
         gacha_rates_notice_2: "* 確定枠は10連ガシャの最後の1回に適用される確率です。",
-        disclaimer_1: "このサイトは、学園アイドルマスター（Gakuen Idolmaster）のファンが運営する、非営利サイトです。",
+        disclaimer_1: "このサイトは、学園アイドルマスター（Gakuen Idolmaster）のファンが運営する、非公式サイトです。",
         disclaimer_2: "サイトで使用されているすべてのゲーム画像、データ、キャラクター等の権利は、©Bandai Namco Entertainment Inc.および関連する権利者に帰属します。",
         pssr_roadmap_title: "実装タイムライン",
         roadmap_filter: "フィルター",
