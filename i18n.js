@@ -74,7 +74,7 @@ const translations = {
         gacha_rates_header_name: "이름",
         gacha_rates_notice_1: "* 등급 이름을 클릭하면 상세 항목을 볼 수 있습니다.",
         gacha_rates_notice_2: "* 확정 슬롯은 10회 뽑기의 마지막 1회에 적용되는 확률입니다.",
-        disclaimer_1: "이 사이트는 학원 아이돌 마스터(Gakuen Idolmaster)의 팬이 운영하는 비영리 사이트입니다.",
+        disclaimer_1: "이 사이트는 학원 아이돌 마스터(学園アイドルマスター)의 팬이 운영하는 비공식 사이트입니다.",
         disclaimer_2: "사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.",
         pssr_roadmap_title: "실장 타임라인",
         roadmap_filter: "필터",
