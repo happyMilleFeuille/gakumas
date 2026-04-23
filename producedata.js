@@ -6,7 +6,7 @@ export const produceList = [
     { id: "ssrrinami_1st3another", name: "가장광소곡", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-30", source: "limited", another: true },
     { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-11-28", another: true, jumpTime2: 8.1 },
     { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
-    { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "sense", source: "limited", another: true },
+    { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
@@ -63,7 +63,7 @@ export const produceList = [
     { id: "ssrmao_1st3another", name: "가장광소곡", name_ja: "仮装狂騒曲", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-01", plan: "sense", source: "limited", another: true },
-    { id: "ssrmao_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "sense", source: "limited", another: true },
+    { id: "ssrmao_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true, jumpTime2: 7.3 },
     { id: "ssrmao_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
@@ -91,7 +91,7 @@ export const produceList = [
     { id: "ssrtemari_1st2another", name: "관국", name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-08-01", another: true },
     { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited", another: true, releasedAt: "2024-12-09", jumpTime2: 8.0 },
     { id: "ssrtemari_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "sense", source: "limited", another: true },
-    { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", source: "limited", another: true },
+    { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", jumpTime2: 10.2, source: "limited", another: true },
     { id: "ssrtemari_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", releasedAt: "2025-05-29", source: "limited", another: true, jumpTime2: 6.4 },
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
@@ -119,7 +119,7 @@ export const produceList = [
     { id: "ssrhiro_1st2another", name: "관국", name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-08-11", another: true },
     { id: "ssrhiro_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", releasedAt: "2024-12-09", source: "limited", another: true },
     { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-02-28", another: true, jumpTime2: 8.2 },
-    { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", source: "limited", another: true },
+    { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", jumpTime2: 7.2, source: "limited", another: true },
     { id: "ssrhiro_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
@@ -131,12 +131,13 @@ export const produceList = [
     { id: "ssrtsubame_1st", name: "이론무장하고", name_ja: "理論武装して", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.8, releasedAt: "2025-11-16", youtube_url: "https://youtu.be/0ZWUdwVQOJA?si=4OJ6d8ZxH0k0LmvB" },
     { id: "ssrtsubame_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
     { id: "ssrtsubame_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
+    { id: "ssrtsubame_1st7another", name: "벛꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.5, releasedAt: "2026-04-21", another: true },
 
 
     // --- 세나 SSR (PSSR) ---
     { id: "ssrsena_1st", name: "작은 야망", name_ja: "ちいさな野望", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.4, releasedAt: "2024-11-16", youtube_url: "https://youtu.be/UwA_4TafA_g?si=XjElH7VzQHnl7TGi" },
     { id: "ssrsena_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.0, releasedAt: "2025-02-28", another: true },
-    { id: "ssrsena_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-04-11", another: true },
+    { id: "ssrsena_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 8.2, releasedAt: "2025-04-11", another: true },
     { id: "ssrsena_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrsena_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-05-29", another: true },
     { id: "ssrsena_1st1another", name: "너와 세미블루", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-07-07", another: true },
@@ -160,8 +161,10 @@ export const produceList = [
     { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrume_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrume_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.2, releasedAt: "2026-04-13", another: true },
+    { id: "ssrume_1st7another", name: "벛꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
     { id: "ssrume_2nd", name: "구-스-피-", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-11-28", youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn" },
     { id: "ssrume_3rd", name: "새하얀 페이지와 수채의 주인공", name_ja: "真っ白いページと水彩の主人公", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-04-10", jumpTime2: 7.6, youtube_url: "https://youtu.be/zpDB6GzOXq0?si=lrT8tCS6sSxg6QB1" },
+
 
 
     // --- 미스즈 SSR (PSSR) ---
@@ -175,6 +178,7 @@ export const produceList = [
     { id: "ssrmisuzu_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-12-18", another: true },
     { id: "ssrmisuzu_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrmisuzu_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
+    { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
     { id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05", youtube_url: "https://youtu.be/O2VI4mS6kfg?si=wlIuIkRlKwinObss" },
 
 
@@ -219,8 +223,8 @@ export const produceList = [
     { id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", osusume: "goodimpression", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
     { id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
     { id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
-    { id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
-    { id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
+    { id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
+    { id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
     { id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
     { id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
     { id: "ssrlilja_howlinglimited", name: "Howling over the World", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2025-06-09", plan: "logic", source: "limited", jumpTime2: 7.3, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
