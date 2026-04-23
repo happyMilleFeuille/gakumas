@@ -78,7 +78,7 @@ const translations = {
         disclaimer_2: "사이트에 사용된 모든 게임 이미지, 데이터, 캐릭터 등의 권리는 ©Bandai Namco Entertainment Inc. 및 관련 권리자에게 있습니다.",
         pssr_roadmap_title: "실장 타임라인",
         roadmap_filter: "필터",
-        roadmap_exclude_another: "어나더 제외", // 기존 키 유지하되 새로 추가
+        roadmap_exclude_another: "어나더 제외",
         roadmap_show_another: "어나더",
         roadmap_show_dist: "배포",
         roadmap_show_fes: "페스",
