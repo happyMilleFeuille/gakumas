@@ -524,7 +524,7 @@ function setupStaticListeners(container) {
         sortSelect.innerHTML = `
             <option value="id-desc">${isJa ? '最新順' : '최신순'}</option>
             <option value="id-asc">${isJa ? '古い順' : '과거순'}</option>
-            <option value="lb-desc">${isJa ? '特訓順' : '돌파순'}</option>
+            <option value="lb-desc">${isJa ? '凸順' : '돌파순'}</option>
         `;
         sortSelect.value = state.sortBy;
         sortSelect.addEventListener('change', (e) => {
