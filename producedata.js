@@ -11,7 +11,7 @@ export const produceList = [
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4, youtube_url: "https://youtu.be/1Fbhh3HYC0U?si=GaY-ywMTKmu7CWFw" },
+    { id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4 },
     { id: "ssrrinami_3rd", name: "36℃ U.B.U", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2025-09-17", source: "normal", jumpTime2: 8.7, youtube_url: "https://youtu.be/szxn42peP3M?si=0Fa3iBImUAHj4Rsm" },
 
     // --- 사키 SSR (PSSR) ---
@@ -24,7 +24,7 @@ export const produceList = [
     { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", releasedAt: "2025-05-29", another: true },
     { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 9.3, releasedAt: "2026-02-27", another: true },
-    { id: "ssrsaki_2nd", name: "Boom Boom Pow", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2024-06-19", plan: "logic", source: "normal", jumpTime2: 9.3, youtube_url: "https://youtu.be/gSjzH8FxYuA?si=SxE6cGHrYfFz6mlY" },
+    { id: "ssrsaki_2nd", name: "Boom Boom Pow", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2024-06-19", plan: "logic", source: "normal", jumpTime2: 9.3 },
     { id: "ssrsaki_3rd", name: "Wildest Flower", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2026-03-19", plan: "logic", source: "normal", jumpTime2: 7.2, youtube_url: "https://youtu.be/iiiLtE4w2pE?si=1LC4wWMxbAt-huak" },
 
 
@@ -39,7 +39,7 @@ export const produceList = [
     { id: "ssrchina_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", releasedAt: "2025-08-29", source: "limited", another: true },
     { id: "ssrchina_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.3, releasedAt: "2026-02-27", another: true },
-    { id: "ssrchina_2nd", name: "매일, 발견적 스텝!", osusume: "goodcondition", name_ja: "日々、発見的ステップ!", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4, youtube_url: "https://youtu.be/yROmuk6Jusg?si=Sdzsx-E75OfLMj-j" },
+    { id: "ssrchina_2nd", name: "매일, 발견적 스텝!", osusume: "goodcondition", name_ja: "日々、発見的ステップ!", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4 },
     { id: "ssrchina_3rd", name: "하늘과 약속", osusume: "goodcondition", name_ja: "空と約束", rarity: "PSSR", plan: "sense", releasedAt: "2025-10-21", source: "normal", youtube_url: "https://youtu.be/WxFmsuy4nrM?si=AD1GxXNrDtL2AG29" },
 
     // --- 스미카 SSR (PSSR) ---
@@ -53,7 +53,7 @@ export const produceList = [
     { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
-    { id: "ssrsumika_2nd", name: "숨겼던 나", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2, youtube_url: "https://youtu.be/m1oZgWeL3lY?si=8v7NOmk3EmvxxAMg" },
+    { id: "ssrsumika_2nd", name: "숨겼던 나", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2 },
     { id: "ssrsumika_3rd", name: "Love & Joy", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-06-19", jumpTime2: 8.6, youtube_url: "https://youtu.be/YzBr_c61TsU?si=tVarpAMm8HEV5kU1" },
 
 
@@ -68,7 +68,7 @@ export const produceList = [
     { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true, jumpTime2: 7.3 },
     { id: "ssrmao_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2, youtube_url: "https://youtu.be/8cYN4IRVU0M?si=cv0dmM3xBqH9yQQj" },
+    { id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2 },
     { id: "ssrmao_3rd", name: "봐줘", name_ja: "見て", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-10-31", jumpTime2: 11.2, youtube_url: "https://youtu.be/nKO8cTM9jrI?si=5zmdnmkquuK_IEQg" },
 
     // --- 코토네 SSR (PSSR) ---
@@ -82,7 +82,7 @@ export const produceList = [
     { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", source: "limited", another: true },
     { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrkotone_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrkotone_2nd", name: "Yellow Big Bang!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", releasedAt: "2024-06-10", source: "normal", jumpTime2: 10.3, youtube_url: "https://youtu.be/xjqsnpsFQE4?si=BnSGynUjPWdAepGr" },
+    { id: "ssrkotone_2nd", name: "Yellow Big Bang!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", releasedAt: "2024-06-10", source: "normal", jumpTime2: 10.3 },
     { id: "ssrkotone_3rd", name: "자기긍정감 떡상↑↑ 슈키슈키송", osusume: "concentration", name_ja: "自己肯定感爆上げ↑↑しゅきしゅきソング", releasedAt: "2025-08-12", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 8.1, youtube_url: "https://youtu.be/WCDLyXJgbIo?si=sUASzokNaAkg68Ho" },
 
     // --- 테마리 SSR (PSSR) ---
@@ -96,7 +96,7 @@ export const produceList = [
     { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", releasedAt: "2025-05-29", source: "limited", another: true, jumpTime2: 6.4 },
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
-    { id: "ssrtemari_2nd", name: "아이비", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3, youtube_url: "https://youtu.be/heLDPvSfJUE?si=40MVPtHuI_l4mjh7" },
+    { id: "ssrtemari_2nd", name: "아이비", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3 },
     { id: "ssrtemari_3rd", name: "대체 언제부터", osusume: "fullpower", name_ja: "一体いつから", rarity: "PSSR", releasedAt: "2026-01-16", plan: "anomaly", source: "normal", youtube_url: "https://youtu.be/PE_iyDsY5xM?si=8v9OKPXlkxqQwl4r" },
 
     // --- 릴리야 SSR (PSSR) ---
@@ -109,7 +109,7 @@ export const produceList = [
     { id: "ssrlilja_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrlilja_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrlilja_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.4, another: true },
-    { id: "ssrlilja_2nd", name: "극광", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6, youtube_url: "https://youtu.be/6BDjxWSGSkw?si=VH1IcVz2sLLywSTd" },
+    { id: "ssrlilja_2nd", name: "극광", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6 },
     { id: "ssrlilja_3rd", name: "Atmosphere", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-12-08", jumpTime2: 9.5, youtube_url: "https://youtu.be/R9PEnLmv6zI?si=CG6jPxmYp4dGctXo" },
 
 
@@ -124,7 +124,7 @@ export const produceList = [
     { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
-    { id: "ssrhiro_2nd", name: "콘트라스트", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3, youtube_url: "https://youtu.be/X7egVXrwKpI?si=28hEFsFvo7ZtStHc" },
+    { id: "ssrhiro_2nd", name: "콘트라스트", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3 },
     { id: "ssrhiro_3rd", name: "sunfaded", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J" },
 
     // --- 츠바메 SSR (PSSR) ---    
@@ -146,7 +146,7 @@ export const produceList = [
     { id: "ssrsena_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrsena_1st3another", name: "가장광소곡", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-11-07", another: true },
     { id: "ssrsena_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-12-18", another: true },
-    { id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22", youtube_url: "https://youtu.be/f509kGUP9Vs?si=RKKJxAnVmxa9LgDE" },
+    { id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22" },
     { id: "ssrsena_3rd", name: "적나라", name_ja: "赤裸々", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.6, releasedAt: "2026-02-09", youtube_url: "https://youtu.be/afh9Sq0Dtq4?si=vfvCdWpuf85lfBk5" },
 
 
@@ -162,7 +162,7 @@ export const produceList = [
     { id: "ssrume_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrume_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.2, releasedAt: "2026-04-13", another: true },
     { id: "ssrume_1st7another", name: "벛꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
-    { id: "ssrume_2nd", name: "구-스-피-", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-11-28", youtube_url: "https://youtu.be/70ZgsKxbdLg?si=BxfMtT4b_7QszYCn" },
+    { id: "ssrume_2nd", name: "구-스-피-", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-11-28" },
     { id: "ssrume_3rd", name: "새하얀 페이지와 수채의 주인공", name_ja: "真っ白いページと水彩の主人公", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-04-10", jumpTime2: 7.6, youtube_url: "https://youtu.be/zpDB6GzOXq0?si=lrT8tCS6sSxg6QB1" },
 
 
@@ -179,7 +179,7 @@ export const produceList = [
     { id: "ssrmisuzu_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrmisuzu_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
     { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
-    { id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05", youtube_url: "https://youtu.be/O2VI4mS6kfg?si=wlIuIkRlKwinObss" },
+    { id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05" },
 
 
 
@@ -189,19 +189,19 @@ export const produceList = [
     { id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2024-10-28", jumpTime2: 11.2, youtube_url: "https://youtu.be/YhSCyrRUu1Q?si=I3wqbsHM95DgDQdj" },
 
     // 페스 (Campus Fes)
-    { id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", releasedAt: "2025-01-02", youtube_url: "https://youtu.be/RlcFbCv5v8o?si=tnlQTTxebnpCnZjf" },
-    { id: "ssrchina_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-01-09", jumpTime2: 8.4, youtube_url: "https://youtu.be/bxYf7OF40mk?si=ThEcW9_hcNDdPe0h" },
-    { id: "ssrtsubame_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.5, releasedAt: "2025-12-26", youtube_url: "https://youtu.be/UG-JAbSz0qc?si=nfIr7gBXtwAshbQW" },
-    { id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.4, releasedAt: "2025-01-02", youtube_url: "https://youtu.be/9iN7Lec8UKY?si=Hv_Ob21rYWh1ZA53" },
-    { id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-06-30", youtube_url: "https://youtu.be/30uxo0Dgs8M?si=1fx2M7B7liGrLwDH" },
-    { id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.4, releasedAt: "2024-12-26", youtube_url: "https://youtu.be/HDnGCwQwUYE?si=a8pcWBkjjNsy2Sxu" },
-    { id: "ssrtemari_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.3, releasedAt: "2024-12-26", youtube_url: "https://youtu.be/lT_RqV4oUr0?si=fvzU1qVhU8O7VqL5" },
-    { id: "ssrkotone_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", jumpTime2: 8.3, releasedAt: "2024-12-26", youtube_url: "https://youtu.be/_caPNDWC9nQ?si=kGVT0qDyq8dvBxk5" },
-    { id: "ssrmao_campusfes", name: "Campus mode!!", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited_f", jumpTime2: 8.3, releasedAt: "2025-01-02", youtube_url: "https://youtu.be/z3Mt-kCzKfM?si=w-SjFK7bHjFHx6Lt" },
-    { id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", releasedAt: "2025-01-16", youtube_url: "https://youtu.be/clhHQC-HSO0?si=HW1oCBUlm1AguB6u" },
-    { id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-01-16", youtube_url: "https://youtu.be/pir9uY-LWbY?si=mvUqsnY7dlp7Q4_X" },
-    { id: "ssrhiro_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-01-09", youtube_url: "https://youtu.be/1EJOn0vf-Fo?si=_Soi8_EwZaQyGNxn" },
-    { id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", releasedAt: "2025-01-09", youtube_url: "https://youtu.be/_Xd2EtB-Gi0?si=1L7whpJT07_gaUB2" },
+    { id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", releasedAt: "2025-01-02" },
+    { id: "ssrchina_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-01-09", jumpTime2: 8.4 },
+    { id: "ssrtsubame_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.5, releasedAt: "2025-12-26" },
+    { id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.4, releasedAt: "2025-01-02" },
+    { id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-06-30" },
+    { id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.4, releasedAt: "2024-12-26" },
+    { id: "ssrtemari_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", jumpTime2: 8.3, releasedAt: "2024-12-26" },
+    { id: "ssrkotone_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", jumpTime2: 8.3, releasedAt: "2024-12-26" },
+    { id: "ssrmao_campusfes", name: "Campus mode!!", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited_f", jumpTime2: 8.3, releasedAt: "2025-01-02" },
+    { id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", releasedAt: "2025-01-16" },
+    { id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-01-16" },
+    { id: "ssrhiro_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", releasedAt: "2025-01-09" },
+    { id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", releasedAt: "2025-01-09" },
 
     // 한정 (Limited)
     { id: "ssrmao_summerdist", name: "너와 세미블루", name_ja: "キミトセミブルー", osusume: "concentration", releasedAt: "2024-07-01", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6" },
