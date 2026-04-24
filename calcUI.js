@@ -444,7 +444,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <!-- P-Item Row -->
                     <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
                         <label style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; margin: 0 2px;">
-                            <span class="p-item-check-txt">${isJa ? '재능개화 3' : '재능개화 3'}</span>
+                            <span class="p-item-check-txt">${isJa ? '才能開花 3' : '재능개화 3'}</span>
                             <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''} style="margin: 0; accent-color: #ff4d8d; transform: scale(1.0); cursor: pointer;">
                         </label>
                         <div style="width: 1px; height: 24px; background-color: #ddd; margin: 0 4px;"></div>
