@@ -186,7 +186,7 @@ export const produceList = [
     // 특별 통상
     { id: "ssrrinami_onsen", name: "어서오세요 초성온천", name_ja: "ようこそ初星温泉", osusume: "motivation", rarity: "PSSR", releasedAt: "2024-09-01", plan: "logic", source: "normal", jumpTime2: 12.3 },
     { id: "ssrchina_onsen", name: "어서오세요 초성온천", name_ja: "ようこそ初星温泉", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-11", source: "normal", jumpTime2: 11.3 },
-    { id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2024-10-28", jumpTime2: 11.2, youtube_url: "https://youtu.be/YhSCyrRUu1Q?si=I3wqbsHM95DgDQdj" },
+    { id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2024-10-28", jumpTime2: 11.2 },
 
     // 페스 (Campus Fes)
     { id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", releasedAt: "2025-01-02" },
