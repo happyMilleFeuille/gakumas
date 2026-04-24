@@ -38,16 +38,12 @@ function startWeeklyPlan(type) {
                 } 
                 
                 // 메뉴에서 처음 들어왔거나, 위에서 위치를 잡았더라도 활성화된 아이돌 보장 로직
-                setTimeout(() => {
-                    const activeItem = grid.querySelector('.idol-sel-item.active');
-                    if (activeItem) {
-                        // [수정] 이미 구현된 클릭 핸들러의 스크롤 로직을 재사용하기 위해 클릭 이벤트 발생
-                        activeItem.click();
-                        
-                        // 스크롤 완료 후 위치 다시 저장
-                        setTimeout(() => { window._lastIdolScrollLeft = grid.scrollLeft; }, 300);
-                    }
-                }, 100);
+                const activeItem = grid.querySelector('.idol-sel-item.active');
+                if (activeItem) {
+                    // 애니메이션 없이 즉시 이동
+                    activeItem.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
+                    window._lastIdolScrollLeft = grid.scrollLeft;
+                }
             }
 
             // [추가] 정보 버튼(i) 이벤트 바인딩

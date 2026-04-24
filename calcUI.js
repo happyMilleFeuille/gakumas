@@ -396,7 +396,14 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <span data-i18n="calc_idol_desc">친애도 20 이상 기준</span>
                 </div>
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
-                <div class="plan-type-selector">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 12px; width: 100%; margin-bottom: 1rem; background: white; padding: 0.6rem; border-radius: 0 0 12px 12px; border: 1px solid #ddd; border-top: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box;">
+                    ${(store.type === 'nia' || store.type === 'hajime') ? `
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0;">
+                        <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''} style="margin: 0; accent-color: #ff4d8d; cursor: pointer; transform: scale(1.1);">
+                        <span class="p-item-check-txt" style="font-size: 0.8rem; font-weight: bold; color: #555; white-space: nowrap;">${isJa ? '才能開花 3' : '재능개화 3'}</span>
+                    </label>
+                    <div style="width: 1px; height: 28px; background-color: #ddd; flex-shrink: 0;"></div>
+                    ` : ''}
                     ${['sense', 'logic', 'anomaly'].map(pt => {
         const isActive = store.planType === pt;
         const activeStyle = isActive ? `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66; opacity: 1; transform: scale(1.1);"` : '';
@@ -443,11 +450,6 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     
                     <!-- P-Item Row -->
                     <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
-                        <label style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; margin: 0 2px;">
-                            <span class="p-item-check-txt">${isJa ? '才能開花 3' : '재능개화 3'}</span>
-                            <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''} style="margin: 0; accent-color: #ff4d8d; transform: scale(1.0); cursor: pointer;">
-                        </label>
-                        <div style="width: 1px; height: 24px; background-color: #ddd; margin: 0 4px;"></div>
                         <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
                         ${Array.from({ length: store.type === 'nia' ? 5 : 2 }).map((_, i) => `
                             <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
