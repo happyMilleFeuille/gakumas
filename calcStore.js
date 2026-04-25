@@ -20,7 +20,7 @@ export const calcStore = {
     pItems: [null, null, null, null, null],
     pItemChecked: false,
     memories: [null, null, null, null],
-    isBoardCollapsed: false,
+    isKyouka: false,
 
     /**
      * 초기 로드 및 저장된 상태 복원
@@ -43,7 +43,7 @@ export const calcStore = {
         this.pItems = saved.pItems || [null, null, null, null, null];
         this.pItemChecked = saved.pItemChecked || false;
         this.memories = saved.memories || [null, null, null, null];
-        this.isBoardCollapsed = !!saved.isBoardCollapsed;
+        this.isKyouka = !!saved.isKyouka;
 
         // 초기 주간 계획 설정 (저장된 게 없으면 기본값)
         const planData = calcPlans[type];

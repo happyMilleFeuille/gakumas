@@ -1,5 +1,6 @@
 // calcEvents.js
 import { cardList } from './carddata.js';
+import { state } from './state.js';
 import { showOtherTuneModal } from './calcModals.js';
 import { calcStore } from './calcStore.js';
 import { showSupportItemTooltip } from './calcUI.js';
@@ -9,7 +10,7 @@ import { showSupportItemTooltip } from './calcUI.js';
  */
 export function initGlobalDistListener(refreshAll) {
     if (window._distInit) return;
-    
+
     document.addEventListener('click', (e) => {
         const board = document.querySelector('.unified-plan-board');
         if (!board) return;
@@ -64,15 +65,64 @@ export function initGlobalDistListener(refreshAll) {
         if (cardRemoveBtn) {
             const id = cardRemoveBtn.dataset.id;
             const plan = calcStore.planType;
-            calcStore.planCards[plan] = (calcStore.planCards[plan] || []).filter(cid => cid !== id);
-            delete calcStore.cardChecked[id];
-            delete calcStore.cardExtraChecked[id];
+            calcStore.planCards[plan] = (calcStore.planCards[plan] || []).map(cid => cid === id ? null : cid);
+            
+            // 카드 제거 시 해당 카드의 체크박스 옵션들(이벤트, 강화, 체인지 등) 초기화
             delete calcStore.cardEventChecked[id];
+            delete calcStore.cardExtraChecked[id];
+
 
             // 사이드 패널 동기화
-            const item = document.querySelector(`.side-card-item[data-id="${id}"]`);
-            if (item) { item.classList.remove('selected'); delete item.dataset.selectTime; }
-            
+            const sidePanel = document.getElementById('calc-side-panel');
+            const item = sidePanel?.querySelector(`.side-card-item[data-id="${id}"]`);
+            if (item) {
+                item.classList.remove('selected'); delete item.dataset.selectTime;
+                item.style.borderColor = '#ddd'; item.style.borderWidth = '';
+            }
+            // Update stars for 6th slot mode
+            if (sidePanel) {
+                const updatedPlanCards = calcStore.planCards[plan] || [];
+                const filledCount = updatedPlanCards.filter(cid => cid !== null).length;
+                const isSelectingSixth = filledCount === 5 && updatedPlanCards[5] === null;
+                const tabs = sidePanel.querySelector('.side-panel-tabs');
+                const content = sidePanel.querySelector('.side-panel-content');
+                if (tabs) {
+                    tabs.style.background = isSelectingSixth ? '#8FDDBA' : 'white';
+                    tabs.style.borderBottomColor = '#eee';
+                    
+                    let badge = tabs.querySelector('.rental-badge');
+                    if (isSelectingSixth) {
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.className = 'rental-badge';
+                            badge.textContent = 'RENTAL';
+                            Object.assign(badge.style, {
+                                position: 'absolute', top: '2px', left: '6px',
+                                fontSize: '8px', fontWeight: 'bold', color: '#fff',
+                                letterSpacing: '0.5px', zIndex: '10', opacity: '0.8'
+                            });
+                            tabs.appendChild(badge);
+                        }
+                    } else if (badge) {
+                        badge.remove();
+                    }
+                }
+                if (content) {
+                    content.style.background = isSelectingSixth ? '#8FDDBA' : 'white';
+                }
+                sidePanel.querySelectorAll('.side-card-item').forEach(el => {
+                    const elId = el.dataset.id;
+                    const isSixth = updatedPlanCards.indexOf(elId) === 5;
+                    const rawLb = state.supportLB?.[elId] || 0;
+                    const isSelectedCard = updatedPlanCards.includes(elId);
+                    const displayLb = (isSelectingSixth && !isSelectedCard) || isSixth ? 4 : rawLb;
+                    el.querySelectorAll('.calc-card-star').forEach((star, i) => {
+                        if (i < displayLb) star.classList.add('active');
+                        else star.classList.remove('active');
+                    });
+                });
+            }
+
             calcStore.save();
             refreshAll();
             return;
@@ -113,7 +163,7 @@ export function initGlobalDistListener(refreshAll) {
             const type = target[0]; // 'e', 'd', 'g'
             const sub = target[1]; // 'm', 'a', 't'
             const storeKey = type === 'e' ? 'manualEnhance' : (type === 'd' ? 'manualDelete' : 'manualGet');
-            
+
             // 삭제(d)의 경우 m, a, t 삼각 교체 / 나머지는 m, a 양방향 교체
             let sourceSub = '';
             if (type === 'd') {
@@ -132,6 +182,6 @@ export function initGlobalDistListener(refreshAll) {
             }
         }
     });
-    
+
     window._distInit = true;
 }

@@ -488,6 +488,7 @@
 }
 
 .stat-header {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -740,25 +741,6 @@
     color: #ff4d8d;
 }
 
-.board-toggle-bar {
-    background: transparent;
-    border: none;
-    padding: 5px 20px;
-    margin: 0 auto 0.5rem;
-    text-align: center;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #888;
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
-    display: block;
-    width: fit-content;
-}
-
-.board-toggle-bar:hover {
-    color: #ff4d8d;
-}
 
 .unified-plan-board {
     background: white;
@@ -773,9 +755,6 @@
     margin-bottom: 2rem;
 }
 
-.unified-plan-board.collapsed-board {
-    display: none;
-}
 
 .week-row {
     display: flex;
@@ -1126,6 +1105,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.panel-tab-item:not(:last-of-type)::after {
+    content: "";
+    position: absolute;
+    right: -4px;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: #eee;
 }
 
 .panel-tab-item img {
@@ -1820,18 +1810,102 @@
     }
 }
 
-/* 아이돌 선택 보조 설명 (상단 탭 형태) */
+/* 아이돌 선택 보조 설명 및 보드 타이틀 (상단 탭 형태) */
 .idol-selection-info {
     font-size: 0.65rem;
     color: #888;
     background: #fff;
     border: 1px solid #ddd;
-    border-bottom: none; /* 아래쪽 테두리 제거하여 연결 */
-    border-radius: 8px 8px 0 0; /* 아래쪽 라운드 제거 */
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
     padding: 4px 12px;
-    margin: 0 0 0 8px; /* 왼쪽에서 살짝 띄움 */
+    margin: 0 0 0 8px;
     width: fit-content;
     letter-spacing: 0.03em;
     position: relative;
-    z-index: 1; /* 테두리 겹침 방지 */
+    z-index: 1;
+}
+
+.header-kyouka-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 32px;
+    z-index: 50;
+}
+
+.header-kyouka-btn img {
+    height: 100%;
+}
+
+.board-title-tab {
+    font-size: 0.65rem;
+    color: #666;
+    font-weight: bold;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 4px 12px;
+    margin: 1rem 0 0 8px; /* 위쪽 간격과 왼쪽 정렬 유지 */
+    width: fit-content;
+    letter-spacing: 0.03em;
+    position: relative;
+    z-index: 1;
+}
+
+.kyouka-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    height: 24px; /* 헤더 우측 상단에 맞춰 크기 소폭 조정 */
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.kyouka-btn img {
+    height: 100%;
+    width: auto;
+    border-radius: 4px;
+    filter: grayscale(100%) opacity(0.6) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15)); /* 범위 축소, 색 농도 복구 */
+    transition: all 0.3s ease;
+}
+
+.kyouka-btn:hover img {
+    filter: grayscale(50%) opacity(0.8) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.kyouka-btn.active img {
+    filter: grayscale(0%) opacity(1); /* 활성 시 컬러 복구, 그림자 제거 */
+}
+
+.kyouka-btn.active:hover img {
+    transform: scale(1.05);
+}
+/* 6th slot dynamic colors */
+.sixth-slot .card-opt-check, .sixth-slot .card-event-check, .sixth-slot .card-slot-check { accent-color: #8FDDBA !important; }
+.sixth-slot .card-slot-remove, .sixth-slot .card-counter-btn { background: #8FDDBA !important; }
+.sixth-slot .card-slot-remove:hover, .sixth-slot .card-counter-btn:hover { background: #7eccab !important; }
+
+.sixth-slot .card-item-counter { background: #8FDDBA !important; }
+.sixth-slot .card-counter-val { color: white !important; }
+.sixth-slot .card-counter-btn { background: white !important; color: #8FDDBA !important; }
+.sixth-slot .card-counter-btn:hover { background: #f0f0f0 !important; color: #8FDDBA !important; }
+
+.sixth-slot .card-item-counter { background: rgba(143, 221, 186, 0.25) !important; }
+.sixth-slot .card-counter-val { color: #333 !important; }
+.sixth-slot .card-counter-btn { background: #8FDDBA !important; color: white !important; }
+.sixth-slot .card-counter-btn:hover { background: #7eccab !important; color: white !important; }
+
+.sixth-slot .card-slot-remove { color: #333 !important; }
+
+/* 모바일 추가 보정 */
+@media (max-width: 480px) {
+    .header-kyouka-btn {
+        height: 22px !important; /* 확실하게 줄어들도록 !important 추가 및 크기 조정 */
+        top: 6px !important;
+        right: 6px !important;
+    }
 }

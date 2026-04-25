@@ -7,8 +7,9 @@ import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
 import { pItemDescriptions, pItemSlots } from './pItemData.js';
-import { getTriggerCounts, calculateTotals, getNiaLessonStat, getHajimeLessonStat } from './calcLogic.js';
+import { getTriggerCounts, calculateTotals, getNiaLessonStat, getHajimeLessonStat, getSupportPercentBonusForCard } from './calcLogic.js';
 import { calculateCardBonus } from './simulator-engine.js';
+import { skillCardList } from './skillcarddata.js';
 import { 
     updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel,
@@ -498,18 +499,27 @@ function startWeeklyPlan(type) {
             }
             const calcBtn = document.getElementById('btn-run-calc');
             if (calcBtn) calcBtn.onclick = () => toggleSupportCardPanel(calcStore.planType, refreshAll);
-            const toggleBar = document.getElementById('board-toggle-bar');
-            if (toggleBar) {
-                toggleBar.onclick = () => {
-                    calcStore.isBoardCollapsed = !calcStore.isBoardCollapsed;
-                    calcStore.save();
-                    board?.classList.toggle('collapsed-board', calcStore.isBoardCollapsed);
-                    const isJa = state.currentLang === 'ja';
-                    if (calcStore.isBoardCollapsed) {
-                        toggleBar.textContent = isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼';
-                    } else {
-                        toggleBar.textContent = isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲';
+            const kyoukaBtn = document.getElementById('btn-kyouka');
+            if (kyoukaBtn) {
+                if (calcStore.isKyouka) kyoukaBtn.classList.add('active');
+                kyoukaBtn.onclick = () => {
+                    calcStore.isKyouka = !calcStore.isKyouka;
+                    
+                    // 강화월간이 꺼지면 선택된 강화월간 전용 카드들 제거
+                    if (!calcStore.isKyouka) {
+                        Object.keys(calcStore.planSkills).forEach(plan => {
+                            const selected = calcStore.planSkills[plan];
+                            Object.keys(selected).forEach(id => {
+                                if (skillCardList[id]?.isKyoukaOnly) {
+                                    delete selected[id];
+                                }
+                            });
+                        });
                     }
+
+                    calcStore.save();
+                    kyoukaBtn.classList.toggle('active', calcStore.isKyouka);
+                    refreshAll();
                 };
             }
         }
@@ -534,9 +544,10 @@ function refreshAll() {
         const spTotals = { vocal: 0, dance: 0, visual: 0 };
         const selectedIds = calcStore.planCards[calcStore.planType] || [];
         selectedIds.forEach(id => {
+            if (!id) return;
             const card = cardList.find(c => c.id === id);
             if (card?.abilities?.includes('sp_lessonup')) {
-                const lb = state.supportLB[id] || 0;
+                const lb = (selectedIds.indexOf(id) === 5) ? 4 : (state.supportLB[id] || 0);
                 const ability = abilityData['sp_lessonup'];
                 if (ability) {
                     const bonusLevels = ability.levels[card.rarity] || ability.levels;
@@ -578,20 +589,25 @@ function updateSidePanelBonuses(panel, counts) {
     try {
         const { baseTotal, bonusTotal } = calculateTotals(calcStore, counts);
         const bonusItems = panel.querySelectorAll('.side-card-item');
+        const planCards = calcStore.planCards[calcStore.planType] || [];
+        const filledCount = planCards.filter(id => id !== null).length;
+        const isSelectingSixth = filledCount === 5 && planCards[5] === null;
         
         bonusItems.forEach(item => {
             const cardId = item.dataset.id;
             const card = cardList.find(c => c.id === cardId);
             if (!card) return;
             
-            const lb = state.supportLB[cardId] || 0;
-            const itemCounter = calcStore.itemCounters[cardId] || 0;
+            const isSixth = planCards.indexOf(cardId) === 5;
+            const isSelectedCard = planCards.includes(cardId);
+            const lb = (isSelectingSixth && !isSelectedCard) || isSixth ? 4 : (state.supportLB[cardId] || 0);
+            const itemCounter = calcStore.cardChecked?.[cardId] ? (calcStore.itemCounters[cardId] || 0) : 0;
             const includeEvent = !!calcStore.cardEventChecked[cardId];
             const bonus = calculateCardBonus(card, counts, lb, itemCounter, includeEvent);
             
             let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
-            if (bonus.percent > 0 && card.type && baseTotal[card.type]) {
-                totalVal += Math.floor(baseTotal[card.type] * (bonus.percent / 100));
+            if (bonus.percent > 0 && card.type) {
+                totalVal += getSupportPercentBonusForCard(calcStore, bonus.percent, card.type);
             }
 
             const bonusEl = item.querySelector('.bonus-val');

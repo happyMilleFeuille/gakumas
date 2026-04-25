@@ -71,6 +71,16 @@ export function getTriggerCounts(store) {
             });
         }
 
+        // [추가] 강화주간(kyouka) 보너스: 특정 주차 시험/오디션 시 아이템 획득 +1
+        if (store.isKyouka) {
+            const wInt = parseInt(weekNum);
+            if (store.type === 'hajime' && wInt === 10 && actionId === 'test') {
+                counts.total.get_item++;
+            } else if (store.type === 'nia' && (wInt === 9 || wInt === 17) && actionId === 'audition') {
+                counts.total.get_item++;
+            }
+        }
+
         if (actionId === 'lessonvo') { if (isSP) counts.lessons.vocal.sp++; else counts.lessons.vocal.normal++; }
         else if (actionId === 'lessondan') { if (isSP) counts.lessons.dance.sp++; else counts.lessons.dance.normal++; }
         else if (actionId === 'lessonvi') { if (isSP) counts.lessons.visual.sp++; else counts.lessons.visual.normal++; }
@@ -132,10 +142,20 @@ export function getTriggerCounts(store) {
         counts.total.enhance += niaBonusEnhance;
     }
 
+    // --- 하지메(Hajime) P-아이템 보너스 ---
+    if (store.type === 'hajime' && store.pItems) {
+        if (store.pItems.includes('hajime2')) {
+            const classCount = (counts.total['class_hajime'] || 0);
+            const bonus = Math.min(classCount, 3);
+            counts.total.get += bonus;
+        }
+    }
+
     // 3. 서포트 카드 엑스트라 옵션 (강화/삭제/체인지) 합산
     let activePlan = store.planType || 'sense';
     let selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(id => {
+        if (!id) return;
         // 비활성화된 카드는 무시
         if (state.disabledCards[id]) return;
 
@@ -164,6 +184,7 @@ export function getTriggerCounts(store) {
 
     selectedIds = store.planCards?.[activePlan] || [];
     selectedIds.forEach(id => {
+        if (!id) return;
         // 비활성화된 카드는 무시
         if (state.disabledCards[id]) return;
 
@@ -183,6 +204,7 @@ export function getTriggerCounts(store) {
 
     // 5. 아이템 효과(Item Effects) 보너스 트리거 반영
     selectedIds.forEach(cardId => {
+        if (!cardId) return;
         // 비활성화된 카드는 무시
         if (state.disabledCards[cardId]) return;
 
@@ -236,14 +258,7 @@ export function getTriggerCounts(store) {
         }
     });
 
-    // --- 하지메(Hajime) P-아이템 보너스 ---
-    if (store.type === 'hajime' && store.pItems) {
-        if (store.pItems.includes('hajime2')) {
-            const classCount = counts.total['class_hajime'] || 0;
-            const bonus = Math.min(classCount, 3);
-            counts.total.get += bonus;
-        }
-    }
+
 
     // 6. 수동 분배 수치 자동 할당 및 합산 (모든 트리거 합산 후 최종 수행)
     const currentEnhancePool = counts.total.enhance || 0;
@@ -316,9 +331,10 @@ export function calculateTotals(store, detailedCounts) {
     let supportFixedTotal = { vocal: 0, dance: 0, visual: 0 };
 
     selectedIds.forEach(cardId => {
+        if (!cardId) return;
         if (state.disabledCards[cardId]) return;
         const card = cardList.find(c => c.id === cardId); if (!card) return;
-        const lb = state.supportLB[cardId] || 0;
+        const lb = (selectedIds.indexOf(cardId) === 5) ? 4 : (state.supportLB[cardId] || 0);
         const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
         const includeEvent = !!store.cardEventChecked[cardId];
         const bonusResult = calculateCardBonus(card, detailedCounts, lb, itemCounter, includeEvent);
@@ -550,4 +566,31 @@ export function calculateTotals(store, detailedCounts) {
             totalPercs: totalPercs
         }
     };
+}
+
+/**
+ * 특정 카드의 % 보너스가 현재 계획에서 실제로 몇 점을 올려주는지 계산 (레슨별 개별 내림 반영)
+ */
+export function getSupportPercentBonusForCard(store, cardPercent, cardType) {
+    if (!cardPercent || !cardType || !store.weeks) return 0;
+    let totalFlooredBonus = 0;
+
+    Object.keys(store.weeks).forEach(weekNum => {
+        const week = store.weeks[weekNum];
+        if (!week || !week.value) return;
+        const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
+
+        let stats = null;
+        if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
+        else if (store.type === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
+        else if (actionId === 'test' || actionId === 'audition') {
+            stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
+        }
+
+        if (stats && stats[cardType] > 0) {
+            totalFlooredBonus += Math.floor(stats[cardType] * (cardPercent / 100));
+        }
+    });
+
+    return totalFlooredBonus;
 }

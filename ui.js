@@ -181,11 +181,11 @@ function renderProduceCards(idolName, container) {
         const rarityOrder = { 'PSSR': 3, 'PSR': 2, 'PR': 1 };
         const rA = rarityOrder[a.rarity] || 0;
         const rB = rarityOrder[b.rarity] || 0;
-        
+
         if (rA !== rB) {
             return rB - rA; // 등급 높은 순
         }
-        
+
         const dateA = a.releasedAt || "";
         const dateB = b.releasedAt || "";
         return dateB.localeCompare(dateA); // 같은 등급이면 최신순
@@ -251,7 +251,7 @@ function renderProduceCards(idolName, container) {
 
         let currentIndex = state.pssrIndex[card.id] || 0;
         if (currentIndex >= imageList.length) currentIndex = 0;
-        
+
         img.src = imageList[currentIndex];
 
         cardEl.addEventListener('click', (e) => {
@@ -304,7 +304,7 @@ function renderProduceCards(idolName, container) {
             const isJa = state.currentLang === 'ja';
             const sourceMap = {
                 'limited': isJa ? '限定' : '한정',
-                'limited_f': isJa ? 'フェス' : '페스',
+                'limited_f': isJa ? 'フェ스' : '페스',
                 'limited_u': isJa ? 'ユニット' : '유닛',
                 'normal': isJa ? '恒常' : '통상',
                 'dist': isJa ? '配布' : '배포'
@@ -320,7 +320,7 @@ function renderProduceCards(idolName, container) {
 
         const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
         name.textContent = displayName;
-        
+
         if (state.currentLang === 'ja') {
             name.style.wordBreak = 'normal';
             name.style.overflowWrap = 'anywhere';
@@ -443,7 +443,7 @@ function openSlotModal() {
 
         if (saveBtn) {
             const slotId = saveBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} に現在の状態をセーブしますか？` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} に현재 상태를 저장하시겠습니까?` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
                 saveToSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
@@ -451,7 +451,7 @@ function openSlotModal() {
 
         if (loadBtn) {
             const slotId = loadBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} のデータをロードしますか？` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} 의 데이터를 불러오시겠습니까?` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
                 if (loadFromSlot(slotId)) {
                     renderSupport();
                     modal.remove();
@@ -461,7 +461,7 @@ function openSlotModal() {
 
         if (deleteBtn) {
             const slotId = deleteBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} のデータを削除しますか？` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
+            if (confirm(isJa ? `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
                 deleteSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
@@ -470,7 +470,6 @@ function openSlotModal() {
 }
 
 function syncSlotUI(container) {
-    // 기존 슬롯 UI 동기화 기능은 모달로 대체됨 (빈 함수로 유지하거나 삭제 가능)
 }
 
 export function renderSupport() {
@@ -486,7 +485,7 @@ export function renderSupport() {
     }
 
     syncFilterUI(container);
-    syncSlotUI(container); // [추가] 슬롯 정보 업데이트
+    syncSlotUI(container);
     updateSupportGrid(container);
 }
 
@@ -536,9 +535,11 @@ function setupStaticListeners(container) {
     const allMaxBtn = container.querySelector('#btn-all-max-lb');
     if (allMaxBtn) {
         const isJa = state.currentLang === 'ja';
-        allMaxBtn.textContent = isJa ? '全カード完凸' : '모든 카드 풀돌';
+        allMaxBtn.textContent = isJa ? '一括調整' : '일괄 조정';
         allMaxBtn.addEventListener('click', () => {
-            const confirmMsg = isJa ? 'すべてのカードを完凸状態に変更しますか？' : '모든 카드를 4단계 돌파(풀돌) 상태로 변경하시겠습니까?';
+            const confirmMsg = isJa ? 'すべてのカードを最大突破状態に変更、またはリセットします。実行しますか？' : '모든 카드를 최대 돌파로 변경하거나 초기화하게 됩니다. 변경하시겠습니까?';
+
+            const confirmLabel = isJa ? '最大突破' : '최대돌파';
 
             showCustomConfirm(confirmMsg, () => {
                 cardList.forEach(card => {
@@ -546,11 +547,16 @@ function setupStaticListeners(container) {
                 });
                 renderSupport();
                 if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
-            });
+            }, () => {
+                cardList.forEach(card => {
+                    setSupportLB(card.id, 0);
+                });
+                renderSupport();
+                if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
+            }, confirmLabel);
         });
     }
 
-    // 슬롯 관리 모달 열기
     const openSlotBtn = container.querySelector('#btn-open-slot-modal');
     if (openSlotBtn) {
         openSlotBtn.addEventListener('click', () => {
@@ -573,17 +579,14 @@ function setupStaticListeners(container) {
             isLongPress = true;
             const cardId = cardEl.dataset.id;
             toggleDisabledCard(cardId);
-
-            // [추가] 계산기 선택 목록에서도 실제로 제거 (선택 취소)
             if (state.disabledCards[cardId]) {
                 ['sense', 'logic', 'anomaly'].forEach(plan => {
                     if (calcStore.planCards[plan]) {
-                        calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== cardId);
+                        calcStore.planCards[plan] = calcStore.planCards[plan].map(id => id === cardId ? null : id);
                     }
                 });
-                calcStore.save(); // 변경사항 저장
+                calcStore.save();
             }
-
             renderSupport();
             if (navigator.vibrate) navigator.vibrate(50);
         }, 600);
@@ -597,17 +600,14 @@ function setupStaticListeners(container) {
             isLongPress = true;
             const cardId = cardEl.dataset.id;
             toggleDisabledCard(cardId);
-
-            // [추가] 계산기 선택 목록에서도 실제로 제거 (선택 취소)
             if (state.disabledCards[cardId]) {
                 ['sense', 'logic', 'anomaly'].forEach(plan => {
                     if (calcStore.planCards[plan]) {
-                        calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== cardId);
+                        calcStore.planCards[plan] = calcStore.planCards[plan].map(id => id === cardId ? null : id);
                     }
                 });
-                calcStore.save(); // 변경사항 저장
+                calcStore.save();
             }
-
             renderSupport();
             if (navigator.vibrate) navigator.vibrate(50);
         }, 600);
@@ -661,12 +661,9 @@ function syncFilterUI(container) {
         btns.forEach(btn => {
             const val = btn.dataset.val;
             let isActive = false;
-
             if (val === 'all') {
-                // 배열이 비어있으면 '전체' 활성화
                 isActive = (state.filters[type].length === 0);
             } else {
-                // 배열 내에 값이 포함되어 있으면 활성화
                 isActive = state.filters[type].includes(val);
             }
             btn.classList.toggle('active', isActive);
@@ -708,7 +705,6 @@ function updateSupportGrid(container) {
         return match ? parseInt(match[0], 10) : 0;
     };
 
-    // 정렬 로직 수정: 비활성화된 카드는 항상 맨 뒤로
     filteredList.sort((a, b) => {
         const aDisabled = !!state.disabledCards[a.id];
         const bDisabled = !!state.disabledCards[b.id];
@@ -721,19 +717,27 @@ function updateSupportGrid(container) {
             const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
             const rA = rarityOrder[a.rarity] || 0;
             const rB = rarityOrder[b.rarity] || 0;
-            if (rA !== rB) return rB - rA; // SSR 먼저
+            if (rA !== rB) return rB - rA;
             return getNumericId(b.id) - getNumericId(a.id) || b.id.localeCompare(a.id);
         } else if (state.sortBy === 'id-asc') {
             if (dateA !== dateB) return dateA.localeCompare(dateB);
             const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
             const rA = rarityOrder[a.rarity] || 0;
             const rB = rarityOrder[b.rarity] || 0;
-            if (rA !== rB) return rB - rA; // SSR 먼저
+            if (rA !== rB) return rB - rA;
             return getNumericId(a.id) - getNumericId(b.id) || a.id.localeCompare(b.id);
         } else if (state.sortBy === 'lb-desc') {
             const lbA = state.supportLB[a.id] || 0;
             const lbB = state.supportLB[b.id] || 0;
-            return lbB - lbA || getNumericId(b.id) - getNumericId(a.id);
+            if (lbA !== lbB) return lbB - lbA;
+            const dateA = a.releasedAt || "";
+            const dateB = b.releasedAt || "";
+            if (dateA !== dateB) return dateB.localeCompare(dateA);
+            const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
+            const rA = rarityOrder[a.rarity] || 0;
+            const rB = rarityOrder[b.rarity] || 0;
+            if (rA !== rB) return rB - rA;
+            return getNumericId(b.id) - getNumericId(a.id);
         }
         return 0;
     });
@@ -769,36 +773,27 @@ function updateSupportGrid(container) {
     updatePageTranslations(container);
 }
 
-
-
-
-// [추가] 즐겨찾기 기반 배경색 업데이트 함수
 export function updateGlobalBackgroundColor() {
     const fixedBg = document.getElementById('fixed-bg');
     if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
         let color = idolColors[state.favoriteIdol];
-
-        // CSS 변수 설정
         document.documentElement.style.setProperty('--idol-theme-color', color);
-
-        document.body.style.backgroundColor = color + "00"; // 바탕 배경색 투명도를 0%로 (사실상 완전 흰색)
-        if (fixedBg) fixedBg.style.opacity = '0.2'; // 문양을 더 은은하게 (0.2)
-
+        document.body.style.backgroundColor = color + "00";
+        if (fixedBg) fixedBg.style.opacity = '0.2';
         if (fixedBg) {
-            fixedBg.style.backgroundColor = color; // 마스크 문양 색상 설정
+            fixedBg.style.backgroundColor = color;
         }
     } else {
-        document.documentElement.style.setProperty('--idol-theme-color', '#ff4081'); // 기본 핑크색
-
+        document.documentElement.style.setProperty('--idol-theme-color', '#ff4081');
         if (fixedBg) {
-            fixedBg.style.backgroundColor = "#adb5bd"; // 기본 문양 색상: 회색
-            fixedBg.style.opacity = '0.2'; // 다른 캐릭터와 동일한 투명도
+            fixedBg.style.backgroundColor = "#adb5bd";
+            fixedBg.style.opacity = '0.2';
         }
-        document.body.style.backgroundColor = "#ffffff"; // 다른 캐릭터와 동일하게 배경은 흰색
+        document.body.style.backgroundColor = "#ffffff";
     }
 }
 
-function showCustomConfirm(message, onConfirmCallback) {
+function showCustomConfirm(message, onConfirmCallback, onResetCallback, confirmLabel) {
     let modal = document.getElementById('custom-confirm-modal');
     if (modal) modal.remove();
 
@@ -813,15 +808,18 @@ function showCustomConfirm(message, onConfirmCallback) {
     const pSize = isMobile ? '0.8rem' : '0.95rem';
     const pad = isMobile ? '20px 15px' : '25px 20px';
     const btnSize = '0.75rem';
-
     const modalWidth = isMobile ? '320px' : '400px';
+
+    const resetBtnHtml = onResetCallback ? `<button class="calc-btn reset-btn" style="background:#2196F3; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? 'リセット' : '초기화'}</button>` : '';
+    const finalConfirmLabel = confirmLabel || (isJa ? '確認' : '확인');
 
     modal.innerHTML = `
         <div class="modal-content" style="max-width: ${modalWidth}; text-align: center; padding: ${pad};">
             <p style="margin-bottom: 20px; font-size: ${pSize}; color: #333; line-height: 1.5; font-weight: bold; word-break: keep-all;">${message}</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
+                ${resetBtnHtml}
                 <button class="calc-btn cancel-btn" style="background:#eee; color:#666 !important; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? 'キャンセル' : '취소'}</button>
-                <button class="calc-btn confirm-btn" style="min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? '確認' : '확인'}</button>
+                <button class="calc-btn confirm-btn" style="min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${finalConfirmLabel}</button>
             </div>
         </div>
     `;
@@ -830,6 +828,12 @@ function showCustomConfirm(message, onConfirmCallback) {
     modal.style.display = 'flex';
 
     modal.querySelector('.cancel-btn').addEventListener('click', () => modal.remove());
+    if (onResetCallback) {
+        modal.querySelector('.reset-btn').addEventListener('click', () => {
+            modal.remove();
+            onResetCallback();
+        });
+    }
     modal.querySelector('.confirm-btn').addEventListener('click', () => {
         modal.remove();
         onConfirmCallback();

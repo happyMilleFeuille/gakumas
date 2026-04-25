@@ -2,6 +2,7 @@
 import { state } from './state.js';
 import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
+import { produceList } from './producedata.js';
 import { calculateCardBonus } from './simulator-engine.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { updateSelectedCardsUI, getIdolDisplayColor } from './calcUI.js';
@@ -159,10 +160,16 @@ export function renderSidePanelContent(panel, selectedPlan) {
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
     const planCards = calcStore.planCards[selectedPlan] || [];
 
+    const filledCount = planCards.filter(id => id !== null).length;
+    const isSelectingSixth = filledCount === 5 && planCards[5] === null;
+
     const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
-        const lb = state.supportLB[c.id] || 0;
+        const rawLb = state.supportLB[c.id] || 0;
         const isSelected = planCards.includes(c.id);
-        const style = isSelected ? `style="border-color: ${idolColor}; border-width: 2px;"` : '';
+        const isSixth = isSelected && planCards.indexOf(c.id) === 5;
+        const lb = (isSelectingSixth && !isSelected) || isSixth ? 4 : rawLb;
+        const cardColor = isSixth ? '#8FDDBA' : idolColor;
+        const style = isSelected ? `style="border-color: ${cardColor}; border-width: 2px;"` : '';
         return `
             <div class="side-card-item ${isSelected ? 'selected' : ''}" data-id="${c.id}" ${style}>
                 <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
@@ -173,13 +180,17 @@ export function renderSidePanelContent(panel, selectedPlan) {
             </div>`;
     }).join('');
 
+    const tabsStyle = isSelectingSixth ? 'background: #8FDDBA; border-bottom-color: #eee;' : 'background: white; border-bottom-color: #eee;';
+    const contentStyle = isSelectingSixth ? 'background: #8FDDBA;' : 'background: white;';
+
     panel.innerHTML = `
-        <div class="side-panel-tabs">
+        <div class="side-panel-tabs" style="${tabsStyle} position: relative;">
             <div class="panel-tab-item"><img src="icons/vocal.png"></div>
             <div class="panel-tab-item"><img src="icons/dance.png"></div>
             <div class="panel-tab-item"><img src="icons/visual.png"></div>
+            ${isSelectingSixth ? '<span class="rental-badge" style="position: absolute; top: 2px; left: 6px; font-size: 8px; font-weight: bold; color: #fff; letter-spacing: 0.5px; z-index: 10; opacity: 0.8;">RENTAL</span>' : ''}
         </div>
-        <div class="side-panel-content">
+        <div class="side-panel-content" style="${contentStyle}">
             <div class="calc-spinner-overlay" id="calc-side-spinner-overlay"><div class="calc-spinner"></div></div>
             <div class="side-panel-column" data-type="vocal">${renderCol('vocal')}</div>
             <div class="side-panel-column" data-type="dance">${renderCol('dance')}</div>
@@ -210,27 +221,32 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                 const cardId = item.dataset.id, isSelected = item.classList.contains('selected');
                 const plan = calcStore.planType;
                 let currentPlanCards = calcStore.planCards[plan] || [];
+                while (currentPlanCards.length < 6) currentPlanCards.push(null);
                 const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
                 if (isSelected) {
                     item.classList.remove('selected'); delete item.dataset.selectTime;
                     item.style.borderColor = '#ddd';
-                    calcStore.planCards[plan] = currentPlanCards.filter(id => id !== cardId);
-                    if (calcStore.cardChecked[cardId]) delete calcStore.cardChecked[cardId];
+                    item.style.borderWidth = '';
+                    item.style.boxShadow = '';
+                    const idx = currentPlanCards.indexOf(cardId);
+                    if (idx !== -1) currentPlanCards[idx] = null;
+                    calcStore.planCards[plan] = currentPlanCards;
+
+                    // 카드 해제 시 해당 카드의 체크박스 옵션들(이벤트, 강화, 체인지 등) 초기화
+                    delete calcStore.cardEventChecked[cardId];
+                    delete calcStore.cardExtraChecked[cardId];
+
                 } else {
-                    if (currentPlanCards.length >= 6) {
-                        const sorted = Array.from(panel.querySelectorAll('.side-card-item.selected')).sort((a, b) => (parseInt(a.dataset.selectTime) || 0) - (parseInt(b.dataset.selectTime) || 0));
-                        const oldest = sorted[0];
-                        if (oldest) {
-                            oldest.classList.remove('selected'); delete oldest.dataset.selectTime;
-                            oldest.style.borderColor = '#ddd';
-                            calcStore.planCards[plan] = calcStore.planCards[plan].filter(id => id !== oldest.dataset.id);
-                        }
+                    const emptyIdx = currentPlanCards.indexOf(null);
+                    if (emptyIdx === -1) {
+                        return;
                     }
                     item.classList.add('selected'); item.dataset.selectTime = Date.now();
                     item.style.borderColor = idolColor;
-                    calcStore.planCards[plan].push(cardId);
-                    calcStore.cardChecked[cardId] = false;
+                    currentPlanCards[emptyIdx] = cardId;
+                    calcStore.planCards[plan] = currentPlanCards;
+
 
                     const selectedCardObj = cardList.find(c => c.id === cardId);
                     if (selectedCardObj && selectedCardObj.abilities && selectedCardObj.abilities.includes('sp_param20')) {
@@ -241,6 +257,60 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                 }
                 calcStore.save();
                 updateSelectedCardsUI(calcStore);
+                
+                const updatedPlanCards = calcStore.planCards[plan] || [];
+                const updatedFilledCount = updatedPlanCards.filter(id => id !== null).length;
+                const isNowSelectingSixth = updatedFilledCount === 5 && updatedPlanCards[5] === null;
+
+                const tabs = panel.querySelector('.side-panel-tabs');
+                const content = panel.querySelector('.side-panel-content');
+                if (tabs) {
+                    tabs.style.background = isNowSelectingSixth ? '#8FDDBA' : 'white';
+                    tabs.style.borderBottomColor = '#eee';
+                    tabs.style.position = 'relative';
+
+                    let badge = tabs.querySelector('.rental-badge');
+                    if (isNowSelectingSixth) {
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.className = 'rental-badge';
+                            badge.textContent = 'RENTAL';
+                            Object.assign(badge.style, {
+                                position: 'absolute', top: '2px', left: '6px',
+                                fontSize: '8px', fontWeight: 'bold', color: '#fff',
+                                letterSpacing: '0.5px', zIndex: '10', opacity: '0.8'
+                            });
+                            tabs.appendChild(badge);
+                        }
+                    } else if (badge) {
+                        badge.remove();
+                    }
+                }
+                if (content) {
+                    content.style.background = isNowSelectingSixth ? '#8FDDBA' : 'white';
+                }
+
+                panel.querySelectorAll('.side-card-item').forEach(el => {
+                    const id = el.dataset.id;
+                    const isSixth = updatedPlanCards.indexOf(id) === 5;
+                    if (updatedPlanCards.includes(id)) {
+                        el.style.borderColor = isSixth ? '#8FDDBA' : idolColor;
+                        el.style.borderWidth = '2px';
+                    } else {
+                        el.style.borderColor = '#ddd';
+                        el.style.borderWidth = '';
+                    }
+                    // Update star display for 6th slot mode
+                    const isSelectedCard = updatedPlanCards.includes(id);
+                    const rawLb = state.supportLB[id] || 0;
+                    const displayLb = (isNowSelectingSixth && !isSelectedCard) || isSixth ? 4 : rawLb;
+                    const stars = el.querySelectorAll('.calc-card-star');
+                    stars.forEach((star, i) => {
+                        if (i < displayLb) star.classList.add('active');
+                        else star.classList.remove('active');
+                    });
+                });
+
                 refreshAll();
             }
         });
@@ -254,6 +324,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
     renderSidePanelContent(panel, selectedPlan);
     const planCards = calcStore.planCards[selectedPlan] || [];
     planCards.forEach(id => {
+        if (!id) return;
         const item = panel.querySelector(`.side-card-item[data-id="${id}"]`);
         if (item) { item.classList.add('selected'); item.dataset.selectTime = Date.now(); }
     });
@@ -286,34 +357,123 @@ export function showOtherTuneModal(refreshAll) {
     const selectedSkills = calcStore.planSkills[activePlan] || {};
     const counts = getTriggerCounts(calcStore);
     const cardGroups = [];
+    const allCardIds = Object.keys(skillCardList);
     const rarities = ['r', 'sr', 'ssr'];
     if (calcStore.type === 'hajime') rarities.push('legend');
 
-    const allCardIds = Object.keys(skillCardList);
+    // 1. 모든 등급의 미분류 카드(기본, 프리, 레전드) 먼저 배치
     rarities.forEach(r => {
         const planCards = allCardIds
-            .filter(id => id.startsWith(`${activePlan}-${r}`) && !id.endsWith('alt'))
+            .filter(id => {
+                const skill = skillCardList[id];
+                if (!id.startsWith(`${activePlan}-${r}`) || id.endsWith('alt')) return false;
+                if (skill.isKyoukaOnly) return false; // 강화월간 전용은 여기서 제외
+                return true;
+            })
             .sort((a, b) => {
-                const numA = parseInt(a.match(/\d+$/)[0]);
-                const numB = parseInt(b.match(/\d+$/)[0]);
-                return numA - numB;
+                const numA = a.match(/\d+$/);
+                const numB = b.match(/\d+$/);
+                if (numA && numB) return parseInt(numA[0]) - parseInt(numB[0]);
+                if (numA) return -1;
+                if (numB) return 1;
+                return a.localeCompare(b);
             });
+
         planCards.forEach(baseId => {
             const group = [baseId];
             if (skillCardList[`${baseId}alt`]) group.push(`${baseId}alt`);
             cardGroups.push(group);
         });
+
         if (r !== 'legend') {
             const freeCards = allCardIds
                 .filter(id => id.startsWith(`free-${r}`))
                 .sort((a, b) => {
-                    const numA = parseInt(a.match(/\d+$/)[0]);
-                    const numB = parseInt(b.match(/\d+$/)[0]);
+                    const numA = parseInt(a.match(/\d+$/)?.[0] || 0);
+                    const numB = parseInt(b.match(/\d+$/)?.[0] || 0);
                     return numA - numB;
                 });
             freeCards.forEach(id => cardGroups.push([id]));
         }
     });
+
+    // 2. 강화월간 전용 카드들 그룹화 (로직, 센스, 어노말리 SSR인 경우)
+    if (calcStore.isKyouka && (activePlan === 'logic' || activePlan === 'sense' || activePlan === 'anomaly') ) {
+        const kyoukaCards = allCardIds
+            .filter(id => id.startsWith(`${activePlan}-ssr`) && skillCardList[id].isKyoukaOnly)
+            .sort((a, b) => a.localeCompare(b));
+
+        if (kyoukaCards.length > 0) {
+            const groups = {
+                // Logic
+                goodimpression: [],
+                motivation: [],
+                // Sense
+                concentration: [],
+                goodcondition: [],
+                // Anomaly
+                enthusiasm: [],
+                fullpower: [],
+                // Common
+                others: []
+            };
+
+            kyoukaCards.forEach(id => {
+                const fileName = id.split('-')[1] || id;
+                // dist와 limited가 혼용되는 경우를 위해 둘 다 체크
+                let produce = produceList.find(p => p.id === fileName);
+                if (!produce) {
+                    const altName = fileName.includes('limited') ? fileName.replace('limited', 'dist') : fileName.replace('dist', 'limited');
+                    produce = produceList.find(p => p.id === altName);
+                }
+                let osusume = produce ? produce.osusume : null;
+                
+                // 온존(preservation)을 전력(fullpower)으로 취급
+                if (osusume === 'preservation') osusume = 'fullpower';
+
+                if (groups[osusume]) groups[osusume].push(id);
+                else groups.others.push(id);
+            });
+
+            // Logic Headers
+            if (activePlan === 'logic') {
+                if (groups.goodimpression.length > 0) {
+                    cardGroups.push([`header-goodimpression`]);
+                    groups.goodimpression.forEach(id => cardGroups.push([id]));
+                }
+                if (groups.motivation.length > 0) {
+                    cardGroups.push([`header-motivation`]);
+                    groups.motivation.forEach(id => cardGroups.push([id]));
+                }
+            }
+            // Sense Headers
+            if (activePlan === 'sense') {
+                if (groups.goodcondition.length > 0) {
+                    cardGroups.push([`header-goodcondition`]);
+                    groups.goodcondition.forEach(id => cardGroups.push([id]));
+                }
+                if (groups.concentration.length > 0) {
+                    cardGroups.push([`header-concentration`]);
+                    groups.concentration.forEach(id => cardGroups.push([id]));
+                }
+            }
+            // Anomaly Headers
+            if (activePlan === 'anomaly') {
+                if (groups.enthusiasm.length > 0) {
+                    cardGroups.push([`header-enthusiasm`]);
+                    groups.enthusiasm.forEach(id => cardGroups.push([id]));
+                }
+                if (groups.fullpower.length > 0) {
+                    cardGroups.push([`header-fullpower`]);
+                    groups.fullpower.forEach(id => cardGroups.push([id]));
+                }
+            }
+            
+            if (groups.others.length > 0) {
+                groups.others.forEach(id => cardGroups.push([id]));
+            }
+        }
+    }
 
     const modal = document.createElement('div');
     modal.className = 'modal';
@@ -322,7 +482,27 @@ export function showOtherTuneModal(refreshAll) {
     modal.addEventListener('mousedown', (e) => e.stopPropagation());
     modal.addEventListener('click', (e) => e.stopPropagation());
 
+    const isJa = state.currentLang === 'ja';
     const renderCardItem = (id) => {
+        if (id.startsWith('header-')) {
+            const type = id.replace('header-', '');
+            let label = '';
+            const icon = `<img src="icons/${type}.webp" style="width: 18px; height: 18px; object-fit: contain;">`;
+            if (type === 'goodimpression') {
+                label = isJa ? '[強化月間] 好印象' : '[강화월간] 호인상';
+            } else if (type === 'motivation') {
+                label = isJa ? '[強化月間] やる気' : '[강화월간] 의욕';
+            } else if (type === 'concentration') {
+                label = isJa ? '[強化月間] 集中' : '[강화월간] 집중';
+            } else if (type === 'goodcondition') {
+                label = isJa ? '[強化月間] 好調' : '[강화월간] 호조';
+            } else if (type === 'enthusiasm') {
+                label = isJa ? '[強化月間] 強気' : '[강화월간] 강기';
+            } else if (type === 'fullpower') {
+                label = isJa ? '[強化月間] 全力' : '[강화월간] 전력';
+            }
+            return `<div class="tune-card-group-header" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: #f3e5f5; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; color: #9c27b0; border-radius: 6px; margin-top: 8px; border-left: 4px solid #9c27b0;">${icon}<span>${label}</span></div>`;
+        }
         if (id === 'trouble') {
             const tCount = counts.total.get_t || 0;
             return `
@@ -332,9 +512,16 @@ export function showOtherTuneModal(refreshAll) {
                 </div>`;
         }
         const skill = skillCardList[id] || {}, count = selectedSkills[id] || 0, isSelected = count > 0;
+        let imgSrc = `icons/cal/card/${id}.webp`;
+        if (skill.isKyoukaOnly) {
+            const parts = id.split('-');
+            const plan = parts[0];
+            const fileName = parts.slice(1).join('-');
+            imgSrc = `idols/${plan}/${fileName}.webp`;
+        }
         return `
             <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${skill.multi ? 'data-multi="true"' : ''}>
-                <img src="icons/cal/card/${id}.webp" onerror="this.parentElement.style.display='none';">
+                <img src="${imgSrc}" onerror="this.parentElement.style.display='none';">
                 <div class="card-count-badge ${count > 1 ? '' : 'hidden'}">x${count}</div>
                 <div class="card-reset-btn ${isSelected && skill.multi ? '' : 'hidden'}">×</div>
             </div>`;
@@ -342,7 +529,7 @@ export function showOtherTuneModal(refreshAll) {
 
     if (counts.total.get_t > 0) cardGroups.unshift(['trouble']);
 
-    const isJa = state.currentLang === 'ja';
+
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
             <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: #9c27b0; font-size: 1rem;"></h3>
@@ -365,6 +552,7 @@ export function showOtherTuneModal(refreshAll) {
         total += (counts.total.get_t || 0);
         const selectedIds = calcStore.planCards[currentPlan] || [];
         selectedIds.forEach(id => {
+            if (!id) return;
             if (calcStore.cardChecked[id]) {
                 const card = cardList.find(c => c.id === id);
                 if (card && card.have?.startsWith('card_')) total++;
@@ -373,7 +561,8 @@ export function showOtherTuneModal(refreshAll) {
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
             const planLabel = isJa ? (currentPlan === 'sense' ? 'センス' : (currentPlan === 'logic' ? 'ロジック' : 'アノマリー')) : currentPlan.toUpperCase();
-            titleEl.textContent = isJa ? `${planLabel}カード選択 (${total} / ${boardGetCount})` : `${currentPlan.toUpperCase()} 카드 선택 (${total} / ${boardGetCount})`;
+            const kyoukaPrefix = calcStore.isKyouka ? (isJa ? '[強化月間] ' : '[강화월간] ') : '';
+            titleEl.textContent = isJa ? `${kyoukaPrefix}${planLabel}カード選択 (${total} / ${boardGetCount})` : `${kyoukaPrefix}${currentPlan.toUpperCase()} 카드 선택 (${total} / ${boardGetCount})`;
         }
     };
     updateTitle();

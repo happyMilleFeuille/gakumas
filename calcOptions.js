@@ -3,7 +3,7 @@
 
 export const activityOptions = {
     class_hajime: [  
-        { id: "class_hajime1",results: ["get_t","change"], mainlabel: "Change",label_ko: "카드 체인지, 트러블 추가", label_ja: "カードチェンジ・トラブルカード獲得", type: "checkbox" },
+        { id: "class_hajime1",results: ["get", "get_t","change"], mainlabel: "Change",label_ko: "카드 체인지, 트러블 추가", label_ja: "カードチェンジ・トラブルカード獲得", type: "checkbox" },
         { id: "class_hajime2",results: ["get"], label_ko: "해당 없음", label_ja: "該当なし", type: "checkbox" },  
     ],
     class_nia: [

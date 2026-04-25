@@ -173,8 +173,10 @@ export function updateSelectedCardsUI(store) {
     const container = document.getElementById('selected-support-container');
     if (!container) return;
 
-    const selectedIds = (store.planCards[store.planType] || []).filter(id => !state.disabledCards[id]);
-    const isAllEmpty = selectedIds.length === 0;
+    let rawIds = store.planCards[store.planType] || [];
+    while (rawIds.length < 6) rawIds.push(null);
+    const selectedIds = rawIds.map(id => (id && !state.disabledCards[id]) ? id : null);
+    const isAllEmpty = selectedIds.every(id => !id);
     const isJa = state.currentLang === 'ja';
 
     // Initialize 6 empty slots if they don't exist yet
@@ -192,6 +194,9 @@ export function updateSelectedCardsUI(store) {
     for (let i = 0; i < 6; i++) {
         const slotEl = container.children[i];
         const cardId = selectedIds[i];
+
+        if (i === 5) slotEl.classList.add('sixth-slot');
+        else slotEl.classList.remove('sixth-slot');
 
         if (cardId) {
             const cardData = cardList.find(c => c.id === cardId);
@@ -240,9 +245,13 @@ export function updateSelectedCardsUI(store) {
 
             // 2. Slot frame (Image and check/remove controls)
             let frame = slotEl.querySelector('.slot-frame');
+            const isSixth = (i === 5);
+            frame.style.borderColor = isSixth ? '#8FDDBA' : 'transparent';
+            frame.style.borderWidth = isSixth ? '2px' : '';
+            frame.style.boxShadow = isSixth ? '0 0 8px #8FDDBA88' : '';
+
             if (!frame.querySelector('img')) {
                 // If it was empty, construct inner elements
-                frame.style.borderColor = 'transparent';
                 frame.innerHTML = `
                     <img src="images/support/${cardId}_card.webp" onerror="this.src='images/support/${cardId}_item.webp'; this.onerror=null;">
                     <div class="card-slot-remove" data-id="${cardId}">×</div>
@@ -412,6 +421,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 </div>
 
                 <div class="stat-header" style="border-color: ${idolColor};">
+                    <button id="btn-kyouka" class="kyouka-btn header-kyouka-btn">
+                        <img src="icons/kyoukagekkan${state.currentLang === 'ko' ? '-k' : ''}.webp" alt="Kyouka">
+                    </button>
                     <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
                         <span class="sum-label">TOTAL</span>
                         <span id="total-stats-sum-value">0</span>
@@ -490,8 +502,8 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 <div class="selected-support-container" id="selected-support-container"></div>
                 <div class="activity-counter" id="activity-counter"></div>
-                <div class="board-toggle-bar" id="board-toggle-bar">${store.isBoardCollapsed ? (isJa ? 'スケジュールを開く ▼' : '주간 행동 열기 ▼') : (isJa ? 'スケジュールを閉じる ▲' : '주간 행동 닫기 ▲')}</div>
-                <div class="unified-plan-board ${store.isBoardCollapsed ? 'collapsed-board' : ''}" data-calc-type="${store.type}">${weeksHtml}</div>
+                <div class="board-title-tab" data-i18n="weekly_action">${isJa ? '週間スケジュール' : '주간 행동'}</div>
+                <div class="unified-plan-board" data-calc-type="${store.type}">${weeksHtml}</div>
             </div>
         </div>
     `;
