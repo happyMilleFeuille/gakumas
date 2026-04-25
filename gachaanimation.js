@@ -368,11 +368,18 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         }
 
         videoNext.src = assetBlobs[getSrc] || getSrc;
-        subState = (card.rarity === 'PSSR') ? "pssr_intro" : "normal";
+        if (card.rarity === 'PSSR') {
+            subState = "pssr_intro";
+        } else if (isSupport && card.displayRarity === 'SSR') {
+            subState = "sssr";
+        } else {
+            subState = "normal";
+        }
 
         if (imgOverlay) {
-            imgOverlay.classList.remove('produce-card', 'landscape-card');
+            imgOverlay.classList.remove('produce-card', 'landscape-card', 'ssr-tilt');
             imgOverlay.classList.add(isSupport ? 'landscape-card' : 'produce-card');
+            if (isSupport && card.displayRarity === 'SSR') imgOverlay.classList.add('ssr-tilt');
             if (card.type === 'produce') imgOverlay.src = `idols/${card.id}1.webp`;
             else imgOverlay.src = `images/support/${card.id}.webp`;
         }
@@ -381,7 +388,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             nameOverlay.classList.remove('produce-name', 'landscape-name');
             nameOverlay.classList.add(isSupport ? 'landscape-name' : 'produce-name');
             nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
-            nameOverlay.style.background = (card.displayRarity === 'SSR' ? '#a335ee' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
+            nameOverlay.style.background = (card.displayRarity === 'SSR' ? 'linear-gradient(to right, #f5d033, #e374d1, #3bcfde, #51e8a3)' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
         }
 
         videoNext.onplaying = () => {
@@ -403,7 +410,25 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 activeStepSfx = playSound(sfx);
                 soundPlayed = true;
             }
-            if (card.rarity !== 'PSSR') {
+            if (subState === "sssr") {
+                let overlaysShown = false;
+                const checkSssrTime = () => {
+                    if (currentState !== States.SHOWING_INDIVIDUAL) return;
+                    if (!overlaysShown && videoNext.currentTime >= 6.95 && !videoNext.seeking) {
+                        overlaysShown = true;
+                        if (!state.gachaMuted) {
+                            stopStepSfx();
+                            activeStepSfx = playSound('gasya/getssr.mp3');
+                        }
+                        if (imgOverlay) imgOverlay.classList.add('visible');
+                        if (nameOverlay) nameOverlay.classList.add('visible');
+                        if (isNew && newBadgeOverlay) newBadgeOverlay.classList.add('visible');
+                    } else if (!overlaysShown) {
+                        requestAnimationFrame(checkSssrTime);
+                    }
+                };
+                requestAnimationFrame(checkSssrTime);
+            } else if (card.rarity !== 'PSSR') {
                 setTimeout(() => {
                     if (currentState !== States.SHOWING_INDIVIDUAL) return;
                     if (imgOverlay) imgOverlay.classList.add('visible');
@@ -436,6 +461,14 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         videoNext.onclick = () => {
             if (!canClick) return;
             if (subState === "pssr_intro") return;
+            if (subState === "sssr") {
+                if (videoNext.currentTime < 6.95) {
+                    canClick = false;
+                    videoNext.currentTime = 6.95; 
+                    scheduleCanClick(1000, States.SHOWING_INDIVIDUAL);
+                    return;
+                }
+            }
             if (subState === "pssr_special") {
                 const j1 = card.jumpTime1 || 3.3, j2 = card.jumpTime2;
                 const cur = videoNext.currentTime;
@@ -559,7 +592,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         const pssrPickup = currentResults.find(c => pssrPickups.some(p => (typeof p === 'string' ? p : p.id) === c.id));
 
         blackoutScheduled = null;
-        if (pssrPickup && Math.random() < 0.7) {
+        if (type !== 'selection' && pssrPickup && Math.random() < 0.7) {
             const p = pssrPickups.find(p => (typeof p === 'string' ? p : p.id) === pssrPickup.id);
             const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
             const highest = getHighestRarity(currentResults);
