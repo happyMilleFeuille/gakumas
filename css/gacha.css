@@ -246,6 +246,7 @@ body.gacha-result-active .gacha-container {
         right: 3px;
         font-size: 0.75rem;
     }
+
     .pickup-date.is-unit {
         right: auto;
         left: 3px;
@@ -713,6 +714,7 @@ body.gacha-result-active .gacha-container {
     justify-content: flex-end;
     gap: 8px;
     width: 145px;
+    white-space: nowrap;
     font-size: 0.9rem;
     font-weight: bold;
     border: 1px solid rgba(255, 255, 255, 0.2);
