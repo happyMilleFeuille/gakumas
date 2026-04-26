@@ -456,13 +456,13 @@ function openSlotModal() {
                     // [추가] 계산기 슬롯에서 비활성화된 카드 제거 동기화
                     ['sense', 'logic', 'anomaly'].forEach(plan => {
                         if (calcStore.planCards[plan]) {
-                            calcStore.planCards[plan] = calcStore.planCards[plan].map(id => 
+                            calcStore.planCards[plan] = calcStore.planCards[plan].map(id =>
                                 (id && state.disabledCards[id]) ? null : id
                             );
                         }
                     });
                     calcStore.save();
-                    
+
                     renderSupport();
                     modal.remove();
                 }
@@ -547,7 +547,7 @@ function setupStaticListeners(container) {
         const isJa = state.currentLang === 'ja';
         allMaxBtn.textContent = isJa ? '一括調整' : '일괄 조정';
         allMaxBtn.addEventListener('click', () => {
-            const confirmMsg = isJa ? 'すべてのカードを最大突破状態に変更、またはリセットします。実行しますか？' : '모든 카드를 최대 돌파로 변경하거나 초기화하게 됩니다. 변경하시겠습니까?';
+            const confirmMsg = isJa ? 'すべてのカードを最大突破に変更するか、無効なカードおよび突破状態をリセットします。変更しますか？' : '모든 카드를 최대 돌파로 변경하거나 비활성화 카드 및 돌파를 초기화하게 됩니다. 변경하시겠습니까?';
 
             const confirmLabel = isJa ? '最大突破' : '최대돌파';
 
