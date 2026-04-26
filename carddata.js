@@ -2490,6 +2490,7 @@ export const cardList = [
         plan: "anomaly",
         source: "limited",
         have: "item",
+
         item_effects: [{ type: "action", trigger: ["get_preservation"], stats: { vocal: 30 }, target: "delete_t", max: 1 }],
         rarity: "SR",
         extra1: "param",
