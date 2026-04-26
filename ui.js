@@ -443,7 +443,7 @@ function openSlotModal() {
 
         if (saveBtn) {
             const slotId = saveBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} に현재 상태를 저장하시겠습니까?` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} に現在の状態を保存しますか？` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
                 saveToSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
@@ -451,8 +451,18 @@ function openSlotModal() {
 
         if (loadBtn) {
             const slotId = loadBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} 의 데이터를 불러오시겠습니까?` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} のデータを読み込みますか？` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
                 if (loadFromSlot(slotId)) {
+                    // [추가] 계산기 슬롯에서 비활성화된 카드 제거 동기화
+                    ['sense', 'logic', 'anomaly'].forEach(plan => {
+                        if (calcStore.planCards[plan]) {
+                            calcStore.planCards[plan] = calcStore.planCards[plan].map(id => 
+                                (id && state.disabledCards[id]) ? null : id
+                            );
+                        }
+                    });
+                    calcStore.save();
+                    
                     renderSupport();
                     modal.remove();
                 }
@@ -461,7 +471,7 @@ function openSlotModal() {
 
         if (deleteBtn) {
             const slotId = deleteBtn.dataset.slot;
-            if (confirm(isJa ? `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
+            if (confirm(isJa ? `スロット ${slotId} のデータを削除しますか？` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
                 deleteSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
@@ -551,6 +561,8 @@ function setupStaticListeners(container) {
                 cardList.forEach(card => {
                     setSupportLB(card.id, 0);
                 });
+                state.disabledCards = {};
+                localStorage.setItem('disabledCards', JSON.stringify(state.disabledCards));
                 renderSupport();
                 if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
             }, confirmLabel);
