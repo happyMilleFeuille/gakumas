@@ -262,7 +262,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                 }
                 calcStore.save();
                 updateSelectedCardsUI(calcStore);
-                
+
                 const updatedPlanCards = calcStore.planCards[plan] || [];
                 const updatedFilledCount = updatedPlanCards.filter(id => id !== null).length;
                 const isNowSelectingSixth = updatedFilledCount === 5 && updatedPlanCards[5] === null;
@@ -406,7 +406,7 @@ export function showOtherTuneModal(refreshAll) {
     });
 
     // 2. 강화월간 전용 카드들 그룹화 (로직, 센스, 어노말리 SSR인 경우)
-    if (calcStore.isKyouka && (activePlan === 'logic' || activePlan === 'sense' || activePlan === 'anomaly') ) {
+    if (calcStore.isKyouka && (activePlan === 'logic' || activePlan === 'sense' || activePlan === 'anomaly')) {
         const kyoukaCards = allCardIds
             .filter(id => id.startsWith(`${activePlan}-ssr`) && skillCardList[id].isKyoukaOnly)
             .sort((a, b) => a.localeCompare(b));
@@ -435,7 +435,7 @@ export function showOtherTuneModal(refreshAll) {
                     produce = produceList.find(p => p.id === altName);
                 }
                 let osusume = produce ? produce.osusume : null;
-                
+
                 // 온존(preservation)을 전력(fullpower)으로 취급
                 if (osusume === 'preservation') osusume = 'fullpower';
 
@@ -443,40 +443,22 @@ export function showOtherTuneModal(refreshAll) {
                 else groups.others.push(id);
             });
 
-            // Logic Headers
+            // Logic Groups
             if (activePlan === 'logic') {
-                if (groups.goodimpression.length > 0) {
-                    cardGroups.push([`header-goodimpression`]);
-                    groups.goodimpression.forEach(id => cardGroups.push([id]));
-                }
-                if (groups.motivation.length > 0) {
-                    cardGroups.push([`header-motivation`]);
-                    groups.motivation.forEach(id => cardGroups.push([id]));
-                }
+                if (groups.goodimpression.length > 0) cardGroups.push([`header-goodimpression`, ...groups.goodimpression]);
+                if (groups.motivation.length > 0) cardGroups.push([`header-motivation`, ...groups.motivation]);
             }
-            // Sense Headers
+            // Sense Groups
             if (activePlan === 'sense') {
-                if (groups.goodcondition.length > 0) {
-                    cardGroups.push([`header-goodcondition`]);
-                    groups.goodcondition.forEach(id => cardGroups.push([id]));
-                }
-                if (groups.concentration.length > 0) {
-                    cardGroups.push([`header-concentration`]);
-                    groups.concentration.forEach(id => cardGroups.push([id]));
-                }
+                if (groups.goodcondition.length > 0) cardGroups.push([`header-goodcondition`, ...groups.goodcondition]);
+                if (groups.concentration.length > 0) cardGroups.push([`header-concentration`, ...groups.concentration]);
             }
-            // Anomaly Headers
+            // Anomaly Groups
             if (activePlan === 'anomaly') {
-                if (groups.enthusiasm.length > 0) {
-                    cardGroups.push([`header-enthusiasm`]);
-                    groups.enthusiasm.forEach(id => cardGroups.push([id]));
-                }
-                if (groups.fullpower.length > 0) {
-                    cardGroups.push([`header-fullpower`]);
-                    groups.fullpower.forEach(id => cardGroups.push([id]));
-                }
+                if (groups.enthusiasm.length > 0) cardGroups.push([`header-enthusiasm`, ...groups.enthusiasm]);
+                if (groups.fullpower.length > 0) cardGroups.push([`header-fullpower`, ...groups.fullpower]);
             }
-            
+
             if (groups.others.length > 0) {
                 groups.others.forEach(id => cardGroups.push([id]));
             }
@@ -509,7 +491,7 @@ export function showOtherTuneModal(refreshAll) {
             } else if (type === 'fullpower') {
                 label = isJa ? '[強化月間] 全力' : '[강화월간] 전력';
             }
-            return `<div class="tune-card-group-header" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: #f3e5f5; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; color: #9c27b0; border-radius: 6px; margin-top: 8px; border-left: 4px solid #9c27b0;">${icon}<span>${label}</span></div>`;
+            return `<div class="tune-card-group-header" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: #f3e5f5; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; color: #9c27b0; border-radius: 6px; margin-top: 8px; border-left: 4px solid #9c27b0; cursor: pointer; transition: background 0.2s; position: relative;">${icon}<span>${label}</span><span class="toggle-icon" style="margin-left: auto; transition: transform 0.2s;">▼</span></div>`;
         }
         if (id === 'trouble') {
             const tCount = counts.total.get_t || 0;
@@ -541,7 +523,20 @@ export function showOtherTuneModal(refreshAll) {
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
             <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: #9c27b0; font-size: 1rem;"></h3>
-            <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => g.length > 1 ? `<div class="tune-card-group-box" data-group="${g.join(',')}">${g.map(renderCardItem).join('')}</div>` : renderCardItem(g[0])).join('')}</div>
+            <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => {
+        if (g.length > 1) {
+            if (g[0].startsWith('header-')) {
+                return `
+                            <div class="tune-kyouka-group-container" style="grid-column: 1 / -1; display: contents;">
+                                ${renderCardItem(g[0])}
+                                ${g.slice(1).map(id => renderCardItem(id)).join('')}
+                            </div>
+                        `;
+            }
+            return `<div class="tune-card-group-box" data-group="${g.join(',')}">${g.map(renderCardItem).join('')}</div>`;
+        }
+        return renderCardItem(g[0]);
+    }).join('')}</div>
             <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%; box-sizing: border-box;">
                 <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${isJa ? '一括初期化' : '전체 초기화'}</button>
                 <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${isJa ? '閉じる' : '닫기'}</button>
@@ -574,6 +569,25 @@ export function showOtherTuneModal(refreshAll) {
         }
     };
     updateTitle();
+
+    // 강화월간 그룹 토글 이벤트 리스너
+    modal.querySelectorAll('.tune-card-group-header').forEach(header => {
+        header.onclick = (e) => {
+            e.preventDefault(); e.stopPropagation();
+            const container = header.parentElement; // display: contents 때문에 형제들을 찾아야 함
+            const toggleIcon = header.querySelector('.toggle-icon');
+            const isCollapsed = header.classList.toggle('collapsed');
+
+            if (toggleIcon) toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
+
+            // 헤더 바로 다음에 오는 아이템들을 찾아서 토글
+            let next = header.nextElementSibling;
+            while (next && next.classList.contains('tune-card-item')) {
+                next.style.display = isCollapsed ? 'none' : 'flex';
+                next = next.nextElementSibling;
+            }
+        };
+    });
 
     modal.querySelectorAll('.tune-card-item').forEach(item => {
         item.onclick = (e) => {
@@ -766,7 +780,7 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
 function showTemporaryToast(message) {
     const tooltip = document.createElement('div');
     const isMobile = window.innerWidth <= 768;
-    
+
     tooltip.textContent = message;
     tooltip.style.position = 'fixed';
     tooltip.style.backgroundColor = 'rgba(0,0,0,0.85)';
@@ -779,12 +793,12 @@ function showTemporaryToast(message) {
     tooltip.style.pointerEvents = 'none';
     tooltip.style.whiteSpace = 'nowrap';
     tooltip.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-    
+
     // 중앙 하단 고정
     tooltip.style.left = '50%';
     tooltip.style.bottom = isMobile ? '12%' : '10%';
     tooltip.style.transform = 'translateX(-50%)';
-    
+
     // 부드러운 페이드 효과를 위해 transition 사용 (keyframes 충돌 방지)
     tooltip.style.opacity = '0';
     tooltip.style.transition = 'opacity 0.3s ease-in-out';
