@@ -175,7 +175,21 @@ export function updateSelectedCardsUI(store) {
 
     let rawIds = store.planCards[store.planType] || [];
     while (rawIds.length < 6) rawIds.push(null);
-    const selectedIds = rawIds.map((id, idx) => (id && (idx === 5 || !state.disabledCards[id])) ? id : null);
+
+    // [수정] 1~5번 슬롯 중 비활성화된 카드가 있다면 실제로 null로 동기화 (자리를 차지하지 않도록)
+    let changed = false;
+    for (let i = 0; i < 5; i++) {
+        if (rawIds[i] && state.disabledCards[rawIds[i]]) {
+            rawIds[i] = null;
+            changed = true;
+        }
+    }
+    if (changed) {
+        store.planCards[store.planType] = rawIds;
+        store.save();
+    }
+
+    const selectedIds = [...rawIds];
     const isAllEmpty = selectedIds.every(id => !id);
     const isJa = state.currentLang === 'ja';
 
