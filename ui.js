@@ -549,7 +549,7 @@ function setupStaticListeners(container) {
         const isJa = state.currentLang === 'ja';
         allMaxBtn.textContent = isJa ? '一括調整' : '일괄 조정';
         allMaxBtn.addEventListener('click', () => {
-            const confirmMsg = isJa ? 'すべてのカードを最大開花に変更するか、無効なカードおよび突破状態をリセットします。変更しますか？' : '모든 카드를 최대 돌파로 변경하거나 비활성화 카드 및 돌파를 초기화하게 됩니다. 변경하시겠습니까?';
+            const confirmMsg = isJa ? 'すべてのカードを最大開花状態に変更するか、非アクティブカードおよび開花状態をリセットします。実行しますか？' : '모든 카드를 최대 돌파로 변경하거나 비활성화 카드 및 돌파를 초기화하게 됩니다. 변경하시겠습니까?';
 
             const confirmLabel = isJa ? '最大開花' : '최대돌파';
 

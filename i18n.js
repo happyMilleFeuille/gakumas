@@ -182,8 +182,8 @@ const translations = {
         roadmap_since_release: "実装タイムライン",
         roadmap_expand: "開く",
         roadmap_collapse: "閉じる",
-        support_tooltip_1: "• <b>花マークをクリックして、上限解放段階を設定できます。</b>",
-        support_tooltip_2: "• <b>カードを長押しすると非活性化され、<br>リストの最下部に移動し、ステータス計算から除外されます。</b>",
+        support_tooltip_1: "• <b>花マークをクリックして、開花段階を設定できます。</b>",
+        support_tooltip_2: "• <b>カードを長押しすると非アクティブになり、<br>リストの一番下に移動し、ステータス計算から除外されます。</b>",
         footer: ""
     }
 };
