@@ -840,8 +840,8 @@ export function showSupportItemTooltip(slot, cardId) {
             get_enthusiasm: '強気カード獲得', get_fullpower: '全力カード獲得',
             get_drink: 'ドリンク獲得', get_item: 'アイテム獲得', get_ssr: 'SSRカード獲得',
             purchase_drink: 'ドリンク交換', gift: '活動支給・差し入れ', goout: 'おでかけ',
-            lesson: 'レッスン', sp: 'SPレッスン', sp_lesson: 'SPレッスン', audition: '試験/オーディション', advice: '相談',
-            rest: '休む', test: '試験/オーディション', class: '授業/営業', spclass: '特別指導',
+            lesson: 'レッスン', sp: 'SPレッスン', sp_lesson: 'SPレッスン', audition: 'オーディション', advice: '相談',
+            rest: '休む', test: '試験', class: '授業/営業', spclass: '特別指導',
             enhance: 'カード強化', delete: 'カード削除', delete_t: 'トラブルカード削除', change: 'カードチェンジ'
         } : {
             get: '카드 획득', get_concentration: '집중 카드 획득', get_goodcondition: '호조 카드 획득',
@@ -850,8 +850,8 @@ export function showSupportItemTooltip(slot, cardId) {
             get_enthusiasm: '강기 카드 획득', get_fullpower: '전력 카드 획득',
             get_drink: '드링크 획득', get_item: '아이템 획득', get_ssr: 'SSR 카드 획득',
             purchase_drink: '드링크 구매', gift: '활동지급, 사시이레', goout: '외출',
-            lesson: '레슨', sp: 'SP 레슨', sp_lesson: 'SP 레슨', audition: '시험/오디션', advice: '상담',
-            rest: '휴식', test: '시험/오디션', class: '수업/영업', spclass: '특별지도',
+            lesson: '레슨', sp: 'SP 레슨', sp_lesson: 'SP 레슨', audition: '오디션', advice: '상담',
+            rest: '휴식', test: '시험', class: '수업/영업', spclass: '특별지도',
             enhance: '카드 강화', delete: '카드 삭제', delete_t: '트러블 카드 삭제', change: '카드 체인지'
         };
 
@@ -859,9 +859,9 @@ export function showSupportItemTooltip(slot, cardId) {
             ? { vocal: 'ボーカル', dance: 'ダンス', visual: 'ビジュアル' }
             : { vocal: '보컬', dance: '댄스', visual: '비주얼' };
 
-        // 트리거 처리 (배열인 경우 첫 번째 값만 사용)
-        const rawTrigger = Array.isArray(eff.trigger) ? eff.trigger[0] : eff.trigger;
-        const trigger = labels[rawTrigger] || rawTrigger;
+        // 트리거 처리 (배열인 경우 모든 요소를 매핑하여 합침)
+        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+        const trigger = triggers.map(t => labels[t] || t).join(', ');
         const maxSuffix = (eff.max && eff.max < 9) ? (isJa ? ` (プロデュース中${eff.max}回)` : ` (프로듀스 중 ${eff.max}회)`) : '';
 
         if (eff.type === 'action') {
@@ -874,14 +874,23 @@ export function showSupportItemTooltip(slot, cardId) {
                 let displayText = eff.display
                     ? (typeof eff.display === 'object' ? (isJa ? eff.display.ja : eff.display.ko) : eff.display)
                     : null;
-                let targetStr = displayText || labels[eff.target] || eff.target;
+
+                let targetStr = "";
+                if (displayText) {
+                    targetStr = displayText;
+                } else {
+                    const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
+                    targetStr = targets.map(t => labels[t] || t).join(', ');
+                }
+
                 if (eff.value) targetStr += ` +${eff.value}`;
                 effectDescParts.push(targetStr);
             }
             const effectDesc = effectDescParts.join(', ');
             return isJa ? `${trigger}時 ${effectDesc}${maxSuffix}` : `${trigger} 시 ${effectDesc}${maxSuffix}`;
         } else if (eff.type === 'add_count') {
-            const target = labels[eff.target] || eff.target;
+            const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
+            const target = targets.map(t => labels[t] || t).join(', ');
             return `${target} +${eff.value}${maxSuffix}`;
         }
         return '';
