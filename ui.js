@@ -402,15 +402,17 @@ function openSlotModal() {
         for (let i = 1; i <= 3; i++) {
             const info = getSlotInfo(i);
             slotsHtml += `
-                <div class="slot-modal-item">
-                    <div class="slot-modal-info">
-                        <span class="slot-modal-name">Slot ${i}</span>
-                        <span class="slot-modal-date">${info || (isJa ? 'データなし' : '데이터 없음')}</span>
+                <div class="slot-modal-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                    <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333;">Slot ${i}</span>
+                            <button class="slot-btn save" data-slot="${i}" style="width: 38px; flex: none; padding: 3px 0; font-size: 0.65rem; background: #e3f2fd; color: #1976d2; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${isJa ? 'Save' : '저장'}</button>
+                        </div>
+                        <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${info || (isJa ? 'データなし' : '데이터 없음')}</span>
                     </div>
-                    <div class="slot-modal-actions">
-                        <button class="slot-btn save" data-slot="${i}">${isJa ? 'Save' : '저장'}</button>
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''}>${isJa ? 'Load' : '로드'}</button>
-                        <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''}>&times;</button>
+                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: 8px;">
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''} style="width: 65px; flex: none; padding: 6px 0; font-size: 0.85rem; background: #f1f8e9; color: #689f38; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center;">${isJa ? 'Load' : '로드'}</button>
+                        <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="background: #ffebee; color: #ef5350; border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer;">&times;</button>
                     </div>
                 </div>`;
         }
