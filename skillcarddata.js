@@ -257,7 +257,7 @@ export const skillCardList = {
     "sense-ssrchina_2nd": { type: "mental", attrs: ["genki"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrchina_3rd": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrchina_halloweendist": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
-    "sense-ssrchina_michinaruunit1": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
+    "sense-ssrchina_michinaruunit": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrchina_onsen": { type: "mental", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrhiro_2nd": { type: "active", attrs: ["genki"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrhiro_halloweenlimited": { type: "mental", attrs: ["goodcondition"], rarity: "SSR", isKyoukaOnly: true },
