@@ -13,6 +13,14 @@
         gtag('config', 'G-LRG62DQ35R');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // 앱 버전 관리 - 업데이트 시 이 숫자만 올리면 모든 사용자 캐시가 강제 갱신됩니다.
+        const APP_VERSION = '1.0.3';
+        if (localStorage.getItem('gakumas_note_version') !== APP_VERSION) {
+            localStorage.setItem('gakumas_note_version', APP_VERSION);
+            location.reload(true);
+        }
+    </script>
     <meta name="google-site-verification" content="WTUIctiVOEH6W01p9L-cLTHTsY584U27fPXIGb1RGSk" />
     <title>Gakumas Note</title>
     <meta name="description"
