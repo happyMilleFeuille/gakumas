@@ -151,17 +151,20 @@ export function showStatDetailModal(breakdown) {
  * 서포트 카드 선택 패널 렌더링
  */
 export function renderSidePanelContent(panel, selectedPlan) {
+    const planCards = calcStore.planCards[selectedPlan] || [];
+    const filledCount = planCards.filter(id => id !== null).length;
+    const isSelectingSixth = filledCount === 5 && planCards[5] === null;
+
+    // 패널 자체에 상태 클래스 추가/제거 (CSS에서 활용)
+    if (isSelectingSixth) panel.classList.add('is-selecting-sixth');
+    else panel.classList.remove('is-selecting-sixth');
+
     const filtered = cardList.filter(c =>
         (c.plan === selectedPlan || c.plan === 'free') &&
         c.rarity !== 'R' &&
-        c.type !== 'assist' &&
-        !state.disabledCards[c.id]
+        c.type !== 'assist'
     );
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
-    const planCards = calcStore.planCards[selectedPlan] || [];
-
-    const filledCount = planCards.filter(id => id !== null).length;
-    const isSelectingSixth = filledCount === 5 && planCards[5] === null;
 
     const renderCol = (type) => filtered.filter(c => c.type === type).map(c => {
         const rawLb = state.supportLB[c.id] || 0;
@@ -170,8 +173,10 @@ export function renderSidePanelContent(panel, selectedPlan) {
         const lb = (isSelectingSixth && !isSelected) || isSixth ? 4 : rawLb;
         const cardColor = isSixth ? '#8FDDBA' : idolColor;
         const style = isSelected ? `style="border-color: ${cardColor}; border-width: 2px;"` : '';
+        const isDisabled = state.disabledCards[c.id];
+
         return `
-            <div class="side-card-item ${isSelected ? 'selected' : ''}" data-id="${c.id}" ${style}>
+            <div class="side-card-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'is-disabled-card' : ''}" data-id="${c.id}" ${style}>
                 <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
                 <img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;">
                 <div class="calc-card-stars">${Array.from({ length: 4 }, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
@@ -243,7 +248,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                         return;
                     }
                     item.classList.add('selected'); item.dataset.selectTime = Date.now();
-                    item.style.borderColor = idolColor;
+                    item.style.borderColor = (emptyIdx === 5) ? '#8FDDBA' : idolColor;
                     currentPlanCards[emptyIdx] = cardId;
                     calcStore.planCards[plan] = currentPlanCards;
 
@@ -261,6 +266,9 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                 const updatedPlanCards = calcStore.planCards[plan] || [];
                 const updatedFilledCount = updatedPlanCards.filter(id => id !== null).length;
                 const isNowSelectingSixth = updatedFilledCount === 5 && updatedPlanCards[5] === null;
+
+                if (isNowSelectingSixth) panel.classList.add('is-selecting-sixth');
+                else panel.classList.remove('is-selecting-sixth');
 
                 const tabs = panel.querySelector('.side-panel-tabs');
                 const content = panel.querySelector('.side-panel-content');

@@ -243,8 +243,10 @@ function startWeeklyPlan(type) {
                     // [추가] 서포트 패널이 열려있다면 선택된 카드들의 테두리 색상도 즉시 업데이트
                     const sidePanel = document.getElementById('calc-side-panel');
                     if (sidePanel) {
+                        const currentPlanCards = calcStore.planCards[calcStore.planType] || [];
                         sidePanel.querySelectorAll('.side-card-item.selected').forEach(card => {
-                            card.style.borderColor = color;
+                            const isSixth = currentPlanCards.indexOf(card.dataset.id) === 5;
+                            card.style.borderColor = isSixth ? '#8FDDBA' : color;
                         });
                     }
 

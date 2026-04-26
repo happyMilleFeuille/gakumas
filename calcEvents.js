@@ -84,6 +84,9 @@ export function initGlobalDistListener(refreshAll) {
                 const updatedPlanCards = calcStore.planCards[plan] || [];
                 const filledCount = updatedPlanCards.filter(cid => cid !== null).length;
                 const isSelectingSixth = filledCount === 5 && updatedPlanCards[5] === null;
+                if (isSelectingSixth) sidePanel.classList.add('is-selecting-sixth');
+                else sidePanel.classList.remove('is-selecting-sixth');
+
                 const tabs = sidePanel.querySelector('.side-panel-tabs');
                 const content = sidePanel.querySelector('.side-panel-content');
                 if (tabs) {

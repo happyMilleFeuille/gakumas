@@ -175,7 +175,7 @@ export function updateSelectedCardsUI(store) {
 
     let rawIds = store.planCards[store.planType] || [];
     while (rawIds.length < 6) rawIds.push(null);
-    const selectedIds = rawIds.map(id => (id && !state.disabledCards[id]) ? id : null);
+    const selectedIds = rawIds.map((id, idx) => (id && (idx === 5 || !state.disabledCards[id])) ? id : null);
     const isAllEmpty = selectedIds.every(id => !id);
     const isJa = state.currentLang === 'ja';
 

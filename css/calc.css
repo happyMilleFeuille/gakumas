@@ -156,6 +156,17 @@
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 비활성화 카드 기본 숨김 (6번째 슬롯 선택 시 또는 이미 선택된 경우에만 보이게) */
+.calc-side-panel .side-card-item.is-disabled-card {
+    display: none;
+}
+
+.calc-side-panel.is-selecting-sixth .side-card-item.is-disabled-card,
+.calc-side-panel .side-card-item.is-disabled-card.selected {
+    display: block;
+    opacity: 0.8;
+}
+
 .calc-side-panel.open {
     transform: translateX(0);
 }

@@ -155,9 +155,9 @@ export function getTriggerCounts(store) {
     let activePlan = store.planType || 'sense';
     let selectedIds = store.planCards[activePlan] || [];
     selectedIds.forEach(id => {
-        if (!id) return;
-        // 비활성화된 카드는 무시
-        if (state.disabledCards[id]) return;
+        // 비활성화된 카드는 무시 (단, 6번째 렌탈 슬롯은 예외)
+        const isSixth = selectedIds.indexOf(id) === 5;
+        if (state.disabledCards[id] && !isSixth) return;
 
         if (store.cardExtraChecked[id]) {
             const card = cardList.find(c => c.id === id);
@@ -185,8 +185,9 @@ export function getTriggerCounts(store) {
     selectedIds = store.planCards?.[activePlan] || [];
     selectedIds.forEach(id => {
         if (!id) return;
-        // 비활성화된 카드는 무시
-        if (state.disabledCards[id]) return;
+        // 비활성화된 카드는 무시 (단, 6번째 렌탈 슬롯은 예외)
+        const isSixth = selectedIds.indexOf(id) === 5;
+        if (state.disabledCards[id] && !isSixth) return;
 
         if (store.cardChecked?.[id]) {
             const card = cardList.find(c => c.id === id);
@@ -205,8 +206,9 @@ export function getTriggerCounts(store) {
     // 5. 아이템 효과(Item Effects) 보너스 트리거 반영
     selectedIds.forEach(cardId => {
         if (!cardId) return;
-        // 비활성화된 카드는 무시
-        if (state.disabledCards[cardId]) return;
+        // 비활성화된 카드는 무시 (단, 6번째 렌탈 슬롯은 예외)
+        const isSixth = selectedIds.indexOf(cardId) === 5;
+        if (state.disabledCards[cardId] && !isSixth) return;
 
         const card = cardList.find(c => c.id === cardId);
         if (card && card.item_effects && store.cardChecked?.[cardId]) {
@@ -332,7 +334,7 @@ export function calculateTotals(store, detailedCounts) {
 
     selectedIds.forEach(cardId => {
         if (!cardId) return;
-        if (state.disabledCards[cardId]) return;
+        if (state.disabledCards[cardId] && selectedIds.indexOf(cardId) !== 5) return;
         const card = cardList.find(c => c.id === cardId); if (!card) return;
         const lb = (selectedIds.indexOf(cardId) === 5) ? 4 : (state.supportLB[cardId] || 0);
         const itemCounter = store.cardChecked[cardId] ? (store.itemCounters[cardId] || 0) : 0;
