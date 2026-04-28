@@ -136,7 +136,11 @@ export function getTriggerCounts(store) {
             Object.values(store.weeks).forEach(w => { if (w.value === 'class_nia' && w.opts.get_drink === 'true') n42++; });
             counts.total.get_drink = (counts.total.get_drink || 0) + (Math.min(n42, 2) * 2);
         }
-        if (store.pItems.includes('nia5-1')) { if (Object.keys(store.weeks).some(w => parseInt(w) > 17 && store.weeks[w].opts.sp === 'true')) niaBonusEnhance += 1; }
+        if (store.pItems.includes('nia5-1')) {
+            Object.keys(store.weeks).forEach(w => {
+                if (parseInt(w) > 17 && store.weeks[w].opts.sp === 'true') niaBonusEnhance += 1;
+            });
+        }
         counts.total.get += niaBonusGet;
         counts.total.delete += niaBonusDelete;
         counts.total.enhance += niaBonusEnhance;
@@ -317,13 +321,44 @@ export function calculateTotals(store, detailedCounts) {
     const currentIdolData = idolData[store.selectedIdol];
     let idolPercs = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
-        idolPercs.vocal = currentIdolData.vocalBonus;
-        idolPercs.dance = currentIdolData.danceBonus;
-        idolPercs.visual = currentIdolData.visualBonus;
-        if (store.pItemChecked) {
-            if (currentIdolData.vocalBonus3) idolPercs.vocal = currentIdolData.vocalBonus3;
-            if (currentIdolData.danceBonus3) idolPercs.dance = currentIdolData.danceBonus3;
-            if (currentIdolData.visualBonus3) idolPercs.visual = currentIdolData.visualBonus3;
+        const isBloom3 = !!store.pItemChecked;
+        const isSR = !!store.isSR;
+
+        // 신규 스키마 (bonus 객체 존재 시)
+        if (currentIdolData.bonus) {
+            const rarityKey = isSR ? 'sr' : 'ssr';
+            const baseBonus = currentIdolData.bonus[rarityKey].base;
+            const bloom3Bonus = isBloom3 ? (currentIdolData.bonus[rarityKey].bloom3 || {vocal:0,dance:0,visual:0}) : {vocal:0,dance:0,visual:0};
+            
+            // 친밀도 보너스 % 합산
+            const aff10Bonus = currentIdolData.affinity?.[10]?.bonus || {vocal:0,dance:0,visual:0};
+            const aff20Bonus = currentIdolData.affinity?.[20]?.bonus || {vocal:0,dance:0,visual:0};
+            
+            idolPercs.vocal = (baseBonus.vocal || 0) + (bloom3Bonus.vocal || 0) + (aff10Bonus.vocal || 0) + (aff20Bonus.vocal || 0);
+            idolPercs.dance = (baseBonus.dance || 0) + (bloom3Bonus.dance || 0) + (aff10Bonus.dance || 0) + (aff20Bonus.dance || 0);
+            idolPercs.visual = (baseBonus.visual || 0) + (bloom3Bonus.visual || 0) + (aff10Bonus.visual || 0) + (aff20Bonus.visual || 0);
+        } 
+        // 기존 스키마 호환
+        else {
+            if (isSR) {
+                idolPercs.vocal = currentIdolData.srVocalBonus || currentIdolData.vocalBonus;
+                idolPercs.dance = currentIdolData.srDanceBonus || currentIdolData.danceBonus;
+                idolPercs.visual = currentIdolData.srVisualBonus || currentIdolData.visualBonus;
+                if (isBloom3) {
+                    if (currentIdolData.srVocalBonus3) idolPercs.vocal = currentIdolData.srVocalBonus3;
+                    if (currentIdolData.srDanceBonus3) idolPercs.dance = currentIdolData.srDanceBonus3;
+                    if (currentIdolData.srVisualBonus3) idolPercs.visual = currentIdolData.srVisualBonus3;
+                }
+            } else {
+                idolPercs.vocal = currentIdolData.vocalBonus;
+                idolPercs.dance = currentIdolData.danceBonus;
+                idolPercs.visual = currentIdolData.visualBonus;
+                if (isBloom3) {
+                    if (currentIdolData.vocalBonus3) idolPercs.vocal = currentIdolData.vocalBonus3;
+                    if (currentIdolData.danceBonus3) idolPercs.dance = currentIdolData.danceBonus3;
+                    if (currentIdolData.visualBonus3) idolPercs.visual = currentIdolData.visualBonus3;
+                }
+            }
         }
     }
 
@@ -492,9 +527,31 @@ export function calculateTotals(store, detailedCounts) {
 
     let idolBaseTotal = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
-        idolBaseTotal.vocal = currentIdolData.baseVocal || 0;
-        idolBaseTotal.dance = currentIdolData.baseDance || 0;
-        idolBaseTotal.visual = currentIdolData.baseVisual || 0;
+        const isSR = !!store.isSR;
+        // 신규 스키마 (baseStats 존재 시)
+        if (currentIdolData.baseStats) {
+            const base = currentIdolData.baseStats[isSR ? 'sr' : 'ssr'];
+            
+            // 친밀도 보너스 스텟 합산
+            const aff10Base = currentIdolData.affinity?.[10]?.base || {vocal:0,dance:0,visual:0};
+            const aff20Base = currentIdolData.affinity?.[20]?.base || {vocal:0,dance:0,visual:0};
+
+            idolBaseTotal.vocal = (base.vocal || 0) + (aff10Base.vocal || 0) + (aff20Base.vocal || 0);
+            idolBaseTotal.dance = (base.dance || 0) + (aff10Base.dance || 0) + (aff20Base.dance || 0);
+            idolBaseTotal.visual = (base.visual || 0) + (aff10Base.visual || 0) + (aff20Base.visual || 0);
+        }
+        // 기존 스키마 호환
+        else {
+            if (isSR) {
+                idolBaseTotal.vocal = currentIdolData.srBaseVocal || (currentIdolData.baseVocal - 5) || 0;
+                idolBaseTotal.dance = currentIdolData.srBaseDance || (currentIdolData.baseDance - 5) || 0;
+                idolBaseTotal.visual = currentIdolData.srBaseVisual || (currentIdolData.baseVisual - 5) || 0;
+            } else {
+                idolBaseTotal.vocal = currentIdolData.baseVocal || 0;
+                idolBaseTotal.dance = currentIdolData.baseDance || 0;
+                idolBaseTotal.visual = currentIdolData.baseVisual || 0;
+            }
+        }
     }
 
     // --- 5. P-아이템 효과 합산 ---
@@ -583,10 +640,29 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType) {
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
 
         let stats = null;
-        if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
-        else if (store.type === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
-        else if (actionId === 'test' || actionId === 'audition') {
-            stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
+        if (store.type === 'nia') {
+            if (['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
+                stats = getNiaLessonStat(actionId, isSP, wInt);
+            } else if (actionId === 'audition') {
+                const data = idolData[store.selectedIdol];
+                if (data) {
+                    const stage = wInt === 9 ? 1 : (wInt === 17 ? 2 : (wInt === 26 ? 3 : 0));
+                    const stageStats = niaAuditionStats[stage];
+                    if (stageStats) {
+                        const vals = data.growthType === 'protruded' ? stageStats.protruded : stageStats.balanced;
+                        const baseVal = vals[data.priority.indexOf(cardType)];
+                        if (baseVal) {
+                            // 니아 오디션 % 보너스: UI 표시용으로는 계수(0.55) 없이 생수치로 계산
+                            totalFlooredBonus += Math.floor(baseVal * (cardPercent / 100));
+                        }
+                    }
+                }
+            }
+        } else if (store.type === 'hajime') {
+            if (['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
+                stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
+            }
+            // 하지메 시험(test)은 % 보너스 계산에서 제외 (stats = null 유지)
         }
 
         if (stats && stats[cardType] > 0) {

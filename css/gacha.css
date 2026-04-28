@@ -503,9 +503,6 @@ body.gacha-result-active .gacha-container {
     transition: all 0.2s;
 }
 
-.back-btn:hover {
-    background: #000;
-}
 
 .back-btn.hidden {
     display: none;
@@ -931,23 +928,12 @@ body.gacha-result-active .gacha-container {
 }
 
 .spinner.active::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 5px solid #eeeeee;
-    border-top: 5px solid var(--primary-color);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
-    z-index: 10000 !important;
+    display: none;
 }
 
 #gacha-progress-text {
     position: absolute;
-    top: calc(50% + 55px);
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--primary-color);
@@ -958,11 +944,11 @@ body.gacha-result-active .gacha-container {
 
 @keyframes spin {
     0% {
-        transform: rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
     }
 
     100% {
-        transform: rotate(360deg);
+        transform: translate(-50%, -50%) rotate(360deg);
     }
 }
 

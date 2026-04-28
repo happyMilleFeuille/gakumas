@@ -1,6 +1,9 @@
 // gacha.js
 import { updatePageTranslations } from './utils.js';
-import { state, setJewels, setTotalPulls, clearGachaLog, setGachaType, setSelectedPickup, idolColors } from './state.js';
+import { 
+    state, setJewels, setTotalPulls, clearGachaLog, setGachaType, setSelectedPickup, idolColors,
+    setActiveNormalId, setActiveLimitedId, setActiveUnitId, setActiveFesId, setActiveSelectionId
+} from './state.js';
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
@@ -56,6 +59,15 @@ function showDownloadConfirm(contentArea) {
     if (startBtn) {
         startBtn.onclick = () => {
             sessionStorage.setItem('gachaAssetsApproved', 'true');
+            
+            // 가장 최신 가챠로 덮어씌우기
+            setGachaType('normal');
+            if (NORMAL_CONFIG.length > 0) setActiveNormalId(NORMAL_CONFIG[0].id);
+            if (LIMITED_CONFIG.length > 0) setActiveLimitedId(LIMITED_CONFIG[0].id);
+            if (UNIT_CONFIG.length > 0) setActiveUnitId(UNIT_CONFIG[0].id);
+            if (FES_CONFIG.length > 0) setActiveFesId(FES_CONFIG[0].id);
+            if (SELECTION_CONFIG.length > 0) setActiveSelectionId(SELECTION_CONFIG[0].id);
+
             startGachaUI(contentArea, false);
         };
     }

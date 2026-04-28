@@ -5,7 +5,7 @@ import { renderGacha, stopBGM } from './gacha.js';
 
 export function handleNavigation(target, isBack = false) {
     if (!target) return;
-    
+
     const contentArea = document.getElementById('content-area');
     const isContentEmpty = contentArea && contentArea.innerHTML.trim() === '';
 
@@ -48,7 +48,7 @@ export function handleNavigation(target, isBack = false) {
         }
     } else {
         // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 문양 복구
-        stopBGM('all'); 
+        stopBGM('all');
         if (fixedBg) {
             const maskUrl = "url('images/background.webp')";
             fixedBg.style.webkitMaskImage = maskUrl;
@@ -60,11 +60,11 @@ export function handleNavigation(target, isBack = false) {
         }
     }
 
-    // 히스토리 상태 기록 (뒤로가기 시 홈으로 보내기 위해, 뒤로가기 중이 아닐 때만)
-    if (!isBack) {
-        if (!history.state || history.state.target !== target) {
-            history.pushState({ target: target }, "");
-        }
+    // 해시 업데이트 (수동 호출 시 URL 동기화)
+    const currentHash = window.location.hash.substring(1) || 'home';
+    if (!isBack && currentHash !== target) {
+        window.location.hash = target;
+        return; // hashchange 이벤트가 handleNavigation을 다시 부를 것이므로 여기서 중단
     }
 
     // 가챠 관련 UI 초기화 (가챠 탭이 아닐 때 숨김 처리)

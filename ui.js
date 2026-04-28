@@ -1,25 +1,57 @@
 // ui.js
 import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, loadFromSlot, getSlotInfo, deleteSlot } from './state.js';
-import { updatePageTranslations } from './utils.js';
+import { updatePageTranslations, translate } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
 import { initCalc } from './calc.js';
 import { calcStore } from './calcStore.js';
-import translations from './i18n.js';
 import { renderPSSRRoadmap, idolList } from './roadmap.js';
 import { showCardModal } from './cardModal.js';
 
 const contentArea = document.getElementById('content-area');
+const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
 // 계산기 화면 복귀 이벤트 리스너
 window.addEventListener('renderCalcRequested', () => {
     renderCalc();
 });
 
-
-
 let homeCachedContent = null;
 let lastRenderedLang = null;
+window.__videoModalOpen = false;
+window.__videoModalPendingClose = false;
+window.__videoModalPopHandler = null;
+
+function closeVideoModal(isPopState = false) {
+    const videoModal = document.getElementById('video-modal');
+    const iframe = document.getElementById('video-iframe');
+
+    if (!isPopState && window.__videoModalOpen) {
+        window.__videoModalPendingClose = true;
+        history.back();
+        return;
+    }
+
+    if (iframe) iframe.src = '';
+    if (videoModal) {
+        const resetModal = videoModal.cloneNode(true);
+        resetModal.classList.add('hidden');
+        resetModal.style.display = 'none';
+        const resetIframe = resetModal.querySelector('#video-iframe');
+        if (resetIframe) resetIframe.src = '';
+        videoModal.replaceWith(resetModal);
+    }
+    document.body.classList.remove('video-modal-open');
+    window.__videoModalOpen = false;
+    window.__videoModalPendingClose = false;
+    if (window.__videoModalPopHandler) {
+        window.removeEventListener('popstate', window.__videoModalPopHandler);
+        window.__videoModalPopHandler = null;
+    }
+}
+
+window.closeVideoModal = closeVideoModal;
+window.hideVideoModal = closeVideoModal;
 
 export function renderHome() {
     if (!contentArea) return;
@@ -166,8 +198,6 @@ function renderProduceCards(idolName, container) {
     if (!itemTpl) return;
 
     const produceCards = produceList.filter(p => {
-        // ID가 ssr이름_ 혹은 sr이름_ 형식으로 시작하는지 정교하게 체크
-        // 예: ssrchina_... 는 china에게만 매칭되고, ssrhiro_michinaru... 는 hiro에게만 매칭됨
         const nameMatch = p.id.startsWith(`ssr${idolName}_`) ||
             p.id.startsWith(`sr${idolName}_`) ||
             p.id.startsWith(`r${idolName}_`);
@@ -192,7 +222,7 @@ function renderProduceCards(idolName, container) {
     });
 
     if (produceCards.length === 0) {
-        container.innerHTML = `<p style="color:#999; padding:2rem; width:100%; text-align:center;">No cards found for ${idolName}.</p>`;
+        container.innerHTML = `<p style="color:#999; padding:2rem; width:100%; text-align:center;">${t('ui_no_cards_found_for', { idolName }, `No cards found for ${idolName}.`)}</p>`;
         return;
     }
 
@@ -205,18 +235,16 @@ function renderProduceCards(idolName, container) {
         const name = item.querySelector('.pssr-name');
         const personalColor = idolColors[idolName] || "#ffffff";
 
-        // [수정] 카드 전체와 정보창의 색상을 완벽하게 일치시킴 (불투명 처리)
-        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`; // 약 15% 농도
+        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`; 
         cardEl.style.backgroundColor = "#ffffff";
         cardEl.style.backgroundImage = mixedBg;
 
-        infoBox.style.backgroundColor = "transparent"; // 정보창 배경을 투명하게 하여 카드 배경이 그대로 보이게 함
+        infoBox.style.backgroundColor = "transparent"; 
         infoBox.style.backgroundImage = "none";
 
         name.style.color = '#333';
         imgWrapper.style.backgroundColor = personalColor + "11";
 
-        // 플랜 아이콘 (기존 방식 원복)
         const planIcon = item.querySelector('.pssr-plan-icon');
         if (card.plan) {
             planIcon.src = `icons/${card.plan}.webp`;
@@ -224,7 +252,6 @@ function renderProduceCards(idolName, container) {
             planIcon.style.display = 'none';
         }
 
-        // 오스스메 아이콘 추가 (플랜 옆에 삽입)
         if (card.osusume) {
             const osusumeIcon = document.createElement('img');
             osusumeIcon.className = 'pssr-osusume-icon';
@@ -242,11 +269,6 @@ function renderProduceCards(idolName, container) {
         const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
         anothers.forEach(a => {
             imageList.push(`idols/${a.id}1.webp`);
-        });
-
-        imageList.forEach(url => {
-            const preimg = new Image();
-            preimg.src = url;
         });
 
         let currentIndex = state.pssrIndex[card.id] || 0;
@@ -289,25 +311,17 @@ function renderProduceCards(idolName, container) {
             }
         };
 
-        if (card.plan) {
-            planIcon.src = `icons/${card.plan}.webp`;
-            planIcon.style.display = 'block';
-        } else {
-            planIcon.style.display = 'none';
-        }
-
         const rarityKey = card.rarity.toLowerCase().replace('p', '');
         rarityIcon.src = `icons/${rarityKey}.png`;
 
         const sourceBadge = item.querySelector('.pssr-source-badge');
         if (sourceBadge) {
-            const isJa = state.currentLang === 'ja';
             const sourceMap = {
-                'limited': isJa ? '限定' : '한정',
-                'limited_f': isJa ? 'フェ스' : '페스',
-                'limited_u': isJa ? 'ユニット' : '유닛',
-                'normal': isJa ? '恒常' : '통상',
-                'dist': isJa ? '配布' : '배포'
+                'limited': t('filter_limited'),
+                'limited_f': t('filter_limited_f'),
+                'limited_u': t('filter_limited_u'),
+                'normal': t('filter_normal'),
+                'dist': t('filter_dist')
             };
             const cSource = card.source || 'normal';
             if (sourceMap[cSource]) {
@@ -342,7 +356,6 @@ function renderProduceCards(idolName, container) {
                     if (!videoModal || !iframe) return;
 
                     const finalUrl = card.youtube_url;
-                    // 유튜브 URL을 embed용으로 변환
                     let embedUrl = finalUrl;
                     if (finalUrl.includes('watch?v=')) {
                         const videoId = finalUrl.split('watch?v=')[1].split('&')[0];
@@ -351,31 +364,29 @@ function renderProduceCards(idolName, container) {
                         const videoId = finalUrl.split('youtu.be/')[1].split('?')[0];
                         embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
                     }
-
                     iframe.src = embedUrl;
 
-                    // 캐릭터별 테두리 색상 적용
                     const modalContent = videoModal.querySelector('.video-modal-content');
                     const innerContainer = videoModal.querySelector('.video-container');
-                    const personalColor = idolColors[idolName] || '#ff4d8d';
-                    if (modalContent) modalContent.style.borderColor = personalColor;
-                    if (innerContainer) innerContainer.style.borderColor = personalColor;
+                    const color = idolColors[idolName] || '#ff4d8d';
+                    if (modalContent) modalContent.style.borderColor = color;
+                    if (innerContainer) innerContainer.style.borderColor = color;
 
-                    // 로딩 지연 및 싱크 개선: 약간의 시간차를 두고 모달 표시
-                    setTimeout(() => {
-                        videoModal.classList.remove('hidden');
-                        videoModal.style.display = 'flex';
-                    }, 100);
-
-                    const hideVideoModal = () => {
-                        videoModal.classList.add('hidden');
-                        videoModal.style.display = 'none';
-                        iframe.src = '';
+                    videoModal.classList.remove('hidden');
+                    videoModal.style.display = 'flex';
+                    document.body.classList.add('video-modal-open');
+                    window.__videoModalOpen = true;
+                    window.__videoModalPendingClose = false;
+                    if (window.__videoModalPopHandler) {
+                        window.removeEventListener('popstate', window.__videoModalPopHandler);
+                    }
+                    window.__videoModalPopHandler = () => {
+                        closeVideoModal(true);
                     };
-                    window.hideVideoModal = hideVideoModal;
-
-                    videoModal.onclick = (ev) => { if (ev.target === videoModal) hideVideoModal(); };
-
+                    window.addEventListener('popstate', window.__videoModalPopHandler);
+                    videoModal.onclick = (ev) => {
+                        if (ev.target === videoModal) closeVideoModal();
+                    };
                     history.pushState({ modalOpen: 'video' }, "");
                 };
                 youtubeLink.classList.remove('hidden');
@@ -389,7 +400,6 @@ function renderProduceCards(idolName, container) {
 }
 
 function openSlotModal() {
-    const isJa = state.currentLang === 'ja';
     let modal = document.getElementById('slot-modal');
     if (modal) modal.remove();
 
@@ -406,12 +416,12 @@ function openSlotModal() {
                     <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333;">Slot ${i}</span>
-                            <button class="slot-btn save" data-slot="${i}" style="width: 38px; flex: none; padding: 3px 0; font-size: 0.65rem; background: #e3f2fd; color: #1976d2; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${isJa ? 'Save' : '저장'}</button>
+                            <button class="slot-btn save" data-slot="${i}" style="width: 38px; flex: none; padding: 3px 0; font-size: 0.65rem; background: #e3f2fd; color: #1976d2; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_save')}</button>
                         </div>
-                        <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${info || (isJa ? 'データなし' : '데이터 없음')}</span>
+                        <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${info || t('ui_slot_empty')}</span>
                     </div>
                     <div class="slot-modal-actions" style="display: flex; align-items: center; gap: 8px;">
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''} style="width: 65px; flex: none; padding: 6px 0; font-size: 0.85rem; background: #f1f8e9; color: #689f38; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center;">${isJa ? 'Load' : '로드'}</button>
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''} style="width: 65px; flex: none; padding: 6px 0; font-size: 0.85rem; background: #f1f8e9; color: #689f38; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center;">${t('ui_slot_load')}</button>
                         <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="background: #ffebee; color: #ef5350; border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer;">&times;</button>
                     </div>
                 </div>`;
@@ -424,19 +434,18 @@ function openSlotModal() {
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 350px; padding: ${isMobile ? '15px' : '20px'};">
             <span class="close-modal" style="${isMobile ? 'top: 5px; right: 15px;' : ''}">&times;</span>
-            <h3 style="margin-top:0; color:#ff4d8d; font-size:${isMobile ? '0.95rem' : '1.1rem'};">${isJa ? 'Save / Load' : '프리셋 저장/로드'}</h3>
+            <h3 style="margin-top:0; color:#ff4d8d; font-size:${isMobile ? '0.95rem' : '1.1rem'};">${t('ui_slot_title')}</h3>
             <div class="slot-modal-list">
                 ${renderSlots()}
             </div>
         </div>`;
 
-
-
     document.body.appendChild(modal);
     modal.style.display = 'flex';
+    history.pushState({ modalOpen: 'slot' }, "");
 
-    modal.querySelector('.close-modal').onclick = () => modal.remove();
-    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    modal.querySelector('.close-modal').onclick = () => history.back();
+    modal.onclick = (e) => { if (e.target === modal) history.back(); };
 
     modal.addEventListener('click', (e) => {
         const saveBtn = e.target.closest('.save');
@@ -445,7 +454,7 @@ function openSlotModal() {
 
         if (saveBtn) {
             const slotId = saveBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} に現在の状態を保存しますか？` : `슬롯 ${slotId} 에 현재 상태를 저장하시겠습니까?`)) {
+            if (confirm(t('ui_slot_save_confirm', { slotId }))) {
                 saveToSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
@@ -453,35 +462,28 @@ function openSlotModal() {
 
         if (loadBtn) {
             const slotId = loadBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} のデータを読み込みますか？` : `슬롯 ${slotId} 의 데이터를 불러오시겠습니까?`)) {
-                if (loadFromSlot(slotId)) {
-                    // [추가] 계산기 슬롯에서 비활성화된 카드 제거 동기화
-                    ['sense', 'logic', 'anomaly'].forEach(plan => {
-                        if (calcStore.planCards[plan]) {
-                            calcStore.planCards[plan] = calcStore.planCards[plan].map(id =>
-                                (id && state.disabledCards[id]) ? null : id
-                            );
-                        }
-                    });
-                    calcStore.save();
-
-                    renderSupport();
-                    modal.remove();
-                }
+            if (loadFromSlot(slotId)) {
+                ['sense', 'logic', 'anomaly'].forEach(plan => {
+                    if (calcStore.planCards[plan]) {
+                        calcStore.planCards[plan] = calcStore.planCards[plan].map(id =>
+                            (id && state.disabledCards[id]) ? null : id
+                        );
+                    }
+                });
+                calcStore.save();
+                renderSupport();
+                modal.remove();
             }
         }
 
         if (deleteBtn) {
             const slotId = deleteBtn.dataset.slot;
-            if (confirm(isJa ? `スロット ${slotId} のデータを削除しますか？` : `슬롯 ${slotId} 의 데이터를 삭제하시겠습니까?`)) {
+            if (confirm(t('ui_slot_delete_confirm', { slotId }))) {
                 deleteSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
             }
         }
     });
-}
-
-function syncSlotUI(container) {
 }
 
 export function renderSupport() {
@@ -497,7 +499,6 @@ export function renderSupport() {
     }
 
     syncFilterUI(container);
-    syncSlotUI(container);
     updateSupportGrid(container);
 }
 
@@ -531,11 +532,10 @@ function setupStaticListeners(container) {
 
     const sortSelect = container.querySelector('#support-sort');
     if (sortSelect) {
-        const isJa = state.currentLang === 'ja';
         sortSelect.innerHTML = `
-            <option value="id-desc">${isJa ? '最新順' : '최신순'}</option>
-            <option value="id-asc">${isJa ? '古い順' : '과거순'}</option>
-            <option value="lb-desc">${isJa ? '凸順' : '돌파순'}</option>
+            <option value="id-desc">${t('ui_sort_latest')}</option>
+            <option value="id-asc">${t('ui_sort_oldest')}</option>
+            <option value="lb-desc">${t('ui_sort_lb')}</option>
         `;
         sortSelect.value = state.sortBy;
         sortSelect.addEventListener('change', (e) => {
@@ -546,12 +546,10 @@ function setupStaticListeners(container) {
 
     const allMaxBtn = container.querySelector('#btn-all-max-lb');
     if (allMaxBtn) {
-        const isJa = state.currentLang === 'ja';
-        allMaxBtn.textContent = isJa ? '一括調整' : '일괄 조정';
+        allMaxBtn.textContent = t('ui_bulk_adjust');
         allMaxBtn.addEventListener('click', () => {
-            const confirmMsg = isJa ? 'すべてのカードを最大開花状態に変更するか、非アクティブカードおよび開花状態をリセットします。実行しますか？' : '모든 카드를 최대 돌파로 변경하거나 비활성화 카드 및 돌파를 초기화하게 됩니다. 변경하시겠습니까?';
-
-            const confirmLabel = isJa ? '最大開花' : '최대돌파';
+            const confirmMsg = t('ui_bulk_adjust_confirm');
+            const confirmLabel = t('ui_bulk_adjust_confirm_label');
 
             showCustomConfirm(confirmMsg, () => {
                 cardList.forEach(card => {
@@ -577,9 +575,6 @@ function setupStaticListeners(container) {
             openSlotModal();
         });
     }
-
-
-
 
     const grid = container.querySelector('.support-grid');
     let longPressTimer;
@@ -758,7 +753,7 @@ function updateSupportGrid(container) {
 
     grid.innerHTML = '';
     if (filteredList.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; width:100%; grid-column:1/-1; padding:2rem;">No cards found.</p>';
+        grid.innerHTML = `<p style="text-align:center; width:100%; grid-column:1/-1; padding:2rem;">${t('ui_no_cards_found', {}, 'No cards found.')}</p>`;
     } else {
         const fragment = document.createDocumentFragment();
         filteredList.forEach(card => {
@@ -811,7 +806,6 @@ function showCustomConfirm(message, onConfirmCallback, onResetCallback, confirmL
     let modal = document.getElementById('custom-confirm-modal');
     if (modal) modal.remove();
 
-    const isJa = state.currentLang === 'ja';
     const isMobile = window.innerWidth <= 768;
 
     modal = document.createElement('div');
@@ -824,35 +818,36 @@ function showCustomConfirm(message, onConfirmCallback, onResetCallback, confirmL
     const btnSize = '0.75rem';
     const modalWidth = isMobile ? '320px' : '400px';
 
-    const resetBtnHtml = onResetCallback ? `<button class="calc-btn reset-btn" style="background:#2196F3; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? 'リセット' : '초기화'}</button>` : '';
-    const finalConfirmLabel = confirmLabel || (isJa ? '確認' : '확인');
+    const resetBtnHtml = onResetCallback ? `<button class="calc-btn reset-btn" style="background:#2196F3; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${t('gacha_reset')}</button>` : '';
+    const finalConfirmLabel = confirmLabel || t('ui_confirm');
 
     modal.innerHTML = `
         <div class="modal-content" style="max-width: ${modalWidth}; text-align: center; padding: ${pad};">
             <p style="margin-bottom: 20px; font-size: ${pSize}; color: #333; line-height: 1.5; font-weight: bold; word-break: keep-all;">${message}</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 ${resetBtnHtml}
-                <button class="calc-btn cancel-btn" style="background:#eee; color:#666 !important; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${isJa ? 'キャンセル' : '취소'}</button>
+                <button class="calc-btn cancel-btn" style="background:#eee; color:#666 !important; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${t('ui_cancel')}</button>
                 <button class="calc-btn confirm-btn" style="min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${finalConfirmLabel}</button>
             </div>
         </div>
     `;
 
     document.body.appendChild(modal);
+    history.pushState({ modalOpen: 'customConfirm' }, "");
     modal.style.display = 'flex';
 
-    modal.querySelector('.cancel-btn').addEventListener('click', () => modal.remove());
+    modal.querySelector('.cancel-btn').addEventListener('click', () => history.back());
     if (onResetCallback) {
         modal.querySelector('.reset-btn').addEventListener('click', () => {
-            modal.remove();
+            history.back();
             onResetCallback();
         });
     }
     modal.querySelector('.confirm-btn').addEventListener('click', () => {
-        modal.remove();
+        history.back();
         onConfirmCallback();
     });
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
+        if (e.target === modal) history.back();
     });
 }

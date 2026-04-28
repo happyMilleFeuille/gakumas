@@ -103,19 +103,396 @@ export const niaClassStats = {
 };
 
 export const idolData = {
-    'saki': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 16.5, danceBonus: 16.5, visualBonus: 20.5, baseVocal: 100, baseDance: 100, baseVisual: 105, vocalBonus3: 19.5, danceBonus3: 19.5, visualBonus3: 22.5 },
-    'temari': { priority: ['vocal', 'dance', 'visual'], growthType: 'protruded', vocalBonus: 24.0, danceBonus: 21.5, visualBonus: 8.5, baseVocal: 120, baseDance: 100, baseVisual: 80, vocalBonus3: 27, danceBonus3: 26.5, visualBonus3: 8.5 },
-    'kotone': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 8.0, danceBonus: 24.5, visualBonus: 22.5, vocalBonus3: 8, danceBonus3: 29.5, visualBonus3: 25.5, baseVocal: 90, baseDance: 90, baseVisual: 120 },
-    'tsubame': { priority: ['dance', 'vocal', 'visual'], growthType: 'protruded', vocalBonus: 17, danceBonus: 20, visualBonus: 13, vocalBonus3: 19, danceBonus3: 24, visualBonus3: 13, baseVocal: 115, baseDance: 140, baseVisual: 110 },
-    'mao': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded', vocalBonus: 22.0, danceBonus: 8.0, visualBonus: 23.0, vocalBonus3: 25, danceBonus3: 8, visualBonus3: 28, baseVocal: 125, baseDance: 90, baseVisual: 100 },
-    'lilja': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 18.0, danceBonus: 20.0, visualBonus: 18.0, vocalBonus3: 18, danceBonus3: 25, visualBonus3: 21, baseVocal: 80, baseDance: 100, baseVisual: 115 },
-    'china': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 10.0, danceBonus: 24.0, visualBonus: 20.5, vocalBonus3: 10, danceBonus3: 29, visualBonus3: 23.5, baseVocal: 75, baseDance: 115, baseVisual: 125 },
-    'sumika': { priority: ['dance', 'visual', 'vocal'], growthType: 'protruded', vocalBonus: 9.0, danceBonus: 23.0, visualBonus: 23.0, vocalBonus3: 9, danceBonus3: 28, visualBonus3: 26, baseVocal: 100, baseDance: 115, baseVisual: 90 },
-    'hiro': { priority: ['vocal', 'dance', 'visual'], growthType: 'balanced', vocalBonus: 23.0, danceBonus: 19.5, visualBonus: 10.0, vocalBonus3: 28, danceBonus3: 24.5, visualBonus3: 10, baseVocal: 125, baseDance: 120, baseVisual: 80 },
-    'sena': { priority: ['visual', 'vocal', 'dance'], growthType: 'balanced', vocalBonus: 15.0, danceBonus: 8.0, visualBonus: 20.5, vocalBonus3: 17, danceBonus3: 8, visualBonus3: 24.5, baseVocal: 175, baseDance: 125, baseVisual: 140 },
-    'misuzu': { priority: ['vocal', 'visual', 'dance'], growthType: 'protruded', vocalBonus: 27.0, danceBonus: 10.0, visualBonus: 18.0, vocalBonus3: 31, danceBonus3: 10, visualBonus3: 20, baseVocal: 85, baseDance: 125, baseVisual: 135 },
-    'ume': { priority: ['dance', 'vocal', 'visual'], growthType: 'balanced', vocalBonus: 20.0, danceBonus: 23.0, visualBonus: 15.0, vocalBonus3: 23, danceBonus3: 28, visualBonus3: 15, baseVocal: 90, baseDance: 95, baseVisual: 100 },
-    'rinami': { priority: ['visual', 'dance', 'vocal'], growthType: 'balanced', vocalBonus: 11.0, danceBonus: 21.5, visualBonus: 23.5, vocalBonus3: 11, danceBonus3: 24.5, visualBonus3: 28.5, baseVocal: 85, baseDance: 110, baseVisual: 110 }
+    'saki': {
+        priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
+        // 기본 스텟
+        baseStats: {
+            ssr: { vocal: 100, dance: 100, visual: 105 },
+            sr: { vocal: 95, dance: 95, visual: 100 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 0, visual: 0 },
+                bonus: { vocal: 3.0, dance: 3.0, visual: 3.0 }
+            },
+            20: {
+                base: { vocal: 0, dance: 0, visual: 0 },
+                bonus: { vocal: 1.5, dance: 1.5, visual: 2.5 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 16.5, dance: 16.5, visual: 20.5 },
+                bloom3: { vocal: 3.0, dance: 3.0, visual: 2.0 } // +3.0%, +3.0%, +2.0% 추가
+            },
+            sr: {
+                base: { vocal: 16.5, dance: 16.5, visual: 18.5 },
+                bloom3: { vocal: 2.0, dance: 2.0, visual: 1.0 } // +2.0%, +2.0%, +1.0% 추가
+            }
+        }
+    },
+    'temari': {
+        priority: ['vocal', 'dance', 'visual'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 100, dance: 90, visual: 80 },
+            sr: { vocal: 95, dance: 85, visual: 75 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 10, dance: 0, visual: 0 },
+                bonus: { vocal: 0, dance: 5.0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 10, dance: 10, visual: 0 },
+                bonus: { vocal: 0, dance: 0.5, visual: 2.5 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 24.0, dance: 16.0, visual: 6.0 },
+                bloom3: { vocal: 3.0, dance: 5.0, visual: 0 } // +3.0%, +5.0% 추가
+            },
+            sr: {
+                base: { vocal: 24.0, dance: 15.0, visual: 5.0 },
+                bloom3: { vocal: 2.0, dance: 3.0, visual: 0 }  // +2.0%, +3.0% 추가
+            }
+        }
+    },
+    'kotone': {
+        priority: ['dance', 'visual', 'vocal'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 90, dance: 80, visual: 100 },
+            sr: { vocal: 85, dance: 75, visual: 95 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 0, visual: 10 },
+                bonus: { vocal: 0, dance: 6.0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 0, dance: 10, visual: 10 },
+                bonus: { vocal: 2.0, dance: 0.5, visual: 0.5 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 6.0, dance: 18.0, visual: 22.0 },
+                bloom3: { vocal: 0, dance: 5.0, visual: 3.0 } // +5.0%, +3.0% 추가
+            },
+            sr: {
+                base: { vocal: 5.0, dance: 17.0, visual: 22.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 2.0 }  // +3.0%, +2.0% 추가
+            }
+        }
+    },
+    'tsubame': {
+        priority: ['dance', 'vocal', 'visual'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 105, dance: 115, visual: 95 },
+            sr: { vocal: 100, dance: 110, visual: 90 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 10, dance: 20, visual: 0 },
+                bonus: { vocal: 1.0, dance: 3.0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 0, dance: 5, visual: 15 },
+                bonus: { vocal: 2.0, dance: 0, visual: 1.0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 14.0, dance: 17.0, visual: 12.0 },
+                bloom3: { vocal: 2.0, dance: 4.0, visual: 0 } // +2.0%, +4.0% 추가
+            },
+            sr: {
+                base: { vocal: 13.0, dance: 16.0, visual: 11.0 },
+                bloom3: { vocal: 2.0, dance: 4.0, visual: 0 }  // +2.0%, +4.0% 추가
+            }
+        }
+    },
+    'mao': {
+        priority: ['vocal', 'visual', 'dance'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 100, dance: 90, visual: 80 },
+            sr: { vocal: 95, dance: 85, visual: 75 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 10, dance: 0, visual: 10 },
+                bonus: { vocal: 0, dance: 0, visual: 5.0 }
+            },
+            20: {
+                base: { vocal: 15, dance: 0, visual: 10 },
+                bonus: { vocal: 0, dance: 2.0, visual: 0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 22.0, dance: 6.0, visual: 18.0 },
+                bloom3: { vocal: 3.0, dance: 0, visual: 5.0 } // +3.0%, +5.0% 추가
+            },
+            sr: {
+                base: { vocal: 21.0, dance: 5.0, visual: 18.0 },
+                bloom3: { vocal: 2.0, dance: 0, visual: 3.0 }  // +2.0%, +3.0% 추가
+            }
+        }
+    },
+    'lilja': {
+        priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 75, dance: 75, visual: 85 },
+            sr: { vocal: 70, dance: 70, visual: 80 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 0, visual: 20 },
+                bonus: { vocal: 4.0, dance: 4.0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 5, dance: 25, visual: 10 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 14.0, dance: 16.0, visual: 18.0 },
+                bloom3: { vocal: 0, dance: 5.0, visual: 3.0 } // +5.0%, +3.0% 추가
+            },
+            sr: {
+                base: { vocal: 13.0, dance: 16.0, visual: 17.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 2.0 }  // +3.0%, +2.0% 추가
+            }
+        }
+    },
+    'china': {
+        priority: ['dance', 'visual', 'vocal'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 75, dance: 75, visual: 80 },
+            sr: { vocal: 70, dance: 70, visual: 75 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 35, visual: 35 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 0, dance: 5, visual: 10 },
+                bonus: { vocal: 0, dance: 1.0, visual: 1.5 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 10.0, dance: 23.0, visual: 19.0 },
+                bloom3: { vocal: 0, dance: 5.0, visual: 3.0 } // +5.0%, +3.0% 추가
+            },
+            sr: {
+                base: { vocal: 10.0, dance: 23.0, visual: 17.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 2.0 }  // +3.0%, +2.0% 추가
+            }
+        }
+    },
+    'sumika': {
+        priority: ['dance', 'visual', 'vocal'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 90, dance: 80, visual: 90 },
+            sr: { vocal: 85, dance: 75, visual: 85 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 5, visual: 0 },
+                bonus: { vocal: 0, dance: 3.0, visual: 3.0 }
+            },
+            20: {
+                base: { vocal: 10, dance: 30, visual: 0 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 9.0, dance: 20.0, visual: 20.0 },
+                bloom3: { vocal: 0, dance: 5.0, visual: 3.0 } // +5.0%, +3.0% 추가
+            },
+            sr: {
+                base: { vocal: 8.0, dance: 20.0, visual: 19.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 2.0 }  // +3.0%, +2.0% 추가
+            }
+        }
+    },
+    'hiro': {
+        priority: ['vocal', 'dance', 'visual'], growthType: 'balanced',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 75, dance: 75, visual: 80 },
+            sr: { vocal: 70, dance: 70, visual: 75 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 40, dance: 40, visual: 0 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 10, dance: 5, visual: 0 },
+                bonus: { vocal: 1.0, dance: 1.5, visual: 0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 22.0, dance: 18.0, visual: 10.0 },
+                bloom3: { vocal: 5.0, dance: 5.0, visual: 0 } // +5.0%, +5.0% 추가
+            },
+            sr: {
+                base: { vocal: 22.0, dance: 17.0, visual: 9.0 },
+                bloom3: { vocal: 3.0, dance: 3.0, visual: 0 }  // +3.0%, +3.0% 추가
+            }
+        }
+    },
+    'sena': {
+        priority: ['visual', 'vocal', 'dance'], growthType: 'balanced',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 155, dance: 125, visual: 130 },
+            sr: { vocal: 145, dance: 115, visual: 120 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 20, dance: 0, visual: 10 },
+                bonus: { vocal: 3.0, dance: 0, visual: 1.0 }
+            },
+            20: {
+                base: { vocal: 0, dance: 0, visual: 0 },
+                bonus: { vocal: 1.0, dance: 2.0, visual: 2.5 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 11.0, dance: 6.0, visual: 17.0 },
+                bloom3: { vocal: 2.0, dance: 0, visual: 4.0 } // +2.0%, +4.0% 추가
+            },
+            sr: {
+                base: { vocal: 10.0, dance: 5.0, visual: 16.0 },
+                bloom3: { vocal: 2.0, dance: 0, visual: 4.0 }  // +2.0%, +4.0% 추가
+            }
+        }
+    },
+    'misuzu': {
+        priority: ['vocal', 'visual', 'dance'], growthType: 'protruded',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 85, dance: 90, visual: 100 },
+            sr: { vocal: 80, dance: 85, visual: 95 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 25, visual: 25 },
+                bonus: { vocal: 4.0, dance: 0, visual: 0 }
+            },
+            20: {
+                base: { vocal: 0, dance: 10, visual: 10 },
+                bonus: { vocal: 1.0, dance: 0, visual: 2.0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 22.0, dance: 10.0, visual: 16.0 },
+                bloom3: { vocal: 4.0, dance: 0, visual: 2.0 } // +4.0%, +2.0% 추가
+            },
+            sr: {
+                base: { vocal: 21.0, dance: 9.0, visual: 15.0 },
+                bloom3: { vocal: 4.0, dance: 0, visual: 2.0 }  // +4.0%, +2.0% 추가
+            }
+        }
+    },
+    'ume': {
+        priority: ['dance', 'vocal', 'visual'], growthType: 'balanced',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 75, dance: 85, visual: 85 },
+            sr: { vocal: 70, dance: 80, visual: 80 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 0, visual: 0 },
+                bonus: { vocal: 3.0, dance: 3.0, visual: 3.0 }
+            },
+            20: {
+                base: { vocal: 15, dance: 10, visual: 15 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 17.0, dance: 20.0, visual: 12.0 },
+                bloom3: { vocal: 3.0, dance: 5.0, visual: 0 } // +3.0%, +5.0% 추가
+            },
+            sr: {
+                base: { vocal: 16.0, dance: 20.0, visual: 11.0 },
+                bloom3: { vocal: 2.0, dance: 3.0, visual: 0 }  // +2.0%, +3.0% 추가
+            }
+        }
+    },
+    'rinami': {
+        priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 85, dance: 95, visual: 80 },
+            sr: { vocal: 80, dance: 90, visual: 75 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 0, visual: 5 },
+                bonus: { vocal: 0, dance: 2.5, visual: 2.5 }
+            },
+            20: {
+                base: { vocal: 0, dance: 15, visual: 25 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
+            }
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 11.0, dance: 19.0, visual: 21.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 5.0 } // +3.0%, +5.0% 추가
+            },
+            sr: {
+                base: { vocal: 10.0, dance: 18.0, visual: 21.0 },
+                bloom3: { vocal: 0, dance: 2.0, visual: 3.0 }  // +2.0%, +3.0% 추가
+            }
+        }
+    },
 };
 
 export const judgingRatios = {

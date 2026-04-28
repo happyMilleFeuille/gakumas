@@ -34,6 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
         m.updateGlobalBackgroundColor();
     });
 
+    if (navigator.storage?.persisted && navigator.storage?.persist) {
+        navigator.storage.persisted()
+            .then(isPersisted => {
+                if (!isPersisted) return navigator.storage.persist();
+                return true;
+            })
+            .catch(() => false);
+    }
+
     // 모든 언어 버튼 상태 동기화 함수
     const syncLangBtns = () => {
         const radio = document.getElementById(`lang-${state.currentLang}`);
@@ -51,8 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
     syncGlobalUI();
     document.documentElement.lang = state.currentLang;
 
-    // 초기 화면 렌더링 (홈)
-    handleNavigation('home');
+    // 초기 화면 렌더링 (URL 해시 반영)
+    const initialTarget = window.location.hash.substring(1) || 'home';
+    handleNavigation(initialTarget);
+
+    // 해시 변경 이벤트 리스너 추가
+    window.addEventListener('hashchange', () => {
+        const target = window.location.hash.substring(1) || 'home';
+        handleNavigation(target, true);
+    });
 
     // 화면 전환 이벤트 발생 시 동기화
     window.addEventListener('viewChanged', syncGlobalUI);
@@ -243,60 +259,173 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
-            hideModal();
-            if (history.state && history.state.modalOpen === true) history.back();
+            if (modal && (modal.style.display === 'flex' || !modal.classList.contains('hidden'))) {
+                history.back();
+            } else {
+                hideModal();
+            }
         });
     }
 
     if (closeGachaLogModal) {
         closeGachaLogModal.addEventListener('click', () => {
-            hideGachaLogModal();
-            if (history.state && history.state.modalOpen === 'gachaLog') history.back();
+            if (gachaLogModal && (gachaLogModal.style.display === 'flex' || !gachaLogModal.classList.contains('hidden'))) {
+                history.back();
+            } else {
+                hideGachaLogModal();
+            }
         });
     }
 
     if (closeGachaRatesModal) {
         closeGachaRatesModal.addEventListener('click', () => {
-            hideGachaRatesModal();
-            if (history.state && history.state.modalOpen === 'rates') history.back();
+            if (gachaRatesModal && (gachaRatesModal.style.display === 'flex' || !gachaRatesModal.classList.contains('hidden'))) {
+                history.back();
+            } else {
+                hideGachaRatesModal();
+            }
         });
     }
 
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
-            hideModal();
-            if (history.state && history.state.modalOpen === true) history.back();
+            if (modal.style.display === 'flex' || !modal.classList.contains('hidden')) {
+                history.back();
+            } else {
+                hideModal();
+            }
         }
         if (event.target === gachaLogModal) {
-            hideGachaLogModal();
-            if (history.state && history.state.modalOpen === 'gachaLog') history.back();
+            if (gachaLogModal.style.display === 'flex' || !gachaLogModal.classList.contains('hidden')) {
+                history.back();
+            } else {
+                hideGachaLogModal();
+            }
         }
         if (event.target === gachaRatesModal) {
-            hideGachaRatesModal();
-            if (history.state && history.state.modalOpen === 'rates') history.back();
+            if (gachaRatesModal.style.display === 'flex' || !gachaRatesModal.classList.contains('hidden')) {
+                history.back();
+            } else {
+                hideGachaRatesModal();
+            }
         }
     });
 
     // 브라우저 뒤로가기 버튼 처리
     window.addEventListener('popstate', (event) => {
-        // 0. 범용 모달(.modal) 처리 (추가)
-        const activeModals = document.querySelectorAll('.modal');
-        let modalClosed = false;
-        activeModals.forEach(m => {
-            if (m.id === 'card-modal') return; // 상세 모달은 아래에서 별도로 처리 (refreshAll 포함)
-            if (m.style.display === 'flex' || m.id === 'slot-modal' || m.id === 'stat-detail-modal' || m.id === 'gacha-log-modal' || m.id === 'gacha-rates-modal') {
-                m.style.display = 'none';
-                if (m.classList.contains('modal')) m.classList.add('hidden');
-                if (m.id === 'slot-modal' || m.id === 'stat-detail-modal') m.remove();
-                modalClosed = true;
+        const cardModal = document.getElementById('card-modal');
+        const videoModal = document.getElementById('video-modal');
+        const recommendModal = document.getElementById('calc-recommend-modal');
+        const memorySelectModal = document.getElementById('calc-memory-select-modal');
+        const tuneModal = document.getElementById('calc-tune-modal');
+        const statDetailModal = document.getElementById('stat-detail-modal');
+        const isVideoModalOpen = window.__videoModalOpen ||
+            window.__videoModalPendingClose ||
+            document.body.classList.contains('video-modal-open') ||
+            (videoModal && (videoModal.style.display === 'flex' || !videoModal.classList.contains('hidden')));
+
+        if (isVideoModalOpen) {
+            if (typeof window.closeVideoModal === 'function') window.closeVideoModal(true);
+            else {
+                if (videoModal) {
+                    videoModal.style.display = 'none';
+                    videoModal.classList.add('hidden');
+                }
+                const iframe = document.getElementById('video-iframe');
+                if (iframe) iframe.src = '';
+                document.body.classList.remove('video-modal-open');
+                window.__videoModalOpen = false;
+                window.__videoModalPendingClose = false;
+            }
+            return;
+        }
+
+        if (statDetailModal && statDetailModal.style.display !== 'none' && !statDetailModal.classList.contains('hidden')) {
+            if (typeof window.closeStatDetailModal === 'function') window.closeStatDetailModal(true);
+            else {
+                statDetailModal.classList.add('hidden');
+                statDetailModal.style.display = 'none';
+            }
+            return;
+        }
+
+        if (tuneModal && tuneModal.style.display !== 'none' && !tuneModal.classList.contains('hidden')) {
+            tuneModal.remove();
+            return;
+        }
+
+        if (memorySelectModal && memorySelectModal.style.display !== 'none' && !memorySelectModal.classList.contains('hidden')) {
+            if (typeof window.closeMemoryModal === 'function') window.closeMemoryModal(true);
+            else {
+                memorySelectModal.classList.add('hidden');
+                memorySelectModal.style.display = 'none';
+                memorySelectModal.remove();
+            }
+            return;
+        }
+
+        if (recommendModal && recommendModal.style.display !== 'none' && !recommendModal.classList.contains('hidden')) {
+            if (typeof window.closeRecommendModal === 'function') window.closeRecommendModal(true);
+            else {
+                recommendModal.classList.add('hidden');
+                recommendModal.style.display = 'none';
+            }
+            return;
+        }
+
+        // 1. 최상위 상세 모달이 열려있으면 얘부터 닫기 (최우선순위)
+        if (cardModal && (cardModal.style.display === 'flex' || !cardModal.classList.contains('hidden'))) {
+            hideModal();
+            return;
+        }
+
+        // 2. 모든 종류의 모달 및 툴팁 자동 감지 및 닫기
+        const allPossibleModals = document.querySelectorAll('.modal, .calc-tooltip, .modal-content, .confirm-modal-content, .side-panel, #calc-side-panel');
+        let overlayClosed = false;
+
+        allPossibleModals.forEach(m => {
+            // 보이는 상태인지 체크 (display가 none이 아니거나 hidden 클래스가 없는 경우)
+            const isVisible = m.style.display !== 'none' && !m.classList.contains('hidden') && m.offsetHeight > 0;
+            
+            if (isVisible) {
+                // 상세 모달(card-modal)은 특수 처리 (데이터 갱신 등)를 위해 아래 로직으로 토스
+                if (m.id === 'card-modal' || m.closest('#card-modal')) return;
+
+                // 일반 모달 닫기
+                if (m.classList.contains('calc-tooltip')) {
+                    m.remove(); // 툴팁은 보통 remove
+                } else if (m.id === 'calc-side-panel' || m.classList.contains('side-panel')) {
+                    if (typeof window.closeSupportCardPanel === 'function') window.closeSupportCardPanel(true);
+                    else { m.classList.add('hidden'); m.style.display = 'none'; }
+                } else if (m.id === 'video-modal') {
+                    if (typeof window.closeVideoModal === 'function') window.closeVideoModal(true);
+                    else {
+                        m.style.display = 'none'; m.classList.add('hidden');
+                        const iframe = document.getElementById('video-iframe');
+                        if (iframe) iframe.src = '';
+                    }
+                } else if (m.id === 'calc-recommend-modal') {
+                    if (typeof window.closeRecommendModal === 'function') window.closeRecommendModal(true);
+                    else { m.classList.add('hidden'); m.style.display = 'none'; }
+                } else if (m.querySelector('.memory-select-content') || m.querySelector('.memory-option-list')) {
+                    // 메모리 선택 모달은 아이디가 없을 수 있으므로 내부 구조로 판단
+                    if (typeof window.closeMemoryModal === 'function') window.closeMemoryModal(true);
+                    else m.remove();
+                } else {
+                    // 일반 모달은 숨기기
+                    m.style.display = 'none';
+                    m.classList.add('hidden');
+                    // 만약 동적으로 생성된 slot-modal 등이라면 삭제
+                    if (m.id === 'slot-modal' || m.id === 'stat-detail-modal') m.remove();
+                }
+                overlayClosed = true;
             }
         });
-        if (modalClosed) return;
 
-        const cardModal = document.getElementById('card-modal');
+        if (overlayClosed) return;
+
         const gachaLogModal = document.getElementById('gacha-log-modal');
         const gachaRatesModal = document.getElementById('gacha-rates-modal');
-        const videoModal = document.getElementById('video-modal');
         const resultsContainer = document.querySelector('#gacha-results');
         const calcPanel = document.getElementById('calc-side-panel');
 
@@ -306,33 +435,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. 유튜브 모달 처리 (추가)
-        if (videoModal && !videoModal.classList.contains('hidden')) {
-            if (typeof window.hideVideoModal === 'function') {
-                window.hideVideoModal();
-            } else {
-                videoModal.classList.add('hidden');
-                videoModal.style.display = 'none';
-                const iframe = document.getElementById('video-iframe');
-                if (iframe) iframe.src = '';
-            }
-            return;
-        }
 
-        // 3. 상세 모달이 열려있으면 모달만 닫기
-        if (cardModal && !cardModal.classList.contains('hidden')) {
-            hideModal();
-            return;
-        }
+
 
         // 4. 가챠 로그 모달이 열려있으면 닫기
-        if (gachaLogModal && !gachaLogModal.classList.contains('hidden')) {
+        if (gachaLogModal && (gachaLogModal.style.display === 'flex' || !gachaLogModal.classList.contains('hidden'))) {
             hideGachaLogModal();
             return;
         }
 
         // [추가] 가챠 확률 모달이 열려있으면 닫기
-        if (gachaRatesModal && !gachaRatesModal.classList.contains('hidden')) {
+        if (gachaRatesModal && (gachaRatesModal.style.display === 'flex' || !gachaRatesModal.classList.contains('hidden'))) {
             hideGachaRatesModal();
             return;
         }
@@ -349,13 +462,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // [추가] 스킬 카드 조정 모달이 열려있으면 닫기
-        const tuneModal = document.querySelector('.modal-content .tune-card-grid')?.closest('.modal');
-        if (tuneModal) {
-            tuneModal.remove();
-            return;
-        }
-
         // 4. 가챠 결과 화면 처리
         if (resultsContainer && resultsContainer.children.length > 0) {
             document.body.classList.remove('immersive-mode');
@@ -364,8 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 5. 기본 내비게이션
-        handleNavigation('home', true);
+        // 5. 기본 내비게이션 (현재 해시값 기준)
+        const target = window.location.hash.substring(1) || 'home';
+        handleNavigation(target, true);
     });
 
     // [추가] 페이지 가시성(Visibility) 감지하여 오디오 제어

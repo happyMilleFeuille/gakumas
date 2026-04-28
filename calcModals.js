@@ -30,6 +30,17 @@ export function showStatDetailModal(breakdown) {
         modal.className = 'modal';
         document.body.appendChild(modal);
     }
+    const closeStatDetailModal = (isPopState = false) => {
+        const statModal = document.getElementById(modalId);
+        if (!statModal) return;
+        if (!isPopState) {
+            history.back();
+            return;
+        }
+        statModal.style.display = 'none';
+        statModal.classList.add('hidden');
+    };
+    window.closeStatDetailModal = closeStatDetailModal;
 
     const renderRow = (label, values, subValues = null, rowClass = '') => {
         const rowSum = Math.floor((values?.vocal || 0) + (values?.dance || 0) + (values?.visual || 0));
@@ -61,7 +72,7 @@ export function showStatDetailModal(breakdown) {
 
     modal.innerHTML = `
         <div class="stat-detail-modal-content">
-            <span class="stat-detail-close" onclick="document.getElementById('stat-detail-modal').style.display='none'">&times;</span>
+            <span class="stat-detail-close">&times;</span>
             
             <div class="stat-detail-grid">
                 <div class="stat-grid-header">
@@ -143,7 +154,9 @@ export function showStatDetailModal(breakdown) {
     }
 
     modal.style.display = 'flex';
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    modal.classList.remove('hidden');
+    modal.querySelector('.stat-detail-close').onclick = () => closeStatDetailModal();
+    modal.onclick = (e) => { if (e.target === modal) closeStatDetailModal(); };
     history.pushState({ modalOpen: modalId }, "");
 }
 
@@ -326,7 +339,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
 
     if (window.innerWidth <= 768 && !overlay) {
         overlay = document.createElement('div'); overlay.id = 'panel-overlay'; overlay.className = 'panel-overlay';
-        document.body.appendChild(overlay); overlay.onclick = closeSupportCardPanel;
+        document.body.appendChild(overlay); overlay.onclick = () => history.back();
     }
 
     renderSidePanelContent(panel, selectedPlan);
@@ -340,6 +353,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
 
     requestAnimationFrame(() => {
         panel.classList.add('open'); if (overlay) overlay.classList.add('show');
+        history.pushState({ modalOpen: 'sidePanel' }, "");
         setTimeout(() => {
             try { refreshAll(); } catch (err) { console.error(err); }
             finally { document.getElementById('calc-side-spinner-overlay')?.remove(); }
@@ -349,12 +363,79 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
 
 export function closeSupportCardPanel(isPopState = false) {
     const panel = document.getElementById('calc-side-panel'), overlay = document.getElementById('panel-overlay');
-    if (panel?.classList.contains('open')) {
-        panel.classList.remove('open');
-        if (overlay) overlay.classList.remove('show');
-        if (!isPopState && window.innerWidth <= 768 && history.state?.panelOpen) history.back();
+    if (!panel?.classList.contains('open')) return;
+
+    if (!isPopState) {
+        history.back();
+        return;
     }
+
+    panel.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
 }
+export function syncSupportPanelUI() {
+    const panel = document.getElementById('calc-side-panel');
+    if (!panel) return;
+
+    const plan = calcStore.planType;
+    const currentPlanCards = calcStore.planCards[plan] || [];
+    const filledCount = currentPlanCards.filter(id => id !== null).length;
+    const isNowSelectingSixth = filledCount === 5 && currentPlanCards[5] === null;
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
+    // 6주차(렌탈) 모드 표시 업데이트
+    if (isNowSelectingSixth) panel.classList.add('is-selecting-sixth');
+    else panel.classList.remove('is-selecting-sixth');
+
+    const tabs = panel.querySelector('.side-panel-tabs');
+    const content = panel.querySelector('.side-panel-content');
+    if (tabs) {
+        tabs.style.background = isNowSelectingSixth ? '#8FDDBA' : 'white';
+        let badge = tabs.querySelector('.rental-badge');
+        if (isNowSelectingSixth && !badge) {
+            badge = document.createElement('span');
+            badge.className = 'rental-badge';
+            badge.textContent = 'RENTAL';
+            Object.assign(badge.style, {
+                position: 'absolute', top: '2px', left: '6px',
+                fontSize: '8px', fontWeight: 'bold', color: '#fff',
+                letterSpacing: '0.5px', zIndex: '10', opacity: '0.8'
+            });
+            tabs.appendChild(badge);
+        } else if (!isNowSelectingSixth && badge) {
+            badge.remove();
+        }
+    }
+    if (content) content.style.background = isNowSelectingSixth ? '#8FDDBA' : 'white';
+
+    // 모든 카드 아이템 상태 초기화 및 현재 선택된 카드 적용
+    panel.querySelectorAll('.side-card-item').forEach(el => {
+        const id = el.dataset.id;
+        const idx = currentPlanCards.indexOf(id);
+        const isSelected = idx !== -1;
+        const isSixth = idx === 5;
+
+        if (isSelected) {
+            el.classList.add('selected');
+            el.style.borderColor = isSixth ? '#8FDDBA' : idolColor;
+            el.style.borderWidth = '2px';
+        } else {
+            el.classList.remove('selected');
+            el.style.borderColor = '#ddd';
+            el.style.borderWidth = '';
+            delete el.dataset.selectTime;
+        }
+
+        // 별(한계 돌파) 표시 업데이트
+        const displayLb = (isNowSelectingSixth && !isSelected) || isSixth ? 4 : (state.supportLB[id] || 0);
+        const stars = el.querySelectorAll('.calc-card-star');
+        stars.forEach((star, i) => {
+            if (i < displayLb) star.classList.add('active');
+            else star.classList.remove('active');
+        });
+    });
+}
+
 window.closeSupportCardPanel = closeSupportCardPanel;
 
 /**
@@ -466,6 +547,7 @@ export function showOtherTuneModal(refreshAll) {
     }
 
     const modal = document.createElement('div');
+    modal.id = 'calc-tune-modal';
     modal.className = 'modal';
     modal.style.display = 'flex';
     modal.style.zIndex = '40000';
@@ -544,7 +626,8 @@ export function showOtherTuneModal(refreshAll) {
         </div>`;
 
     document.body.appendChild(modal);
-    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    history.pushState({ modalOpen: 'tune' }, "");
+    modal.onclick = (e) => { if (e.target === modal) history.back(); };
 
     const updateTitle = () => {
         const counts = getTriggerCounts(calcStore);
@@ -627,53 +710,41 @@ export function showOtherTuneModal(refreshAll) {
             const rb = el.querySelector('.card-reset-btn'); if (rb) rb.classList.add('hidden');
         });
     };
-    document.getElementById('close-tune-modal').onclick = () => modal.remove();
+    document.getElementById('close-tune-modal').onclick = () => history.back();
 }
 
 export function showMemorySelectModal(slotIndex, refreshAll) {
     const isJa = state.currentLang === 'ja';
+    const isMobile = window.innerWidth <= 768;
     const modal = document.createElement('div');
+    modal.id = 'calc-memory-select-modal';
     modal.className = 'modal';
     modal.style.display = 'flex';
     modal.style.zIndex = '40000';
 
     const content = document.createElement('div');
-    content.className = 'modal-content';
-    content.style.width = '300px';
-    content.style.padding = '15px';
-    content.style.maxHeight = '80vh';
+    content.className = 'modal-content memory-select-content';
+    content.style.width = isMobile ? '85vw' : '640px';
+    content.style.padding = isMobile ? '15px 8px' : '15px';
+    content.style.maxHeight = '105vh';
     content.style.overflowY = 'auto';
 
 
     // calcStore.memories[slotIndex]는 이제 배열 형태여야 함
     let currentSelections = Array.isArray(calcStore.memories[slotIndex]) ? [...calcStore.memories[slotIndex]] : [];
 
-    // 비우기 버튼 (해제)
-    const clearBtn = document.createElement('div');
-    clearBtn.style.padding = '10px';
-    clearBtn.style.background = '#f5f5f5';
-    clearBtn.style.borderRadius = '6px';
-    clearBtn.style.marginBottom = '8px';
-    clearBtn.style.cursor = 'pointer';
-    clearBtn.style.textAlign = 'center';
-    clearBtn.style.fontWeight = 'bold';
-    clearBtn.style.color = '#666';
-    clearBtn.textContent = isJa ? '全体解除' : '전체 해제';
-    clearBtn.onclick = () => {
-        currentSelections = [];
-        Array.from(content.querySelectorAll('.memory-opt-btn')).forEach(el => {
-            el.style.background = '#fff';
-            el.style.borderColor = '#ddd';
-        });
-    };
-
     // 모달 닫기 로직: 닫을 때 스토어 저장 및 새로고침
-    const closeModalAndSave = () => {
+    const closeModalAndSave = (isPopState = false) => {
         calcStore.memories[slotIndex] = currentSelections;
         calcStore.save();
         refreshAll();
-        modal.remove();
+        // 상세 모달이 열려있다면 갱신
+        if (typeof window.refreshAll === 'function') window.refreshAll();
+
+        if (!isPopState) history.back();
+        else modal.remove();
     };
+    window.closeMemoryModal = closeModalAndSave;
 
     // 옵션 리스트 렌더링
     import('./calcData.js').then(({ memoryOptions }) => {
@@ -681,100 +752,183 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
 
         const colsContainer = document.createElement('div');
         colsContainer.style.display = 'grid';
-        colsContainer.style.gridTemplateColumns = '1fr 1fr 1fr';
-        colsContainer.style.gap = '8px';
+        // 2열(보컬) + 1열(선) + 2열(댄스) + 1열(선) + 2열(비주얼) = 총 8열
+        colsContainer.style.gridTemplateColumns = '1fr 1fr auto 1fr 1fr auto 1fr 1fr';
+        colsContainer.style.columnGap = isMobile ? '2px' : '6px';
+        colsContainer.style.rowGap = isMobile ? '4px' : '6px';
         content.appendChild(colsContainer);
 
-        const columns = { vocal: null, dance: null, visual: null };
-        const headers = { vocal: isJa ? 'ボーカル' : '보컬', dance: isJa ? 'ダンス' : '댄스', visual: isJa ? 'ビジュアル' : '비주얼' };
+        const headers = { vocal: isJa ? 'Vo' : '보컬', dance: isJa ? 'Da' : '댄스', visual: isJa ? 'Vi' : '비주얼' };
         const colors = { vocal: '#ff4d8d', dance: '#46a4f3', visual: '#fcc75e' };
-        const bgColors = { vocal: '#fff0f5', dance: '#eef7ff', visual: '#fffdf0' };
+        const bgColors = { vocal: '#ffd1e0', dance: '#cce5ff', visual: '#fff4c2' };
 
-        Object.keys(columns).forEach(type => {
-            const col = document.createElement('div');
-            col.style.display = 'flex';
-            col.style.flexDirection = 'column';
-            col.style.gap = '6px';
+        // 아주 연한 속성 색상 (미선택 시 배경 및 테두리용)
+        const tintBgs = {
+            vocal: 'rgba(255, 77, 141, 0.04)',
+            dance: 'rgba(70, 164, 243, 0.04)',
+            visual: 'rgba(252, 199, 94, 0.04)'
+        };
+        const tintBorders = {
+            vocal: 'rgba(255, 77, 141, 0.15)',
+            dance: 'rgba(70, 164, 243, 0.15)',
+            visual: 'rgba(252, 199, 94, 0.15)'
+        };
 
+        // 1. 헤더 렌더링 (적절한 위치에 배치)
+        const typeOrder = ['vocal', 'dance', 'visual'];
+        typeOrder.forEach((type, idx) => {
             const title = document.createElement('div');
+            title.style.gridColumn = `${idx * 3 + 1} / span 2`;
             title.style.textAlign = 'center';
-            title.style.fontWeight = 'bold';
-            title.style.fontSize = '0.9rem';
-            title.style.color = colors[type];
-            title.style.marginBottom = '4px';
-            title.textContent = headers[type];
-            col.appendChild(title);
+            title.style.display = 'flex';
+            title.style.justifyContent = 'center';
+            title.style.alignItems = 'center';
+            title.style.padding = '4px 0';
 
-            columns[type] = col;
-            colsContainer.appendChild(col);
+            const icon = document.createElement('img');
+            icon.src = `icons/${type}.png`;
+            icon.style.width = isMobile ? '18px' : '22px';
+            icon.style.height = 'auto';
+            icon.style.objectFit = 'contain';
+
+            title.appendChild(icon);
+            colsContainer.appendChild(title);
         });
 
+        // 2. 옵션 버튼들을 타입별/형식별(고정/%)로 분류
+        const groupedOpts = {
+            vocal: { fixed: [], percent: [] },
+            dance: { fixed: [], percent: [] },
+            visual: { fixed: [], percent: [] }
+        };
         Object.keys(memoryOptions).forEach(key => {
             const opt = memoryOptions[key];
-            const type = opt.type;
-            if (!columns[type]) return;
+            if (opt.isPercent) groupedOpts[opt.type].percent.push({ key, ...opt });
+            else groupedOpts[opt.type].fixed.push({ key, ...opt });
+        });
 
-            const btn = document.createElement('div');
-            btn.className = 'memory-opt-btn';
-            btn.style.padding = '8px 4px';
-            btn.style.border = '1px solid #ddd';
-            btn.style.borderRadius = '6px';
-            btn.style.cursor = 'pointer';
-            btn.style.textAlign = 'center';
+        const maxRows = Math.max(
+            Math.ceil(groupedOpts.vocal.fixed.length),
+            Math.ceil(groupedOpts.dance.fixed.length),
+            Math.ceil(groupedOpts.visual.fixed.length),
+            Math.ceil(groupedOpts.vocal.percent.length),
+            Math.ceil(groupedOpts.dance.percent.length),
+            Math.ceil(groupedOpts.visual.percent.length)
+        );
 
-            const isSelected = currentSelections.includes(key);
-            btn.style.background = isSelected ? bgColors[type] : '#fff';
-            btn.style.borderColor = isSelected ? colors[type] : '#ddd';
+        // 3. 세로 구분선 추가 (3열과 6열)
+        [3, 6].forEach(colIdx => {
+            const divider = document.createElement('div');
+            divider.style.gridColumn = colIdx;
+            divider.style.gridRow = `1 / span ${maxRows + 2}`;
+            divider.style.width = '1px';
+            divider.style.background = '#eee';
+            divider.style.margin = isMobile ? '0 1px' : '0 4px';
+            colsContainer.appendChild(divider);
+        });
 
-            const shortText = (opt.label_ko || '').split(' ')[1] || opt.label_ko;
-            btn.innerHTML = `<div style="font-weight: bold; color: #333; font-size: 0.85rem;">${shortText}</div>`;
+        // 4. 행 단위로 버튼 렌더링
+        for (let r = 0; r < maxRows; r++) {
+            typeOrder.forEach((type, typeIdx) => {
+                // c=0: 고정치, c=1: %
+                for (let c = 0; c < 2; c++) {
+                    const opt = (c === 0) ? groupedOpts[type].fixed[r] : groupedOpts[type].percent[r];
 
-            btn.onclick = () => {
-                const idx = currentSelections.indexOf(key);
-                if (idx > -1) {
-                    currentSelections.splice(idx, 1);
-                    btn.style.background = '#fff';
-                    btn.style.borderColor = '#ddd';
-                } else {
-                    // 같은 type의 기존 선택 제거
-                    const existIdx = currentSelections.findIndex(k => memoryOptions[k].type === type);
-                    if (existIdx > -1) {
-                        const oldKey = currentSelections[existIdx];
-                        currentSelections.splice(existIdx, 1);
-                        // DOM에서 이전 버튼 스타일 초기화
-                        const oldBtn = Array.from(columns[type].children).find(child => child.dataset.key === oldKey);
-                        if (oldBtn) {
-                            oldBtn.style.background = '#fff';
-                            oldBtn.style.borderColor = '#ddd';
-                        }
+                    if (opt) {
+                        const btn = document.createElement('div');
+                        btn.className = 'memory-opt-btn';
+                        btn.style.padding = isMobile ? '8px 1px' : '8px 2px';
+                        btn.style.border = '1px solid #ddd';
+                        btn.style.borderRadius = '4px';
+                        btn.style.cursor = 'pointer';
+                        btn.style.textAlign = 'center';
+                        btn.dataset.key = opt.key;
+                        btn.style.gridColumn = `${typeIdx * 3 + (c + 1)}`;
+
+                        const isSelected = currentSelections.includes(opt.key);
+                        btn.style.background = isSelected ? bgColors[type] : tintBgs[type];
+                        btn.style.borderColor = isSelected ? colors[type] : tintBorders[type];
+
+                        const shortText = (opt.label_ko || '').split(' ')[1] || opt.label_ko;
+                        btn.innerHTML = `<div style="font-weight: bold; color: #333; font-size: ${isMobile ? '0.62rem' : '0.8rem'}; line-height: 1.1;">${shortText}</div>`;
+
+                        btn.onclick = () => {
+                            const idx = currentSelections.indexOf(opt.key);
+                            if (idx > -1) {
+                                currentSelections.splice(idx, 1);
+                                btn.style.background = tintBgs[type];
+                                btn.style.borderColor = tintBorders[type];
+                            } else {
+                                // 같은 타입의 기존 선택 제거 (수치 버튼 OR 해당없음 버튼)
+                                const noneKey = `${type}_none`;
+                                const existIdx = currentSelections.findIndex(k =>
+                                    k === noneKey || (memoryOptions[k] && memoryOptions[k].type === type)
+                                );
+
+                                if (existIdx > -1) {
+                                    const oldKey = currentSelections[existIdx];
+                                    currentSelections.splice(existIdx, 1);
+                                    const oldBtn = colsContainer.querySelector(`.memory-opt-btn[data-key="${oldKey}"]`);
+                                    if (oldBtn) {
+                                        const isNone = oldKey.endsWith('_none');
+                                        oldBtn.style.background = isNone ? (isSelected ? bgColors[type] : tintBgs[type]) : tintBgs[type];
+                                        oldBtn.style.borderColor = tintBorders[type];
+                                        if (isNone) oldBtn.style.color = '#999';
+                                    }
+                                }
+                                currentSelections.push(opt.key);
+                                btn.style.background = bgColors[opt.type];
+                                btn.style.borderColor = colors[opt.type];
+                                if (currentSelections.length === 3) { setTimeout(() => { closeModalAndSave(); }, 100); }
+                            }
+                        };
+                        colsContainer.appendChild(btn);
+                    } else {
+                        const empty = document.createElement('div');
+                        empty.style.gridColumn = `${typeIdx * 3 + (c + 1)}`;
+                        colsContainer.appendChild(empty);
                     }
+                }
+            });
+        }
 
-                    currentSelections.push(key);
-                    btn.style.background = bgColors[type];
-                    btn.style.borderColor = colors[type];
+        // 5. 맨 아래에 "해당없음" 버튼 추가 (각 2열 차지)
+        typeOrder.forEach((type, typeIdx) => {
+            const noneBtn = document.createElement('div');
+            noneBtn.className = 'memory-clear-btn';
+            noneBtn.style.gridColumn = `${typeIdx * 3 + 1} / span 2`;
+            noneBtn.style.padding = isMobile ? '8px 1px' : '8px 2px';
+            noneBtn.style.border = '1px solid #eee';
+            noneBtn.style.borderRadius = '4px';
+            noneBtn.style.textAlign = 'center';
+            noneBtn.style.cursor = 'pointer';
+            noneBtn.style.background = '#f5f5f5';
+            noneBtn.style.color = '#999';
+            noneBtn.style.marginTop = '4px';
 
-                    // 3개 선택 시 자동 닫기
-                    if (currentSelections.length === 3) {
-                        setTimeout(() => {
-                            closeModalAndSave();
-                        }, 100);
+            const noneText = isJa ? 'リセット' : '선택 취소';
+            noneBtn.innerHTML = `<div style="font-weight: bold; font-size: ${isMobile ? '0.62rem' : '0.8rem'}; line-height: 1.1;">${noneText}</div>`;
+
+            noneBtn.onclick = () => {
+                const existIdx = currentSelections.findIndex(k => memoryOptions[k] && memoryOptions[k].type === type);
+                if (existIdx > -1) {
+                    const oldKey = currentSelections[existIdx];
+                    currentSelections.splice(existIdx, 1);
+                    const oldBtn = colsContainer.querySelector(`.memory-opt-btn[data-key="${oldKey}"]`);
+                    if (oldBtn) {
+                        oldBtn.style.background = tintBgs[type];
+                        oldBtn.style.borderColor = tintBorders[type];
                     }
                 }
             };
-            btn.dataset.key = key; // 기존 버튼을 찾기 위해 key 저장
-            columns[type].appendChild(btn);
+            colsContainer.appendChild(noneBtn);
         });
-
-        // 비우기 버튼 (해제)을 옵션 리스트 아래로 이동
-        clearBtn.style.marginTop = '12px';
-        content.appendChild(clearBtn);
     });
 
     modal.appendChild(content);
     modal.onclick = (e) => { if (e.target === modal) closeModalAndSave(); };
-
-
     document.body.appendChild(modal);
+    history.pushState({ modalOpen: 'memorySelect' }, "");
 }
 
 function showTemporaryToast(message) {
@@ -818,4 +972,146 @@ function showTemporaryToast(message) {
             if (tooltip.parentNode) tooltip.parentNode.removeChild(tooltip);
         }, 300);
     }, 2000);
+}
+
+/**
+ * 추천 설정 및 확인 모달 표시
+ */
+export function showRecommendModal(onConfirm) {
+    const modalId = 'calc-recommend-modal';
+    let modal = document.getElementById(modalId);
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = modalId;
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+    history.pushState({ modalOpen: 'recommend' }, "");
+
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+    const isJa = state.currentLang === 'ja';
+
+    // 기본 선택값 (저장된 설정 반영)
+    let settings = { ...calcStore.recommendSettings };
+    const getSum = () => settings.vocal + settings.dance + settings.visual;
+
+    const titleText = isJa ? 'サポカ自動おすすめ' : '서포트 카드 자동 추천';
+
+    const renderSubRow = (label, key) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 24px; border-bottom: 1px solid #f9f9f9;">
+            <span style="font-size: 13px; color: #666;">• ${label}</span>
+            <div style="display: flex; gap: 4px;" class="sp-sub-options" data-key="${key}">
+                ${[0, 1, 2, 3].map(num => `
+                    <button class="sp-opt-btn ${num === settings[key] ? 'active' : ''}" data-val="${num}" 
+                        style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 11px; font-weight: bold; color: #666; transition: all 0.2s;">
+                        ${num}
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    modal.innerHTML = `
+        <div class="confirm-modal-content" style="border: 1px solid #ddd; border-radius: 12px; padding: 24px; background: #fff; max-width: 320px; width: 95%; margin: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: modal-fade-in 0.2s ease-out;">
+            <div style="font-size: 17px; font-weight: bold; margin-bottom: 20px; color: #333; text-align: center;">${titleText}</div>
+            
+            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fcfcfc; border-bottom: 2px solid #eee;">
+                    <span style="font-size: 14px; font-weight: bold; color: #333;">${isJa ? 'SP発生率増加サポカ (件数)' : 'SP 발생률 증가 서포카 (개수)'}</span>
+                    <span id="sp-total-count" style="font-size: 16px; font-weight: 900; color: ${idolColor}; background: ${idolColor}15; padding: 2px 10px; border-radius: 12px;">${getSum()}</span>
+                </div>
+                ${renderSubRow(isJa ? 'ボーカル SP' : '보컬 SP', 'vocal')}
+                ${renderSubRow(isJa ? 'ダンス SP' : '댄스 SP', 'dance')}
+                ${renderSubRow(isJa ? 'ビジュアル SP' : '비주얼 SP', 'visual')}
+            </div>
+
+            <div style="margin-bottom: 20px; padding: 0 4px;">
+                <div style="font-size: 11px; color: #999; line-height: 1.5; letter-spacing: -0.02em;">
+                    <div style="font-weight: bold; margin-bottom: 4px; color: #777;">⚠️ ${isJa ? '注意事項' : '주의사항'}</div>
+                    <div id="recommend-notice-content">
+                        • ${isJa ? 'サポートカードのPアイテムおよび固有カードの獲得、ならびにイベントの発生はすべて発動することを前提として計算され、発動タイミングは考慮しません。' : '서포트카드의 P아이템 및 고유카드 획득 그리고 이벤트 발생은 모두 발동하는 것을 기준으로 계산되며, 발동 시점은 고려하지 않습니다.'}<br>
+                        • ${isJa ? '(％)系サポートカードを2枚以上組み合わせた場合、ゲーム内と同様に獲得値ごとに切り捨ててから合算するため、リストに表示される該当サポートカードの数値に誤差が生じます。' : '(%)계열 서포트 카드를 2개 이상 조합할 경우 인게임과 동일하게 획득 수치마다 내림 후 합산을 하기에 리스트에 표시된 해당 개별 서포카 수치에 오차가 발생합니다.'}
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="confirm-btn cancel" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: #fcfcfc; color: #888; cursor: pointer; font-size: 13px;">${isJa ? 'キャンセル' : '취소'}</button>
+                <button class="confirm-btn ok" style="flex: 1.5; padding: 10px; border-radius: 8px; border: none; background: ${idolColor}; color: #fff; cursor: pointer; font-size: 13px; font-weight: bold;">${isJa ? 'おすすめ' : '추천 시작'}</button>
+            </div>
+        </div>
+        <style>
+            .sp-opt-btn.active {
+                background: ${idolColor} !important;
+                color: #fff !important;
+                border-color: ${idolColor} !important;
+                box-shadow: 0 2px 6px ${idolColor}44;
+            }
+        </style>
+    `;
+
+    modal.style.display = 'flex';
+    modal.style.zIndex = '30000';
+
+    const totalDisplay = modal.querySelector('#sp-total-count');
+
+    // 이벤트 바인딩 및 실시간 합계 업데이트 (6개 제한 추가)
+    modal.querySelectorAll('.sp-sub-options').forEach(container => {
+        const key = container.dataset.key;
+        const btns = container.querySelectorAll('.sp-opt-btn');
+        btns.forEach(btn => {
+            btn.onclick = () => {
+                const newVal = parseInt(btn.dataset.val);
+                const currentSumWithoutKey = getSum() - settings[key];
+
+                // 합계가 6を 넘으면 선택 불가
+                if (currentSumWithoutKey + newVal > 6) {
+                    showTemporaryToast(isJa ? '合計は6枚までです。' : '합계는 최대 6개까지 가능합니다!');
+                    return;
+                }
+
+                btns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                settings[key] = newVal;
+                calcStore.recommendSettings[key] = newVal;
+                calcStore.save();
+                totalDisplay.innerText = getSum();
+            };
+        });
+    });
+
+    const close = (isPopState = false) => {
+        if (!isPopState) history.back();
+        else modal.style.display = 'none';
+    };
+    window.closeRecommendModal = close;
+    modal.querySelector('.confirm-btn.cancel').onclick = close;
+
+    const okBtn = modal.querySelector('.confirm-btn.ok');
+    okBtn.onclick = () => {
+        const footer = modal.querySelector('.confirm-modal-content > div:last-of-type');
+        footer.innerHTML = `
+            <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0;">
+                <div class="loading-spinner" style="width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid ${idolColor}; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                <div style="font-size: 12px; color: ${idolColor}; font-weight: bold;"></div>
+            </div>
+        `;
+
+        setTimeout(() => {
+            onConfirm(settings);
+            close();
+        }, 100);
+    };
+
+    modal.onclick = (e) => { if (e.target === modal) close(); };
+
+    if (!document.getElementById('modal-spin-style')) {
+        const style = document.createElement('style');
+        style.id = 'modal-spin-style';
+        style.innerHTML = `
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            @keyframes modal-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        `;
+        document.head.appendChild(style);
+    }
 }

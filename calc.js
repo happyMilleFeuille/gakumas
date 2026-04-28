@@ -10,42 +10,210 @@ import { pItemDescriptions, pItemSlots } from './pItemData.js';
 import { getTriggerCounts, calculateTotals, getNiaLessonStat, getHajimeLessonStat, getSupportPercentBonusForCard } from './calcLogic.js';
 import { calculateCardBonus } from './simulator-engine.js';
 import { skillCardList } from './skillcarddata.js';
-import { 
-    updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI, 
+import {
+    updateActivityCountsUI, updateSelectedCardsUI, updateStatHeaderUI,
     renderCalcMenu, renderWeeklyPlan, updateSPBadge, updateMainLabel,
     showSubTooltip, showPItemSelectorTooltip, showPItemInfoTooltip, showSupportItemTooltip,
-    getIdolDisplayColor, updateMemorySlotsUI
-} from './calcUI.js';import { initGlobalDistListener } from './calcEvents.js';
-import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal } from './calcModals.js';
+    getIdolDisplayColor, updateMemorySlotsUI, syncDisabledSelectedCards, showTalentBloomInfoTooltip,
+    showToast
+} from './calcUI.js';
+import { initGlobalDistListener } from './calcEvents.js';
+import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syncSupportPanelUI, showRecommendModal } from './calcModals.js';
+import { initRecommendationFeature } from './calcRecommend.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 
-export function initCalc() { 
+export function initCalc() {
     window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
-    renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia')); 
+    renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
+}
+
+function restoreIdolGridPosition(grid) {
+    if (!grid) return;
+
+    if (window._lastIdolScrollLeft !== undefined) {
+        grid.scrollLeft = window._lastIdolScrollLeft;
+    }
+
+    const activeItem = grid.querySelector('.idol-sel-item.active');
+    if (activeItem) {
+        activeItem.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
+        window._lastIdolScrollLeft = grid.scrollLeft;
+    }
+}
+
+function applyCalcThemeColor(color) {
+    document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
+        if (w.classList.contains('large-icon')) {
+            w.style.filter = `drop-shadow(1.5px 0 0 ${color}) drop-shadow(-1.5px 0 0 ${color}) drop-shadow(0 1.5px 0 ${color}) drop-shadow(0 -1.5px 0 ${color}) drop-shadow(0 0 5px ${color})`;
+        } else {
+            w.style.borderColor = color;
+            w.style.boxShadow = `0 0 8px ${color}66`;
+        }
+        const badge = w.querySelector('.sp-badge');
+        if (badge) badge.style.backgroundColor = color;
+    });
+
+    document.querySelectorAll('.info-i-btn').forEach(iBtn => {
+        iBtn.style.backgroundColor = color;
+    });
+
+    document.querySelectorAll('.plan-type-btn.active').forEach(btn => {
+        btn.style.borderColor = color;
+        btn.style.boxShadow = `0 0 8px ${color}66`;
+    });
+
+    const runCalcBtn = document.getElementById('btn-run-calc');
+    if (runCalcBtn) {
+        runCalcBtn.style.backgroundColor = color;
+        runCalcBtn.style.boxShadow = `0 2px 6px ${color}33`;
+    }
+
+    const statHeader = document.querySelector('.stat-header');
+    if (statHeader) statHeader.style.borderColor = color;
+
+    const totalContainer = document.getElementById('total-stats-sum-container');
+    if (totalContainer) {
+        totalContainer.style.backgroundColor = color;
+        totalContainer.style.boxShadow = `0 2px 6px ${color}33`;
+    }
+
+    document.querySelectorAll('.p-item-slot').forEach(slot => {
+        const hasImg = slot.querySelector('img');
+        slot.style.borderColor = hasImg ? 'transparent' : '#ddd';
+        const placeholder = slot.querySelector('.p-item-placeholder');
+        if (placeholder) placeholder.style.color = '#ccc';
+    });
+
+    const pItemInfoBtn = document.querySelector('.p-item-info-btn');
+    if (pItemInfoBtn) {
+        pItemInfoBtn.style.backgroundColor = '#f8f9fa';
+        pItemInfoBtn.style.color = '#666';
+    }
+
+    const sidePanel = document.getElementById('calc-side-panel');
+    if (sidePanel) {
+        const currentPlanCards = calcStore.planCards[calcStore.planType] || [];
+        sidePanel.querySelectorAll('.side-card-item.selected').forEach(card => {
+            const isSixth = currentPlanCards.indexOf(card.dataset.id) === 5;
+            card.style.borderColor = isSixth ? '#8FDDBA' : color;
+        });
+    }
+}
+
+function isIncompleteWeekSelection(wrapper) {
+    const value = wrapper.dataset.value;
+    const optsDef = activityOptions[value] || [];
+    const checkboxOpts = optsDef.filter(o => o.type === 'checkbox');
+    if (checkboxOpts.length === 0) return false;
+
+    const week = wrapper.closest('.week-row')?.dataset.week;
+    const savedOpts = calcStore.weeks[week]?.opts || {};
+    const hasCheckedOption = checkboxOpts.some(o => savedOpts[o.id] === 'true');
+    const requiresAttr = value === 'class_hajime' || value === 'class_nia';
+    const hasSelectedAttr = !!savedOpts.selectedAttr;
+
+    if (requiresAttr) {
+        return hasCheckedOption !== hasSelectedAttr;
+    }
+
+    return !hasCheckedOption;
+}
+
+function clearIncompleteWeekSelections(exclude = null) {
+    let changed = false;
+    document.querySelectorAll('.plan-icon-wrapper.active').forEach(wrapper => {
+        if (wrapper === exclude) return;
+        if (!isIncompleteWeekSelection(wrapper)) return;
+
+        const week = wrapper.closest('.week-row')?.dataset.week;
+        if (!week) return;
+
+        calcStore.setWeekAction(week, '', {});
+        wrapper.classList.remove('active');
+        wrapper.style.filter = '';
+        wrapper.style.borderColor = '';
+        wrapper.style.boxShadow = '';
+        updateSPBadge(wrapper, calcStore.selectedIdol);
+        updateMainLabel(wrapper);
+        changed = true;
+    });
+
+    return changed;
+}
+
+function bindIdolSelector(grid, refreshAll) {
+    document.querySelectorAll('.idol-sel-item').forEach(item => {
+        item.onclick = (e) => {
+            if (window._isDraggingIdol) {
+                e.preventDefault();
+                return;
+            }
+
+            item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            if (item.classList.contains('active')) return;
+
+            calcStore.setSelectedIdol(item.dataset.id);
+            document.querySelectorAll('.idol-sel-item').forEach(i => {
+                i.classList.remove('active');
+                i.style.borderColor = '';
+                i.style.boxShadow = '';
+                i.style.transform = '';
+            });
+
+            item.classList.add('active');
+            const color = getIdolDisplayColor(item.dataset.id);
+            item.style.borderColor = color;
+            item.style.borderWidth = '3px';
+            item.style.boxShadow = `0 0 12px ${color}b3`;
+            item.style.transform = 'scale(1.1)';
+
+            applyCalcThemeColor(color);
+            refreshAll();
+        };
+    });
+
+    if (!grid) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    grid.addEventListener('mousedown', (e) => {
+        isDown = true;
+        window._isDraggingIdol = false;
+        grid.classList.add('active');
+        startX = e.pageX - grid.offsetLeft;
+        scrollLeft = grid.scrollLeft;
+    });
+    grid.addEventListener('mouseleave', () => {
+        isDown = false;
+        grid.classList.remove('active');
+    });
+    grid.addEventListener('mouseup', () => {
+        isDown = false;
+        grid.classList.remove('active');
+        setTimeout(() => { window._isDraggingIdol = false; }, 50);
+    });
+    grid.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - grid.offsetLeft;
+        const walk = (x - startX) * 2;
+        if (Math.abs(walk) > 5) window._isDraggingIdol = true;
+        grid.scrollLeft = scrollLeft - walk;
+        window._lastIdolScrollLeft = grid.scrollLeft;
+    });
 }
 
 function startWeeklyPlan(type) {
     calcStore.init(type);
     initGlobalDistListener(refreshAll);
-    
+
     const handlers = {
         setupAll: () => {
             const grid = document.getElementById('idol-selector-grid');
-            if (grid) {
-                // 플랜 전환(센스/로직/어노말리)인 경우 기존 위치 유지
-                if (window._lastIdolScrollLeft !== undefined) {
-                    grid.scrollLeft = window._lastIdolScrollLeft;
-                } 
-                
-                // 메뉴에서 처음 들어왔거나, 위에서 위치를 잡았더라도 활성화된 아이돌 보장 로직
-                const activeItem = grid.querySelector('.idol-sel-item.active');
-                if (activeItem) {
-                    // 애니메이션 없이 즉시 이동
-                    activeItem.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
-                    window._lastIdolScrollLeft = grid.scrollLeft;
-                }
-            }
+            restoreIdolGridPosition(grid);
 
             // [추가] 정보 버튼(i) 이벤트 바인딩
             document.querySelectorAll('.info-i-btn').forEach(btn => {
@@ -55,12 +223,12 @@ function startWeeklyPlan(type) {
                     const weekRow = btn.closest('.week-row');
                     if (!weekRow) return;
                     const weekNum = parseInt(weekRow.dataset.week);
-                    
+
                     // 1. 수치 데이터 추출 로직 (참조용 비율 데이터만 사용)
                     let circleStats = { vocal: 0, dance: 0, visual: 0 };
                     const idolInfo = idolData[calcStore.selectedIdol];
                     const ratios = judgingRatios[calcStore.type];
-                    
+
                     if (idolInfo && ratios) {
                         let stageIdx = 0;
                         if (calcStore.type === 'nia') {
@@ -71,7 +239,7 @@ function startWeeklyPlan(type) {
                             // 하지메: 6주차 부근은 1단계(중간), 그 이후(13주차 부근)는 2단계(기말)
                             stageIdx = (weekNum <= 10) ? 1 : 2;
                         }
-                        
+
                         const stageData = ratios[stageIdx];
                         if (stageData) {
                             const data = idolInfo.growthType === 'protruded' ? stageData.protruded : stageData.balanced;
@@ -90,12 +258,12 @@ function startWeeklyPlan(type) {
 
                     const tooltip = document.createElement('div');
                     tooltip.className = 'calc-tooltip stat-graph-tooltip';
-                    
+
                     const isJa = state.currentLang === 'ja';
                     const maxVal = Math.max(circleStats.vocal, circleStats.dance, circleStats.visual, 1); // 0 방지
-                    
+
                     const getBarPart = (val, color, icon) => {
-                        const height = Math.min(100, (val/maxVal)*100);
+                        const height = Math.min(100, (val / maxVal) * 100);
                         return `
                         <div class="graph-column">
                             <div class="graph-bar-bg">
@@ -130,7 +298,7 @@ function startWeeklyPlan(type) {
                     if (container) {
                         const idolId = calcStore.selectedIdol;
                         const idolColor = idolColors[idolId] || "#ff4d8d";
-                        
+
                         container.appendChild(tooltip);
                         tooltip.style.left = '50%';
                         tooltip.style.top = '-5px';
@@ -145,7 +313,7 @@ function startWeeklyPlan(type) {
 
             const backBtn = document.querySelector('.back-btn');
             if (backBtn) backBtn.onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
-            
+
             document.querySelectorAll('.plan-type-btn').forEach(btn => {
                 btn.onclick = () => {
                     if (btn.classList.contains('active')) return;
@@ -154,164 +322,43 @@ function startWeeklyPlan(type) {
                     if (currentGrid) window._lastIdolScrollLeft = currentGrid.scrollLeft;
 
                     calcStore.setPlanType(btn.dataset.type);
-                    startWeeklyPlan(type); 
+                    startWeeklyPlan(type);
                 };
             });
 
-            document.querySelectorAll('.idol-sel-item').forEach(item => {
-                item.onclick = (e) => {
-                    if (window._isDraggingIdol) {
-                        e.preventDefault();
-                        return;
-                    }
-                    
-                    // [수정] active 체크를 뒤로 미루거나, 스크롤은 항상 되도록 함
-                    item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                    
-                    if (item.classList.contains('active')) return;
-                    
-                    calcStore.setSelectedIdol(item.dataset.id);
-                    document.querySelectorAll('.idol-sel-item').forEach(i => {
-                        i.classList.remove('active');
-                        i.style.borderColor = '';
-                        i.style.boxShadow = '';
-                        i.style.transform = '';
-                    });
-                    item.classList.add('active');
-                    const getIdolColor = (id) => (idolColors[id] || "#ff4d8d");
-                    const color = getIdolColor(item.dataset.id);
-                    item.style.borderColor = color;
-                    item.style.borderWidth = '3px';
-                    item.style.boxShadow = `0 0 12px ${color}b3`;
-                    item.style.transform = 'scale(1.1)';
-
-                    // [추가] 계획 보드의 모든 활성화된 아이콘 테두리 및 SP 배지 색상 변경
-                    document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
-                        if (w.classList.contains('large-icon')) {
-                            w.style.filter = `drop-shadow(1.5px 0 0 ${color}) drop-shadow(-1.5px 0 0 ${color}) drop-shadow(0 1.5px 0 ${color}) drop-shadow(0 -1.5px 0 ${color}) drop-shadow(0 0 5px ${color})`;
-                        } else {
-                            w.style.borderColor = color;
-                            w.style.boxShadow = `0 0 8px ${color}66`;
+            // [추가] 자동 추천 기능 초기화
+            initRecommendationFeature(
+                calcStore,
+                calcPlans,
+                refreshAll,
+                syncSupportPanelUI,
+                showToast,
+                state,
+                showRecommendModal,
+                () => {
+                    if (window.innerWidth > 768) {
+                        const panel = document.getElementById('calc-side-panel');
+                        if (!panel || !panel.classList.contains('open')) {
+                            toggleSupportCardPanel(calcStore.planType, refreshAll);
                         }
-                        // SP 배지가 있다면 색상 즉시 업데이트
-                        const badge = w.querySelector('.sp-badge');
-                        if (badge) badge.style.backgroundColor = color;
-                    });
-
-                    // [추가] 정보 버튼(i) 색상도 즉시 업데이트
-                    document.querySelectorAll('.info-i-btn').forEach(iBtn => {
-                        iBtn.style.backgroundColor = color;
-                    });
-
-                    // [추가] 플랜 타입 버튼의 활성화 테두리 색상도 변경
-                    document.querySelectorAll('.plan-type-btn.active').forEach(btn => {
-                        btn.style.borderColor = color;
-                        btn.style.boxShadow = `0 0 8px ${color}66`;
-                    });
-
-                    // [추가] 상단 계산 버튼 색상 변경
-                    const runCalcBtn = document.getElementById('btn-run-calc');
-                    if (runCalcBtn) {
-                        runCalcBtn.style.backgroundColor = color;
-                        runCalcBtn.style.boxShadow = `0 2px 6px ${color}33`;
                     }
+                }
+            );
 
-                    // [추가] 스탯 헤더 테두리 및 TOTAL 배경색 변경
-                    const statHeader = document.querySelector('.stat-header');
-                    if (statHeader) statHeader.style.borderColor = color;
-                    const totalContainer = document.getElementById('total-stats-sum-container');
-                    if (totalContainer) {
-                        totalContainer.style.backgroundColor = color;
-                        totalContainer.style.boxShadow = `0 2px 6px ${color}33`;
-                    }
-
-                    // [추가] P-아이템 슬롯 테두리 즉시 업데이트 (아이템 있으면 투명, 없으면 회색)
-                    document.querySelectorAll('.p-item-slot').forEach(slot => {
-                        const hasImg = slot.querySelector('img');
-                        slot.style.borderColor = hasImg ? 'transparent' : '#ddd';
-                        const placeholder = slot.querySelector('.p-item-placeholder');
-                        if (placeholder) placeholder.style.color = '#ccc';
-                    });
-
-                    // [추가] P-아이템 정보 버튼(i) 색상 유지 (회색)
-                    const pItemInfoBtn = document.querySelector('.p-item-info-btn');
-                    if (pItemInfoBtn) {
-                        pItemInfoBtn.style.backgroundColor = '#f8f9fa';
-                        pItemInfoBtn.style.color = '#666';
-                    }
-
-                    // [추가] 서포트 패널이 열려있다면 선택된 카드들의 테두리 색상도 즉시 업데이트
-                    const sidePanel = document.getElementById('calc-side-panel');
-                    if (sidePanel) {
-                        const currentPlanCards = calcStore.planCards[calcStore.planType] || [];
-                        sidePanel.querySelectorAll('.side-card-item.selected').forEach(card => {
-                            const isSixth = currentPlanCards.indexOf(card.dataset.id) === 5;
-                            card.style.borderColor = isSixth ? '#8FDDBA' : color;
-                        });
-                    }
-
-                    refreshAll();
-                };
-            });
-
-            // 아이돌 셀렉터 드래그 스크롤 복구 및 이벤트 바인딩
-            if (grid) {
-                let isDown = false, startX, scrollLeft;
-                grid.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    window._isDraggingIdol = false;
-                    grid.classList.add('active');
-                    startX = e.pageX - grid.offsetLeft;
-                    scrollLeft = grid.scrollLeft;
-                });
-                grid.addEventListener('mouseleave', () => {
-                    isDown = false;
-                    grid.classList.remove('active');
-                });
-                grid.addEventListener('mouseup', () => {
-                    isDown = false;
-                    grid.classList.remove('active');
-                    // 클릭 이벤트 방지를 위해 약간의 지연 후 드래그 상태 해제
-                    setTimeout(() => { window._isDraggingIdol = false; }, 50);
-                });
-                grid.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - grid.offsetLeft;
-                    const walk = (x - startX) * 2;
-                    if (Math.abs(walk) > 5) window._isDraggingIdol = true;
-                    grid.scrollLeft = scrollLeft - walk;
-                    // [추가] 드래그 중에도 위치 기억 (실시간 반영)
-                    window._lastIdolScrollLeft = grid.scrollLeft;
-                });
-            }
+            bindIdolSelector(grid, refreshAll);
 
             const board = document.querySelector('.unified-plan-board');
             if (board) {
                 const removeAllTooltips = (exclude = null) => {
                     document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip').forEach(t => t.remove());
-                    document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
-                        if (w === exclude) return;
-                        const optsDef = activityOptions[w.dataset.value] || [];
-                        const week = w.closest('.week-row').dataset.week;
-                        const savedOpts = calcStore.weeks[week]?.opts || {};
-                        if (optsDef.some(o => o.type === 'checkbox') && !optsDef.some(o => savedOpts[o.id] === 'true')) {
-                            calcStore.setWeekAction(week, '', {});
-                            w.classList.remove('active');
-                            // [수정] 스타일 초기화 추가
-                            w.style.filter = '';
-                            w.style.borderColor = '';
-                            w.style.boxShadow = '';
-                            updateSPBadge(w, calcStore.selectedIdol); updateMainLabel(w);
-                        }
-                    });
+                    clearIncompleteWeekSelections(exclude);
                     refreshAll();
                 };
 
                 board.onclick = (e) => {
                     const wrapper = e.target.closest('.plan-icon-wrapper');
                     if (!wrapper || e.target.closest('.calc-tooltip, .calc-sub-tooltip, .dist-btn')) return;
-                    
+
                     // 이벤트 전파 방지 (모바일 클릭/터치 간섭 방지)
                     e.stopPropagation();
 
@@ -321,7 +368,7 @@ function startWeeklyPlan(type) {
                     if (wrapper.classList.contains('active')) {
                         calcStore.setWeekAction(weekNum, '', {});
                         wrapper.classList.remove('active');
-                        Object.keys(wrapper.dataset).forEach(k => { if(k.startsWith('opt')) delete wrapper.dataset[k]; });
+                        Object.keys(wrapper.dataset).forEach(k => { if (k.startsWith('opt')) delete wrapper.dataset[k]; });
                         // [수정] 필터와 모든 스타일 초기화
                         wrapper.style.filter = '';
                         wrapper.style.borderColor = '';
@@ -334,12 +381,12 @@ function startWeeklyPlan(type) {
                             w.classList.remove('active');
                             w.style.borderColor = '';
                             w.style.boxShadow = '';
-                            Object.keys(w.dataset).forEach(k => { if(k.startsWith('opt')) delete w.dataset[k]; });
+                            Object.keys(w.dataset).forEach(k => { if (k.startsWith('opt')) delete w.dataset[k]; });
                             w.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
                         });
                         calcStore.setWeekAction(weekNum, val, {});
                         wrapper.classList.add('active');
-                        
+
                         if (wrapper.classList.contains('large-icon')) {
                             // 이미지 외곽을 따라가는 선명한 테두리 + 캐릭터 색상의 얕은 그림자
                             wrapper.style.filter = `drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 5px ${idolColor})`;
@@ -347,7 +394,7 @@ function startWeeklyPlan(type) {
                             wrapper.style.borderColor = idolColor;
                             wrapper.style.boxShadow = `0 0 8px ${idolColor}66`;
                         }
-                        
+
                         updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
                         removeAllTooltips(wrapper);
 
@@ -357,7 +404,7 @@ function startWeeklyPlan(type) {
                             const isClass = val === 'class_hajime' || val === 'class_nia';
                             tooltip.className = `calc-tooltip ${isClass ? 'split-layout' : ''}`;
                             tooltip.onclick = (te) => te.stopPropagation(); // 툴팁 내부 클릭 시 닫힘 방지
-                            
+
                             // [추가] 아이돌 색상 적용
                             const idolId = calcStore.selectedIdol;
                             const idolColor = idolColors[idolId] || "#ff4d8d";
@@ -401,21 +448,20 @@ function startWeeklyPlan(type) {
                                         const attr = btn.dataset.attr;
                                         const isActive = btn.classList.contains('active');
                                         tooltip.querySelectorAll('.attr-icon-button').forEach(b => b.classList.remove('active'));
-                                        
+
                                         if (!isActive) {
                                             btn.classList.add('active');
-                                            calcStore.weeks[weekNum].opts.selectedAttr = attr;
-                                            
+                                            calcStore.updateWeekOpt(weekNum, 'selectedAttr', attr);
+
                                             // [추가] 체크박스도 이미 선택되어 있다면 툴팁 닫기
                                             const anyChecked = tooltip.querySelector('input[type="checkbox"]:checked');
                                             if (anyChecked) {
                                                 setTimeout(() => removeAllTooltips(), 100);
                                             }
                                         } else {
-                                            delete calcStore.weeks[weekNum].opts.selectedAttr;
+                                            calcStore.updateWeekOpt(weekNum, 'selectedAttr', null);
                                         }
                                         updateMainLabel(wrapper);
-                                        calcStore.save();
                                         refreshAll();
                                     };
                                 });
@@ -423,10 +469,10 @@ function startWeeklyPlan(type) {
                                 tooltip.innerHTML = optionsHtml;
                             }
                             wrapper.appendChild(tooltip);
-                            
+
                             const tooltipWidth = tooltip.offsetWidth;
                             const tooltipHeight = tooltip.offsetHeight;
-                            
+
                             // 부모(wrapper) 기준 중앙 정렬
                             tooltip.style.left = '50%';
                             tooltip.style.top = '50%';
@@ -451,7 +497,7 @@ function startWeeklyPlan(type) {
                                     calcStore.updateWeekOpt(weekNum, optId, chk.checked);
                                     wrapper.dataset[`opt${optId}`] = String(chk.checked);
                                     updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
-                                    
+
                                     if (chk.checked && currentOptDef?.subOptions) {
                                         showSubTooltip(currentOptDef, weekNum, wrapper, tooltip);
                                     } else if (!opts.some(o => o.type === 'counter')) {
@@ -501,12 +547,30 @@ function startWeeklyPlan(type) {
             }
             const calcBtn = document.getElementById('btn-run-calc');
             if (calcBtn) calcBtn.onclick = () => toggleSupportCardPanel(calcStore.planType, refreshAll);
+            const resetWeeksBtn = document.getElementById('btn-reset-weeks');
+            if (resetWeeksBtn) {
+                resetWeeksBtn.onclick = () => {
+                    const scrollContainer = document.getElementById('idol');
+                    const scrollTop = scrollContainer?.scrollTop ?? window.scrollY ?? document.documentElement.scrollTop ?? 0;
+                    calcStore.resetWeeks();
+                    showToast(state.currentLang === 'ja' ? '週間スケジュールを初期化しました。' : '주간 스케줄을 초기화했습니다.');
+                    startWeeklyPlan(type);
+                    requestAnimationFrame(() => {
+                        if (scrollContainer) scrollContainer.scrollTop = scrollTop;
+                        window.scrollTo(0, scrollTop);
+                        requestAnimationFrame(() => {
+                            if (scrollContainer) scrollContainer.scrollTop = scrollTop;
+                            window.scrollTo(0, scrollTop);
+                        });
+                    });
+                };
+            }
             const kyoukaBtn = document.getElementById('btn-kyouka');
             if (kyoukaBtn) {
                 if (calcStore.isKyouka) kyoukaBtn.classList.add('active');
                 kyoukaBtn.onclick = () => {
                     calcStore.isKyouka = !calcStore.isKyouka;
-                    
+
                     // 강화월간이 꺼지면 선택된 강화월간 전용 카드들 제거
                     if (!calcStore.isKyouka) {
                         Object.keys(calcStore.planSkills).forEach(plan => {
@@ -537,12 +601,14 @@ function startWeeklyPlan(type) {
  */
 function refreshAll() {
     try {
+        syncDisabledSelectedCards(calcStore);
+
         const counts = getTriggerCounts(calcStore);
         const { bonusTotal, finalTotal, breakdown } = calculateTotals(calcStore, counts);
         calcStore.bonusTotal = bonusTotal;
         calcStore.finalTotal = finalTotal;
         window._lastStatBreakdown = breakdown; // 상세 모달용 데이터
-        
+
         const spTotals = { vocal: 0, dance: 0, visual: 0 };
         const selectedIds = calcStore.planCards[calcStore.planType] || [];
         selectedIds.forEach(id => {
@@ -594,19 +660,19 @@ function updateSidePanelBonuses(panel, counts) {
         const planCards = calcStore.planCards[calcStore.planType] || [];
         const filledCount = planCards.filter(id => id !== null).length;
         const isSelectingSixth = filledCount === 5 && planCards[5] === null;
-        
+
         bonusItems.forEach(item => {
             const cardId = item.dataset.id;
             const card = cardList.find(c => c.id === cardId);
             if (!card) return;
-            
+
             const isSixth = planCards.indexOf(cardId) === 5;
             const isSelectedCard = planCards.includes(cardId);
             const lb = (isSelectingSixth && !isSelectedCard) || isSixth ? 4 : (state.supportLB[cardId] || 0);
             const itemCounter = calcStore.cardChecked?.[cardId] ? (calcStore.itemCounters[cardId] || 0) : 0;
             const includeEvent = !!calcStore.cardEventChecked[cardId];
             const bonus = calculateCardBonus(card, counts, lb, itemCounter, includeEvent);
-            
+
             let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
             if (bonus.percent > 0 && card.type) {
                 totalVal += getSupportPercentBonusForCard(calcStore, bonus.percent, card.type);
@@ -616,7 +682,7 @@ function updateSidePanelBonuses(panel, counts) {
             if (bonusEl) {
                 const displayVal = Math.floor(totalVal);
                 bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '';
-                
+
                 bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
                 if (card.abilities?.includes('sp_lessonup')) {
                     bonusEl.classList.add(`sp-${card.type}`);
@@ -635,7 +701,7 @@ function setupPItemSelector() {
 
     const checkbox = document.getElementById('p-item-checkbox');
     if (checkbox) {
-        checkbox.checked = (calcStore.pItemChecked === true || calcStore.pItemChecked === 'true');
+        checkbox.checked = !!calcStore.pItemChecked;
         checkbox.onchange = (e) => {
             calcStore.pItemChecked = e.target.checked;
             calcStore.save();
@@ -643,8 +709,26 @@ function setupPItemSelector() {
         };
     }
 
+    const srCheckbox = document.getElementById('sr-checkbox');
+    if (srCheckbox) {
+        srCheckbox.checked = !!calcStore.isSR;
+        srCheckbox.onchange = (e) => {
+            calcStore.isSR = e.target.checked;
+            calcStore.save();
+            refreshAll();
+        };
+    }
+
+    const talentInfoBtn = document.querySelector('.talent-bloom-info-btn');
+    if (talentInfoBtn) {
+        talentInfoBtn.onclick = (e) => {
+            e.stopPropagation();
+            showTalentBloomInfoTooltip(talentInfoBtn);
+        };
+    }
+
     if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
-    
+
     const currentType = calcStore.type;
     const itemsBySlot = pItemSlots[currentType] || [];
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
@@ -653,7 +737,7 @@ function setupPItemSelector() {
         const val = calcStore.pItems[idx];
         slot.style.borderColor = val ? 'transparent' : '#ddd';
         slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
-        
+
         // Hover 효과 (JS로 추가)
         slot.onmouseenter = () => { slot.style.backgroundColor = `${idolColor}11`; };
         slot.onmouseleave = () => { slot.style.backgroundColor = 'white'; };
@@ -705,6 +789,10 @@ if (!window._calcGlobalInit) {
         if (e.target.closest('.modal') || e.target.closest('.modal-content')) return;
         if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper, .dist-btn, .p-item-slot, .other-tune-btn')) {
             document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip, .p-item-tooltip, .support-item-tooltip').forEach(t => t.remove());
+            const changed = clearIncompleteWeekSelections();
+            if (changed && typeof window.refreshAll === 'function') {
+                window.refreshAll();
+            }
         }
     });
     window._calcGlobalInit = true;

@@ -85,6 +85,7 @@ export const skillCardList = {
     "anomaly-ssrtemari_yukidokenidist": { type: "active", attrs: ["enthusiasm"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrume_2nd": { type: "active", attrs: ["enthusiasm"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrume_campusfes": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
+    "anomaly-ssrmisuzu_3rd": { type: "active", attrs: ["enthusiasm"], rarity: "SSR", isKyoukaOnly: true },
 
     // --- Free ---
     "free-r1": { type: "mental", attrs: ["genki"], rarity: "R", multi: true },

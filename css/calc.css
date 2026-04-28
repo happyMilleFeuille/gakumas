@@ -561,6 +561,17 @@
     font-size: 0.95rem;
 }
 
+#total-stats-sum-value.is-overflow {
+    color: #ffffff;
+}
+
+.total-overflow-text {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: inherit;
+    margin-left: 0;
+}
+
 .stat-items-row {
     display: flex;
     justify-content: space-around;
@@ -775,10 +786,125 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-@media (max-width: 480px) {
+/* --- Idol Options Row (Base) --- */
+.idol-options-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 1rem;
+    background: white;
+    padding: 0.6rem;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid #ddd;
+    border-top: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    position: relative;
+}
+
+.idol-opt-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+}
+
+.idol-opt-label input {
+    margin: 0;
+    cursor: pointer;
+    transform: scale(1.0);
+}
+
+#sr-checkbox { accent-color: #2196f3; }
+#p-item-checkbox { accent-color: #ff4d8d; }
+
+.idol-opt-label span {
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #555;
+    white-space: nowrap;
+}
+
+.talent-bloom-info-btn {
+    position: absolute;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    color: #666;
+    font-size: 9px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: serif;
+}
+
+.idol-opt-divider {
+    width: 1px;
+    height: 28px;
+    background-color: #ddd;
+    flex-shrink: 0;
+}
+
+.plan-type-btns-group {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+/* --- Mobile Optimizations (up to 768px) --- */
+@media (max-width: 768px) {
+    .plan-type-btns-group {
+        gap: 0.4rem !important;
+    }
+
+    .plan-icon-wrapper {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .icon-outer-container.large-container,
+    .plan-icon-wrapper.large-icon {
+        width: 80px !important;
+        height: 50px !important;
+    }
+
+    .plan-type-btn {
+        width: 34px !important;
+        height: 34px !important;
+    }
+
+    .plan-type-btn img {
+        width: 22px !important;
+        height: 22px !important;
+    }
+
+    .plan-icons-container {
+        gap: 0.25rem !important;
+    }
+
+    .main-label-text {
+        font-size: 0.5rem !important;
+        bottom: -2px !important;
+        right: -2px !important;
+    }
+
+    .sp-badge {
+        font-size: 0.55rem !important;
+        padding: 1px 3px !important;
+        top: -5px !important;
+        right: -5px !important;
+    }
+
     .unified-plan-board {
         padding: 0.5rem 0.25rem !important;
-        gap: 0.1rem !important;
     }
 
     .week-row {
@@ -794,27 +920,10 @@
         font-size: 0.7rem !important;
     }
 
-    .plan-icon-wrapper {
-        width: 44px !important;
-        height: 44px !important;
-    }
-
-    .plan-icons-container {
-        gap: 0.35rem !important;
-    }
-
-    .main-label-text {
-        font-size: 0.55rem !important;
-        bottom: -3px !important;
-        right: -3px !important;
-        padding: 1px 3px !important;
-    }
-
-    .sp-badge {
-        font-size: 0.6rem !important;
-        padding: 1px 4px !important;
-        top: -6px !important;
-        right: -6px !important;
+    .header-kyouka-btn {
+        height: 22px !important;
+        top: 6px !important;
+        right: 6px !important;
     }
 }
 
@@ -908,7 +1017,7 @@
     background: #9c27b0;
     color: white;
     border-radius: 50%;
-    font-size: 11px;
+    font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1101,6 +1210,7 @@
     padding: 4px 12px;
     font-size: 0.75rem;
     border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .side-panel-tabs {
@@ -1448,6 +1558,14 @@
 }
 
 @media (max-width: 768px) {
+    .calc-actions.top {
+        justify-content: flex-start !important;
+        gap: 8px !important;
+    }
+    .back-btn {
+        margin-left: auto !important;
+    }
+
     .p-item-container {
         gap: 6px;
         padding: 8px;
@@ -1865,6 +1983,47 @@
     z-index: 1;
 }
 
+.board-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    margin-left: 8px;
+    width: calc(100% - 8px);
+}
+
+.board-title-row .board-title-tab {
+    margin: 0;
+}
+
+.board-reset-btn {
+    appearance: none;
+    border: 1px solid #d7dbe2;
+    background: #fff;
+    color: #555;
+    border-radius: 999px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1.2;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.board-reset-btn:hover {
+    background: #f5f7fa;
+    border-color: #c7ccd4;
+    color: #333;
+}
+
 .kyouka-btn {
     background: none;
     border: none;
@@ -1912,11 +2071,4 @@
 
 .sixth-slot .card-slot-remove { color: #333 !important; }
 
-/* 모바일 추가 보정 */
-@media (max-width: 480px) {
-    .header-kyouka-btn {
-        height: 22px !important; /* 확실하게 줄어들도록 !important 추가 및 크기 조정 */
-        top: 6px !important;
-        right: 6px !important;
-    }
-}
+

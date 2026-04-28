@@ -675,6 +675,28 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_anomaly3",
+        name: "당신과 둘이, 전철에서",
+        name_ja: "あなたとふたり、電車で",
+        type: "vocal",
+        plan: "anomaly",
+        have: "card_m",
+        attrs: ["fullpower"],
+        releasedAt: "2026-04-29",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "percentparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+
+    {
         id: "vocal_limitedanomaly1",
         name: "v갸루 피ㅡㅡㅡ스v",
         name_ja: "vギャルピーーースッv",
@@ -1017,7 +1039,7 @@ export const cardList = [
         name_ja: "すっかり仲良しって感じ♪",
         type: "dance",
         have: "item",
-        releasedAt: "2024-06-01",
+        releasedAt: "2025-06-01",
         plan: "sense",
         rarity: "SSR",
         source: "dist",
@@ -2608,7 +2630,7 @@ export const cardList = [
         abilities:
             [
                 "fixedparam",
-                "sp_lessonup",
+                "ppoint",
                 "supportrateup",
                 "sp_param",
                 "test",
@@ -3501,6 +3523,26 @@ export const cardList = [
                 "supportrateup",
                 "get_preservation",
                 "get_item6",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_sranomaly3",
+        name: "???",
+        name_ja: "???",
+        type: "visual",
+        plan: "anomaly",
+        have: "item",
+        releasedAt: "2026-04-29",
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

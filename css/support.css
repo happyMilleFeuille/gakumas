@@ -24,7 +24,8 @@
     border: 2px solid #bbb;
     overflow: hidden;
     transition: transform 0.2s ease;
-    transform: translateZ(0); /* GPU 레이어 미리 확보 */
+    transform: translateZ(0);
+    /* GPU 레이어 미리 확보 */
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -60,7 +61,7 @@
     border-color: #d991c7;
     /* 상단 85%는 흰색, 하단 15%는 그라데이션 바 */
     background-image: linear-gradient(#fff, #fff),
-                      linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%);
+        linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%);
     background-size: 100% 92%, 100% 8%;
     background-position: top, bottom;
     background-repeat: no-repeat, no-repeat;
@@ -71,7 +72,7 @@
     border-color: #ffe082;
     /* 상단 92% 흰색, 하단 8% 3단 컬러 (하이라이트 좌측 25% 이동) */
     background-image: linear-gradient(#fff, #fff),
-                      linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%);
+        linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%);
     background-size: 100% 92%, 100% 8%;
     background-position: top, bottom;
     background-repeat: no-repeat, no-repeat;

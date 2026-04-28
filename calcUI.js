@@ -1,5 +1,5 @@
 import { state, idolColors } from './state.js';
-import { updatePageTranslations } from './utils.js';
+import { updatePageTranslations, translate } from './utils.js';
 import { activityOptions } from './calcOptions.js';
 import { idolData } from './calcData.js';
 import { cardList } from './carddata.js';
@@ -11,6 +11,51 @@ import { showMemorySelectModal } from './calcModals.js';
  * 아이돌별 표시 색상 반환 (릴리야 보정 포함)
  */
 export const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
+const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
+
+export function getNormalizedSelectedCardIds(store, disabledCards = state.disabledCards) {
+    const ids = [...(store.planCards[store.planType] || [])];
+    while (ids.length < 6) ids.push(null);
+
+    let changed = false;
+    for (let i = 0; i < 5; i++) {
+        if (ids[i] && disabledCards[ids[i]]) {
+            ids[i] = null;
+            changed = true;
+        }
+    }
+
+    return { ids, changed };
+}
+
+export function syncDisabledSelectedCards(store, disabledCards = state.disabledCards) {
+    const { ids, changed } = getNormalizedSelectedCardIds(store, disabledCards);
+    if (changed) {
+        store.planCards[store.planType] = ids;
+        store.save();
+    }
+    return ids;
+}
+
+function renderMemorySlotContent(memArray, isJa, slotIndex) {
+    const normalizedMemArray = Array.isArray(memArray) ? memArray : (memArray ? [memArray] : []);
+    let linesHtml = '';
+
+    ['vocal', 'dance', 'visual'].forEach(sName => {
+        const memKey = normalizedMemArray.find(k => window.calcData?.memoryOptions?.[k]?.stat === sName);
+        const opt = memKey ? window.calcData.memoryOptions[memKey] : null;
+        if (opt) {
+            const attrColor = (sName === 'vocal' ? '#ff4d8d' : (sName === 'dance' ? '#46a4f3' : '#fcc75e'));
+            const icon = `<img src="icons/${sName}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
+            const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
+            linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
+        } else {
+            linesHtml += `<div class="memory-slot-line title">-</div>`;
+        }
+    });
+
+    return `<div class="memory-slot-badge">memory ${slotIndex + 1}</div>${linesHtml}`;
+}
 
 /**
  * 하단 활동 카운터 UI 업데이트
@@ -173,23 +218,7 @@ export function updateSelectedCardsUI(store) {
     const container = document.getElementById('selected-support-container');
     if (!container) return;
 
-    let rawIds = store.planCards[store.planType] || [];
-    while (rawIds.length < 6) rawIds.push(null);
-
-    // [수정] 1~5번 슬롯 중 비활성화된 카드가 있다면 실제로 null로 동기화 (자리를 차지하지 않도록)
-    let changed = false;
-    for (let i = 0; i < 5; i++) {
-        if (rawIds[i] && state.disabledCards[rawIds[i]]) {
-            rawIds[i] = null;
-            changed = true;
-        }
-    }
-    if (changed) {
-        store.planCards[store.planType] = rawIds;
-        store.save();
-    }
-
-    const selectedIds = [...rawIds];
+    const { ids: selectedIds } = getNormalizedSelectedCardIds(store);
     const isAllEmpty = selectedIds.every(id => !id);
     const isJa = state.currentLang === 'ja';
 
@@ -229,10 +258,10 @@ export function updateSelectedCardsUI(store) {
             if (cardData?.extra2) {
                 let optLabel = '';
                 const e2 = cardData.extra2;
-                if (e2.includes('enhance')) optLabel = isJa ? '強化' : '강화';
-                else if (e2.includes('change')) optLabel = isJa ? 'チェンジ' : '체인지';
-                else if (e2.includes('del')) optLabel = isJa ? '削除' : '삭제';
-                else optLabel = isJa ? 'オプション' : '옵션';
+                if (e2.includes('enhance')) optLabel = t('calc_label_enhance');
+                else if (e2.includes('change')) optLabel = t('calc_label_change');
+                else if (e2.includes('del')) optLabel = t('calc_label_delete');
+                else optLabel = t('calc_label_option');
 
                 extraOptHtml = `
                     <label class="opt-check-label">
@@ -248,7 +277,7 @@ export function updateSelectedCardsUI(store) {
                     <div class="opt-line">
                         <label class="opt-check-label">
                             <input type="checkbox" class="card-event-check" data-id="${cardId}" ${eventChecked ? 'checked' : ''}>
-                            <span>${isJa ? 'イベント' : '이벤트'}</span>
+                            <span>${t('calc_label_event')}</span>
                         </label>
                     </div>
                 </div>
@@ -412,26 +441,34 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         <div class="calc-container">
             <div class="calc-main-wrapper">
                 <div class="calc-actions top">
-                    <button class="calc-btn primary-btn" id="btn-run-calc" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">${isJa ? '計算' : '계산'}</button>
+                    <button class="calc-btn primary-btn" id="btn-run-calc" style="background-color: ${idolColor}; box-shadow: 0 1px 3px rgba(0,0,0,0.15);">${isJa ? '計算' : '계산'}</button>
+                    <button class="calc-btn recommend-btn" id="btn-recommend-cards" style="background: linear-gradient(135deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%); color: #fff; border: 1px solid #d991c7; display: flex; align-items: center; justify-content: center; padding: 0 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); white-space: nowrap;">${isJa ? 'おすすめ' : '추천'}</button>
                     <button class="back-btn primary-btn">${isJa ? '戻る' : '뒤로가기'}</button>
                 </div>
                 <div class="idol-selection-info">
                     <span data-i18n="calc_idol_desc">친애도 20 이상 기준</span>
                 </div>
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
-                <div style="display: flex; justify-content: center; align-items: center; gap: 12px; width: 100%; margin-bottom: 1rem; background: white; padding: 0.6rem; border-radius: 0 0 12px 12px; border: 1px solid #ddd; border-top: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box;">
+                <div class="idol-options-row">
                     ${(store.type === 'nia' || store.type === 'hajime') ? `
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0;">
-                        <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''} style="margin: 0; accent-color: #ff4d8d; cursor: pointer; transform: scale(1.1);">
-                        <span class="p-item-check-txt" style="font-size: 0.8rem; font-weight: bold; color: #555; white-space: nowrap;">${isJa ? '才能開花 3' : '재능개화 3'}</span>
+                    <label class="idol-opt-label">
+                        <input type="checkbox" id="sr-checkbox" ${store.isSR ? 'checked' : ''}>
+                        <span>SR</span>
                     </label>
-                    <div style="width: 1px; height: 28px; background-color: #ddd; flex-shrink: 0;"></div>
+                    <label class="idol-opt-label">
+                        <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''}>
+                        <span class="p-item-check-txt">${isJa ? '才能開花 3' : '재능개화 3'}</span>
+                    </label>
+                    <button class="talent-bloom-info-btn">i</button>
+                    <div class="idol-opt-divider"></div>
                     ` : ''}
-                    ${['sense', 'logic', 'anomaly'].map(pt => {
+                    <div class="plan-type-btns-group">
+                        ${['sense', 'logic', 'anomaly'].map(pt => {
         const isActive = store.planType === pt;
         const activeStyle = isActive ? `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66; opacity: 1; transform: scale(1.1);"` : '';
         return `<div class="plan-type-btn ${isActive ? 'active' : ''}" data-type="${pt}" ${activeStyle}><img src="icons/${pt}.webp"></div>`;
     }).join('')}
+                    </div>
                 </div>
 
                 <div class="stat-header" style="border-color: ${idolColor};">
@@ -475,11 +512,11 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 <div class="p-item-container" id="p-item-container" style="display: flex; flex-direction: column; width: 100%; margin-bottom: 1rem; padding: 10px; background: white; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box;">
                     
                     <!-- P-Item Row -->
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
-                        <button class="p-item-info-btn" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;">i</button>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; position: relative;">
                         ${Array.from({ length: store.type === 'nia' ? 5 : 2 }).map((_, i) => `
                             <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
                         `).join('')}
+                        <button class="p-item-info-btn" style="position: absolute; right: 0; width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 9px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: serif;">i</button>
                     </div>
 
                     <!-- Divider -->
@@ -488,24 +525,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <!-- Memory Row -->
                     <div class="memory-container" id="memory-container" style="width: 100%; --idol-color: ${idolColor}; --idol-color-transparent: ${idolColor}26;">
                         ${Array.from({ length: 4 }).map((_, i) => {
-        const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
-        let linesHtml = '';
-        ['vocal', 'dance', 'visual'].forEach(sName => {
-            const memKey = memArray.find(k => window.calcData?.memoryOptions?.[k]?.stat === sName);
-            const opt = memKey ? window.calcData.memoryOptions[memKey] : null;
-            if (opt) {
-                const attrColor = (sName === 'vocal' ? '#ff4d8d' : (sName === 'dance' ? '#46a4f3' : '#fcc75e'));
-                const icon = `<img src="icons/${sName}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
-                const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
-                linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
-            } else {
-                linesHtml += `<div class="memory-slot-line title">-</div>`;
-            }
-        });
         return `
                             <div class="memory-slot" data-idx="${i}">
-                                <div class="memory-slot-badge">memory ${i + 1}</div>
-                                ${linesHtml}
+                                ${renderMemorySlotContent(store.memories[i], isJa, i)}
                             </div>
                             `;
     }).join('')}
@@ -516,7 +538,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 <div class="selected-support-container" id="selected-support-container"></div>
                 <div class="activity-counter" id="activity-counter"></div>
-                <div class="board-title-tab" data-i18n="weekly_action">${isJa ? '週間スケジュール' : '주간 행동'}</div>
+                <div class="board-title-row">
+                    <div class="board-title-tab" data-i18n="weekly_action">${isJa ? '週間スケジュール' : '주간 행동'}</div>
+                    <button class="board-reset-btn" id="btn-reset-weeks" data-i18n="calc_reset_weeks">${isJa ? 'リセット' : '초기화'}</button>
+                </div>
                 <div class="unified-plan-board" data-calc-type="${store.type}">${weeksHtml}</div>
             </div>
         </div>
@@ -569,6 +594,9 @@ export function updateStatHeaderUI(store, breakdown) {
     const maxStat = store.type === 'hajime' ? 2800 : (store.type === 'nia' ? 2600 : 0);
 
     let sum = 0;
+    let cappedSum = 0;
+    let overflowSum = 0;
+    let hasOverflow = false;
     attrs.forEach(attr => {
         const totalEl = document.getElementById(`total-${attr}`);
         const finalEl = document.getElementById(`final-${attr}`);
@@ -601,6 +629,14 @@ export function updateStatHeaderUI(store, breakdown) {
             }
         }
         sum += finalStat;
+        if (maxStat > 0) {
+            cappedSum += Math.min(finalStat, maxStat);
+            const overflow = Math.max(0, finalStat - maxStat);
+            overflowSum += overflow;
+            if (overflow > 0) hasOverflow = true;
+        } else {
+            cappedSum += finalStat;
+        }
 
         // SP lesson up total display
         if (spEl && window._lastSpTotals) {
@@ -615,7 +651,18 @@ export function updateStatHeaderUI(store, breakdown) {
     });
 
     const sumValueEl = document.getElementById('total-stats-sum-value');
-    if (sumValueEl) sumValueEl.textContent = sum;
+    if (sumValueEl) {
+        const displaySum = maxStat > 0 ? cappedSum : sum;
+        if (hasOverflow && overflowSum > 0) {
+            sumValueEl.innerHTML = `${displaySum}<span class="total-overflow-text">(+${overflowSum})</span>`;
+            sumValueEl.classList.add('is-overflow');
+            sumValueEl.style.color = '#ffffff';
+        } else {
+            sumValueEl.textContent = displaySum;
+            sumValueEl.classList.remove('is-overflow');
+            sumValueEl.style.color = '';
+        }
+    }
 }
 
 export function updateMemorySlotsUI(store) {
@@ -629,21 +676,7 @@ export function updateMemorySlotsUI(store) {
 
     const slots = container.querySelectorAll('.memory-slot');
     slots.forEach((slot, i) => {
-        const memArray = Array.isArray(store.memories[i]) ? store.memories[i] : (store.memories[i] ? [store.memories[i]] : []);
-        let linesHtml = '';
-        ['vocal', 'dance', 'visual'].forEach(sName => {
-            const memKey = memArray.find(k => window.calcData?.memoryOptions?.[k]?.stat === sName);
-            const opt = memKey ? window.calcData.memoryOptions[memKey] : null;
-            if (opt) {
-                const attrColor = (sName === 'vocal' ? '#ff4d8d' : (sName === 'dance' ? '#46a4f3' : '#fcc75e'));
-                const icon = `<img src="icons/${sName}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
-                const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
-                linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
-            } else {
-                linesHtml += `<div class="memory-slot-line title">-</div>`;
-            }
-        });
-        slot.innerHTML = `<div class="memory-slot-badge">memory ${i + 1}</div>${linesHtml}`;
+        slot.innerHTML = renderMemorySlotContent(store.memories[i], isJa, i);
     });
 }
 
@@ -722,6 +755,7 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
     });
 
     document.body.appendChild(tooltip);
+    history.pushState({ modalOpen: 'pItem' }, "");
     const rect = slot.getBoundingClientRect();
     const tooltipWidth = tooltip.offsetWidth;
 
@@ -762,13 +796,14 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     const isMobile = window.innerWidth <= 768;
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
-    const tooltip = document.createElement('div');
-    tooltip.className = 'calc-tooltip p-item-info-tooltip';
-    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${isMobile ? '0.65rem' : '0.85rem'}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
-
+    const isJa = state.currentLang === 'ja';
+    const fontSize = isMobile ? (isJa ? '0.5rem' : '0.65rem') : '0.75rem';
     const imgSize = isMobile ? '16px' : '24px';
     const gap = isMobile ? '4px' : '8px';
-    const isJa = state.currentLang === 'ja';
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'calc-tooltip p-item-info-tooltip';
+    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
 
     const items = pItemDescriptions[calcStore.type] || [];
     let contentHtml = items.map(item => {
@@ -814,7 +849,6 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
 export function showSupportItemTooltip(slot, cardId) {
     document.querySelectorAll('.support-item-tooltip').forEach(t => t.remove());
 
-    const isJa = state.currentLang === 'ja';
     const isMobile = window.innerWidth <= 768;
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
     const card = cardList.find(c => c.id === cardId);
@@ -833,36 +867,47 @@ export function showSupportItemTooltip(slot, cardId) {
 
     // 아이템 효과 텍스트 생성
     const effects = card.item_effects.map(eff => {
-        const labels = isJa ? {
-            get: 'カード獲得', get_concentration: '集中カード獲得', get_goodcondition: '好調カード獲得',
-            get_motivation: 'やる気カード獲得', get_goodimpression: '好印象カード獲得',
-            get_genki: '元気カード獲得', get_preservation: '温存カード獲得',
-            get_enthusiasm: '強気カード獲得', get_fullpower: '全力カード獲得',
-            get_drink: 'ドリンク獲得', get_item: 'アイテム獲得', get_ssr: 'SSRカード獲得',
-            purchase_drink: 'ドリンク交換', gift: '活動支給・差し入れ', goout: 'おでかけ',
-            lesson: 'レッスン', sp: 'SPレッスン', sp_lesson: 'SPレッスン', audition: 'オーディション', advice: '相談',
-            rest: '休む', test: '試験', class: '授業/営業', spclass: '特別指導',
-            enhance: 'カード強化', delete: 'カード削除', delete_t: 'トラブルカード削除', change: 'カードチェンジ'
-        } : {
-            get: '카드 획득', get_concentration: '집중 카드 획득', get_goodcondition: '호조 카드 획득',
-            get_motivation: '의욕 카드 획득', get_goodimpression: '호인상 카드 획득',
-            get_genki: '원기 카드 획득', get_preservation: '온존 카드 획득',
-            get_enthusiasm: '강기 카드 획득', get_fullpower: '전력 카드 획득',
-            get_drink: '드링크 획득', get_item: '아이템 획득', get_ssr: 'SSR 카드 획득',
-            purchase_drink: '드링크 구매', gift: '활동지급, 사시이레', goout: '외출',
-            lesson: '레슨', sp: 'SP 레슨', sp_lesson: 'SP 레슨', audition: '오디션', advice: '상담',
-            rest: '휴식', test: '시험', class: '수업/영업', spclass: '특별지도',
-            enhance: '카드 강화', delete: '카드 삭제', delete_t: '트러블 카드 삭제', change: '카드 체인지'
+        const labels = {
+            get: t('support_effect_get'),
+            get_concentration: t('support_effect_get_concentration'),
+            get_goodcondition: t('support_effect_get_goodcondition'),
+            get_motivation: t('support_effect_get_motivation'),
+            get_goodimpression: t('support_effect_get_goodimpression'),
+            get_genki: t('support_effect_get_genki'),
+            get_preservation: t('support_effect_get_preservation'),
+            get_enthusiasm: t('support_effect_get_enthusiasm'),
+            get_fullpower: t('support_effect_get_fullpower'),
+            get_drink: t('support_effect_get_drink'),
+            get_item: t('support_effect_get_item'),
+            get_ssr: t('support_effect_get_ssr'),
+            purchase_drink: t('support_effect_purchase_drink'),
+            gift: t('support_effect_gift'),
+            goout: t('support_effect_goout'),
+            lesson: t('support_effect_lesson'),
+            sp: t('support_effect_sp'),
+            sp_lesson: t('support_effect_sp_lesson'),
+            audition: t('support_effect_audition'),
+            advice: t('support_effect_advice'),
+            rest: t('support_effect_rest'),
+            test: t('support_effect_test'),
+            class: t('support_effect_class'),
+            spclass: t('support_effect_spclass'),
+            enhance: t('support_effect_enhance'),
+            delete: t('support_effect_delete'),
+            delete_t: t('support_effect_delete_t'),
+            change: t('support_effect_change')
         };
 
-        const statLabels = isJa
-            ? { vocal: 'ボーカル', dance: 'ダンス', visual: 'ビジュアル' }
-            : { vocal: '보컬', dance: '댄스', visual: '비주얼' };
+        const statLabels = {
+            vocal: t('attr_vocal'),
+            dance: t('attr_dance'),
+            visual: t('attr_visual')
+        };
 
         // 트리거 처리 (배열인 경우 모든 요소를 매핑하여 합침)
         const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
         const trigger = triggers.map(t => labels[t] || t).join(', ');
-        const maxSuffix = (eff.max && eff.max < 9) ? (isJa ? ` (プロデュース中${eff.max}回)` : ` (프로듀스 중 ${eff.max}회)`) : '';
+        const maxSuffix = (eff.max && eff.max < 9) ? t('support_effect_max_suffix', { count: eff.max }) : '';
 
         if (eff.type === 'action') {
             let effectDescParts = [];
@@ -872,7 +917,7 @@ export function showSupportItemTooltip(slot, cardId) {
             }
             if (eff.target) {
                 let displayText = eff.display
-                    ? (typeof eff.display === 'object' ? (isJa ? eff.display.ja : eff.display.ko) : eff.display)
+                    ? (typeof eff.display === 'object' ? (state.currentLang === 'ja' ? eff.display.ja : eff.display.ko) : eff.display)
                     : null;
 
                 let targetStr = "";
@@ -887,7 +932,7 @@ export function showSupportItemTooltip(slot, cardId) {
                 effectDescParts.push(targetStr);
             }
             const effectDesc = effectDescParts.join(', ');
-            return isJa ? `${trigger}時 ${effectDesc}${maxSuffix}` : `${trigger} 시 ${effectDesc}${maxSuffix}`;
+            return t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
         } else if (eff.type === 'add_count') {
             const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
             const target = targets.map(t => labels[t] || t).join(', ');
@@ -937,4 +982,101 @@ export function showSupportItemTooltip(slot, cardId) {
         document.addEventListener('click', closeTooltip);
         if (idolContainer) idolContainer.addEventListener('scroll', closeTooltip, { passive: true });
     }, 10);
+}
+
+/**
+ * 재능개화 정보 툴팁 표시
+ */
+export function showTalentBloomInfoTooltip(infoBtn) {
+    if (document.querySelector('.talent-bloom-info-tooltip')) { document.querySelector('.talent-bloom-info-tooltip').remove(); return; }
+
+    const isMobile = window.innerWidth <= 768;
+    const isJa = state.currentLang === 'ja';
+    const fontSize = isMobile ? (isJa ? '0.5rem' : '0.62rem') : '0.75rem';
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'calc-tooltip talent-bloom-info-tooltip';
+    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 90vw; padding: ${isMobile ? '8px 10px' : '12px 15px'}; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 10000;`;
+
+    tooltip.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="color: #333;">${t('talent_bloom_desc_2')}</div>
+        </div>
+    `;
+
+    document.body.appendChild(tooltip);
+
+    const rect = infoBtn.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+
+    let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+    let top = rect.bottom + window.scrollY + 8;
+
+    if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
+    if (left < 10) left = 10;
+    if (rect.bottom + tooltipHeight + 20 > window.innerHeight) top = rect.top + window.scrollY - tooltipHeight - 8;
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    setTimeout(() => {
+        const closeTooltip = (e) => {
+            if (!tooltip.parentElement) return;
+            if (!tooltip.contains(e.target) && e.target !== infoBtn) {
+                tooltip.remove();
+                document.removeEventListener('click', closeTooltip);
+            }
+        };
+        document.addEventListener('click', closeTooltip);
+    }, 0);
+}
+
+/**
+ * 화면 중앙 하단에 토스트 메시지 표시
+ */
+export function showToast(msg) {
+    // 기존 토스트 제거
+    const existing = document.querySelector('.calc-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'calc-toast';
+    toast.textContent = msg;
+    
+    // 스타일 적용
+    Object.assign(toast.style, {
+        position: 'fixed',
+        bottom: '100px',
+        left: '50%',
+        transform: 'translateX(-50%) translateY(20px)',
+        backgroundColor: 'rgba(255, 64, 129, 0.95)', // 브랜드 컬러 느낌의 핑크
+        color: 'white',
+        padding: '12px 24px',
+        borderRadius: '30px',
+        fontSize: '0.85rem',
+        zIndex: '10000',
+        opacity: '0',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        pointerEvents: 'none',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+        whiteSpace: 'nowrap',
+        fontWeight: 'bold'
+    });
+
+    document.body.appendChild(toast);
+
+    // 애니메이션 시작
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+
+    // 3초 후 제거
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }

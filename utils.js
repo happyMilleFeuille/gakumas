@@ -18,6 +18,17 @@ export function updatePageTranslations(root = document) {
     });
 }
 
+export function translate(key, params = {}, fallback = '') {
+    const lang = state.currentLang;
+    const template = translations[lang]?.[key] ?? fallback;
+    if (typeof template !== 'string') return fallback;
+
+    return template.replace(/\{(\w+)\}/g, (_, paramKey) => {
+        const value = params[paramKey];
+        return value === undefined || value === null ? '' : String(value);
+    });
+}
+
 // 모바일 배경 높이 고정 (주소창 꿀렁임 방지)
 export function initMobileHeightFix() {
     const fixedBg = document.getElementById('fixed-bg');

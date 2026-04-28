@@ -33,20 +33,20 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
     const rarity = card.rarity;
     const isDist = card.source === 'dist';
     const cardType = card.type; // vocal, dance, visual
-    
+
     // --- 1. 등급별 기본 보너스 및 event_paraup 적용 ---
     if (includeBase) {
         let baseBonus = rarity === 'SSR' ? 20 : (rarity === 'SR' ? 15 : 0);
-        
+
         if (card.abilities?.includes('event_paraup')) {
             const epAbility = abilityData['event_paraup'];
             if (epAbility) {
                 let epLv = 1;
                 if (rarity === 'SSR') epLv = (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1));
                 else if (rarity === 'SR') epLv = (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
-                
+
                 const epVal = epAbility.levels[epLv] || 0;
-                baseBonus = baseBonus * (1 + (epVal / 100));
+                baseBonus = Math.floor(baseBonus * (1 + (epVal / 100)));
             }
         }
         applyStat(results, cardType, baseBonus);
@@ -55,7 +55,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
     // --- 2. 아이템 효과(Item Effects) 계산 ---
     if (card.item_effects) {
         const totalCounts = triggerData.total || triggerData;
-        const lessonCounts = triggerData.lessons || { vocal: {normal:0, sp:0}, dance: {normal:0, sp:0}, visual: {normal:0, sp:0} };
+        const lessonCounts = triggerData.lessons || { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } };
 
         card.item_effects.forEach(eff => {
             if (eff.type === 'fixed' && eff.stats) {
@@ -102,7 +102,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
     if (!card.abilities) return results;
 
     const totalCounts = triggerData.total || triggerData;
-    const lessonCounts = triggerData.lessons || { vocal: {normal:0, sp:0}, dance: {normal:0, sp:0}, visual: {normal:0, sp:0} };
+    const lessonCounts = triggerData.lessons || { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } };
 
     // --- 3. 나머지 어빌리티 계산 ---
     const excludedAbilities = [
@@ -153,13 +153,13 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
         } else if (abilityId === 'lesson_param') {
             const c = lessonCounts[cardType];
             count = c ? (c.normal + c.sp) : 0;
-        } 
+        }
         // 2. 범용 케이스: abilitydata.js의 trigger 배열을 그대로 따름 (sp_param20 등)
         else if (ability.trigger) {
-            ability.trigger.forEach(tid => { 
-                count += (totalCounts[tid] || 0); 
+            ability.trigger.forEach(tid => {
+                count += (totalCounts[tid] || 0);
             });
-        } 
+        }
         // 3. 트리거 없는 경우: 초기 스탯 보너스
         else {
             applyStat(results, cardType, bonusVal);

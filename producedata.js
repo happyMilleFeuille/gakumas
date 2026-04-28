@@ -125,7 +125,7 @@ export const produceList = [
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
     { id: "ssrhiro_2nd", name: "콘트라스트", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3 },
-    { id: "ssrhiro_3rd", name: "sunfaded", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J" },
+    { id: "ssrhiro_3rd", name: "SUNFADED", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J" },
 
     // --- 츠바메 SSR (PSSR) ---    
     { id: "ssrtsubame_1st", name: "이론무장하고", name_ja: "理論武装して", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.8, releasedAt: "2025-11-16", youtube_url: "https://youtu.be/0ZWUdwVQOJA?si=4OJ6d8ZxH0k0LmvB" },
@@ -180,6 +180,7 @@ export const produceList = [
     { id: "ssrmisuzu_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
     { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
     { id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05" },
+    { id: "ssrmisuzu_3rd", name: "VEIL", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.2, releasedAt: "2026-04-29", youtube_url: "https://youtu.be/AbxzlgJTM-I?si=u1JejBnCmOJ1RGgX" },
 
 
 
