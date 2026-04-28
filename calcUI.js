@@ -654,7 +654,7 @@ export function updateStatHeaderUI(store, breakdown) {
     if (sumValueEl) {
         const displaySum = maxStat > 0 ? cappedSum : sum;
         if (hasOverflow && overflowSum > 0) {
-            sumValueEl.innerHTML = `${displaySum}<span class="total-overflow-text">(+${overflowSum})</span>`;
+            sumValueEl.innerHTML = `${displaySum}<span class="total-overflow-text">(-${overflowSum})</span>`;
             sumValueEl.classList.add('is-overflow');
             sumValueEl.style.color = '#ffffff';
         } else {
@@ -1044,7 +1044,7 @@ export function showToast(msg) {
     const toast = document.createElement('div');
     toast.className = 'calc-toast';
     toast.textContent = msg;
-    
+
     // 스타일 적용
     Object.assign(toast.style, {
         position: 'fixed',
