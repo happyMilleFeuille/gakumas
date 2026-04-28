@@ -279,28 +279,43 @@ function renderProduceCards(idolName, container) {
 
         cardEl.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (img.classList.contains('slide-out') || img.classList.contains('slide-prepare')) return;
+
             img.classList.add('slide-out');
             imgWrapper.style.backgroundColor = personalColor;
 
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % imageList.length;
-                setPSSRIndex(card.id, currentIndex);
+            const nextIndex = (currentIndex + 1) % imageList.length;
+            const nextSrc = imageList[nextIndex];
 
-                img.style.transition = 'none';
-                img.classList.remove('slide-out');
-                img.classList.add('slide-prepare');
-                img.src = imageList[currentIndex];
+            // 이미지 프리로드 시작
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                setTimeout(() => {
+                    currentIndex = nextIndex;
+                    setPSSRIndex(card.id, currentIndex);
 
-                requestAnimationFrame(() => {
+                    img.style.transition = 'none';
+                    img.classList.remove('slide-out');
+                    img.classList.add('slide-prepare');
+                    img.src = nextSrc;
+
                     requestAnimationFrame(() => {
-                        img.style.transition = '';
-                        img.classList.remove('slide-prepare');
-                        setTimeout(() => {
-                            imgWrapper.style.backgroundColor = personalColor + "11";
-                        }, 200);
+                        requestAnimationFrame(() => {
+                            img.style.transition = '';
+                            img.classList.remove('slide-prepare');
+                            setTimeout(() => {
+                                imgWrapper.style.backgroundColor = personalColor + "11";
+                            }, 200);
+                        });
                     });
-                });
-            }, 100);
+                }, 100);
+            };
+            tempImg.onerror = () => {
+                // 로딩 실패 시 즉시 복구 시도
+                img.classList.remove('slide-out');
+                imgWrapper.style.backgroundColor = personalColor + "11";
+            };
+            tempImg.src = nextSrc;
         });
 
         let retryCount = 0;
