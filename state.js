@@ -182,18 +182,39 @@ export function toggleDisabledCard(cardId) {
     localStorage.setItem('disabledCards', JSON.stringify(state.disabledCards));
 }
 
-// [추가] 슬롯 저장/로드 기능
-export function saveToSlot(slotId) {
-    const saveData = {
+export function buildSupportSlotData() {
+    return {
         supportLB: state.supportLB,
         disabledCards: state.disabledCards,
         timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     };
+}
+
+// [추가] 슬롯 저장/로드 기능
+export function saveToSlot(slotId) {
+    const saveData = buildSupportSlotData();
     localStorage.setItem(`support_slot_${slotId}`, JSON.stringify(saveData));
 }
 
+export function setSlotData(slotId, slotData) {
+    if (!slotData) return;
+    localStorage.setItem(`support_slot_${slotId}`, JSON.stringify({
+        supportLB: slotData.supportLB || {},
+        disabledCards: slotData.disabledCards || {},
+        timestamp: slotData.timestamp || new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+    }));
+}
+
+export function getSlotData(slotId) {
+    try {
+        return JSON.parse(localStorage.getItem(`support_slot_${slotId}`));
+    } catch {
+        return null;
+    }
+}
+
 export function loadFromSlot(slotId) {
-    const saved = JSON.parse(localStorage.getItem(`support_slot_${slotId}`));
+    const saved = getSlotData(slotId);
     if (!saved) return false;
 
     state.supportLB = saved.supportLB || {};
@@ -209,6 +230,6 @@ export function deleteSlot(slotId) {
 }
 
 export function getSlotInfo(slotId) {
-    const saved = JSON.parse(localStorage.getItem(`support_slot_${slotId}`));
+    const saved = getSlotData(slotId);
     return saved ? saved.timestamp : null;
 }

@@ -1,5 +1,5 @@
 // ui.js
-import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, loadFromSlot, getSlotInfo, deleteSlot } from './state.js';
+import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, setSlotData, loadFromSlot, getSlotInfo, getSlotData, deleteSlot } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
@@ -10,6 +10,7 @@ import { showCardModal } from './cardModal.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
+const PRESET_EXPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSafeNbHyCmIU9YHHXX-mdtKukA8fcEHlWkzOegXxOwQTUnoSp4MKa_EMBkQU_PuiE/exec';
 
 // 계산기 화면 복귀 이벤트 리스너
 window.addEventListener('renderCalcRequested', () => {
@@ -235,11 +236,11 @@ function renderProduceCards(idolName, container) {
         const name = item.querySelector('.pssr-name');
         const personalColor = idolColors[idolName] || "#ffffff";
 
-        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`; 
+        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`;
         cardEl.style.backgroundColor = "#ffffff";
         cardEl.style.backgroundImage = mixedBg;
 
-        infoBox.style.backgroundColor = "transparent"; 
+        infoBox.style.backgroundColor = "transparent";
         infoBox.style.backgroundImage = "none";
 
         name.style.color = '#333';
@@ -402,27 +403,314 @@ function renderProduceCards(idolName, container) {
 function openSlotModal() {
     let modal = document.getElementById('slot-modal');
     if (modal) modal.remove();
+    const existingShareModal = document.getElementById('slot-share-modal');
+    if (existingShareModal) existingShareModal.remove();
 
     modal = document.createElement('div');
     modal.className = 'modal';
     modal.id = 'slot-modal';
+
+    const updateCopyButton = (rootEl, slotId, visible, code = '') => {
+        const copyBtn = rootEl?.querySelector(`[data-copy-slot="${slotId}"]`);
+        if (!copyBtn) return;
+        copyBtn.dataset.code = code;
+        copyBtn.textContent = t('ui_slot_copy');
+        copyBtn.style.display = visible ? 'inline-block' : 'none';
+    };
+
+    const updateExportResult = (rootEl, slotId, message, color = '#666') => {
+        const resultEl = rootEl?.querySelector(`[data-export-result="${slotId}"]`);
+        if (!resultEl) return;
+        resultEl.textContent = message || '';
+        resultEl.style.color = color;
+    };
+
+    const updateImportResult = (rootEl, slotId, message, color = '#666') => {
+        const resultEl = rootEl?.querySelector(`[data-import-result="${slotId}"]`);
+        if (!resultEl) return;
+        resultEl.textContent = message || '';
+        resultEl.style.color = color;
+    };
+
+    const lockExportButton = (rootEl, slotId) => {
+        const exportBtn = rootEl?.querySelector(`[data-export-btn="${slotId}"]`);
+        if (!exportBtn) return;
+        exportBtn.disabled = true;
+        exportBtn.dataset.locked = 'true';
+        exportBtn.style.cursor = 'default';
+        exportBtn.style.opacity = '0.55';
+        exportBtn.style.pointerEvents = 'none';
+        exportBtn.style.transform = 'none';
+        exportBtn.blur();
+    };
+
+    const applyImportedPreset = (slotId, preset) => {
+        setSlotData(slotId, preset);
+        loadFromSlot(slotId);
+        ['sense', 'logic', 'anomaly'].forEach(plan => {
+            if (calcStore.planCards[plan]) {
+                calcStore.planCards[plan] = calcStore.planCards[plan].map(id =>
+                    (id && state.disabledCards[id]) ? null : id
+                );
+            }
+        });
+        calcStore.save();
+        renderSupport();
+    };
+
+    const exportSlotPreset = async (slotId, rootEl) => {
+        const exportBtn = rootEl?.querySelector(`[data-export-btn="${slotId}"]`);
+        if (exportBtn?.dataset.locked === 'true') return;
+
+        if (!PRESET_EXPORT_ENDPOINT) {
+            updateExportResult(rootEl, slotId, t('ui_slot_export_missing_config'), '#ef5350');
+            updateCopyButton(rootEl, slotId, false);
+            return;
+        }
+
+        const saved = getSlotData(slotId);
+        if (!saved) {
+            updateExportResult(rootEl, slotId, t('ui_slot_export_empty'), '#ef5350');
+            updateCopyButton(rootEl, slotId, false);
+            return;
+        }
+
+        lockExportButton(rootEl, slotId);
+        updateExportResult(rootEl, slotId, t('ui_slot_exporting'), '#1976d2');
+        updateCopyButton(rootEl, slotId, false);
+
+        try {
+            const response = await fetch(PRESET_EXPORT_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    slotId: Number(slotId),
+                    lang: state.currentLang,
+                    exportedAt: new Date().toISOString(),
+                    preset: saved
+                })
+            });
+
+            const responseText = await response.text();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${responseText}`);
+            }
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                throw new Error(`Invalid JSON response: ${responseText.slice(0, 200)}`);
+            }
+
+            if (!result?.ok || !result?.code) {
+                throw new Error(result?.error || 'Invalid export response');
+            }
+
+            updateExportResult(rootEl, slotId, t('ui_slot_export_success', { code: result.code }), '#2e7d32');
+            updateCopyButton(rootEl, slotId, true, result.code);
+        } catch (error) {
+            console.warn('Preset export failed:', error);
+            const detail = error?.message ? ` ${error.message}` : '';
+            updateExportResult(rootEl, slotId, `${t('ui_slot_export_failed')}${detail}`, '#ef5350');
+            updateCopyButton(rootEl, slotId, false);
+        }
+    };
+
+    const copyExportCode = async (slotId, rootEl) => {
+        const copyBtn = rootEl?.querySelector(`[data-copy-slot="${slotId}"]`);
+        const code = copyBtn?.dataset.code || '';
+        if (!copyBtn || !code) return;
+
+        let copied = false;
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(code);
+                copied = true;
+            }
+        } catch {
+        }
+
+        if (!copied) {
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            tempInput.setAttribute('readonly', '');
+            tempInput.style.position = 'fixed';
+            tempInput.style.opacity = '0';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, code.length);
+            copied = document.execCommand('copy');
+            tempInput.remove();
+        }
+
+        copyBtn.textContent = copied ? t('ui_slot_copied') : t('ui_slot_copy_failed');
+        window.setTimeout(() => {
+            if (document.body.contains(copyBtn)) {
+                copyBtn.textContent = t('ui_slot_copy');
+            }
+        }, 1500);
+    };
+
+    const importSlotPreset = async (slotId, rootEl) => {
+        const inputEl = rootEl?.querySelector(`[data-import-input="${slotId}"]`);
+        const importBtn = rootEl?.querySelector(`[data-import-btn="${slotId}"]`);
+        const rawCode = inputEl?.value || '';
+        const code = rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
+
+        if (!PRESET_EXPORT_ENDPOINT) {
+            updateImportResult(rootEl, slotId, t('ui_slot_export_missing_config'), '#ef5350');
+            return;
+        }
+
+        if (!code) {
+            updateImportResult(rootEl, slotId, t('ui_slot_import_empty'), '#ef5350');
+            inputEl?.focus();
+            return;
+        }
+
+        if (inputEl) inputEl.value = code;
+        if (importBtn) {
+            importBtn.disabled = true;
+            importBtn.style.cursor = 'default';
+            importBtn.style.opacity = '0.7';
+        }
+        updateImportResult(rootEl, slotId, t('ui_slot_importing'), '#1976d2');
+
+        try {
+            const response = await fetch(PRESET_EXPORT_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    action: 'import',
+                    code
+                })
+            });
+
+            const responseText = await response.text();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${responseText}`);
+            }
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                throw new Error(`Invalid JSON response: ${responseText.slice(0, 200)}`);
+            }
+
+            if (!result?.ok || !result?.preset) {
+                throw new Error(result?.error || 'Invalid import response');
+            }
+
+            applyImportedPreset(slotId, result.preset);
+            modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
+            updateImportResult(rootEl, slotId, t('ui_slot_import_success'), '#2e7d32');
+        } catch (error) {
+            console.warn('Preset import failed:', error);
+            const detail = error?.message ? ` ${error.message}` : '';
+            updateImportResult(rootEl, slotId, `${t('ui_slot_import_failed')}${detail}`, '#ef5350');
+        } finally {
+            if (importBtn) {
+                importBtn.disabled = false;
+                importBtn.style.cursor = 'pointer';
+                importBtn.style.opacity = '1';
+            }
+        }
+    };
+
+    const openShareModal = (slotId) => {
+        let shareModal = document.getElementById('slot-share-modal');
+        if (shareModal) shareModal.remove();
+
+        const slotInfo = getSlotInfo(slotId);
+        shareModal = document.createElement('div');
+        shareModal.className = 'modal';
+        shareModal.id = 'slot-share-modal';
+
+        shareModal.innerHTML = `
+            <div class="modal-content" style="max-width: 340px; padding: 18px 18px 16px;">
+                <span class="close-modal" style="top: 7px; right: 14px;">&times;</span>
+                <h3 style="margin-top:0; margin-bottom: 12px; color:#ff4d8d; font-size:1rem;">${t('ui_slot_share_title')}</h3>
+                <div style="padding: 12px; background: #f9f9f9; border: 1px solid #eee; border-radius: 10px;">
+                    <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 12px;">
+                        <div style="display:flex; align-items:center; gap: 6px; min-width: 0; flex: 1;">
+                            <span style="font-weight: bold; color: #333; white-space: nowrap;">Slot ${slotId}</span>
+                            <span data-export-result="${slotId}" style="font-size: 0.72rem; color: #666; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+                        </div>
+                        <button class="slot-btn copy-code" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
+                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: 58px; height: 28px; flex: none; padding: 0; font-size: 0.68rem; background: #fff3e0; color: #ef6c00; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_export')}</button>
+                    </div>
+                    <div style="height: 1px; background: #ececec; margin: 10px 0 12px;"></div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: 30px; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.8rem; outline: none;">
+                        <button class="slot-btn import" data-import-btn="${slotId}" style="width: 58px; flex: none; padding: 5px 0; font-size: 0.7rem; background: #e8f5e9; color: #2e7d32; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_import')}</button>
+                    </div>
+                    <div data-import-result="${slotId}" style="font-size: 0.7rem; color: #999; margin-top: 7px;"></div>
+                </div>
+            </div>`;
+
+        document.body.appendChild(shareModal);
+        shareModal.style.display = 'flex';
+
+        const closeShareModal = () => {
+            shareModal.remove();
+        };
+
+        shareModal.querySelector('.close-modal').onclick = closeShareModal;
+        shareModal.onclick = (e) => {
+            if (e.target === shareModal) closeShareModal();
+        };
+
+        shareModal.addEventListener('click', (e) => {
+            const exportBtn = e.target.closest('.export');
+            const copyBtn = e.target.closest('.copy-code');
+            const importBtn = e.target.closest('.import');
+
+            if (exportBtn) {
+                exportSlotPreset(exportBtn.dataset.slot, shareModal);
+            }
+
+            if (copyBtn) {
+                copyExportCode(copyBtn.dataset.copySlot, shareModal);
+            }
+
+            if (importBtn) {
+                importSlotPreset(slotId, shareModal);
+            }
+        });
+
+        const importInput = shareModal.querySelector(`[data-import-input="${slotId}"]`);
+        importInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                importSlotPreset(slotId, shareModal);
+            }
+        });
+    };
 
     const renderSlots = () => {
         let slotsHtml = '';
         for (let i = 1; i <= 3; i++) {
             const info = getSlotInfo(i);
             slotsHtml += `
-                <div class="slot-modal-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                <div class="slot-modal-item" style="position: relative; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                    <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="position: absolute; top: 7px; right: 9px; background: transparent; color: #b0b0b0; border: none; width: auto; height: auto; padding: 0; border-radius: 0; display: block; font-size: 0.95rem; line-height: 1; cursor: pointer;">&times;</button>
                     <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; padding-right: 18px;">
                             <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333;">Slot ${i}</span>
-                            <button class="slot-btn save" data-slot="${i}" style="width: 38px; flex: none; padding: 3px 0; font-size: 0.65rem; background: #e3f2fd; color: #1976d2; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_save')}</button>
+                            <button class="slot-btn save" data-slot="${i}" style="width: 38px; flex: none; padding: 3px 0; font-size: 0.65rem; background: #ffe4ef; color: #d93d77; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_save')}</button>
                         </div>
                         <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${info || t('ui_slot_empty')}</span>
                     </div>
-                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: 8px;">
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'disabled' : ''} style="width: 65px; flex: none; padding: 6px 0; font-size: 0.85rem; background: #f1f8e9; color: #689f38; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center;">${t('ui_slot_load')}</button>
-                        <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="background: #ffebee; color: #ef5350; border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer;">&times;</button>
+                    <div class="slot-modal-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-right: 10px;">
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="width: 72px; height: 28px; flex: none; padding: 0; font-size: 0.78rem; background: #e3f2fd; color: #1976d2; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center;">${t('ui_slot_load')}</button>
+                        <button class="slot-btn share" data-slot="${i}" style="width: 72px; height: 28px; flex: none; padding: 0; font-size: 0.78rem; background: #fff1cc; color: #b88400; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_share')}</button>
                     </div>
                 </div>`;
         }
@@ -444,13 +732,24 @@ function openSlotModal() {
     modal.style.display = 'flex';
     history.pushState({ modalOpen: 'slot' }, "");
 
-    modal.querySelector('.close-modal').onclick = () => history.back();
-    modal.onclick = (e) => { if (e.target === modal) history.back(); };
+    const closeSlotModal = () => {
+        const shareModal = document.getElementById('slot-share-modal');
+        if (shareModal) shareModal.remove();
+        history.back();
+    };
+
+    modal.querySelector('.close-modal').onclick = closeSlotModal;
+    modal.onclick = (e) => { if (e.target === modal) closeSlotModal(); };
 
     modal.addEventListener('click', (e) => {
+        const shareBtn = e.target.closest('.share');
         const saveBtn = e.target.closest('.save');
         const loadBtn = e.target.closest('.load');
         const deleteBtn = e.target.closest('.delete');
+
+        if (shareBtn) {
+            openShareModal(shareBtn.dataset.slot);
+        }
 
         if (saveBtn) {
             const slotId = saveBtn.dataset.slot;

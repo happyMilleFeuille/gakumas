@@ -997,9 +997,12 @@ export function showRecommendModal(onConfirm) {
 
     const titleText = isJa ? 'サポカ自動おすすめ' : '서포트 카드 자동 추천';
 
-    const renderSubRow = (label, key) => `
+    const renderSubRow = (key) => `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 24px; border-bottom: 1px solid #f9f9f9;">
-            <span style="font-size: 13px; color: #666;">• ${label}</span>
+            <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #666;">
+                <img src="icons/${key}.png" style="width: 15px; height: 15px;">
+                <span style="font-weight: 700; letter-spacing: -0.01em;">SP</span>
+            </span>
             <div style="display: flex; gap: 4px;" class="sp-sub-options" data-key="${key}">
                 ${[0, 1, 2, 3].map(num => `
                     <button class="sp-opt-btn ${num === settings[key] ? 'active' : ''}" data-val="${num}" 
@@ -1020,9 +1023,9 @@ export function showRecommendModal(onConfirm) {
                     <span style="font-size: 14px; font-weight: bold; color: #333;">${isJa ? 'SP発生率増加サポカ (件数)' : 'SP 발생률 증가 서포카 (개수)'}</span>
                     <span id="sp-total-count" style="font-size: 16px; font-weight: 900; color: ${idolColor}; background: ${idolColor}15; padding: 2px 10px; border-radius: 12px;">${getSum()}</span>
                 </div>
-                ${renderSubRow(isJa ? 'ボーカル SP' : '보컬 SP', 'vocal')}
-                ${renderSubRow(isJa ? 'ダンス SP' : '댄스 SP', 'dance')}
-                ${renderSubRow(isJa ? 'ビジュアル SP' : '비주얼 SP', 'visual')}
+                ${renderSubRow('vocal')}
+                ${renderSubRow('dance')}
+                ${renderSubRow('visual')}
             </div>
 
             <div style="margin-bottom: 20px; padding: 0 4px;">
