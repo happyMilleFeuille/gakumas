@@ -3,6 +3,7 @@ import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColo
 import { updatePageTranslations, translate } from './utils.js';
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
+import { videoList } from './videodata.js';
 import { initCalc } from './calc.js';
 import { calcStore } from './calcStore.js';
 import { renderPSSRRoadmap, idolList } from './roadmap.js';
@@ -20,14 +21,50 @@ window.addEventListener('renderCalcRequested', () => {
 let homeCachedContent = null;
 let lastRenderedLang = null;
 window.__videoModalOpen = false;
+window.__videoModalHistoryPushed = false;
 window.__videoModalPendingClose = false;
-window.__videoModalPopHandler = null;
+
+function openVideoModal(embedUrl, borderColor = '#ff4d8d') {
+    const videoModal = document.getElementById('video-modal');
+    const iframe = document.getElementById('video-iframe');
+    if (!videoModal || !iframe) return;
+
+    const modalContent = videoModal.querySelector('.video-modal-content');
+    const innerContainer = videoModal.querySelector('.video-container');
+    if (modalContent) modalContent.style.borderColor = borderColor;
+    if (innerContainer) innerContainer.style.borderColor = borderColor;
+
+    iframe.src = embedUrl;
+    videoModal.classList.remove('hidden');
+    videoModal.style.display = 'flex';
+    document.body.classList.add('video-modal-open');
+
+    window.__videoModalOpen = true;
+
+    const handleClose = () => closeVideoModal();
+    const closeBtn = document.getElementById('close-video-modal');
+    if (closeBtn) closeBtn.onclick = handleClose;
+    videoModal.onclick = (e) => {
+        if (e.target === videoModal) handleClose();
+    };
+
+    if (!window.__videoModalHistoryPushed) {
+        history.pushState({ modalOpen: 'video' }, "");
+        window.__videoModalHistoryPushed = true;
+    }
+}
 
 function closeVideoModal(isPopState = false) {
     const videoModal = document.getElementById('video-modal');
     const iframe = document.getElementById('video-iframe');
+    const isVisible = !!(videoModal && (videoModal.style.display === 'flex' || !videoModal.classList.contains('hidden')));
 
-    if (!isPopState && window.__videoModalOpen) {
+    if (!isVisible && !window.__videoModalOpen && !window.__videoModalPendingClose) {
+        window.__videoModalHistoryPushed = false;
+        return;
+    }
+
+    if (!isPopState && window.__videoModalHistoryPushed) {
         window.__videoModalPendingClose = true;
         history.back();
         return;
@@ -38,19 +75,20 @@ function closeVideoModal(isPopState = false) {
         const resetModal = videoModal.cloneNode(true);
         resetModal.classList.add('hidden');
         resetModal.style.display = 'none';
-        const resetIframe = resetModal.querySelector('#video-iframe');
-        if (resetIframe) resetIframe.src = '';
+        resetModal.onclick = null;
         videoModal.replaceWith(resetModal);
     }
     document.body.classList.remove('video-modal-open');
     window.__videoModalOpen = false;
     window.__videoModalPendingClose = false;
-    if (window.__videoModalPopHandler) {
-        window.removeEventListener('popstate', window.__videoModalPopHandler);
-        window.__videoModalPopHandler = null;
+
+    if (isPopState) {
+        window.__videoModalHistoryPushed = false;
+        return;
     }
 }
 
+window.openVideoModal = openVideoModal;
 window.closeVideoModal = closeVideoModal;
 window.hideVideoModal = closeVideoModal;
 
@@ -98,6 +136,12 @@ export function renderIdolList() {
     const itemTpl = document.getElementById('tpl-idol-item');
     const view = gridTpl.content.cloneNode(true);
     const grid = view.querySelector('.idol-grid');
+
+    // Video 컨테이너 추가
+    const videoArea = document.createElement('div');
+    videoArea.className = 'idol-video-container-wrapper';
+    videoArea.innerHTML = '<div class="idol-video-list"></div>';
+    const videoListEl = videoArea.querySelector('.idol-video-list');
 
     // PSSR 컨테이너 추가
     const pssrArea = document.createElement('div');
@@ -160,13 +204,16 @@ export function renderIdolList() {
                 gridContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
             }
 
-            // Render Produce Cards for this idol
+            // Render Produce Cards and Videos for this idol
+            videoArea.style.setProperty('--idol-border-color', `${color}66`); // 투명도 40%로 상향
+            renderIdolVideos(name, videoListEl);
             renderProduceCards(name, pssrGrid);
         });
         grid.appendChild(item);
     });
 
     contentArea.appendChild(view);
+    contentArea.appendChild(videoArea);
     contentArea.appendChild(pssrArea);
 
     // [수정] 즐겨찾기 아이돌이 있다면 애니메이션 없이 즉시 선택 상태로 렌더링
@@ -178,6 +225,7 @@ export function renderIdolList() {
             const color = (idolColors[state.favoriteIdol] || "#ff4d8d");
             favIcon.style.borderColor = color;
             favIcon.style.boxShadow = `0 0 15px ${color}66`;
+            videoArea.style.setProperty('--idol-border-color', `${color}66`); // 40% 투명도 적용
 
             // 2. 스크롤 위치 즉시 이동 (Smooth 없이)
             const clickedItem = favIcon.parentElement.parentElement;
@@ -187,10 +235,84 @@ export function renderIdolList() {
                 gridContainer.scrollTo({ left: scrollPos, behavior: 'auto' });
             }
 
-            // 3. 하단 PSSR 리스트 즉시 렌더링
+            // 3. 하단 리스트 즉시 렌더링
+            renderIdolVideos(state.favoriteIdol, videoListEl);
             renderProduceCards(state.favoriteIdol, pssrGrid);
         }
     }
+}
+
+function renderIdolVideos(idolName, container) {
+    if (!container) return;
+    container.innerHTML = '';
+
+    // 1. 해당 아이돌의 영상 리스트 가져오기 (객체 구조로 변경됨)
+    const filteredVideos = videoList[idolName] || [];
+
+    if (filteredVideos.length === 0) {
+        container.parentElement.style.display = 'none';
+        return;
+    }
+
+    container.parentElement.style.display = 'block';
+
+    // 2. 날짜 기준 내림차순 정렬 (최신순)
+    const sortedVideos = [...filteredVideos].sort((a, b) => {
+        const dateA = a.date || '0000.00.00';
+        const dateB = b.date || '0000.00.00';
+        return dateB.localeCompare(dateA);
+    });
+
+    const itemTpl = document.getElementById('tpl-idol-video-item');
+    sortedVideos.forEach(video => {
+        const item = itemTpl.content.cloneNode(true);
+        const thumb = item.querySelector('.video-thumb');
+        const title = item.querySelector('.video-title');
+        const videoItem = item.querySelector('.idol-video-item');
+
+        const personalColor = idolColors[idolName] || "#ffffff";
+        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`;
+        videoItem.style.backgroundColor = "#ffffff";
+        videoItem.style.backgroundImage = mixedBg;
+
+        // 유튜브 ID 추출
+        let videoId = '';
+        if (video.url.includes('youtu.be/')) {
+            videoId = video.url.split('youtu.be/')[1].split('?')[0];
+        } else if (video.url.includes('watch?v=')) {
+            videoId = video.url.split('watch?v=')[1].split('&')[0];
+        }
+
+        thumb.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+
+        let displayTitle = video.title; // 기본은 일본어 (title)
+        if (state.currentLang === 'ko' && video.title_ko) {
+            displayTitle = video.title_ko; // 한국어 설정이고 한국어 제목이 있으면 한국어(title_ko) 우선
+        }
+        title.textContent = displayTitle;
+
+        // [수정] 실시간 대응을 위해 글자 수 및 언어 정보를 클래스로 전달
+        const titleLength = displayTitle.length;
+        title.classList.remove('len-long', 'len-vlong', 'len-extreme', 'lang-ja');
+        if (state.currentLang === 'ja') title.classList.add('lang-ja');
+
+        if (titleLength >= 13) title.classList.add('len-extreme');
+        else if (titleLength >= 10) title.classList.add('len-vlong');
+        else if (titleLength >= 7) title.classList.add('len-long');
+
+
+        const dateEl = item.querySelector('.video-date');
+        if (dateEl) {
+            dateEl.textContent = video.date || '';
+        }
+
+        videoItem.addEventListener('click', () => {
+            const color = idolColors[idolName] || '#ff4d8d';
+            openVideoModal(`https://www.youtube.com/embed/${videoId}?autoplay=1`, color);
+        });
+
+        container.appendChild(item);
+    });
 }
 
 function renderProduceCards(idolName, container) {
@@ -350,6 +472,7 @@ function renderProduceCards(idolName, container) {
 
         const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
         name.textContent = displayName;
+        name.classList.toggle('lang-ja', state.currentLang === 'ja');
 
         if (state.currentLang === 'ja') {
             name.style.wordBreak = 'normal';
@@ -367,10 +490,6 @@ function renderProduceCards(idolName, container) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const videoModal = document.getElementById('video-modal');
-                    const iframe = document.getElementById('video-iframe');
-                    if (!videoModal || !iframe) return;
-
                     const finalUrl = card.youtube_url;
                     let embedUrl = finalUrl;
                     if (finalUrl.includes('watch?v=')) {
@@ -380,30 +499,8 @@ function renderProduceCards(idolName, container) {
                         const videoId = finalUrl.split('youtu.be/')[1].split('?')[0];
                         embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
                     }
-                    iframe.src = embedUrl;
-
-                    const modalContent = videoModal.querySelector('.video-modal-content');
-                    const innerContainer = videoModal.querySelector('.video-container');
                     const color = idolColors[idolName] || '#ff4d8d';
-                    if (modalContent) modalContent.style.borderColor = color;
-                    if (innerContainer) innerContainer.style.borderColor = color;
-
-                    videoModal.classList.remove('hidden');
-                    videoModal.style.display = 'flex';
-                    document.body.classList.add('video-modal-open');
-                    window.__videoModalOpen = true;
-                    window.__videoModalPendingClose = false;
-                    if (window.__videoModalPopHandler) {
-                        window.removeEventListener('popstate', window.__videoModalPopHandler);
-                    }
-                    window.__videoModalPopHandler = () => {
-                        closeVideoModal(true);
-                    };
-                    window.addEventListener('popstate', window.__videoModalPopHandler);
-                    videoModal.onclick = (ev) => {
-                        if (ev.target === videoModal) closeVideoModal();
-                    };
-                    history.pushState({ modalOpen: 'video' }, "");
+                    openVideoModal(embedUrl, color);
                 };
                 youtubeLink.classList.remove('hidden');
             } else {
@@ -656,7 +753,7 @@ function openSlotModal() {
                             <span style="font-weight: bold; color: #333; white-space: nowrap;">Slot ${slotId}</span>
                             <span data-export-result="${slotId}" style="font-size: 0.72rem; color: #666; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
                         </div>
-                        <button class="slot-btn copy-code" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
+                        <button class="slot-btn copy-code ${state.currentLang === 'ja' ? 'lang-ja' : ''}" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
                         <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: 32px; height: 30px; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/upload-cloud.svg" alt="${t('ui_slot_export')}" style="width: 16px; height: 16px; filter: invert(48%) sepia(90%) saturate(1250%) hue-rotate(3deg) brightness(101%) contrast(101%);">
                         </button>

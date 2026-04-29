@@ -4,13 +4,14 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: 1rem;
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 1rem 0.8rem;
+    /* 하단 여백을 1.5rem에서 0.8rem으로 축소 */
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* 하단 가로 경계선 */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .idol-grid::-webkit-scrollbar {
@@ -93,24 +94,105 @@
     z-index: 5;
 }
 
-@media (max-width: 768px) {
-    .idol-icon {
-        width: 65px;
-        height: 90px;
-    }
 
-    .fav-star-btn {
-        width: 22px;
-        height: 22px;
-        top: 1px;
-        right: 1px;
-    }
-
-    .fav-star-svg {
-        width: 18px;
-        height: 18px;
-    }
+/* Idol Video List Styles */
+.idol-video-container-wrapper {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0 1rem 0.4rem;
+    /* 하단 여백 축소 */
+    display: none;
+    position: relative;
 }
+
+/* 중간 고유색 선: 짧게 중앙 정렬 */
+.idol-video-container-wrapper::after {
+    content: '';
+    display: block;
+    width: 90%;
+    height: 1px;
+    margin: 0.5rem auto 0;
+    background-color: var(--idol-border-color, transparent);
+}
+
+.idol-video-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.idol-video-list::-webkit-scrollbar {
+    display: none;
+}
+
+.idol-video-item {
+    flex: 0 0 auto;
+    width: 180px;
+    /* 크기를 살짝 조절 */
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: #fff;
+    /* 카드 배경 복구 */
+    border-radius: 12px;
+    overflow: hidden;
+    padding-bottom: 0;
+    /* 하단 여백 제거 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.idol-video-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.video-thumb-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-thumb {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* 하단 미세 공백 제거 */
+    transition: transform 0.3s;
+}
+
+.video-play-overlay {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.idol-video-item:hover .video-play-overlay {
+    transform: scale(1.1);
+}
+
+.video-play-icon {
+    width: 16px;
+    height: auto;
+}
+
+
 
 /* PSSR Display Styles */
 .pssr-container {
@@ -196,13 +278,20 @@
 }
 
 .pssr-name {
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 800;
     color: #333;
-    line-height: 1.3;
-    word-break: keep-all;
+    line-height: 1.25;
+    margin-bottom: 3px;
+    letter-spacing: -0.01em;
     text-align: left;
+    word-break: keep-all;
     flex: 1;
+}
+
+.pssr-name.lang-ja {
+    letter-spacing: -0.06em;
+    /* 초고밀도 자간 축소 */
 }
 
 .pssr-youtube-link {
@@ -233,8 +322,10 @@
 
 .pssr-plan-icon {
     position: absolute;
-    top: -15px; /* 정보창 경계선 위로 원복 */
-    right: 44px; /* osusume-icon(30px) + 간격(4px) + 우측 여백(10px) */
+    top: -15px;
+    /* 정보창 경계선 위로 원복 */
+    right: 44px;
+    /* osusume-icon(30px) + 간격(4px) + 우측 여백(10px) */
     width: 30px;
     height: 30px;
     z-index: 10;
@@ -267,7 +358,8 @@
         width: 24px;
         height: 24px;
         top: -12px;
-        right: 36px; /* osusume-icon(24px) + 간격(4px) + 우측 여백(8px) */
+        right: 36px;
+        /* osusume-icon(24px) + 간격(4px) + 우측 여백(8px) */
     }
 
     .pssr-osusume-icon {
@@ -298,4 +390,180 @@
     gap: 1.5rem;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+.video-thumb-container,
+.video-thumb-wrapper {
+    position: relative;
+    /* 날짜 위치 기준점 */
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.video-date {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    pointer-events: none;
+    /* 클릭 방해 금지 */
+    z-index: 5;
+}
+
+.video-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    /* 다시 여유 있는 높이로 */
+    gap: 8px;
+    /* height 제거: 세로 높이 보존 */
+}
+
+.video-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: visible;
+    flex: 1;
+    min-width: 0;
+    /* 글자가 길어져도 아이콘을 밀어내지 않게 필수 추가 */
+    transform-origin: left center;
+}
+
+/* 데스크톱 비율 유지 축소 */
+.video-title.len-long {
+    transform: scale(0.95);
+}
+
+.video-title.len-vlong {
+    transform: scale(0.9);
+    letter-spacing: -0.02em;
+}
+
+.video-title.len-extreme {
+    transform: scale(0.7);
+    letter-spacing: -0.04em;
+}
+
+/* 일본어 모드 시 자간 추가 축소 */
+.video-title.lang-ja {
+    letter-spacing: -0.02em;
+}
+
+.video-title.lang-ja.len-vlong {
+    letter-spacing: -0.04em;
+}
+
+.video-title.lang-ja.len-extreme {
+    letter-spacing: -0.07em;
+}
+
+.video-link-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    /* 절대 밀려나지 않게 고정 */
+    display: block;
+    opacity: 0.8;
+    transition: transform 0.2s;
+    background: transparent !important;
+}
+
+.idol-video-item:hover .video-link-icon {
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+/* 모바일 대응 (최우선 적용을 위해 하단 배치) */
+@media (max-width: 768px) {
+    .idol-icon {
+        width: 65px;
+        height: 90px;
+        border-radius: 8px;
+        /* 둥글기 축소 */
+    }
+
+    .fav-star-btn {
+        width: 22px;
+        height: 22px;
+        top: 1px;
+        right: 1px;
+    }
+
+    .fav-star-svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* 영상 리스트 모바일 축소 */
+    .idol-video-item {
+        width: 100px;
+        border-radius: 8px;
+        /* 둥글기 축소 */
+    }
+
+    .video-info {
+        /* height 제거: 세로 높이 보존 */
+        padding: 4px 7px;
+        gap: 2px;
+        margin-bottom: 2px;
+    }
+
+    .video-title {
+        font-size: 0.5rem;
+        font-weight: 600;
+        transform-origin: left center;
+        /* translateY 제거: 칸 높이가 생겼으므로 억지로 올릴 필요 없음 */
+    }
+
+    /* 모바일 비율 유지 축소 (요청 수치 적용) */
+    .video-title.len-long {
+        transform: scale(0.94);
+    }
+
+    .video-title.len-vlong {
+        transform: scale(0.9);
+        letter-spacing: -0.03em;
+    }
+
+    .video-title.len-extreme {
+        transform: scale(0.68);
+        letter-spacing: -0.05em;
+    }
+
+    /* 일본어 모바일 자간 추가 축소 */
+    .video-title.lang-ja {
+        letter-spacing: -0.03em;
+    }
+
+    .video-title.lang-ja.len-vlong {
+        letter-spacing: -0.05em;
+    }
+
+    .video-title.lang-ja.len-extreme {
+        letter-spacing: -0.08em;
+    }
+
+    .video-link-icon {
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+        /* 모바일에서도 고정 */
+    }
+
+    .video-date {
+        font-size: 0.5rem;
+        padding: 1px 2px;
+        bottom: 2px;
+        right: 2px;
+    }
 }
