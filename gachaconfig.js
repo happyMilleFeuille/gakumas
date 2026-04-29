@@ -38,7 +38,7 @@ export const UNIT_CONFIG = [
                 { id: 'ssrsumika_dokimekiunit', char: 'sumika' },
                 { id: 'ssrlilja_dokimekiunit', char: 'lilja' }
             ],
-            sssr: ['vocal_unitsense1'],
+            sssr: ['visual_unitsense1'],
             sr_card: ['vocal_srunitanomaly1']
         }
     },
@@ -106,7 +106,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrume_3rd', char: 'ume' }],
             sssr: ['dance_logic3'],
-            sr_card: ['dance_srlogic2']
+            sr_card: ['visual_srlogic6']
         }
     },
     {
