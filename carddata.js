@@ -421,27 +421,6 @@ export const cardList = [
             ]
     },
     {
-        id: "vocal_unitsense1",
-        name: "긴 여행 수고했어!",
-        name_ja: "長旅おつかれさま！",
-        type: "vocal",
-        plan: "sense",
-        have: "item",
-        releasedAt: "2026-04-01",
-        rarity: "SSR",
-        source: "limited_u",
-        extra1: "param", extra2: "ranenhance",
-        abilities:
-            [
-                "fixedparam",
-                "sp_lessonup",
-                "supportrateup",
-                "get_goodcondition",
-                "sp_param20",
-                "event_paraup"
-            ]
-    },
-    {
         id: "vocal_distsense1",
         name: "이 녀석들 성가셔~",
         name_ja: "こいつらめんどくさー",
@@ -1744,6 +1723,27 @@ export const cardList = [
                 "supportrateup",
                 "sp_param",
                 "get_drink",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_unitsense1",
+        name: "긴 여행 수고했어!",
+        name_ja: "長旅おつかれさま！",
+        type: "visual",
+        plan: "sense",
+        have: "item",
+        releasedAt: "2026-04-01",
+        rarity: "SSR",
+        source: "limited_u",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "get_goodcondition",
+                "sp_param20",
                 "event_paraup"
             ]
     },
