@@ -35,7 +35,7 @@ const translations = {
         ui_sort_oldest: "과거순",
         ui_sort_lb: "돌파순",
         ui_bulk_adjust: "일괄 조정",
-        ui_bulk_adjust_confirm: "모든 카드를 최대 돌파로 변경하거나 비활성화 카드 및 돌파를 초기화하게 됩니다. 변경하시겠습니까?",
+        ui_bulk_adjust_confirm: "모든 카드를 최대 돌파로 변경하거나 카드 비활성화 및 돌파를 초기화하게 됩니다. 변경하시겠습니까?",
         ui_bulk_adjust_confirm_label: "최대돌파",
         ui_confirm: "확인",
         ui_cancel: "취소",

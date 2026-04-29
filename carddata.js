@@ -687,11 +687,11 @@ export const cardList = [
         extra1: "param", extra2: "ranenhance",
         abilities:
             [
-                "percentparam",
-                "hpmax",
+                "fixedparam",
+                "sp_lessonup",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "sp_param20",
+                "get_ssr",
                 "event_paraup"
             ]
     },
@@ -3528,7 +3528,7 @@ export const cardList = [
     },
     {
         id: "visual_sranomaly3",
-        name: "느긋하고 맛있는 순간",
+        name: "느긋하고 맛있는 한때",
         name_ja: "のんびり美味しいひととき",
         type: "visual",
         plan: "anomaly",
@@ -3539,10 +3539,10 @@ export const cardList = [
         abilities:
             [
                 "fixedparam",
-                "hpmax",
+                "sp_lessonup",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "sp_param20",
+                "get",
                 "event_paraup"
             ]
     },

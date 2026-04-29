@@ -650,8 +650,6 @@ function openSlotModal() {
 
         shareModal.innerHTML = `
             <div class="modal-content" style="max-width: 340px; padding: 18px 18px 16px;">
-                <span class="close-modal" style="top: 7px; right: 14px;">&times;</span>
-                <h3 style="margin-top:0; margin-bottom: 12px; color:#ff4d8d; font-size:1rem;">${t('ui_slot_share_title')}</h3>
                 <div style="padding: 12px; background: #f9f9f9; border: 1px solid #eee; border-radius: 10px;">
                     <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 12px;">
                         <div style="display:flex; align-items:center; gap: 6px; min-width: 0; flex: 1;">
@@ -659,12 +657,16 @@ function openSlotModal() {
                             <span data-export-result="${slotId}" style="font-size: 0.72rem; color: #666; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
                         </div>
                         <button class="slot-btn copy-code" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
-                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: 58px; height: 28px; flex: none; padding: 0; font-size: 0.68rem; background: #fff3e0; color: #ef6c00; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_export')}</button>
+                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: 32px; height: 30px; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/upload-cloud.svg" alt="${t('ui_slot_export')}" style="width: 16px; height: 16px; filter: invert(48%) sepia(90%) saturate(1250%) hue-rotate(3deg) brightness(101%) contrast(101%);">
+                        </button>
                     </div>
                     <div style="height: 1px; background: #ececec; margin: 10px 0 12px;"></div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: 30px; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.8rem; outline: none;">
-                        <button class="slot-btn import" data-import-btn="${slotId}" style="width: 58px; flex: none; padding: 5px 0; font-size: 0.7rem; background: #e8f5e9; color: #2e7d32; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_import')}</button>
+                        <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: 32px; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.8rem; outline: none;">
+                        <button class="slot-btn import" data-import-btn="${slotId}" style="width: 32px; height: 32px; flex: none; padding: 0; background: #e8f5e9; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/download-cloud.svg" alt="${t('ui_slot_import')}" style="width: 16px; height: 16px; filter: invert(41%) sepia(12%) saturate(2641%) hue-rotate(81deg) brightness(94%) contrast(87%);">
+                        </button>
                     </div>
                     <div data-import-result="${slotId}" style="font-size: 0.7rem; color: #999; margin-top: 7px;"></div>
                 </div>
@@ -677,7 +679,6 @@ function openSlotModal() {
             shareModal.remove();
         };
 
-        shareModal.querySelector('.close-modal').onclick = closeShareModal;
         shareModal.onclick = (e) => {
             if (e.target === shareModal) closeShareModal();
         };
@@ -716,16 +717,20 @@ function openSlotModal() {
             slotsHtml += `
                 <div class="slot-modal-item" style="position: relative; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
                     <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="position: absolute; top: 7px; right: 9px; background: transparent; color: #b0b0b0; border: none; width: auto; height: auto; padding: 0; border-radius: 0; display: block; font-size: 0.95rem; line-height: 1; cursor: pointer;">&times;</button>
-                    <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
-                        <div style="display: flex; align-items: center; gap: 10px; padding-right: 18px;">
-                            <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333;">Slot ${i}</span>
-                            <button class="slot-btn save" data-slot="${i}" style="width: 38px; flex: none; padding: 3px 0; font-size: 0.65rem; background: #ffe4ef; color: #d93d77; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_save')}</button>
-                        </div>
+                    <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left; flex: 1; min-width: 0;">
+                        <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333;">Slot ${i}</span>
                         <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${info || t('ui_slot_empty')}</span>
                     </div>
-                    <div class="slot-modal-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-right: 10px;">
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="width: 72px; height: 28px; flex: none; padding: 0; font-size: 0.78rem; background: #e3f2fd; color: #1976d2; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center;">${t('ui_slot_load')}</button>
-                        <button class="slot-btn share" data-slot="${i}" style="width: 72px; height: 28px; flex: none; padding: 0; font-size: 0.78rem; background: #fff1cc; color: #b88400; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; text-align: center;">${t('ui_slot_share')}</button>
+                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: 6px; padding-top: 10px; padding-right: 2px;">
+                        <button class="slot-btn save" data-slot="${i}" style="width: 32px; height: 28px; flex: none; padding: 0; background: #ffe4ef; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/save.svg" alt="${t('ui_slot_save')}" style="width: 16px; height: 16px; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                        </button>
+                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="width: 32px; height: 28px; flex: none; padding: 0; background: #e3f2fd; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/upload.svg" alt="${t('ui_slot_load')}" style="width: 16px; height: 16px; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
+                        </button>
+                        <button class="slot-btn share" data-slot="${i}" style="width: 32px; height: 28px; flex: none; padding: 0; background: #fff1cc; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/cloud.svg" alt="${t('ui_slot_share')}" style="width: 16px; height: 16px; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                        </button>
                     </div>
                 </div>`;
         }
@@ -736,8 +741,6 @@ function openSlotModal() {
 
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 350px; padding: ${isMobile ? '15px' : '20px'};">
-            <span class="close-modal" style="${isMobile ? 'top: 5px; right: 15px;' : ''}">&times;</span>
-            <h3 style="margin-top:0; color:#ff4d8d; font-size:${isMobile ? '0.95rem' : '1.1rem'};">${t('ui_slot_title')}</h3>
             <div class="slot-modal-list">
                 ${renderSlots()}
             </div>
@@ -753,7 +756,6 @@ function openSlotModal() {
         history.back();
     };
 
-    modal.querySelector('.close-modal').onclick = closeSlotModal;
     modal.onclick = (e) => { if (e.target === modal) closeSlotModal(); };
 
     modal.addEventListener('click', (e) => {
@@ -1131,17 +1133,19 @@ function showCustomConfirm(message, onConfirmCallback, onResetCallback, confirmL
     const pad = isMobile ? '20px 15px' : '25px 20px';
     const btnSize = '0.75rem';
     const modalWidth = isMobile ? '320px' : '400px';
+    const btnMinWidth = isMobile ? '80px' : '100px';
+    const btnHeight = isMobile ? '28px' : '32px';
 
-    const resetBtnHtml = onResetCallback ? `<button class="calc-btn reset-btn" style="background:#2196F3; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${t('gacha_reset')}</button>` : '';
+    const resetBtnHtml = onResetCallback ? `<button class="calc-btn reset-btn" style="background:#2196F3; min-width:${btnMinWidth}; font-size:${btnSize}; height:${btnHeight}; padding:0 8px; border-radius:8px;">${t('gacha_reset')}</button>` : '';
     const finalConfirmLabel = confirmLabel || t('ui_confirm');
 
     modal.innerHTML = `
         <div class="modal-content" style="max-width: ${modalWidth}; text-align: center; padding: ${pad};">
             <p style="margin-bottom: 20px; font-size: ${pSize}; color: #333; line-height: 1.5; font-weight: bold; word-break: keep-all;">${message}</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
                 ${resetBtnHtml}
-                <button class="calc-btn cancel-btn" style="background:#eee; color:#666 !important; min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${t('ui_cancel')}</button>
-                <button class="calc-btn confirm-btn" style="min-width:80px; font-size:${btnSize}; height:27px; padding:0;">${finalConfirmLabel}</button>
+                <button class="calc-btn cancel-btn" style="background:#eee; color:#666 !important; min-width:${btnMinWidth}; font-size:${btnSize}; height:${btnHeight}; padding:0 8px; border-radius:8px;">${t('ui_cancel')}</button>
+                <button class="calc-btn confirm-btn" style="min-width:${btnMinWidth}; font-size:${btnSize}; height:${btnHeight}; padding:0 8px; border-radius:8px;">${finalConfirmLabel}</button>
             </div>
         </div>
     `;

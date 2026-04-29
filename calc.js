@@ -59,8 +59,7 @@ function applyCalcThemeColor(color) {
     });
 
     document.querySelectorAll('.plan-type-btn.active').forEach(btn => {
-        btn.style.borderColor = color;
-        btn.style.boxShadow = `0 0 8px ${color}66`;
+        btn.style.setProperty('--idol-color', color);
     });
 
     const runCalcBtn = document.getElementById('btn-run-calc');
@@ -154,19 +153,12 @@ function bindIdolSelector(grid, refreshAll) {
             if (item.classList.contains('active')) return;
 
             calcStore.setSelectedIdol(item.dataset.id);
-            document.querySelectorAll('.idol-sel-item').forEach(i => {
-                i.classList.remove('active');
-                i.style.borderColor = '';
-                i.style.boxShadow = '';
-                i.style.transform = '';
-            });
+            document.querySelectorAll('.idol-sel-item').forEach(i => i.classList.remove('active'));
 
-            item.classList.add('active');
             const color = getIdolDisplayColor(item.dataset.id);
-            item.style.borderColor = color;
-            item.style.borderWidth = '3px';
-            item.style.boxShadow = `0 0 12px ${color}b3`;
-            item.style.transform = 'scale(1.1)';
+            item.style.setProperty('--idol-color', color);
+            item.style.setProperty('--idol-color-shadow', color + 'b3');
+            item.classList.add('active');
 
             applyCalcThemeColor(color);
             refreshAll();
@@ -593,7 +585,11 @@ function startWeeklyPlan(type) {
 
     renderWeeklyPlan(calcStore, calcPlans, idolList, handlers);
     window.refreshAll = refreshAll;
-    refreshAll();
+    
+    // [수정] 렌더링 후 DOM이 확실히 준비된 시점에 초기 계산 수행
+    requestAnimationFrame(() => {
+        refreshAll();
+    });
 }
 
 /**
@@ -696,25 +692,28 @@ function updateSidePanelBonuses(panel, counts) {
 }
 
 function setupPItemSelector() {
-    const container = document.getElementById('p-item-container');
-    if (!container) return;
 
-    const checkbox = document.getElementById('p-item-checkbox');
-    if (checkbox) {
-        checkbox.checked = !!calcStore.pItemChecked;
-        checkbox.onchange = (e) => {
-            calcStore.pItemChecked = e.target.checked;
+    const pItemToggle = document.getElementById('p-item-toggle');
+    if (pItemToggle) {
+        pItemToggle.onclick = (e) => {
+            e.preventDefault();
+            calcStore.pItemChecked = !calcStore.pItemChecked;
             calcStore.save();
+            pItemToggle.classList.toggle('active', calcStore.pItemChecked);
             refreshAll();
         };
     }
 
-    const srCheckbox = document.getElementById('sr-checkbox');
-    if (srCheckbox) {
-        srCheckbox.checked = !!calcStore.isSR;
-        srCheckbox.onchange = (e) => {
-            calcStore.isSR = e.target.checked;
+    const srToggle = document.getElementById('sr-toggle');
+    if (srToggle) {
+        srToggle.onclick = (e) => {
+            e.preventDefault();
+            calcStore.isSR = !calcStore.isSR;
             calcStore.save();
+            
+            // 즉시 시각적 상태 업데이트
+            srToggle.classList.toggle('active', calcStore.isSR);
+            
             refreshAll();
         };
     }
@@ -729,31 +728,34 @@ function setupPItemSelector() {
 
     if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
 
-    const currentType = calcStore.type;
-    const itemsBySlot = pItemSlots[currentType] || [];
-    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+    const container = document.getElementById('p-item-container');
+    if (container) {
+        const currentType = calcStore.type;
+        const itemsBySlot = pItemSlots[currentType] || [];
+        const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
-    container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
-        const val = calcStore.pItems[idx];
-        slot.style.borderColor = val ? 'transparent' : '#ddd';
-        slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
+        container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
+            const val = calcStore.pItems[idx];
+            slot.style.borderColor = val ? 'transparent' : '#ddd';
+            slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
 
-        // Hover 효과 (JS로 추가)
-        slot.onmouseenter = () => { slot.style.backgroundColor = `${idolColor}11`; };
-        slot.onmouseleave = () => { slot.style.backgroundColor = 'white'; };
+            // Hover 효과 (JS로 추가)
+            slot.onmouseenter = () => { slot.style.backgroundColor = `${idolColor}11`; };
+            slot.onmouseleave = () => { slot.style.backgroundColor = 'white'; };
 
-        slot.onclick = (e) => {
-            e.stopPropagation();
-            showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll);
-        };
-    });
+            slot.onclick = (e) => {
+                e.stopPropagation();
+                showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll);
+            };
+        });
 
-    const infoBtn = container.querySelector('.p-item-info-btn');
-    if (infoBtn) {
-        infoBtn.onclick = (e) => {
-            e.stopPropagation();
-            showPItemInfoTooltip(infoBtn, pItemDescriptions);
-        };
+        const infoBtn = container.querySelector('.p-item-info-btn');
+        if (infoBtn) {
+            infoBtn.onclick = (e) => {
+                e.stopPropagation();
+                showPItemInfoTooltip(infoBtn, pItemDescriptions);
+            };
+        }
     }
 }
 

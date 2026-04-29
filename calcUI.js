@@ -61,11 +61,21 @@ function renderMemorySlotContent(memArray, isJa, slotIndex) {
  * 하단 활동 카운터 UI 업데이트
  */
 export function updateActivityCountsUI(store, counts) {
+    const isJa = state.currentLang === 'ja';
     const counterContainer = document.getElementById('activity-counter');
     if (!counterContainer) return;
 
     // 1. 메인 활동 아이콘들 (레슨, 휴식 등)
-    const allPossibleValues = Array.from(new Set(Object.values(store.weeks).map(w => w.value))).filter(v => v);
+    let allPossibleValues = Array.from(new Set(Object.values(store.weeks).map(w => w.value))).filter(v => v);
+    
+    // 보컬, 댄스, 비주얼 레슨은 0회여도 무조건 포함
+    const baseLessons = ['lessonvo', 'lessondan', 'lessonvi'];
+    baseLessons.forEach(lesson => {
+        if (!allPossibleValues.includes(lesson)) {
+            allPossibleValues.push(lesson);
+        }
+    });
+
     const sortOrder = ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'];
 
     allPossibleValues.sort((a, b) => {
@@ -73,24 +83,63 @@ export function updateActivityCountsUI(store, counts) {
         return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
     });
 
-    let html = '<div class="main-counts">';
-    allPossibleValues.forEach(val => {
+    const activityLabels = {
+        lessonvo: { ko: '보컬 레슨', ja: 'Voレッスン' },
+        lessondan: { ko: '댄스 레슨', ja: 'Daレッスン' },
+        lessonvi: { ko: '비주얼 레슨', ja: 'Viレッスン' },
+        class_hajime: { ko: '수업/영업', ja: '授業/営業' },
+        class_nia: { ko: '수업/영업', ja: '授業/営業' },
+        goout_hajime: { ko: '외출', ja: 'おでかけ' },
+        goout_nia: { ko: '외출', ja: 'おでかけ' },
+        gift_hajime: { ko: '활동지급', ja: '活動支給' },
+        gift_nia: { ko: '활동지급', ja: '活動支給' },
+        advice: { ko: '상담', ja: '相談' },
+        spclass: { ko: '특별지도', ja: '特別指導' },
+        audition: { ko: '오디션', ja: 'オーディション' },
+        test: { ko: '시험', ja: '試験' },
+        oikomi: { ko: '追い込み', ja: '追い込み' }
+    };
+
+    // 보컬, 댄스, 비주얼 레슨 (3열 격자)
+    let html = '<div class="activity-grid base-lessons-grid">';
+    baseLessons.forEach(val => {
         const count = counts.total[val] || 0;
         const spCount = (val === 'lessonvo' ? counts.lessons.vocal.sp : (val === 'lessondan' ? counts.lessons.dance.sp : (val === 'lessonvi' ? counts.lessons.visual.sp : 0)));
 
         html += `
-            <div class="counter-item" style="position: relative; flex-direction: column; height: 36px; min-width: 32px;">
-                <div style="display: flex; align-items: center; gap: 2px; opacity: ${count > 0 ? 1 : 0.3};">
-                    <img src="icons/cal/${val}.webp" alt="${val}" style="width: 20px; height: 20px;">
-                    <span class="counter-count">${count}</span>
+            <div class="activity-cell active-cell activity-${val}">
+                <div class="activity-cell-icon">
+                    <img src="icons/cal/${val}.webp" class="activity-mini-icon">
                 </div>
-                ${spCount > 0 ? `<div style="font-size: 0.65rem; color: #ff4d8d; font-weight: bold; margin-top: -2px;">SP ${spCount}</div>` : ''}
+                <div class="activity-cell-count">
+                    <span class="main-count">${count}${spCount > 0 ? `<span class="sp-sub-count">(SP ${spCount})</span>` : ''}</span>
+                </div>
             </div>
         `;
     });
     html += '</div>';
 
-    const isJa = state.currentLang === 'ja';
+    // 나머지 활동들 (5열 격자)
+    const otherValues = allPossibleValues.filter(val => !baseLessons.includes(val));
+    if (otherValues.length > 0) {
+        html += '<div class="activity-grid other-activities-grid">';
+        otherValues.forEach(val => {
+            const count = counts.total[val] || 0;
+            html += `
+                <div class="activity-cell ${count > 0 ? 'active-cell' : 'empty-cell'}">
+                    <div class="activity-cell-icon">
+                        <img src="icons/cal/${val}.webp" class="activity-mini-icon">
+                    </div>
+                    <div class="activity-cell-count">
+                        <span class="main-count">${count}</span>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+    }
+
+
 
     const renderDist = (label, total, m, a, color = '#ff4d8d', bg = 'rgba(255, 77, 141, 0.05)', type = 'e') => `
         <div class="enhance-item-content compact-dist" style="background: ${bg}; border-color: ${color}33;">
@@ -401,8 +450,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
     const idolsHtml = idolList.map(name => {
         const isActive = store.selectedIdol === name;
         const color = getIdolDisplayColor(name);
-        const style = isActive ? `style="border-color: ${color}; border-width: 3px; box-shadow: 0 0 12px ${color}b3; transform: scale(1.1);"` : '';
-        return `<div class="idol-sel-item ${isActive ? 'active' : ''}" data-id="${name}" ${style}><img src="icons/idolicons/${name}.png" onerror="this.src='icons/idol.png'"></div>`;
+        const colorShadow = color + 'b3'; // 70% alpha for shadow
+        const variables = isActive ? `style="--idol-color: ${color}; --idol-color-shadow: ${colorShadow};"` : '';
+        return `<div class="idol-sel-item ${isActive ? 'active' : ''}" data-id="${name}" ${variables}><img src="icons/idolicons/${name}_c.png" onerror="this.src='icons/idol.png'"></div>`;
     }).join('');
 
     const weekNumbers = Object.keys(planData.weeks).map(Number).sort((a, b) => b - a);
@@ -445,27 +495,23 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <button class="calc-btn recommend-btn" id="btn-recommend-cards" style="background: linear-gradient(135deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%); color: #fff; border: 1px solid #d991c7; display: flex; align-items: center; justify-content: center; padding: 0 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); white-space: nowrap;">${isJa ? 'おすすめ' : '추천'}</button>
                     <button class="back-btn primary-btn">${isJa ? '戻る' : '뒤로가기'}</button>
                 </div>
-                <div class="idol-selection-info">
-                    <span data-i18n="calc_idol_desc">친애도 20 이상 기준</span>
-                </div>
+
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
                 <div class="idol-options-row">
                     ${(store.type === 'nia' || store.type === 'hajime') ? `
-                    <label class="idol-opt-label">
-                        <input type="checkbox" id="sr-checkbox" ${store.isSR ? 'checked' : ''}>
-                        <span>SR</span>
-                    </label>
-                    <label class="idol-opt-label">
-                        <input type="checkbox" id="p-item-checkbox" ${store.pItemChecked ? 'checked' : ''}>
-                        <span class="p-item-check-txt">${isJa ? '才能開花 3' : '재능개화 3'}</span>
-                    </label>
+                    <div class="sr-toggle-item ${store.isSR ? 'active' : ''}" id="sr-toggle">
+                        <img src="icons/sr.png" onerror="this.src='icons/sr.webp'">
+                    </div>
+                    <div class="talent-toggle-item ${store.pItemChecked ? 'active' : ''}" id="p-item-toggle" style="--idol-color: ${idolColor};">
+                        <img src="icons/sainou.webp">
+                    </div>
                     <button class="talent-bloom-info-btn">i</button>
                     <div class="idol-opt-divider"></div>
                     ` : ''}
                     <div class="plan-type-btns-group">
                         ${['sense', 'logic', 'anomaly'].map(pt => {
         const isActive = store.planType === pt;
-        const activeStyle = isActive ? `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66; opacity: 1; transform: scale(1.1);"` : '';
+        const activeStyle = isActive ? `style="--idol-color: ${idolColor};"` : '';
         return `<div class="plan-type-btn ${isActive ? 'active' : ''}" data-type="${pt}" ${activeStyle}><img src="icons/${pt}.webp"></div>`;
     }).join('')}
                     </div>
@@ -547,6 +593,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         </div>
     `;
 
+    document.querySelectorAll('.plan-type-btn.active').forEach(btn => {
+        btn.style.setProperty('--idol-color', idolColor);
+    });
     root.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
         updateSPBadge(w, store.selectedIdol);
         updateMainLabel(w);
