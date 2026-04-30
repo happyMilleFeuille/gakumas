@@ -77,7 +77,7 @@ export const videoList = {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             url: "https://youtu.be/97MA984Yzcc?si=ehD367nFFQFnISAY",
-            date: "2025.06.02."
+            date: "2025.07.23."
         },
         {
             title: "SUPREMACY",
