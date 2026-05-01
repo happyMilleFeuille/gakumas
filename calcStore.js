@@ -145,14 +145,35 @@ export const calcStore = {
         this.selectedIdol = saved.selectedIdol || 'saki';
         this.planType = saved.planType || 'sense';
         this.weeks = saved.weeks || {};
-        this.planCards = {
-            ...createDefaultPlanCards(),
-            ...(saved.planCards || {})
-        };
-        this.planSkills = {
-            ...createDefaultPlanSkills(),
-            ...(saved.planSkills || {})
-        };
+
+        // 마이그레이션: planCards가 과거 방식(단일 배열)인지 확인 후 변환
+        if (Array.isArray(saved.planCards)) {
+            this.planCards = {
+                sense: [...saved.planCards],
+                logic: [...saved.planCards],
+                anomaly: [...saved.planCards]
+            };
+        } else {
+            this.planCards = {
+                ...createDefaultPlanCards(),
+                ...(saved.planCards || {})
+            };
+        }
+
+        // 마이그레이션: planSkills가 과거 방식(단일 객체, sense/logic/anomaly 키가 없음)인지 확인 후 변환
+        if (saved.planSkills && !saved.planSkills.sense && !saved.planSkills.logic && !saved.planSkills.anomaly) {
+            this.planSkills = {
+                sense: { ...saved.planSkills },
+                logic: { ...saved.planSkills },
+                anomaly: { ...saved.planSkills }
+            };
+        } else {
+            this.planSkills = {
+                ...createDefaultPlanSkills(),
+                ...(saved.planSkills || {})
+            };
+        }
+
         this.cardChecked = saved.cardChecked || {};
         this.cardExtraChecked = saved.cardExtraChecked || {};
         this.cardEventChecked = saved.cardEventChecked || {};
@@ -163,7 +184,14 @@ export const calcStore = {
         this.pItems = Array.isArray(saved.pItems) ? saved.pItems : [null, null, null, null, null];
         this.pItemChecked = saved.pItemChecked === true || saved.pItemChecked === 'true';
         this.isSR = saved.isSR === true || saved.isSR === 'true';
-        this.memories = Array.isArray(saved.memories) ? saved.memories : [null, null, null, null];
+
+        // 마이그레이션: 메모리가 과거 방식(단일 문자열 요소 배열)인지 확인 후 배열의 배열로 변환
+        this.memories = Array.isArray(saved.memories) ? saved.memories.map(m => {
+            if (m === null) return [];
+            if (!Array.isArray(m)) return [m];
+            return m;
+        }) : [[], [], [], []];
+
         this.isKyouka = !!saved.isKyouka;
         this.recommendSettings = { ...createDefaultRecommendSettings(), ...(saved.recommendSettings || {}) };
     },
@@ -177,15 +205,35 @@ export const calcStore = {
         const saved = this.loadPersistedState(type);
         this.applySavedState(saved);
 
-        // 초기 주간 계획 설정 (저장된 게 없으면 기본값)
+        // 주간 계획 검증 및 동기화 (업데이트 시 누락되거나 잘못된 값 방지)
         const planData = calcPlans[type];
-        if (Object.keys(this.weeks).length === 0 && planData) {
+        if (planData && planData.weeks) {
+            const currentWeeks = {};
+            const isInitial = Object.keys(this.weeks).length === 0;
+
             Object.keys(planData.weeks).forEach(w => {
                 const options = planData.weeks[w];
-                if (options && options.length > 0) {
-                    this.weeks[w] = { value: options[0].value, opts: {} };
+                const savedWeek = this.weeks[w];
+
+                if (isInitial) {
+                    if (options && options.length > 0) {
+                        currentWeeks[w] = { value: options[0].value, opts: {} };
+                    }
+                } else {
+                    const isValidValue = savedWeek && 
+                        (savedWeek.value === '' || (options && options.some(opt => opt.value === savedWeek.value)));
+                    
+                    if (isValidValue) {
+                        currentWeeks[w] = savedWeek;
+                    } else {
+                        // 주차가 새로 추가되었거나, 이전 선택값이 무효화된 경우 기본값으로 덮어씀
+                        if (options && options.length > 0) {
+                            currentWeeks[w] = { value: options[0].value, opts: {} };
+                        }
+                    }
                 }
             });
+            this.weeks = currentWeeks;
         }
 
         // 읽기 성공 시 주 저장소/보조 저장소를 즉시 다시 맞춰 둔다.
