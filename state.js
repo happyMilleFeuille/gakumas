@@ -32,8 +32,14 @@ export const idolColors = {
     tsubame: "#7B68E8"
 };
 
+const getBrowserLang = () => {
+    const lang = navigator.language || navigator.userLanguage;
+    if (lang && lang.startsWith('ko')) return 'ko';
+    return 'ja'; // 기본값 일본어
+};
+
 export const state = {
-    currentLang: localStorage.getItem('lang') || 'ko',
+    currentLang: localStorage.getItem('lang') || getBrowserLang(),
     filters: {
         plan: [],
         attr: [],
