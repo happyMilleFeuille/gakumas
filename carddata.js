@@ -1930,7 +1930,7 @@ export const cardList = [
                 "sp_lessonup",
                 "supportrateup",
                 "get_mental",
-                "enhance_memtal",
+                "enhance_mental",
                 "event_paraup"
             ]
     },
