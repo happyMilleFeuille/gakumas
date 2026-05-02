@@ -120,7 +120,7 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: 1rem;
-    padding: 0.5rem 0;
+    padding: 0.8rem 0.5rem;
     -ms-overflow-style: none;
     scrollbar-width: none;
     max-width: 1000px;
@@ -143,19 +143,19 @@
     overflow: hidden;
     padding-bottom: 0;
     /* 하단 여백 제거 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .idol-video-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .video-thumb-wrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
-    border-radius: 8px;
+    border-radius: 8px 8px 0 0;
     overflow: hidden;
     background: #000;
 }
@@ -397,7 +397,7 @@
     position: relative;
     /* 날짜 위치 기준점 */
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 8px 8px 0 0;
 }
 
 .video-date {
