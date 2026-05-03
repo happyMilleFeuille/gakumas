@@ -44,11 +44,13 @@ export function openGachaRatesModal() {
     const pool = getGachaPool(type);
 
     let activeConfig = CURRENT_PICKUPS[type] || {};
+    let config = {};
+    let activeName = "";
 
     if (type === 'selection') {
         activeConfig = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         config = activeConfig?.pool || { pssr: [] };
-        activeName = activeConfig?.name || "";
+        activeName = (lang === 'ja' && activeConfig?.name_ja) ? activeConfig.name_ja : (activeConfig?.name || "");
         if (activeConfig?.ssr_guaranteed) {
             strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
         }
@@ -78,7 +80,7 @@ export function openGachaRatesModal() {
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-        const cardData = produceList.find(c => c.id['include'] ? c.id : c.id) === pid; // 기존 로직 유지
+        const cardData = produceList.find(c => c.id === pid);
         activeName = activeConfig.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
     }
 
