@@ -7,7 +7,7 @@ export const produceList = [
     { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-11-28", another: true, jumpTime2: 8.1 },
     { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
     { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
-    { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-05-09", another: true },
+    { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", jumpTime2: 7.1, source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
@@ -62,7 +62,7 @@ export const produceList = [
     { id: "ssrmao_1st2another", name: "관국", name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-08-01", another: true },
     { id: "ssrmao_1st3another", name: "가장광소곡", name_ja: "仮装狂騒曲", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", plan: "sense", source: "limited", another: true },
-    { id: "ssrmao_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-01", plan: "sense", source: "limited", another: true },
+    { id: "ssrmao_1st5another", name: "해피 밀푀유", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-01", jumpTime2: 7.2, plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st7another", name: "벚꽃 포토그래프", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st8another", name: "고금동서 식은 죽 먹기", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true, jumpTime2: 7.3 },
@@ -97,7 +97,7 @@ export const produceList = [
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
     { id: "ssrtemari_2nd", name: "아이비", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3 },
-    { id: "ssrtemari_3rd", name: "대체 언제부터", osusume: "fullpower", name_ja: "一体いつから", rarity: "PSSR", releasedAt: "2026-01-16", plan: "anomaly", source: "normal", youtube_url: "https://youtu.be/PE_iyDsY5xM?si=8v9OKPXlkxqQwl4r" },
+    { id: "ssrtemari_3rd", name: "대체 언제부터", osusume: "fullpower", name_ja: "一体いつから", rarity: "PSSR", releasedAt: "2026-01-16", plan: "anomaly", jumpTime2: 9.3, source: "normal", youtube_url: "https://youtu.be/PE_iyDsY5xM?si=8v9OKPXlkxqQwl4r" },
 
     // --- 릴리야 SSR (PSSR) ---
     { id: "ssrlilja_1st", name: "백선", name_ja: "白線", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 6.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/m4VahiqP9vA?si=SUBYu3W6gLIyRf9M" },
