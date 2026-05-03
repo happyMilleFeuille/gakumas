@@ -43,55 +43,43 @@ export function openGachaRatesModal() {
     let strategy = { ...(GACHA_STRATEGIES[type] || GACHA_STRATEGIES.normal) };
     const pool = getGachaPool(type);
 
-    let config = CURRENT_PICKUPS[type] || {};
-    let activeName = "";
+    let activeConfig = CURRENT_PICKUPS[type] || {};
 
     if (type === 'selection') {
-        const sel = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
-        if (sel) {
-            config = sel.pool || { pssr: [] };
-            activeName = sel.name;
-            config.isOnlyPool = !!sel.only_pool_pssr;
-            if (sel.ssr_guaranteed) {
-                strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
-            }
+        activeConfig = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
+        config = activeConfig?.pool || { pssr: [] };
+        activeName = activeConfig?.name || "";
+        if (activeConfig?.ssr_guaranteed) {
+            strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
         }
     } else if (type === 'normal') {
-        const norm = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
-        if (norm) {
-            config = norm.pool || config;
-            const firstPSSR = config.pssr?.[0];
-            const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-            const cardData = produceList.find(c => c.id === pid);
-            activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
-        }
+        activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+        config = activeConfig?.pool || config;
+        const firstPSSR = config.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
+        activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
     } else if (type === 'limited') {
-        const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
-        if (lim) {
-            config = lim.pool || config;
-            const firstPSSR = config.pssr?.[0];
-            const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-            const cardData = produceList.find(c => c.id === pid);
-            activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
-        }
+        activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
+        config = activeConfig?.pool || config;
+        const firstPSSR = config.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
+        activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
     } else if (type === 'unit') {
-        const unt = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
-        if (unt) {
-            config = unt.pool || config;
-            const firstPSSR = config.pssr?.[0];
-            const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-            const cardData = produceList.find(c => c.id === pid);
-            activeName = unt.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
-        }
+        activeConfig = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+        config = activeConfig?.pool || config;
+        const firstPSSR = config.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
+        activeName = activeConfig.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
     } else if (type === 'fes') {
-        const fes = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
-        if (fes) {
-            config = fes.pool || config;
-            const firstPSSR = config.pssr?.[0];
-            const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-            const cardData = produceList.find(c => c.id === pid);
-            activeName = fes.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
-        }
+        activeConfig = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+        config = activeConfig?.pool || config;
+        const firstPSSR = config.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id['include'] ? c.id : c.id) === pid; // 기존 로직 유지
+        activeName = activeConfig.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
     }
 
     const rateKeys = { PSSR: 'PSSR', SSSR: 'SSSR', PSR: 'PSR', SR_CARD: 'SSR_CARD', PR: 'PR', R_CARD: 'R_CARD' };
@@ -125,7 +113,7 @@ export function openGachaRatesModal() {
 
         let results = [];
 
-        if (config.isOnlyPool) {
+        if (activeConfig?.only_pool_pssr) {
             const nRate = totalRate / rarityPool.length;
             const gRate = totalGuaranteed / rarityPool.length;
             results = rarityPool.map(c => ({ card: c, nRate, gRate, forceNoPk: true }));

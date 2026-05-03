@@ -439,9 +439,19 @@ async function handleGachaClick(ui, mode, animation) {
         ui.btn1?.style.pointerEvents === 'none') return;
 
     playSound('gasya/gasyaclick.mp3');
-    const cost = mode === 1 ? 250 : 2500;
     
-    // 즉시 버튼 비활성화 (스피너 표시 제거)
+    // 현재 가챠 설정 가져오기 (무료 여부 확인용)
+    let activeCfg = null;
+    if (state.gachaType === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId);
+    else if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
+    else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
+    else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
+    else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId);
+
+    const isFree = activeCfg?.is_free === true;
+    const cost = isFree ? 0 : (mode === 1 ? 250 : 2500);
+    
+    // 즉시 버튼 비활성화
     if (ui.btn1) ui.btn1.style.pointerEvents = 'none';
     if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
     const spinner = document.getElementById('gacha-spinner');
@@ -522,8 +532,20 @@ function updateGachaButtonsState(ui) {
         if (!isResultView && state.gachaType === 'selection') ui.btn1.style.display = 'none';
         else {
             ui.btn1.style.display = 'block';
-            ui.btn1.disabled = isResultView ? false : (state.jewels < 250);
-            if (!isResultView) ui.btn1.innerHTML = `${t.gacha_1pull}<br><span class='btn-cost'>250</span>`;
+            // 무료 여부 확인
+            let activeCfg = null;
+            if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
+            else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
+            else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
+            else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId);
+            const isFree = activeCfg?.is_free === true;
+
+            ui.btn1.disabled = isResultView ? false : (!isFree && state.jewels < 250);
+            if (!isResultView) {
+                const displayCost = isFree ? 'FREE' : '250';
+                const style = isFree ? ' style="font-size: 0.85em;"' : '';
+                ui.btn1.innerHTML = `${t.gacha_1pull}<br><span class='btn-cost'${style}>${displayCost}</span>`;
+            }
         }
     }
     
@@ -532,21 +554,44 @@ function updateGachaButtonsState(ui) {
             ui.btn10.style.display = 'none';
         } else if (!isResultView && state.gachaType === 'selection') {
             const sel = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
-            const pullCount = sel?.pull_count || 10, maxPulls = sel?.max_pulls || Infinity, cost = pullCount * 250;
+            const pullCount = sel?.pull_count || 10, maxPulls = sel?.max_pulls || Infinity;
+            const isFree = sel?.is_free === true;
+            const cost = isFree ? 0 : (pullCount * 250);
+            const displayCost = isFree ? 'FREE' : cost;
+            
             ui.btn10.style.display = 'block';
-            if (currentPulls >= maxPulls) { ui.btn10.disabled = true; ui.btn10.style.opacity = '0.5'; }
-            else { ui.btn10.disabled = (state.jewels < cost); ui.btn10.style.opacity = '1'; }
+            if (currentPulls >= maxPulls) { 
+                ui.btn10.disabled = true; 
+                ui.btn10.style.opacity = '0.5'; 
+            } else { 
+                ui.btn10.disabled = !isFree && (state.jewels < cost); 
+                ui.btn10.style.opacity = '1'; 
+            }
             const label = t.gacha_pull_count.replace('{count}', pullCount);
-            ui.btn10.innerHTML = `${label}<br><span class='btn-cost'>${cost}</span>`;
+            const style = isFree ? ' style="font-size: 0.85em;"' : '';
+            ui.btn10.innerHTML = `${label}<br><span class='btn-cost'${style}>${displayCost}</span>`;
             ui.btn10.onclick = () => handleGachaClick(ui, pullCount, ui.animationInstance);
         } else {
             ui.btn10.style.display = 'block'; ui.btn10.style.opacity = '1';
+            
+            // 무료 여부 확인
+            let activeCfg = null;
+            if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
+            else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
+            else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
+            else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId);
+            const isFree = activeCfg?.is_free === true;
+
             // 결과 화면에서는 현재 버튼에 표시된 비용(250 or 2500)으로 체크
             const costSpan = ui.btn10.querySelector('.btn-cost');
-            const cost = (isResultView && costSpan) ? (parseInt(costSpan.textContent) || 2500) : 2500;
-            ui.btn10.disabled = (state.jewels < cost);
+            const currentCostText = costSpan?.textContent;
+            const cost = (isResultView && currentCostText && currentCostText !== 'FREE') ? (parseInt(currentCostText) || 2500) : (isFree ? 0 : 2500);
+            
+            ui.btn10.disabled = isResultView ? false : (!isFree && state.jewels < cost);
             if (!isResultView) {
-                ui.btn10.innerHTML = `${t.gacha_10pull}<br><span class='btn-cost'>${cost}</span>`;
+                const displayCost = isFree ? 'FREE' : '2500';
+                const style = isFree ? ' style="font-size: 0.85em;"' : '';
+                ui.btn10.innerHTML = `${t.gacha_10pull}<br><span class='btn-cost'${style}>${displayCost}</span>`;
                 ui.btn10.onclick = () => handleGachaClick(ui, 10, ui.animationInstance);
             }
         }

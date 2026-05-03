@@ -77,7 +77,7 @@ export const GACHA_STRATEGIES = {
     limited: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'limited') },
     unit: { rates: UNIT_RATES, guaranteed: UNIT_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'unit') },
     fes: { rates: FES_RATES, guaranteed: FES_GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) },
-    selection: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) }
+    selection: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool, isGuaranteedSlot, rates, guaranteed, customPickups) => handleStandardPickup(key, pool, 'selection', isGuaranteedSlot, rates, guaranteed, customPickups) }
     };
 
 function isReleased(card) {
@@ -90,23 +90,36 @@ function isReleased(card) {
 export function getGachaPool(poolType) {
     let config = CURRENT_PICKUPS[poolType] || {};
     
-    // [추가] 가챠 타입별 풀 및 날짜 설정 가져오기
+    // [추가] 가챠 타입별 상위 설정 객체 가져오기 (exclude 필드 참조용)
+    let activeConfig = config;
     if (poolType === 'normal') {
-        const norm = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
-        if (norm) config = norm.pool || config;
+        activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+        config = activeConfig?.pool || config;
     } else if (poolType === 'limited') {
-        const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
-        if (lim) config = lim.pool || config;
+        activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
+        config = activeConfig?.pool || config;
     } else if (poolType === 'unit') {
-        const unt = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
-        if (unt) config = unt.pool || config;
+        activeConfig = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+        config = activeConfig?.pool || config;
     } else if (poolType === 'fes') {
-        const fes = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
-        if (fes) config = fes.pool || config;
+        activeConfig = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+        config = activeConfig?.pool || config;
+    } else if (poolType === 'selection') {
+        const selId = state.activeSelectionId || SELECTION_CONFIG[0].id;
+        activeConfig = SELECTION_CONFIG.find(c => c.id === selId) || SELECTION_CONFIG[0];
+        config = activeConfig?.pool || config;
     }
 
     const validSources = ['normal'];
-    if (poolType === 'limited') validSources.push('limited');
+    
+    // [수정] 셀렉션 가챠일 때 config에 is_limited가 있으면 한정 풀 포함
+    let isLimitedSelection = false;
+    if (poolType === 'selection') {
+        const sel = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId);
+        if (sel?.is_limited) isLimitedSelection = true;
+    }
+
+    if (poolType === 'limited' || isLimitedSelection) validSources.push('limited');
     if (poolType === 'unit') validSources.push('limited_u');
     if (poolType === 'fes') validSources.push('limited_f');
 
@@ -158,18 +171,36 @@ export function getGachaPool(poolType) {
         pssrPool = produceList.filter(p => p.rarity === 'PSSR' && isInPool(p, poolType === 'unit'));
     }
 
-    return { 
-        PSSR: pssrPool,
-        SSSR: cardList.filter(card => card.rarity === 'SSR' && isInPool(card)),
-        PSR: produceList.filter(p => p.rarity === 'PSR' && isInPool(p)),
-        SR_CARD: cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased).length > 0 
-                 ? cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased) 
-                 : dummyData.SR_CARD,
-        PR: produceList.filter(p => p.rarity === 'PR' && isInPool(p)).filter(isReleased),
-        R_CARD: cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased).length > 0 
-                 ? cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased) 
-                 : dummyData.R_CARD
+    // [추가] 제외 목록(exclude) 처리
+    const exclude = activeConfig?.exclude || {};
+    const filterExclude = (list, type) => {
+        const exList = exclude[type] || [];
+        if (exList.length === 0) return list;
+        // ID 공백 제거 및 대소문자 무시 비교 (안전용)
+        const normalizedExList = exList.map(id => id.trim());
+        return list.filter(item => !normalizedExList.includes(item.id));
     };
+
+    const finalPool = { 
+        PSSR: filterExclude(pssrPool, 'pssr'),
+        SSSR: filterExclude(cardList.filter(card => card.rarity === 'SSR' && isInPool(card)), 'sssr'),
+        PSR: filterExclude(produceList.filter(p => p.rarity === 'PSR' && isInPool(p)), 'psr'),
+        SR_CARD: filterExclude(
+                    cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased).length > 0 
+                    ? cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased) 
+                    : dummyData.SR_CARD, 
+                    'sr_card'
+                 ),
+        PR: filterExclude(produceList.filter(p => p.rarity === 'PR' && isInPool(p)).filter(isReleased), 'pr'),
+        R_CARD: filterExclude(
+                    cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased).length > 0 
+                    ? cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased) 
+                    : dummyData.R_CARD,
+                    'r_card'
+                 )
+    };
+
+    return finalPool;
 }
 
 export function pickGacha(count = 1, poolType = 'normal', customPool = null) {

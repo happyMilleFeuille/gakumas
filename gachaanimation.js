@@ -566,19 +566,9 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         }
 
         canClick = false;
-        if (clickTimer) clearTimeout(clickTimer);
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
         currentStep = 0;
         subState = "";
-
-        const cost = (mode === 1) ? 250 : 2500;
-        const prevPulls = state.totalPulls[state.gachaType] || 0;
-        setJewels(state.jewels - cost);
-        setTotalPulls(prevPulls + mode, state.gachaType);
-        gachaMode = mode;
-        currentResults = results;
-        const currentLog = state.gachaLog[state.gachaType] || [];
-        baselineIdsSet = new Set(currentLog.map(item => item.id)); // 원본 보존
-        existingIdsSet = new Set(baselineIdsSet); // 연출용 복사본
 
         const type = state.gachaType;
         let activeCfg = CURRENT_PICKUPS[type] || { pssr: [] };
@@ -587,6 +577,18 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         else if (type === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         else if (type === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         else if (type === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+
+        const isFree = activeCfg?.is_free === true;
+        const cost = isFree ? 0 : (mode === 1 ? 250 : 2500);
+        const prevPulls = state.totalPulls[state.gachaType] || 0;
+        
+        if (!isFree) setJewels(state.jewels - cost);
+        setTotalPulls(prevPulls + mode, state.gachaType);
+        gachaMode = mode;
+        currentResults = results;
+        const currentLog = state.gachaLog[state.gachaType] || [];
+        baselineIdsSet = new Set(currentLog.map(item => item.id)); // 원본 보존
+        existingIdsSet = new Set(baselineIdsSet); // 연출용 복사본
 
         const pssrPickups = activeCfg.pssr || activeCfg.pool?.pssr || [];
         const pssrPickup = currentResults.find(c => pssrPickups.some(p => (typeof p === 'string' ? p : p.id) === c.id));

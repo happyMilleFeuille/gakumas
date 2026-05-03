@@ -606,6 +606,62 @@ export const LIMITED_CONFIG = [
 // 셀렉션 가챠 상세 설정 (드로어 리스트 및 가챠 풀)
 export const SELECTION_CONFIG = [
     {
+        id: '2ani100ren',
+        name: '2주년 시즌한정 포함 100연 뽑기',
+        name_ja: '2周年シーズン限定入り100連',
+        display_date: '2026-05-01',
+        date: '2026-04-28',
+        bannerImg: 'gasya/gasya_2ani100ren.webp',
+        is_free: true, // 무료 가챠 설정 추가
+        is_limited: true, // 한정 가챠 풀 포함
+        exclude: {
+            pssr: [
+                'ssrchina_3rd', 'ssrmao_3rd', 'ssrlilja_3rd', 'ssrhiro_3rd',
+                'ssrsumika_3rd', 'ssrkotone_3rd', 'ssrrinami_3rd',
+                'ssrsaki_3rd', 'ssrume_3rd', 'ssrsena_3rd', 'ssrtemari_3rd',
+                'ssrtemari_gamusyaralimited', 'ssrkotone_gamusyaralimited',
+                'ssrhiro_miraclelimited', 'ssrmao_miraclelimited',
+                'ssrlilja_howlinglimited', 'ssrchina_howlinglimited',
+                'ssrrinami_endlesslimited', 'ssrsena_endlesslimited', 'ssrume_endlesslimited',
+                // 하울링 어나더 (9another)
+                'ssrsaki_1st9another', 'ssrsumika_1st9another', 'ssrmao_1st9another', 'ssrkotone_1st9another',
+                'ssrtemari_1st9another', 'ssrhiro_1st9another', 'ssrsena_1st9another', 'ssrume_1st9another',
+                // 미라클 어나더 (10another)
+                'ssrrinami_1st10another', 'ssrsaki_1st10another', 'ssrchina_1st10another', 'ssrkotone_1st10another',
+                'ssrtemari_1st10another', 'ssrlilja_1st10another', 'ssrsena_1st10another', 'ssrume_1st10another', 'ssrmisuzu_1st10another',
+                // 가무샤라 어나더 (11another)
+                'ssrrinami_1st11another', 'ssrchina_1st11another', 'ssrsumika_1st11another', 'ssrmao_1st11another',
+                'ssrlilja_1st11another', 'ssrhiro_1st11another', 'ssrsena_1st11another', 'ssrume_1st11another', 'ssrmisuzu_1st11another',
+                // 엔들리스 어나더 (12another)
+                'ssrrinami_1st12another', 'ssrsaki_1st12another', 'ssrchina_1st12another', 'ssrsumika_1st12another',
+                'ssrmao_1st12another', 'ssrkotone_1st12another', 'ssrtemari_1st12another', 'ssrlilja_1st12another',
+                'ssrhiro_1st12another', 'ssrtsubame_1st12another'
+            ],
+            sssr: [
+                // 3차 서포트 (11명)
+                'visual_sense1', 'vocal_sense2', 'dance_anomaly3', 'vocal_anomaly1',
+                'visual_limitedsense2', 'dance_sense2', 'visual_logic4',
+                'dance_logic3', 'visual_logic6', 'visual_logic5', 'vocal_anomaly2',
+                // 한정 시리즈 (가무샤라, 미라클, 하울링, 엔들리스)
+                'vocal_limitedlogic3', 'vocal_limitedsense3', 'vocal_limitedanomaly1', 
+                'vocal_limitedlogic2', 'visual_limitedlogic2', 'dance_limitedanomaly1',
+                'dance_limitedlogic3', 'dance_limitedsense3', 'visual_limitedlogic3'
+            ],
+            sr_card: [
+                // 3차 서포트 (11명)
+                'visual_srsense2', 'vocal_srsense2', 'visual_sranomaly2', 'vocal_sranomaly1', 
+                'dance_srsense5', 'visual_srsense1', 'visual_srlogic4',
+                'visual_srlogic6', 'visual_srlogic5', 'vocal_srlogic5', 'dance_sranomaly2',
+                // 한정 시리즈 (가무샤라, 미라클, 하울링, 엔들리스)
+                'vocal_srlimitedlogic3', 'dance_srlimitedsense3', 'vocal_srlimitedanomaly1', 
+                'visual_srlimitedlogic2', 'visual_srlimitedlogic1', 'dance_srlimitedanomaly1',
+                'visual_srlimitedlogic3', 'vocal_srlimitedsense3', 'dance_srlimitedlogic2'
+            ]
+        },
+        pull_count: 10,
+        max_pulls: 100, // 최대 뽑기 가능 횟수 설정 추가
+    },
+    {
         id: 'ongakusai_day2',
         name: '초성음악제 DAY2',
         name_ja: '初星音楽祭 DAY2',
