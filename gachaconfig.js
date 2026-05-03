@@ -607,8 +607,8 @@ export const LIMITED_CONFIG = [
 export const SELECTION_CONFIG = [
     {
         id: '2ani100ren',
-        name: '2주년 시즌한정 포함 100연 뽑기',
-        name_ja: '2周年シーズン限定入り100連',
+        name: '시즌한정 포함 100연',
+        name_ja: 'シーズン限定入り100連',
         display_date: '2026-05-01',
         date: '2026-04-28',
         bannerImg: 'gasya/gasya_2ani100ren.webp',
