@@ -622,7 +622,7 @@ export const SELECTION_CONFIG = [
                 'ssrtemari_gamusyaralimited', 'ssrkotone_gamusyaralimited',
                 'ssrhiro_miraclelimited', 'ssrmao_miraclelimited',
                 'ssrlilja_howlinglimited', 'ssrchina_howlinglimited',
-                'ssrrinami_endlesslimited', 'ssrsena_endlesslimited', 'ssrume_endlesslimited',
+                'ssrsena_endlesslimited', 'ssrume_endlesslimited',
                 // 하울링 어나더 (9another)
                 'ssrsaki_1st9another', 'ssrsumika_1st9another', 'ssrmao_1st9another', 'ssrkotone_1st9another',
                 'ssrtemari_1st9another', 'ssrhiro_1st9another', 'ssrsena_1st9another', 'ssrume_1st9another',
@@ -645,7 +645,7 @@ export const SELECTION_CONFIG = [
                 // 한정 시리즈 (가무샤라, 미라클, 하울링, 엔들리스)
                 'vocal_limitedlogic3', 'vocal_limitedsense3', 'vocal_limitedanomaly1',
                 'vocal_limitedlogic2', 'visual_limitedlogic2', 'dance_limitedanomaly1',
-                'dance_limitedlogic3', 'dance_limitedsense3', 'visual_limitedlogic3'
+                'visual_limitedanomaly4', 'dance_limitedsense3'
             ],
             sr_card: [
                 // 3차 서포트 (11명)
@@ -655,7 +655,7 @@ export const SELECTION_CONFIG = [
                 // 한정 시리즈 (가무샤라, 미라클, 하울링, 엔들리스)
                 'vocal_srlimitedlogic3', 'dance_srlimitedsense3', 'vocal_srlimitedanomaly1',
                 'visual_srlimitedlogic2', 'visual_srlimitedlogic1', 'dance_srlimitedanomaly1',
-                'visual_srlimitedlogic3', 'vocal_srlimitedsense3', 'dance_srlimitedlogic2'
+                'vocal_limitedanomaly2', 'dance_srlimitedsense4'
             ]
         },
         pull_count: 10,
