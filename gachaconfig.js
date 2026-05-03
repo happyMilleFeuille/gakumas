@@ -126,7 +126,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrsena_3rd', char: 'sena' }],
             sssr: ['visual_logic5'],
-            sr_card: ['vocal_srlogic5']
+            sr_card: ['vocal_srlogic6']
         }
     },
     {
@@ -607,8 +607,8 @@ export const LIMITED_CONFIG = [
 export const SELECTION_CONFIG = [
     {
         id: '2ani100ren',
-        name: '시즌한정포함 100연',
-        name_ja: 'シーズン限定入り100連',
+        name: '2주년 시즌한정 포함 100연 뽑기',
+        name_ja: '2周年シーズン限定入り100連',
         display_date: '2026-05-01',
         date: '2026-04-28',
         bannerImg: 'gasya/gasya_2ani100ren.webp',
@@ -651,7 +651,7 @@ export const SELECTION_CONFIG = [
                 // 3차 서포트 (11명)
                 'visual_srsense2', 'vocal_srsense2', 'visual_sranomaly2', 'vocal_sranomaly1',
                 'dance_srsense5', 'visual_srsense1', 'visual_srlogic4',
-                'visual_srlogic6', 'visual_srlogic5', 'vocal_srlogic5', 'dance_sranomaly2',
+                'visual_srlogic6', 'visual_srlogic5', 'vocal_srlogic6', 'dance_sranomaly2',
                 // 한정 시리즈 (가무샤라, 미라클, 하울링, 엔들리스)
                 'vocal_srlimitedlogic3', 'dance_srlimitedsense3', 'vocal_srlimitedanomaly1',
                 'visual_srlimitedlogic2', 'visual_srlimitedlogic1', 'dance_srlimitedanomaly1',
