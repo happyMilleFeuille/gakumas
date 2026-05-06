@@ -149,9 +149,43 @@ export function renderIdolList() {
     pssrArea.innerHTML = '<div class="pssr-grid"></div>';
     const pssrGrid = pssrArea.querySelector('.pssr-grid');
 
+    // 프로듀스 카드 이미지 프리로드 (호버/터치 시 현재 보일 이미지 1장만)
+    const preloadedIdols = new Set();
+    function preloadIdolImages(idolName) {
+        if (preloadedIdols.has(idolName)) return;
+        preloadedIdols.add(idolName);
+
+        const cards = produceList.filter(p => {
+            const nameMatch = p.id.startsWith(`ssr${idolName}_`) ||
+                p.id.startsWith(`sr${idolName}_`) ||
+                p.id.startsWith(`r${idolName}_`);
+            return nameMatch &&
+                (p.rarity === 'PSSR' || p.rarity === 'PSR' || p.rarity === 'PR') &&
+                p.another !== true;
+        });
+
+        cards.forEach(card => {
+            // renderProduceCards와 동일한 로직으로 현재 보일 이미지 결정
+            const imageList = [
+                `idols/${card.id}1.webp`,
+                `idols/${card.id}2.webp`
+            ];
+            const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
+            anothers.forEach(a => imageList.push(`idols/${a.id}1.webp`));
+
+            let currentIndex = state.pssrIndex[card.id] || 0;
+            if (currentIndex >= imageList.length) currentIndex = 0;
+
+            // 현재 보일 이미지 1장만 프리로드
+            const preImg = new Image();
+            preImg.src = imageList[currentIndex];
+        });
+    }
+
     idolList.forEach(name => {
         const item = itemTpl.content.cloneNode(true);
         const img = item.querySelector('.idol-icon');
+        const idolItem = item.querySelector('.idol-item');
         const favBtn = item.querySelector('.fav-star-btn');
 
         img.src = `icons/idolicons/${name}.png`;
@@ -162,6 +196,10 @@ export function renderIdolList() {
         if (state.favoriteIdol === name) {
             favBtn.classList.add('active');
         }
+
+        // 호버(PC) / 터치시작(모바일) 시 프리로드
+        idolItem.addEventListener('mouseenter', () => preloadIdolImages(name));
+        idolItem.addEventListener('touchstart', () => preloadIdolImages(name), { passive: true });
 
         favBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // 카드 클릭 이벤트 방지
