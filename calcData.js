@@ -53,6 +53,37 @@ export const calcPlans = {
             25: [{ value: "goout_nia" }, { value: "advice" }, { value: "spclass" }],
             26: [{ value: "audition" }]
         }
+    },
+    hif: {
+        title: "hif",
+        weeks: {
+            1: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            2: [{ value: "class_nia" }],
+            3: [{ value: "goout_nia" }, { value: "gift_nia", results: ["get", "get_drink"] }],
+            4: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            5: [{ value: "class_nia" }],
+            6: [{ value: "goout_nia" }, { value: "advice" }],
+            7: [{ value: "class_nia" }],
+            8: [{ value: "spclass" }],
+            9: [{ value: "audition", results: ["get", "get", "get", "get", "get_item"] }],
+            10: [{ value: "goout_nia" }, { value: "gift_nia", results: ["get", "get_drink"] }],
+            11: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            12: [{ value: "class_nia" }],
+            13: [{ value: "goout_nia" }, { value: "advice" }, { value: "gift_nia", results: ["get", "get_drink"] }],
+            14: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            15: [{ value: "class_nia" }],
+            16: [{ value: "spclass" }],
+            17: [{ value: "audition", results: ["get_item"] }],
+            18: [{ value: "goout_nia" }, { value: "gift_nia", results: ["get", "get_drink"] }],
+            19: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            20: [{ value: "class_nia" }],
+            21: [{ value: "advice" }, { value: "gift_nia", results: ["get", "get_drink"] }, { value: "spclass" }],
+            22: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            23: [{ value: "class_nia" }],
+            24: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            25: [{ value: "goout_nia" }, { value: "advice" }, { value: "spclass" }],
+            26: [{ value: "audition" }]
+        }
     }
 };
 
@@ -124,11 +155,11 @@ export const idolData = {
         // 보너스 % (단계별)
         bonus: {
             ssr: {
-                base: { vocal: 16.5, dance: 16.5, visual: 20.5 },
+                base: { vocal: 12.0, dance: 12.0, visual: 15.0 },
                 bloom3: { vocal: 3.0, dance: 3.0, visual: 2.0 } // +3.0%, +3.0%, +2.0% 추가
             },
             sr: {
-                base: { vocal: 16.5, dance: 16.5, visual: 18.5 },
+                base: { vocal: 12.0, dance: 12.0, visual: 13.0 },
                 bloom3: { vocal: 2.0, dance: 2.0, visual: 1.0 } // +2.0%, +2.0%, +1.0% 추가
             }
         }
@@ -501,6 +532,11 @@ export const judgingRatios = {
         2: { protruded: { circle: [1924, 1281, 1065] }, balanced: { circle: [1834, 1361, 1065] } }
     },
     nia: {
+        1: { protruded: { circle: [332, 200, 133] }, balanced: { circle: [264, 218, 179] } },
+        2: { protruded: { circle: [738, 443, 296] }, balanced: { circle: [587, 484, 397] } },
+        3: { protruded: { circle: [1389, 834, 556] }, balanced: { circle: [1105, 912, 746] } }
+    },
+    hif: {
         1: { protruded: { circle: [332, 200, 133] }, balanced: { circle: [264, 218, 179] } },
         2: { protruded: { circle: [738, 443, 296] }, balanced: { circle: [587, 484, 397] } },
         3: { protruded: { circle: [1389, 834, 556] }, balanced: { circle: [1105, 912, 746] } }
