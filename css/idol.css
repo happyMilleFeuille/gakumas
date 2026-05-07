@@ -567,3 +567,32 @@
         right: 2px;
     }
 }
+
+/* Bottom Menu Logo Text (PC only) */
+.menu-logo-text {
+    display: none;
+    position: absolute;
+    left: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: #fff;
+    background: var(--idol-theme-color, var(--primary-color));
+    padding: 3px 10px;
+    border-radius: 0;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    opacity: 1;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 769px) {
+    .button-group.horizontal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .menu-logo-text {
+        display: block;
+    }
+}

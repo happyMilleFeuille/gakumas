@@ -132,8 +132,6 @@ export function renderPSSRRoadmap(shouldScroll = false) {
         }
 
         const iconName = idolName === 'tsubame' ? 'tsubame' : idolName;
-        const idolLocalName = idolNameMap[idolName] ? (state.currentLang === 'ja' ? idolNameMap[idolName].ja : idolNameMap[idolName].ko) : idolName;
-
         columnHeader.innerHTML = `
             <img src="icons/idolicons/${iconName}_c.png" class="column-idol-icon" loading="eager">
             ${daysText ? `<div class="idol-header-tooltip">${daysText}</div>` : ''}
@@ -217,7 +215,7 @@ export function renderPSSRRoadmap(shouldScroll = false) {
             const node = document.createElement('div');
             node.className = 'roadmap-node';
             node.style.bottom = `${bottomOffset}px`;
-            const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+            const displayName = (state.currentLang === 'en' && card.name_en) ? card.name_en : ((state.currentLang !== 'ko' && card.name_ja) ? card.name_ja : card.name);
             node.innerHTML = `
                 <div class="roadmap-node-inner"><img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
                 <div class="roadmap-tooltip">

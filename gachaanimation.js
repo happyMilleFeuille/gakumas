@@ -3,6 +3,14 @@ import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopBGM } from './gacha.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 
+const useJaNames = () => state.currentLang !== 'ko';
+const getLocalizedCardName = (card) => {
+    if (!card) return '';
+    if (state.currentLang === 'en' && card.name_en) return card.name_en;
+    if (useJaNames() && card.name_ja) return card.name_ja;
+    return card.name;
+};
+
 // 연출 상태 정의
 const States = {
     IDLE: 'IDLE',
@@ -387,7 +395,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         if (nameOverlay) {
             nameOverlay.classList.remove('produce-name', 'landscape-name');
             nameOverlay.classList.add(isSupport ? 'landscape-name' : 'produce-name');
-            nameOverlay.textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+            nameOverlay.textContent = getLocalizedCardName(card);
             nameOverlay.style.background = (card.displayRarity === 'SSR' ? 'linear-gradient(to right, #f5d033, #e374d1, #3bcfde, #51e8a3)' : (card.displayRarity === 'SR' ? '#f5cd46' : '#add0eb'));
         }
 
@@ -610,4 +618,3 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     return { startGacha, prepareResults };
 }
-

@@ -12,7 +12,9 @@ let scrollLeft;
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. 요소 선택
-    const langBtns = document.querySelectorAll('.lang-btn');
+    const langSelect = document.getElementById('lang-select');
+    const langOptions = document.getElementById('lang-options');
+    const langCurrentLabel = document.getElementById('lang-current-label');
     const idolSection = document.getElementById('idol'); // 배경이 적용될 섹션 (혹은 fixedBg)
     const logo = document.querySelector('.logo');
 
@@ -44,14 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 모든 언어 버튼 상태 동기화 함수
-    const syncLangBtns = () => {
-        const radio = document.getElementById(`lang-${state.currentLang}`);
-        if (radio) radio.checked = true;
+    const syncLangControl = () => {
+        if (langCurrentLabel) {
+            langCurrentLabel.textContent = state.currentLang.toUpperCase();
+        }
+        if (langOptions) {
+            langOptions.querySelectorAll('.lang-option').forEach((option) => {
+                option.classList.toggle('active', option.dataset.lang === state.currentLang);
+                option.setAttribute('aria-selected', option.dataset.lang === state.currentLang ? 'true' : 'false');
+            });
+        }
+        if (langSelect) {
+            langSelect.setAttribute('aria-expanded', 'false');
+        }
+    };
+
+    const closeLangDropdown = () => {
+        if (langOptions) {
+            langOptions.classList.add('hidden');
+        }
+        if (langSelect) {
+            langSelect.setAttribute('aria-expanded', 'false');
+        }
     };
 
     // 전역 UI 상태 동기화 (배경, 버튼 등)
     const syncGlobalUI = () => {
-        syncLangBtns();
+        syncLangControl();
         // 가챠 탭이 아닐 때만 일반 배경 적용 (가챠 탭은 자체 픽업 배경 로직 사용)
         const isGachaView = document.querySelector('.gacha-container');
     };
@@ -82,27 +103,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 언어 변경 (이벤트 위임 방식)
-    document.addEventListener('change', (e) => {
-        const radio = e.target.closest('input[name="lang"]');
-        if (!radio) return;
+    document.addEventListener('click', (e) => {
+        const langButton = e.target.closest('#lang-select');
+        const langOption = e.target.closest('.lang-option');
 
-        const newLang = radio.value;
-        setLanguage(newLang);
-        updatePageTranslations();
-
-        // UI 업데이트
-        syncLangBtns();
-
-        // 현재 화면 상태에 따라 추가 렌더링
-        if (document.querySelector('.pssr-roadmap-container')) {
-            import('./ui.js').then(m => m.renderHome());
+        if (langButton) {
+            const willOpen = langOptions?.classList.contains('hidden');
+            if (langOptions) {
+                langOptions.classList.toggle('hidden');
+            }
+            langSelect?.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+            return;
         }
-        if (document.querySelector('.support-grid')) {
-            renderSupport();
+
+        if (langOption) {
+            const newLang = langOption.dataset.lang;
+            if (!newLang || newLang === state.currentLang) {
+                closeLangDropdown();
+                return;
+            }
+
+            setLanguage(newLang);
+            updatePageTranslations();
+            syncLangControl();
+            closeLangDropdown();
+
+            if (document.querySelector('.pssr-roadmap-container')) {
+                import('./ui.js').then(m => m.renderHome());
+            }
+            if (document.querySelector('.support-grid')) {
+                renderSupport();
+            }
+            if (document.querySelector('.gacha-container')) {
+                renderGacha();
+            }
+            return;
         }
-        if (document.querySelector('.gacha-container')) {
-            renderGacha();
+
+        if (!e.target.closest('#lang-dropdown')) {
+            closeLangDropdown();
         }
     });
 

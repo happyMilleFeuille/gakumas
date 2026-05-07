@@ -6,6 +6,14 @@ import { cardList } from './carddata.js'; // 서포트 카드 데이터 추가
 import { openDrawer } from './gacha-drawer.js';
 import { bindSafeClick } from './gacha-utils.js';
 
+const useJaNames = () => state.currentLang !== 'ko';
+const getLocalizedCardName = (card) => {
+    if (!card) return '';
+    if (state.currentLang === 'en' && card.name_en) return card.name_en;
+    if (useJaNames() && card.name_ja) return card.name_ja;
+    return card.name || '';
+};
+
 /**
  * 픽업 선택기 영역 렌더링
  */
@@ -186,7 +194,7 @@ function setupSupportTooltips(container) {
             rarityImg.style.display = 'block';
             
             // 카드 이름 설정 (다국어 지원)
-            nameLabel.textContent = (state.currentLang === 'ja' && cardData.name_ja) ? cardData.name_ja : cardData.name;
+            nameLabel.textContent = getLocalizedCardName(cardData);
             
             if (cardData.plan && cardData.plan !== 'free') {
                 planIcon.src = `icons/${cardData.plan}.webp`;
@@ -344,24 +352,30 @@ export function renderResults(ui, currentResults, existingIdsBeforePull = null) 
         }
         clone.querySelector('.result-card-rarity-img').src = `icons/${card.displayRarity.toLowerCase()}.png`;
         const t = document.createElement('div'); t.className = 'card-type-label'; t.textContent = card.type === 'produce' ? 'IDOL' : 'SUPPORT'; cardEl.appendChild(t);
-        clone.querySelector('.result-card-name').textContent = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        clone.querySelector('.result-card-name').textContent = getLocalizedCardName(card);
         ui.resultsContainer.appendChild(clone);
     });
 }
 
 function getDrawerTypeDisplayData(type, checkHasCard) {
     let currentCfg, favColor, displayName, bannerImg, bgImg;
+    const getConfigDisplayName = (cfg) => {
+        if (!cfg) return '';
+        if (state.currentLang === 'en' && cfg.name_en) return cfg.name_en;
+        if (useJaNames() && cfg.name_ja) return cfg.name_ja;
+        return cfg.name || '';
+    };
     if (type === 'selection') {
         currentCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         favColor = idolColors[state.favoriteIdol] || "#ff4081";
-        displayName = (state.currentLang === 'ja' && currentCfg.name_ja) ? currentCfg.name_ja : currentCfg.name;
+        displayName = getConfigDisplayName(currentCfg);
         bannerImg = currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp';
         bgImg = bannerImg;
     } else if (type === 'normal') {
         currentCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        displayName = (state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || currentCfg.name);
+        displayName = getLocalizedCardName(cardData) || currentCfg.name;
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
@@ -371,7 +385,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         currentCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        displayName = (state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || currentCfg.name);
+        displayName = getLocalizedCardName(cardData) || currentCfg.name;
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
@@ -381,7 +395,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         currentCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        displayName = (state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || currentCfg.name);
+        displayName = getLocalizedCardName(cardData) || currentCfg.name;
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
@@ -391,7 +405,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         currentCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        displayName = (state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || currentCfg.name);
+        displayName = getLocalizedCardName(cardData) || currentCfg.name;
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';

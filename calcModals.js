@@ -7,6 +7,9 @@ import { calculateCardBonus } from './simulator-engine.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { updateSelectedCardsUI, getIdolDisplayColor } from './calcUI.js';
 import { calcStore } from './calcStore.js';
+import { translate } from './utils.js';
+
+const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
 // 모달 및 상세 내역 스타일 상수
 const MODAL_STYLES = {
@@ -76,35 +79,35 @@ export function showStatDetailModal(breakdown) {
             
             <div class="stat-detail-grid">
                 <div class="stat-grid-header">
-                    <span class="header-label">${isJa ? '詳細項目' : '상세 내역'}</span>
-                    <span class="color-vo">${isJa ? 'Vo' : '보컬'}</span>
-                    <span class="color-da">${isJa ? 'Da' : '댄스'}</span>
-                    <span class="color-vi">${isJa ? 'Vi' : '비주얼'}</span>
-                    <span style="border-left: 1px solid transparent;">Total</span>
+                    <span class="header-label">${t('calc_detail_item')}</span>
+                    <span class="color-vo">${t('attr_vocal')}</span>
+                    <span class="color-da">${t('attr_dance')}</span>
+                    <span class="color-vi">${t('attr_visual')}</span>
+                    <span style="border-left: 1px solid transparent;">${t('calc_detail_total')}</span>
                 </div>
                 
-                ${renderRow(isJa ? 'アイドル(固定)' : '아이돌 (고정)', breakdown.idolBase, null, 'row-base')}
+                ${renderRow(t('calc_detail_idol_fixed'), breakdown.idolBase, null, 'row-base')}
                 ${(calcStore.type === 'hajime' || calcStore.type === 'nia') ? `
-                    ${renderRow(isJa ? '授業' : '수업', breakdown.class, null, 'row-base')}
-                    ${renderRow(isJa ? '試験' : '시험', breakdown.exam, null, 'row-base')}
-                    ${renderRow(isJa ? 'レッスン' : '레슨', breakdown.lesson, null, 'row-base')}
+                    ${renderRow(t('calc_detail_class'), breakdown.class, null, 'row-base')}
+                    ${renderRow(t('calc_detail_exam'), breakdown.exam, null, 'row-base')}
+                    ${renderRow(t('calc_detail_lesson'), breakdown.lesson, null, 'row-base')}
                 ` : `
-                    ${renderRow(isJa ? '営業' : '영업', breakdown.class, null, 'row-base')}
-                    ${renderRow(isJa ? 'レッスン/オーディション' : '레슨/오디션', breakdown.base, null, 'row-base')}
+                    ${renderRow(t('calc_detail_promotion'), breakdown.class, null, 'row-base')}
+                    ${renderRow(t('calc_detail_lesson_audition'), breakdown.base, null, 'row-base')}
                 `}
                 
-                ${renderRow(`<span id="bonus-toggle-icon" style="margin-right: 4px;">▼</span>${isJa ? 'ボーナス合計' : '보너스 합계'}`, bonusTotal, null, 'row-bonus-total')}
+                ${renderRow(`<span id="bonus-toggle-icon" style="margin-right: 4px;">▼</span>${t('calc_detail_bonus_total')}`, bonusTotal, null, 'row-bonus-total')}
                 
                 <div id="bonus-sub-items">
-                    ${renderRow(isJa ? 'アイドル(%)' : '아이돌 (%)', breakdown.idol, breakdown.idol.percent, 'row-sub-item')}
-                    ${renderRow(isJa ? 'サポート(%)' : '서포트 (%)', breakdown.supportPercent, breakdown.supportPercent.factors, 'row-sub-item')}
-                    ${renderRow(isJa ? 'サポート(固定)' : '서포트 (고정)', breakdown.supportFixed, null, 'row-sub-item')}
-                    ${renderRow(isJa ? 'メモリー(%)' : '메모리 (%)', breakdown.memory?.percent, breakdown.memory?.percent?.factors, 'row-sub-item')}
-                    ${renderRow(isJa ? 'メモリー(固定)' : '메모리 (고정)', breakdown.memory?.fixed, null, 'row-sub-item')}
-                    ${renderRow(isJa ? 'Pアイテム' : (calcStore.type === 'nia' ? 'p아이템 (55%)' : 'p아이템'), breakdown.item, null, 'row-sub-item')}
+                    ${renderRow(t('calc_detail_idol_percent'), breakdown.idol, breakdown.idol.percent, 'row-sub-item')}
+                    ${renderRow(t('calc_detail_support_percent'), breakdown.supportPercent, breakdown.supportPercent.factors, 'row-sub-item')}
+                    ${renderRow(t('calc_detail_support_fixed'), breakdown.supportFixed, null, 'row-sub-item')}
+                    ${renderRow(t('calc_detail_memory_percent'), breakdown.memory?.percent, breakdown.memory?.percent?.factors, 'row-sub-item')}
+                    ${renderRow(t('calc_detail_memory_fixed'), breakdown.memory?.fixed, null, 'row-sub-item')}
+                    ${renderRow(calcStore.type === 'nia' ? t('calc_detail_pitem_nia') : t('calc_detail_pitem'), breakdown.item, null, 'row-sub-item')}
                 </div>
             </div>
-            ${renderRow(isJa ? '総合計' : '최종 합계', {
+            ${renderRow(t('calc_detail_final_total'), {
         vocal: breakdown.base.vocal + breakdown.idolBase.vocal + bonusTotal.vocal,
         dance: breakdown.base.dance + breakdown.idolBase.dance + bonusTotal.dance,
         visual: breakdown.base.visual + breakdown.idolBase.visual + bonusTotal.visual
@@ -191,7 +194,7 @@ export function renderSidePanelContent(panel, selectedPlan) {
         return `
             <div class="side-card-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'is-disabled-card' : ''}" data-id="${c.id}" ${style}>
                 <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
-                <img src="images/support/${c.id}_card.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_item.webp'; this.onerror=null;">
+                <img src="images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'card' : 'item'}.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'item' : 'card'}.webp'; this.onerror=null;">
                 <div class="calc-card-stars">${Array.from({ length: 4 }, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
                 <div class="card-bonus-overlay"><span class="bonus-val"></span></div>
                 <div class="info-btn">i</div>
@@ -206,7 +209,7 @@ export function renderSidePanelContent(panel, selectedPlan) {
             <div class="panel-tab-item"><img src="icons/vocal.png"></div>
             <div class="panel-tab-item"><img src="icons/dance.png"></div>
             <div class="panel-tab-item"><img src="icons/visual.png"></div>
-            ${isSelectingSixth ? '<span class="rental-badge" style="position: absolute; top: 2px; left: 6px; font-size: 8px; font-weight: bold; color: #fff; letter-spacing: 0.5px; z-index: 10; opacity: 0.8;">RENTAL</span>' : ''}
+            ${isSelectingSixth ? `<span class="rental-badge" style="position: absolute; top: 2px; left: 6px; font-size: 8px; font-weight: bold; color: #fff; letter-spacing: 0.5px; z-index: 10; opacity: 0.8;">${t('calc_label_rental')}</span>` : ''}
         </div>
         <div class="side-panel-content" style="${contentStyle}">
             <div class="calc-spinner-overlay" id="calc-side-spinner-overlay"><div class="calc-spinner"></div></div>
@@ -232,7 +235,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
             if (infoBtn && item) {
                 e.stopPropagation();
                 const card = cardList.find(c => c.id === item.dataset.id);
-                if (card) window.showCardModal(card, (state.currentLang === 'ja' && card.name_ja ? card.name_ja : card.name), card.image || `images/support/${card.id}.webp`);
+                if (card) window.showCardModal(card, (state.currentLang === 'en' && card.name_en ? card.name_en : (state.currentLang !== 'ko' && card.name_ja ? card.name_ja : card.name)), card.image || `images/support/${card.id}.webp`);
                 return;
             }
             if (item) {
@@ -268,9 +271,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
 
                     const selectedCardObj = cardList.find(c => c.id === cardId);
                     if (selectedCardObj && selectedCardObj.abilities && selectedCardObj.abilities.includes('sp_param20')) {
-                        const isJa = state.currentLang === 'ja';
-                        const toastMsg = isJa ? "カード枚数(20枚以上)の条件は常に満たすものとします。" : "카드 갯수(20장 이상) 조건은 항상 만족함으로 취급합니다.";
-                        showTemporaryToast(toastMsg);
+                        showTemporaryToast(t('calc_toast_sp_card_condition'));
                     }
                 }
                 calcStore.save();
@@ -295,7 +296,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                         if (!badge) {
                             badge = document.createElement('span');
                             badge.className = 'rental-badge';
-                            badge.textContent = 'RENTAL';
+                            badge.textContent = t('calc_label_rental');
                             Object.assign(badge.style, {
                                 position: 'absolute', top: '2px', left: '6px',
                                 fontSize: '8px', fontWeight: 'bold', color: '#fff',
@@ -395,7 +396,7 @@ export function syncSupportPanelUI() {
         if (isNowSelectingSixth && !badge) {
             badge = document.createElement('span');
             badge.className = 'rental-badge';
-            badge.textContent = 'RENTAL';
+            badge.textContent = t('calc_label_rental');
             Object.assign(badge.style, {
                 position: 'absolute', top: '2px', left: '6px',
                 fontSize: '8px', fontWeight: 'bold', color: '#fff',
@@ -561,17 +562,17 @@ export function showOtherTuneModal(refreshAll) {
             let label = '';
             const icon = `<img src="icons/${type}.webp" style="width: 18px; height: 18px; object-fit: contain;">`;
             if (type === 'goodimpression') {
-                label = isJa ? '[強化月間] 好印象' : '[강화월간] 호인상';
+                label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_goodimpression')}`;
             } else if (type === 'motivation') {
-                label = isJa ? '[強化月間] やる気' : '[강화월간] 의욕';
+                label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_motivation')}`;
             } else if (type === 'concentration') {
-                label = isJa ? '[強化月間] 集中' : '[강화월간] 집중';
+                label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_concentration')}`;
             } else if (type === 'goodcondition') {
-                label = isJa ? '[強化月間] 好調' : '[강화월간] 호조';
+                label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_goodcondition')}`;
             } else if (type === 'enthusiasm') {
-                label = isJa ? '[強化月間] 強気' : '[강화월간] 강기';
+                label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_enthusiasm')}`;
             } else if (type === 'fullpower') {
-                label = isJa ? '[強化月間] 全力' : '[강화월간] 전력';
+                label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_fullpower')}`;
             }
             return `<div class="tune-card-group-header" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: #f3e5f5; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; color: #9c27b0; border-radius: 6px; margin-top: 8px; border-left: 4px solid #9c27b0; cursor: pointer; transition: background 0.2s; position: relative;">${icon}<span>${label}</span><span class="toggle-icon" style="margin-left: auto; transition: transform 0.2s;">▼</span></div>`;
         }
@@ -620,8 +621,8 @@ export function showOtherTuneModal(refreshAll) {
         return renderCardItem(g[0]);
     }).join('')}</div>
             <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%; box-sizing: border-box;">
-                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${isJa ? '一括初期化' : '전체 초기화'}</button>
-                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${isJa ? '閉じる' : '닫기'}</button>
+                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_label_bulk_reset')}</button>
+                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('gacha_close')}</button>
             </div>
         </div>`;
 
@@ -646,9 +647,9 @@ export function showOtherTuneModal(refreshAll) {
         });
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
-            const planLabel = isJa ? (currentPlan === 'sense' ? 'センス' : (currentPlan === 'logic' ? 'ロジック' : 'アノマリー')) : currentPlan.toUpperCase();
-            const kyoukaPrefix = calcStore.isKyouka ? (isJa ? '[強化月間] ' : '[강화월간] ') : '';
-            titleEl.textContent = isJa ? `${kyoukaPrefix}${planLabel}カード選択 (${total} / ${boardGetCount})` : `${kyoukaPrefix}${currentPlan.toUpperCase()} 카드 선택 (${total} / ${boardGetCount})`;
+            const planLabel = t(`calc_tune_plan_${currentPlan}`);
+            const kyoukaPrefix = calcStore.isKyouka ? t('calc_tune_prefix_kyouka') : '';
+            titleEl.textContent = t('calc_tune_title_format', { prefix: kyoukaPrefix, plan: planLabel, selected: total, total: boardGetCount });
         }
     };
     updateTitle();
@@ -700,7 +701,7 @@ export function showOtherTuneModal(refreshAll) {
     });
 
     document.getElementById('reset-all-skills').onclick = () => {
-        const resetConfirm = isJa ? '初期化しますか？' : '초기화할까요?';
+        const resetConfirm = t('calc_confirm_reset_skills');
         if (!confirm(resetConfirm)) return;
         calcStore.planSkills[activePlan] = {}; calcStore.save(); refreshAll(); updateTitle();
         modal.querySelectorAll('.tune-card-item').forEach(el => {
@@ -745,6 +746,16 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
         else modal.remove();
     };
     window.closeMemoryModal = closeModalAndSave;
+
+    // 우측 상단 작은 ✕ (닫기) 버튼
+    content.style.position = 'relative';
+    const xBtn = document.createElement('div');
+    xBtn.innerHTML = '✕';
+    xBtn.style.cssText = `position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #bbb; cursor: pointer; transition: all 0.2s; z-index: 10; font-family: sans-serif;`;
+    xBtn.onmouseenter = () => { xBtn.style.color = '#333'; xBtn.style.transform = 'scale(1.1)'; };
+    xBtn.onmouseleave = () => { xBtn.style.color = '#bbb'; xBtn.style.transform = 'scale(1)'; };
+    xBtn.onclick = () => closeModalAndSave();
+    content.appendChild(xBtn);
 
     // 옵션 리스트 렌더링
     import('./calcData.js').then(({ memoryOptions }) => {
@@ -879,7 +890,6 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
                                 currentSelections.push(opt.key);
                                 btn.style.background = bgColors[opt.type];
                                 btn.style.borderColor = colors[opt.type];
-                                if (currentSelections.length === 3) { setTimeout(() => { closeModalAndSave(); }, 100); }
                             }
                         };
                         colsContainer.appendChild(btn);
@@ -892,37 +902,6 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
             });
         }
 
-        // 5. 맨 아래에 "해당없음" 버튼 추가 (각 2열 차지)
-        typeOrder.forEach((type, typeIdx) => {
-            const noneBtn = document.createElement('div');
-            noneBtn.className = 'memory-clear-btn';
-            noneBtn.style.gridColumn = `${typeIdx * 3 + 1} / span 2`;
-            noneBtn.style.padding = isMobile ? '8px 1px' : '8px 2px';
-            noneBtn.style.border = '1px solid #eee';
-            noneBtn.style.borderRadius = '4px';
-            noneBtn.style.textAlign = 'center';
-            noneBtn.style.cursor = 'pointer';
-            noneBtn.style.background = '#f5f5f5';
-            noneBtn.style.color = '#999';
-            noneBtn.style.marginTop = '4px';
-
-            const noneText = isJa ? 'リセット' : '선택 취소';
-            noneBtn.innerHTML = `<div style="font-weight: bold; font-size: ${isMobile ? '0.62rem' : '0.8rem'}; line-height: 1.1;">${noneText}</div>`;
-
-            noneBtn.onclick = () => {
-                const existIdx = currentSelections.findIndex(k => memoryOptions[k] && memoryOptions[k].type === type);
-                if (existIdx > -1) {
-                    const oldKey = currentSelections[existIdx];
-                    currentSelections.splice(existIdx, 1);
-                    const oldBtn = colsContainer.querySelector(`.memory-opt-btn[data-key="${oldKey}"]`);
-                    if (oldBtn) {
-                        oldBtn.style.background = tintBgs[type];
-                        oldBtn.style.borderColor = tintBorders[type];
-                    }
-                }
-            };
-            colsContainer.appendChild(noneBtn);
-        });
     });
 
     modal.appendChild(content);
@@ -995,7 +974,7 @@ export function showRecommendModal(onConfirm) {
     let settings = { ...calcStore.recommendSettings };
     const getSum = () => settings.vocal + settings.dance + settings.visual;
 
-    const titleText = isJa ? 'サポカ自動おすすめ' : '서포트 카드 자동 추천';
+    const titleText = t('calc_title_support_recommend');
 
     const renderSubRow = (key) => `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 24px; border-bottom: 1px solid #f9f9f9;">
@@ -1020,7 +999,7 @@ export function showRecommendModal(onConfirm) {
             
             <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fcfcfc; border-bottom: 2px solid #eee;">
-                    <span style="font-size: 14px; font-weight: bold; color: #333;">${isJa ? 'SP発生率増加サポカ (件数)' : 'SP 발생률 증가 서포카 (개수)'}</span>
+                    <span style="font-size: 14px; font-weight: bold; color: #333;">${t('calc_title_sp_support_count')}</span>
                     <span id="sp-total-count" style="font-size: 16px; font-weight: 900; color: ${idolColor}; background: ${idolColor}15; padding: 2px 10px; border-radius: 12px;">${getSum()}</span>
                 </div>
                 ${renderSubRow('vocal')}
@@ -1030,17 +1009,17 @@ export function showRecommendModal(onConfirm) {
 
             <div style="margin-bottom: 20px; padding: 0 4px;">
                 <div style="font-size: 11px; color: #999; line-height: 1.5; letter-spacing: -0.02em;">
-                    <div style="font-weight: bold; margin-bottom: 4px; color: #777;">⚠️ ${isJa ? '注意事項' : '주의사항'}</div>
+                    <div style="font-weight: bold; margin-bottom: 4px; color: #777;">⚠️ ${t('calc_notice')}</div>
                     <div id="recommend-notice-content">
-                        • ${isJa ? 'サポートカードのPアイテムおよび固有カードの獲得、ならびにイベントの発生はすべて発動することを前提として計算され、発動タイミングは考慮しません。' : '서포트카드의 P아이템 및 고유카드 획득 그리고 이벤트 발생은 모두 발동하는 것을 기준으로 계산되며, 발동 시점은 고려하지 않습니다.'}<br>
-                        • ${isJa ? '(％)系サポートカードを2枚以上組み合わせた場合、ゲーム内と同様に獲得値ごとに切り捨ててから合算するため、リストに表示される該当サポートカードの数値に誤差が生じます。' : '(%)계열 서포트 카드를 2개 이상 조합할 경우 인게임과 동일하게 획득 수치마다 내림 후 합산을 하기에 리스트에 표시된 해당 개별 서포카 수치에 오차가 발생합니다.'}
+                        • ${t('calc_notice_recommend_1')}<br>
+                        • ${t('calc_notice_recommend_2')}
                     </div>
                 </div>
             </div>
 
             <div style="display: flex; gap: 10px;">
-                <button class="confirm-btn cancel" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: #fcfcfc; color: #888; cursor: pointer; font-size: 13px;">${isJa ? 'キャンセル' : '취소'}</button>
-                <button class="confirm-btn ok" style="flex: 1.5; padding: 10px; border-radius: 8px; border: none; background: ${idolColor}; color: #fff; cursor: pointer; font-size: 13px; font-weight: bold;">${isJa ? 'おすすめ' : '추천 시작'}</button>
+                <button class="confirm-btn cancel" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: #fcfcfc; color: #888; cursor: pointer; font-size: 13px;">${t('ui_cancel')}</button>
+                <button class="confirm-btn ok" style="flex: 1.5; padding: 10px; border-radius: 8px; border: none; background: ${idolColor}; color: #fff; cursor: pointer; font-size: 13px; font-weight: bold;">${t('calc_label_recommend_start')}</button>
             </div>
         </div>
         <style>
@@ -1069,7 +1048,7 @@ export function showRecommendModal(onConfirm) {
 
                 // 합계가 6を 넘으면 선택 불가
                 if (currentSumWithoutKey + newVal > 6) {
-                    showTemporaryToast(isJa ? '合計は6枚までです。' : '합계는 최대 6개까지 가능합니다!');
+                    showTemporaryToast(t('calc_toast_recommend_limit'));
                     return;
                 }
 

@@ -1,6 +1,6 @@
 // calc.js
 import { state, idolColors } from './state.js';
-import { updatePageTranslations } from './utils.js';
+import { updatePageTranslations, translate } from './utils.js';
 import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
@@ -22,10 +22,11 @@ import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syn
 import { initRecommendationFeature } from './calcRecommend.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
+const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
 export function initCalc() {
     window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
-    renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
+    renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'), () => startWeeklyPlan('hif'));
 }
 
 function restoreIdolGridPosition(grid) {
@@ -223,7 +224,7 @@ function startWeeklyPlan(type) {
 
                     if (idolInfo && ratios) {
                         let stageIdx = 0;
-                        if (calcStore.type === 'nia') {
+                        if (calcStore.type === 'nia' || calcStore.type === 'hif') {
                             if (weekNum <= 10) stageIdx = 1;
                             else if (weekNum <= 20) stageIdx = 2;
                             else stageIdx = 3;
@@ -304,7 +305,7 @@ function startWeeklyPlan(type) {
             });
 
             const backBtn = document.querySelector('.back-btn');
-            if (backBtn) backBtn.onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'));
+            if (backBtn) backBtn.onclick = () => renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'), () => startWeeklyPlan('hif'));
 
             document.querySelectorAll('.plan-type-btn').forEach(btn => {
                 btn.onclick = () => {
@@ -406,7 +407,7 @@ function startWeeklyPlan(type) {
                             const selectedAttr = savedOpts.selectedAttr || '';
 
                             const optionsHtml = opts.map(o => {
-                                const label = o[`label_${state.currentLang}`] || o.label_ko;
+                                const label = o.labelKey ? t(o.labelKey) : (o[`label_${state.currentLang}`] || o.label_ko || '');
                                 const savedVal = savedOpts[o.id];
                                 if (o.type === 'checkbox') {
                                     return `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${savedVal === 'true' ? 'checked' : ''}><span>${label}${o.subOptions ? ' ▶' : ''}</span></label>`;
@@ -418,13 +419,13 @@ function startWeeklyPlan(type) {
                             if (isClass) {
                                 const attrColumn = `
                                     <div class="tooltip-attr-column">
-                                        <div class="attr-icon-button ${selectedAttr === 'vocal' ? 'active' : ''}" data-attr="vocal" title="보컬">
+                                        <div class="attr-icon-button ${selectedAttr === 'vocal' ? 'active' : ''}" data-attr="vocal" title="${t('attr_vocal')}">
                                             <img src="icons/vocal.png" alt="Vo">
                                         </div>
-                                        <div class="attr-icon-button ${selectedAttr === 'dance' ? 'active' : ''}" data-attr="dance" title="댄스">
+                                        <div class="attr-icon-button ${selectedAttr === 'dance' ? 'active' : ''}" data-attr="dance" title="${t('attr_dance')}">
                                             <img src="icons/dance.png" alt="Da">
                                         </div>
-                                        <div class="attr-icon-button ${selectedAttr === 'visual' ? 'active' : ''}" data-attr="visual" title="비주얼">
+                                        <div class="attr-icon-button ${selectedAttr === 'visual' ? 'active' : ''}" data-attr="visual" title="${t('attr_visual')}">
                                             <img src="icons/visual.png" alt="Vi">
                                         </div>
                                     </div>`;
@@ -529,7 +530,7 @@ function startWeeklyPlan(type) {
                 };
             }
 
-            if (type === 'nia' || type === 'hajime') {
+            if (type === 'nia' || type === 'hajime' || type === 'hif') {
                 const c = document.getElementById('p-item-container');
                 if (c) c.classList.remove('hidden');
                 setupPItemSelector();
@@ -545,7 +546,7 @@ function startWeeklyPlan(type) {
                     const scrollContainer = document.getElementById('idol');
                     const scrollTop = scrollContainer?.scrollTop ?? window.scrollY ?? document.documentElement.scrollTop ?? 0;
                     calcStore.resetWeeks();
-                    showToast(state.currentLang === 'ja' ? '週間スケジュールを初期化しました。' : '주간 스케줄을 초기화했습니다.');
+                    showToast(t('calc_toast_reset_weeks'));
                     startWeeklyPlan(type);
                     requestAnimationFrame(() => {
                         if (scrollContainer) scrollContainer.scrollTop = scrollTop;

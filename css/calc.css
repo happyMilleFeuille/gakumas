@@ -323,7 +323,7 @@
 }
 
 .selected-card-slot.filled .slot-frame {
-    border: 1px solid #ff4d8d;
+    border: none;
     background: white;
 }
 
@@ -690,7 +690,8 @@
     overflow-x: auto;
     width: 100%;
     padding: 10px 5px;
-    margin-top: 6px; /* 여백을 6px로 축소 */
+    margin-top: 6px;
+    /* 여백을 6px로 축소 */
     margin-bottom: 0;
     /* 아래 칸과 붙이기 위해 제거 */
     background: white;
@@ -736,7 +737,8 @@
 .activity-counter {
     display: flex;
     flex-direction: column;
-    gap: 0; /* 내부 요소들 사이의 간격 제거 */
+    gap: 0;
+    /* 내부 요소들 사이의 간격 제거 */
     width: 100%;
     background: white;
     padding: 12px;
@@ -750,8 +752,10 @@
     display: grid;
     width: 100%;
     margin-top: 0;
-    border-top: 1px solid #ddd; /* 상단 선 */
-    border-left: 1px solid #ddd; /* 좌측 선 */
+    border-top: 1px solid #ddd;
+    /* 상단 선 */
+    border-left: 1px solid #ddd;
+    /* 좌측 선 */
     border-radius: 8px;
     overflow: hidden;
 }
@@ -759,15 +763,18 @@
 /* 보컬/댄스/비주얼 레슨 전용 (3열) */
 .base-lessons-grid {
     grid-template-columns: repeat(3, 1fr);
-    border-radius: 8px 8px 0 0; /* 위쪽만 라운드 */
+    border-radius: 8px 8px 0 0;
+    /* 위쪽만 라운드 */
 }
 
 /* 나머지 활동 전용 (5열) */
 .other-activities-grid {
     grid-template-columns: repeat(5, 1fr);
     border-top: none;
-    border-radius: 0 0 8px 8px; /* 아래쪽만 라운드 */
-    margin-top: 0 !important; /* 강제로 여백 제거 */
+    border-radius: 0 0 8px 8px;
+    /* 아래쪽만 라운드 */
+    margin-top: 0 !important;
+    /* 강제로 여백 제거 */
 }
 
 .other-activities-grid .main-count {
@@ -776,14 +783,17 @@
 
 /* 5열 격자 세로 길이 축소 */
 .other-activities-grid .activity-cell {
-    padding: 4px 8px; /* 6px -> 4px로 상하 여백 축소 */
+    padding: 4px 8px;
+    /* 6px -> 4px로 상하 여백 축소 */
 }
 
 .activity-cell {
     background: #fff;
     padding: 6px 8px;
-    display: grid; /* 그리드 레이아웃으로 변경 */
-    grid-template-columns: 18px 1fr; /* 아이콘 18px 고정, 나머지는 숫자 영역 */
+    display: grid;
+    /* 그리드 레이아웃으로 변경 */
+    grid-template-columns: 18px 1fr;
+    /* 아이콘 18px 고정, 나머지는 숫자 영역 */
     align-items: center;
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
@@ -792,7 +802,8 @@
 .activity-cell-count {
     display: flex;
     align-items: center;
-    justify-content: center; /* 숫자 영역 내에서 가운데 정렬 */
+    justify-content: center;
+    /* 숫자 영역 내에서 가운데 정렬 */
     gap: 2px;
     width: 100%;
 }
@@ -821,11 +832,15 @@
 }
 
 /* 보컬/댄스/비주얼 속성 색상 및 아이콘 크기 적용 */
-.activity-lessonvo, .activity-lessondan, .activity-lessonvi {
-    grid-template-columns: 20px 1fr !important; /* 아이콘 공간 살짝 확대 */
+.activity-lessonvo,
+.activity-lessondan,
+.activity-lessonvi {
+    grid-template-columns: 20px 1fr !important;
+    /* 아이콘 공간 살짝 확대 */
 }
-.activity-lessonvo .activity-mini-icon, 
-.activity-lessondan .activity-mini-icon, 
+
+.activity-lessonvo .activity-mini-icon,
+.activity-lessondan .activity-mini-icon,
 .activity-lessonvi .activity-mini-icon {
     width: 20px !important;
     height: 20px !important;
@@ -834,6 +849,7 @@
 .activity-lessonvo {
     background: rgba(255, 77, 141, 0.08) !important;
 }
+
 .activity-lessonvo .main-count {
     color: #ff4d8d !important;
 }
@@ -841,13 +857,16 @@
 .activity-lessondan {
     background: rgba(70, 164, 243, 0.08) !important;
 }
+
 .activity-lessondan .main-count {
     color: #46a4f3 !important;
 }
 
 .activity-lessonvi {
-    background: rgba(252, 199, 94, 0.12) !important; /* 노란색은 좀 더 짙게 */
+    background: rgba(252, 199, 94, 0.12) !important;
+    /* 노란색은 좀 더 짙게 */
 }
+
 .activity-lessonvi .main-count {
     color: #fcc75e !important;
 }
@@ -946,7 +965,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-right: 26px; /* 세로선과 i 버튼 사이 정중앙을 맞추기 위한 여백 */
+    padding-right: 26px;
+    /* 세로선과 i 버튼 사이 정중앙을 맞추기 위한 여백 */
 }
 
 /* --- Mobile Optimizations (up to 768px) --- */
@@ -1018,9 +1038,11 @@
     .activity-grid .main-count {
         font-size: 0.75rem !important;
     }
+
     .other-activities-grid .main-count {
         font-size: 0.65rem !important;
     }
+
     .sp-sub-count {
         font-size: 0.55rem !important;
     }
@@ -1307,7 +1329,8 @@
 }
 
 #btn-run-calc {
-    min-width: 110px !important; /* 계산 버튼만 2배 너비 적용 */
+    min-width: 110px !important;
+    /* 계산 버튼만 2배 너비 적용 */
 }
 
 .calc-btn:hover {
@@ -1330,7 +1353,8 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     min-width: unset !important;
     width: auto !important;
-    margin-left: auto !important; /* 오른쪽 끝으로 밀기 */
+    margin-left: auto !important;
+    /* 오른쪽 끝으로 밀기 */
 }
 
 .side-panel-tabs {
@@ -1953,7 +1977,8 @@
     width: 100%;
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.06), transparent);
-    margin: 15px 0; /* 위아래 여백을 15px로 늘림 */
+    margin: 15px 0;
+    /* 위아래 여백을 15px로 늘림 */
 }
 
 .class-attr-badge {
@@ -2238,6 +2263,40 @@
     .side-panel-tabs {
         padding-right: 24px !important;
         /* 스크롤바 너비만큼 강제로 여백 추가 */
+    }
+}
+
+.sixth-slot .slot-frame {
+    border-color: #8FDDBA;
+    background: rgba(143, 221, 186, 0.2);
+}
+
+.rental-bg-text {
+    font-size: 10px;
+    font-weight: bold;
+    color: #8FDDBA;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.support-bg-text {
+    font-size: 8px;
+    font-weight: bold;
+    color: #bbb;
+    opacity: 0.65;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .rental-bg-text {
+        font-size: 6px;
+    }
+    .support-bg-text {
+        font-size: 5px;
     }
 }
 

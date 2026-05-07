@@ -9,13 +9,14 @@
 
 /* 홈 퀵 메뉴 바로가기 */
 .home-quick-nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
     width: 100%;
-    max-width: 440px;
-    margin: 3rem auto 1rem;
-    padding: 0 10px;
+    max-width: 600px;
+    margin: 4rem auto 3rem;
+    padding: 0 20px;
     box-sizing: border-box;
 }
 
@@ -23,32 +24,83 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 10px 4px;
+    align-items: stretch;
+    padding: 0;
+    min-height: 100px;
+    height: 100%;
     background: #fff;
     border: 1.5px solid var(--idol-theme-color, #ddd);
-    border-radius: 10px;
+    border-radius: 15px;
     cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--idol-theme-color, #555);
+    transition: all 0.2s;
+    overflow: hidden;
+    position: relative;
+    text-align: left;
 }
 
 .home-quick-btn:hover {
-    background: color-mix(in srgb, var(--idol-theme-color) 10%, white);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --header-bg: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)) 12%, white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
 }
 
-.home-quick-btn:active {
-    background: color-mix(in srgb, var(--idol-theme-color) 15%, white);
+.quick-btn-header {
+    display: flex;
+    align-items: center;
+    padding: 7px 15px 5px;
+    background: var(--header-bg, transparent);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    min-height: 32px;
+}
+
+.quick-btn-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--idol-theme-color, #333);
+    line-height: 1.2;
+}
+
+.quick-btn-title.font-small {
+    font-size: 0.72rem;
+}
+
+.quick-btn-body {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.quick-btn-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    flex-shrink: 0;
+    padding-left: 5px;
 }
 
 .quick-btn-icon {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
+}
+
+.quick-btn-text-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    padding: 10px 15px 10px 5px;
+}
+
+.quick-btn-desc {
+    font-size: 0.62rem;
+    color: #666;
+    font-weight: 500;
+    line-height: 1.4;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 
@@ -121,7 +173,8 @@
 
 .roadmap-v-divider {
     width: 1px;
-    height: 16px; /* 다시 절제된 높이로 축소 */
+    height: 16px;
+    /* 다시 절제된 높이로 축소 */
     background: var(--idol-theme-color, var(--primary-color));
     opacity: 0.8;
 }
@@ -136,7 +189,8 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    border-top-left-radius: 8px; /* 부모 10px 라운드 안쪽으로 완벽 밀착 */
+    border-top-left-radius: 8px;
+    /* 부모 10px 라운드 안쪽으로 완벽 밀착 */
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--idol-theme-color, var(--primary-color));
@@ -147,7 +201,8 @@
 
 .roadmap-expand-btn:hover,
 .roadmap-expand-btn.active {
-    background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)), white 85%); /* 농도를 15%로 높여서 더 선명하게 함 */
+    background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)), white 85%);
+    /* 농도를 15%로 높여서 더 선명하게 함 */
     color: var(--idol-theme-color, var(--primary-color));
     /* transform 효과 제거: 제자리에 고정된 상태에서 색상만 반응 */
 }
@@ -185,7 +240,8 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    border-top-right-radius: 8px; /* 부모 10px 라운드 안쪽으로 완벽 밀착 */
+    border-top-right-radius: 8px;
+    /* 부모 10px 라운드 안쪽으로 완벽 밀착 */
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--idol-theme-color, var(--primary-color));
@@ -196,7 +252,8 @@
 
 .roadmap-filter-btn:hover,
 .roadmap-filter-btn.active {
-    background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)), white 85%); /* 농도를 15%로 높여서 더 선명하게 함 */
+    background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)), white 85%);
+    /* 농도를 15%로 높여서 더 선명하게 함 */
     color: var(--idol-theme-color, var(--primary-color));
     /* transform 효과 제거: 색상만 부드럽게 변화 */
 }
@@ -554,19 +611,65 @@
 
 @media (max-width: 768px) {
     .home-quick-nav {
-        margin: 1.5rem auto 1rem;
-        gap: 6px;
+        grid-template-columns: repeat(2, 1fr);
+        margin: 2.5rem auto 2rem;
+        gap: 8px;
+        padding: 0;
+        width: 90%;
+        max-width: 480px;
     }
 
     .home-quick-btn {
-        font-size: 0.55rem;
-        padding: 8px 2px;
-        gap: 2px;
+        font-size: 0.52rem;
+        min-height: 65px;
+        border-radius: 10px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .quick-btn-header {
+        display: flex;
+        align-items: center;
+        padding: 3px 10px 2px;
+        background: var(--header-bg, transparent);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        min-height: 20px;
+    }
+
+    .quick-btn-title {
+        font-size: 0.5rem;
+        position: static;
+        text-align: left;
+    }
+
+    .quick-btn-title.font-small {
+        font-size: 0.48rem;
+    }
+
+    .quick-btn-body {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .quick-btn-icon-wrap {
+        width: 33px;
+        padding-left: 5px;
     }
 
     .quick-btn-icon {
-        width: 22px;
-        height: 22px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .quick-btn-text-wrap {
+        padding: 1px 10px 2px 3px;
+    }
+
+    .quick-btn-desc {
+        font-size: 0.35rem;
+        color: #666;
     }
 
     .main-logo-h1 {
@@ -598,8 +701,9 @@
 
     .roadmap-v-divider {
         width: 1px !important;
-        height: 10px !important; /* 모바일 버튼 크기에 맞춰 더 짧게 조정 */
-        align-self: center !important; 
+        height: 10px !important;
+        /* 모바일 버튼 크기에 맞춰 더 짧게 조정 */
+        align-self: center !important;
     }
 
     .pssr-roadmap-list {
@@ -607,8 +711,10 @@
     }
 
     .roadmap-expand-btn {
-        padding: 4px 6px !important; /* 패딩을 더 줄여서 콤팩트하게 */
-        min-width: 85px !important;   /* 너비 상한선을 낮춤 */
+        padding: 4px 6px !important;
+        /* 패딩을 더 줄여서 콤팩트하게 */
+        min-width: 85px !important;
+        /* 너비 상한선을 낮춤 */
         font-size: 0.62rem !important;
         background: transparent !important;
     }
@@ -619,7 +725,8 @@
     }
 
     .roadmap-filter-btn {
-        padding: 4px 6px !important; /* 패딩을 더 줄임 */
+        padding: 4px 6px !important;
+        /* 패딩을 더 줄임 */
         font-size: 0.62rem !important;
         background: transparent !important;
         border: none !important;
@@ -706,8 +813,10 @@
     .roadmap-column::before {
         top: 22px !important;
         /* 모바일: 선을 상대적으로 짧게 유지 */
-        width: 1.5px !important; /* 테두리 굵기와 같은 1.5px로 수정 */
-        margin-left: -0.75px !important; /* 굵기에 맞춰 중앙 보정 */
+        width: 1.5px !important;
+        /* 테두리 굵기와 같은 1.5px로 수정 */
+        margin-left: -0.75px !important;
+        /* 굵기에 맞춰 중앙 보정 */
     }
 
 

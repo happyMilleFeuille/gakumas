@@ -2,6 +2,14 @@ import { state } from './state.js';
 import { currencyData } from './currency.js';
 import translations from './i18n.js';
 
+const useJaNames = () => state.currentLang !== 'ko';
+const getLocalizedCardName = (item) => {
+    if (!item) return '';
+    if (state.currentLang === 'en' && item.name_en) return item.name_en;
+    if (useJaNames() && item.name_ja) return item.name_ja;
+    return item.name;
+};
+
 export function openGachaLogModal() {
     const modal = document.getElementById('gacha-log-modal');
     const statsArea = document.getElementById('gacha-log-stats');
@@ -101,7 +109,7 @@ export function openGachaLogModal() {
 }
 
 function renderStats(container, total, stats, topChar) {
-    const isJa = state.currentLang === 'ja';
+    const isJa = useJaNames();
     const t = translations[state.currentLang];
     const totalJewels = total * 250;
     const yenPerJewel = 1.1951;
@@ -215,7 +223,7 @@ function createLogItem(item) {
     // 이름 오버레이
     const nameOverlay = document.createElement('div');
     nameOverlay.className = 'log-item-name-overlay';
-    const nameText = (state.currentLang === 'ja' && item.name_ja) ? item.name_ja : item.name;
+    const nameText = getLocalizedCardName(item);
     nameOverlay.textContent = nameText;
     nameOverlay.title = nameText; // 마우스 오버 시 전체 이름 표시
     el.appendChild(nameOverlay);

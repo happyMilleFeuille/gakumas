@@ -7,13 +7,8 @@ export function updatePageTranslations(root = document) {
     const lang = state.currentLang;
     root.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-            if (el.tagName === 'SPAN' || el.children.length === 0) {
-                el.innerHTML = translations[lang][key];
-            } else {
-                const textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                if (textNode) textNode.textContent = translations[lang][key];
-            }
+        if (translations[lang] && translations[lang][key]) {
+            el.innerHTML = translations[lang][key];
         }
     });
 }

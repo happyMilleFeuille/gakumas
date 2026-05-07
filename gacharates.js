@@ -5,30 +5,46 @@ import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_
 import { produceList } from './producedata.js';
 import translations from './i18n.js';
 
+const useJaNames = (lang) => lang !== 'ko';
+
 
 
 
 
 const charNameMap = {
-    rinami_: { ko: '히메사키 리나미', ja: '姫崎 莉波' },
-    saki_: { ko: '하나미 사키', ja: '花海 咲季' },
-    china_: { ko: '쿠라모토 치나', ja: '倉本 千奈' },
-    sumika_: { ko: '시운 스미카', ja: '紫雲 清夏' },
-    mao_: { ko: '아리무라 마오', ja: '有村 麻央' },
-    kotone_: { ko: '후지타 코토네', ja: '藤田 ことね' },
-    temari_: { ko: '츠키무라 테마리', ja: '月村 手毬' },
-    lilja_: { ko: '카츠라기 릴리야', ja: '葛城 リーリヤ' },
-    hiro_: { ko: '시노사와 히로', ja: '篠澤 広' },
-    tsubame_: { ko: '아마야 츠바메', ja: '雨夜 燕' },
-    sena_: { ko: '쥬오 세나', ja: '十王 星南' },
-    ume_: { ko: '하나미 우메', ja: '花海 佑芽' },
-    misuzu_: { ko: '하타야 미스즈', ja: '秦谷 美鈴' }
+    rinami_: 'idol_fullname_rinami',
+    saki_: 'idol_fullname_saki',
+    china_: 'idol_fullname_china',
+    sumika_: 'idol_fullname_sumika',
+    mao_: 'idol_fullname_mao',
+    kotone_: 'idol_fullname_kotone',
+    temari_: 'idol_fullname_temari',
+    lilja_: 'idol_fullname_lilja',
+    hiro_: 'idol_fullname_hiro',
+    tsubame_: 'idol_fullname_tsubame',
+    sena_: 'idol_fullname_sena',
+    ume_: 'idol_fullname_ume',
+    misuzu_: 'idol_fullname_misuzu'
 };
 
 const getCharName = (id, lang) => {
     const key = Object.keys(charNameMap).find(k => id.includes(k));
     if (!key) return "";
-    return charNameMap[key][lang] || charNameMap[key]['ko'];
+    const nameKey = charNameMap[key];
+    return translations[lang]?.[nameKey] || translations.ko?.[nameKey] || "";
+};
+
+const getCardDisplayName = (card, lang) => {
+    if (!card) return "";
+    if (lang === 'en' && card.name_en) return card.name_en;
+    return (useJaNames(lang) && card.name_ja) ? card.name_ja : (card.name || "");
+};
+
+const getConfigDisplayName = (configEntry, fallbackCard, lang) => {
+    if (lang === 'en' && configEntry?.name_en) return configEntry.name_en;
+    if (useJaNames(lang) && configEntry?.name_ja) return configEntry.name_ja;
+    if (useJaNames(lang) && fallbackCard?.name_ja) return fallbackCard.name_ja;
+    return configEntry?.name || fallbackCard?.name || "";
 };
 
 export function openGachaRatesModal() {
@@ -50,7 +66,7 @@ export function openGachaRatesModal() {
     if (type === 'selection') {
         activeConfig = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         config = activeConfig?.pool || { pssr: [] };
-        activeName = (lang === 'ja' && activeConfig?.name_ja) ? activeConfig.name_ja : (activeConfig?.name || "");
+        activeName = getConfigDisplayName(activeConfig, null, lang);
         if (activeConfig?.ssr_guaranteed) {
             strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
         }
@@ -60,28 +76,28 @@ export function openGachaRatesModal() {
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
+        activeName = getCardDisplayName(cardData, lang);
     } else if (type === 'limited') {
         activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        activeName = (lang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || "");
+        activeName = getCardDisplayName(cardData, lang);
     } else if (type === 'unit') {
         activeConfig = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        activeName = activeConfig.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
+        activeName = getConfigDisplayName(activeConfig, cardData, lang);
     } else if (type === 'fes') {
         activeConfig = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
-        activeName = activeConfig.name || (lang === 'ja' && cardData?.name_ja ? cardData.name_ja : cardData?.name) || "";
+        activeName = getConfigDisplayName(activeConfig, cardData, lang);
     }
 
     const rateKeys = { PSSR: 'PSSR', SSSR: 'SSSR', PSR: 'PSR', SR_CARD: 'SSR_CARD', PR: 'PR', R_CARD: 'R_CARD' };
@@ -186,8 +202,8 @@ export function openGachaRatesModal() {
         const isProduce = (rarityKey === 'PSSR' || rarityKey === 'PSR' || rarityKey === 'PR');
         return results.map(item => {
             const c = item.card, isPk = item.forceNoPk ? false : pickupIds.includes(c.id);
-            let n = (lang === 'ja' && c.name_ja) ? c.name_ja : c.name;
-            if (c.another) n = (lang === 'ja' ? '[アナザー] ' : '[어나더] ') + n;
+            let n = getCardDisplayName(c, lang);
+            if (c.another) n = `${t.gacha_another_prefix || '[Another] '}${n}`;
             return { card: c, name: n, isPk, rarity: rarityKey, charName: isProduce ? getCharName(c.id, lang) : "", releasedAt: c.releasedAt || "2024-05-16", normalRate: item.nRate, guaranteedRate: item.gRate };
         }).sort((a, b) => (b.isPk - a.isPk) || (b.card.source === 'limited_f' ? 1 : 0) - (a.card.source === 'limited_f' ? 1 : 0) || b.releasedAt.localeCompare(a.releasedAt) || a.name.localeCompare(b.name));
     };
@@ -210,7 +226,7 @@ export function openGachaRatesModal() {
                                 const sN = strategy.rates[rateKeys[sub.key]] || 0, sG = strategy.guaranteed[rateKeys[sub.key]] || 0, cards = getIndividualCardData(sub.key);
                                 let cC = sub.key.toLowerCase(); if (cC === 'sr_card') cC = 'sr'; if (cC === 'r_card') cC = 'r';
                                 return `<tr class="rate-row sub-group expandable" data-target="detail-${sub.key}"><td class="sub-label rarity-${cC}"><span class="expand-icon">▶</span> ${sub.label}</td><td>${formatPercent(sN)}</td><td>${sG > 0 ? formatPercent(sG) : '-'}</td></tr>
-                                    <tr class="detail-row hidden" id="detail-${sub.key}"><td colspan="3"><div class="detail-container"><div class="detail-header"><span class="header-name">${t.gacha_rates_header_name}</span><span class="header-rate">${lang === 'ja' ? '通常' : '일반'}</span><span class="header-rate">${lang === 'ja' ? '確定' : '확정'}</span></div>
+                                    <tr class="detail-row hidden" id="detail-${sub.key}"><td colspan="3"><div class="detail-container"><div class="detail-header"><span class="header-name">${t.gacha_rates_header_name}</span><span class="header-rate">${t.gacha_rates_header_normal}</span><span class="header-rate">${t.gacha_rates_header_guaranteed}</span></div>
                                     <div class="detail-list">${cards.map(c => {
                                         if (!c || !c.card) return "";
                                         const isSupport = c.rarity.includes('CARD') || c.rarity === 'SSSR', imgTag = isSupport ? `<img src="images/support/${c.card.id}.webp" class="detail-card-img" onerror="this.style.display='none'" alt="">` : "";
@@ -218,7 +234,7 @@ export function openGachaRatesModal() {
                                         const pkClass = isPk ? 'is-pickup' : '';
                                         const displayNormalRate = c.normalRate > 0.000001 ? formatPercent(c.normalRate) : '-';
                                         const displayGuaranteedRate = c.guaranteedRate > 0.000001 ? formatPercent(c.guaranteedRate) : '-';
-                                        return `<div class="detail-item ${pkClass}"><div class="detail-name-row">${imgTag}<div class="detail-name-wrapper"><span class="detail-name">${isPk ? '[PICKUP] ' : ''}${c.name}</span>${c.charName ? `<span class="detail-char-name">${c.charName}</span>` : ""}</div></div><div class="detail-rate-group"><span class="detail-rate">${displayNormalRate}</span><span class="detail-rate">${displayGuaranteedRate}</span></div></div>`;
+                                        return `<div class="detail-item ${pkClass}"><div class="detail-name-row">${imgTag}<div class="detail-name-wrapper"><span class="detail-name">${isPk ? (t.gacha_pickup_prefix || '[PICKUP] ') : ''}${c.name}</span>${c.charName ? `<span class="detail-char-name">${c.charName}</span>` : ""}</div></div><div class="detail-rate-group"><span class="detail-rate">${displayNormalRate}</span><span class="detail-rate">${displayGuaranteedRate}</span></div></div>`;
                                     }).join('')}</div></div></td></tr>`;
                             }).join('')}</tbody></table></td></tr>`;
                 }).join('')}

@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         // 앱 버전 관리 
-        const APP_VERSION = '1.0.7';
+        const APP_VERSION = '1.0.8';
         if (localStorage.getItem('gakumas_note_version') !== APP_VERSION) {
             localStorage.setItem('gakumas_note_version', APP_VERSION);
             location.reload(true);
@@ -83,6 +83,11 @@
     <link rel="preload" as="image" href="icons/idolicons/misuzu_c.png">
     <link rel="preload" as="image" href="icons/idolicons/ume_c.png">
     <link rel="preload" as="image" href="icons/idolicons/rinami_c.png">
+
+    <!-- Calculator Menu Image Preload -->
+    <link rel="preload" as="image" href="images/hajime.webp">
+    <link rel="preload" as="image" href="images/nia.webp">
+    <link rel="preload" as="image" href="images/hif.webp">
 </head>
 
 <body>
@@ -105,12 +110,19 @@
         <section id="idol">
             <div class="lang-switch-container">
                 <img src="icons/title.webp" alt="Gakumas Note" class="main-logo-img">
-                <div class="lang-toggle-wrap">
-                    <input type="radio" name="lang" id="lang-ko" value="ko">
-                    <input type="radio" name="lang" id="lang-ja" value="ja">
-                    <label for="lang-ko" class="lang-label">KO</label>
-                    <label for="lang-ja" class="lang-label">JA</label>
-                    <div class="lang-slider"></div>
+                <div class="lang-select-wrap">
+                    <span class="lang-select-label">Language</span>
+                    <div class="lang-dropdown" id="lang-dropdown">
+                        <button id="lang-select" class="lang-select" type="button" aria-haspopup="listbox"
+                            aria-expanded="false" aria-label="Select language">
+                            <span id="lang-current-label">KO</span>
+                        </button>
+                        <div class="lang-options hidden" id="lang-options" role="listbox" aria-label="Language options">
+                            <button class="lang-option" type="button" data-lang="ko" role="option">KO</button>
+                            <button class="lang-option" type="button" data-lang="ja" role="option">JA</button>
+                            <button class="lang-option" type="button" data-lang="en" role="option">EN</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="content-area"></div>
@@ -153,6 +165,7 @@
                 </div>
             </div>
             <div class="button-group horizontal">
+                <span class="menu-logo-text">GAKUMAS NOTE</span>
                 <button class="menu-btn" data-target="idol">
                     <img src="icons/idol.svg" alt="" class="btn-icon">
                 </button>
@@ -249,20 +262,59 @@
         <!-- 홈 퀵 메뉴 바로가기 -->
         <div class="home-quick-nav">
             <button class="home-quick-btn" data-target="idol">
-                <img src="icons/idol.svg" alt="" class="quick-btn-icon">
-                <span data-i18n="btn_empty">아이돌</span>
-            </button>
-            <button class="home-quick-btn" data-target="support">
-                <img src="icons/card.svg" alt="" class="quick-btn-icon">
-                <span data-i18n="btn_supporter">서포트카드</span>
+                <div class="quick-btn-header">
+                    <div class="quick-btn-title" data-i18n="btn_empty">アイドル</div>
+                </div>
+                <div class="quick-btn-body">
+                    <div class="quick-btn-icon-wrap">
+                        <img src="icons/idol.svg" alt="" class="quick-btn-icon">
+                    </div>
+                    <div class="quick-btn-text-wrap">
+                        <div class="quick-btn-desc" data-i18n="desc_idol">実装済みアイドルの画像や情報を確認でき、各アイドルが参加したMVリンクを提供します。
+                        </div>
+                    </div>
+                </div>
             </button>
             <button class="home-quick-btn" data-target="calc">
-                <img src="icons/caculation.svg" alt="" class="quick-btn-icon">
-                <span data-i18n="btn_calc">계산기</span>
+                <div class="quick-btn-header">
+                    <div class="quick-btn-title" data-i18n="btn_calc">ステータス計算</div>
+                </div>
+                <div class="quick-btn-body">
+                    <div class="quick-btn-icon-wrap">
+                        <img src="icons/caculation.svg" alt="" class="quick-btn-icon">
+                    </div>
+                    <div class="quick-btn-text-wrap">
+                        <div class="quick-btn-desc" data-i18n="desc_calc">
+                            プロデュースで使用するサポートカードの性能確認や、スケジュールに応じたサポカ編成の自動推薦を提供します。</div>
+                    </div>
+                </div>
+            </button>
+            <button class="home-quick-btn" data-target="support">
+                <div class="quick-btn-header">
+                    <div class="quick-btn-title font-small" data-i18n="btn_supporter">サポートカード</div>
+                </div>
+                <div class="quick-btn-body">
+                    <div class="quick-btn-icon-wrap">
+                        <img src="icons/card.svg" alt="" class="quick-btn-icon">
+                    </div>
+                    <div class="quick-btn-text-wrap">
+                        <div class="quick-btn-desc" data-i18n="desc_support">
+                            サポートカードの効果を確認し、凸状態を指定できます。凸状態やカードの無効化はステータス計算機に反映されます。</div>
+                    </div>
+                </div>
             </button>
             <button class="home-quick-btn" data-target="gacha">
-                <img src="icons/gasha.svg" alt="" class="quick-btn-icon">
-                <span data-i18n="btn_gacha">가챠 시뮬레이터</span>
+                <div class="quick-btn-header">
+                    <div class="quick-btn-title font-small" data-i18n="btn_gacha">ガシャシミュレーター</div>
+                </div>
+                <div class="quick-btn-body">
+                    <div class="quick-btn-icon-wrap">
+                        <img src="icons/gasha.svg" alt="" class="quick-btn-icon">
+                    </div>
+                    <div class="quick-btn-text-wrap">
+                        <div class="quick-btn-desc" data-i18n="desc_gacha">ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。（70%完成）</div>
+                    </div>
+                </div>
             </button>
         </div>
 
@@ -270,7 +322,7 @@
         <div class="roadmap-filter-wrap">
             <div class="roadmap-control-group">
                 <button id="btn-roadmap-expand" class="roadmap-expand-btn">
-                    <span data-i18n="roadmap_since_release">실장 로드맵</span>
+                    <span data-i18n="roadmap_since_release">実装タイムライン</span>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                         stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;">
                         <path d="m6 9 6 6 6-6" />

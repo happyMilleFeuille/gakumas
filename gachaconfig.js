@@ -608,6 +608,7 @@ export const SELECTION_CONFIG = [
     {
         id: '2ani100ren',
         name: '시즌한정 포함 100연',
+        name_en: '100 Free Pulls with Seasonal Limiteds',
         name_ja: 'シーズン限定入り100連',
         display_date: '2026-05-01',
         date: '2026-04-28',
@@ -664,6 +665,7 @@ export const SELECTION_CONFIG = [
     {
         id: 'ongakusai_day2',
         name: '초성음악제 DAY2',
+        name_en: 'Hatsuboshi Music Festival Day 2',
         name_ja: '初星音楽祭 DAY2',
         display_date: '2026-03-02',
         date: '2025-05-16',
@@ -680,6 +682,7 @@ export const SELECTION_CONFIG = [
     {
         id: 'ongakusai_day1',
         name: '초성음악제 DAY1',
+        name_en: 'Hatsuboshi Music Festival Day 1',
         name_ja: '初星音楽祭 DAY1',
         display_date: '2026-03-01',
         date: '2025-05-16',

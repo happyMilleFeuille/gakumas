@@ -24,6 +24,14 @@ window.__videoModalOpen = false;
 window.__videoModalHistoryPushed = false;
 window.__videoModalPendingClose = false;
 
+const useJaNames = () => state.currentLang !== 'ko';
+const getLocalizedCardName = (card) => {
+    if (!card) return '';
+    if (state.currentLang === 'en' && card.name_en) return card.name_en;
+    if (useJaNames() && card.name_ja) return card.name_ja;
+    return card.name;
+};
+
 function openVideoModal(embedUrl, borderColor = '#ff4d8d') {
     const videoModal = document.getElementById('video-modal');
     const iframe = document.getElementById('video-iframe');
@@ -114,6 +122,8 @@ export function renderHome() {
 
     // 캐시가 있어도 로드맵 영역은 비우고 다시 그려서 새로운 높이/JS 반영
     contentArea.innerHTML = homeCachedContent;
+    updatePageTranslations(contentArea); // 추가: 캐시된 내용에도 최신 번역 적용
+
     const listContainer = document.getElementById('pssr-roadmap-list');
     if (listContainer) listContainer.innerHTML = '';
     renderPSSRRoadmap(false);
@@ -326,6 +336,8 @@ function renderIdolVideos(idolName, container) {
         let displayTitle = video.title; // 기본은 일본어 (title)
         if (state.currentLang === 'ko' && video.title_ko) {
             displayTitle = video.title_ko; // 한국어 설정이고 한국어 제목이 있으면 한국어(title_ko) 우선
+        } else if (state.currentLang === 'en' && video.title_en) {
+            displayTitle = video.title_en; // 영어 설정이고 영어 제목이 있으면 영어(title_en) 우선
         }
         title.textContent = displayTitle;
 
@@ -508,11 +520,11 @@ function renderProduceCards(idolName, container) {
             }
         }
 
-        const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+        const displayName = getLocalizedCardName(card);
         name.textContent = displayName;
-        name.classList.toggle('lang-ja', state.currentLang === 'ja');
+        name.classList.toggle('lang-ja', useJaNames());
 
-        if (state.currentLang === 'ja') {
+        if (useJaNames()) {
             name.style.wordBreak = 'normal';
             name.style.overflowWrap = 'anywhere';
         } else {
@@ -1106,7 +1118,7 @@ function setupStaticListeners(container) {
             const cardId = cardEl.dataset.id;
             const card = cardList.find(c => c.id === cardId);
             if (card) {
-                const displayName = (state.currentLang === 'ja' && card.name_ja) ? card.name_ja : card.name;
+                const displayName = getLocalizedCardName(card);
                 const imgSrc = card.image || `images/support/${cardId}.webp`;
                 showCardModal(card, displayName, imgSrc);
             }

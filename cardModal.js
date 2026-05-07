@@ -2,6 +2,7 @@
 import { state, setSupportLB } from './state.js';
 import { abilityData } from './abilitydata.js';
 import translations from './i18n.js';
+import { showSupportItemTooltip } from './calcUI.js';
 
 // 모달 표시 함수
 export function showCardModal(card, displayName, imgSrc) {
@@ -40,10 +41,37 @@ export function showCardModal(card, displayName, imgSrc) {
     mTitle.classList.add(`title-${card.type.toLowerCase()}`);
 
     const baseIconPath = `images/support/${card.id}`;
-    mExtraIcon.src = `${baseIconPath}_card.webp`;
+    const isCardType = card.have && card.have.startsWith('card');
+    mExtraIcon.src = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
     mExtraIcon.onerror = () => {
-        mExtraIcon.src = `${baseIconPath}_item.webp`;
+        mExtraIcon.src = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
         mExtraIcon.onerror = null;
+    };
+
+    const attrColors = {
+        vocal: "#f766a4",
+        dance: "#5aa6f0",
+        visual: "#fdc361",
+        assist: "#72da49"
+    };
+
+    if (card.item_effects) {
+        const color = attrColors[card.type.toLowerCase()] || '#ff4d8d';
+        mExtraIcon.style.backgroundColor = '#fff';
+        mExtraIcon.style.borderColor = color;
+        mExtraIcon.style.borderWidth = '1px';
+    } else {
+        mExtraIcon.style.backgroundColor = '#fff';
+        mExtraIcon.style.borderColor = '#e0e0e0';
+        mExtraIcon.style.borderWidth = '1px';
+    }
+    mExtraIcon.style.filter = 'none';
+
+    mExtraIcon.onclick = (e) => {
+        if (card.item_effects) {
+            e.stopPropagation();
+            showSupportItemTooltip(mExtraIcon, card.id);
+        }
     };
 
     const highlightNumbers = (text, type) => {

@@ -44,7 +44,7 @@ export const getNiaLessonStat = (actionId, isSP, week) => {
  */
 export function getTriggerCounts(store) {
     const counts = {
-        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_drink: 0, purchase_drink: 0, get_item: (store.type === 'nia' ? 1 : 0), change: 0 },
+        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_drink: 0, purchase_drink: 0, get_item: ((store.type === 'nia' || store.type === 'hif') ? 1 : 0), change: 0 },
         lessons: { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } }
     };
 
@@ -56,7 +56,7 @@ export function getTriggerCounts(store) {
 
         counts.total[actionId] = (counts.total[actionId] || 0) + 1;
 
-        const planData = store.type === 'hajime' ? calcPlans.hajime : calcPlans.nia;
+        const planData = store.type === 'hajime' ? calcPlans.hajime : (calcPlans[store.type] || calcPlans.nia);
         const weekOptions = planData.weeks[weekNum] || [];
         const actionDef = weekOptions.find(o => o.value === actionId);
         if (actionDef && actionDef.results) {
@@ -76,7 +76,7 @@ export function getTriggerCounts(store) {
             const wInt = parseInt(weekNum);
             if (store.type === 'hajime' && wInt === 10 && actionId === 'test') {
                 counts.total.get_item++;
-            } else if (store.type === 'nia' && (wInt === 9 || wInt === 17) && actionId === 'audition') {
+            } else if ((store.type === 'nia' || store.type === 'hif') && (wInt === 9 || wInt === 17) && actionId === 'audition') {
                 counts.total.get_item++;
             }
         }
@@ -111,7 +111,7 @@ export function getTriggerCounts(store) {
     });
 
     // 2. Nia 전용 P-아이템 보너스
-    if (store.type === 'nia' && store.pItems) {
+    if ((store.type === 'nia' || store.type === 'hif') && store.pItems) {
         const boardCounts = {};
         Object.values(store.weeks).forEach(w => { if (w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
         let niaBonusGet = 0, niaBonusDelete = 0, niaBonusEnhance = 0;
@@ -450,9 +450,9 @@ export function calculateTotals(store, detailedCounts) {
         const week = store.weeks[weekNum]; if (!week || !week.value) return;
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
         let stats = null;
-        if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
+        if ((store.type === 'nia' || store.type === 'hif') && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
         else if (store.type === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
-        else if (store.type === 'nia' && actionId === 'audition') {
+        else if ((store.type === 'nia' || store.type === 'hif') && actionId === 'audition') {
             const data = idolData[store.selectedIdol];
             if (data) {
                 const stage = wInt === 9 ? 1 : (wInt === 17 ? 2 : (wInt === 26 ? 3 : 0)), stageStats = niaAuditionStats[stage];
@@ -640,7 +640,7 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType) {
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
 
         let stats = null;
-        if (store.type === 'nia') {
+        if (store.type === 'nia' || store.type === 'hif') {
             if (['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
                 stats = getNiaLessonStat(actionId, isSP, wInt);
             } else if (actionId === 'audition') {

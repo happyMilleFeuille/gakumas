@@ -10,6 +10,19 @@ let isScrollingToItem = false; // 최상위로 이동하여 어디서든 접근 
 let isRestoringScroll = false; // 복원 중인지 체크하는 플래그 추가
 let isInitialized = false; // 초기화 여부 플래그 추가
 const lastScrollPositions = {}; // 가챠 종류별 마지막 스크롤 위치 저장
+const useJaNames = () => state.currentLang !== 'ko';
+const getLocalizedCardName = (card) => {
+    if (!card) return '';
+    if (state.currentLang === 'en' && card.name_en) return card.name_en;
+    if (useJaNames() && card.name_ja) return card.name_ja;
+    return card.name || '';
+};
+const getConfigDisplayName = (cfg) => {
+    if (!cfg) return '';
+    if (state.currentLang === 'en' && cfg.name_en) return cfg.name_en;
+    if (useJaNames() && cfg.name_ja) return cfg.name_ja;
+    return cfg.name || '';
+};
 
 /**
  * 드로어 초기화
@@ -320,7 +333,7 @@ function renderPickupList(itemsLayer, indicatorLayer) {
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('idols/${pid}${imgVer}.webp'); border: 1px solid ${color};">
                 ${planIconHtml}
             </div>
-            <div class="drawer-item-name">${(state.currentLang === 'ja' && cardData?.name_ja) ? cardData.name_ja : (cardData?.name || pid)}</div>`;
+            <div class="drawer-item-name">${getLocalizedCardName(cardData) || pid}</div>`;
         item.onclick = () => handleItemClick(pid, item);
         itemsLayer.appendChild(item);
 
@@ -336,7 +349,6 @@ function renderPickupList(itemsLayer, indicatorLayer) {
 
 function renderNormalList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
-    const isJa = state.currentLang === 'ja';
     NORMAL_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -346,7 +358,7 @@ function renderNormalList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
+        const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};">
@@ -369,7 +381,6 @@ function renderNormalList(itemsLayer, indicatorLayer) {
 
 function renderLimitedList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
-    const isJa = state.currentLang === 'ja';
     LIMITED_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -379,7 +390,7 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
+        const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};">
@@ -403,7 +414,6 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
 function renderUnitList(itemsLayer, indicatorLayer) {
     const isMobile = window.innerWidth <= 768;
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
-    const isJa = state.currentLang === 'ja';
     UNIT_CONFIG.forEach(cfg => {
         const pssrCount = cfg.pool?.pssr?.length || 0;
         const isDouble = pssrCount >= 2;
@@ -439,7 +449,7 @@ function renderUnitList(itemsLayer, indicatorLayer) {
             </div>`;
         }
         
-        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
+        const displayName = getConfigDisplayName(cfg);
         item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; overflow: hidden; position: relative;">
                 ${imgInnerHtml}
             </div>
@@ -459,7 +469,6 @@ function renderUnitList(itemsLayer, indicatorLayer) {
 }
 
 function renderSelectionList(itemsLayer, indicatorLayer) {
-    const isJa = state.currentLang === 'ja';
     SELECTION_CONFIG.forEach(cfg => {
         const item = document.createElement('div');
         item.className = 'drawer-item selection-type';
@@ -471,7 +480,7 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
         const cardData = produceList.find(c => c.id === pid);
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon" style="z-index: 20;">` : '';
 
-        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
+        const displayName = getConfigDisplayName(cfg);
         item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${favColor}; overflow: hidden; background-image: url('${cfg.bannerImg}'); background-size: cover; background-position: top; position: relative;">
                 ${planIconHtml}
             </div>
@@ -492,7 +501,6 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
 
 function renderFesList(itemsLayer, indicatorLayer) {
     const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
-    const isJa = state.currentLang === 'ja';
     FES_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -502,7 +510,7 @@ function renderFesList(itemsLayer, indicatorLayer) {
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        const displayName = (isJa && cfg.name_ja) ? cfg.name_ja : (cfg.name || '');
+        const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
         item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color}; position: relative;">

@@ -2,6 +2,9 @@
 import { cardList } from './carddata.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { state } from './state.js';
+import { translate } from './utils.js';
+
+const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
 /**
  * 서포트 카드 자동 추천 엔진 (Beta)
@@ -17,7 +20,7 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     const maxStackCache = new Map();
     const evaluationCache = new Map();
     const validAttrs = new Set(['vocal', 'dance', 'visual']);
-    const cap = (store.type === 'nia') ? 2600 : (store.type === 'hajime' ? 2800 : 9999);
+    const cap = (store.type === 'nia') ? 2600 : (store.type === 'hajime' ? 2800 : (store.type === 'hif' ? 3000 : 9999));
 
     // 1. 카드 판별 유틸리티 (속성 및 SP 여부)
     const getCardData = (id) => cardMap.get(id);
@@ -330,7 +333,7 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
         const isAllSelected = weekNums.every(w => store.weeks[w] && store.weeks[w].value);
 
         if (!isAllSelected) {
-            showToast(state.currentLang === 'ja' ? 'すべての週のスケジュールを選択してから実行してください。' : '모든 주차의 행동을 선택한 후 실행해 주세요.');
+            showToast(t('calc_toast_recommend_require_schedule'));
             return;
         }
 
@@ -341,7 +344,7 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
                 refreshAll();
                 if (typeof ensureSupportPanelOpen === 'function') ensureSupportPanelOpen();
                 syncSupportPanelUI();
-                showToast(state.currentLang === 'ja' ? 'おすすめの組み合わせが適用されました。' : '추천 조합이 적용되었습니다.');
+                showToast(t('calc_toast_recommend_applied'));
             }
         });
     };

@@ -35,6 +35,7 @@ export const idolColors = {
 const getBrowserLang = () => {
     const lang = navigator.language || navigator.userLanguage;
     if (lang && lang.startsWith('ko')) return 'ko';
+    if (lang && lang.startsWith('en')) return 'en';
     return 'ja'; // 기본값 일본어
 };
 

@@ -4,6 +4,9 @@ import { state } from './state.js';
 import { showOtherTuneModal } from './calcModals.js';
 import { calcStore } from './calcStore.js';
 import { showSupportItemTooltip } from './calcUI.js';
+import { translate } from './utils.js';
+
+const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
 /**
  * 전역 분배기 및 카드 카운터 리스너 설정
@@ -23,6 +26,7 @@ export function initGlobalDistListener(refreshAll) {
         const tuneBtn = e.target.closest('#btn-other-tune');
         const counterBtn = e.target.closest('.card-counter-btn');
         const slotImg = e.target.closest('.slot-frame img');
+        const emptySlotFrame = e.target.closest('.selected-card-slot.empty .slot-frame');
 
         // 0. 장착된 서포트 카드 이미지 클릭 (툴팁 표시)
         if (slotImg) {
@@ -34,6 +38,15 @@ export function initGlobalDistListener(refreshAll) {
                     showSupportItemTooltip(slotEl, cardId);
                     return;
                 }
+            }
+        }
+
+        // 0-1. 빈 서포트 카드 슬롯 클릭 시 계산 버튼 트리거 (서포트 패널이 닫혀있을 때만)
+        if (emptySlotFrame) {
+            const sidePanel = document.getElementById('calc-side-panel');
+            if (!sidePanel || !sidePanel.classList.contains('open')) {
+                const calcBtn = document.getElementById('btn-run-calc');
+                if (calcBtn) { calcBtn.click(); return; }
             }
         }
 
@@ -98,7 +111,7 @@ export function initGlobalDistListener(refreshAll) {
                         if (!badge) {
                             badge = document.createElement('span');
                             badge.className = 'rental-badge';
-                            badge.textContent = 'RENTAL';
+                            badge.textContent = t('calc_label_rental');
                             Object.assign(badge.style, {
                                 position: 'absolute', top: '2px', left: '6px',
                                 fontSize: '8px', fontWeight: 'bold', color: '#fff',
