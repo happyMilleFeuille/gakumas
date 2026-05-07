@@ -421,6 +421,7 @@ export function updateSelectedCardsUI(store) {
  * 계산기 메뉴 렌더링
  */
 export function renderCalcMenu(updatePageTranslations, onHajime, onNia, onHif) {
+    localStorage.removeItem('last_calc_type');
     const root = document.getElementById('calc-root');
     if (!root) return;
 

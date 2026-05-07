@@ -26,7 +26,12 @@ const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
 export function initCalc() {
     window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
-    renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'), () => startWeeklyPlan('hif'));
+    const lastType = localStorage.getItem('last_calc_type');
+    if (lastType === 'hajime' || lastType === 'nia' || lastType === 'hif') {
+        startWeeklyPlan(lastType);
+    } else {
+        renderCalcMenu(updatePageTranslations, () => startWeeklyPlan('hajime'), () => startWeeklyPlan('nia'), () => startWeeklyPlan('hif'));
+    }
 }
 
 function restoreIdolGridPosition(grid) {

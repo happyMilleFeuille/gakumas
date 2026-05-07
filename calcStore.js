@@ -201,6 +201,7 @@ export const calcStore = {
      */
     init(type) {
         this.type = type;
+        localStorage.setItem('last_calc_type', type);
         this.ensurePersistenceGuards();
         const saved = this.loadPersistedState(type);
         this.applySavedState(saved);
