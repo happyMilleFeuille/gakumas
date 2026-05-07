@@ -9,7 +9,7 @@ let activeNodes = {};
 export const GACHA_ASSETS = [
     'bgm/mainbgm.mp3',
     'gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 
-    'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 
+    'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 'gasya/bgm_ssrcm.mp3',
     'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
     'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
     'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3',

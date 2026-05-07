@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.lang = state.currentLang;
 
     // 초기 화면 렌더링 (URL 해시 반영)
-    const initialTarget = window.location.hash.substring(1) || 'home';
+    const initialTarget = window.location.hash.substring(1) || sessionStorage.getItem('lastTarget') || 'home';
     handleNavigation(initialTarget);
 
     // 해시 변경 이벤트 리스너 추가
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allPossibleModals.forEach(m => {
             // 보이는 상태인지 체크 (display가 none이 아니거나 hidden 클래스가 없는 경우)
             const isVisible = m.style.display !== 'none' && !m.classList.contains('hidden') && m.offsetHeight > 0;
-            
+
             if (isVisible) {
                 // 상세 모달(card-modal)은 특수 처리 (데이터 갱신 등)를 위해 아래 로직으로 토스
                 if (m.id === 'card-modal' || m.closest('#card-modal')) return;

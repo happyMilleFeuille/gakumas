@@ -23,6 +23,11 @@ const States = {
 };
 
 export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
+    const getPromotionSsrBgm = () => {
+        const isCampusFes = state.gachaType === 'fes' && typeof state.activeFesId === 'string' && state.activeFesId.includes('campusfes');
+        return isCampusFes ? 'gasya/bgm_ssrcm.mp3' : 'gasya/bgm_ssr.mp3';
+    };
+
     // 요소를 찾는 헬퍼 함수 (매번 최신 상태를 반영하기 위함)
     const getElements = () => {
         const container = document.getElementById('gacha-video-container');
@@ -260,7 +265,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         nextSrc = `gasya/get_${nextType}${step}.mp4`;
 
         if (nextType === "ssr" && prevType !== "ssr") {
-            playSound('gasya/bgm_ssr.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
+            playSound(getPromotionSsrBgm(), { loop: true, isBGM: true, bgmType: 'gacha' });
         }
 
         videoNext.src = assetBlobs[nextSrc] || nextSrc;
@@ -472,7 +477,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             if (subState === "sssr") {
                 if (videoNext.currentTime < 6.95) {
                     canClick = false;
-                    videoNext.currentTime = 6.95; 
+                    videoNext.currentTime = 6.95;
                     scheduleCanClick(1000, States.SHOWING_INDIVIDUAL);
                     return;
                 }
@@ -589,7 +594,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         const isFree = activeCfg?.is_free === true;
         const cost = isFree ? 0 : (mode === 1 ? 250 : 2500);
         const prevPulls = state.totalPulls[state.gachaType] || 0;
-        
+
         if (!isFree) setJewels(state.jewels - cost);
         setTotalPulls(prevPulls + mode, state.gachaType);
         gachaMode = mode;

@@ -6,8 +6,14 @@ import { renderGacha, stopBGM } from './gacha.js';
 export function handleNavigation(target, isBack = false) {
     if (!target) return;
 
+    sessionStorage.setItem('lastTarget', target);
+    if (target !== 'gacha') {
+        sessionStorage.removeItem('gachaViewState');
+    }
+
     const contentArea = document.getElementById('content-area');
-    const isContentEmpty = contentArea && contentArea.innerHTML.trim() === '';
+    const hasSeoIntro = !!contentArea?.querySelector('#seo-intro');
+    const isContentEmpty = !contentArea || contentArea.innerHTML.trim() === '' || hasSeoIntro;
 
     // 현재 활성화된 탭과 동일하고, 화면이 비어있지 않은 경우만 무시
     if (history.state && history.state.target === target && !isBack && !isContentEmpty) {
