@@ -2,7 +2,7 @@
 export const produceList = [
     // --- 리나미 SSR (PSSR) ---
     { id: "ssrrinami_1st", name: "clumsy trick", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 10.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/ND5MsmApfTE?si=GLya6fTOH15jVFMq" },
-    { id: "ssrrinami_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", releasedAt: "2024-08-01", source: "limited", another: true, jumpTime2: 6.2 },
+    { id: "ssrrinami_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", releasedAt: "2024-08-01", source: "limited", another: true, jumpTime2: 6.2 },
     { id: "ssrrinami_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-30", source: "limited", another: true },
     { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-11-28", another: true, jumpTime2: 8.1 },
     { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
@@ -31,7 +31,7 @@ export const produceList = [
     // --- 치나 SSR (PSSR) ---
     { id: "ssrchina_1st", name: "Wonder scale", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 8.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE" },
     { id: "ssrchina_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-07-12", another: true },
-    { id: "ssrchina_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", releasedAt: "2024-08-11", plan: "logic", source: "limited", another: true },
+    { id: "ssrchina_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", releasedAt: "2024-08-11", plan: "logic", source: "limited", another: true },
     { id: "ssrchina_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", releasedAt: "2024-11-28", source: "limited", another: true, jumpTime2: 8.2 },
     { id: "ssrchina_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", releasedAt: "2025-02-14", source: "limited", another: true },
     { id: "ssrchina_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", source: "limited", another: true, jumpTime2: 7.1 },
@@ -44,7 +44,7 @@ export const produceList = [
 
     // --- 스미카 SSR (PSSR) ---
     { id: "ssrsumika_1st", name: "Tame-Lie-One-Step", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 6.4, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/O0Ylv6GNWMQ?si=0OKoVjMM8dpoSSeN" },
-    { id: "ssrsumika_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", releasedAt: "2024-08-01", rarity: "PSSR", plan: "sense", source: "limited", another: true, jumpTime2: 6.3 },
+    { id: "ssrsumika_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", releasedAt: "2024-08-01", rarity: "PSSR", plan: "sense", source: "limited", another: true, jumpTime2: 6.3 },
     { id: "ssrsumika_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-14", plan: "sense", source: "limited", another: true },
@@ -59,7 +59,7 @@ export const produceList = [
 
     // --- 마오 SSR (PSSR) ---
     { id: "ssrmao_1st", name: "Fluorite", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 9.2, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/4AcOcsvGluY?si=1bIuj1lCYg4Ca5IQ" },
-    { id: "ssrmao_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-08-01", another: true },
+    { id: "ssrmao_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-08-01", another: true },
     { id: "ssrmao_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-01", jumpTime2: 7.2, plan: "sense", source: "limited", another: true },
@@ -88,7 +88,7 @@ export const produceList = [
     // --- 테마리 SSR (PSSR) ---
     { id: "ssrtemari_1st", name: "Luna say maybe", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 11.4, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/Sq5Dj0U06vQ?si=z7zi9RBA43D7QpwX" },
     { id: "ssrtemari_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 6.4, releasedAt: "2024-07-01", another: true },
-    { id: "ssrtemari_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-08-01", another: true },
+    { id: "ssrtemari_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-08-01", another: true },
     { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", source: "limited", another: true, releasedAt: "2024-12-09", jumpTime2: 8.0 },
     { id: "ssrtemari_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", jumpTime2: 10.2, source: "limited", another: true },
@@ -116,7 +116,7 @@ export const produceList = [
     // --- 히로 SSR (PSSR) ---
     { id: "ssrhiro_1st", name: "광경", name_en: "Koukei", name_ja: "光景", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/VJk2etK8I1w?si=OA8K2zri7qLpp5l2" },
     { id: "ssrhiro_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-07-12", another: true, jumpTime2: 6.3 },
-    { id: "ssrhiro_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-08-11", another: true },
+    { id: "ssrhiro_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-08-11", another: true },
     { id: "ssrhiro_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", releasedAt: "2024-12-09", source: "limited", another: true },
     { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-02-28", another: true, jumpTime2: 8.2 },
     { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", jumpTime2: 7.2, source: "limited", another: true },
@@ -141,7 +141,7 @@ export const produceList = [
     { id: "ssrsena_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrsena_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-05-29", another: true },
     { id: "ssrsena_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-07-07", another: true },
-    { id: "ssrsena_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-22", another: true },
+    { id: "ssrsena_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-22", another: true },
     { id: "ssrsena_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrsena_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrsena_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-11-07", another: true },
@@ -153,7 +153,7 @@ export const produceList = [
     // --- 우메 SSR (PSSR) ---
     { id: "ssrume_1st", name: "The Rolling Riceball", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 9.4, releasedAt: "2024-06-01", youtube_url: "https://youtu.be/FL-NhmFGQYw?si=NR38ucVx1cmxrs-C" },
     { id: "ssrume_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-07-12", another: true },
-    { id: "ssrume_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-08-11", another: true },
+    { id: "ssrume_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-08-11", another: true },
     { id: "ssrume_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2024-09-30", another: true },
     { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2025-05-09", another: true, jumpTime2: 6.3 },
     { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2025-05-29", another: true },
@@ -170,7 +170,7 @@ export const produceList = [
     // --- 미스즈 SSR (PSSR) ---
     { id: "ssrmisuzu_1st", name: "달거북이", name_en: "Moon Turtle", name_ja: "ツキノカメ", osusume: "preservation", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf" },
     { id: "ssrmisuzu_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-07-07", another: true },
-    { id: "ssrmisuzu_1st2another", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-22", another: true },
+    { id: "ssrmisuzu_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-22", another: true },
     { id: "ssrmisuzu_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", releasedAt: "2025-08-29", source: "limited", another: true },
     { id: "ssrmisuzu_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrmisuzu_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-11-07", another: true },
@@ -208,9 +208,9 @@ export const produceList = [
     { id: "ssrmao_summerdist", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "concentration", releasedAt: "2024-07-01", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6" },
     { id: "ssrrinami_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "goodcondition", releasedAt: "2024-07-12", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 10.4, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6" },
     { id: "ssrsumika_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "motivation", releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6" },
-    { id: "ssrsaki_kanmuridist", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", osusume: "goodimpression", releasedAt: "2024-08-01", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4" },
-    { id: "ssrkotone_kanmurilimited", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", osusume: "motivation", releasedAt: "2024-08-11", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4" },
-    { id: "ssrlilja_kanmurilimited", name: "관국", name_en: "kamurogiku", name_ja: "冠菊", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-01", plan: "sense", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4" },
+    { id: "ssrsaki_kanmuridist", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodimpression", releasedAt: "2024-08-01", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4" },
+    { id: "ssrkotone_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "motivation", releasedAt: "2024-08-11", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4" },
+    { id: "ssrlilja_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-01", plan: "sense", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4" },
     { id: "ssrchina_halloweendist", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "concentration", releasedAt: "2024-09-30", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB" },
     { id: "ssrtemari_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "motivation", releasedAt: "2024-09-30", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB" },
     { id: "ssrhiro_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-10-08", plan: "sense", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB" },

@@ -13,6 +13,7 @@
         gtag('config', 'G-LRG62DQ35R');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index,follow">
     <script>
         // 앱 버전 관리 
         const APP_VERSION = '1.0.8';
@@ -50,12 +51,12 @@
       "url": "https://happymillefeuille.github.io/gakumas/"
     }
     </script>
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon192x192.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="icons/icon48x48.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16x16.png">
-    <link rel="apple-touch-icon" href="icons/icon192x192.png">
+    <link rel="shortcut icon" href="/gakumas/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/gakumas/icons/icon192x192.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/gakumas/icons/icon48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/gakumas/icons/icon32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/gakumas/icons/icon16x16.png">
+    <link rel="apple-touch-icon" href="/gakumas/icons/icon192x192.png">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/idol.css">
     <link rel="stylesheet" href="css/support.css">
@@ -125,7 +126,20 @@
                     </div>
                 </div>
             </div>
-            <div id="content-area"></div>
+            <div id="content-area">
+                <!-- JavaScript実行前の初期表示 (SEO対策) -->
+                <div id="seo-intro" style="padding: 40px 20px; text-align: center; font-family: sans-serif; color: #fcfcfc;">
+                    <h1 style="font-size: 1.8rem; color: #fcfcfc; margin-bottom: 10px;">Gakumas Note</h1>
+                    <p style="font-size: 1rem; color: #fcfcfc; margin-bottom: 20px;">
+                        Gakumas Note (学ノート) は、学園アイドルマスターのガシャシミュレーターとサポートカード計算機を提供する非公式ファンサイトです。
+                    </p>
+                    <div
+                        style="display: inline-block; text-align: left; max-width: 500px; color: #fcfcfc; line-height: 1.6; padding: 20px; border-radius: 12px;">
+                        <p style="margin: 5px 0;">• <b>ステータス計算</b>: プロデュースで使用するサポートカードの性能確認や、編成の自動推薦を提供します。</p>
+                        <p style="margin: 5px 0;">• <b>ガシャシミュレーター</b>: ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。</p>
+                    </div>
+                </div>
+            </div>
             <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
             <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
                 <div class="total-pulls-box">
