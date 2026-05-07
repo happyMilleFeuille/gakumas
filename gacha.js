@@ -451,6 +451,12 @@ async function handleGachaClick(ui, mode, animation) {
     const isFree = activeCfg?.is_free === true;
     const cost = isFree ? 0 : (mode === 1 ? 250 : 2500);
 
+    // 결과 화면 재뽑기처럼 버튼 상태가 어긋나는 경우에도 실제 차감 가능 여부를 한 번 더 막는다.
+    if (!isFree && state.jewels < cost) {
+        updateGachaButtonsState(ui);
+        return;
+    }
+
     // 즉시 버튼 비활성화
     if (ui.btn1) ui.btn1.style.pointerEvents = 'none';
     if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
@@ -587,7 +593,7 @@ function updateGachaButtonsState(ui) {
             const currentCostText = costSpan?.textContent;
             const cost = (isResultView && currentCostText && currentCostText !== 'FREE') ? (parseInt(currentCostText) || 2500) : (isFree ? 0 : 2500);
 
-            ui.btn10.disabled = isResultView ? false : (!isFree && state.jewels < cost);
+            ui.btn10.disabled = !isFree && state.jewels < cost;
             if (!isResultView) {
                 const displayCost = isFree ? 'FREE' : '2500';
                 const style = isFree ? ' style="font-size: 0.85em;"' : '';
