@@ -24,6 +24,26 @@ window.__videoModalOpen = false;
 window.__videoModalHistoryPushed = false;
 window.__videoModalPendingClose = false;
 
+// 서포트 카드 이미지 프리로드 (호버/클릭 시)
+let preloadedSupport = false;
+export function preloadSupportImages() {
+    if (preloadedSupport) return;
+    preloadedSupport = true;
+
+    cardList.forEach(card => {
+        const baseIconPath = `images/support/${card.id}`;
+        
+        // 내부 아이템/카드 이미지
+        const isCardType = card.have && card.have.startsWith('card');
+        const extraImg = new Image();
+        extraImg.src = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
+        
+        // 에러 방지용 교차 프리로드 (cardModal.js의 onerror 대응)
+        const fallbackImg = new Image();
+        fallbackImg.src = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+    });
+}
+
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
     if (!card) return '';
