@@ -33,14 +33,18 @@ export function preloadSupportImages() {
     cardList.forEach(card => {
         const baseIconPath = `images/support/${card.id}`;
         
-        // 내부 아이템/카드 이미지
+        // 내부 아이템/카드 이미지 프리로드 및 실제 경로 판별
         const isCardType = card.have && card.have.startsWith('card');
-        const extraImg = new Image();
-        extraImg.src = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
-        
-        // 에러 방지용 교차 프리로드 (cardModal.js의 onerror 대응)
-        const fallbackImg = new Image();
-        fallbackImg.src = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+        const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
+        const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+
+        const img1 = new Image();
+        img1.onload = () => { card._extraPath = path1; };
+        img1.src = path1;
+
+        const img2 = new Image();
+        img2.onload = () => { if (!card._extraPath) card._extraPath = path2; };
+        img2.src = path2;
     });
 }
 

@@ -287,9 +287,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.refreshAll();
                 }
             }
-            // 상태 초기화
+            // 상태 및 이미지 초기화
             window._modalCardId = null;
             window._modalInitialLB = null;
+
+            const mImg = document.getElementById('modal-img');
+            const mRarity = document.getElementById('modal-rarity');
+            const mPlan = document.getElementById('modal-plan');
+            const mType = document.getElementById('modal-type');
+            const mExtraIcon = document.getElementById('modal-extra-icon');
+            if (mImg) mImg.src = '';
+            if (mRarity) mRarity.src = '';
+            if (mPlan) mPlan.src = '';
+            if (mType) mType.src = '';
+            if (mExtraIcon) mExtraIcon.src = '';
         }
     }
 

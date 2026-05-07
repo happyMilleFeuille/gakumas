@@ -24,13 +24,6 @@ export function showCardModal(card, displayName, imgSrc) {
     const mAbilities = document.getElementById('modal-abilities');
     const stars = document.querySelectorAll('.star');
 
-    // 이전 데이터 비우기 (반짝임 방지)
-    mImg.src = '';
-    mRarity.src = '';
-    mPlan.src = '';
-    mType.src = '';
-    mExtraIcon.src = '';
-
     mImg.src = imgSrc;
     mTitle.textContent = displayName;
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
@@ -39,14 +32,23 @@ export function showCardModal(card, displayName, imgSrc) {
 
     mTitle.classList.remove('title-vocal', 'title-dance', 'title-visual', 'title-assist');
     mTitle.classList.add(`title-${card.type.toLowerCase()}`);
-
+    
+    // 미리 확인된 경로가 있으면 즉시 사용, 없으면 추측 경로 사용
     const baseIconPath = `images/support/${card.id}`;
     const isCardType = card.have && card.have.startsWith('card');
-    mExtraIcon.src = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
-    mExtraIcon.onerror = () => {
-        mExtraIcon.src = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+    const guessedPath = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
+    
+    mExtraIcon.src = card._extraPath || guessedPath;
+    
+    // 혹시 모를 상황 대비 (프리로드가 안 됐을 경우)
+    if (!card._extraPath) {
+        mExtraIcon.onerror = () => {
+            mExtraIcon.src = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+            mExtraIcon.onerror = null;
+        };
+    } else {
         mExtraIcon.onerror = null;
-    };
+    }
 
     const attrColors = {
         vocal: "#f766a4",
