@@ -270,6 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('hidden');
             modal.style.display = 'none';
 
+            // [추가] 모달이 닫힐 때 활성화된 모든 서포트 아이템 툴팁 제거
+            document.querySelectorAll('.support-item-tooltip').forEach(el => el.remove());
+
             // [수정] 모달이 닫힐 때 계산기가 활성화된 상태라면 무조건 갱신
             if (document.querySelector('.stat-header') || window._modalCardId) {
                 if (typeof window.refreshAll === 'function') {

@@ -478,9 +478,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
             let activeStyle = '';
             if (isActive) {
                 if (isLarge) {
-                    activeStyle = `style="filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 5px ${idolColor});"`;
+                    activeStyle = `style="filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 3px ${idolColor});"`;
                 } else {
-                    activeStyle = `style="border-color: ${idolColor}; box-shadow: 0 0 8px ${idolColor}66;"`;
+                    activeStyle = `style="border-color: ${idolColor}; box-shadow: none;"`;
                 }
             }
 

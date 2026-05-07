@@ -46,10 +46,10 @@ function restoreIdolGridPosition(grid) {
 function applyCalcThemeColor(color) {
     document.querySelectorAll('.plan-icon-wrapper.active').forEach(w => {
         if (w.classList.contains('large-icon')) {
-            w.style.filter = `drop-shadow(1.5px 0 0 ${color}) drop-shadow(-1.5px 0 0 ${color}) drop-shadow(0 1.5px 0 ${color}) drop-shadow(0 -1.5px 0 ${color}) drop-shadow(0 0 5px ${color})`;
+            w.style.filter = `drop-shadow(1.5px 0 0 ${color}) drop-shadow(-1.5px 0 0 ${color}) drop-shadow(0 1.5px 0 ${color}) drop-shadow(0 -1.5px 0 ${color}) drop-shadow(0 0 3px ${color})`;
         } else {
             w.style.borderColor = color;
-            w.style.boxShadow = `0 0 8px ${color}66`;
+            w.style.boxShadow = 'none';
         }
         const badge = w.querySelector('.sp-badge');
         if (badge) badge.style.backgroundColor = color;
@@ -382,10 +382,10 @@ function startWeeklyPlan(type) {
 
                         if (wrapper.classList.contains('large-icon')) {
                             // 이미지 외곽을 따라가는 선명한 테두리 + 캐릭터 색상의 얕은 그림자
-                            wrapper.style.filter = `drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 5px ${idolColor})`;
+                            wrapper.style.filter = `drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 3px ${idolColor})`;
                         } else {
                             wrapper.style.borderColor = idolColor;
-                            wrapper.style.boxShadow = `0 0 8px ${idolColor}66`;
+                            wrapper.style.boxShadow = 'none';
                         }
 
                         updateSPBadge(wrapper, calcStore.selectedIdol); updateMainLabel(wrapper);
