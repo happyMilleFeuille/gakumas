@@ -314,9 +314,9 @@ export const videoList = {
             date: "2025.09.10."
         },
         {
-            title: "ガラクタロード",
-            title_ko: "잡동사니 로드",
-            title_en: "GARAKUTA ROAD",
+            title: "H.I.F ゲーム内OPアニメーション",
+            title_ko: "H.I.F 게임 내 OP 애니메이션",
+            title_en: "H.I.F Game Intro Animation",
             url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
             date: "2026.05.08."
         },
