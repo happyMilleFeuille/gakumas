@@ -128,7 +128,11 @@ export function renderPSSRRoadmap(shouldScroll = false) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const diffDays = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
-            daysText = diffDays >= 0 ? `D+${diffDays}` : `D${diffDays}`;
+            if (diffDays === 0) {
+                daysText = "D-Day";
+            } else {
+                daysText = diffDays > 0 ? `D+${diffDays}` : `D${diffDays}`;
+            }
         }
 
         const iconName = idolName === 'tsubame' ? 'tsubame' : idolName;
