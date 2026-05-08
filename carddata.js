@@ -1730,7 +1730,7 @@ export const cardList = [
     {
         id: "visual_fessense1",
         name: "……시끄러운 축제네",
-        name_ja: "……騒々しい祭りね",
+        name_ja: "……騒々しいお祭りね",
         type: "visual",
         plan: "sense",
         have: "item",

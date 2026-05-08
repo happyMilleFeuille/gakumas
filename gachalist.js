@@ -96,6 +96,25 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
 
     if (key === 'SSSR') {
         const pickupTotal = Math.min(0.01 * pickupCards.length, rates.SSSR);
+        if (poolType === 'fes') {
+            const fesPoolTotal = Math.min(0.02, rates.SSSR);
+            const otherFesCards = regularCards.filter(card => getPoolSource(card) === 'limited_f');
+            const normalCards = regularCards.filter(card => getPoolSource(card) !== 'limited_f');
+            const otherFesTotal = Math.min(Math.max(0, fesPoolTotal - pickupTotal), Math.max(0, rates.SSSR - pickupTotal));
+            const normalTotal = Math.max(0, rates.SSSR - pickupTotal - otherFesTotal);
+
+            return {
+                pickupIds,
+                pickupCards,
+                regularCards,
+                buckets: [
+                    { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                    { ids: otherFesCards.map(card => card.id), cards: otherFesCards, totalRate: otherFesTotal },
+                    { ids: normalCards.map(card => card.id), cards: normalCards, totalRate: normalTotal }
+                ]
+            };
+        }
+
         return {
             pickupIds,
             pickupCards,
@@ -216,11 +235,15 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
         return getRandomFrom(targetPool);
     }
     if (key === 'SSSR' && sssrList.length > 0) {
-        // 개별 픽업 서포트 카드당 1.0% 고정
-        const totalPickupRate = 0.01 * sssrList.length;
-        const pickupRatio = totalPickupRate / rates.SSSR;
-        if (rand < pickupRatio) return getRandomFrom(sssrList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
-        targetPool = targetPool.filter(card => !sssrList.includes(card.id));
+        const pickupInfo = getPickupBuckets(key, pool, poolType, pickups, rates);
+        let threshold = 0;
+        for (const bucket of pickupInfo.buckets) {
+            threshold += bucket.totalRate / rates.SSSR;
+            if (rand < threshold && bucket.cards.length > 0) {
+                return getRandomFrom(bucket.cards);
+            }
+        }
+        return getRandomFrom(targetPool);
     }
     if (key === 'SR_CARD' && srCardList.length > 0) {
         const baseRate = isGuaranteedSlot ? (0.223529 / 0.57) : (0.04 / rates.SSR_CARD);
