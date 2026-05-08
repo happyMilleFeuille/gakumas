@@ -18,6 +18,13 @@ export const videoList = {
             url: "https://youtu.be/9GELzbI-8F4?si=VzegAu9F26KezvOF",
             date: "2025.08.28."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     temari: [
         {
@@ -31,6 +38,13 @@ export const videoList = {
             title: "SUPREMACY",
             url: "https://youtu.be/9GELzbI-8F4?si=VzegAu9F26KezvOF",
             date: "2025.08.28."
+        },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
         },
     ],
     kotone: [
@@ -53,6 +67,13 @@ export const videoList = {
             url: "https://youtu.be/9GELzbI-8F4?si=VzegAu9F26KezvOF",
             date: "2025.08.28."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     tsubame: [
         {
@@ -61,6 +82,13 @@ export const videoList = {
             title_en: "NAIWA",
             url: "https://youtu.be/XLD6CBji5kY?si=vAzdHnEgaEV8NBU-",
             date: "2025.09.10."
+        },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
         },
     ],
     mao: [
@@ -78,6 +106,13 @@ export const videoList = {
             url: "https://youtu.be/XLD6CBji5kY?si=vAzdHnEgaEV8NBU-",
             date: "2025.09.10."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     lilja: [
         {
@@ -91,6 +126,13 @@ export const videoList = {
             title: "SUPREMACY",
             url: "https://youtu.be/9GELzbI-8F4?si=VzegAu9F26KezvOF",
             date: "2025.08.28."
+        },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
         },
     ],
     china: [
@@ -113,6 +155,13 @@ export const videoList = {
             url: "https://youtu.be/RYMg75Xn6sw?si=yw0gOUev5PylbzRP",
             date: "2025.09.04."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     sumika: [
         {
@@ -127,6 +176,13 @@ export const videoList = {
             url: "https://youtu.be/9GELzbI-8F4?si=VzegAu9F26KezvOF",
             date: "2025.08.28."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     hiro: [
         {
@@ -140,6 +196,13 @@ export const videoList = {
             title: "Let's GO!! ICHI-NO-NI!!",
             url: "https://youtu.be/RYMg75Xn6sw?si=yw0gOUev5PylbzRP",
             date: "2025.09.04."
+        },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
         },
     ],
     sena: [
@@ -163,6 +226,13 @@ export const videoList = {
             title_en: "NAIWA",
             url: "https://youtu.be/XLD6CBji5kY?si=vAzdHnEgaEV8NBU-",
             date: "2025.09.10."
+        },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
         },
     ],
     misuzu: [
@@ -192,6 +262,13 @@ export const videoList = {
             url: "https://youtu.be/RYMg75Xn6sw?si=yw0gOUev5PylbzRP",
             date: "2025.09.04."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     ume: [
         {
@@ -213,6 +290,13 @@ export const videoList = {
             url: "https://youtu.be/RYMg75Xn6sw?si=yw0gOUev5PylbzRP",
             date: "2025.09.04."
         },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
+        },
     ],
     rinami: [
         {
@@ -228,6 +312,13 @@ export const videoList = {
             title_en: "NAIWA",
             url: "https://youtu.be/XLD6CBji5kY?si=vAzdHnEgaEV8NBU-",
             date: "2025.09.10."
+        },
+        {
+            title: "ガラクタロード",
+            title_ko: "잡동사니 로드",
+            title_en: "GARAKUTA ROAD",
+            url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
+            date: "2026.05.08."
         },
     ]
 };
