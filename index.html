@@ -15,15 +15,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index,follow">
     <script>
-        // 앱 버전 관리 
+        // 첫 방문/크롤러 접근 시 강제 새로고침을 피하고, 기존 사용자에게만 버전 변경을 기록합니다.
         const APP_VERSION = '1.0.8';
-        if (localStorage.getItem('gakumas_note_version') !== APP_VERSION) {
-            localStorage.setItem('gakumas_note_version', APP_VERSION);
-            location.reload(true);
+        try {
+            const previousVersion = localStorage.getItem('gakumas_note_version');
+            if (previousVersion && previousVersion !== APP_VERSION) {
+                localStorage.setItem('gakumas_note_version', APP_VERSION);
+            } else if (!previousVersion) {
+                localStorage.setItem('gakumas_note_version', APP_VERSION);
+            }
+        } catch (e) {
+            // Storage를 사용할 수 없는 환경(일부 크롤러/프라이버시 모드)에서는 조용히 통과
         }
     </script>
     <meta name="google-site-verification" content="WTUIctiVOEH6W01p9L-cLTHTsY584U27fPXIGb1RGSk" />
-    <title>Gakumas Note - ガシャシミュレーター & ステータス計算機</title>
+    <title>Gakumas Note | Gakuen Idolmaster Gacha Simulator & Support Card Calculator</title>
     <meta property="og:site_name" content="Gakumas Note">
     <meta name="apple-mobile-web-app-title" content="Gakumas Note">
     <meta name="description"
@@ -137,6 +143,8 @@
                         style="display: inline-block; text-align: left; max-width: 500px; color: #fcfcfc; line-height: 1.6; padding: 20px; border-radius: 12px;">
                         <p style="margin: 5px 0;">• <b>ステータス計算</b>: プロデュースで使用するサポートカードの性能確認や、編成の自動推薦を提供します。</p>
                         <p style="margin: 5px 0;">• <b>ガシャシミュレーター</b>: ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。</p>
+                        <p style="margin: 12px 0 0;">Gakumas Note is an unofficial Gakuen Idolmaster fan site with a gacha simulator, support card browser, and stat calculator.</p>
+                        <p style="margin: 5px 0 0;">학마노트는 학원 아이돌마스터 비공식 팬사이트로, 가챠 시뮬레이터와 서포트 카드 정보, 스탯 계산기를 제공합니다.</p>
                     </div>
                 </div>
             </div>
@@ -272,8 +280,15 @@
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
         <h1 data-i18n="main_title" class="main-logo-h1">
+            <span class="brand-heading-text">Gakumas Note</span>
             <div class="main-logo-sub">GAKUMAS NOTE</div>
         </h1>
+
+        <section class="brand-intro" aria-label="Gakumas Note introduction">
+            <p><strong>Gakumas Note</strong> is an unofficial fan site for <strong>Gakuen Idolmaster</strong>.</p>
+            <p>It provides a gacha simulator, support card browser, and stat calculator for Gakumas players.</p>
+            <p>Also known as <strong>gakunote</strong>, <strong>학마노트</strong>, and <strong>学ノート</strong>.</p>
+        </section>
 
         <!-- 홈 퀵 메뉴 바로가기 -->
         <div class="home-quick-nav">
