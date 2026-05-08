@@ -477,13 +477,20 @@ body.gacha-result-active .gacha-container {
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    font-size: 1rem;
+    padding: 0;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
+}
+
+.mute-toggle-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    color: #333;
 }
 
 .mute-toggle-btn:hover {

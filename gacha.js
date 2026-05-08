@@ -16,6 +16,15 @@ import { handleNavigation } from './router.js';
 
 export { audioCtx, playSound, stopBGM, playMainBGM };
 
+function updateMuteButtonIcon(button) {
+    if (!button) return;
+    const iconPath = state.gachaMuted ? 'icons/volumeoff.svg' : 'icons/volumeon.svg';
+    const label = state.gachaMuted ? 'Unmute' : 'Mute';
+    button.innerHTML = `<img src="${iconPath}" alt="" class="mute-toggle-icon">`;
+    button.setAttribute('aria-label', label);
+    button.title = label;
+}
+
 /**
  * 가챠 메인 렌더링 함수
  */
@@ -313,8 +322,12 @@ function initHeaderControls(ui) {
         resetBtn.onclick = () => { setTotalPulls(0, state.gachaType); clearGachaLog(state.gachaType); renderGacha(); };
     }
     if (ui.muteBtn) {
-        ui.muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊';
-        ui.muteBtn.onclick = () => { state.gachaMuted = !state.gachaMuted; state.gachaMuted ? stopBGM('all') : playMainBGM(); ui.muteBtn.textContent = state.gachaMuted ? '🔇' : '🔊'; };
+        updateMuteButtonIcon(ui.muteBtn);
+        ui.muteBtn.onclick = () => {
+            state.gachaMuted = !state.gachaMuted;
+            state.gachaMuted ? stopBGM('all') : playMainBGM();
+            updateMuteButtonIcon(ui.muteBtn);
+        };
         const muteControls = document.getElementById('gacha-header-controls');
         if (muteControls) { muteControls.classList.remove('hidden'); muteControls.style.display = 'flex'; }
     }
