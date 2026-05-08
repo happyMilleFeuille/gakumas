@@ -235,31 +235,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    let activeScrollContainer = null;
+
     document.addEventListener('mousedown', (e) => {
-        const grid = e.target.closest('.idol-grid');
-        if (!grid) return;
+        const scrollContainer = e.target.closest('.idol-grid, .idol-video-list');
+        if (!scrollContainer) return;
         isDown = true;
-        grid.classList.add('active');
-        startX = e.pageX - grid.offsetLeft;
-        scrollLeft = grid.scrollLeft;
+        activeScrollContainer = scrollContainer;
+        scrollContainer.classList.add('active');
+        startX = e.pageX - scrollContainer.offsetLeft;
+        scrollLeft = scrollContainer.scrollLeft;
     });
 
     document.addEventListener('mouseleave', () => {
+        if (activeScrollContainer) activeScrollContainer.classList.remove('active');
         isDown = false;
+        activeScrollContainer = null;
     });
 
     document.addEventListener('mouseup', () => {
+        if (activeScrollContainer) activeScrollContainer.classList.remove('active');
         isDown = false;
+        activeScrollContainer = null;
     });
 
     document.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        const grid = document.querySelector('.idol-grid');
-        if (!grid) return;
+        if (!isDown || !activeScrollContainer) return;
         e.preventDefault();
-        const x = e.pageX - grid.offsetLeft;
+        const x = e.pageX - activeScrollContainer.offsetLeft;
         const walk = (x - startX) * 2; // 스크롤 속도 조절
-        grid.scrollLeft = scrollLeft - walk;
+        activeScrollContainer.scrollLeft = scrollLeft - walk;
     });
 
     // 로고 클릭 -> 홈
