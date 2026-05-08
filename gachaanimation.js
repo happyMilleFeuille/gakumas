@@ -65,6 +65,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     let baselineIdsSet = new Set(); // 가챠 시작 시점의 순수 베이스라인 보관용
     let subState = "";
     let gachaSessionId = 0; // 세션 ID: 이전 가챠의 잔여 타이머가 새 세션에 영향을 주는 것을 방지
+    let skipPressSessionId = -1;
 
     const stopStepSfx = () => {
         if (activeStepSfx) {
@@ -508,10 +509,14 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         stopBGM('gacha'); stopBGM('main'); stopBGM('blackout'); stopStepSfx();
         resetOverlays();
         canClick = false;
+        skipPressSessionId = -1;
         if (clickTimer) clearTimeout(clickTimer);
         clickTimer = null;
         // skip 버튼 핸들러 명시적 해제 (다음 세션에서 잔존 방지)
-        if (skipBtn) skipBtn.onclick = null;
+        if (skipBtn) {
+            skipBtn.onclick = null;
+            skipBtn.onpointerdown = null;
+        }
 
         const muteControls = document.getElementById('gacha-header-controls');
         if (!state.gachaMuted) playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
@@ -543,11 +548,21 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         // 새 세션 시작: 이전 세션의 잔여 타이머를 무효화
         gachaSessionId++;
         canClick = false;
+        skipPressSessionId = -1;
         if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
 
         // 스킵 버튼 이벤트 바인딩 (매번 최신 요소에 적용)
         if (skipBtn) {
+            skipBtn.onpointerdown = () => {
+                if (!canClick || currentState === States.IDLE || currentState === States.FINISHED) {
+                    skipPressSessionId = -1;
+                    return;
+                }
+                skipPressSessionId = gachaSessionId;
+            };
             skipBtn.onclick = () => {
+                if (skipPressSessionId !== gachaSessionId) return;
+                skipPressSessionId = -1;
                 if (!canClick || currentState === States.IDLE || currentState === States.FINISHED) return;
 
                 if (currentState !== States.SHOWING_INDIVIDUAL) {

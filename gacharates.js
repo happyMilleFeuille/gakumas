@@ -1,7 +1,6 @@
 // gacharates.js
 import { state } from './state.js';
-import { GACHA_STRATEGIES, getGachaPool } from './gachalist.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { getActiveGachaConfig, getDisplayStrategy, getGachaPool, getRarityRateEntries } from './gachalist.js';
 import { produceList } from './producedata.js';
 import translations from './i18n.js';
 
@@ -56,43 +55,35 @@ export function openGachaRatesModal() {
     const lang = state.currentLang;
     const t = translations[lang];
     const type = state.gachaType;
-    let strategy = { ...(GACHA_STRATEGIES[type] || GACHA_STRATEGIES.normal) };
+    let strategy = getDisplayStrategy(type);
     const pool = getGachaPool(type);
 
-    let activeConfig = CURRENT_PICKUPS[type] || {};
+    let activeConfig = getActiveGachaConfig(type) || {};
     let config = {};
     let activeName = "";
 
     if (type === 'selection') {
-        activeConfig = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         config = activeConfig?.pool || { pssr: [] };
         activeName = getConfigDisplayName(activeConfig, null, lang);
-        if (activeConfig?.ssr_guaranteed) {
-            strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
-        }
     } else if (type === 'normal') {
-        activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         activeName = getCardDisplayName(cardData, lang);
     } else if (type === 'limited') {
-        activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         activeName = getCardDisplayName(cardData, lang);
     } else if (type === 'unit') {
-        activeConfig = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         activeName = getConfigDisplayName(activeConfig, cardData, lang);
     } else if (type === 'fes') {
-        activeConfig = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -117,94 +108,15 @@ export function openGachaRatesModal() {
         const rarityPool = pool[rarityKey] || [];
         if (rarityPool.length === 0) return [];
 
-        const internalKey = rateKeys[rarityKey];
-        const totalRate = strategy.rates[internalKey] || 0;
-        const totalGuaranteed = strategy.guaranteed[internalKey] || 0;
-
-        const pickups = (rarityKey === 'PSSR') ? (config.pssr || config.pool?.pssr || []) : 
-                       (rarityKey === 'SSSR' ? (config.sssr || config.pool?.sssr || []) : 
-                       (rarityKey === 'SR_CARD' ? (config.sr_card || config.pool?.sr_card || []) : []));
-        
-        const pickupIds = pickups.map(p => typeof p === 'string' ? p : p.id);
-        const pickupCards = rarityPool.filter(c => pickupIds.includes(c.id));
-        const regularCards = rarityPool.filter(c => !pickupIds.includes(c.id));
-
-        let results = [];
-
-        if (activeConfig?.only_pool_pssr) {
-            const nRate = totalRate / rarityPool.length;
-            const gRate = totalGuaranteed / rarityPool.length;
-            results = rarityPool.map(c => ({ card: c, nRate, gRate, forceNoPk: true }));
-        } else if (type === 'fes' && (rarityKey === 'PSSR' || rarityKey === 'SSSR')) {
-            const isP = rarityKey === 'PSSR';
-            const pTotal = isP ? 0.0075 : 0.01, fTotal = isP ? 0.015 : 0.01, nTotal = isP ? 0.0075 : 0.025;
-            const fesCards = regularCards.filter(c => c.source === 'limited_f'), normalCards = regularCards.filter(c => c.source !== 'limited_f');
-            const pRN = pickupCards.length > 0 ? (pTotal / pickupCards.length) : 0;
-            const fRN = fesCards.length > 0 ? (fTotal / fesCards.length) : 0;
-            const nRN = normalCards.length > 0 ? (nTotal / normalCards.length) : 0;
-            const gRatio = totalGuaranteed / totalRate;
-            results = rarityPool.map(c => {
-                let rN = pickupIds.includes(c.id) ? pRN : (c.source === 'limited_f' ? fRN : nRN);
-                return { card: c, nRate: rN, gRate: rN * gRatio };
-            });
-        } else {
-            let pTotal = 0;
-            if (rarityKey === 'PSSR') {
-                // 유닛 가챠 PSSR: 캐릭터당 고정 0.75%
-                const singlePkRate = 0.0075;
-                pTotal = singlePkRate * pickupCards.length;
-            }
-            else if (rarityKey === 'SSSR') {
-                // SSSR: 카드당 1.0% (유닛 가챠 특성 유지)
-                pTotal = 0.01 * pickupCards.length;
-            }
-            else if (rarityKey === 'SR_CARD') {
-                // SR 서포트: 카드당 4.0%
-                pTotal = 0.04 * pickupCards.length;
-            }
-            
-            // 픽업 총 확률 결정 (전체 확률을 넘지 않음)
-            const actualPTotal = pickupCards.length > 0 ? Math.min(pTotal, totalRate) : 0;
-            const pRN = actualPTotal / Math.max(1, pickupCards.length);
-            
-            // 남은 확률(픽뚫) 계산: 전체 확률에서 픽업 합계를 뺀 나머지를 일반 카드들에게 배분
-            let nRN = 0;
-            if (regularCards.length > 0) {
-                nRN = Math.max(0, totalRate - actualPTotal) / regularCards.length;
-            } else if (pickupCards.length > 0 && actualPTotal < totalRate) {
-                // 만약 일반 카드가 없는데 확률이 남는 특수 상황(거의 없음)이면 픽업에 합산
-                const bonus = (totalRate - actualPTotal) / pickupCards.length;
-                // 이 경우 pRN에 더해줌 (아래 결과 매핑 시 적용)
-            }
-
-            let pRG = 0, nRG = 0;
-            if (totalGuaranteed > 0) {
-                // 확정 슬롯 확률 배분
-                let pTG = (rarityKey === 'SR_CARD') ? Math.min(0.223529 * pickupCards.length, totalGuaranteed) : (actualPTotal * (totalGuaranteed / totalRate));
-                
-                if (totalGuaranteed - pTG < 0.00001) {
-                    pTG = totalGuaranteed;
-                    nRG = 0;
-                } else if (regularCards.length > 0) {
-                    nRG = (totalGuaranteed - pTG) / regularCards.length;
-                }
-                
-                pRG = pTG / Math.max(1, pickupCards.length);
-            }
-            results = rarityPool.map(c => {
-                const isPk = pickupIds.includes(c.id);
-                // 일반 카드가 없을 때 남는 확률 보정 포함
-                const finalPRN = (isPk && regularCards.length === 0) ? totalRate / pickupCards.length : pRN;
-                return { card: c, nRate: isPk ? finalPRN : nRN, gRate: isPk ? pRG : nRG };
-            });
-        }
+        const results = getRarityRateEntries(rarityKey, { poolType: type, activeConfig, strategy, pool });
 
         const isProduce = (rarityKey === 'PSSR' || rarityKey === 'PSR' || rarityKey === 'PR');
         return results.map(item => {
-            const c = item.card, isPk = item.forceNoPk ? false : pickupIds.includes(c.id);
+            const c = item.card;
+            const isPk = item.isPickup;
             let n = getCardDisplayName(c, lang);
             if (c.another) n = `${t.gacha_another_prefix || '[Another] '}${n}`;
-            return { card: c, name: n, isPk, rarity: rarityKey, charName: isProduce ? getCharName(c.id, lang) : "", releasedAt: c.releasedAt || "2024-05-16", normalRate: item.nRate, guaranteedRate: item.gRate };
+            return { card: c, name: n, isPk, rarity: rarityKey, charName: isProduce ? getCharName(c.id, lang) : "", releasedAt: c.releasedAt || "2024-05-16", normalRate: item.normalRate, guaranteedRate: item.guaranteedRate };
         }).sort((a, b) => (b.isPk - a.isPk) || (b.card.source === 'limited_f' ? 1 : 0) - (a.card.source === 'limited_f' ? 1 : 0) || b.releasedAt.localeCompare(a.releasedAt) || a.name.localeCompare(b.name));
     };
 

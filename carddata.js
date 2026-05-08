@@ -420,6 +420,7 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+
     {
         id: "vocal_distsense1",
         name: "이 녀석들 성가셔~",
@@ -1723,6 +1724,27 @@ export const cardList = [
                 "supportrateup",
                 "sp_param",
                 "get_drink",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_fessense1",
+        name: "……시끄러운 축제네",
+        name_ja: "……騒々しい祭りね",
+        type: "visual",
+        plan: "sense",
+        have: "item",
+        releasedAt: "2026-05-16",
+        rarity: "SSR",
+        source: "limited_f",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "percentparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

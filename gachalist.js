@@ -40,6 +40,158 @@ function getRandomFrom(pool) {
     return pool[Math.floor(Math.random() * pool.length)];
 }
 
+function normalizePickupIds(list) {
+    return list.map(item => typeof item === 'string' ? item : item.id).filter(Boolean);
+}
+
+function getPoolSource(card) {
+    return card.source || 'normal';
+}
+
+function getPickupBuckets(key, pool, poolType, pickups, rates) {
+    const targetPool = pool[key] || pool.R_CARD || [];
+    const pickupLists = {
+        PSSR: pickups.pssr || pickups.pool?.pssr || [],
+        SSSR: pickups.sssr || pickups.pool?.sssr || [],
+        SR_CARD: pickups.sr_card || pickups.pool?.sr_card || []
+    };
+    const pickupList = pickupLists[key] || [];
+    const pickupIds = normalizePickupIds(pickupList);
+    const pickupCards = targetPool.filter(card => pickupIds.includes(card.id));
+    const regularCards = targetPool.filter(card => !pickupIds.includes(card.id));
+
+    if (key === 'PSSR' && poolType === 'fes') {
+        const perPickupRate = pickups.pickupRate ?? 0.0075;
+        const pickupTotal = Math.min(perPickupRate * pickupCards.length, rates.PSSR);
+        const fesPoolTotal = Math.min(0.0225, rates.PSSR);
+        const otherFesCards = regularCards.filter(card => getPoolSource(card) === 'limited_f');
+        const normalCards = regularCards.filter(card => getPoolSource(card) !== 'limited_f');
+        const otherFesTotal = Math.min(Math.max(0, fesPoolTotal - pickupTotal), Math.max(0, rates.PSSR - pickupTotal));
+        const normalTotal = Math.max(0, rates.PSSR - pickupTotal - otherFesTotal);
+
+        return {
+            pickupIds,
+            pickupCards,
+            regularCards,
+            buckets: [
+                { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                { ids: otherFesCards.map(card => card.id), cards: otherFesCards, totalRate: otherFesTotal },
+                { ids: normalCards.map(card => card.id), cards: normalCards, totalRate: normalTotal }
+            ]
+        };
+    }
+
+    if (key === 'PSSR') {
+        const pickupTotal = Math.min(0.0075 * pickupCards.length, rates.PSSR);
+        return {
+            pickupIds,
+            pickupCards,
+            regularCards,
+            buckets: [
+                { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                { ids: regularCards.map(card => card.id), cards: regularCards, totalRate: Math.max(0, rates.PSSR - pickupTotal) }
+            ]
+        };
+    }
+
+    if (key === 'SSSR') {
+        const pickupTotal = Math.min(0.01 * pickupCards.length, rates.SSSR);
+        return {
+            pickupIds,
+            pickupCards,
+            regularCards,
+            buckets: [
+                { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                { ids: regularCards.map(card => card.id), cards: regularCards, totalRate: Math.max(0, rates.SSSR - pickupTotal) }
+            ]
+        };
+    }
+
+    if (key === 'SR_CARD') {
+        const pickupTotal = Math.min(0.04 * pickupCards.length, rates.SSR_CARD);
+        return {
+            pickupIds,
+            pickupCards,
+            regularCards,
+            buckets: [
+                { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                { ids: regularCards.map(card => card.id), cards: regularCards, totalRate: Math.max(0, rates.SSR_CARD - pickupTotal) }
+            ]
+        };
+    }
+
+    return {
+        pickupIds,
+        pickupCards,
+        regularCards,
+        buckets: [{ ids: targetPool.map(card => card.id), cards: targetPool, totalRate: rates[key] || 0 }]
+    };
+}
+
+export function getActiveGachaConfig(poolType = state.gachaType) {
+    if (poolType === 'selection') return SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
+    if (poolType === 'normal') return NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+    if (poolType === 'limited') return LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
+    if (poolType === 'unit') return UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
+    if (poolType === 'fes') return FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
+    return CURRENT_PICKUPS[poolType] || {};
+}
+
+export function getDisplayStrategy(poolType = state.gachaType) {
+    const strategy = { ...(GACHA_STRATEGIES[poolType] || GACHA_STRATEGIES.normal) };
+    if (poolType === 'selection') {
+        const activeConfig = getActiveGachaConfig(poolType);
+        if (activeConfig?.ssr_guaranteed) {
+            strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
+        }
+    }
+    return strategy;
+}
+
+export function getRarityRateEntries(rarityKey, options = {}) {
+    const poolType = options.poolType || state.gachaType;
+    const activeConfig = options.activeConfig || getActiveGachaConfig(poolType);
+    const strategy = options.strategy || getDisplayStrategy(poolType);
+    const pool = options.pool || getGachaPool(poolType);
+    const rarityPool = pool[rarityKey] || [];
+    const totalRate = options.totalRate ?? strategy.rates[rarityKey] ?? 0;
+    const totalGuaranteed = options.totalGuaranteed ?? strategy.guaranteed[rarityKey] ?? 0;
+
+    if (rarityPool.length === 0) return [];
+
+    if (activeConfig?.only_pool_pssr && rarityKey === 'PSSR') {
+        const nRate = totalRate / rarityPool.length;
+        const gRate = totalGuaranteed / rarityPool.length;
+        return rarityPool.map(card => ({ card, normalRate: nRate, guaranteedRate: gRate, isPickup: false }));
+    }
+
+    if (!['PSSR', 'SSSR', 'SR_CARD'].includes(rarityKey)) {
+        const nRate = totalRate / rarityPool.length;
+        const gRate = totalGuaranteed / rarityPool.length;
+        return rarityPool.map(card => ({ card, normalRate: nRate, guaranteedRate: gRate, isPickup: false }));
+    }
+
+    const pickupInfo = getPickupBuckets(rarityKey, pool, poolType, activeConfig, strategy.rates);
+    const guaranteedRatio = totalRate > 0 ? (totalGuaranteed / totalRate) : 0;
+    const rateMap = new Map();
+
+    pickupInfo.buckets.forEach(bucket => {
+        const perCardRate = bucket.cards.length > 0 ? (bucket.totalRate / bucket.cards.length) : 0;
+        bucket.cards.forEach(card => {
+            rateMap.set(card.id, {
+                normalRate: perCardRate,
+                guaranteedRate: perCardRate * guaranteedRatio,
+                isPickup: pickupInfo.pickupIds.includes(card.id)
+            });
+        });
+    });
+
+    return rarityPool.map(card => {
+        const entry = rateMap.get(card.id) || { normalRate: 0, guaranteedRate: 0, isPickup: false };
+        return { card, ...entry };
+    });
+}
+
 // 일반적인 픽업 처리 로직 (PSSR, SSSR, SR_CARD)
 function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guaranteed, customPickups = null) {
     const pickups = customPickups || CURRENT_PICKUPS[poolType];
@@ -53,23 +205,30 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
     const srCardList = pickups.sr_card || pickups.pool?.sr_card || [];
 
     if (key === 'PSSR' && pssrList.length > 0) {
-        // 개별 픽업 캐릭터당 0.75% 고정, 인원수에 따라 합산
-        const totalPickupRate = 0.0075 * pssrList.length;
-        const pickupRatio = totalPickupRate / rates.PSSR; 
-        if (rand < pickupRatio) return getRandomFrom(pssrList.map(p => produceList.find(c => c.id === (typeof p === 'string' ? p : p.id))).filter(Boolean));
+        const pickupInfo = getPickupBuckets(key, pool, poolType, pickups, rates);
+        let threshold = 0;
+        for (const bucket of pickupInfo.buckets) {
+            threshold += bucket.totalRate / rates.PSSR;
+            if (rand < threshold && bucket.cards.length > 0) {
+                return getRandomFrom(bucket.cards);
+            }
+        }
+        return getRandomFrom(targetPool);
     }
     if (key === 'SSSR' && sssrList.length > 0) {
         // 개별 픽업 서포트 카드당 1.0% 고정
         const totalPickupRate = 0.01 * sssrList.length;
         const pickupRatio = totalPickupRate / rates.SSSR;
         if (rand < pickupRatio) return getRandomFrom(sssrList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
+        targetPool = targetPool.filter(card => !sssrList.includes(card.id));
     }
     if (key === 'SR_CARD' && srCardList.length > 0) {
         const baseRate = isGuaranteedSlot ? (0.223529 / 0.57) : (0.04 / rates.SSR_CARD);
         if (rand < baseRate) return getRandomFrom(srCardList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
+        targetPool = targetPool.filter(card => !srCardList.includes(card.id));
     }
 
-    return getRandomFrom(targetPool);
+    return getRandomFrom(targetPool.length > 0 ? targetPool : (pool[key] || pool.R_CARD));
 }
 
 export const GACHA_STRATEGIES = {
