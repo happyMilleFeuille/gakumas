@@ -537,9 +537,9 @@ export const judgingRatios = {
         3: { protruded: { circle: [1389, 834, 556] }, balanced: { circle: [1105, 912, 746] } }
     },
     hif: {
-        1: { protruded: { circle: [332, 200, 133] }, balanced: { circle: [264, 218, 179] } },
-        2: { protruded: { circle: [738, 443, 296] }, balanced: { circle: [587, 484, 397] } },
-        3: { protruded: { circle: [1389, 834, 556] }, balanced: { circle: [1105, 912, 746] } }
+        1: { protruded: { circle: [100, 100, 100] }, balanced: { circle: [100, 100, 100] } },
+        2: { protruded: { circle: [100, 100, 100] }, balanced: { circle: [100, 100, 100] } },
+        3: { protruded: { circle: [100, 100, 100] }, balanced: { circle: [100, 100, 100] } }
     }
 };
 

@@ -68,15 +68,14 @@ export function showStatDetailModal(breakdown) {
     };
 
     const bonusTotal = {
-        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportFixed.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (breakdown.item?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.memory?.percent?.vocal || 0),
-        dance: (breakdown.idol.dance || 0) + (breakdown.supportFixed.dance || 0) + (breakdown.supportPercent.dance || 0) + (breakdown.item?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.memory?.percent?.dance || 0),
-        visual: (breakdown.idol.visual || 0) + (breakdown.supportFixed.visual || 0) + (breakdown.supportPercent.visual || 0) + (breakdown.item?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.memory?.percent?.visual || 0)
+        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportFixed.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (breakdown.item?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.memory?.percent?.vocal || 0) + (breakdown.hif?.fixed?.vocal || 0) + (breakdown.hif?.percent?.vocal || 0),
+        dance: (breakdown.idol.dance || 0) + (breakdown.supportFixed.dance || 0) + (breakdown.supportPercent.dance || 0) + (breakdown.item?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.memory?.percent?.dance || 0) + (breakdown.hif?.fixed?.dance || 0) + (breakdown.hif?.percent?.dance || 0),
+        visual: (breakdown.idol.visual || 0) + (breakdown.supportFixed.visual || 0) + (breakdown.supportPercent.visual || 0) + (breakdown.item?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
     };
 
     modal.innerHTML = `
         <div class="stat-detail-modal-content">
             <span class="stat-detail-close">&times;</span>
-            
             <div class="stat-detail-grid">
                 <div class="stat-grid-header">
                     <span class="header-label">${t('calc_detail_item')}</span>
@@ -105,6 +104,8 @@ export function showStatDetailModal(breakdown) {
                     ${renderRow(t('calc_detail_memory_percent'), breakdown.memory?.percent, breakdown.memory?.percent?.factors, 'row-sub-item')}
                     ${renderRow(t('calc_detail_memory_fixed'), breakdown.memory?.fixed, null, 'row-sub-item')}
                     ${renderRow(calcStore.type === 'nia' ? t('calc_detail_pitem_nia') : t('calc_detail_pitem'), breakdown.item, null, 'row-sub-item')}
+                    ${calcStore.type === 'hif' ? renderRow(t('calc_detail_hif_percent'), breakdown.hif?.percent, breakdown.hif?.percent?.factors, 'row-sub-item') : ''}
+                    ${calcStore.type === 'hif' ? renderRow(t('calc_detail_hif_fixed'), breakdown.hif?.fixed, null, 'row-sub-item') : ''}
                 </div>
             </div>
             ${renderRow(t('calc_detail_final_total'), {

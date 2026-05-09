@@ -68,6 +68,10 @@ function applyCalcThemeColor(color) {
         btn.style.setProperty('--idol-color', color);
     });
 
+    document.querySelectorAll('.talent-toggle-item').forEach(btn => {
+        btn.style.setProperty('--idol-color', color);
+    });
+
     const runCalcBtn = document.getElementById('btn-run-calc');
     if (runCalcBtn) {
         runCalcBtn.style.backgroundColor = color;
@@ -86,8 +90,7 @@ function applyCalcThemeColor(color) {
     document.querySelectorAll('.p-item-slot').forEach(slot => {
         const hasImg = slot.querySelector('img');
         slot.style.borderColor = hasImg ? 'transparent' : '#ddd';
-        const placeholder = slot.querySelector('.p-item-placeholder');
-        if (placeholder) placeholder.style.color = '#ccc';
+
     });
 
     const pItemInfoBtn = document.querySelector('.p-item-info-btn');
@@ -710,11 +713,38 @@ function setupPItemSelector() {
         };
     }
 
+    const hifPrimaToggle = document.getElementById('hif-prima-toggle');
+    if (hifPrimaToggle) {
+        hifPrimaToggle.onclick = (e) => {
+            e.preventDefault();
+            calcStore.hifPrimaChecked = !calcStore.hifPrimaChecked;
+            
+            // 프리마스텔라가 켜지면 SR은 끈다
+            if (calcStore.hifPrimaChecked) {
+                calcStore.isSR = false;
+                const srToggle = document.getElementById('sr-toggle');
+                if (srToggle) srToggle.classList.remove('active');
+            }
+            
+            calcStore.save();
+            hifPrimaToggle.classList.toggle('active', calcStore.hifPrimaChecked);
+            refreshAll();
+        };
+    }
+
     const srToggle = document.getElementById('sr-toggle');
     if (srToggle) {
         srToggle.onclick = (e) => {
             e.preventDefault();
             calcStore.isSR = !calcStore.isSR;
+            
+            // SR이 켜지면 프리마스텔라는 끈다
+            if (calcStore.isSR) {
+                calcStore.hifPrimaChecked = false;
+                const hifPrimaToggle = document.getElementById('hif-prima-toggle');
+                if (hifPrimaToggle) hifPrimaToggle.classList.remove('active');
+            }
+            
             calcStore.save();
             
             // 즉시 시각적 상태 업데이트
@@ -743,7 +773,7 @@ function setupPItemSelector() {
         container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
             const val = calcStore.pItems[idx];
             slot.style.borderColor = val ? 'transparent' : '#ddd';
-            slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="p-item-placeholder">+</span>';
+            slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="support-bg-text">P-item</span>';
 
             // Hover 효과 (JS로 추가)
             slot.onmouseenter = () => { slot.style.backgroundColor = `${idolColor}11`; };
@@ -762,6 +792,34 @@ function setupPItemSelector() {
                 showPItemInfoTooltip(infoBtn, pItemDescriptions);
             };
         }
+
+        container.querySelectorAll('.hif-stat-controls').forEach(ctrl => {
+            ctrl.onclick = (e) => {
+                e.stopPropagation();
+                const btn = e.target.closest('.cnt-btn');
+                if (!btn) return;
+                const attr = ctrl.dataset.attr;
+                let cur = calcStore.hifStats?.[attr] || 0;
+                if (btn.classList.contains('plus') && cur < 5) cur++;
+                else if (btn.classList.contains('minus') && cur > 0) cur--;
+                
+                if (!calcStore.hifStats) calcStore.hifStats = { vocal: 0, dance: 0, visual: 0 };
+                if (calcStore.hifStats[attr] !== cur) {
+                    calcStore.hifStats[attr] = cur;
+                    calcStore.save();
+                    ctrl.querySelector('.cnt-val').textContent = cur;
+                    const valsContainer = ctrl.closest('.hif-stat-item').querySelector('.hif-bonus-vals');
+                    if (valsContainer) {
+                        const spans = valsContainer.querySelectorAll('span');
+                        if (spans.length >= 2) {
+                            spans[0].textContent = `+${cur * 20}`;
+                            spans[1].textContent = `+${cur * 2}%`;
+                        }
+                    }
+                    refreshAll();
+                }
+            };
+        });
     }
 }
 

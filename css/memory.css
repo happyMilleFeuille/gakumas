@@ -72,3 +72,12 @@
         padding: 0px 6px;
     }
 }
+
+@media (max-width: 768px) {
+    .memory-slot-line {
+        font-size: 0.65rem;
+    }
+    .memory-slot-line.title {
+        font-size: 0.6rem;
+    }
+}

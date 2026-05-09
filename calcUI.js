@@ -346,7 +346,9 @@ export function updateSelectedCardsUI(store) {
                 // If it was empty, construct inner elements
                 frame.innerHTML = `
                     <img src="images/support/${cardId}_${imgSuffix}.webp" onerror="this.src='images/support/${cardId}_${fallbackSuffix}.webp'; this.onerror=null;">
-                    <div class="card-slot-remove" data-id="${cardId}">×</div>
+                    <div class="card-slot-remove" data-id="${cardId}">
+                        <img src="icons/x.svg" class="cnt-btn-icon" style="filter: brightness(0) invert(1);">
+                    </div>
                     <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked ? 'checked' : ''}>
                 `;
             } else {
@@ -372,9 +374,13 @@ export function updateSelectedCardsUI(store) {
                 if (!counterContainer) {
                     slotEl.insertAdjacentHTML('beforeend', `
                         <div class="card-item-counter">
-                            <button class="card-counter-btn minus" data-id="${cardId}">-</button>
+                            <button class="card-counter-btn minus" data-id="${cardId}">
+                                <img src="icons/minus.svg" class="cnt-btn-icon" style="width: 8px; height: 8px; filter: brightness(0) invert(1);">
+                            </button>
                             <span class="card-counter-val">${counter}</span>
-                            <button class="card-counter-btn plus" data-id="${cardId}">+</button>
+                            <button class="card-counter-btn plus" data-id="${cardId}">
+                                <img src="icons/plus.svg" class="cnt-btn-icon" style="width: 8px; height: 8px; filter: brightness(0) invert(1);">
+                            </button>
                         </div>
                     `);
                 } else {
@@ -439,7 +445,7 @@ export function renderCalcMenu(updatePageTranslations, onHajime, onNia, onHif) {
                     <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_master">NIA MASTER</div>
                     <img src="images/nia.webp" class="calc-menu-img" alt="N.i.a" style="border-color: ${color};">
                 </div>
-                <div class="calc-menu-item" id="btn-hif" style="pointer-events: none; opacity: 0.5; filter: grayscale(1);">
+                <div class="calc-menu-item disabled" id="btn-hif">
                     <div class="calc-menu-label" style="border-left-color: ${color};">HIF</div>
                     <img src="images/hif.webp" class="calc-menu-img" alt="HIF" style="border-color: ${color};">
                 </div>
@@ -448,7 +454,7 @@ export function renderCalcMenu(updatePageTranslations, onHajime, onNia, onHif) {
     updatePageTranslations();
     document.getElementById('btn-hajime').onclick = onHajime;
     document.getElementById('btn-nia').onclick = onNia;
-    // if (onHif) document.getElementById('btn-hif').onclick = onHif;
+    if (onHif) document.getElementById('btn-hif').onclick = onHif;
 }
 /**
  * 계산기 전체 화면 렌더링
@@ -517,6 +523,11 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div class="talent-toggle-item ${store.pItemChecked ? 'active' : ''}" id="p-item-toggle" style="--idol-color: ${idolColor};">
                         <img src="icons/sainou.webp">
                     </div>
+                    ${store.type === 'hif' ? `
+                    <div class="talent-toggle-item ${store.hifPrimaChecked ? 'active' : ''}" id="hif-prima-toggle" style="--idol-color: ${idolColor};">
+                        <div style="width: 19px; height: 19px; background-color: var(--idol-color, #ff4d8d); -webkit-mask-image: url('icons/primastella.webp'); mask-image: url('icons/primastella.webp'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;"></div>
+                    </div>
+                    ` : ''}
                     <button class="talent-bloom-info-btn">i</button>
                     <div class="idol-opt-divider"></div>
                     ` : ''}
@@ -544,7 +555,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             <span id="final-vocal" class="final-stat-label" style="font-size: 0.8rem; color: #ff4d8d;">0</span>
                             <span id="total-perc-vocal" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
                             <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
-                            <span id="total-vocal" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
+                            <span id="total-vocal" style="height: 14px; margin-top: -2px;">0</span>
                             <span id="sp-vocal-percent" class="sp-percent-label"></span>
                         </div>
                         <div class="stat-item item-dance">
@@ -552,7 +563,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             <span id="final-dance" class="final-stat-label" style="font-size: 0.8rem; color: #46a4f3;">0</span>
                             <span id="total-perc-dance" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
                             <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
-                            <span id="total-dance" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
+                            <span id="total-dance" style="height: 14px; margin-top: -2px;">0</span>
                             <span id="sp-dance-percent" class="sp-percent-label"></span>
                         </div>
                         <div class="stat-item item-visual">
@@ -560,7 +571,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             <span id="final-visual" class="final-stat-label" style="font-size: 0.8rem; color: #fcc75e;">0</span>
                             <span id="total-perc-visual" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
                             <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
-                            <span id="total-visual" style="font-size: 0.8rem; height: 14px; margin-top: -2px;">0</span>
+                            <span id="total-visual" style="height: 14px; margin-top: -2px;">0</span>
                             <span id="sp-visual-percent" class="sp-percent-label"></span>
                         </div>
                     </div>
@@ -568,7 +579,38 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 ${(store.type === 'nia' || store.type === 'hajime' || store.type === 'hif') ? `
                 <div class="calc-integrated-container" id="p-item-container" style="display: flex; flex-direction: column; width: 100%; margin-bottom: 1rem; padding: 12px; background: white; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box;">
-                    
+                    ${store.type === 'hif' ? `
+                    <!-- HIF Stats Section -->
+                    <div class="hif-stats-container">
+                        <div class="memory-slot-badge">HIF Bonus</div>
+                        ${['vocal', 'dance', 'visual'].map((attr, index) => {
+        const attrColor = attr === 'vocal' ? '#ff4d8d' : (attr === 'dance' ? '#46a4f3' : '#fcc75e');
+        return `
+                            ${index > 0 ? '<div class="hif-stat-divider"></div>' : ''}
+                            <div class="hif-stat-item">
+                                <div class="hif-stat-top">
+                                    <img src="icons/${attr}.png" class="hif-stat-img">
+                                    <div class="hif-bonus-vals" style="color: ${attrColor};">
+                                        <span>+${(store.hifStats?.[attr] || 0) * 20}</span>
+                                        <span>+${(store.hifStats?.[attr] || 0) * 2}%</span>
+                                    </div>
+                                </div>
+                                <div class="counter-controls hif-stat-controls" data-attr="${attr}" style="border-color: ${attrColor}40;">
+                                    <button class="cnt-btn minus" style="border-right: 1px solid ${attrColor}20;">
+                                        <img src="icons/minus.svg" class="cnt-btn-icon">
+                                    </button>
+                                    <span class="cnt-val" style="color: ${attrColor};">${store.hifStats?.[attr] || 0}</span>
+                                    <button class="cnt-btn plus" style="border-left: 1px solid ${attrColor}20;">
+                                        <img src="icons/plus.svg" class="cnt-btn-icon">
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+    }).join('')}
+                    </div>
+                    <div style="width: 100%; height: 1px; background-color: #eee; margin: 8px 0 12px 0;"></div>
+                    ` : ''}
+
                     <!-- 1. P-Item Section -->
                     <div id="p-item-container-inner" style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; position: relative;">
                         ${Array.from({ length: (store.type === 'nia' || store.type === 'hif') ? 5 : 2 }).map((_, i) => `
@@ -868,7 +910,7 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
     const isJa = state.currentLang !== 'ko';
-    const fontSize = isMobile ? (state.currentLang === 'en' ? '0.56rem' : (isJa ? '0.5rem' : '0.65rem')) : (state.currentLang === 'en' ? '0.7rem' : '0.75rem');
+    const fontSize = isMobile ? (state.currentLang === 'en' ? '0.56rem' : (isJa ? '0.5rem' : '0.55rem')) : (state.currentLang === 'en' ? '0.7rem' : '0.75rem');
     const imgSize = isMobile ? '16px' : '24px';
     const gap = isMobile ? '4px' : '8px';
 
@@ -893,12 +935,12 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     const tooltipWidth = tooltip.offsetWidth;
     const tooltipHeight = tooltip.offsetHeight;
 
-    let left = rect.left;
+    let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
     let top = rect.bottom + window.scrollY + 8;
 
     if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
     if (left < 10) left = 10;
-    if (rect.bottom + tooltipHeight + 20 > window.innerHeight) top = rect.top + window.scrollY - tooltipHeight - 8;
+    // 무조건 아래로 표시되도록 위로 뜨는 로직 제거
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -1109,17 +1151,31 @@ export function showTalentBloomInfoTooltip(infoBtn) {
     if (document.querySelector('.talent-bloom-info-tooltip')) { document.querySelector('.talent-bloom-info-tooltip').remove(); return; }
 
     const isMobile = window.innerWidth <= 768;
-    const isJa = state.currentLang === 'ja';
-    const fontSize = isMobile ? (isJa ? '0.5rem' : '0.62rem') : '0.75rem';
+    const lang = state.currentLang;
+    const isJa = lang === 'ja';
+    const isEn = lang === 'en';
+    const fontSize = isMobile ? (isJa ? '0.5rem' : '0.55rem') : '0.75rem';
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip talent-bloom-info-tooltip';
-    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 90vw; padding: ${isMobile ? '8px 10px' : '12px 15px'}; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 10000;`;
+    // PC에서는 450px 정도의 적절한 최대 너비를 주고, 모바일에서는 90vw를 유지
+    const maxWidth = isMobile ? '90vw' : '450px';
+    tooltip.style.cssText = `position: absolute; width: max-content; max-width: ${maxWidth}; padding: ${isMobile ? '8px 10px' : '12px 15px'}; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 10000;`;
+
+    const srRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/sr.png" onerror="this.src='icons/sr.webp'" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8;"><span>${isEn ? 'SR Idol' : (isJa ? 'SRアイドル' : 'SR 등급')}</span></div>`;
+    const sainouRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/sainou.webp" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8;"><span>${isEn ? 'Bloom 3+' : (isJa ? '才能開花3段階以上' : '재능개화 3단계 이상')}</span></div>`;
+    const primaRow = calcStore.type === 'hif' ? `<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 16px; height: 16px; background-color: ${idolColor}; -webkit-mask-image: url('icons/primastella.webp'); mask-image: url('icons/primastella.webp'); -webkit-mask-size: contain; mask-size: contain; mask-position: center; mask-repeat: no-repeat; opacity: 0.8;"></div><span>${isEn ? 'Primastella' : (isJa ? '一番星解放' : '프리마스텔라 해방')}</span></div>` : '';
 
     tooltip.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-            <div style="color: #333;">${t('talent_bloom_desc_2')}</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; color: #333; align-items: center; text-align: center;">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                ${srRow}
+                ${sainouRow}
+                ${primaRow}
+            </div>
+            <div style="width: 100%; height: 1px; background: #ddd; margin: 2px 0;"></div>
+            <div style="line-height: 1.4; text-align: left;">${t('talent_bloom_desc_2')}</div>
         </div>
     `;
 

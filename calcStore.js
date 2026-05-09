@@ -53,10 +53,12 @@ export const calcStore = {
     manualGet: { m: 0, a: 0, t: 0 },
     pItems: [null, null, null, null, null],
     pItemChecked: false,
+    hifPrimaChecked: false,
     isSR: false,
     memories: [null, null, null, null],
     isKyouka: false,
     recommendSettings: { vocal: 0, dance: 0, visual: 0 },
+    hifStats: { vocal: 0, dance: 0, visual: 0 },
     _persistenceReady: false,
 
     getPrimaryKey(type = this.type) {
@@ -103,10 +105,12 @@ export const calcStore = {
             manualGet: this.manualGet,
             pItems: this.pItems,
             pItemChecked: this.pItemChecked,
+            hifPrimaChecked: this.hifPrimaChecked,
             isSR: this.isSR,
             memories: this.memories,
             isKyouka: this.isKyouka,
             recommendSettings: this.recommendSettings,
+            hifStats: this.hifStats,
             updatedAt: Date.now()
         };
     },
@@ -183,6 +187,7 @@ export const calcStore = {
         this.manualGet = { ...createDefaultManualGet(), ...(saved.manualGet || {}) };
         this.pItems = Array.isArray(saved.pItems) ? saved.pItems : [null, null, null, null, null];
         this.pItemChecked = saved.pItemChecked === true || saved.pItemChecked === 'true';
+        this.hifPrimaChecked = saved.hifPrimaChecked === true || saved.hifPrimaChecked === 'true';
         this.isSR = saved.isSR === true || saved.isSR === 'true';
 
         // 마이그레이션: 메모리가 과거 방식(단일 문자열 요소 배열)인지 확인 후 배열의 배열로 변환
@@ -194,6 +199,7 @@ export const calcStore = {
 
         this.isKyouka = !!saved.isKyouka;
         this.recommendSettings = { ...createDefaultRecommendSettings(), ...(saved.recommendSettings || {}) };
+        this.hifStats = { vocal: 0, dance: 0, visual: 0, ...(saved.hifStats || {}) };
     },
 
     /**

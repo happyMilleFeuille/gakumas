@@ -316,6 +316,19 @@ export function calculateTotals(store, detailedCounts) {
     let examFlatTotal = { vocal: 0, dance: 0, visual: 0 };
     let classTotal = { vocal: 0, dance: 0, visual: 0 };
 
+    let hifFixedTotal = { vocal: 0, dance: 0, visual: 0 };
+    let hifPercentFactors = { vocal: 0, dance: 0, visual: 0 };
+    let hifPercentTotal = { vocal: 0, dance: 0, visual: 0 };
+
+    if (store.type === 'hif' && store.hifStats) {
+        ['vocal', 'dance', 'visual'].forEach(attr => {
+            const count = store.hifStats[attr] || 0;
+            hifFixedTotal[attr] += count * 20;
+            hifPercentFactors[attr] += count * 2;
+        });
+    }
+
+
     // --- [Pre-calculate Percentage Bonuses] ---
     // 1. Idol Percentages
     const currentIdolData = idolData[store.selectedIdol];
@@ -406,9 +419,9 @@ export function calculateTotals(store, detailedCounts) {
 
     // Total Percentage sum for Nia calculation
     const totalPercs = {
-        vocal: idolPercs.vocal + supportPercs.vocal + memoryPercentFactors.vocal,
-        dance: idolPercs.dance + supportPercs.dance + memoryPercentFactors.dance,
-        visual: idolPercs.visual + supportPercs.visual + memoryPercentFactors.visual
+        vocal: idolPercs.vocal + supportPercs.vocal + memoryPercentFactors.vocal + hifPercentFactors.vocal,
+        dance: idolPercs.dance + supportPercs.dance + memoryPercentFactors.dance + hifPercentFactors.dance,
+        visual: idolPercs.visual + supportPercs.visual + memoryPercentFactors.visual + hifPercentFactors.visual
     };
 
     // --- [Weekly Loop] ---
@@ -425,25 +438,29 @@ export function calculateTotals(store, detailedCounts) {
         const percs = {
             idol: idolPercs[attr],
             support: supportPercs[attr],
-            memory: memoryPercentFactors[attr]
+            memory: memoryPercentFactors[attr],
+            hif: hifPercentFactors[attr]
         };
 
         let idolVal = Math.floor(base * (percs.idol / 100));
         let supportVal = Math.floor(base * (percs.support / 100));
         let memoryVal = Math.floor(base * (percs.memory / 100));
+        let hifVal = Math.floor(base * (percs.hif / 100));
 
-        const diff = unifiedTotal - (idolVal + supportVal + memoryVal);
+        const diff = unifiedTotal - (idolVal + supportVal + memoryVal + hifVal);
         if (diff !== 0) {
-            const raw = [base * (percs.idol / 100), base * (percs.support / 100), base * (percs.memory / 100)];
+            const raw = [base * (percs.idol / 100), base * (percs.support / 100), base * (percs.memory / 100), base * (percs.hif / 100)];
             const maxIdx = raw.indexOf(Math.max(...raw));
             if (maxIdx === 0) idolVal += diff;
             else if (maxIdx === 1) supportVal += diff;
-            else memoryVal += diff;
+            else if (maxIdx === 2) memoryVal += diff;
+            else hifVal += diff;
         }
 
         idolBonusTotal[attr] += idolVal;
         supportPercentTotal[attr] += supportVal;
         memoryPercentTotal[attr] += memoryVal;
+        hifPercentTotal[attr] += hifVal;
     };
 
     Object.keys(store.weeks).forEach(weekNum => {
@@ -566,9 +583,9 @@ export function calculateTotals(store, detailedCounts) {
     }
 
     const bonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + memoryPercentTotal.vocal,
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + memoryPercentTotal.dance,
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + memoryPercentTotal.visual
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + memoryPercentTotal.vocal + hifFixedTotal.vocal + hifPercentTotal.vocal,
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + memoryPercentTotal.dance + hifFixedTotal.dance + hifPercentTotal.dance,
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + memoryPercentTotal.visual + hifFixedTotal.visual + hifPercentTotal.visual
     };
 
     const finalTotal = {
@@ -620,6 +637,15 @@ export function calculateTotals(store, detailedCounts) {
                     dance: memoryPercentTotal.dance,
                     visual: memoryPercentTotal.visual,
                     factors: memoryPercentFactors
+                }
+            },
+            hif: {
+                fixed: hifFixedTotal,
+                percent: {
+                    vocal: hifPercentTotal.vocal,
+                    dance: hifPercentTotal.dance,
+                    visual: hifPercentTotal.visual,
+                    factors: hifPercentFactors
                 }
             },
             totalPercs: totalPercs

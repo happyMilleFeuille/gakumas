@@ -143,6 +143,8 @@ const translations = {
         calc_detail_memory_fixed: "메모리 (고정)",
         calc_detail_pitem: "p아이템",
         calc_detail_pitem_nia: "p아이템 (55%)",
+        calc_detail_hif_percent: "HIF 보너스(%)",
+        calc_detail_hif_fixed: "HIF 보너스(고정)",
         calc_detail_final_total: "최종 합계",
         support_effect_get: "카드 획득",
         support_effect_get_concentration: "집중 카드 획득",
@@ -261,7 +263,7 @@ const translations = {
         idol_fullname_misuzu: "하타야 미스즈",
         support_tooltip_1: "• <b>꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.</b>",
         support_tooltip_2: "• <b>카드를 길게 누르면 비활성화되며,<br>리스트의 맨 아래로 이동하고 스텟계산에서 제외됩니다.</b>",
-        talent_bloom_desc_2: "아이돌의 기본 스텟은 <span style=\"color: #ff4d8d; font-weight: bold;\">친애도 20↑</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4특훈 이상</span>을 기준으로 하며, </br>일부 특정 아이돌(2차 리나미, 2차 코토네 등)의 경우는 반영하지 않습니다."
+        talent_bloom_desc_2: "아이돌의 기본 스텟은 <span style=\"color: #ff4d8d; font-weight: bold;\">친애도 20↑</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4특훈 이상</span>을 기준으로 하며, 일부 특정 아이돌(2차 리나미, 2차 코토네 등)의 경우는 반영하지 않습니다."
     },
     ja: {
         btn_empty: "アイドル",
@@ -406,6 +408,8 @@ const translations = {
         calc_detail_memory_fixed: "メモリー(固定)",
         calc_detail_pitem: "Pアイテム",
         calc_detail_pitem_nia: "Pアイテム (55%)",
+        calc_detail_hif_percent: "HIFボーナス(%)",
+        calc_detail_hif_fixed: "HIFボーナス(固定)",
         calc_detail_final_total: "総合計",
         support_effect_get: "カード獲得",
         support_effect_get_concentration: "集中カード獲得",
@@ -523,7 +527,7 @@ const translations = {
         idol_fullname_misuzu: "秦谷 美鈴",
         support_tooltip_1: "• <b>花マークをクリックして、開花段階を設定できます。</b>",
         support_tooltip_2: "• <b>カードを長押しすると除外状態になり、<br>リストの一番下に移動します。ステータス計算には含まれません。</b>",
-        talent_bloom_desc_2: "アイドルの基本ステータスは <span style=\"color: #ff4d8d; font-weight: bold;\">親愛度 20↑</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4特訓以上</span> を基準としており、</br>一部の特定アイドル（2nd莉波、2ndことね等）の場合は反映されていません。"
+        talent_bloom_desc_2: "アイドルの基本ステータスは <span style=\"color: #ff4d8d; font-weight: bold;\">親愛度 20↑</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4特訓以上</span> を基準としており、一部の特定アイドル（2nd莉波、2ndことね等）の場合は反映されていません。"
     },
     en: {
         btn_empty: "Idols",
@@ -668,6 +672,8 @@ const translations = {
         calc_detail_memory_fixed: "Memory (Fixed)",
         calc_detail_pitem: "P Item",
         calc_detail_pitem_nia: "P Item (55%)",
+        calc_detail_hif_percent: "HIF Bonus (%)",
+        calc_detail_hif_fixed: "HIF Bonus (Fixed)",
         calc_detail_final_total: "Final Total",
         support_effect_get: "Get Card",
         support_effect_get_concentration: "Get Concentrate Card",
@@ -786,7 +792,7 @@ const translations = {
         idol_fullname_misuzu: "Misuzu Hataya",
         support_tooltip_1: "• <b>Click the flower icon to set the limit break level.</b>",
         support_tooltip_2: "• <b>Press and hold a card to disable it,<br>move it to the bottom of the list, and exclude it from stat calculation.</b>",
-        talent_bloom_desc_2: "An idol's base stats are calculated using <span style=\"color: #ff4d8d; font-weight: bold;\">Bond Lv. 20+</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, and <span style=\"color: #fcc75e; font-weight: bold;\">4+ Training</span> as the standard, </br>and do not reflect certain specific idols such as 2nd Rinami or 2nd Kotone."
+        talent_bloom_desc_2: "An idol's base stats are calculated using <span style=\"color: #ff4d8d; font-weight: bold;\">Bond Lv. 20+</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, and <span style=\"color: #fcc75e; font-weight: bold;\">4+ Training</span> as the standard, and do not reflect certain specific idols such as 2nd Rinami or 2nd Kotone."
     }
 };
 
