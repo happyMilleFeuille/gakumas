@@ -272,6 +272,13 @@ export const videoList = {
     ],
     ume: [
         {
+            title: "金の斧、銀の斧、エメラルドの斧",
+            title_ko: "금도끼, 은도끼, 에메랄드도끼",
+            title_en: "Mercury and the Honest Dorothy",
+            url: "https://youtu.be/YbyjjPC6wUQ?si=BYgTBsEG19dihjDN",
+            date: "2026.05.11."
+        },
+        {
             title: "生誕ミニライブ2026",
             title_ko: "생일 미니라이브2026",
             title_en: "Birthday MiniLive 2026",
