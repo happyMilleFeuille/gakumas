@@ -46,7 +46,7 @@
     gap: 40px;
     align-items: flex-end;
     pointer-events: none;
-    z-index: 1;
+    z-index: 10;
 }
 
 .drawer-indicator-line {
@@ -67,7 +67,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 27.5px; /* (라인위치 30px) - (마름모반지름 2.5px) 내외로 조정 */
+    padding-bottom: 23px; /* 크기 확대에 따른 위치 재보정 (아래로) */
     scroll-snap-align: center;
 }
 
@@ -134,19 +134,22 @@
 
 
 .drawer-diamond {
-    width: 6px; height: 6px;
-    background: rgba(255, 255, 255, 0.5);
-    transform: rotate(45deg) scale(1); /* 기본 크기 */
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
     transform-origin: center center;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 2;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .active-diamond .drawer-diamond {
-    width: 6px; height: 6px; /* 크기 고정 */
-    background: #ff4081;
-    transform: rotate(45deg) scale(2.2); /* 스케일로 확대하여 중앙 정렬 유지 */
-    box-shadow: 0 0 8px #ff4081;
+    font-size: 16px;
+    color: #ff4081;
+    transform: scale(1.8); /* 배율을 1.8로 하향 조정 */
+    text-shadow: 0 0 8px #ff4081;
     opacity: 1;
 }
 
@@ -182,13 +185,16 @@
     
     .drawer-diamond-wrapper { 
         width: 130px; 
-        padding-bottom: 17.5px; 
+        padding-bottom: 15px !important; /* 16px에서 1px 내려서 15px로 조정 */
     }
     .drawer-diamond-wrapper.selection-diamond {
         width: 180px; /* 아이템 너비와 동일하게 180px로 축소 */
     }
     .drawer-indicator-line { 
         bottom: 20px; 
+    }
+    .drawer-diamond {
+        font-size: 12px !important;
     }
 }
 

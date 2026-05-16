@@ -1,12 +1,10 @@
 // ui.js
-import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, setSlotData, loadFromSlot, getSlotInfo, getSlotData, deleteSlot } from './state.js';
+import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, setSlotData, loadFromSlot, getSlotInfo, getSlotData, deleteSlot, setSortBy, setSortOrder } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { cardList } from './carddata.js';
-import { produceList } from './producedata.js';
-import { videoList } from './videodata.js';
 import { initCalc } from './calc.js';
 import { calcStore } from './calcStore.js';
-import { renderPSSRRoadmap, idolList } from './roadmap.js';
+import { renderPSSRRoadmap } from './roadmap.js';
 import { showCardModal } from './cardModal.js';
 
 const contentArea = document.getElementById('content-area');
@@ -32,7 +30,7 @@ export function preloadSupportImages() {
 
     cardList.forEach(card => {
         const baseIconPath = `images/support/${card.id}`;
-        
+
         // 내부 아이템/카드 이미지 프리로드 및 실제 경로 판별
         const isCardType = card.have && card.have.startsWith('card');
         const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
@@ -56,7 +54,7 @@ const getLocalizedCardName = (card) => {
     return card.name;
 };
 
-function openVideoModal(embedUrl, borderColor = '#ff4d8d') {
+export function openVideoModal(embedUrl, borderColor = '#ff4d8d') {
     const videoModal = document.getElementById('video-modal');
     const iframe = document.getElementById('video-iframe');
     if (!videoModal || !iframe) return;
@@ -86,7 +84,7 @@ function openVideoModal(embedUrl, borderColor = '#ff4d8d') {
     }
 }
 
-function closeVideoModal(isPopState = false) {
+export function closeVideoModal(isPopState = false) {
     const videoModal = document.getElementById('video-modal');
     const iframe = document.getElementById('video-iframe');
     const isVisible = !!(videoModal && (videoModal.style.display === 'flex' || !videoModal.classList.contains('hidden')));
@@ -153,438 +151,16 @@ export function renderHome() {
     renderPSSRRoadmap(false);
 }
 
-export function renderCalc() {
+export function renderCalc(mode) {
     if (!contentArea) return;
     const tpl = document.getElementById('tpl-calc');
     contentArea.innerHTML = '';
     contentArea.appendChild(tpl.content.cloneNode(true));
     updatePageTranslations();
-    initCalc();
+    initCalc(mode);
 }
 
-export function renderIdolList() {
-    if (!contentArea) return;
-    contentArea.innerHTML = '';
 
-    const gridTpl = document.getElementById('tpl-idol-grid');
-    const itemTpl = document.getElementById('tpl-idol-item');
-    const view = gridTpl.content.cloneNode(true);
-    const grid = view.querySelector('.idol-grid');
-
-    // Video 컨테이너 추가
-    const videoArea = document.createElement('div');
-    videoArea.className = 'idol-video-container-wrapper';
-    videoArea.innerHTML = '<div class="idol-video-list"></div>';
-    const videoListEl = videoArea.querySelector('.idol-video-list');
-
-    // PSSR 컨테이너 추가
-    const pssrArea = document.createElement('div');
-    pssrArea.className = 'pssr-container';
-    pssrArea.innerHTML = '<div class="pssr-grid"></div>';
-    const pssrGrid = pssrArea.querySelector('.pssr-grid');
-
-    // 프로듀스 카드 이미지 프리로드 (호버/터치 시 현재 보일 이미지 1장만)
-    const preloadedIdols = new Set();
-    function preloadIdolImages(idolName) {
-        if (preloadedIdols.has(idolName)) return;
-        preloadedIdols.add(idolName);
-
-        const cards = produceList.filter(p => {
-            const nameMatch = p.id.startsWith(`ssr${idolName}_`) ||
-                p.id.startsWith(`sr${idolName}_`) ||
-                p.id.startsWith(`r${idolName}_`);
-            return nameMatch &&
-                (p.rarity === 'PSSR' || p.rarity === 'PSR' || p.rarity === 'PR') &&
-                p.another !== true;
-        });
-
-        cards.forEach(card => {
-            // renderProduceCards와 동일한 로직으로 현재 보일 이미지 결정
-            const imageList = [
-                `idols/${card.id}1.webp`,
-                `idols/${card.id}2.webp`
-            ];
-            const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
-            anothers.forEach(a => imageList.push(`idols/${a.id}1.webp`));
-
-            let currentIndex = state.pssrIndex[card.id] || 0;
-            if (currentIndex >= imageList.length) currentIndex = 0;
-
-            // 현재 보일 이미지 1장만 프리로드
-            const preImg = new Image();
-            preImg.src = imageList[currentIndex];
-        });
-    }
-
-    idolList.forEach(name => {
-        const item = itemTpl.content.cloneNode(true);
-        const img = item.querySelector('.idol-icon');
-        const idolItem = item.querySelector('.idol-item');
-        const favBtn = item.querySelector('.fav-star-btn');
-
-        img.src = `icons/idolicons/${name}.png`;
-        img.alt = name;
-        favBtn.style.setProperty('--fav-color', idolColors[name] || '#fbc02d');
-
-        // 즐겨찾기 상태 반영
-        if (state.favoriteIdol === name) {
-            favBtn.classList.add('active');
-        }
-
-        // 호버(PC) / 터치시작(모바일) 시 프리로드
-        idolItem.addEventListener('mouseenter', () => preloadIdolImages(name));
-        idolItem.addEventListener('touchstart', () => preloadIdolImages(name), { passive: true });
-
-        favBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // 카드 클릭 이벤트 방지
-            setFavoriteIdol(name);
-
-            // 모든 별 버튼 상태 업데이트
-            document.querySelectorAll('.fav-star-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            if (state.favoriteIdol === name) {
-                favBtn.classList.add('active');
-            }
-
-            // [추가] 전체 배경색 업데이트
-            updateGlobalBackgroundColor();
-        });
-
-        img.addEventListener('click', (e) => {
-            // [추가] 선택된 아이콘 스타일링
-            document.querySelectorAll('.idol-icon').forEach(icon => {
-                icon.classList.remove('selected');
-                icon.style.borderColor = ''; // 기존 스타일 초기화
-                icon.style.boxShadow = '';
-            });
-
-            img.classList.add('selected');
-            const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
-            const color = getIdolDisplayColor(name);
-            img.style.borderColor = color;
-            img.style.boxShadow = `0 0 15px ${color}66`;
-
-            // Center the clicked icon
-            const clickedItem = e.currentTarget.parentElement.parentElement;
-            const gridContainer = clickedItem.parentElement;
-            if (gridContainer) {
-                const containerWidth = gridContainer.offsetWidth;
-                const itemOffsetLeft = clickedItem.offsetLeft;
-                const itemWidth = clickedItem.offsetWidth;
-                const scrollPos = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
-                gridContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
-            }
-
-            // Render Produce Cards and Videos for this idol
-            videoArea.style.setProperty('--idol-border-color', `${color}66`); // 투명도 40%로 상향
-            renderIdolVideos(name, videoListEl);
-            renderProduceCards(name, pssrGrid);
-        });
-        grid.appendChild(item);
-    });
-
-    contentArea.appendChild(view);
-    contentArea.appendChild(videoArea);
-    contentArea.appendChild(pssrArea);
-
-    // [수정] 즐겨찾기 아이돌이 있다면 애니메이션 없이 즉시 선택 상태로 렌더링
-    if (state.favoriteIdol) {
-        const favIcon = contentArea.querySelector(`.idol-icon[alt="${state.favoriteIdol}"]`);
-        if (favIcon) {
-            // 1. 선택 스타일 즉시 적용
-            favIcon.classList.add('selected');
-            const color = (idolColors[state.favoriteIdol] || "#ff4d8d");
-            favIcon.style.borderColor = color;
-            favIcon.style.boxShadow = `0 0 15px ${color}66`;
-            videoArea.style.setProperty('--idol-border-color', `${color}66`); // 40% 투명도 적용
-
-            // 2. 스크롤 위치 즉시 이동 (Smooth 없이)
-            const clickedItem = favIcon.parentElement.parentElement;
-            const gridContainer = clickedItem.parentElement;
-            if (gridContainer) {
-                const scrollPos = clickedItem.offsetLeft - (gridContainer.offsetWidth / 2) + (clickedItem.offsetWidth / 2);
-                gridContainer.scrollTo({ left: scrollPos, behavior: 'auto' });
-            }
-
-            // 3. 하단 리스트 즉시 렌더링
-            renderIdolVideos(state.favoriteIdol, videoListEl);
-            renderProduceCards(state.favoriteIdol, pssrGrid);
-        }
-    }
-}
-
-function renderIdolVideos(idolName, container) {
-    if (!container) return;
-    container.innerHTML = '';
-
-    // 1. 해당 아이돌의 영상 리스트 가져오기 (객체 구조로 변경됨)
-    const filteredVideos = videoList[idolName] || [];
-
-    if (filteredVideos.length === 0) {
-        container.parentElement.style.display = 'none';
-        return;
-    }
-
-    container.parentElement.style.display = 'block';
-
-    // 2. 날짜 기준 내림차순 정렬 (최신순)
-    const sortedVideos = [...filteredVideos].sort((a, b) => {
-        const dateA = a.date || '0000.00.00';
-        const dateB = b.date || '0000.00.00';
-        return dateB.localeCompare(dateA);
-    });
-
-    const itemTpl = document.getElementById('tpl-idol-video-item');
-    sortedVideos.forEach(video => {
-        const item = itemTpl.content.cloneNode(true);
-        const thumb = item.querySelector('.video-thumb');
-        const title = item.querySelector('.video-title');
-        const videoItem = item.querySelector('.idol-video-item');
-
-        const personalColor = idolColors[idolName] || "#ffffff";
-        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`;
-        videoItem.style.backgroundColor = "#ffffff";
-        videoItem.style.backgroundImage = mixedBg;
-
-        // 유튜브 ID 추출
-        let videoId = '';
-        if (video.url.includes('youtu.be/')) {
-            videoId = video.url.split('youtu.be/')[1].split('?')[0];
-        } else if (video.url.includes('watch?v=')) {
-            videoId = video.url.split('watch?v=')[1].split('&')[0];
-        }
-
-        thumb.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-
-        let displayTitle = video.title; // 기본은 일본어 (title)
-        if (state.currentLang === 'ko' && video.title_ko) {
-            displayTitle = video.title_ko; // 한국어 설정이고 한국어 제목이 있으면 한국어(title_ko) 우선
-        } else if (state.currentLang === 'en' && video.title_en) {
-            displayTitle = video.title_en; // 영어 설정이고 영어 제목이 있으면 영어(title_en) 우선
-        }
-        title.textContent = displayTitle;
-
-        // [수정] 실시간 대응을 위해 글자 수 및 언어 정보를 클래스로 전달
-        const titleLength = displayTitle.length;
-        title.classList.remove('len-long', 'len-vlong', 'len-extreme', 'lang-ja');
-        if (state.currentLang === 'ja') title.classList.add('lang-ja');
-
-        if (titleLength >= 13) title.classList.add('len-extreme');
-        else if (titleLength >= 10) title.classList.add('len-vlong');
-        else if (titleLength >= 7) title.classList.add('len-long');
-
-
-        const dateEl = item.querySelector('.video-date');
-        if (dateEl) {
-            dateEl.textContent = video.date || '';
-        }
-
-        videoItem.addEventListener('click', () => {
-            const color = idolColors[idolName] || '#ff4d8d';
-            openVideoModal(`https://www.youtube.com/embed/${videoId}?autoplay=1`, color);
-        });
-
-        container.appendChild(item);
-    });
-}
-
-function renderProduceCards(idolName, container) {
-    container.innerHTML = '';
-    const itemTpl = document.getElementById('tpl-pssr-item');
-    if (!itemTpl) return;
-
-    const produceCards = produceList.filter(p => {
-        const nameMatch = p.id.startsWith(`ssr${idolName}_`) ||
-            p.id.startsWith(`sr${idolName}_`) ||
-            p.id.startsWith(`r${idolName}_`);
-
-        return nameMatch &&
-            (p.rarity === 'PSSR' || p.rarity === 'PSR' || p.rarity === 'PR') &&
-            p.another !== true;
-    });
-
-    produceCards.sort((a, b) => {
-        const rarityOrder = { 'PSSR': 3, 'PSR': 2, 'PR': 1 };
-        const rA = rarityOrder[a.rarity] || 0;
-        const rB = rarityOrder[b.rarity] || 0;
-
-        if (rA !== rB) {
-            return rB - rA; // 등급 높은 순
-        }
-
-        const dateA = a.releasedAt || "";
-        const dateB = b.releasedAt || "";
-        return dateB.localeCompare(dateA); // 같은 등급이면 최신순
-    });
-
-    if (produceCards.length === 0) {
-        container.innerHTML = `<p style="color:#999; padding:2rem; width:100%; text-align:center;">${t('ui_no_cards_found_for', { idolName }, `No cards found for ${idolName}.`)}</p>`;
-        return;
-    }
-
-    produceCards.forEach((card, index) => {
-        const item = itemTpl.content.cloneNode(true);
-        const cardEl = item.querySelector('.pssr-card');
-        const img = item.querySelector('.pssr-img');
-        const imgWrapper = item.querySelector('.pssr-img-wrapper');
-        const infoBox = item.querySelector('.pssr-info');
-        const name = item.querySelector('.pssr-name');
-        const personalColor = idolColors[idolName] || "#ffffff";
-
-        const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`;
-        cardEl.style.backgroundColor = "#ffffff";
-        cardEl.style.backgroundImage = mixedBg;
-
-        infoBox.style.backgroundColor = "transparent";
-        infoBox.style.backgroundImage = "none";
-
-        name.style.color = '#333';
-        imgWrapper.style.backgroundColor = personalColor + "11";
-
-        const planIcon = item.querySelector('.pssr-plan-icon');
-        if (card.plan) {
-            planIcon.src = `icons/${card.plan}.webp`;
-        } else {
-            planIcon.style.display = 'none';
-        }
-
-        if (card.osusume) {
-            const osusumeIcon = document.createElement('img');
-            osusumeIcon.className = 'pssr-osusume-icon';
-            osusumeIcon.src = `icons/${card.osusume}.webp`;
-            planIcon.parentElement.insertBefore(osusumeIcon, planIcon);
-        }
-
-        const rarityIcon = item.querySelector('.pssr-rarity-icon');
-
-        const imageList = [
-            `idols/${card.id}1.webp`,
-            `idols/${card.id}2.webp`
-        ];
-
-        const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
-        anothers.forEach(a => {
-            imageList.push(`idols/${a.id}1.webp`);
-        });
-
-        let currentIndex = state.pssrIndex[card.id] || 0;
-        if (currentIndex >= imageList.length) currentIndex = 0;
-
-        img.src = imageList[currentIndex];
-
-        cardEl.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (img.classList.contains('slide-out') || img.classList.contains('slide-prepare')) return;
-
-            img.classList.add('slide-out');
-            imgWrapper.style.backgroundColor = personalColor;
-
-            const nextIndex = (currentIndex + 1) % imageList.length;
-            const nextSrc = imageList[nextIndex];
-
-            // 이미지 프리로드 시작
-            const tempImg = new Image();
-            tempImg.onload = () => {
-                setTimeout(() => {
-                    currentIndex = nextIndex;
-                    setPSSRIndex(card.id, currentIndex);
-
-                    img.style.transition = 'none';
-                    img.classList.remove('slide-out');
-                    img.classList.add('slide-prepare');
-                    img.src = nextSrc;
-
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            img.style.transition = '';
-                            img.classList.remove('slide-prepare');
-                            setTimeout(() => {
-                                imgWrapper.style.backgroundColor = personalColor + "11";
-                            }, 200);
-                        });
-                    });
-                }, 100);
-            };
-            tempImg.onerror = () => {
-                // 로딩 실패 시 즉시 복구 시도
-                img.classList.remove('slide-out');
-                imgWrapper.style.backgroundColor = personalColor + "11";
-            };
-            tempImg.src = nextSrc;
-        });
-
-        let retryCount = 0;
-        img.onerror = () => {
-            if (retryCount < imageList.length) {
-                retryCount++;
-                currentIndex = (currentIndex + 1) % imageList.length;
-                img.src = imageList[currentIndex];
-            }
-        };
-
-        const rarityKey = card.rarity.toLowerCase().replace('p', '');
-        rarityIcon.src = `icons/${rarityKey}.png`;
-
-        const sourceBadge = item.querySelector('.pssr-source-badge');
-        if (sourceBadge) {
-            const sourceMap = {
-                'limited': t('filter_limited'),
-                'limited_f': t('filter_limited_f'),
-                'limited_u': t('filter_limited_u'),
-                'normal': t('filter_normal'),
-                'dist': t('filter_dist')
-            };
-            const cSource = card.source || 'normal';
-            if (sourceMap[cSource]) {
-                sourceBadge.textContent = sourceMap[cSource];
-                sourceBadge.style.display = 'inline-block';
-            } else {
-                sourceBadge.style.display = 'none';
-            }
-        }
-
-        const displayName = getLocalizedCardName(card);
-        name.textContent = displayName;
-        name.classList.toggle('lang-ja', useJaNames());
-
-        if (useJaNames()) {
-            name.style.wordBreak = 'normal';
-            name.style.overflowWrap = 'anywhere';
-        } else {
-            name.style.wordBreak = 'keep-all';
-            name.style.overflowWrap = 'normal';
-        }
-
-        // 유튜브 링크 설정
-        const youtubeLink = item.querySelector('.pssr-youtube-link');
-        if (youtubeLink) {
-            if (card.youtube_url) {
-                youtubeLink.onclick = (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    const finalUrl = card.youtube_url;
-                    let embedUrl = finalUrl;
-                    if (finalUrl.includes('watch?v=')) {
-                        const videoId = finalUrl.split('watch?v=')[1].split('&')[0];
-                        embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                    } else if (finalUrl.includes('youtu.be/')) {
-                        const videoId = finalUrl.split('youtu.be/')[1].split('?')[0];
-                        embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                    }
-                    const color = idolColors[idolName] || '#ff4d8d';
-                    openVideoModal(embedUrl, color);
-                };
-                youtubeLink.classList.remove('hidden');
-            } else {
-                youtubeLink.classList.add('hidden');
-            }
-        }
-
-        container.appendChild(item);
-    });
-}
 
 function openSlotModal() {
     let modal = document.getElementById('slot-modal');
@@ -990,7 +566,7 @@ export function renderSupport() {
 }
 
 function setupStaticListeners(container) {
-    const filterGroups = ['plan', 'attr', 'source', 'rarity'];
+    const filterGroups = ['plan', 'attr', 'source', 'rarity', 'ability'];
     filterGroups.forEach(type => {
         const group = container.querySelector(`#filter-${type}`);
         if (!group) return;
@@ -1001,6 +577,23 @@ function setupStaticListeners(container) {
             renderSupport();
         });
     });
+    
+    // 서포트 정보 툴팁 클릭 이벤트
+    const infoBtn = container.querySelector('.support-info-btn');
+    const infoTooltip = container.querySelector('.support-info-tooltip');
+    if (infoBtn && infoTooltip) {
+        infoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            infoTooltip.classList.toggle('visible');
+        });
+        
+        // 툴팁 외부 클릭 시 닫기
+        document.addEventListener('click', (e) => {
+            if (!infoBtn.contains(e.target) && !infoTooltip.contains(e.target)) {
+                infoTooltip.classList.remove('visible');
+            }
+        });
+    }
 
     const toggleBtn = container.querySelector('#btn-toggle-extra');
     const extraWrapper = container.querySelector('#extra-filters');
@@ -1017,19 +610,24 @@ function setupStaticListeners(container) {
         });
     }
 
-    const sortSelect = container.querySelector('#support-sort');
+    const sortSelect = container.querySelector('#sort-select');
     if (sortSelect) {
-        sortSelect.innerHTML = `
-            <option value="id-desc">${t('ui_sort_latest')}</option>
-            <option value="id-asc">${t('ui_sort_oldest')}</option>
-            <option value="lb-desc">${t('ui_sort_lb')}</option>
-        `;
-        sortSelect.value = state.sortBy;
         sortSelect.addEventListener('change', (e) => {
-            state.sortBy = e.target.value;
+            setSortBy(e.target.value);
             renderSupport();
         });
     }
+    
+    const sortOrderBtn = container.querySelector('#btn-sort-order');
+    if (sortOrderBtn) {
+        sortOrderBtn.addEventListener('click', () => {
+            const newOrder = (state.sortOrder === 'asc') ? 'desc' : 'asc';
+            setSortOrder(newOrder);
+            renderSupport();
+        });
+    }
+
+
 
     const allMaxBtn = container.querySelector('#btn-all-max-lb');
     if (allMaxBtn) {
@@ -1151,7 +749,7 @@ function setupStaticListeners(container) {
 }
 
 function syncFilterUI(container) {
-    const filterGroups = ['plan', 'attr', 'source', 'rarity'];
+    const filterGroups = ['plan', 'attr', 'source', 'rarity', 'ability'];
     filterGroups.forEach(type => {
         const btns = container.querySelectorAll(`#filter-${type} .filter-btn`);
         btns.forEach(btn => {
@@ -1173,8 +771,15 @@ function syncFilterUI(container) {
         toggleBtn?.classList.add('active');
     }
 
-    const sortSelect = container.querySelector('#support-sort');
-    if (sortSelect) sortSelect.value = state.sortBy;
+    const sortSelect = container.querySelector('#sort-select');
+    if (sortSelect) {
+        sortSelect.value = state.sortBy;
+    }
+
+    const sortOrderArrow = container.querySelector('#sort-order-arrow');
+    if (sortOrderArrow) {
+        sortOrderArrow.textContent = (state.sortOrder === 'asc') ? '↑' : '↓';
+    }
 }
 
 function updateSupportGrid(container) {
@@ -1192,8 +797,17 @@ function updateSupportGrid(container) {
         const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
         const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
         const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
+        
+        // ability filter uses AND logic (must have all selected abilities)
+        const abilityMatch = (state.filters.ability.length === 0) || state.filters.ability.every(ab => {
+            if (!card.abilities) return false;
+            if (ab === 'sp_lessonup') {
+                return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
+            }
+            return card.abilities.includes(ab);
+        });
 
-        return planMatch && attrMatch && sourceMatch && rarityMatch;
+        return planMatch && attrMatch && sourceMatch && rarityMatch && abilityMatch;
     });
 
     const getNumericId = (id) => {
@@ -1206,34 +820,30 @@ function updateSupportGrid(container) {
         const bDisabled = !!state.disabledCards[b.id];
         if (aDisabled !== bDisabled) return aDisabled ? 1 : -1;
 
-        const dateA = a.releasedAt || "";
-        const dateB = b.releasedAt || "";
-        if (state.sortBy === 'id-desc') {
-            if (dateA !== dateB) return dateB.localeCompare(dateA);
+        const isAsc = (state.sortOrder === 'asc');
+
+        if (state.sortBy === 'id') {
+            const dateA = a.releasedAt || "0000.00.00";
+            const dateB = b.releasedAt || "0000.00.00";
+            if (dateA !== dateB) return isAsc ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
+            
             const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
             const rA = rarityOrder[a.rarity] || 0;
             const rB = rarityOrder[b.rarity] || 0;
             if (rA !== rB) return rB - rA;
-            return getNumericId(b.id) - getNumericId(a.id) || b.id.localeCompare(a.id);
-        } else if (state.sortBy === 'id-asc') {
-            if (dateA !== dateB) return dateA.localeCompare(dateB);
-            const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
-            const rA = rarityOrder[a.rarity] || 0;
-            const rB = rarityOrder[b.rarity] || 0;
-            if (rA !== rB) return rB - rA;
-            return getNumericId(a.id) - getNumericId(b.id) || a.id.localeCompare(b.id);
-        } else if (state.sortBy === 'lb-desc') {
+            
+            const idA = getNumericId(a.id);
+            const idB = getNumericId(b.id);
+            return isAsc ? (idA - idB) : (idB - idA);
+        } else if (state.sortBy === 'lb') {
             const lbA = state.supportLB[a.id] || 0;
             const lbB = state.supportLB[b.id] || 0;
-            if (lbA !== lbB) return lbB - lbA;
-            const dateA = a.releasedAt || "";
-            const dateB = b.releasedAt || "";
-            if (dateA !== dateB) return dateB.localeCompare(dateA);
-            const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
-            const rA = rarityOrder[a.rarity] || 0;
-            const rB = rarityOrder[b.rarity] || 0;
-            if (rA !== rB) return rB - rA;
+            if (lbA !== lbB) return isAsc ? (lbA - lbB) : (lbB - lbA);
             return getNumericId(b.id) - getNumericId(a.id);
+        } else if (state.sortBy === 'name') {
+            const nameA = getLocalizedCardName(a);
+            const nameB = getLocalizedCardName(b);
+            return isAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
         }
         return 0;
     });
@@ -1271,17 +881,30 @@ function updateSupportGrid(container) {
 
 export function updateGlobalBackgroundColor() {
     const fixedBg = document.getElementById('fixed-bg');
+    const isHif = window.location.hash === '#calc/hif';
+    const idolColor = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColors[state.favoriteIdol] : '#ff4d8d';
+
+    document.documentElement.style.setProperty('--idol-theme-color', idolColor);
+
+    if (isHif && fixedBg) {
+        // HIF 전용 5색 그라데이션 전역 배경 복구
+        fixedBg.style.background = 'linear-gradient(225deg, #67c7d3, #189cfa, #3d64fb, #9575fb, #5960fb)';
+        fixedBg.style.opacity = '0.3';
+        document.body.style.backgroundColor = '#ffffff';
+        return;
+    }
+
     if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
-        let color = idolColors[state.favoriteIdol];
-        document.documentElement.style.setProperty('--idol-theme-color', color);
-        document.body.style.backgroundColor = color + "00";
-        if (fixedBg) fixedBg.style.opacity = '0.2';
+        document.body.style.backgroundColor = idolColor + "00";
         if (fixedBg) {
-            fixedBg.style.backgroundColor = color;
+            fixedBg.style.background = '';
+            fixedBg.style.backgroundColor = idolColor;
+            fixedBg.style.opacity = '0.2';
         }
     } else {
-        document.documentElement.style.setProperty('--idol-theme-color', '#ff4081');
+        document.documentElement.style.setProperty('--idol-theme-color', '#ff4d8d');
         if (fixedBg) {
+            fixedBg.style.background = '';
             fixedBg.style.backgroundColor = "#adb5bd";
             fixedBg.style.opacity = '0.2';
         }

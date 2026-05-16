@@ -230,12 +230,27 @@ function handleDrawerScroll() {
         }
         
         item.classList.remove('active-item');
-        if (diamonds[idx]) diamonds[idx].classList.remove('active-diamond');
+        if (diamonds[idx]) {
+            diamonds[idx].classList.remove('active-diamond');
+            const diamond = diamonds[idx].querySelector('.drawer-diamond');
+            if (diamond) {
+                diamond.style.color = '';
+                diamond.style.textShadow = '';
+            }
+        }
     });
 
     if (closestIdx !== -1) {
         items[closestIdx].classList.add('active-item');
-        if (diamonds[closestIdx]) diamonds[closestIdx].classList.add('active-diamond');
+        if (diamonds[closestIdx]) {
+            diamonds[closestIdx].classList.add('active-diamond');
+            const color = diamonds[closestIdx].dataset.color;
+            const diamond = diamonds[closestIdx].querySelector('.drawer-diamond');
+            if (color && diamond) {
+                diamond.style.color = color;
+                diamond.style.textShadow = `0 0 8px ${color}`;
+            }
+        }
 
         // 자동 정렬 중이 아닐 때만 데이터 선택 상태를 업데이트 (디바운싱 적용)
         if (!isScrollingToItem) {
@@ -339,9 +354,10 @@ function renderPickupList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper';
+        dw.dataset.color = color;
         dw.innerHTML = `
             <div class="drawer-item-date">${pickups.date || ''}</div>
-            <div class="drawer-diamond"></div>
+            <div class="drawer-diamond">✦</div>
         `;
         indicatorLayer.appendChild(dw);
     });
@@ -370,10 +386,11 @@ function renderNormalList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper';
+        dw.dataset.color = color;
         const displayDate = (cfg?.display_date || cfg?.date || '');
         dw.innerHTML = `
             <div class="drawer-item-date">${displayDate}</div>
-            <div class="drawer-diamond"></div>
+            <div class="drawer-diamond">✦</div>
         `;
         indicatorLayer.appendChild(dw);
     });
@@ -402,10 +419,11 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper';
+        dw.dataset.color = color;
         const displayDate = (cfg?.display_date || cfg?.date || '');
         dw.innerHTML = `
             <div class="drawer-item-date">${displayDate}</div>
-            <div class="drawer-diamond"></div>
+            <div class="drawer-diamond">✦</div>
         `;
         indicatorLayer.appendChild(dw);
     });
@@ -459,10 +477,11 @@ function renderUnitList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = `drawer-diamond-wrapper ${isDouble ? 'selection-diamond' : ''}`;
+        dw.dataset.color = color;
         const displayDate = (cfg?.display_date || cfg?.date || '');
         dw.innerHTML = `
             <div class="drawer-item-date">${displayDate}</div>
-            <div class="drawer-diamond"></div>
+            <div class="drawer-diamond">✦</div>
         `;
         indicatorLayer.appendChild(dw);
     });
@@ -490,10 +509,11 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper selection-diamond';
+        dw.dataset.color = favColor;
         const displayDate = cfg.display_date || cfg.date || '';
         dw.innerHTML = `
             <div class="drawer-item-date">${displayDate}</div>
-            <div class="drawer-diamond"></div>
+            <div class="drawer-diamond">✦</div>
         `;
         indicatorLayer.appendChild(dw);
     });
@@ -522,10 +542,11 @@ function renderFesList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper';
+        dw.dataset.color = color;
         const displayDate = (cfg?.display_date || cfg?.date || '');
         dw.innerHTML = `
             <div class="drawer-item-date">${displayDate}</div>
-            <div class="drawer-diamond"></div>
+            <div class="drawer-diamond">✦</div>
         `;
         indicatorLayer.appendChild(dw);
     });

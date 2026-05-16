@@ -15,12 +15,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index,follow">
     <script>
-        // 첫 방문/크롤러 접근 시 강제 새로고침을 피하고, 기존 사용자에게만 버전 변경을 기록합니다.
-        const APP_VERSION = '1.0.8';
+        // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
+        const APP_VERSION = '1.1.0';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
                 localStorage.setItem('gakumas_note_version', APP_VERSION);
+                location.reload();
             } else if (!previousVersion) {
                 localStorage.setItem('gakumas_note_version', APP_VERSION);
             }
@@ -58,10 +59,14 @@
     }
     </script>
     <link rel="shortcut icon" href="https://happymillefeuille.github.io/gakumas/favicon.ico">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://happymillefeuille.github.io/gakumas/icons/icon192x192.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="https://happymillefeuille.github.io/gakumas/icons/icon48x48.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://happymillefeuille.github.io/gakumas/icons/icon32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://happymillefeuille.github.io/gakumas/icons/icon16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192"
+        href="https://happymillefeuille.github.io/gakumas/icons/icon192x192.png">
+    <link rel="icon" type="image/png" sizes="48x48"
+        href="https://happymillefeuille.github.io/gakumas/icons/icon48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="https://happymillefeuille.github.io/gakumas/icons/icon32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="https://happymillefeuille.github.io/gakumas/icons/icon16x16.png">
     <link rel="apple-touch-icon" href="https://happymillefeuille.github.io/gakumas/icons/icon192x192.png">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/idol.css">
@@ -134,17 +139,17 @@
             </div>
             <div id="content-area">
                 <!-- JavaScript実行前の初期表示 (SEO対策) -->
-                <div id="seo-intro" style="padding: 40px 20px; text-align: center; font-family: sans-serif; color: #fcfcfc;">
-                    <h1 style="font-size: 1.8rem; color: #fcfcfc; margin-bottom: 10px;">Gakumas Note</h1>
-                    <p style="font-size: 1rem; color: #fcfcfc; margin-bottom: 20px;">
+                <div id="seo-intro">
+                    <h1>Gakumas Note</h1>
+                    <p>
                         Gakumas Note (学ノート) は、学園アイドルマスターのガシャシミュレーターとサポートカード計算機を提供する非公式ファンサイトです。
                     </p>
-                    <div
-                        style="display: inline-block; text-align: left; max-width: 500px; color: #fcfcfc; line-height: 1.6; padding: 20px; border-radius: 12px;">
-                        <p style="margin: 5px 0;">• <b>ステータス計算</b>: プロデュースで使用するサポートカードの性能確認や、編成の自動推薦を提供します。</p>
-                        <p style="margin: 5px 0;">• <b>ガシャシミュレーター</b>: ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。</p>
-                        <p style="margin: 12px 0 0;">Gakumas Note is an unofficial Gakuen Idolmaster fan site with a gacha simulator, support card browser, and stat calculator.</p>
-                        <p style="margin: 5px 0 0;">학마노트는 학원 아이돌마스터 비공식 팬사이트로, 가챠 시뮬레이터와 서포트 카드 정보, 스탯 계산기를 제공합니다.</p>
+                    <div class="seo-desc">
+                        <p>• <b>ステータス計算</b>: プロデュースで使用するサポートカードの性能確認や、編成の自動推薦を提供します。</p>
+                        <p>• <b>ガシャシミュレーター</b>: ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。</p>
+                        <p>Gakumas Note is an unofficial Gakuen Idolmaster fan site with a gacha simulator, support card
+                            browser, and stat calculator.</p>
+                        <p>학마노트는 학원 아이돌마스터 비공식 팬사이트로, 가챠 시뮬레이터와 서포트 카드 정보, 스탯 계산기를 제공합니다.</p>
                     </div>
                 </div>
             </div>
@@ -432,44 +437,58 @@
     <template id="tpl-support">
         <div class="support-container">
             <div class="filter-container">
-                <div class="filter-group" id="filter-attr" style="position: relative;">
-                    <button class="filter-btn" data-val="vocal" data-i18n="filter_vocal">Vocal</button>
-                    <button class="filter-btn" data-val="dance" data-i18n="filter_dance">Dance</button>
-                    <button class="filter-btn" data-val="visual" data-i18n="filter_visual">Visual</button>
-                    <div class="support-info-wrapper">
-                        <button class="support-info-btn">i</button>
-                        <div class="support-info-tooltip">
-                            <p><span data-i18n="support_tooltip_1">• <b>꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.</b></span></p>
-                            <p><span data-i18n="support_tooltip_2">• <b>카드를 길게 누르면 비활성화되며,<br>리스트의 맨 아래로 이동하고 스텟계산에서
-                                        제외됩니다.</b></span></p>
+                <div class="plan-filter-box">
+                    <div class="plan-filter-left">
+                        <div class="filter-group" id="filter-attr" style="position: relative;">
+                            <button class="filter-btn" data-val="vocal" data-i18n="filter_vocal">Vocal</button>
+                            <button class="filter-btn" data-val="dance" data-i18n="filter_dance">Dance</button>
+                            <button class="filter-btn" data-val="visual" data-i18n="filter_visual">Visual</button>
+                            <div class="support-info-wrapper">
+                                <button class="support-info-btn">i</button>
+                                <div class="support-info-tooltip">
+                                    <p><span data-i18n="support_tooltip_1">• 꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.</span></p>
+                                    <p><span data-i18n="support_tooltip_2">• 카드를 길게 누르면 비활성화되며,<br>리스트의 맨 아래로 이동하고
+                                            스텟계산에서
+                                            제외됩니다.</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-divider-h"></div>
+                        <div class="filter-group" id="filter-plan">
+                            <button class="filter-btn" data-val="free"><img src="icons/free.webp" alt="Free"
+                                    class="filter-icon"></button>
+                            <button class="filter-btn" data-val="sense"><img src="icons/sense.webp" alt="Sense"
+                                    class="filter-icon"></button>
+                            <button class="filter-btn" data-val="logic"><img src="icons/logic.webp" alt="Logic"
+                                    class="filter-icon"></button>
+                            <button class="filter-btn" data-val="anomaly"><img src="icons/anomaly.webp" alt="Anomaly"
+                                    class="filter-icon"></button>
                         </div>
                     </div>
-                </div>
-                <div class="filter-group" id="filter-plan">
-                    <button class="filter-btn" data-val="free"><img src="icons/free.webp" alt="Free"
-                            class="filter-icon"></button>
-                    <button class="filter-btn" data-val="sense"><img src="icons/sense.webp" alt="Sense"
-                            class="filter-icon"></button>
-                    <button class="filter-btn" data-val="logic"><img src="icons/logic.webp" alt="Logic"
-                            class="filter-icon"></button>
-                    <button class="filter-btn" data-val="anomaly"><img src="icons/anomaly.webp" alt="Anomaly"
-                            class="filter-icon"></button>
-                    <button id="btn-toggle-extra" class="filter-toggle-btn">▼</button>
-                </div>
-                <div id="extra-filters" class="extra-filters-wrapper hidden">
-                    <div class="filter-group" id="filter-rarity">
-                        <button class="filter-btn" data-val="SSR"><img src="icons/ssr.png" alt="SSR"
-                                class="filter-icon-rarity"></button>
-                        <button class="filter-btn" data-val="SR"><img src="icons/sr.png" alt="SR"
-                                class="filter-icon-rarity"></button>
-                    </div>
-                    <div class="filter-group" id="filter-source">
-                        <button class="filter-btn active" data-val="all" data-i18n="filter_all">All</button>
-                        <button class="filter-btn" data-val="normal" data-i18n="filter_normal">Normal</button>
-                        <button class="filter-btn" data-val="limited" data-i18n="filter_limited">Limited</button>
-                        <button class="filter-btn" data-val="limited_f" data-i18n="filter_limited_f">Fes</button>
-                        <button class="filter-btn" data-val="limited_u" data-i18n="filter_limited_u">Unit</button>
-                        <button class="filter-btn" data-val="dist" data-i18n="filter_dist">Distribution</button>
+                    <button id="btn-toggle-extra" class="filter-toggle-btn">Details <span
+                            class="toggle-icon">▼</span></button>
+                    <div id="extra-filters" class="extra-filters-wrapper hidden">
+                        <div class="filter-group" id="filter-rarity">
+                            <button class="filter-btn" data-val="SSR"><img src="icons/ssr.png" alt="SSR"
+                                    class="filter-icon-rarity"></button>
+                            <button class="filter-btn" data-val="SR"><img src="icons/sr.png" alt="SR"
+                                    class="filter-icon-rarity"></button>
+                        </div>
+                        <div class="filter-group" id="filter-source">
+                            <button class="filter-btn" data-val="normal" data-i18n="filter_normal">Normal</button>
+                            <button class="filter-btn" data-val="limited" data-i18n="filter_limited">Limited</button>
+                            <button class="filter-btn" data-val="limited_f" data-i18n="filter_limited_f">Fes</button>
+                            <button class="filter-btn" data-val="limited_u" data-i18n="filter_limited_u">Unit</button>
+                            <button class="filter-btn" data-val="dist" data-i18n="filter_dist">Distribution</button>
+                        </div>
+                        <div class="filter-group" id="filter-ability">
+                            <button class="filter-btn" data-val="sp_lessonup" data-i18n="filter_sp_lessonup">SP%
+                                ↑</button>
+                            <button class="filter-btn" data-val="percentparam"
+                                data-i18n="filter_percentparam">Bonus(%)</button>
+                            <button class="filter-btn" data-val="fixedparam"
+                                data-i18n="filter_fixedparam">Bonus(fixed)</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -481,12 +500,16 @@
                         <span data-i18n="btn_manage_slots">프리셋</span>
                     </button>
                 </div>
-                <select id="support-sort" class="sort-select">
-                    <option value="id-desc">최신순</option>
-                    <option value="id-asc">과거순</option>
-                    <option value="lb-desc">돌파순</option>
-                    <option value="name-asc">이름순</option>
-                </select>
+                <div class="sort-group">
+                    <select id="sort-select" class="sort-select">
+                        <option value="id" data-i18n="ui_sort_latest">최신순</option>
+                        <option value="lb" data-i18n="ui_sort_lb">돌파순</option>
+                    </select>
+                    <button id="btn-sort-order" class="sort-order-btn-toggle">
+                        <span id="sort-order-arrow">↑</span>
+                        <img src="icons/list.svg" alt="Sort Order" class="sort-order-icon">
+                    </button>
+                </div>
             </div>
 
             <div class="support-grid"></div>

@@ -196,6 +196,7 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         rarity: "SSR",
+        source: "limited",
         gacha: false,
         extra1: "param", extra2: "ranchange",
         abilities:
@@ -1729,7 +1730,7 @@ export const cardList = [
     },
     {
         id: "visual_fessense1",
-        name: "……시끄러운 축제네",
+        name: "......시끄러운 축제네",
         name_ja: "……騒々しいお祭りね",
         type: "visual",
         plan: "sense",
@@ -1741,10 +1742,10 @@ export const cardList = [
         abilities:
             [
                 "percentparam",
-                "hpmax",
+                "test",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "goout2",
+                "sp_param",
                 "event_paraup"
             ]
     },
@@ -2130,7 +2131,7 @@ export const cardList = [
         name_ja: "愛無き暗記は難しい",
         type: "vocal",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["audition", "test"], triggertext: ["vocal400"], stats: { vocal: 26 }, max: 9 }],
+        item_effects: [{ type: "action", trigger: ["audition", "test", "round_hif1", "round_hif2"], triggertext: ["vocal400"], stats: { vocal: 26 }, max: 9 }],
         releasedAt: "2024-05-16",
         plan: "free",
         rarity: "SR",
@@ -2643,7 +2644,7 @@ export const cardList = [
         name_ja: "嬉し恥ずかし夢心地",
         type: "dance",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["audition", "test"], stats: { dance: 26 }, max: 9 }],
+        item_effects: [{ type: "action", trigger: ["audition", "test", "round_hif1", "round_hif2"], stats: { dance: 26 }, max: 9 }],
         plan: "free",
         releasedAt: "2024-05-16",
         rarity: "SR",
@@ -3175,7 +3176,7 @@ export const cardList = [
         type: "visual",
         plan: "free",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["audition", "test"], triggertext: ["visual400"], stats: { visual: 26 }, max: 9 }],
+        item_effects: [{ type: "action", trigger: ["audition", "test", "round_hif1", "round_hif2"], triggertext: ["visual400"], stats: { visual: 26 }, max: 9 }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
@@ -3448,7 +3449,7 @@ export const cardList = [
         releasedAt: "2026-04-10",
         plan: "logic",
         have: "item",
-        item_effects: [{ type: "action", triggertext: ["visual400"], trigger: ["get_motivation"], target: "change", max: 2 }],
+        item_effects: [{ type: "action", triggertext: ["visual400"], trigger: ["get_motivation"], target: "change", max: 3 }],
         rarity: "SR",
         extra1: "param",
         abilities:

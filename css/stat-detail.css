@@ -44,7 +44,7 @@
     gap: 0;
     overflow-y: auto;
     padding-right: 2px;
-    margin-top: 10px;
+    margin-top: 0;
 }
 
 /* 스크롤바 커스텀 */
@@ -60,7 +60,7 @@
 .stat-grid-header {
     display: grid;
     grid-template-columns: 135px repeat(3, 1fr) 72px;
-    padding: 10px 0;
+    padding: 0 0 10px 0;
     border-bottom: 2px solid #ff4d8d;
     font-weight: 700;
     font-size: 0.85rem;
@@ -86,9 +86,9 @@
 }
 
 .stat-detail-label {
-    font-size: 0.9rem;
+    font-size: 0.81rem;
     color: #444;
-    padding-left: 8px;
+    padding-left: 12px;
     font-weight: 500;
 }
 
@@ -186,7 +186,7 @@
     padding-left: 24px;
     color: #888;
     position: relative;
-    font-size: 0.75rem;
+    font-size: 0.66rem;
 }
 
 .row-sub-item .stat-main-val,
@@ -215,6 +215,8 @@
     font-size: 1.05rem;
     font-weight: 800;
     color: #ff4d8d;
+    text-align: center;
+    padding-left: 0;
 }
 
 .row-total .stat-main-val {
@@ -262,7 +264,7 @@
 
     .stat-detail-label {
         font-size: 0.65rem !important;
-        padding-left: 4px !important;
+        padding-left: 12px !important;
     }
 
     .stat-main-val {
@@ -283,6 +285,10 @@
         position: absolute !important;
         top: -0.5px !important;
         font-size: 0.35rem !important;
+    }
+
+    .row-bonus-total .stat-sub-val {
+        top: 3.5px !important;
     }
 
     .stat-sum-cell {
@@ -317,6 +323,7 @@
 
     .row-total .stat-detail-label {
         font-size: 0.8rem !important;
+        padding-left: 0 !important;
     }
 
     .row-total .stat-main-val,
@@ -383,4 +390,36 @@
     width: 28px;
     height: 28px;
     object-fit: contain;
+}
+
+/* 모바일 툴팁 스플릿 레이아웃 크기 축소 */
+@media (max-width: 768px) {
+    .calc-tooltip.split-layout {
+        padding: 6px !important;
+    }
+    
+    .tooltip-attr-column {
+        gap: 5px;
+        padding: 2px;
+    }
+
+    .tooltip-divider {
+        margin: 0 8px;
+    }
+
+    .tooltip-options-column {
+        gap: 4px;
+    }
+
+    .attr-icon-button {
+        width: 30px;
+        height: 30px;
+        padding: 3px;
+        border-radius: 8px;
+    }
+
+    .attr-icon-button img {
+        width: 22px;
+        height: 22px;
+    }
 }

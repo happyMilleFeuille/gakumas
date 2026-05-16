@@ -79,11 +79,11 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
                             else if (card.type === 'visual') totalTriggerCount += lessonCounts.visual.sp;
                             else totalTriggerCount += (lessonCounts.vocal.sp + lessonCounts.dance.sp + lessonCounts.visual.sp);
                         } else if (t === 'class') {
-                            totalTriggerCount += (totalCounts['class_hajime'] || 0) + (totalCounts['class_nia'] || 0);
+                            totalTriggerCount += (totalCounts['class_hajime'] || 0) + (totalCounts['class_nia'] || 0) + (totalCounts['class_hif0'] || 0) + (totalCounts['class_hif1'] || 0);
                         } else if (t === 'gift') {
-                            totalTriggerCount += (totalCounts['gift_hajime'] || 0) + (totalCounts['gift_nia'] || 0);
+                            totalTriggerCount += (totalCounts['gift_hajime'] || 0) + (totalCounts['gift_nia'] || 0) + (totalCounts['gift_hif'] || 0);
                         } else if (t === 'goout') {
-                            totalTriggerCount += (totalCounts['goout_hajime'] || 0) + (totalCounts['goout_nia'] || 0);
+                            totalTriggerCount += (totalCounts['goout_hajime'] || 0) + (totalCounts['goout_nia'] || 0) + (totalCounts['goout_hif'] || 0);
                         } else {
                             totalTriggerCount += (totalCounts[t] || 0);
                         }

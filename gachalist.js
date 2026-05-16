@@ -61,13 +61,27 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
     const regularCards = targetPool.filter(card => !pickupIds.includes(card.id));
 
     if (key === 'PSSR' && poolType === 'fes') {
+        const hasExplicitPickupRate = typeof pickups.pickupRate === 'number';
         const perPickupRate = pickups.pickupRate ?? 0.0075;
         const pickupTotal = Math.min(perPickupRate * pickupCards.length, rates.PSSR);
-        const fesPoolTotal = Math.min(0.0225, rates.PSSR);
-        const otherFesCards = regularCards.filter(card => getPoolSource(card) === 'limited_f');
-        const normalCards = regularCards.filter(card => getPoolSource(card) !== 'limited_f');
-        const otherFesTotal = Math.min(Math.max(0, fesPoolTotal - pickupTotal), Math.max(0, rates.PSSR - pickupTotal));
-        const normalTotal = Math.max(0, rates.PSSR - pickupTotal - otherFesTotal);
+
+        if (!hasExplicitPickupRate) {
+            const nonPickupFesCards = regularCards.filter(card => getPoolSource(card) === 'limited_f');
+            const normalCards = regularCards.filter(card => getPoolSource(card) !== 'limited_f');
+            const nonPickupFesTotal = Math.min(0.015, Math.max(0, rates.PSSR - pickupTotal));
+            const normalTotal = Math.max(0, rates.PSSR - pickupTotal - nonPickupFesTotal);
+
+            return {
+                pickupIds,
+                pickupCards,
+                regularCards,
+                buckets: [
+                    { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                    { ids: nonPickupFesCards.map(card => card.id), cards: nonPickupFesCards, totalRate: nonPickupFesTotal },
+                    { ids: normalCards.map(card => card.id), cards: normalCards, totalRate: normalTotal }
+                ]
+            };
+        }
 
         return {
             pickupIds,
@@ -75,8 +89,7 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
             regularCards,
             buckets: [
                 { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
-                { ids: otherFesCards.map(card => card.id), cards: otherFesCards, totalRate: otherFesTotal },
-                { ids: normalCards.map(card => card.id), cards: normalCards, totalRate: normalTotal }
+                { ids: regularCards.map(card => card.id), cards: regularCards, totalRate: Math.max(0, rates.PSSR - pickupTotal) }
             ]
         };
     }
@@ -97,11 +110,25 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
     if (key === 'SSSR') {
         const pickupTotal = Math.min(0.01 * pickupCards.length, rates.SSSR);
         if (poolType === 'fes') {
-            const fesPoolTotal = Math.min(0.02, rates.SSSR);
-            const otherFesCards = regularCards.filter(card => getPoolSource(card) === 'limited_f');
-            const normalCards = regularCards.filter(card => getPoolSource(card) !== 'limited_f');
-            const otherFesTotal = Math.min(Math.max(0, fesPoolTotal - pickupTotal), Math.max(0, rates.SSSR - pickupTotal));
-            const normalTotal = Math.max(0, rates.SSSR - pickupTotal - otherFesTotal);
+            const hasExplicitPickupRate = typeof pickups.pickupRate === 'number';
+
+            if (!hasExplicitPickupRate) {
+                const nonPickupFesCards = regularCards.filter(card => getPoolSource(card) === 'limited_f');
+                const normalCards = regularCards.filter(card => getPoolSource(card) !== 'limited_f');
+                const nonPickupFesTotal = Math.min(0.01, Math.max(0, rates.SSSR - pickupTotal));
+                const normalTotal = Math.max(0, rates.SSSR - pickupTotal - nonPickupFesTotal);
+
+                return {
+                    pickupIds,
+                    pickupCards,
+                    regularCards,
+                    buckets: [
+                        { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
+                        { ids: nonPickupFesCards.map(card => card.id), cards: nonPickupFesCards, totalRate: nonPickupFesTotal },
+                        { ids: normalCards.map(card => card.id), cards: normalCards, totalRate: normalTotal }
+                    ]
+                };
+            }
 
             return {
                 pickupIds,
@@ -109,8 +136,7 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
                 regularCards,
                 buckets: [
                     { ids: pickupIds, cards: pickupCards, totalRate: pickupTotal },
-                    { ids: otherFesCards.map(card => card.id), cards: otherFesCards, totalRate: otherFesTotal },
-                    { ids: normalCards.map(card => card.id), cards: normalCards, totalRate: normalTotal }
+                    { ids: regularCards.map(card => card.id), cards: regularCards, totalRate: Math.max(0, rates.SSSR - pickupTotal) }
                 ]
             };
         }

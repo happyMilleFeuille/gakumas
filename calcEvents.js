@@ -197,6 +197,21 @@ export function initGlobalDistListener(refreshAll) {
                 refreshAll();
             }
         }
+        // 6. 스탯 상세 정보 토글 (vocal/dance/visual 하단 정보)
+        const statToggleBtn = e.target.closest('#btn-stat-detail-toggle');
+        if (statToggleBtn) {
+            const detailAreas = document.querySelectorAll('.stat-detail-area');
+            const isActive = statToggleBtn.classList.toggle('active');
+            
+            detailAreas.forEach(area => {
+                area.classList.toggle('collapsed', !isActive);
+            });
+            
+            // 상태 저장
+            calcStore.statDetailsOpen = isActive;
+            calcStore.save();
+            return;
+        }
     });
 
     window._distInit = true;

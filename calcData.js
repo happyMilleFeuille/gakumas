@@ -57,32 +57,38 @@ export const calcPlans = {
     hif: {
         title: "hif",
         weeks: {
-            1: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            2: [{ value: "class_nia" }],
-            3: [{ value: "goout_nia" }, { value: "gift_nia", results: ["get", "get_drink"] }],
+            1: [{ value: "advice" }, { value: "gift_hif", results: ["get", "get_drink"] }, { value: "spclass" }],
+            2: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            3: [{ value: "class_hif0" }],
             4: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            5: [{ value: "class_nia" }],
-            6: [{ value: "goout_nia" }, { value: "advice" }],
-            7: [{ value: "class_nia" }],
-            8: [{ value: "spclass" }],
-            9: [{ value: "audition", results: ["get", "get", "get", "get", "get_item"] }],
-            10: [{ value: "goout_nia" }, { value: "gift_nia", results: ["get", "get_drink"] }],
+            5: [{ value: "goout_hif" }, { value: "advice" }],
+            6: [{ value: "class_hif0" }],
+            7: [{ value: "test", results: ["get", "get", "get", "get", "get_item", "delete", "delete"] }],
+            8: [{ value: "goout_hif" }, { value: "gift_hif", results: ["get", "get_drink"] }],
+            9: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            10: [{ value: "class_hif1" }],
             11: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            12: [{ value: "class_nia" }],
-            13: [{ value: "goout_nia" }, { value: "advice" }, { value: "gift_nia", results: ["get", "get_drink"] }],
-            14: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            15: [{ value: "class_nia" }],
-            16: [{ value: "spclass" }],
-            17: [{ value: "audition", results: ["get_item"] }],
-            18: [{ value: "goout_nia" }, { value: "gift_nia", results: ["get", "get_drink"] }],
-            19: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            20: [{ value: "class_nia" }],
-            21: [{ value: "advice" }, { value: "gift_nia", results: ["get", "get_drink"] }, { value: "spclass" }],
+            12: [{ value: "advice" }, { value: "spclass" }],
+            13: [{ value: "test", results: ["delete", "delete"] }],
+            14: [{ value: "goout_hif" }, { value: "gift_hif", results: ["get", "get_drink"] }],
+            15: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            16: [{ value: "goout_hif" }, { value: "advice" }, { value: "gift_hif", results: ["get", "get_drink"] }],
+            17: [{ value: "class_hif1" }],
+            18: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            19: [{ value: "advice" }, { value: "spclass" }],
+            20: [{ value: "test", results: [] }],
+            21: [{ value: "class_hif1" }],
             22: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            23: [{ value: "class_nia" }],
-            24: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
-            25: [{ value: "goout_nia" }, { value: "advice" }, { value: "spclass" }],
-            26: [{ value: "audition" }]
+            23: [{ value: "goout_hif" }, { value: "gift_hif", results: ["get", "get_drink"] }],
+            24: [{ value: "class_hif1" }],
+            25: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
+            26: [{ value: "advice" }],
+            27: [{ value: "round_hif1", results: ["get_item"] }],
+            28: [{ value: "advice_hif" }],
+            29: [{ value: "round_hif2" }],
+
+
+
         }
     }
 };
@@ -116,6 +122,20 @@ export const niaLessonStats = [
     { maxWeek: 99, sp: 150, normal: 120 }
 ];
 
+export const hifLessonStats = {
+
+    byWeek: {
+        2: { sp: 60, normal: 50, subSp: 20, subNormal: 10 },
+        4: { sp: 80, normal: 60, subSp: 50, subNormal: 20 },
+        9: { sp: 80, normal: 70, subSp: 20, subNormal: 10 },
+        11: { sp: 100, normal: 80, subSp: 60, subNormal: 30 },
+        15: { sp: 100, normal: 90, subSp: 20, subNormal: 10 },
+        18: { sp: 120, normal: 100, subSp: 70, subNormal: 40 },
+        22: { sp: 120, normal: 110, subSp: 20, subNormal: 10 },
+        25: { sp: 140, normal: 120, subSp: 80, subNormal: 50 },
+    }
+};
+
 export const hajimeClassStats = {
     1: 100,
     2: 100,
@@ -132,6 +152,23 @@ export const niaClassStats = {
     20: 130,
     23: 130
 };
+
+export const hifClassStats = {
+    3: 120,
+    6: 120,
+    10: 150,
+    17: 150,
+    21: 180,
+    24: 180,
+};
+
+export const hifTestStats = {
+    7: { first: null, second: null, third: null },
+    13: { first: null, second: null, third: null },
+    20: { first: null, second: null, third: null }
+};
+
+export const hifParameterLimitBonuses = [0, 50, 80, 110, 140, 170, 200];
 
 export const idolData = {
     'saki': {
@@ -180,6 +217,10 @@ export const idolData = {
             20: {
                 base: { vocal: 10, dance: 10, visual: 0 },
                 bonus: { vocal: 0, dance: 0.5, visual: 2.5 }
+            },
+            37: {
+                base: { vocal: 0, dance: 0, visual: 0 },
+                bonus: { vocal: 3, dance: 1, visual: 3 }
             }
         },
         // 보너스 % (단계별)
@@ -270,7 +311,12 @@ export const idolData = {
             20: {
                 base: { vocal: 15, dance: 0, visual: 10 },
                 bonus: { vocal: 0, dance: 2.0, visual: 0 }
+            },
+            37: {
+                base: { vocal: 0, dance: 0, visual: 15 },
+                bonus: { vocal: 1, dance: 3, visual: 1 }
             }
+
         },
         // 보너스 % (단계별)
         bonus: {
@@ -450,6 +496,10 @@ export const idolData = {
             20: {
                 base: { vocal: 0, dance: 10, visual: 10 },
                 bonus: { vocal: 1.0, dance: 0, visual: 2.0 }
+            },
+            37: {
+                base: { vocal: 10, dance: 0, visual: 5 },
+                bonus: { vocal: 0, dance: 3, visual: 2.0 }
             }
         },
         // 보너스 % (단계별)
@@ -498,7 +548,7 @@ export const idolData = {
         priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
         // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
         baseStats: {
-            ssr: { vocal: 85, dance: 95, visual: 80 },
+            ssr: { vocal: 80, dance: 90, visual: 75 },
             sr: { vocal: 80, dance: 90, visual: 75 }
         },
         // 친밀도 보너스 (항상 합산 적용)
@@ -510,7 +560,11 @@ export const idolData = {
             20: {
                 base: { vocal: 0, dance: 15, visual: 25 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
-            }
+            },
+            37: {
+                base: { vocal: 0, dance: 10, visual: 15 },
+                bonus: { vocal: 2, dance: 0, visual: 2 }
+            },
         },
         // 보너스 % (단계별)
         bonus: {
@@ -575,4 +629,25 @@ export const memoryOptions = {
 if (typeof window !== 'undefined') {
     window.calcData = window.calcData || {};
     window.calcData.memoryOptions = memoryOptions;
+}
+
+// HIF 모드 프리마 스텔라 해금 캐릭터 리스트
+export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari'];
+
+// HIF 프리마 스텔라 플랜 제한
+export const hifPrimaStellaPlanRestrictions = {
+    temari: ['anomaly'],
+    rinami: ['logic'],
+    mao: ['sense'],
+    misuzu: ['anomaly']
+};
+
+export function canUseHifPrimaStella(idolId, planType) {
+    const normalizedIdolId = String(idolId || '').toLowerCase();
+    if (!hifPrimaStellaIdols.includes(normalizedIdolId)) return false;
+
+    const allowedPlans = hifPrimaStellaPlanRestrictions[normalizedIdolId];
+    if (!allowedPlans || allowedPlans.length === 0) return true;
+
+    return allowedPlans.includes(planType);
 }

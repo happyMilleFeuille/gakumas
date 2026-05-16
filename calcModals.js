@@ -68,9 +68,9 @@ export function showStatDetailModal(breakdown) {
     };
 
     const bonusTotal = {
-        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportFixed.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (breakdown.item?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.memory?.percent?.vocal || 0) + (breakdown.hif?.fixed?.vocal || 0) + (breakdown.hif?.percent?.vocal || 0),
-        dance: (breakdown.idol.dance || 0) + (breakdown.supportFixed.dance || 0) + (breakdown.supportPercent.dance || 0) + (breakdown.item?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.memory?.percent?.dance || 0) + (breakdown.hif?.fixed?.dance || 0) + (breakdown.hif?.percent?.dance || 0),
-        visual: (breakdown.idol.visual || 0) + (breakdown.supportFixed.visual || 0) + (breakdown.supportPercent.visual || 0) + (breakdown.item?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
+        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.vocal || 0) : 0) + (breakdown.memory?.percent?.vocal || 0) + (breakdown.hif?.fixed?.vocal || 0) + (breakdown.hif?.percent?.vocal || 0),
+        dance: (breakdown.idol.dance || 0) + (breakdown.supportPercent.dance || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.dance || 0) : 0) + (breakdown.memory?.percent?.dance || 0) + (breakdown.hif?.fixed?.dance || 0) + (breakdown.hif?.percent?.dance || 0),
+        visual: (breakdown.idol.visual || 0) + (breakdown.supportPercent.visual || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.visual || 0) : 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
     };
 
     modal.innerHTML = `
@@ -78,40 +78,49 @@ export function showStatDetailModal(breakdown) {
             <span class="stat-detail-close">&times;</span>
             <div class="stat-detail-grid">
                 <div class="stat-grid-header">
-                    <span class="header-label">${t('calc_detail_item')}</span>
-                    <span class="color-vo">${t('attr_vocal')}</span>
-                    <span class="color-da">${t('attr_dance')}</span>
-                    <span class="color-vi">${t('attr_visual')}</span>
-                    <span style="border-left: 1px solid transparent;">${t('calc_detail_total')}</span>
+                    <span class="header-label"></span>
+                    <span class="color-vo"><img src="icons/vocal.png" class="stat-detail-header-icon"></span>
+                    <span class="color-da"><img src="icons/dance.png" class="stat-detail-header-icon"></span>
+                    <span class="color-vi"><img src="icons/visual.png" class="stat-detail-header-icon"></span>
+                    <span style="border-left: 1px solid transparent;"></span>
                 </div>
                 
                 ${renderRow(t('calc_detail_idol_fixed'), breakdown.idolBase, null, 'row-base')}
-                ${(calcStore.type === 'hajime' || calcStore.type === 'nia') ? `
+                ${renderRow(t('calc_detail_support_fixed'), breakdown.supportFixed, null, 'row-base')}
+                ${renderRow(t('calc_detail_memory_fixed'), breakdown.memory?.fixed, null, 'row-base')}
+                ${calcStore.type === 'hif' ? renderRow(t('calc_detail_hif_fixed'), breakdown.hif?.fixed, null, 'row-base') : ''}
+                ${calcStore.type !== 'hif' ? renderRow(calcStore.type === 'nia' ? t('calc_detail_pitem_nia_base') : t('calc_detail_pitem'), breakdown.item?.base, null, 'row-base') : ''}
+                
+                ${calcStore.type === 'hajime' ? `
                     ${renderRow(t('calc_detail_class'), breakdown.class, null, 'row-base')}
                     ${renderRow(t('calc_detail_exam'), breakdown.exam, null, 'row-base')}
                     ${renderRow(t('calc_detail_lesson'), breakdown.lesson, null, 'row-base')}
-                ` : `
+                ` : (calcStore.type === 'nia' ? `
                     ${renderRow(t('calc_detail_promotion'), breakdown.class, null, 'row-base')}
-                    ${renderRow(t('calc_detail_lesson_audition'), breakdown.base, null, 'row-base')}
-                `}
+                    ${renderRow(t('calc_detail_audition'), breakdown.exam, null, 'row-base')}
+                    ${renderRow(t('calc_detail_lesson'), breakdown.lesson, null, 'row-base')}
+                ` : `
+                    ${renderRow(t('calc_detail_class'), breakdown.class, null, 'row-base')}
+                    ${renderRow(t('calc_detail_selection_exam'), breakdown.exam, null, 'row-base')}
+                    ${renderRow(t('calc_detail_lesson'), breakdown.lesson, null, 'row-base')}
+                `)}
                 
-                ${renderRow(`<span id="bonus-toggle-icon" style="margin-right: 4px;">▼</span>${t('calc_detail_bonus_total')}`, bonusTotal, null, 'row-bonus-total')}
+                ${renderRow(`<span id="bonus-toggle-icon" style="margin-right: 4px;">▶</span>${t('calc_detail_bonus_total')}`, bonusTotal, breakdown.totalPercs, 'row-bonus-total')}
                 
                 <div id="bonus-sub-items">
                     ${renderRow(t('calc_detail_idol_percent'), breakdown.idol, breakdown.idol.percent, 'row-sub-item')}
                     ${renderRow(t('calc_detail_support_percent'), breakdown.supportPercent, breakdown.supportPercent.factors, 'row-sub-item')}
-                    ${renderRow(t('calc_detail_support_fixed'), breakdown.supportFixed, null, 'row-sub-item')}
                     ${renderRow(t('calc_detail_memory_percent'), breakdown.memory?.percent, breakdown.memory?.percent?.factors, 'row-sub-item')}
-                    ${renderRow(t('calc_detail_memory_fixed'), breakdown.memory?.fixed, null, 'row-sub-item')}
-                    ${renderRow(calcStore.type === 'nia' ? t('calc_detail_pitem_nia') : t('calc_detail_pitem'), breakdown.item, null, 'row-sub-item')}
+                    ${calcStore.type === 'nia' ? `
+                        ${renderRow(t('calc_detail_pitem_nia_perc'), breakdown.item?.perc, null, 'row-sub-item')}
+                    ` : ''}
                     ${calcStore.type === 'hif' ? renderRow(t('calc_detail_hif_percent'), breakdown.hif?.percent, breakdown.hif?.percent?.factors, 'row-sub-item') : ''}
-                    ${calcStore.type === 'hif' ? renderRow(t('calc_detail_hif_fixed'), breakdown.hif?.fixed, null, 'row-sub-item') : ''}
                 </div>
             </div>
             ${renderRow(t('calc_detail_final_total'), {
-        vocal: breakdown.base.vocal + breakdown.idolBase.vocal + bonusTotal.vocal,
-        dance: breakdown.base.dance + breakdown.idolBase.dance + bonusTotal.dance,
-        visual: breakdown.base.visual + breakdown.idolBase.visual + bonusTotal.visual
+        vocal: breakdown.base.vocal + breakdown.idolBase.vocal + (breakdown.supportFixed?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.item?.base?.vocal || 0) + bonusTotal.vocal,
+        dance: breakdown.base.dance + breakdown.idolBase.dance + (breakdown.supportFixed?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.item?.base?.dance || 0) + bonusTotal.dance,
+        visual: breakdown.base.visual + breakdown.idolBase.visual + (breakdown.supportFixed?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.item?.base?.visual || 0) + bonusTotal.visual
     }, null, 'row-total')}
         </div>`;
 
@@ -121,9 +130,9 @@ export function showStatDetailModal(breakdown) {
         const baseVo = (breakdown.lesson?.vocal || 0) + (breakdown.exam?.vocal || 0);
         const baseDa = (breakdown.lesson?.dance || 0) + (breakdown.exam?.dance || 0);
         const baseVi = (breakdown.lesson?.visual || 0) + (breakdown.exam?.visual || 0);
-        const tVo = Math.floor(baseVo + breakdown.idolBase.vocal + (breakdown.class?.vocal || 0) + bonusTotal.vocal);
-        const tDa = Math.floor(baseDa + breakdown.idolBase.dance + (breakdown.class?.dance || 0) + bonusTotal.dance);
-        const tVi = Math.floor(baseVi + breakdown.idolBase.visual + (breakdown.class?.visual || 0) + bonusTotal.visual);
+        const tVo = Math.floor(baseVo + breakdown.idolBase.vocal + (breakdown.supportFixed?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.item?.base?.vocal || 0) + (breakdown.class?.vocal || 0) + bonusTotal.vocal);
+        const tDa = Math.floor(baseDa + breakdown.idolBase.dance + (breakdown.supportFixed?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.item?.base?.dance || 0) + (breakdown.class?.dance || 0) + bonusTotal.dance);
+        const tVi = Math.floor(baseVi + breakdown.idolBase.visual + (breakdown.supportFixed?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.item?.base?.visual || 0) + (breakdown.class?.visual || 0) + bonusTotal.visual);
         const tSum = tVo + tDa + tVi;
 
         const cells = finalTotalRow.querySelectorAll('.stat-main-val');
@@ -142,6 +151,11 @@ export function showStatDetailModal(breakdown) {
     const toggleIcon = modal.querySelector('#bonus-toggle-icon');
 
     if (bonusRow && subItemsContainer && toggleIcon) {
+        // 초기 상태를 닫힘(collapsed)으로 설정
+        subItemsContainer.style.display = 'none';
+        toggleIcon.textContent = '▶';
+        bonusRow.classList.add('collapsed');
+
         bonusRow.style.cursor = 'pointer';
         bonusRow.addEventListener('click', () => {
             const isCollapsing = subItemsContainer.style.display !== 'none';
@@ -449,6 +463,9 @@ export function showOtherTuneModal(refreshAll) {
     const counts = getTriggerCounts(calcStore);
     const cardGroups = [];
     const allCardIds = Object.keys(skillCardList);
+    const primaSkillId = (calcStore.type === 'hif' && !!calcStore.hifPrimaChecked && !!calcStore.weeks?.['21']?.value)
+        ? allCardIds.find(id => id === `${activePlan}-prima_${calcStore.selectedIdol}1`)
+        : null;
     const rarities = ['r', 'sr', 'ssr'];
     if (calcStore.type === 'hajime') rarities.push('legend');
 
@@ -459,6 +476,7 @@ export function showOtherTuneModal(refreshAll) {
                 const skill = skillCardList[id];
                 if (!id.startsWith(`${activePlan}-${r}`) || id.endsWith('alt')) return false;
                 if (skill.isKyoukaOnly) return false; // 강화월간 전용은 여기서 제외
+                if (skill.primastella) return false; // 프리마스텔라 전용은 기본 모달에서 제외
                 return true;
             })
             .sort((a, b) => {
@@ -585,22 +603,26 @@ export function showOtherTuneModal(refreshAll) {
                     <div class="card-count-badge ${tCount > 1 ? '' : 'hidden'}">x${tCount}</div>
                 </div>`;
         }
-        const skill = skillCardList[id] || {}, count = selectedSkills[id] || 0, isSelected = count > 0;
+        const skill = skillCardList[id] || {};
+        const isForcedPrima = primaSkillId === id;
+        const count = isForcedPrima ? 1 : (selectedSkills[id] || 0);
+        const isSelected = isForcedPrima || count > 0;
         let imgSrc = `icons/cal/card/${id}.webp`;
-        if (skill.isKyoukaOnly) {
+        if (skill.isKyoukaOnly || skill.primastella) {
             const parts = id.split('-');
             const plan = parts[0];
             const fileName = parts.slice(1).join('-');
             imgSrc = `idols/${plan}/${fileName}.webp`;
         }
         return `
-            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${skill.multi ? 'data-multi="true"' : ''}>
+            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${skill.multi ? 'data-multi="true"' : ''} ${isForcedPrima ? 'data-forced-prima="true"' : ''} ${isForcedPrima ? 'style="pointer-events: none; opacity: 0.9; filter: saturate(1.2);"' : ''}>
                 <img src="${imgSrc}" onerror="this.parentElement.style.display='none';">
                 <div class="card-count-badge ${count > 1 ? '' : 'hidden'}">x${count}</div>
-                <div class="card-reset-btn ${isSelected && skill.multi ? '' : 'hidden'}">×</div>
+                <div class="card-reset-btn ${isSelected && skill.multi && !isForcedPrima ? '' : 'hidden'}">×</div>
             </div>`;
     };
 
+    if (primaSkillId) cardGroups.unshift([primaSkillId]);
     if (counts.total.get_t > 0) cardGroups.unshift(['trouble']);
 
 
@@ -637,6 +659,7 @@ export function showOtherTuneModal(refreshAll) {
         const currentPlan = calcStore.planType;
         const skills = calcStore.planSkills[currentPlan] || {};
         let total = Object.values(skills).reduce((a, b) => a + b, 0);
+        if (primaSkillId) total += 1;
         total += (counts.total.get_t || 0);
         const selectedIds = calcStore.planCards[currentPlan] || [];
         selectedIds.forEach(id => {
@@ -678,6 +701,7 @@ export function showOtherTuneModal(refreshAll) {
         item.onclick = (e) => {
             e.preventDefault(); e.stopPropagation();
             const id = item.dataset.id, skill = skillCardList[id] || {}, resetBtn = e.target.closest('.card-reset-btn');
+            if (id === primaSkillId) return;
             const currentPlan = calcStore.planType;
             if (!calcStore.planSkills[currentPlan]) calcStore.planSkills[currentPlan] = {};
             const skills = calcStore.planSkills[currentPlan];
@@ -690,7 +714,7 @@ export function showOtherTuneModal(refreshAll) {
             }
             calcStore.save(); refreshAll(); updateTitle();
             modal.querySelectorAll('.tune-card-item').forEach(el => {
-                const cid = el.dataset.id; if (cid === 'trouble') return;
+                const cid = el.dataset.id; if (cid === 'trouble' || cid === primaSkillId) return;
                 const count = skills[cid] || 0;
                 el.classList.toggle('selected', count > 0);
                 const badge = el.querySelector('.card-count-badge');
@@ -706,7 +730,7 @@ export function showOtherTuneModal(refreshAll) {
         if (!confirm(resetConfirm)) return;
         calcStore.planSkills[activePlan] = {}; calcStore.save(); refreshAll(); updateTitle();
         modal.querySelectorAll('.tune-card-item').forEach(el => {
-            const cid = el.dataset.id; if (cid === 'trouble') return;
+            const cid = el.dataset.id; if (cid === 'trouble' || cid === primaSkillId) return;
             el.classList.remove('selected');
             const badge = el.querySelector('.card-count-badge'); if (badge) badge.classList.add('hidden');
             const rb = el.querySelector('.card-reset-btn'); if (rb) rb.classList.add('hidden');

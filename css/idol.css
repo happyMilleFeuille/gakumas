@@ -454,6 +454,11 @@
     letter-spacing: -0.04em;
 }
 
+.video-title.len-ultra {
+    transform: scale(0.63);
+    letter-spacing: -0.05em;
+}
+
 /* 일본어 모드 시 자간 추가 축소 */
 .video-title.lang-ja {
     letter-spacing: -0.02em;
@@ -465,6 +470,11 @@
 
 .video-title.lang-ja.len-extreme {
     letter-spacing: -0.07em;
+}
+
+.video-title.lang-ja.len-ultra {
+    transform: scale(0.6);
+    letter-spacing: -0.08em;
 }
 
 .video-link-icon {
@@ -540,6 +550,11 @@
         letter-spacing: -0.05em;
     }
 
+    .video-title.len-ultra {
+        transform: scale(0.6);
+        letter-spacing: -0.06em;
+    }
+
     /* 일본어 모바일 자간 추가 축소 */
     .video-title.lang-ja {
         letter-spacing: -0.03em;
@@ -551,6 +566,11 @@
 
     .video-title.lang-ja.len-extreme {
         letter-spacing: -0.08em;
+    }
+
+    .video-title.lang-ja.len-ultra {
+        transform: scale(0.57);
+        letter-spacing: -0.1em;
     }
 
     .video-link-icon {

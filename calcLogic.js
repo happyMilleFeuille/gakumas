@@ -1,10 +1,12 @@
 // calcLogic.js
 import { state } from './state.js';
-import { calcPlans, baseStats, idolData, niaAuditionStats, hajimeLessonStats, niaLessonStats, hajimeClassStats, niaClassStats } from './calcData.js';
+import { calcPlans, baseStats, idolData, niaAuditionStats, hajimeLessonStats, niaLessonStats, hifLessonStats, hajimeClassStats, niaClassStats, hifClassStats, hifTestStats } from './calcData.js';
 import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { activityOptions } from './calcOptions.js';
 import { calculateCardBonus } from './simulator-engine.js';
+
+const hifClassActionIds = ['class_hif', 'class_hif0', 'class_hif1'];
 
 /**
  * 하지메(Hajime) 전용 레슨 수치 로직
@@ -37,6 +39,33 @@ export const getNiaLessonStat = (actionId, isSP, week) => {
         dance: actionId === 'lessondan' ? val : 0,
         visual: actionId === 'lessonvi' ? val : 0
     };
+};
+
+/**
+ * HIF 전용 레슨 수치 로직
+ */
+export const getHifLessonStat = (actionId, isSP, week, selectedSubAttr = null) => {
+    const weekStat = hifLessonStats.byWeek?.[week];
+    const rangeStat = (hifLessonStats.ranges || []).find(s => week <= s.maxWeek) || null;
+    const step = weekStat || rangeStat;
+    if (!step) return null;
+    const val = isSP ? step.sp : step.normal;
+    const subVal = isSP ? step.subSp : step.subNormal;
+    const stats = { vocal: 0, dance: 0, visual: 0 };
+
+    if (actionId === 'lessonvo') {
+        stats.vocal = val || 0;
+    } else if (actionId === 'lessondan') {
+        stats.dance = val || 0;
+    } else if (actionId === 'lessonvi') {
+        stats.visual = val || 0;
+    }
+
+    if (selectedSubAttr) {
+        stats[selectedSubAttr] = subVal || 0;
+    }
+
+    return stats;
 };
 
 /**
@@ -111,7 +140,7 @@ export function getTriggerCounts(store) {
     });
 
     // 2. Nia 전용 P-아이템 보너스
-    if ((store.type === 'nia' || store.type === 'hif') && store.pItems) {
+    if (store.type === 'nia' && store.pItems) {
         const boardCounts = {};
         Object.values(store.weeks).forEach(w => { if (w.value) boardCounts[w.value] = (boardCounts[w.value] || 0) + 1; });
         let niaBonusGet = 0, niaBonusDelete = 0, niaBonusEnhance = 0;
@@ -185,6 +214,18 @@ export function getTriggerCounts(store) {
             if (skill.attrs) skill.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + count; });
         }
     });
+
+    const forcedPrimaSkillId = (store.type === 'hif' && store.hifPrimaChecked && store.weeks?.['21']?.value)
+        ? `${activePlan}-prima_${store.selectedIdol}1`
+        : null;
+    const forcedPrimaSkill = forcedPrimaSkillId ? skillCardList[forcedPrimaSkillId] : null;
+    if (forcedPrimaSkill) {
+        counts.total.get += 1;
+        if (forcedPrimaSkill.type === 'active') counts.total.get_a += 1;
+        else if (forcedPrimaSkill.type === 'mental') counts.total.get_m += 1;
+        if (forcedPrimaSkill.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + 1;
+        if (forcedPrimaSkill.attrs) forcedPrimaSkill.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + 1; });
+    }
 
     selectedIds = store.planCards?.[activePlan] || [];
     selectedIds.forEach(id => {
@@ -336,20 +377,22 @@ export function calculateTotals(store, detailedCounts) {
     if (currentIdolData) {
         const isBloom3 = !!store.pItemChecked;
         const isSR = !!store.isSR;
+        const affinityEntries = Object.values(currentIdolData.affinity || {});
+        const affinityBonusTotal = affinityEntries.reduce((acc, entry) => ({
+            vocal: acc.vocal + (entry?.bonus?.vocal || 0),
+            dance: acc.dance + (entry?.bonus?.dance || 0),
+            visual: acc.visual + (entry?.bonus?.visual || 0)
+        }), { vocal: 0, dance: 0, visual: 0 });
 
         // 신규 스키마 (bonus 객체 존재 시)
         if (currentIdolData.bonus) {
             const rarityKey = isSR ? 'sr' : 'ssr';
             const baseBonus = currentIdolData.bonus[rarityKey].base;
             const bloom3Bonus = isBloom3 ? (currentIdolData.bonus[rarityKey].bloom3 || {vocal:0,dance:0,visual:0}) : {vocal:0,dance:0,visual:0};
-            
-            // 친밀도 보너스 % 합산
-            const aff10Bonus = currentIdolData.affinity?.[10]?.bonus || {vocal:0,dance:0,visual:0};
-            const aff20Bonus = currentIdolData.affinity?.[20]?.bonus || {vocal:0,dance:0,visual:0};
-            
-            idolPercs.vocal = (baseBonus.vocal || 0) + (bloom3Bonus.vocal || 0) + (aff10Bonus.vocal || 0) + (aff20Bonus.vocal || 0);
-            idolPercs.dance = (baseBonus.dance || 0) + (bloom3Bonus.dance || 0) + (aff10Bonus.dance || 0) + (aff20Bonus.dance || 0);
-            idolPercs.visual = (baseBonus.visual || 0) + (bloom3Bonus.visual || 0) + (aff10Bonus.visual || 0) + (aff20Bonus.visual || 0);
+
+            idolPercs.vocal = (baseBonus.vocal || 0) + (bloom3Bonus.vocal || 0) + affinityBonusTotal.vocal;
+            idolPercs.dance = (baseBonus.dance || 0) + (bloom3Bonus.dance || 0) + affinityBonusTotal.dance;
+            idolPercs.visual = (baseBonus.visual || 0) + (bloom3Bonus.visual || 0) + affinityBonusTotal.visual;
         } 
         // 기존 스키마 호환
         else {
@@ -428,6 +471,8 @@ export function calculateTotals(store, detailedCounts) {
     let idolBonusTotal = { vocal: 0, dance: 0, visual: 0 };
     let supportPercentTotal = { vocal: 0, dance: 0, visual: 0 };
     let memoryPercentTotal = { vocal: 0, dance: 0, visual: 0 };
+    let itemBaseBonusTotal = { vocal: 0, dance: 0, visual: 0 };
+    let itemPercBonusTotal = { vocal: 0, dance: 0, visual: 0 };
 
     const applyLessonBonus = (base, attr) => {
         if (!base || base <= 0) return;
@@ -467,7 +512,8 @@ export function calculateTotals(store, detailedCounts) {
         const week = store.weeks[weekNum]; if (!week || !week.value) return;
         const actionId = week.value, isSP = week.opts.sp === 'true', wInt = parseInt(weekNum);
         let stats = null;
-        if ((store.type === 'nia' || store.type === 'hif') && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
+        if (store.type === 'nia' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getNiaLessonStat(actionId, isSP, wInt);
+        else if (store.type === 'hif' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHifLessonStat(actionId, isSP, wInt, week.opts.selectedSubAttr);
         else if (store.type === 'hajime' && ['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) stats = getHajimeLessonStat(actionId, isSP, wInt) || (isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId]);
         else if ((store.type === 'nia' || store.type === 'hif') && actionId === 'audition') {
             const data = idolData[store.selectedIdol];
@@ -485,17 +531,42 @@ export function calculateTotals(store, detailedCounts) {
                         // 2. % 추가분 보너스: floor(floor(기본 수치 * 총%합산 / 100) * 0.55)
                         const bonusB = Math.floor(Math.floor(baseVal * (totalPercs[attr] / 100)) * 0.55);
 
-                        itemBonusTotal[attr] += (bonusA + bonusB);
+                        itemBaseBonusTotal[attr] += bonusA;
+                        itemPercBonusTotal[attr] += bonusB;
                     });
                 }
             }
-        } else if (actionId === 'class_hajime' || actionId === 'class_nia') {
+        } else if (store.type === 'hif' && actionId === 'test') {
+            const manualVo = parseInt(week.opts.hif_test_vocal);
+            const manualDa = parseInt(week.opts.hif_test_dance);
+            const manualVi = parseInt(week.opts.hif_test_visual);
+            const hasManualInput = !isNaN(manualVo) || !isNaN(manualDa) || !isNaN(manualVi);
+
+            if (hasManualInput) {
+                stats = {
+                    vocal: isNaN(manualVo) ? 0 : manualVo,
+                    dance: isNaN(manualDa) ? 0 : manualDa,
+                    visual: isNaN(manualVi) ? 0 : manualVi
+                };
+            } else {
+                const testStat = hifTestStats[wInt];
+                const data = idolData[store.selectedIdol];
+                stats = { vocal: 0, dance: 0, visual: 0 };
+                if (testStat && data?.priority?.length === 3) {
+                    stats[data.priority[0]] = testStat.first ?? 0;
+                    stats[data.priority[1]] = testStat.second ?? 0;
+                    stats[data.priority[2]] = testStat.third ?? 0;
+                }
+            }
+        } else if (actionId === 'class_hajime' || actionId === 'class_nia' || hifClassActionIds.includes(actionId)) {
             const selectedAttr = week.opts.selectedAttr;
             stats = { vocal: 0, dance: 0, visual: 0 };
             if (selectedAttr) {
                 let baseVal = 100;
                 if (actionId === 'class_hajime') {
                     baseVal = hajimeClassStats[wInt] || 100;
+                } else if (hifClassActionIds.includes(actionId)) {
+                    baseVal = hifClassStats[wInt] || 100;
                 } else if (actionId === 'class_nia') {
                     baseVal = niaClassStats[wInt] || 100;
                 }
@@ -504,7 +575,7 @@ export function calculateTotals(store, detailedCounts) {
         } else stats = isSP ? baseStats[`${actionId}_sp`] : baseStats[actionId];
 
         if (stats) {
-            if (actionId === 'class_hajime' || actionId === 'class_nia') {
+            if (actionId === 'class_hajime' || actionId === 'class_nia' || hifClassActionIds.includes(actionId)) {
                 classTotal.vocal += stats.vocal || 0;
                 classTotal.dance += stats.dance || 0;
                 classTotal.visual += stats.visual || 0;
@@ -545,17 +616,19 @@ export function calculateTotals(store, detailedCounts) {
     let idolBaseTotal = { vocal: 0, dance: 0, visual: 0 };
     if (currentIdolData) {
         const isSR = !!store.isSR;
+        const affinityEntries = Object.values(currentIdolData.affinity || {});
+        const affinityBaseTotal = affinityEntries.reduce((acc, entry) => ({
+            vocal: acc.vocal + (entry?.base?.vocal || 0),
+            dance: acc.dance + (entry?.base?.dance || 0),
+            visual: acc.visual + (entry?.base?.visual || 0)
+        }), { vocal: 0, dance: 0, visual: 0 });
         // 신규 스키마 (baseStats 존재 시)
         if (currentIdolData.baseStats) {
             const base = currentIdolData.baseStats[isSR ? 'sr' : 'ssr'];
-            
-            // 친밀도 보너스 스텟 합산
-            const aff10Base = currentIdolData.affinity?.[10]?.base || {vocal:0,dance:0,visual:0};
-            const aff20Base = currentIdolData.affinity?.[20]?.base || {vocal:0,dance:0,visual:0};
 
-            idolBaseTotal.vocal = (base.vocal || 0) + (aff10Base.vocal || 0) + (aff20Base.vocal || 0);
-            idolBaseTotal.dance = (base.dance || 0) + (aff10Base.dance || 0) + (aff20Base.dance || 0);
-            idolBaseTotal.visual = (base.visual || 0) + (aff10Base.visual || 0) + (aff20Base.visual || 0);
+            idolBaseTotal.vocal = (base.vocal || 0) + affinityBaseTotal.vocal;
+            idolBaseTotal.dance = (base.dance || 0) + affinityBaseTotal.dance;
+            idolBaseTotal.visual = (base.visual || 0) + affinityBaseTotal.visual;
         }
         // 기존 스키마 호환
         else {
@@ -576,16 +649,16 @@ export function calculateTotals(store, detailedCounts) {
         store.pItems.forEach(itemId => {
             if (!itemId) return;
             const cardGetCount = detailedCounts.total.get || 0;
-            if (itemId === 'hajime1-1') itemBonusTotal.vocal += 15 * Math.min(cardGetCount, 5);
-            else if (itemId === 'hajime1-2') itemBonusTotal.dance += 15 * Math.min(cardGetCount, 5);
-            else if (itemId === 'hajime1-3') itemBonusTotal.visual += 15 * Math.min(cardGetCount, 5);
+            if (itemId === 'hajime1-1') itemBaseBonusTotal.vocal += 15 * Math.min(cardGetCount, 5);
+            else if (itemId === 'hajime1-2') itemBaseBonusTotal.dance += 15 * Math.min(cardGetCount, 5);
+            else if (itemId === 'hajime1-3') itemBaseBonusTotal.visual += 15 * Math.min(cardGetCount, 5);
         });
     }
 
     const bonusTotal = {
-        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBonusTotal.vocal + memoryBonusTotal.vocal + memoryPercentTotal.vocal + hifFixedTotal.vocal + hifPercentTotal.vocal,
-        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBonusTotal.dance + memoryBonusTotal.dance + memoryPercentTotal.dance + hifFixedTotal.dance + hifPercentTotal.dance,
-        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBonusTotal.visual + memoryBonusTotal.visual + memoryPercentTotal.visual + hifFixedTotal.visual + hifPercentTotal.visual
+        vocal: idolBonusTotal.vocal + supportFixedTotal.vocal + supportPercentTotal.vocal + itemBaseBonusTotal.vocal + itemPercBonusTotal.vocal + memoryBonusTotal.vocal + memoryPercentTotal.vocal + hifFixedTotal.vocal + hifPercentTotal.vocal,
+        dance: idolBonusTotal.dance + supportFixedTotal.dance + supportPercentTotal.dance + itemBaseBonusTotal.dance + itemPercBonusTotal.dance + memoryBonusTotal.dance + memoryPercentTotal.dance + hifFixedTotal.dance + hifPercentTotal.dance,
+        visual: idolBonusTotal.visual + supportFixedTotal.visual + supportPercentTotal.visual + itemBaseBonusTotal.visual + itemPercBonusTotal.visual + memoryBonusTotal.visual + memoryPercentTotal.visual + hifFixedTotal.visual + hifPercentTotal.visual
     };
 
     const finalTotal = {
@@ -629,7 +702,10 @@ export function calculateTotals(store, detailedCounts) {
                     visual: supportPercs.visual
                 }
             },
-            item: itemBonusTotal,
+            item: {
+                base: itemBaseBonusTotal,
+                perc: itemPercBonusTotal
+            },
             memory: {
                 fixed: memoryBonusTotal,
                 percent: {
@@ -668,7 +744,9 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType) {
         let stats = null;
         if (store.type === 'nia' || store.type === 'hif') {
             if (['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
-                stats = getNiaLessonStat(actionId, isSP, wInt);
+                stats = store.type === 'hif'
+                    ? getHifLessonStat(actionId, isSP, wInt)
+                    : getNiaLessonStat(actionId, isSP, wInt);
             } else if (actionId === 'audition') {
                 const data = idolData[store.selectedIdol];
                 if (data) {

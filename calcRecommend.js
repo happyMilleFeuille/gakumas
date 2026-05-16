@@ -3,6 +3,7 @@ import { cardList } from './carddata.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { state } from './state.js';
 import { translate } from './utils.js';
+import { hifParameterLimitBonuses } from './calcData.js';
 
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
@@ -20,7 +21,8 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     const maxStackCache = new Map();
     const evaluationCache = new Map();
     const validAttrs = new Set(['vocal', 'dance', 'visual']);
-    const cap = (store.type === 'nia') ? 2600 : (store.type === 'hajime' ? 2800 : (store.type === 'hif' ? 3000 : 9999));
+    const hifParamLimitBonus = (store.type === 'hif') ? (hifParameterLimitBonuses[store.hifParamLimitLevel || 0] || 0) : 0;
+    const cap = (store.type === 'nia') ? 2600 : (store.type === 'hajime' ? 3000 : (store.type === 'hif' ? (3000 + hifParamLimitBonus) : 9999));
 
     // 1. 카드 판별 유틸리티 (속성 및 SP 여부)
     const getCardData = (id) => cardMap.get(id);

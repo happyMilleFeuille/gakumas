@@ -59,6 +59,7 @@ export const calcStore = {
     isKyouka: false,
     recommendSettings: { vocal: 0, dance: 0, visual: 0 },
     hifStats: { vocal: 0, dance: 0, visual: 0 },
+    activeWeek: null,
     _persistenceReady: false,
 
     getPrimaryKey(type = this.type) {

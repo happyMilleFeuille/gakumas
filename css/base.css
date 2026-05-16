@@ -68,8 +68,8 @@ img {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 0 5px 0 7px;
-    height: 18px;
+    padding: 0 6px 0 8px;
+    height: 20px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.96);
     border: 1px solid var(--idol-theme-color, var(--primary-color));
@@ -89,7 +89,7 @@ img {
 }
 
 .lang-select-label {
-    font-size: 0.38rem;
+    font-size: 0.55rem;
     font-weight: 900;
     letter-spacing: 0.08em;
     color: rgba(60, 60, 60, 0.62);
@@ -107,12 +107,12 @@ img {
     background: color-mix(in srgb, var(--idol-theme-color, var(--primary-color)) 60%, white);
     color: #222;
     font-family: inherit;
-    font-size: 0.64rem;
+    font-size: 0.7rem;
     font-weight: 800;
     line-height: 1;
-    padding: 0 3px;
-    height: 14px;
-    min-width: 22px;
+    padding: 0 4px;
+    height: 15px;
+    min-width: 24px;
     text-align: center;
     cursor: pointer;
     outline: none;
@@ -547,5 +547,57 @@ body.gacha-result-active .button-group.horizontal {
     .video-modal-content {
         width: 92%;
         margin: 40px auto;
+    }
+}
+
+/* SEO Intro Styles */
+#seo-intro {
+    padding: 40px 20px;
+    text-align: center;
+    font-family: sans-serif;
+    color: #fcfcfc;
+}
+#seo-intro h1 {
+    font-size: 1.8rem;
+    color: #fcfcfc;
+    margin-bottom: 10px;
+}
+#seo-intro > p {
+    font-size: 1rem;
+    color: #fcfcfc;
+    margin-bottom: 20px;
+}
+#seo-intro .seo-desc {
+    display: inline-block;
+    text-align: left;
+    max-width: 500px;
+    color: #fcfcfc;
+    line-height: 1.6;
+    padding: 20px;
+    border-radius: 12px;
+}
+#seo-intro .seo-desc p {
+    margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+    #seo-intro {
+        padding: 15px 10px;
+    }
+    #seo-intro h1 {
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+    }
+    #seo-intro > p {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+    }
+    #seo-intro .seo-desc {
+        padding: 10px;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+    #seo-intro .seo-desc p {
+        margin: 3px 0;
     }
 }

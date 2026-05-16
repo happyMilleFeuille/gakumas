@@ -1,12 +1,18 @@
 // router.js
 import { state, idolColors } from './state.js';
-import { renderHome, renderIdolList, renderCalc, renderSupport, updateGlobalBackgroundColor } from './ui.js';
+import { renderHome, renderCalc, renderSupport, updateGlobalBackgroundColor } from './ui.js';
+import { renderIdolList } from './idolUI.js';
 import { renderGacha, stopBGM } from './gacha.js';
 
-export function handleNavigation(target, isBack = false) {
-    if (!target) return;
+export function handleNavigation(targetWithSub, isBack = false) {
+    if (!targetWithSub) return;
 
-    sessionStorage.setItem('lastTarget', target);
+    // targetWithSub could be 'calc/hif'
+    const parts = targetWithSub.split('/');
+    const target = parts[0];
+    const subTarget = parts[1] || null;
+
+    sessionStorage.setItem('lastTarget', targetWithSub);
     if (target !== 'gacha') {
         sessionStorage.removeItem('gachaViewState');
     }
@@ -16,7 +22,7 @@ export function handleNavigation(target, isBack = false) {
     const isContentEmpty = !contentArea || contentArea.innerHTML.trim() === '' || hasSeoIntro;
 
     // 현재 활성화된 탭과 동일하고, 화면이 비어있지 않은 경우만 무시
-    if (history.state && history.state.target === target && !isBack && !isContentEmpty) {
+    if (history.state && history.state.target === targetWithSub && !isBack && !isContentEmpty) {
         return;
     }
 
@@ -68,8 +74,8 @@ export function handleNavigation(target, isBack = false) {
 
     // 해시 업데이트 (수동 호출 시 URL 동기화)
     const currentHash = window.location.hash.substring(1) || 'home';
-    if (!isBack && currentHash !== target) {
-        window.location.hash = target;
+    if (!isBack && currentHash !== targetWithSub) {
+        window.location.hash = targetWithSub;
         return; // hashchange 이벤트가 handleNavigation을 다시 부를 것이므로 여기서 중단
     }
 
@@ -96,7 +102,7 @@ export function handleNavigation(target, isBack = false) {
     switch (target) {
         case 'home': renderHome(); break;
         case 'idol': renderIdolList(); break;
-        case 'calc': renderCalc(); break;
+        case 'calc': renderCalc(subTarget); break;
         case 'support': renderSupport(); break;
         case 'gacha': renderGacha(); break;
         default: console.warn('Unknown navigation target:', target);

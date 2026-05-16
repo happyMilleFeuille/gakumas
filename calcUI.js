@@ -1,7 +1,7 @@
 import { state, idolColors } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { activityOptions } from './calcOptions.js';
-import { idolData } from './calcData.js';
+import { idolData, hifParameterLimitBonuses, canUseHifPrimaStella } from './calcData.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
@@ -14,6 +14,7 @@ export const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 const getOptionLabel = (opt) => opt?.labelKey ? t(opt.labelKey) : (opt?.[`label_${state.currentLang}`] || opt?.label_ko || '');
 const getOptionMainLabel = (opt) => opt?.mainLabelKey ? t(opt.mainLabelKey) : (opt?.mainlabel || '');
+const getCalcIconSrc = (value, calcType = calcStore.type) => `icons/cal/${calcType === 'hif' && value === 'test' ? 'test_hif' : value}.webp`;
 
 export function getNormalizedSelectedCardIds(store, disabledCards = state.disabledCards) {
     const ids = [...(store.planCards[store.planType] || [])];
@@ -78,7 +79,7 @@ export function updateActivityCountsUI(store, counts) {
         }
     });
 
-    const sortOrder = ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'];
+    const sortOrder = ['lessonvo', 'lessondan', 'lessonvi', 'class_hajime', 'class_nia', 'class_hif', 'class_hif0', 'class_hif1', 'goout_hajime', 'goout_nia', 'gift_hajime', 'gift_nia', 'advice', 'spclass', 'audition', 'test', 'oikomi'];
 
     allPossibleValues.sort((a, b) => {
         let indexA = sortOrder.indexOf(a), indexB = sortOrder.indexOf(b);
@@ -91,6 +92,9 @@ export function updateActivityCountsUI(store, counts) {
         lessonvi: { ko: '비주얼 레슨', ja: 'Viレッスン' },
         class_hajime: { ko: '수업/영업', ja: '授業/営業' },
         class_nia: { ko: '수업/영업', ja: '授業/営業' },
+        class_hif: { ko: '수업', ja: '授業' },
+        class_hif0: { ko: '수업', ja: '授業' },
+        class_hif1: { ko: '수업', ja: '授業' },
         goout_hajime: { ko: '외출', ja: 'おでかけ' },
         goout_nia: { ko: '외출', ja: 'おでかけ' },
         gift_hajime: { ko: '활동지급', ja: '活動支給' },
@@ -111,7 +115,7 @@ export function updateActivityCountsUI(store, counts) {
         html += `
             <div class="activity-cell active-cell activity-${val}">
                 <div class="activity-cell-icon">
-                    <img src="icons/cal/${val}.webp" class="activity-mini-icon">
+                    <img src="${getCalcIconSrc(val, store.type)}" class="activity-mini-icon">
                 </div>
                 <div class="activity-cell-count">
                     <span class="main-count">${count}${spCount > 0 ? `<span class="sp-sub-count">(SP ${spCount})</span>` : ''}</span>
@@ -130,7 +134,7 @@ export function updateActivityCountsUI(store, counts) {
             html += `
                 <div class="activity-cell ${count > 0 ? 'active-cell' : 'empty-cell'}">
                     <div class="activity-cell-icon">
-                        <img src="icons/cal/${val}.webp" class="activity-mini-icon">
+                        <img src="${getCalcIconSrc(val, store.type)}" class="activity-mini-icon">
                     </div>
                     <div class="activity-cell-count">
                         <span class="main-count">${count}</span>
@@ -181,7 +185,7 @@ export function updateActivityCountsUI(store, counts) {
     }
 
     const otherGetDisplay = `
-        <div class="enhance-item-content compact-dist has-tune-btn" style="background: rgba(156, 39, 176, 0.05); border-color: rgba(156, 39, 176, 0.2); position: relative; min-width: 140px;">
+        <div class="enhance-item-content compact-dist has-tune-btn" style="border-color: rgba(156, 39, 176, 0.2); position: relative; min-width: 140px;">
             <div class="dist-group" style="flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 8px;">
                 ${otherGetItems}
             </div>
@@ -437,17 +441,17 @@ export function renderCalcMenu(updatePageTranslations, onHajime, onNia, onHif) {
     root.innerHTML = `
         <div class="calc-menu-container">
             <div class="calc-buttons">
-                <div class="calc-menu-item" id="btn-hajime">
+                <div class="calc-menu-item" id="btn-hif" style="--idol-theme-color: ${color};">
+                    <div class="calc-menu-label" style="border-left-color: ${color};">HIF</div>
+                    <img src="images/hif.webp" class="calc-menu-img hif-menu-img" alt="HIF">
+                </div>
+                <div class="calc-menu-item" id="btn-hajime" style="--idol-theme-color: ${color};">
                     <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_legend">HAJIME LEGEND</div>
                     <img src="images/hajime.webp" class="calc-menu-img" alt="Hajime" style="border-color: ${color};">
                 </div>
-                <div class="calc-menu-item" id="btn-nia">
+                <div class="calc-menu-item" id="btn-nia" style="--idol-theme-color: ${color};">
                     <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_master">NIA MASTER</div>
                     <img src="images/nia.webp" class="calc-menu-img" alt="N.i.a" style="border-color: ${color};">
-                </div>
-                <div class="calc-menu-item disabled" id="btn-hif">
-                    <div class="calc-menu-label" style="border-left-color: ${color};">HIF</div>
-                    <img src="images/hif.webp" class="calc-menu-img" alt="HIF" style="border-color: ${color};">
                 </div>
             </div>
         </div>`;
@@ -479,30 +483,44 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         const savedWeek = store.weeks[i] || {};
         const optionsHtml = options.map(opt => {
             const isActive = savedWeek.value === opt.value;
-            const isLarge = ['audition', 'test', 'oikomi'].includes(opt.value);
+            const isLarge = ['audition', 'test', 'oikomi', 'round_hif1', 'round_hif2'].includes(opt.value);
             let optAttrs = isActive && savedWeek.opts ? Object.keys(savedWeek.opts).map(k => ` data-opt${k}="${savedWeek.opts[k]}"`).join('') : '';
 
             let activeStyle = '';
             if (isActive) {
                 if (isLarge) {
-                    activeStyle = `style="filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 3px ${idolColor});"`;
+                    activeStyle = `style="--idol-color: ${idolColor}; filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 3px ${idolColor});"`;
                 } else {
                     activeStyle = `style="border-color: ${idolColor}; box-shadow: none;"`;
                 }
             }
 
-            const isTestOrAudition = ['test', 'audition'].includes(opt.value);
+            const isTestOrAudition = ['test', 'audition'].includes(opt.value) && !(store.type === 'hif' && opt.value === 'test');
             const infoBtnHtml = isTestOrAudition ? `<div class="info-i-btn" data-type="${opt.value}" style="background-color: ${idolColor};">i</div>` : '';
 
             return `
                 <div class="icon-outer-container ${isLarge ? 'large-container' : ''}">
                     <div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}>
-                        <img src="icons/cal/${opt.value}.webp" class="plan-icon-img">
+                        <img src="${getCalcIconSrc(opt.value, store.type)}" class="plan-icon-img">
                     </div>
                     ${infoBtnHtml}
                 </div>`;
         }).join('');
-        return `<div class="week-row" data-week="${i}"><div class="week-header"><span class="week-label">${i}${isJa ? '週' : '주'}</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
+        const isHif = store.type === 'hif';
+        const displayedWeekNum = isHif && i >= 21 ? (i - 20) : i;
+        const hifSpecialLabels = {
+            7: '<small>R</small><span class="week-num">1</span>',
+            8: '<small>Break</small>',
+            9: '<small>R</small><span class="week-num">2</span>'
+        };
+        const specialHifLabel = isHif && i >= 21 ? hifSpecialLabels[displayedWeekNum] : null;
+        const weekLabelContent = specialHifLabel
+            ? specialHifLabel
+            : state.currentLang === 'en'
+                ? `<small>${isHif ? 'D' : 'W'}</small><span class="week-num">${displayedWeekNum}</span>`
+                : `<span class="week-num">${displayedWeekNum}</span><small>${isHif ? (isJa ? '日' : '일') : (isJa ? '週' : '주')}</small>`;
+        const rowClass = `week-row${isHif && i === 21 ? ' hif-reset-boundary' : ''}`;
+        return `<div class="${rowClass}" data-week="${i}"><div class="week-diamond">✦</div><div class="week-header"><span class="week-label">${weekLabelContent}</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
     }).join('');
 
     root.innerHTML = `
@@ -524,7 +542,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         <img src="icons/sainou.webp">
                     </div>
                     ${store.type === 'hif' ? `
-                    <div class="talent-toggle-item ${store.hifPrimaChecked ? 'active' : ''}" id="hif-prima-toggle" style="--idol-color: ${idolColor};">
+                    <div class="talent-toggle-item ${store.hifPrimaChecked ? 'active' : ''} ${!canUseHifPrimaStella(store.selectedIdol, store.planType) ? 'disabled' : ''}" id="hif-prima-toggle" style="--idol-color: ${idolColor};">
                         <div style="width: 19px; height: 19px; background-color: var(--idol-color, #ff4d8d); -webkit-mask-image: url('icons/primastella.webp'); mask-image: url('icons/primastella.webp'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;"></div>
                     </div>
                     ` : ''}
@@ -540,39 +558,82 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     </div>
                 </div>
 
-                <div class="stat-header" style="border-color: ${idolColor};">
-                    <button id="btn-kyouka" class="kyouka-btn header-kyouka-btn">
-                        <img src="icons/kyoukagekkan${state.currentLang === 'ko' ? '-k' : ''}.webp" alt="Kyouka">
-                    </button>
-                    <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
-                        <span class="sum-label">TOTAL</span>
-                        <span id="total-stats-sum-value">0</span>
-                        <div class="stat-info-btn" id="btn-stat-info">i</div>
+                <div class="stat-header" style="border-color: ${idolColor}; overflow: hidden;">
+                    <div class="stat-header-top-bar" style="background-color: ${idolColor};">
+                        ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="stat-header-icon ${store.type}-icon">` : ''}
+                        <span class="stat-header-title">PRODUCE RESULT</span>
                     </div>
-                    <div class="stat-items-row">
-                        <div class="stat-item item-vocal">
-                            <img src="icons/vocal.png">
-                            <span id="final-vocal" class="final-stat-label" style="font-size: 0.8rem; color: #ff4d8d;">0</span>
-                            <span id="total-perc-vocal" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
-                            <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
-                            <span id="total-vocal" style="height: 14px; margin-top: -2px;">0</span>
-                            <span id="sp-vocal-percent" class="sp-percent-label"></span>
+                    <div class="stat-header-content">
+                        <button id="btn-kyouka" class="kyouka-btn header-kyouka-btn">
+                            <img src="icons/kyoukagekkan${state.currentLang === 'ko' ? '-k' : ''}.webp" alt="Kyouka">
+                        </button>
+                        <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
+                            <span class="sum-label">TOTAL</span>
+                            <span id="total-stats-sum-value">0</span>
+                            <div class="stat-info-btn" id="btn-stat-info">i</div>
                         </div>
-                        <div class="stat-item item-dance">
-                            <img src="icons/dance.png">
-                            <span id="final-dance" class="final-stat-label" style="font-size: 0.8rem; color: #46a4f3;">0</span>
-                            <span id="total-perc-dance" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
-                            <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
-                            <span id="total-dance" style="height: 14px; margin-top: -2px;">0</span>
-                            <span id="sp-dance-percent" class="sp-percent-label"></span>
+                        <div class="stat-items-row">
+                            <div class="stat-item item-vocal">
+                                <img src="icons/vocal.png">
+                                <span id="final-vocal" class="final-stat-label" style="font-size: 0.8rem; color: #ff4d8d;">0</span>
+                                <span id="total-perc-vocal" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
+                            </div>
+                            <div class="stat-item item-dance">
+                                <img src="icons/dance.png">
+                                <span id="final-dance" class="final-stat-label" style="font-size: 0.8rem; color: #46a4f3;">0</span>
+                                <span id="total-perc-dance" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
+                            </div>
+                            <div class="stat-item item-visual">
+                                <img src="icons/visual.png">
+                                <span id="final-visual" class="final-stat-label" style="font-size: 0.8rem; color: #fcc75e;">0</span>
+                                <span id="total-perc-visual" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
+                            </div>
                         </div>
-                        <div class="stat-item item-visual">
-                            <img src="icons/visual.png">
-                            <span id="final-visual" class="final-stat-label" style="font-size: 0.8rem; color: #fcc75e;">0</span>
-                            <span id="total-perc-visual" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
-                            <div style="width: 100%; height: 1px; background: #eee; margin: 4px 0;"></div>
-                            <span id="total-visual" style="height: 14px; margin-top: -2px;">0</span>
-                            <span id="sp-visual-percent" class="sp-percent-label"></span>
+
+                        <div class="stat-detail-toggle-bar ${calcStore.statDetailsOpen ? 'active' : ''}" id="btn-stat-detail-toggle">
+                            <div class="toggle-line"></div>
+                            <div class="toggle-label">SUPPORT CARD</div>
+                            <div class="toggle-arrow">▼</div>
+                            <div class="toggle-line"></div>
+                        </div>
+
+                        <div class="stat-items-row stat-detail-area ${calcStore.statDetailsOpen ? '' : 'collapsed'}">
+                            <div class="stat-item item-vocal" style="border:none; background:none; box-shadow:none; padding:0;">
+                                <div class="stat-detail-content" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;">
+                                    <div class="bonus-bar-container" style="margin-bottom: 0;">
+                                        <div id="bonus-bar-vocal" class="bonus-bar"></div>
+                                        <div id="sp-dot-vocal" class="sp-dot"></div>
+                                    </div>
+                                    <div class="stat-values" style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
+                                        <span id="total-vocal" style="height: 14px; line-height: 14px; text-align: center;">0</span>
+                                        <span id="sp-vocal-percent" class="sp-percent-label" style="color: #888; text-align: center;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stat-item item-dance" style="border:none; background:none; box-shadow:none; padding:0;">
+                                <div class="stat-detail-content" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;">
+                                    <div class="bonus-bar-container" style="margin-bottom: 0;">
+                                        <div id="bonus-bar-dance" class="bonus-bar"></div>
+                                        <div id="sp-dot-dance" class="sp-dot"></div>
+                                    </div>
+                                    <div class="stat-values" style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
+                                        <span id="total-dance" style="height: 14px; line-height: 14px; text-align: center;">0</span>
+                                        <span id="sp-dance-percent" class="sp-percent-label" style="color: #888; text-align: center;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stat-item item-visual" style="border:none; background:none; box-shadow:none; padding:0;">
+                                <div class="stat-detail-content" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;">
+                                    <div class="bonus-bar-container" style="margin-bottom: 0;">
+                                        <div id="bonus-bar-visual" class="bonus-bar"></div>
+                                        <div id="sp-dot-visual" class="sp-dot"></div>
+                                    </div>
+                                    <div class="stat-values" style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
+                                        <span id="total-visual" style="height: 14px; line-height: 14px; text-align: center;">0</span>
+                                        <span id="sp-visual-percent" class="sp-percent-label" style="color: #888; text-align: center;"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -607,13 +668,31 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             </div>
                         `;
     }).join('')}
+                        <div class="hif-stat-divider full-width"></div>
+                        <div class="hif-param-limit-item">
+                            <div class="hif-stat-top hif-param-limit-top">
+                                <div class="hif-param-limit-title" data-i18n="hif_param_limit_title">${t('hif_param_limit_title')}</div>
+                                <div class="hif-bonus-vals" style="color: #5960fb;">
+                                    <span>+${hifParameterLimitBonuses[store.hifParamLimitLevel || 0] || 0}</span>
+                                </div>
+                            </div>
+                            <div class="counter-controls hif-stat-controls hif-param-limit-controls" style="border-color: #5960fb40;">
+                                <button class="cnt-btn minus" style="border-right: 1px solid #5960fb20;">
+                                    <img src="icons/minus.svg" class="cnt-btn-icon">
+                                </button>
+                                <span class="cnt-val" style="color: #5960fb;">${store.hifParamLimitLevel || 0}</span>
+                                <button class="cnt-btn plus" style="border-left: 1px solid #5960fb20;">
+                                    <img src="icons/plus.svg" class="cnt-btn-icon">
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div style="width: 100%; height: 1px; background-color: #eee; margin: 8px 0 12px 0;"></div>
                     ` : ''}
 
                     <!-- 1. P-Item Section -->
                     <div id="p-item-container-inner" style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; position: relative;">
-                        ${Array.from({ length: (store.type === 'nia' || store.type === 'hif') ? 5 : 2 }).map((_, i) => `
+                        ${Array.from({ length: store.type === 'nia' ? 5 : (store.type === 'hif' ? 1 : 2) }).map((_, i) => `
                             <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
                         `).join('')}
                         <button class="p-item-info-btn" style="position: absolute; right: 0; width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 9px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: serif;">i</button>
@@ -643,8 +722,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 ` : ''}
 
                 <div class="activity-counter" id="activity-counter"></div>
-                <div class="board-title-row">
-                    <div class="board-title-tab" data-i18n="weekly_action">${isJa ? '週間スケジュール' : '주간 행동'}</div>
+                <div class="board-title-row" style="background-color: ${idolColor}; border-color: ${idolColor};">
+                    ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="board-title-icon ${store.type}-icon">` : ''}
+                    <div class="board-title-tab">SCHEDULE SELECT</div>
                     <button class="board-reset-btn" id="btn-reset-weeks" data-i18n="calc_reset_weeks">${isJa ? 'リセット' : '초기화'}</button>
                 </div>
                 <div class="unified-plan-board" data-calc-type="${store.type}">${weeksHtml}</div>
@@ -680,12 +760,29 @@ export function updateMainLabel(w) {
     const week = weekNum ? calcStore.weeks[weekNum] : null;
     const savedOpts = week ? week.opts : {};
 
-    // 속성 아이콘 추가 (Hajime/Nia 수업 전용)
-    if (savedOpts && savedOpts.selectedAttr) {
-        const attr = savedOpts.selectedAttr;
+    if (calcStore.type === 'hif' && w.dataset.value === 'test') {
+        const vo = parseInt(savedOpts.hif_test_vocal);
+        const da = parseInt(savedOpts.hif_test_dance);
+        const vi = parseInt(savedOpts.hif_test_visual);
+        const labels = [];
+        if (!isNaN(vo) && vo > 0) labels.push(`Vo ${vo}`);
+        if (!isNaN(da) && da > 0) labels.push(`Da ${da}`);
+        if (!isNaN(vi) && vi > 0) labels.push(`Vi ${vi}`);
+        if (labels.length > 0) {
+            const l = document.createElement('div');
+            l.className = 'main-label-text';
+            l.textContent = labels.join(' ');
+            w.appendChild(l);
+        }
+        return;
+    }
+
+    // 속성 아이콘 추가 (수업 메인 속성 / HIF 레슨 보조 속성)
+    const attrBadge = savedOpts?.selectedAttr || savedOpts?.selectedSubAttr;
+    if (attrBadge) {
         const b = document.createElement('div');
         b.className = 'class-attr-badge';
-        b.innerHTML = `<img src="icons/${attr}.png" alt="${attr}">`;
+        b.innerHTML = `<img src="icons/${attrBadge}.png" alt="${attrBadge}">`;
         w.appendChild(b);
     }
 
@@ -700,24 +797,81 @@ export function updateMainLabel(w) {
         const l = document.createElement('div'); l.className = 'main-label-text'; l.textContent = labels.join(' '); w.appendChild(l);
     }
 }
-
 export function updateStatHeaderUI(store, breakdown) {
     const attrs = ['vocal', 'dance', 'visual'];
     const idolInfo = idolData[store.selectedIdol];
-    const maxStat = store.type === 'hajime' ? 2800 : (store.type === 'nia' ? 2600 : (store.type === 'hif' ? 3000 : 0));
+    const hifParamLimitBonus = store.type === 'hif' ? (hifParameterLimitBonuses[store.hifParamLimitLevel || 0] || 0) : 0;
+    const maxStat = store.type === 'hajime'
+        ? 3000
+        : (store.type === 'hif' ? (3000 + hifParamLimitBonus) : (store.type === 'nia' ? 2600 : 0));
+    const idolColor = getIdolDisplayColor(store.selectedIdol);
+
+    // 헤더 및 테두리 색상 동적 업데이트
+    const headerBar = document.querySelector('.stat-header-top-bar');
+    const statHeader = document.querySelector('.stat-header');
+    const totalSumContainer = document.getElementById('total-stats-sum-container');
+
+    if (headerBar) {
+        if (store.type === 'hif') {
+            // 헤더 바와 부모 박스 전체에 그라데이션 적용 (틈새 방지)
+            const grad = 'linear-gradient(135deg, #67c7d3, #189cfa, #3d64fb, #9575fb, #5960fb)';
+            statHeader.style.background = grad;
+        } else {
+            statHeader.style.background = '';
+            statHeader.style.backgroundColor = idolColor;
+        }
+    }
+    if (statHeader) {
+        // 모든 모드에서 아이돌 고유색 배경과 테두리 적용
+        statHeader.style.background = '';
+        statHeader.style.backgroundColor = idolColor;
+        statHeader.style.border = `2px solid ${idolColor}`;
+        statHeader.style.backgroundClip = '';
+        statHeader.style.backgroundOrigin = '';
+    }
+    if (totalSumContainer) {
+        totalSumContainer.style.backgroundColor = idolColor;
+        totalSumContainer.style.boxShadow = `0 2px 6px ${idolColor}33`;
+    }
 
     let sum = 0;
     let cappedSum = 0;
     let overflowSum = 0;
     let hasOverflow = false;
+    let maxBonus = 0;
+    const bonusVals = {};
+    attrs.forEach(attr => {
+        const val = (breakdown.supportFixed?.[attr] || 0) + (breakdown.supportPercent?.[attr] || 0);
+        bonusVals[attr] = val;
+        if (val > maxBonus) maxBonus = val;
+    });
+
     attrs.forEach(attr => {
         const totalEl = document.getElementById(`total-${attr}`);
         const finalEl = document.getElementById(`final-${attr}`);
         const spEl = document.getElementById(`sp-${attr}-percent`);
         const itemEl = document.querySelector(`.stat-item.item-${attr}`);
+        const barEl = document.getElementById(`bonus-bar-${attr}`);
 
-        const bonusVal = (breakdown.supportFixed?.[attr] || 0) + (breakdown.supportPercent?.[attr] || 0);
-        if (totalEl) totalEl.textContent = bonusVal > 0 ? `+${bonusVal}` : '0';
+        const bonusVal = bonusVals[attr];
+        if (totalEl) totalEl.textContent = bonusVal > 0 ? bonusVal : '0';
+
+        if (barEl) {
+            const height = maxBonus > 0 ? (bonusVal / maxBonus) * 100 : 0;
+            barEl.style.height = `${height}%`;
+            barEl.style.backgroundColor = (attr === 'vocal' ? '#ff4d8d' : (attr === 'dance' ? '#46a4f3' : '#fcc75e'));
+        }
+
+        const dotEl = document.getElementById(`sp-dot-${attr}`);
+        if (dotEl && window._lastSpTotals) {
+            const rawSpVal = window._lastSpTotals[attr] || 0;
+            const spVal = Math.min(rawSpVal, 100);
+            dotEl.style.bottom = `${spVal}%`;
+            // 0%일 때는 점을 숨김
+            dotEl.style.opacity = rawSpVal > 0 ? '1' : '0';
+            // 다시 테두리 색상을 스탯 색상으로 변경
+            dotEl.style.borderColor = (attr === 'vocal' ? '#ff4d8d' : (attr === 'dance' ? '#46a4f3' : '#fcc75e'));
+        }
 
         const percEl = document.getElementById(`total-perc-${attr}`);
         if (percEl && breakdown.totalPercs) {
@@ -752,8 +906,9 @@ export function updateStatHeaderUI(store, breakdown) {
         }
 
         // SP lesson up total display
+        // SP lesson up total display
         if (spEl && window._lastSpTotals) {
-            spEl.textContent = `sp (+${window._lastSpTotals[attr]}%)`;
+            spEl.textContent = `sp +${window._lastSpTotals[attr]}%`;
         }
 
         if (itemEl && idolInfo) {

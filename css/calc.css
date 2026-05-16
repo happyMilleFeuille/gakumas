@@ -23,15 +23,178 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* 왼쪽 정렬 (텍스트 때문에) */
     gap: 10px;
     position: relative;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    z-index: 1;
+    /* 기본 z-index */
+    -webkit-tap-highlight-color: transparent;
 }
 
+/* 호버 시 버튼과 그 장식 요소들을 최상단으로 올림 */
 .calc-menu-item:hover {
-    transform: scale(1.03);
+    z-index: 10;
+}
+
+/* HIF 수직 라인 끝 별 장식 */
+#btn-hif::before {
+    content: '✦';
+    position: absolute;
+    right: -45.5px;
+    /* 중심을 왼쪽으로 이동 */
+    top: calc(60% - 13px);
+    font-size: 16px;
+    color: #fff;
+    /* 내부를 흰색으로 채움 */
+    -webkit-text-stroke: 1px #ccc;
+    /* 기본 테두리를 회색으로 설정 */
+    transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease, transform 0.3s ease;
+    /* 부드러운 색상 전환 추가 */
+    pointer-events: none;
+    /* 클릭 반응 제거 */
+    z-index: 2;
+}
+
+/* 개별 버튼 우측 수직 라인 공통 설정 */
+.calc-menu-item::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    width: 3px;
+    /* 두께를 다시 3px로 복구 */
+    background-size: 100% 200%;
+    /* 배경을 2배 높이로 설정 */
+    border-radius: 99px;
+    transition: background-position 0.3s ease, background-color 0.3s ease;
+    /* 위치만 이동하여 깜빡임 방지 및 색상 전환 추가 */
+    pointer-events: none;
+    /* 클릭 반응 제거 */
+    z-index: 1;
+}
+
+/* HIF(맨 위): 위에서 아래로 차오름 (기본: 하단 회색, 호버: 상단 고유색) */
+#btn-hif::after {
+    top: 60%;
+    bottom: -65%;
+    /* 하단 길이를 65%로 재조정 */
+    background-color: var(--idol-theme-color, #ff4d8d);
+    background-image: linear-gradient(to bottom, transparent, #ccc 50%, #ccc 100%);
+    background-position: 0 100%;
+}
+
+#btn-hif:hover::after {
+    background-position: 0 0;
+    background-color: #9575fb;
+    /* 0.45초 대기 후 0.3초 동안 보라색으로 부드럽게 변함 (직선형) */
+    transition: background-position 0.3s linear, background-color 0.3s linear 0.45s;
+}
+
+/* 하지메(가운데): 중간에서 위아래로 색이 번짐 (중앙 확장 방식 + 상하 그라데이션) */
+#btn-hajime::after {
+    top: -15%;
+    bottom: -35%;
+    background-color: #ccc;
+    /* 상하 양끝은 회색, 중앙은 고유색인 대칭형 그라데이션 */
+    background-image: linear-gradient(to bottom, #ccc, var(--idol-theme-color, #ff4d8d), #ccc);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 0%;
+    transition: background-size 0.3s linear;
+}
+
+#btn-hajime:hover::after {
+    background-size: 100% 100%;
+    /* 호버 시 100%로 확장 */
+}
+
+/* 니아(맨 아래): 버튼 상단 위로 뻗어 올라가며 65% 지점(bottom: 35%)에서 멈춤 */
+#btn-nia::after {
+    top: -50%;
+    /* 버튼 위로 길게 돌출 */
+    bottom: 35%;
+    /* 하단 35% 지점에서 끝남 */
+    /* 0~50%는 회색, 50~100%는 고유색 그라데이션(to top) */
+    background-image: linear-gradient(to top, var(--idol-theme-color, #ff4d8d), #ccc 50%, #ccc 100%);
+    background-position: 0 0;
+}
+
+#btn-nia:hover::after {
+    background-position: 0 100%;
+    /* 호버 시 하단의 고유색 부분으로 이동 */
+}
+
+@keyframes hifStarAnim {
+    0% {
+        -webkit-text-stroke-color: #ccc;
+        transform: scale(1);
+    }
+
+    40% {
+        /* 0.4초 (40%): 고유색 변환 및 1.3배 확대 */
+        -webkit-text-stroke-color: var(--idol-theme-color, #ff4d8d);
+        transform: scale(1.3);
+    }
+
+    45% {
+        /* 0.45초 (45%) 지점까지: 고유색 및 1.3배 유지 */
+        -webkit-text-stroke-color: var(--idol-theme-color, #ff4d8d);
+        transform: scale(1.3);
+    }
+
+    70% {
+        /* 0.7초 (70%): 보라색으로 색상만 전환 (크기는 1.3배 유지) */
+        -webkit-text-stroke-color: #9575fb;
+        transform: scale(1.3);
+    }
+
+    100% {
+        /* 1.0초 최종: 보라색 유지, 1.3배 유지 */
+        -webkit-text-stroke-color: #9575fb;
+        transform: scale(1.3);
+    }
+}
+
+#btn-hif:hover::before {
+    animation: hifStarAnim 1.0s forwards;
+    transition: transform 0.3s ease;
+}
+
+#btn-hajime:hover::before,
+#btn-nia:hover::before {
+    -webkit-text-stroke-color: var(--idol-theme-color, #ff4d8d);
+    transform: scale(1.3);
+}
+
+/* 하지메 수직 라인 중앙 별 장식 */
+#btn-hajime::before {
+    content: '✦';
+    position: absolute;
+    right: -45.5px;
+    top: calc(60% - 13px);
+    /* 커진 크기 반영 */
+    font-size: 16px;
+    color: #fff;
+    -webkit-text-stroke: 1px #ccc;
+    transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    /* 클릭 반응 제거 */
+    z-index: 2;
+}
+
+/* NIA 수직 라인 끝 별 장식 */
+#btn-nia::before {
+    content: '✦';
+    position: absolute;
+    right: -45.5px;
+    bottom: calc(35% - 13px);
+    /* 커진 크기 반영 */
+    font-size: 16px;
+    color: #fff;
+    -webkit-text-stroke: 1px #ccc;
+    transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    /* 클릭 반응 제거 */
+    z-index: 2;
 }
 
 .calc-menu-item.disabled {
@@ -40,13 +203,9 @@
     pointer-events: none;
 }
 
-.calc-menu-item.disabled:hover {
-    transform: none;
-}
+.calc-menu-item.disabled:hover {}
 
-.calc-menu-item:active {
-    transform: scale(0.98);
-}
+.calc-menu-item:active {}
 
 .calc-menu-label {
     font-size: 1.1rem;
@@ -56,13 +215,18 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     padding-left: 10px;
-    border-left: 4px solid var(--idol-theme-color, #ff4081);
+    border-left: 4px solid var(--idol-theme-color, #ff4d8d);
     line-height: 1.2;
     margin-bottom: 2px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: border-left-color 0.3s linear;
+}
+
+#btn-hif:hover .calc-menu-label {
+    border-left-color: #9575fb !important;
 }
 
 .menu-badge {
@@ -92,23 +256,90 @@
 
     /* [수정] 우측 상단과 좌측 하단만 둥글게 (대각선 대칭) - 더 샤프한 25px로 조정 */
     border-radius: 0 25px 0 25px;
-    border: 3px solid var(--idol-theme-color, #ff4081);
+    border: 3px solid var(--idol-theme-color, #ff4d8d);
     /* 최종 3px로 테두리 강조 조정 */
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     filter: none;
+    transition: transform 0.3s ease, filter 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    pointer-events: none;
 }
 
 .calc-menu-item:hover .calc-menu-img {
-    filter: brightness(1.05);
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    /* !important 추가로 개별 설정 덮어쓰기 */
+    /* 이미지만 확대 */
+}
+
+/* HIF 버튼 전용 호버 테두리 색상 (왼쪽에서 밀려오는 슬라이드 효과) */
+#btn-hif .calc-menu-img {
+    border-color: transparent !important;
+    background-image:
+        linear-gradient(225deg, #67c7d3, #189cfa, #3d64fb, #9575fb, #5960fb),
+        linear-gradient(var(--idol-theme-color, #ff4d8d), var(--idol-theme-color, #ff4d8d)) !important;
+    background-origin: border-box !important;
+    background-clip: border-box !important;
+    background-repeat: no-repeat !important;
+    background-size: 0% 100%, 100% 100% !important;
+    background-position: left center, left center !important;
+    transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+#btn-hif:hover .calc-menu-img {
+    background-size: 100% 100%, 100% 100% !important;
+    transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease, background-size 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.calc-menu-item:active .calc-menu-img {
+    transform: scale(0.98);
+    /* 클릭 시 이미지만 축소 */
 }
 
 @media (max-width: 768px) {
     .calc-menu-img {
-        width: 300px;
+        width: 260px;
     }
 
     .calc-menu-label {
         font-size: 0.9rem;
+    }
+
+    /* 모바일에서 개별 장식 라인 위치 조정 및 항상 고유색 표시 */
+    .calc-menu-item::after {
+        right: -20px;
+        width: 2px;
+    }
+
+    /* 모바일에서는 호버 상태의 스타일을 기본으로 적용하고, 그라데이션 없이 100% 고유색으로 채움 */
+    #btn-hif::after,
+    #btn-hajime::after,
+    #btn-nia::after {
+        background-image: none !important;
+        background-color: var(--idol-theme-color, #ff4d8d) !important;
+    }
+
+    /* 별 장식도 항상 고유색 표시 */
+    #btn-hif::before,
+    #btn-hajime::before,
+    #btn-nia::before {
+        color: #fff !important;
+        -webkit-text-stroke: 1px var(--idol-theme-color, #ff4d8d) !important;
+        right: -24.5px;
+    }
+
+    #btn-hif::before {
+        top: calc(60% - 10px);
+        font-size: 13px;
+    }
+
+    #btn-hajime::before {
+        top: calc(60% - 10px);
+        font-size: 13px;
+    }
+
+    #btn-nia::before {
+        bottom: calc(35% - 10px);
+        font-size: 13px;
     }
 }
 
@@ -118,7 +349,7 @@
 
 @media (max-width: 768px) {
     .calc-menu-img {
-        width: 300px;
+        width: 260px;
         /* 모바일에서도 큼직하게 확대 */
     }
 }
@@ -515,15 +746,216 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 0;
     width: 100%;
     margin-bottom: 1rem;
-    background: white;
-    padding: 0.8rem;
     border-radius: 12px;
     border: 2px solid #ff4d8d;
-    /* 메인 영역 강조용 분홍색 테두리 */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.stat-header-top-bar {
+    position: relative;
+    width: 100%;
+    padding: 6px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: transparent !important;
+}
+
+.stat-header-content {
+    width: 100%;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: white;
+}
+
+.stat-detail-toggle-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 2px 0 4px;
+    /* 패딩을 대폭 줄여서 공백 제거 */
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.stat-detail-toggle-bar:hover {
+    opacity: 1;
+}
+
+.toggle-label {
+    font-size: 10px;
+    /* 브라우저 최소 크기 고정 */
+    font-weight: 800;
+    color: #888;
+    letter-spacing: 0;
+    user-select: none;
+    display: inline-block;
+    transform: scale(0.65);
+    /* 6.5px 크기로 강제 축소 */
+    transform-origin: center;
+    margin: 0 -12px;
+    /* 투명한 빈 공간을 음수 마진으로 제거하여 경계선을 끌어당김 */
+}
+
+.toggle-arrow {
+    font-size: 0.6rem;
+    color: #888;
+    transform: scale(0.8);
+    margin-left: -2px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 768px) {
+    .stat-detail-toggle-bar {
+        gap: 4px;
+        /* 모바일에서 간격 확보 */
+    }
+
+    .toggle-label {
+        transform: scale(0.8);
+        /* 0.65에서 0.8로 상향 */
+        margin: 0 -8px;
+        /* 커진 만큼 음수 마진도 살짝 조정 */
+    }
+
+    .toggle-arrow {
+        margin-left: 2px;
+        /* 화살표와 글자 사이 간격 추가 */
+    }
+}
+
+.toggle-line {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.toggle-arrow {
+    font-size: 0.6rem;
+    color: #888;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.stat-detail-toggle-bar.active .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+.stat-detail-area {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+    /* 마진도 함께 부드럽게 트랜지션 */
+    max-height: 100px;
+    opacity: 1;
+    margin-top: -4px;
+}
+
+.stat-detail-area.collapsed {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    margin-top: -8px !important;
+    /* 부모의 gap 공간을 위로 당겨서 제거 */
+    margin-bottom: -4px !important;
+    /* 하단 여백도 바짝 당김 */
+    padding: 0 !important;
+    pointer-events: none;
+}
+
+.bonus-bar-container {
+    position: relative;
+    width: 12px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    overflow: visible;
+    /* 점이 컨테이너 경계에 걸쳐도 보이게 */
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.bonus-bar {
+    width: 100%;
+    height: 0%;
+    background: var(--idol-color, #ff4d8d);
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sp-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border: 1.5px solid #888;
+    /* JS에서 색상 변경됨 */
+    border-radius: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    /* 중심점 맞춤 */
+    transition: bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+}
+
+.sp-percent-label {
+    font-size: 0.55rem;
+}
+
+@media (max-width: 768px) {
+    .sp-percent-label {
+        font-size: 10px;
+        /* 브라우저 최소 크기 고정 */
+        display: inline-block;
+        transform: scale(0.8);
+        /* 0.6에서 0.8로 상향 */
+        transform-origin: center top;
+        margin-top: -1px;
+        /* 스케일 변경에 따라 마진 미세 조정 */
+    }
+}
+
+.stat-header-title {
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+}
+
+.stat-header-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(calc(-50% - 1px));
+    height: 22px;
+    /* 18px * 1.2 */
+    object-fit: contain;
+}
+
+.stat-header-icon.hif-icon,
+.stat-header-icon.nia-icon {
+    width: 44px;
+    /* 36px * 1.2 */
+}
+
+.stat-header-icon.nia-icon {
+    transform: translateY(calc(-50% - 1px));
 }
 
 .total-stats-sum {
@@ -611,6 +1043,7 @@
     color: #666 !important;
     margin-top: 2px !important;
     font-weight: normal !important;
+    text-align: center;
 }
 
 .stat-item img {
@@ -901,15 +1334,16 @@
 
 .unified-plan-board {
     background: white;
-    border-radius: 15px;
-    padding: 1rem 0.5rem;
+    border-radius: 0 0 15px 15px;
+    padding: 0.5rem 0.5rem;
     width: 100%;
     border: 1px solid #ddd;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0;
     margin-bottom: 2rem;
+    position: relative;
 }
 
 
@@ -917,8 +1351,63 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.4rem 0.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    padding: 0.5rem 0.5rem 0.8rem;
+    position: relative;
+}
+
+/* 행 단위 세로선 세그먼트 */
+.week-row::before {
+    content: '';
+    position: absolute;
+    bottom: -26px;
+    /* 가로 경계선(bottom: 0)을 중심으로 위아래 26px씩 */
+    left: 5%;
+    width: 2px;
+    height: 52px;
+    background: #e8e8e8;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.week-row:last-child::before {
+    display: none;
+}
+
+
+
+/* 세로선 중앙 마름모 장식 */
+.week-diamond {
+    position: absolute;
+    left: calc(5% + 1px);
+    top: 50%;
+    transform: translate(-50%, calc(-50% - 1px));
+    font-size: 18px;
+    color: #ccc;
+    z-index: 2;
+    pointer-events: none;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.week-row:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    right: 5%;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 2px, transparent 2px);
+    background-size: 8px 2px;
+    background-repeat: repeat-x;
+    background-position: bottom;
+    height: 2px;
+    pointer-events: none;
+}
+
+.week-row.hif-reset-boundary::after {
+    background-image: none;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 /* --- Idol Options Row (Base) --- */
@@ -1029,20 +1518,54 @@
     }
 
     .unified-plan-board {
-        padding: 0.5rem 0.25rem !important;
+        padding: 0.4rem 0.25rem !important;
     }
 
     .week-row {
-        padding: 0.2rem 0.35rem !important;
-        gap: 0.3rem !important;
+        padding: 0.4rem 0.1rem 0.75rem !important;
+        gap: 0 !important;
     }
 
     .week-header {
-        min-width: 35px !important;
+        min-width: 20px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        margin-left: -8px !important;
+        /* 더 강하게 왼쪽으로 밀착 */
+        display: flex !important;
+        justify-content: flex-start !important;
+        border: none !important;
+        /* 빨간 테두리 제거 */
     }
 
     .week-label {
         font-size: 0.7rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: inline-block !important;
+        text-align: left !important;
+    }
+
+    .week-diamond {
+        font-size: 12px !important;
+        width: auto !important;
+        height: auto !important;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .week-row::before {
+        height: 42px !important;
+        bottom: -21px !important;
+    }
+
+    .week-num {
+        font-size: 0.95rem !important;
+    }
+
+    .week-label small {
+        font-size: 0.6rem !important;
+        margin: 0 1px;
+        opacity: 0.8;
     }
 
     /* 모바일 표 글씨 크기 조절 */
@@ -1060,7 +1583,8 @@
 
     .header-kyouka-btn {
         height: 22px !important;
-        top: 6px !important;
+        top: 38px !important;
+        /* 모바일에서도 아래로 팍 내림 */
         right: 6px !important;
     }
 
@@ -1071,7 +1595,8 @@
 }
 
 .week-header {
-    min-width: 45px;
+    min-width: 65px !important;
+    padding-left: 35px !important;
     user-select: none;
 }
 
@@ -1080,6 +1605,18 @@
     color: #666;
     font-size: 0.85rem;
     white-space: nowrap;
+    transform: translateY(2px);
+}
+
+.week-num {
+    font-size: 1.2rem;
+}
+
+.week-label small {
+    font-size: 0.7rem;
+    margin: 0 2px;
+    opacity: 0.8;
+    font-weight: normal;
 }
 
 .plan-icons-container {
@@ -1294,7 +1831,7 @@
     border: none;
     box-shadow: none;
     /* 그림자를 2겹으로 중첩하여 더 진하게 표시 */
-    filter: drop-shadow(0 0 2px rgba(255, 77, 141, 0.9)) drop-shadow(0 0 2px rgba(255, 77, 141, 0.9)) !important;
+    filter: drop-shadow(0 0 2px var(--idol-color, #ff4d8d)) drop-shadow(0 0 2px var(--idol-color, #ff4d8d)) !important;
 }
 
 .plan-icon-img {
@@ -1471,7 +2008,7 @@
 
 .side-card-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px var(--idol-color-shadow, rgba(255, 77, 141, 0.3));
 }
 
 .card-bonus-overlay {
@@ -1566,7 +2103,7 @@
     object-fit: contain !important;
     z-index: 10 !important;
     pointer-events: none;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+    filter: none;
 }
 
 /* 계산기 전용 별 스타일 */
@@ -1668,6 +2205,17 @@
     accent-color: #ff4d8d;
     width: 16px;
     height: 16px;
+    margin: 0;
+}
+
+.hif-test-stat-input {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.hif-test-stat-input::-webkit-outer-spin-button,
+.hif-test-stat-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
     margin: 0;
 }
 
@@ -1800,6 +2348,38 @@
         left: 3px;
     }
 
+    .calc-tooltip {
+        padding: 5px !important;
+        gap: 4px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .tooltip-option {
+        gap: 4px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .tooltip-option input[type="checkbox"] {
+        width: 12px !important;
+        height: 12px !important;
+    }
+
+    .counter-controls {
+        gap: 3px !important;
+    }
+
+    .cnt-btn {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .hif-test-stat-input {
+        font-size: 0.65rem !important;
+        padding: 3px 4px !important;
+    }
+
     /* 토글 버튼 크기 축소 (재조정: 20px -> 22px) */
     .sr-toggle-item,
     .talent-toggle-item {
@@ -1848,6 +2428,23 @@
     #total-dance,
     #total-visual {
         font-size: 0.6rem !important;
+    }
+}
+
+/* Skill Adjustment Modal Styles */
+@media (max-width: 768px) {
+    .stat-header-icon {
+        height: 18px !important;
+    }
+
+    .stat-header-icon.hif-icon,
+    .stat-header-icon.nia-icon {
+        width: 35px !important;
+    }
+
+    .board-title-icon {
+        height: 18px !important;
+        width: 35px !important;
     }
 }
 
@@ -2044,7 +2641,7 @@
 .class-attr-badge {
     position: absolute;
     top: -8px;
-    right: -8px;
+    left: -8px;
     width: 26px;
     height: 26px;
     display: flex;
@@ -2136,7 +2733,7 @@
         width: 18px;
         height: 18px;
         top: -5px;
-        right: -5px;
+        left: -5px;
     }
 
     .class-attr-badge img {
@@ -2163,7 +2760,8 @@
 
 .header-kyouka-btn {
     position: absolute;
-    top: 10px;
+    top: 45px;
+    /* 사용자가 지정한 45px로 하향 조정 */
     right: 10px;
     height: 32px;
     z-index: 50;
@@ -2174,33 +2772,44 @@
 }
 
 .board-title-tab {
-    font-size: 0.65rem;
-    color: #666;
-    font-weight: bold;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-bottom: none;
-    border-radius: 8px 8px 0 0;
-    padding: 4px 12px;
-    margin: 1rem 0 0 8px;
-    /* 위쪽 간격과 왼쪽 정렬 유지 */
-    width: fit-content;
-    letter-spacing: 0.03em;
-    position: relative;
-    z-index: 1;
+    font-size: 0.7rem;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.board-title-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 22px;
+    width: 44px;
+    object-fit: contain;
+}
+
+.board-title-icon.nia-icon {
+    transform: translateY(calc(-50% - 1px));
 }
 
 .board-title-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+    position: relative;
     margin-top: 1rem;
-    margin-left: 8px;
-    width: calc(100% - 8px);
-}
-
-.board-title-row .board-title-tab {
-    margin: 0;
+    width: 100%;
+    background: #f5f6f8;
+    border: 1px solid #e0e3e8;
+    border-radius: 8px 8px 0 0;
+    padding: 6px 12px;
+    box-sizing: border-box;
 }
 
 .board-reset-btn {
@@ -2221,7 +2830,7 @@
     justify-content: center;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-    margin-right: 8px;
+    margin-right: 0;
     flex-shrink: 0;
 }
 
@@ -2413,6 +3022,16 @@
     transform: scale(1.1);
 }
 
+.talent-toggle-item.disabled {
+    opacity: 0.5 !important;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.talent-toggle-item.disabled div {
+    background-color: #ccc !important;
+}
+
 #hif-prima-toggle.active {
     border-color: #46a4f3 !important;
 }
@@ -2433,6 +3052,7 @@
     position: relative;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -2460,6 +3080,12 @@
     height: 36px;
     background-color: #eee;
     margin: 0 12px;
+}
+
+.hif-stat-divider.full-width {
+    width: 100%;
+    height: 1px;
+    margin: 10px 0 8px;
 }
 
 .hif-stat-top {
@@ -2516,6 +3142,38 @@
     font-weight: bold;
 }
 
+.hif-param-limit-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.hif-param-limit-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 6px;
+}
+
+.hif-param-limit-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #555;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.hif-param-limit-controls {
+    flex-shrink: 0;
+}
+
+.hif-param-limit-top .hif-bonus-vals {
+    font-size: 0.75rem;
+}
+
 /* Mobile responsive for HIF UI */
 @media (max-width: 768px) {
     .hif-stats-container {
@@ -2524,6 +3182,10 @@
 
     .hif-stat-divider {
         margin: 0 6px;
+    }
+
+    .hif-stat-divider.full-width {
+        margin: 8px 0 6px;
     }
 
     .hif-stat-top {
@@ -2555,11 +3217,36 @@
         line-height: 16px;
     }
 
+    .hif-param-limit-item {
+        gap: 8px;
+    }
+
+    .hif-param-limit-title {
+        font-size: 0.68rem;
+    }
+
+    .hif-param-limit-top .hif-bonus-vals {
+        font-size: 0.62rem;
+    }
+
     /* 토탈 스탯 우측 강화월간 이미지 버튼 크기 축소 */
     img[alt="Kyouka"] {
         width: 50px !important;
         height: auto !important;
         margin-left: 5px !important;
         cursor: pointer;
+    }
+}
+
+.stat-detail-header-icon {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .stat-detail-header-icon {
+        width: 16px;
+        height: 16px;
     }
 }

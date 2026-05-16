@@ -311,7 +311,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 9, 2: 12 },
             "SR": { 1: 6, 2: 11 }
         },
-        trigger: ["gift_hajime", "gift_nia"],
+        trigger: ["gift_hajime", "gift_nia", "gift_hif"],
     },
     "gift_recovery": {
         format: { ko: "활동지급・사시이레 선택 시 체력회복+{val}", ja: "活動支給・差し入れ選択時、体力回復+{val}", en: "Recover HP +{val} when choosing Supplies / Gift" },
@@ -328,7 +328,16 @@ export const abilityData = {
             "SSR_DIST": { 1: 8, 2: 11 },
             "SR": { 1: 5, 2: 10 }
         },
-        trigger: ["goout_hajime", "goout_nia"],
+        trigger: ["goout_hajime", "goout_nia", "goout_hif"],
+    },
+    "goout2": {
+        format: { ko: "외출 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "おでかけ終了時、{type}上昇+{val} (プロヂュース中2回)", en: "After Go Out, {type} Up +{val} (2 times during Produce)" },
+        levels: {
+            "SSR": { 1: 28, 2: 38 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["goout_hajime", "goout_nia", "goout_hif"],
     },
     "class": {
         format: { ko: "수업・영업 종료 시 {type} 상승+{val}", ja: "授業・営業終了時、{type}上昇+{val}", en: "After Class / Promotion, {type} Up +{val}" },
@@ -337,7 +346,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 4, 2: 5 },
             "SR": { 1: 3, 2: 5 }
         },
-        trigger: ["class_hajime", "class_nia"],
+        trigger: ["class_hajime", "class_nia", "class_hif0", "class_hif1"],
     },
     "advice": {
         format: { ko: "상담 선택 시 {type} 상승+{val}", ja: "相談選択時、{type}上昇+{val}", en: "When choosing Advice, {type} Up +{val}" },
@@ -364,7 +373,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 11, 2: 17 },
             "SR": { 1: 9, 2: 17 }
         },
-        trigger: ["test", "audition"], max: 2,
+        trigger: ["test", "audition", "round_hif1", "round_hif2"], max: 2,
     },
     "spclass": {
         format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },

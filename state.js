@@ -41,12 +41,13 @@ const getBrowserLang = () => {
 
 export const state = {
     currentLang: localStorage.getItem('lang') || getBrowserLang(),
-    filters: {
+    filters: safeParse('filters', {
         plan: [],
         attr: [],
         source: [],
-        rarity: []
-    },
+        rarity: [],
+        ability: []
+    }),
     roadmapFilters: safeParse('roadmapFilters', {
         another: true,
         dist: true,
@@ -58,7 +59,8 @@ export const state = {
         sense: true,
         anomaly: true
     }),
-    sortBy: 'id-desc',
+    sortBy: localStorage.getItem('sortBy') || 'id',
+    sortOrder: localStorage.getItem('sortOrder') || 'desc',
     extraFiltersOpen: false,
     gachaMuted: true,
     supportLB: JSON.parse(localStorage.getItem('supportLB')) || {},
@@ -123,23 +125,40 @@ export function setGachaType(type) {
     localStorage.setItem('gachaType', type);
 }
 
+export function setSortBy(val) {
+    state.sortBy = val;
+    localStorage.setItem('sortBy', val);
+}
+
+export function setSortOrder(val) {
+    state.sortOrder = val;
+    localStorage.setItem('sortOrder', val);
+}
+
 export function setFilter(type, value) {
     if (state.filters[type] !== undefined) {
         if (value === 'all') {
             state.filters[type] = [];
-            return;
-        }
-
-        if (Array.isArray(state.filters[type])) {
+        } else if (Array.isArray(state.filters[type])) {
             const index = state.filters[type].indexOf(value);
             if (index > -1) {
                 state.filters[type].splice(index, 1);
             } else {
+                if (type === 'ability') {
+                    if (value === 'percentparam') {
+                        const idx = state.filters[type].indexOf('fixedparam');
+                        if (idx > -1) state.filters[type].splice(idx, 1);
+                    } else if (value === 'fixedparam') {
+                        const idx = state.filters[type].indexOf('percentparam');
+                        if (idx > -1) state.filters[type].splice(idx, 1);
+                    }
+                }
                 state.filters[type].push(value);
             }
         } else {
             state.filters[type] = (state.filters[type] === value) ? 'all' : value;
         }
+        localStorage.setItem('filters', JSON.stringify(state.filters));
     }
 }
 
