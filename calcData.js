@@ -548,7 +548,7 @@ export const idolData = {
         priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
         // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
         baseStats: {
-            ssr: { vocal: 80, dance: 90, visual: 75 },
+            ssr: { vocal: 85, dance: 95, visual: 80 },
             sr: { vocal: 80, dance: 90, visual: 75 }
         },
         // 친밀도 보너스 (항상 합산 적용)
