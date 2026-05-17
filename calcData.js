@@ -83,9 +83,9 @@ export const calcPlans = {
             24: [{ value: "class_hif1" }],
             25: [{ value: "lessonvo" }, { value: "lessondan" }, { value: "lessonvi" }],
             26: [{ value: "advice" }],
-            27: [{ value: "round_hif1", results: ["get_item"] }],
+            27: [{ value: "round_hif", results: ["get_item"] }],
             28: [{ value: "advice_hif" }],
-            29: [{ value: "round_hif2" }],
+            29: [{ value: "round_hif" }],
 
 
 

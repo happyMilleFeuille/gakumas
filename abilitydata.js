@@ -373,7 +373,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 11, 2: 17 },
             "SR": { 1: 9, 2: 17 }
         },
-        trigger: ["test", "audition", "round_hif1", "round_hif2"], max: 2,
+        trigger: ["test", "audition", "round_hif"], max: 2,
     },
     "spclass": {
         format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },
