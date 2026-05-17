@@ -215,7 +215,7 @@
     border-radius: 0;
     border-top-left-radius: 8px;
     /* 부모 10px 라운드 안쪽으로 완벽 밀착 */
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 800;
     color: var(--idol-theme-color, var(--primary-color));
     cursor: pointer;
@@ -266,7 +266,7 @@
     border-radius: 0;
     border-top-right-radius: 8px;
     /* 부모 10px 라운드 안쪽으로 완벽 밀착 */
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 800;
     color: var(--idol-theme-color, var(--primary-color));
     cursor: pointer;
@@ -377,7 +377,7 @@
 }
 
 .toggle-label {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: #555;
     font-weight: 700;
     white-space: nowrap;
