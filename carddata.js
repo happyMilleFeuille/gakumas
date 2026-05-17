@@ -2654,7 +2654,7 @@ export const cardList = [
                 "fixedparam",
                 "ppoint",
                 "supportrateup",
-                "sp_param",
+                "normallesson_param",
                 "test",
                 "event_paraup"
             ]
