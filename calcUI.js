@@ -1175,6 +1175,7 @@ export function showSupportItemTooltip(slot, cardId) {
             advice: t('support_effect_advice'),
             rest: t('support_effect_rest'),
             test: t('support_effect_test'),
+            round_hif: t('support_effect_round_hif'),
             class: t('support_effect_class'),
             spclass: t('support_effect_spclass'),
             enhance: t('support_effect_enhance'),
