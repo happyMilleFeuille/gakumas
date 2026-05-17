@@ -779,7 +779,8 @@ export function updateMainLabel(w) {
         if (labels.length > 0) {
             const l = document.createElement('div');
             l.className = 'main-label-text';
-            l.textContent = labels.join(' ');
+            const prefix = savedOpts.hif_test_use_perc === 'true' ? '(%) ' : '';
+            l.textContent = prefix + labels.join(' ');
             w.appendChild(l);
         }
         return;
