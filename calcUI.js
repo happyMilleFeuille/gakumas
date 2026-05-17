@@ -189,7 +189,10 @@ export function updateActivityCountsUI(store, counts) {
             <div class="dist-group" style="flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 8px;">
                 ${otherGetItems}
             </div>
-            <button class="other-tune-btn" id="btn-other-tune" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); min-width: 26px; width: auto; height: 26px; padding: 0 4px; background: #9c27b0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem; white-space: nowrap;">${t('ui_bulk_adjust')}</button>
+            <button class="other-tune-btn" id="btn-other-tune" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); min-width: 26px; width: auto; height: 26px; padding: 0 6px; background: ${getIdolDisplayColor(store.selectedIdol)}; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem; white-space: nowrap; display: flex; align-items: center; gap: 4px;">
+                <img src="icons/check-square.svg" style="width: 12px; height: 12px; filter: invert(1);">
+                ${t('ui_bulk_adjust')}
+            </button>
         </div>
     `;
 
@@ -257,7 +260,10 @@ export function updateActivityCountsUI(store, counts) {
                             ${otherGetItems}
                         </div>
                         <div style="width: 100%; height: 1px; background: rgba(156,39,176,0.1); margin: 4px 0;"></div>
-                        <button class="other-tune-btn" id="btn-other-tune" style="width: 85%; height: 26px; margin: 6px auto 8px; display: block; background: #9c27b0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem;">${t('calc_label_select')}</button>
+                        <button class="other-tune-btn" id="btn-other-tune" style="width: 85%; height: 26px; margin: 6px auto 8px; display: flex; align-items: center; justify-content: center; gap: 4px; background: ${getIdolDisplayColor(store.selectedIdol)}; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem;">
+                            <img src="icons/check-square.svg" style="width: 12px; height: 12px; filter: invert(1);">
+                            ${t('calc_label_select')}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -489,7 +495,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
             let activeStyle = '';
             if (isActive) {
                 if (isLarge) {
-                    activeStyle = `style="--idol-color: ${idolColor}; filter: drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 3px ${idolColor});"`;
+                    activeStyle = `style="--idol-color: ${idolColor};"`;
                 } else {
                     activeStyle = `style="border-color: ${idolColor}; box-shadow: none;"`;
                 }
@@ -564,9 +570,11 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         <span class="stat-header-title">PRODUCE RESULT</span>
                     </div>
                     <div class="stat-header-content">
+                        ${store.type !== 'hif' ? `
                         <button id="btn-kyouka" class="kyouka-btn header-kyouka-btn">
                             <img src="icons/kyoukagekkan${state.currentLang === 'ko' ? '-k' : ''}.webp" alt="Kyouka">
                         </button>
+                        ` : ''}
                         <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
                             <span class="sum-label">TOTAL</span>
                             <span id="total-stats-sum-value">0</span>

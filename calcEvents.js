@@ -1,4 +1,4 @@
-// calcEvents.js
+﻿// calcEvents.js
 import { cardList } from './carddata.js';
 import { state } from './state.js';
 import { showOtherTuneModal } from './calcModals.js';
@@ -23,7 +23,7 @@ export function initGlobalDistListener(refreshAll) {
         const cardEventCheckBtn = e.target.closest('.card-event-check');
         const cardRemoveBtn = e.target.closest('.card-slot-remove');
         const distBtn = e.target.closest('.dist-btn');
-        const tuneBtn = e.target.closest('#btn-other-tune');
+        const tuneBtn = e.target.closest('#btn-other-tune, #floating-skill-btn');
         const counterBtn = e.target.closest('.card-counter-btn');
         const slotImg = e.target.closest('.slot-frame img');
         const emptySlotFrame = e.target.closest('.selected-card-slot.empty .slot-frame');

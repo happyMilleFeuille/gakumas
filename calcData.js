@@ -500,7 +500,8 @@ export const idolData = {
             37: {
                 base: { vocal: 10, dance: 0, visual: 5 },
                 bonus: { vocal: 0, dance: 3, visual: 2.0 }
-            }
+            },
+
         },
         // 보너스 % (단계별)
         bonus: {

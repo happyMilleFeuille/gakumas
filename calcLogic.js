@@ -85,6 +85,15 @@ export function getTriggerCounts(store) {
 
         counts.total[actionId] = (counts.total[actionId] || 0) + 1;
 
+        // 범용 트리거 통합 집계 (아이템 트리거 연동용)
+        const classIds = ['class', 'class_hajime', 'class_nia', 'class_hif0', 'class_hif1'];
+        const gooutIds = ['goout', 'goout_hajime', 'goout_nia', 'goout_hif'];
+        const giftIds = ['gift', 'gift_hajime', 'gift_nia', 'gift_hif'];
+
+        if (classIds.includes(actionId)) counts.total.class = (counts.total.class || 0) + 1;
+        if (gooutIds.includes(actionId)) counts.total.goout = (counts.total.goout || 0) + 1;
+        if (giftIds.includes(actionId)) counts.total.gift = (counts.total.gift || 0) + 1;
+
         const planData = store.type === 'hajime' ? calcPlans.hajime : (calcPlans[store.type] || calcPlans.nia);
         const weekOptions = planData.weeks[weekNum] || [];
         const actionDef = weekOptions.find(o => o.value === actionId);
@@ -253,7 +262,6 @@ export function getTriggerCounts(store) {
     // 5. 아이템 효과(Item Effects) 보너스 트리거 반영
     selectedIds.forEach(cardId => {
         if (!cardId) return;
-        // 비활성화된 카드는 무시 (단, 6번째 렌탈 슬롯은 예외)
         const isSixth = selectedIds.indexOf(cardId) === 5;
         if (state.disabledCards[cardId] && !isSixth) return;
 
@@ -278,12 +286,8 @@ export function getTriggerCounts(store) {
                                 else if (card.type === 'dance') countForThisTrigger = counts.lessons.dance.sp;
                                 else if (card.type === 'visual') countForThisTrigger = counts.lessons.visual.sp;
                                 else countForThisTrigger = (counts.lessons.vocal.sp + counts.lessons.dance.sp + counts.lessons.visual.sp);
-                            } else if (t === 'class') {
-                                countForThisTrigger = (counts.total['class_hajime'] || 0) + (counts.total['class_nia'] || 0);
-                            } else if (t === 'gift') {
-                                countForThisTrigger = (counts.total['gift_hajime'] || 0) + (counts.total['gift_nia'] || 0);
-                            } else if (t === 'goout') {
-                                countForThisTrigger = (counts.total['goout_hajime'] || 0) + (counts.total['goout_nia'] || 0);
+                            } else if (t === 'class' || t === 'gift' || t === 'goout') {
+                                countForThisTrigger = (counts.total[t] || 0);
                             } else {
                                 countForThisTrigger = (counts.total[t] || 0);
                             }
@@ -293,9 +297,8 @@ export function getTriggerCounts(store) {
                     }
                     if (multiplier > 0) {
                         const bonusValue = (eff.value || 1) * (eff.max ? Math.min(multiplier, eff.max) : multiplier);
-                        const rawTarget = eff.target || eff.targets; // target 우선, targets 하위호환
+                        const rawTarget = eff.target || eff.targets;
                         const targetList = Array.isArray(rawTarget) ? rawTarget : (rawTarget ? [rawTarget] : []);
-
                         targetList.forEach(t => {
                             if (t === 'delete_t' || t === 'get_t') counts.total[t] += bonusValue;
                             else if (counts.total.hasOwnProperty(t)) counts.total[t] += bonusValue;
@@ -307,47 +310,45 @@ export function getTriggerCounts(store) {
         }
     });
 
-
-
-    // 6. 수동 분배 수치 자동 할당 및 합산 (모든 트리거 합산 후 최종 수행)
-    const currentEnhancePool = counts.total.enhance || 0;
-    let em = Number(store.manualEnhance?.m) || 0;
-    let ea = Number(store.manualEnhance?.a) || 0;
-    if (currentEnhancePool === 0) { em = 0; ea = 0; }
-    else {
-        let diffE = currentEnhancePool - (em + ea);
-        if (diffE > 0) em += diffE;
-        else if (diffE < 0) {
-            const reduceM = Math.min(em, Math.abs(diffE)); em -= reduceM; diffE += reduceM;
-            if (diffE < 0) ea = Math.max(0, ea + diffE);
-        }
+// 6. 수동 분배 수치 자동 할당 및 합산 (모든 트리거 합산 후 최종 수행)
+const currentEnhancePool = counts.total.enhance || 0;
+let em = Number(store.manualEnhance?.m) || 0;
+let ea = Number(store.manualEnhance?.a) || 0;
+if (currentEnhancePool === 0) { em = 0; ea = 0; }
+else {
+    let diffE = currentEnhancePool - (em + ea);
+    if (diffE > 0) em += diffE;
+    else if (diffE < 0) {
+        const reduceM = Math.min(em, Math.abs(diffE)); em -= reduceM; diffE += reduceM;
+        if (diffE < 0) ea = Math.max(0, ea + diffE);
     }
-    store.manualEnhance = { m: em, a: ea };
-    counts.total.enhance_m += em; counts.total.enhance_a += ea;
+}
+store.manualEnhance = { m: em, a: ea };
+counts.total.enhance_m += em; counts.total.enhance_a += ea;
 
-    const currentDeletePool = counts.total.delete || 0;
-    let dm = Number(store.manualDelete?.m) || 0;
-    let da = Number(store.manualDelete?.a) || 0;
-    let dt = Number(store.manualDelete?.t) || 0;
-    if (currentDeletePool === 0) { dm = 0; da = 0; dt = 0; }
-    else {
-        let diffD = currentDeletePool - (dm + da + dt);
-        if (diffD > 0) dm += diffD;
-        else if (diffD < 0) {
-            let absDiff = Math.abs(diffD);
-            const redM = Math.min(dm, absDiff); dm -= redM; absDiff -= redM;
-            const redA = Math.min(da, absDiff); da -= redA; absDiff -= redA;
-            if (absDiff > 0) dt = Math.max(0, dt - absDiff);
-        }
+const currentDeletePool = counts.total.delete || 0;
+let dm = Number(store.manualDelete?.m) || 0;
+let da = Number(store.manualDelete?.a) || 0;
+let dt = Number(store.manualDelete?.t) || 0;
+if (currentDeletePool === 0) { dm = 0; da = 0; dt = 0; }
+else {
+    let diffD = currentDeletePool - (dm + da + dt);
+    if (diffD > 0) dm += diffD;
+    else if (diffD < 0) {
+        let absDiff = Math.abs(diffD);
+        const redM = Math.min(dm, absDiff); dm -= redM; absDiff -= redM;
+        const redA = Math.min(da, absDiff); da -= redA; absDiff -= redA;
+        if (absDiff > 0) dt = Math.max(0, dt - absDiff);
     }
-    store.manualDelete = { m: dm, a: da, t: dt };
-    counts.total.delete_m += dm; counts.total.delete_a += da;
+}
+store.manualDelete = { m: dm, a: da, t: dt };
+counts.total.delete_m += dm; counts.total.delete_a += da;
 
-    // [잠금] 최종 트러블 삭제량은 획득량을 절대로 넘을 수 없음
-    counts.total.delete_t_before_cap = (counts.total.delete_t || 0) + dt;
-    counts.total.delete_t = Math.min(counts.total.delete_t_before_cap, counts.total.get_t || 0);
+// [잠금] 최종 트러블 삭제량은 획득량을 절대로 넘을 수 없음
+counts.total.delete_t_before_cap = (counts.total.delete_t || 0) + dt;
+counts.total.delete_t = Math.min(counts.total.delete_t_before_cap, counts.total.get_t || 0);
 
-    return counts;
+return counts;
 }/**
  * 전역 상태를 바탕으로 최종 합계 스탯 계산
  */
@@ -390,12 +391,12 @@ export function calculateTotals(store, detailedCounts) {
         if (currentIdolData.bonus) {
             const rarityKey = isSR ? 'sr' : 'ssr';
             const baseBonus = currentIdolData.bonus[rarityKey].base;
-            const bloom3Bonus = isBloom3 ? (currentIdolData.bonus[rarityKey].bloom3 || {vocal:0,dance:0,visual:0}) : {vocal:0,dance:0,visual:0};
+            const bloom3Bonus = isBloom3 ? (currentIdolData.bonus[rarityKey].bloom3 || { vocal: 0, dance: 0, visual: 0 }) : { vocal: 0, dance: 0, visual: 0 };
 
             idolPercs.vocal = (baseBonus.vocal || 0) + (bloom3Bonus.vocal || 0) + affinityBonusTotal.vocal;
             idolPercs.dance = (baseBonus.dance || 0) + (bloom3Bonus.dance || 0) + affinityBonusTotal.dance;
             idolPercs.visual = (baseBonus.visual || 0) + (bloom3Bonus.visual || 0) + affinityBonusTotal.visual;
-        } 
+        }
         // 기존 스키마 호환
         else {
             if (isSR) {
@@ -550,6 +551,18 @@ export function calculateTotals(store, detailedCounts) {
                     dance: isNaN(manualDa) ? 0 : manualDa,
                     visual: isNaN(manualVi) ? 0 : manualVi
                 };
+
+                // [% 포함] 옵션이 켜져있다면, 입력한 수치를 (1 + 현재보너스%)로 나누어 베이스 수치로 역산
+                if (week.opts.hif_test_use_perc === 'true') {
+                    ['vocal', 'dance', 'visual'].forEach(attr => {
+                        if (stats[attr] > 0) {
+                            const bonusFactor = 1 + (totalPercs[attr] / 100);
+                            const rawBase = stats[attr] / bonusFactor;
+                            // 소수점 4째자리에서 반올림 후 올림 처리 (더 정밀한 오차 방지)
+                            stats[attr] = Math.ceil(Math.round(rawBase * 10000) / 10000);
+                        }
+                    });
+                }
             } else {
                 const testStat = hifTestStats[wInt];
                 const data = idolData[store.selectedIdol];

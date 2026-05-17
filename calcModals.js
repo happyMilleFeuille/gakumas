@@ -615,20 +615,21 @@ export function showOtherTuneModal(refreshAll) {
             imgSrc = `idols/${plan}/${fileName}.webp`;
         }
         return `
-            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" ${skill.multi ? 'data-multi="true"' : ''} ${isForcedPrima ? 'data-forced-prima="true"' : ''} ${isForcedPrima ? 'style="pointer-events: none; opacity: 0.9; filter: saturate(1.2);"' : ''}>
+            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" data-multi="true" ${isForcedPrima ? 'data-forced-prima="true"' : ''} ${isForcedPrima ? 'style="pointer-events: none; opacity: 0.9; filter: saturate(1.2);"' : ''}>
                 <img src="${imgSrc}" onerror="this.parentElement.style.display='none';">
                 <div class="card-count-badge ${count > 1 ? '' : 'hidden'}">x${count}</div>
-                <div class="card-reset-btn ${isSelected && skill.multi && !isForcedPrima ? '' : 'hidden'}">×</div>
+                <div class="card-reset-btn ${isSelected && !isForcedPrima ? '' : 'hidden'}">×</div>
             </div>`;
     };
 
     if (primaSkillId) cardGroups.unshift([primaSkillId]);
     if (counts.total.get_t > 0) cardGroups.unshift(['trouble']);
 
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
-            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: #9c27b0; font-size: 1rem;"></h3>
+            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: ${idolColor}; font-size: 1rem;"></h3>
             <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => {
         if (g.length > 1) {
             if (g[0].startsWith('header-')) {
@@ -645,10 +646,9 @@ export function showOtherTuneModal(refreshAll) {
     }).join('')}</div>
             <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%; box-sizing: border-box;">
                 <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_label_bulk_reset')}</button>
-                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: #9c27b0; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('gacha_close')}</button>
+                <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: ${idolColor}; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('gacha_close')}</button>
             </div>
         </div>`;
-
     document.body.appendChild(modal);
     history.pushState({ modalOpen: 'tune' }, "");
     modal.onclick = (e) => { if (e.target === modal) history.back(); };
@@ -709,8 +709,7 @@ export function showOtherTuneModal(refreshAll) {
             else {
                 const groupBox = item.closest('.tune-card-group-box');
                 if (groupBox) groupBox.dataset.group.split(',').forEach(gid => { if (gid !== id) delete skills[gid]; });
-                if (skill.multi) skills[id] = (skills[id] || 0) + 1;
-                else if (skills[id]) delete skills[id]; else skills[id] = 1;
+                skills[id] = (skills[id] || 0) + 1;
             }
             calcStore.save(); refreshAll(); updateTitle();
             modal.querySelectorAll('.tune-card-item').forEach(el => {
@@ -720,7 +719,7 @@ export function showOtherTuneModal(refreshAll) {
                 const badge = el.querySelector('.card-count-badge');
                 if (badge) { badge.textContent = `x${count}`; badge.classList.toggle('hidden', count <= 1); }
                 const rb = el.querySelector('.card-reset-btn');
-                if (rb) rb.classList.toggle('hidden', count === 0 || !skillCardList[cid]?.multi);
+                if (rb) rb.classList.toggle('hidden', count === 0);
             });
         };
     });

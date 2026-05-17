@@ -370,6 +370,9 @@
 
 .calc-main-wrapper {
     width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 /* 서포트 카드 패널 (모바일 기본: 왼쪽 사이드 서랍) */
@@ -2150,6 +2153,7 @@
     justify-content: center;
     align-items: center;
     z-index: 30000;
+    transition: none !important;
 }
 
 .modal-content {
@@ -2160,20 +2164,8 @@
     max-width: 450px;
     position: relative;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    animation: modal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes modal-pop {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
 
 .calc-tooltip {
     position: absolute;
@@ -3109,6 +3101,7 @@
     line-height: 1.15;
     font-size: 0.65rem;
     font-weight: bold;
+
 }
 
 .hif-stat-controls {
@@ -3249,4 +3242,140 @@
         width: 16px;
         height: 16px;
     }
+}
+
+/* 화면 우측 하단 고정 플로팅 버튼 */
+.floating-skill-btn {
+    display: flex;
+    position: fixed;
+    bottom: 160px;
+    right: 40px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: var(--idol-color, #ff4d8d);
+    border: 3px solid white;
+    box-shadow: 0 4px 15px var(--idol-color-shadow, rgba(255, 77, 141, 0.4)), inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.floating-skill-btn img {
+    width: 25px;
+    height: 25px;
+    filter: invert(1);
+}
+
+.floating-skill-btn:hover {
+    transform: scale(1.1);
+}
+
+@media (min-width: 769px) {
+    .floating-skill-btn {
+        display: flex;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-skill-btn {
+        display: none !important;
+    }
+}
+
+body:not(:has(.unified-plan-board)) .floating-skill-btn {
+    display: none !important;
+}
+
+/* 프리미엄 HTML 기반 커스텀 툴팁 */
+.tooltip-header {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    padding-bottom: 3px;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    font-family: 'Inter', sans-serif;
+}
+
+.floating-tooltip {
+    position: absolute;
+    bottom: 115%;
+    left: 50%; /* 기준점을 중앙으로 */
+    margin-left: -45px; /* min-width 90px의 절반만큼 왼쪽으로 밀어 고정 */
+    transform: translateY(10px);
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    padding: 8px 15px 8px 12px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: max-content;
+    min-width: 90px;
+    white-space: nowrap;
+    border: none;
+    isolation: isolate;
+    z-index: 10000;
+}
+
+.floating-skill-btn:hover .floating-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 0;
+}
+
+.tooltip-label {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.tooltip-label img {
+    width: 18px !important;
+    height: 18px !important;
+    filter: none !important;
+    opacity: 1 !important;
+    /* 이미지 투명도 강제 고정 */
+}
+
+.tooltip-val {
+    flex: 1;
+    text-align: center;
+    font-weight: 900;
+    /* 더 두껍게 */
+    font-family: 'Inter', 'Pretendard', sans-serif;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 색상 채도 강화 */
+.tooltip-val.vo {
+    color: #ff3b8d;
+}
+
+.tooltip-val.da {
+    color: #3b9fff;
+}
+
+.tooltip-val.vi {
+    color: #ffc23b;
+}
+
+.floating-skill-btn:hover .floating-tooltip {
+    opacity: 1;
+    transform: translateY(0);
 }

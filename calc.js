@@ -18,7 +18,7 @@ import {
     showToast
 } from './calcUI.js';
 import { initGlobalDistListener } from './calcEvents.js';
-import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syncSupportPanelUI, showRecommendModal } from './calcModals.js';
+import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syncSupportPanelUI, showRecommendModal, showOtherTuneModal } from './calcModals.js';
 import { initRecommendationFeature } from './calcRecommend.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
@@ -52,6 +52,7 @@ export function initCalc(mode) {
     const lastType = mode || (window.location.hash === '#calc' ? null : localStorage.getItem('last_calc_type'));
 
     if (lastType === 'hajime' || lastType === 'nia' || lastType === 'hif') {
+        ensureFloatingSkillButton();
         startWeeklyPlan(lastType);
     } else {
         renderCalcMenu(updatePageTranslations,
@@ -59,6 +60,17 @@ export function initCalc(mode) {
             () => window.location.hash = 'calc/nia',
             () => window.location.hash = 'calc/hif'
         );
+    }
+}
+
+function ensureFloatingSkillButton() {
+    let btn = document.getElementById('floating-skill-btn');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'floating-skill-btn';
+        btn.className = 'floating-skill-btn calc-tune-btn';
+        btn.innerHTML = '<img src="icons/check-square.svg" alt="Card">';
+        document.body.appendChild(btn);
     }
 }
 
@@ -112,6 +124,12 @@ function applyCalcThemeColor(color) {
     if (runCalcBtn) {
         runCalcBtn.style.backgroundColor = color;
         runCalcBtn.style.boxShadow = `0 2px 6px ${color}33`;
+    }
+
+    const floatingBtn = document.getElementById('floating-skill-btn');
+    if (floatingBtn) {
+        floatingBtn.style.setProperty('--idol-color', color);
+        floatingBtn.style.setProperty('--idol-color-shadow', color + '66');
     }
 
     const statHeader = document.querySelector('.stat-header');
@@ -418,6 +436,40 @@ function startWeeklyPlan(type) {
             const board = document.querySelector('.unified-plan-board');
             if (board) {
                 const removeAllTooltips = (exclude = null) => {
+                    document.querySelectorAll('.plan-icon-wrapper').forEach(w => {
+                        w.style.zIndex = '';
+                        w.style.filter = '';
+                        w.style.transition = '';
+                        w.style.transform = '';
+                        w.onmouseenter = null;
+                        w.onmouseleave = null;
+                    });
+                    document.querySelectorAll('.hif-test-tooltip').forEach(t => {
+                        const weekStr = t.dataset.weekNum;
+                        if (weekStr !== undefined) {
+                            const weekIdx = parseInt(weekStr);
+                            const inputs = Array.from(t.querySelectorAll('.hif-test-stat-input'));
+                            const allZero = inputs.every(input => {
+                                const v = input.value.trim();
+                                return v === "" || v === "0";
+                            });
+                            
+                            if (allZero) {
+                                // 값이 없으면 저장소에서 해당 주차 행동을 'none'으로 초기화
+                                calcStore.setWeekAction(weekIdx, 'none', {});
+                                
+                                // 화면상의 아이콘 상태도 즉시 초기화
+                                const targetWrapper = document.querySelector(`.week-row[data-week="${weekIdx}"] .plan-icon-wrapper.active[data-value="test"]`);
+                                if (targetWrapper) {
+                                    targetWrapper.classList.remove('active');
+                                    targetWrapper.style.filter = '';
+                                    targetWrapper.style.borderColor = '';
+                                    targetWrapper.style.transform = '';
+                                }
+                            }
+                        }
+                        t.remove();
+                    });
                     document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip').forEach(t => t.remove());
                     clearIncompleteWeekSelections(exclude);
                     refreshAll();
@@ -457,8 +509,8 @@ function startWeeklyPlan(type) {
                         wrapper.classList.add('active');
 
                         if (wrapper.classList.contains('large-icon')) {
-                            // 이미지 외곽을 따라가는 선명한 테두리 + 캐릭터 색상의 얕은 그림자
-                            wrapper.style.filter = `drop-shadow(1.5px 0 0 ${idolColor}) drop-shadow(-1.5px 0 0 ${idolColor}) drop-shadow(0 1.5px 0 ${idolColor}) drop-shadow(0 -1.5px 0 ${idolColor}) drop-shadow(0 0 3px ${idolColor})`;
+                            const idolColor = idolColors[calcStore.selectedIdol] || "#ff4d8d";
+                            wrapper.style.setProperty('--idol-color', idolColor);
                         } else {
                             wrapper.style.borderColor = idolColor;
                             wrapper.style.boxShadow = 'none';
@@ -469,22 +521,34 @@ function startWeeklyPlan(type) {
 
                         const opts = activityOptions[val];
                         if (calcStore.type === 'hif' && val === 'test') {
+                            // 기존에 열려있는 HIF 테스트 툴팁이 있다면 제거
+                            document.querySelectorAll('.hif-test-tooltip').forEach(t => t.remove());
+
                             const isMobile = window.innerWidth <= 768;
                             const tooltip = document.createElement('div');
-                            tooltip.className = 'calc-tooltip';
+                            tooltip.className = 'hif-test-tooltip';
+                            tooltip.dataset.weekNum = weekNum; // 주차 정보 저장
+                            tooltip.style.backgroundColor = 'white';
+                            tooltip.style.padding = '12px';
+                            tooltip.style.borderRadius = '10px';
                             tooltip.onclick = (te) => te.stopPropagation();
 
                             const idolId = calcStore.selectedIdol;
                             const idolColor = idolColors[idolId] || "#ff4d8d";
-                            tooltip.style.borderColor = idolColor;
+                            tooltip.style.border = `1px solid ${idolColor}`;
+                            tooltip.style.cursor = 'default'; // 툴팁 내부에선 일반 커서 사용
+
+                            // 툴팁이 열려있는 동안은 아이콘이 커지지 않게 설정
+                            const originalTransform = wrapper.style.transform;
+                            const originalTransition = wrapper.style.transition;
+                            wrapper.style.transition = 'none'; // 즉시 크기가 돌아가도록 애니메이션 끄기
+                            wrapper.onmouseenter = () => { wrapper.style.transform = 'none'; };
+                            wrapper.onmouseleave = () => { wrapper.style.transform = 'none'; };
+                            wrapper.style.transform = 'none';
+
 
                             const savedOpts = calcStore.weeks[weekNum].opts || {};
-                            const defaultTestValuesByWeek = {
-                                7: 50,
-                                13: 150,
-                                20: 200
-                            };
-                            const defaultTestValue = defaultTestValuesByWeek[weekNum] ?? 50;
+                            const defaultTestValue = 0;
                             const fields = [
                                 { key: 'hif_test_vocal', icon: 'vocal', color: '#ff4d8d', label: 'Vo' },
                                 { key: 'hif_test_dance', icon: 'dance', color: '#46a4f3', label: 'Da' },
@@ -492,9 +556,9 @@ function startWeeklyPlan(type) {
                             ];
 
                             tooltip.innerHTML = `
-                                <div style="display:flex; flex-direction:column; gap:${isMobile ? '6px' : '8px'}; min-width:${isMobile ? '160px' : '190px'};">
-                                    <div style="font-size:${isMobile ? '0.56rem' : '0.62rem'}; line-height:1.3; color:#666; text-align:center; max-width:${isMobile ? '180px' : '220px'};" data-i18n="hif_test_tooltip_desc">
-                                        ${t('hif_test_tooltip_desc')}
+                                <div style="display:flex; flex-direction:column; gap:${isMobile ? '6px' : '10px'}; min-width:${isMobile ? '160px' : '190px'};">
+                                    <div class="hif-test-desc" style="font-size:${isMobile ? '0.56rem' : '0.62rem'}; line-height:1.3; color:#666; text-align:center; max-width:${isMobile ? '180px' : '220px'};">
+                                        ${t(savedOpts.hif_test_use_perc === 'true' ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc')}
                                     </div>
                                     <div style="display:grid; grid-template-columns:repeat(3, minmax(${isMobile ? '48px' : '58px'}, 1fr)); gap:${isMobile ? '6px' : '10px'}; align-items:start;">
                                     ${fields.map(field => `
@@ -503,6 +567,7 @@ function startWeeklyPlan(type) {
                                             <input
                                                 type="number"
                                                 inputmode="numeric"
+                                                max="999"
                                                 class="hif-test-stat-input"
                                                 data-id="${field.key}"
                                                 value="${savedOpts[field.key] ?? defaultTestValue}"
@@ -510,41 +575,80 @@ function startWeeklyPlan(type) {
                                                 style="width:${isMobile ? '48px' : '58px'}; border:1px solid ${field.color}55; border-radius:6px; padding:${isMobile ? '4px 5px' : '5px 6px'}; font-size:${isMobile ? '0.72rem' : '0.8rem'}; outline:none; text-align:center;"
                                             >
                                         </label>
-                                    `).join('')}</div>
+                                    `).join('')}
+                                    </div>
+                                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; width:100%;">
+                                        <button class="hif-test-perc-btn" style="width:${isMobile ? '26px' : '30px'}; height:${isMobile ? '26px' : '30px'}; background:${savedOpts.hif_test_use_perc === 'true' ? idolColor : 'white'}; color:${savedOpts.hif_test_use_perc === 'true' ? 'white' : idolColor}; border:1px solid ${idolColor}; border-radius:50%; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">%</button>
+                                        <button class="hif-test-complete-btn" style="flex:1; height:${isMobile ? '26px' : '30px'}; background:${idolColor}; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center;">완료</button>
+                                    </div>
                                 </div>
                             `;
 
-                            document.body.appendChild(tooltip);
-                            const rect = wrapper.getBoundingClientRect();
-                            const tooltipWidth = tooltip.offsetWidth;
-                            const tooltipHeight = tooltip.offsetHeight;
-                            let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-                            let top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+                            // 아이콘(wrapper)에 직접 추가하여 스크롤 시 완벽하게 따라가도록 설정
+                            const originalZ = wrapper.style.zIndex;
+                            const originalFilter = wrapper.style.filter; // 기존 필터 저장
+                            
+                            wrapper.style.zIndex = '50002'; // 다른 주차보다 위에 표시되도록
+                            wrapper.style.setProperty('filter', 'none', 'important'); // CSS의 drop-shadow 끄기
+                            wrapper.appendChild(tooltip);
 
-                            if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
-                            if (left < 10) left = 10;
-                            if (top < 10) top = 10;
-                            if (top + tooltipHeight > window.innerHeight - 10) top = window.innerHeight - tooltipHeight - 10;
-
-                            tooltip.style.left = `${left}px`;
-                            tooltip.style.top = `${top}px`;
-                            tooltip.style.transform = '';
                             tooltip.style.position = 'absolute';
+                            tooltip.style.left = '50%';
+                            tooltip.style.top = '50%';
+                            tooltip.style.transform = 'translate(-50%, -50%)';
                             tooltip.style.width = 'max-content';
                             tooltip.style.zIndex = '50001';
 
-                            const tooltipDocTop = top + window.scrollY;
-                            tooltip.style.top = `${tooltipDocTop}px`;
+                            // 완료 버튼 클릭 시에만 닫기
+                            tooltip.querySelector('.hif-test-complete-btn').onclick = (e) => {
+                                e.stopPropagation();
+                                
+                                // 모든 입력값이 0인지 확인
+                                const inputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
+                                const allZero = inputs.every(input => (parseInt(input.value) || 0) === 0);
+                                
+                                if (allZero) {
+                                    // 값이 없으면 선택 해제
+                                    calcStore.setWeekAction(weekNum, 'none', {});
+                                    wrapper.classList.remove('active');
+                                    wrapper.style.filter = '';
+                                    wrapper.style.borderColor = '';
+                                    wrapper.style.boxShadow = '';
+                                    wrapper.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
+                                    updateSPBadge(wrapper, calcStore.selectedIdol); 
+                                    updateMainLabel(wrapper);
+                                }
 
-                            const scrollContainer = document.getElementById('idol');
-                            const closeOnScroll = () => {
-                                if (tooltip.isConnected) tooltip.remove();
-                                window.removeEventListener('scroll', closeOnScroll);
-                                scrollContainer?.removeEventListener('scroll', closeOnScroll);
+                                tooltip.remove();
+                                wrapper.style.zIndex = originalZ;
+                                wrapper.style.filter = originalFilter;
+                                wrapper.style.transition = originalTransition;
+                                wrapper.style.transform = originalTransform;
+                                wrapper.onmouseenter = null;
+                                wrapper.onmouseleave = null;
+
+                                refreshAll();
                             };
 
-                            window.addEventListener('scroll', closeOnScroll, { passive: true });
-                            scrollContainer?.addEventListener('scroll', closeOnScroll, { passive: true });
+                            // % 버튼 클릭 토글 로직 추가
+                            const percBtn = tooltip.querySelector('.hif-test-perc-btn');
+                            percBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                const isCurrentlyPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                                const nextState = !isCurrentlyPerc;
+                                
+                                calcStore.updateWeekOpt(weekNum, 'hif_test_use_perc', String(nextState));
+                                percBtn.style.background = nextState ? idolColor : 'white';
+                                percBtn.style.color = nextState ? 'white' : idolColor;
+
+                                // 설명 텍스트 업데이트
+                                const descEl = tooltip.querySelector('.hif-test-desc');
+                                if (descEl) {
+                                    descEl.innerHTML = t(nextState ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc');
+                                }
+                                
+                                refreshAll();
+                            };
 
                             tooltip.querySelectorAll('input[type="number"]').forEach(input => {
                                 const syncValue = () => {
@@ -553,7 +657,7 @@ function startWeeklyPlan(type) {
                                         calcStore.updateWeekOpt(weekNum, input.dataset.id, null);
                                         delete wrapper.dataset[`opt${input.dataset.id}`];
                                     } else {
-                                        const num = Math.max(0, parseInt(raw) || 0);
+                                        const num = Math.min(999, Math.max(0, parseInt(raw) || 0));
                                         input.value = String(num);
                                         calcStore.updateWeekOpt(weekNum, input.dataset.id, num);
                                         wrapper.dataset[`opt${input.dataset.id}`] = String(num);
@@ -731,6 +835,9 @@ function startWeeklyPlan(type) {
             }
             const calcBtn = document.getElementById('btn-run-calc');
             if (calcBtn) calcBtn.onclick = () => toggleSupportCardPanel(calcStore.planType, refreshAll);
+
+            const floatingBtn = document.getElementById('floating-skill-btn');
+
             const resetWeeksBtn = document.getElementById('btn-reset-weeks');
             if (resetWeeksBtn) {
                 resetWeeksBtn.onclick = () => {
@@ -799,6 +906,70 @@ function refreshAll() {
         calcStore.bonusTotal = bonusTotal;
         calcStore.finalTotal = finalTotal;
         window._lastStatBreakdown = breakdown; // 상세 모달용 데이터
+        
+        // 플로팅 버튼 데이터 및 색상 업데이트
+        const floatingBtn = document.getElementById('floating-skill-btn');
+        if (floatingBtn && finalTotal) {
+            // 툴팁 HTML 업데이트 (아이콘 포함)
+            let tooltip = floatingBtn.querySelector('.floating-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.className = 'floating-tooltip';
+                floatingBtn.appendChild(tooltip);
+            }
+            
+            // 카드 수 계산 (모달 헤더 로직과 동일하게 맞춤)
+            const activePlan = calcStore.planType;
+            const skills = calcStore.planSkills[activePlan] || {};
+            const boardGetCount = counts.total.get || 0;
+            
+            // 1. 선택된 스킬들 합계
+            let selectedCount = Object.values(skills).reduce((a, b) => a + b, 0);
+            
+            // 2. 프리마 스텔라 스킬 (HIF 모드 전용)
+            if (calcStore.type === 'hif' && calcStore.hifPrimaChecked && calcStore.weeks?.['21']?.value) {
+                selectedCount += 1;
+            }
+            
+            // 3. 트러블 카드 합계
+            selectedCount += (counts.total.get_t || 0);
+            
+            // 4. 서포트 카드 획득 스킬 중 체크된 것들
+            const selectedIds = calcStore.planCards[activePlan] || [];
+            selectedIds.forEach(id => {
+                if (id && calcStore.cardChecked[id]) {
+                    const card = cardList.find(c => c.id === id);
+                    if (card && card.have?.startsWith('card_')) selectedCount++;
+                }
+            });
+
+            // 색상 동기화 및 툴팁 업데이트 준비
+            const idolColor = (typeof getIdolDisplayColor === 'function') 
+                ? getIdolDisplayColor(calcStore.selectedIdol || 'saki') 
+                : '#ff4d8d';
+            
+            floatingBtn.style.setProperty('--idol-color', idolColor);
+            floatingBtn.style.setProperty('--idol-color-shadow', idolColor + '66');
+
+            tooltip.innerHTML = `
+                <div class="tooltip-header" style="display: flex; justify-content: center; align-items: center; gap: 2px;">
+                    <span style="font-size: 0.8rem; font-weight: 800; color: #ffffff;">${selectedCount}</span> 
+                    <span style="font-size: 0.8rem; font-weight: 800; color: #ffffff;"> / ${boardGetCount}</span>
+                </div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label"><img src="icons/vocal.png"></div>
+                    <span class="tooltip-val vo">${Math.floor(finalTotal.vocal)}</span>
+                </div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label"><img src="icons/dance.png"></div>
+                    <span class="tooltip-val da">${Math.floor(finalTotal.dance)}</span>
+                </div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label"><img src="icons/visual.png"></div>
+                    <span class="tooltip-val vi">${Math.floor(finalTotal.visual)}</span>
+                </div>
+            `;
+        }
 
         const spTotals = { vocal: 0, dance: 0, visual: 0 };
         const selectedIds = calcStore.planCards[calcStore.planType] || [];
@@ -1065,7 +1236,7 @@ if (!window._calcGlobalInit) {
     document.addEventListener('click', (e) => {
         if (e.target.closest('.modal') || e.target.closest('.modal-content')) return;
         if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper, .dist-btn, .p-item-slot, .other-tune-btn')) {
-            document.querySelectorAll('.calc-tooltip, .calc-sub-tooltip, .p-item-tooltip, .support-item-tooltip').forEach(t => t.remove());
+            document.querySelectorAll('.calc-tooltip:not(.hif-test-tooltip), .calc-sub-tooltip, .p-item-tooltip, .support-item-tooltip').forEach(t => t.remove());
             const changed = clearIncompleteWeekSelections();
             if (changed && typeof window.refreshAll === 'function') {
                 window.refreshAll();
