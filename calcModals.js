@@ -659,7 +659,6 @@ export function showOtherTuneModal(refreshAll) {
         const currentPlan = calcStore.planType;
         const skills = calcStore.planSkills[currentPlan] || {};
         let total = Object.values(skills).reduce((a, b) => a + b, 0);
-        if (primaSkillId) total += 1;
         total += (counts.total.get_t || 0);
         const selectedIds = calcStore.planCards[currentPlan] || [];
         selectedIds.forEach(id => {

@@ -926,11 +926,6 @@ function refreshAll() {
             // 1. 선택된 스킬들 합계
             let selectedCount = Object.values(skills).reduce((a, b) => a + b, 0);
             
-            // 2. 프리마 스텔라 스킬 (HIF 모드 전용)
-            if (calcStore.type === 'hif' && calcStore.hifPrimaChecked && calcStore.weeks?.['21']?.value) {
-                selectedCount += 1;
-            }
-            
             // 3. 트러블 카드 합계
             selectedCount += (counts.total.get_t || 0);
             
