@@ -27,7 +27,7 @@ export const skillCardList = {
     "anomaly-sr1alt": { type: "mental", attrs: ["preservation"], rarity: "SR" },
     "anomaly-sr2": { type: "active", attrs: ["fullpower"], rarity: "SR", multi: true },
     "anomaly-sr3": { type: "active", attrs: [], rarity: "SR", multi: true },
-    "anomaly-sr3alt": { type: "active", attrs: ["enthusiasm", "fullpower"], rarity: "SR" },
+    "anomaly-sr3alt": { type: "active", attrs: ["enthusiasm", "fullpower", "preservation"], rarity: "SR" },
     "anomaly-sr4": { type: "active", attrs: [], rarity: "SR", multi: true },
     "anomaly-sr4alt": { type: "mental", attrs: ["fullpower"], rarity: "SR" },
     "anomaly-sr5": { type: "mental", attrs: ["fullpower"], rarity: "SR" },

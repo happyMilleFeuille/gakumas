@@ -5,6 +5,7 @@ import { cardList } from './carddata.js';
 import { skillCardList } from './skillcarddata.js';
 import { activityOptions } from './calcOptions.js';
 import { calculateCardBonus } from './simulator-engine.js';
+import { pItemDescriptions } from './pItemData.js';
 
 const hifClassActionIds = ['class_hif', 'class_hif0', 'class_hif1'];
 
@@ -193,6 +194,121 @@ export function getTriggerCounts(store) {
         }
     }
 
+    // --- HIF P-아이템 보너스 (메인 효과 + 서브 효과 둘 다 누적) ---
+    if (store.type === 'hif' && store.pItems) {
+        const applyHifItemEffects = (effects, itemId) => {
+            const dashCount = (itemId.match(/-/g) || []).length;
+
+            let lessonWeeks = [9, 11];
+            let allowedWeeks = Object.keys(store.weeks).map(Number);
+            if (dashCount === 1) {
+                lessonWeeks = [15, 18];
+                allowedWeeks = [14, 15, 16, 17, 18, 19];
+            } else if (dashCount === 2) {
+                lessonWeeks = [22, 25];
+                allowedWeeks = [21, 22, 23, 24, 25, 26];
+            }
+
+            effects.forEach(eff => {
+                let multiplier = 1;
+                if (eff.trigger) {
+                    const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+                    let totalTriggerCount = 0;
+                    triggers.forEach(t => {
+                        if (t === 'lesson') {
+                            let lessonCount = 0;
+                            lessonWeeks.forEach(w => {
+                                const week = store.weeks[w];
+                                if (week && week.value && ['lessonvo', 'lessondan', 'lessonvi'].includes(week.value)) {
+                                    lessonCount++;
+                                }
+                            });
+                            totalTriggerCount += lessonCount;
+                        } else {
+                            allowedWeeks.forEach(w => {
+                                const week = store.weeks[w];
+                                if (!week || !week.value) return;
+                                const actionId = week.value;
+
+                                let matches = false;
+                                if (t === 'advice') {
+                                    matches = (actionId === 'advice');
+                                } else if (t === 'gift') {
+                                    matches = ['gift', 'gift_hajime', 'gift_nia', 'gift_hif'].includes(actionId);
+                                } else if (t === 'goout') {
+                                    matches = ['goout', 'goout_hajime', 'goout_nia', 'goout_hif'].includes(actionId);
+                                }
+
+                                if (matches) {
+                                    totalTriggerCount++;
+                                }
+                            });
+                        }
+                    });
+                    multiplier = eff.max ? Math.min(totalTriggerCount, eff.max) : totalTriggerCount;
+                }
+
+                if (multiplier > 0) {
+                    const rawTarget = eff.target || eff.targets;
+                    if (rawTarget) {
+                        const targets = Array.isArray(rawTarget) ? rawTarget : [rawTarget];
+                        targets.forEach(t => {
+                            const bonusValue = multiplier;
+                            if (t === 'delete_t' || t === 'get_t') counts.total[t] = (counts.total[t] || 0) + bonusValue;
+                            else if (counts.total.hasOwnProperty(t)) counts.total[t] += bonusValue;
+                            else counts.total[t] = (counts.total[t] || 0) + bonusValue;
+                        });
+                    }
+                }
+            });
+        };
+
+        // 1. 메인 아이템 효과 적용
+        store.pItems.forEach(itemId => {
+            if (!itemId) return;
+            const itemDef = pItemDescriptions.hif?.find(d => d.icons.includes(itemId));
+            if (itemDef && itemDef.item_effects) {
+                applyHifItemEffects(itemDef.item_effects, itemId);
+            }
+        });
+
+        // 2. 서브 옵션 효과 적용 (메인과 둘 다 중첩해서 획득)
+        if (store.pItemSubOpts) {
+            store.pItemSubOpts.forEach(subOptId => {
+                if (!subOptId) return;
+                let foundSub = null;
+                pItemDescriptions.hif?.forEach(item => {
+                    if (item.subOptions) {
+                        const sub = item.subOptions.find(s => s.id === subOptId);
+                        if (sub) foundSub = sub;
+                    }
+                });
+                if (foundSub && foundSub.item_effects) {
+                    applyHifItemEffects(foundSub.item_effects, subOptId);
+                }
+            });
+        }
+
+        // 3. 서브-서브 옵션 효과 적용 (메인, 서브, 서브-서브 셋 다 중첩해서 획득)
+        if (store.pItemSubSubOpts) {
+            store.pItemSubSubOpts.forEach(subSubOptId => {
+                if (!subSubOptId) return;
+                let foundSubSub = null;
+                pItemDescriptions.hif?.forEach(item => {
+                    item.subOptions?.forEach(sub => {
+                        if (sub.subOptions) {
+                            const subSub = sub.subOptions.find(s => s.id === subSubOptId);
+                            if (subSub) foundSubSub = subSub;
+                        }
+                    });
+                });
+                if (foundSubSub && foundSubSub.item_effects) {
+                    applyHifItemEffects(foundSubSub.item_effects, subSubOptId);
+                }
+            });
+        }
+    }
+
     // 3. 서포트 카드 엑스트라 옵션 (강화/삭제/체인지) 합산
     let activePlan = store.planType || 'sense';
     let selectedIds = store.planCards[activePlan] || [];
@@ -310,45 +426,49 @@ export function getTriggerCounts(store) {
         }
     });
 
-// 6. 수동 분배 수치 자동 할당 및 합산 (모든 트리거 합산 후 최종 수행)
-const currentEnhancePool = counts.total.enhance || 0;
-let em = Number(store.manualEnhance?.m) || 0;
-let ea = Number(store.manualEnhance?.a) || 0;
-if (currentEnhancePool === 0) { em = 0; ea = 0; }
-else {
-    let diffE = currentEnhancePool - (em + ea);
-    if (diffE > 0) em += diffE;
-    else if (diffE < 0) {
-        const reduceM = Math.min(em, Math.abs(diffE)); em -= reduceM; diffE += reduceM;
-        if (diffE < 0) ea = Math.max(0, ea + diffE);
+    // 6. 수동 분배 수치 자동 할당 및 합산 (모든 트리거 합산 후 최종 수행)
+    const currentEnhancePool = counts.total.enhance || 0;
+    let em = Number(store.manualEnhance?.m) || 0;
+    let ea = Number(store.manualEnhance?.a) || 0;
+    if (currentEnhancePool === 0) { em = 0; ea = 0; }
+    else {
+        let diffE = currentEnhancePool - (em + ea);
+        if (diffE > 0) em += diffE;
+        else if (diffE < 0) {
+            const reduceM = Math.min(em, Math.abs(diffE)); em -= reduceM; diffE += reduceM;
+            if (diffE < 0) ea = Math.max(0, ea + diffE);
+        }
     }
-}
-store.manualEnhance = { m: em, a: ea };
-counts.total.enhance_m += em; counts.total.enhance_a += ea;
+    store.manualEnhance = { m: em, a: ea };
+    counts.total.enhance_m += em; counts.total.enhance_a += ea;
 
-const currentDeletePool = counts.total.delete || 0;
-let dm = Number(store.manualDelete?.m) || 0;
-let da = Number(store.manualDelete?.a) || 0;
-let dt = Number(store.manualDelete?.t) || 0;
-if (currentDeletePool === 0) { dm = 0; da = 0; dt = 0; }
-else {
-    let diffD = currentDeletePool - (dm + da + dt);
-    if (diffD > 0) dm += diffD;
-    else if (diffD < 0) {
-        let absDiff = Math.abs(diffD);
-        const redM = Math.min(dm, absDiff); dm -= redM; absDiff -= redM;
-        const redA = Math.min(da, absDiff); da -= redA; absDiff -= redA;
-        if (absDiff > 0) dt = Math.max(0, dt - absDiff);
+    const currentDeletePool = counts.total.delete || 0;
+    let dm = Number(store.manualDelete?.m) || 0;
+    let da = Number(store.manualDelete?.a) || 0;
+    let dt = Number(store.manualDelete?.t) || 0;
+    if (currentDeletePool === 0) { dm = 0; da = 0; dt = 0; }
+    else {
+        let diffD = currentDeletePool - (dm + da + dt);
+        if (diffD > 0) dm += diffD;
+        else if (diffD < 0) {
+            let absDiff = Math.abs(diffD);
+            const redM = Math.min(dm, absDiff); dm -= redM; absDiff -= redM;
+            const redA = Math.min(da, absDiff); da -= redA; absDiff -= redA;
+            if (absDiff > 0) dt = Math.max(0, dt - absDiff);
+        }
     }
-}
-store.manualDelete = { m: dm, a: da, t: dt };
-counts.total.delete_m += dm; counts.total.delete_a += da;
+    store.manualDelete = { m: dm, a: da, t: dt };
+    counts.total.delete_m += dm; counts.total.delete_a += da;
 
-// [잠금] 최종 트러블 삭제량은 획득량을 절대로 넘을 수 없음
-counts.total.delete_t_before_cap = (counts.total.delete_t || 0) + dt;
-counts.total.delete_t = Math.min(counts.total.delete_t_before_cap, counts.total.get_t || 0);
+    // [잠금] 최종 트러블 삭제량은 획득량을 절대로 넘을 수 없음
+    counts.total.delete_t_before_cap = (counts.total.delete_t || 0) + dt;
+    counts.total.delete_t = Math.min(counts.total.delete_t_before_cap, counts.total.get_t || 0);
 
-return counts;
+    // 총 카드 삭제/강화 횟수 최종 갱신 (트러블 삭제 및 각 카드 종류별 삭제/강화 합산)
+    counts.total.delete = (counts.total.delete_m || 0) + (counts.total.delete_a || 0) + (counts.total.delete_t || 0);
+    counts.total.enhance = (counts.total.enhance_m || 0) + (counts.total.enhance_a || 0);
+
+    return counts;
 }/**
  * 전역 상태를 바탕으로 최종 합계 스탯 계산
  */

@@ -2343,7 +2343,7 @@ export const cardList = [
         releasedAt: "2024-09-20",
         plan: "logic",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["get_goodimpression"], triggertext: ["vocal700"], targettext: ["ppoint40"], target: "get", display: { ko: "카드 복제", ja: "カードコピー" }, max: 1 }],
+        item_effects: [{ type: "action", trigger: ["get_goodimpression"], triggertext: ["vocal700"], targettext: ["ppoint40"], target: "get", display: { ko: "카드 복제", ja: "カードコピー", en: "Copy Card" }, max: 1 }],
         rarity: "SR",
         extra1: "param",
         abilities:

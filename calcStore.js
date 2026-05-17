@@ -52,6 +52,8 @@ export const calcStore = {
     manualDelete: { m: 0, a: 0, t: 0 },
     manualGet: { m: 0, a: 0, t: 0 },
     pItems: [null, null, null, null, null],
+    pItemSubOpts: [null, null, null, null, null],
+    pItemSubSubOpts: [null, null, null, null, null],
     pItemChecked: false,
     hifPrimaChecked: false,
     isSR: false,
@@ -105,6 +107,8 @@ export const calcStore = {
             manualDelete: this.manualDelete,
             manualGet: this.manualGet,
             pItems: this.pItems,
+            pItemSubOpts: this.pItemSubOpts,
+            pItemSubSubOpts: this.pItemSubSubOpts,
             pItemChecked: this.pItemChecked,
             hifPrimaChecked: this.hifPrimaChecked,
             isSR: this.isSR,
@@ -187,6 +191,8 @@ export const calcStore = {
         this.manualDelete = { ...createDefaultManualDelete(), ...(saved.manualDelete || {}) };
         this.manualGet = { ...createDefaultManualGet(), ...(saved.manualGet || {}) };
         this.pItems = Array.isArray(saved.pItems) ? saved.pItems : [null, null, null, null, null];
+        this.pItemSubOpts = Array.isArray(saved.pItemSubOpts) ? saved.pItemSubOpts : [null, null, null, null, null];
+        this.pItemSubSubOpts = Array.isArray(saved.pItemSubSubOpts) ? saved.pItemSubSubOpts : [null, null, null, null, null];
         this.pItemChecked = saved.pItemChecked === true || saved.pItemChecked === 'true';
         this.hifPrimaChecked = saved.hifPrimaChecked === true || saved.hifPrimaChecked === 'true';
         this.isSR = saved.isSR === true || saved.isSR === 'true';

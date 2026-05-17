@@ -1017,6 +1017,7 @@ function refreshAll() {
         }
 
         setupMemorySelector();
+        setupPItemSelector();
     } catch (err) {
         console.error("Critical error in refreshAll:", err);
     }
@@ -1131,6 +1132,8 @@ function setupPItemSelector() {
     }
 
     if (!calcStore.pItems) calcStore.pItems = [null, null, null, null, null];
+    if (!calcStore.pItemSubOpts) calcStore.pItemSubOpts = [null, null, null, null, null];
+    if (!calcStore.pItemSubSubOpts) calcStore.pItemSubSubOpts = [null, null, null, null, null];
 
     const container = document.getElementById('p-item-container');
     if (container) {
@@ -1141,7 +1144,22 @@ function setupPItemSelector() {
         container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
             const val = calcStore.pItems[idx];
             slot.style.borderColor = val ? 'transparent' : '#ddd';
-            slot.innerHTML = val ? `<img src="icons/cal/${val}.webp" data-val="${val}">` : '<span class="support-bg-text">P-item</span>';
+            
+            let slotHtml = '';
+            if (val) {
+                let iconName = val;
+                if (currentType === 'hif') {
+                    if (calcStore.pItemSubSubOpts && calcStore.pItemSubSubOpts[idx]) {
+                        iconName = calcStore.pItemSubSubOpts[idx];
+                    } else if (calcStore.pItemSubOpts && calcStore.pItemSubOpts[idx]) {
+                        iconName = calcStore.pItemSubOpts[idx];
+                    }
+                }
+                slotHtml = `<img src="icons/cal/${iconName}.webp" data-val="${val}">`;
+            } else {
+                slotHtml = '<span class="support-bg-text">P-item</span>';
+            }
+            slot.innerHTML = slotHtml;
 
             // Hover 효과 (JS로 추가)
             slot.onmouseenter = () => { slot.style.backgroundColor = `${idolColor}11`; };

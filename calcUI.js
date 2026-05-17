@@ -6,6 +6,7 @@ import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
 import { showMemorySelectModal } from './calcModals.js';
+import { pItemDescriptions } from './pItemData.js';
 
 /**
  * 아이돌별 표시 색상 반환 (릴리야 보정 포함)
@@ -15,6 +16,174 @@ const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 const getOptionLabel = (opt) => opt?.labelKey ? t(opt.labelKey) : (opt?.[`label_${state.currentLang}`] || opt?.label_ko || '');
 const getOptionMainLabel = (opt) => opt?.mainLabelKey ? t(opt.mainLabelKey) : (opt?.mainlabel || '');
 const getCalcIconSrc = (value, calcType = calcStore.type) => `icons/cal/${calcType === 'hif' && value === 'test' ? 'test_hif' : value}.webp`;
+
+/**
+ * 서포트 카드의 아이템 효과 또는 HIF P-아이템의 item_effects 배열을 다국어 설명 텍스트로 파싱하는 공통 엔진
+ */
+export function getParsedItemEffectsText(itemEffects) {
+    if (!itemEffects || !Array.isArray(itemEffects)) return '';
+
+    const labels = {
+        get: t('support_effect_get'),
+        get_concentration: t('support_effect_get_concentration'),
+        get_goodcondition: t('support_effect_get_goodcondition'),
+        get_motivation: t('support_effect_get_motivation'),
+        get_goodimpression: t('support_effect_get_goodimpression'),
+        get_genki: t('support_effect_get_genki'),
+        get_preservation: t('support_effect_get_preservation'),
+        get_enthusiasm: t('support_effect_get_enthusiasm'),
+        get_fullpower: t('support_effect_get_fullpower'),
+        get_drink: t('support_effect_get_drink'),
+        get_item: t('support_effect_get_item'),
+        get_ssr: t('support_effect_get_ssr'),
+        purchase_drink: t('support_effect_purchase_drink'),
+        gift: t('support_effect_gift'),
+        goout: t('support_effect_goout'),
+        lesson: t('support_effect_lesson'),
+        sp: t('support_effect_sp'),
+        sp_lesson: t('support_effect_sp_lesson'),
+        audition: t('support_effect_audition'),
+        advice: t('support_effect_advice'),
+        rest: t('support_effect_rest'),
+        test: t('support_effect_test'),
+        round_hif: t('support_effect_round_hif'),
+        class: t('support_effect_class'),
+        spclass: t('support_effect_spclass'),
+        enhance: t('support_effect_enhance'),
+        delete: t('support_effect_delete'),
+        delete_t: t('support_effect_delete_t'),
+        change: t('support_effect_change')
+    };
+
+    const statLabels = {
+        vocal: t('attr_vocal'),
+        dance: t('attr_dance'),
+        visual: t('attr_visual')
+    };
+
+    return itemEffects.map(eff => {
+        // 트리거 처리 (배열인 경우 모든 요소를 매핑하여 합침)
+        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+        const trigger = triggers.map(t => labels[t] || t).join(', ');
+        const maxSuffix = (eff.max && eff.max < 9) ? t('support_effect_max_suffix', { count: eff.max }) : '';
+
+        if (eff.type === 'action') {
+            let effectDescParts = [];
+            if (eff.stats) {
+                const statsStr = Object.entries(eff.stats).map(([k, v]) => `${statLabels[k] || k.toUpperCase()} +${v}`).join(', ');
+                effectDescParts.push(statsStr);
+            }
+            if (eff.target) {
+                let displayText = null;
+                if (eff.display) {
+                    if (typeof eff.display === 'object') {
+                        displayText = eff.display[state.currentLang] || eff.display.ja || eff.display.ko || '';
+                    } else {
+                        displayText = eff.display;
+                    }
+                }
+
+                let targetStr = "";
+                if (displayText) {
+                    targetStr = displayText;
+                } else {
+                    const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
+                    const targetCounts = [];
+                    targets.forEach(t => {
+                        const existing = targetCounts.find(tc => tc.id === t);
+                        if (existing) {
+                            existing.count++;
+                        } else {
+                            targetCounts.push({ id: t, count: 1 });
+                        }
+                    });
+
+                    targetStr = targetCounts.map(tc => {
+                        const name = labels[tc.id] || tc.id;
+                        return tc.count > 1 ? `${name} +${tc.count}` : name;
+                    }).join(', ');
+                }
+
+                if (eff.value) targetStr += ` +${eff.value}`;
+                effectDescParts.push(targetStr);
+            }
+            if (eff.targettext) {
+                const tTexts = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
+                const parsedParts = [];
+                tTexts.forEach(tt => {
+                    const match = tt.match(/^(ppoint|hp|goodcondition|concentration|motivation|goodimpression|anomaly)(\d+)$/i);
+                    let translated = "";
+                    let isSpecial = false;
+
+                    if (match) {
+                        const type = match[1].toLowerCase();
+                        const val = match[2];
+                        translated = t(`support_effect_targettext_${type}`, { val });
+                        if (['goodcondition', 'concentration', 'motivation', 'goodimpression'].includes(type)) {
+                            isSpecial = true;
+                        }
+                    } else {
+                        let localTrans = t(`support_effect_condition_${tt}`);
+                        if (!localTrans) {
+                            localTrans = t(`support_effect_targettext_${tt}`, {}, tt);
+                        }
+                        translated = localTrans;
+                    }
+                    parsedParts.push({ text: translated, isSpecial });
+                });
+
+                let targetTextDesc = "";
+                for (let i = 0; i < parsedParts.length; i++) {
+                    if (i > 0) {
+                        const prev = parsedParts[i - 1];
+                        const curr = parsedParts[i];
+                        if (prev.isSpecial && curr.isSpecial) {
+                            targetTextDesc += " · ";
+                        } else {
+                            targetTextDesc += ", ";
+                        }
+                    }
+                    targetTextDesc += parsedParts[i].text;
+                }
+                if (targetTextDesc) {
+                    effectDescParts.push(targetTextDesc);
+                }
+            }
+            const effectDesc = effectDescParts.join(', ');
+            let finalDesc = t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
+
+            if (eff.triggertext) {
+                const tTexts = Array.isArray(eff.triggertext) ? eff.triggertext : [eff.triggertext];
+                const prefixStr = tTexts.map(tt => {
+                    const percentMatch = tt.match(/^(hp)(\d+)percent(up|down)$/i);
+                    if (percentMatch) {
+                        const num = percentMatch[2];
+                        const dir = percentMatch[3].toLowerCase();
+                        return t(`support_effect_condition_percent_${dir}`, { num });
+                    }
+
+                    const match = tt.match(/^(vocal|dance|visual|hp)(\d+)(up|down)?$/i);
+                    if (match) {
+                        const attrKey = match[1].toLowerCase();
+                        const num = match[2];
+                        const dir = match[3] ? match[3].toLowerCase() : 'up';
+                        const attrName = attrKey === 'hp' ? 'HP' : t(`attr_${attrKey}`);
+                        return t(`support_effect_condition_${dir}`, { attr: attrName, num: num });
+                    }
+                    return tt + (state.currentLang === 'ja' ? '、' : ', ');
+                }).join('');
+                finalDesc = prefixStr + finalDesc;
+            }
+
+            return finalDesc;
+        } else if (eff.type === 'add_count') {
+            const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
+            const target = targets.map(t => labels[t] || t).join(', ');
+            return `${target} +${eff.value}${maxSuffix}`;
+        }
+        return '';
+    }).filter(t => t).join('<br>');
+}
 
 export function getNormalizedSelectedCardIds(store, disabledCards = state.disabledCards) {
     const ids = [...(store.planCards[store.planType] || [])];
@@ -703,7 +872,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         ${Array.from({ length: store.type === 'nia' ? 5 : (store.type === 'hif' ? 1 : 2) }).map((_, i) => `
                             <div class="p-item-slot" data-idx="${i}" style="border-color: ${store.pItems[i] ? 'transparent' : '#ddd'};"></div>
                         `).join('')}
-                        <button class="p-item-info-btn" style="position: absolute; right: 0; width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 9px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: serif;">i</button>
+                        <button class="p-item-info-btn" style="position: absolute; right: 0; width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ddd; background: #f8f9fa; color: #666; font-size: 9px; cursor: pointer; flex-shrink: 0; display: ${store.type === 'hif' && !store.pItems[0] ? 'none' : 'flex'}; align-items: center; justify-content: center; font-weight: bold; font-family: serif;">i</button>
                     </div>
 
                     <!-- Divider -->
@@ -998,6 +1167,46 @@ export function showSubTooltip(parent, week, wrapper, pTooltip) {
         };
     });
 }
+/**
+ * P-아이템의 다국어 조건(레슨 시 등)과 번역 텍스트를 동적으로 결합하여 최종 설명문을 반환하는 헬퍼 함수
+ */
+export function getPItemDescriptionText(descObj, subOptId, subSubOptId) {
+    if (!descObj) return '';
+    const lang = state.currentLang;
+    const isJa = lang !== 'ko';
+
+    // 1. 3단계 세부 옵션(1-1-1 등)이 선택되었고 해당 subSubOption이 존재하는 경우 최우선 출력
+    if (subOptId && subSubOptId) {
+        const subObj = descObj.subOptions?.find(s => s.id === subOptId);
+        const subSubObj = subObj?.subOptions?.find(s => s.id === subSubOptId);
+        if (subSubObj) {
+            if (subSubObj.item_effects && subSubObj.item_effects.length > 0) {
+                return getParsedItemEffectsText(subSubObj.item_effects);
+            }
+            return lang === 'en' ? (subSubObj.en || subSubObj.ja || subSubObj.ko) : (isJa ? (subSubObj.ja || subSubObj.ko) : subSubObj.ko);
+        }
+    }
+
+    // 2. 세부 옵션(HIF 등)이 선택되었고 해당 subOption이 존재하는 경우 출력
+    const subObj = subOptId ? descObj.subOptions?.find(s => s.id === subOptId) : null;
+    if (subObj) {
+        if (subObj.item_effects) {
+            // Re-use the exact same parser engine as support cards!
+            return getParsedItemEffectsText(subObj.item_effects);
+        }
+        return lang === 'en' ? (subObj.en || subObj.ja || subObj.ko) : (isJa ? (subObj.ja || subObj.ko) : subObj.ko);
+    }
+
+    // 3. 일반 아이돌(니아, 하지메) 또는 HIF의 고유 베이스 설명이 적혀있는 경우 출력
+    if (descObj.item_effects) {
+        return getParsedItemEffectsText(descObj.item_effects);
+    }
+    if (descObj.ko || descObj.ja || descObj.en) {
+        return lang === 'en' ? (descObj.en || descObj.ja || descObj.ko) : (isJa ? (descObj.ja || descObj.ko) : descObj.ko);
+    }
+
+    return '';
+}
 
 /**
  * P-아이템 선택 툴팁 표시
@@ -1011,24 +1220,215 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-tooltip';
     const tooltipPadding = isMobile ? '8px' : '12px';
-    const targetWidth = isMobile ? '135px' : '165px';
-    tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:130px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
+
+    const isHif = calcStore.type === 'hif';
+    const targetWidth = isHif ? (isMobile ? '230px' : '300px') : (isMobile ? '135px' : '165px');
+
+    if (isHif) {
+        tooltip.style.cssText = `display:flex; flex-direction:column; width:${targetWidth}; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
+    } else {
+        tooltip.style.cssText = `flex-direction:row; flex-wrap:wrap; width:${targetWidth}; min-width:130px; gap:8px; justify-content:flex-start; padding:${tooltipPadding}; box-sizing:border-box; border: 2px solid ${idolColor};`;
+    }
 
     const btnSize = isMobile ? '32px' : '40px';
 
     // X 버튼(지우기) 제거됨
 
     const slotItems = itemsBySlot[idx] || [];
-    slotItems.forEach(item => {
-        const img = document.createElement('img');
-        img.src = `icons/cal/${item}.webp`;
-        img.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; cursor:pointer; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;`;
-        img.onclick = () => {
-            calcStore.pItems[idx] = item;
-            slot.innerHTML = `<img src="icons/cal/${item}.webp" data-val="${item}">`;
-            calcStore.save(); refreshAll(); tooltip.remove();
+
+    if (isHif) {
+        const header = document.createElement('div');
+        header.style.cssText = `display:flex; align-items:center; gap:8px; width:100%; border-bottom:1px solid #ccc; padding-bottom:6px; margin-bottom:4px; box-sizing:border-box;`;
+
+        const titleSpan = document.createElement('span');
+        titleSpan.innerText = 'HIF P-item Select';
+        titleSpan.style.cssText = `font-size:${isMobile ? '0.58rem' : '0.68rem'}; font-weight:bold; color:#666;`;
+
+        header.appendChild(titleSpan);
+        tooltip.appendChild(header);
+    }
+
+    function adjustTooltipPosition() {
+        const rect = slot.getBoundingClientRect();
+        const tooltipWidth = tooltip.offsetWidth;
+
+        let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+        let top = rect.bottom + window.scrollY + 8;
+
+        if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
+        if (left < 10) left = 10;
+
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
+    }
+
+    function renderSubOptionsScreen(selectedItem, descObj) {
+        tooltip.innerHTML = ''; // Clear main choices
+
+        // Header (Back button and title)
+        const header = document.createElement('div');
+        header.style.cssText = `display:flex; align-items:center; gap:8px; width:100%; border-bottom:1px solid #ccc; padding-bottom:6px; margin-bottom:4px; box-sizing:border-box;`;
+
+        const backBtn = document.createElement('button');
+        backBtn.innerText = '←';
+        backBtn.style.cssText = `background:none; border:none; color:${idolColor}; font-size:${isMobile ? '0.9rem' : '1.1rem'}; font-weight:bold; cursor:pointer; padding:0 4px; line-height:1; margin-left:auto;`;
+        backBtn.onclick = (e) => {
+            e.stopPropagation();
+            // Re-render the main P-item selector tooltip
+            showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll);
         };
-        tooltip.appendChild(img);
+
+        const selectedIcon = document.createElement('img');
+        selectedIcon.src = `icons/cal/${selectedItem}.webp`;
+        selectedIcon.style.cssText = `width:${isMobile ? '20px' : '24px'}; height:${isMobile ? '20px' : '24px'}; min-width:${isMobile ? '20px' : '24px'} !important; flex-shrink:0; border-radius:4px; object-fit:contain; border:1px solid #eee; box-sizing:border-box;`;
+
+        header.appendChild(selectedIcon);
+        header.appendChild(backBtn);
+        tooltip.appendChild(header);
+
+        // Sub options
+        descObj.subOptions.forEach(sub => {
+            const subRow = document.createElement('div');
+            subRow.style.cssText = `display:flex; align-items:center; gap:8px; padding:6px; border-radius:6px; cursor:pointer; transition:background 0.2s; width:100%; box-sizing:border-box;`;
+
+            subRow.onmouseenter = () => { subRow.style.backgroundColor = `${idolColor}15`; };
+            subRow.onmouseleave = () => { subRow.style.backgroundColor = 'transparent'; };
+
+            const text = getPItemDescriptionText(descObj, sub.id);
+            subRow.innerHTML = `
+                <img src="icons/cal/${sub.id}.webp" style="width:${btnSize}; height:${btnSize}; min-width:${btnSize} !important; flex-shrink:0; aspect-ratio:1/1; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;">
+                <span style="font-size: ${isMobile ? '0.54rem' : '0.68rem'}; color: #333; line-height: 1.3;">${text}</span>
+            `;
+
+            subRow.onclick = (e) => {
+                e.stopPropagation();
+                if (sub.subOptions && sub.subOptions.length > 0) {
+                    renderSubSubOptionsScreen(selectedItem, sub.id, sub, descObj);
+                } else {
+                    calcStore.pItems[idx] = selectedItem;
+                    calcStore.pItemSubOpts[idx] = sub.id;
+                    calcStore.pItemSubSubOpts[idx] = null;
+                    calcStore.save();
+                    refreshAll();
+                    tooltip.remove();
+                }
+            };
+            tooltip.appendChild(subRow);
+        });
+
+        // Instantly adjust size and position
+        adjustTooltipPosition();
+    }
+
+    function renderSubSubOptionsScreen(selectedItem, selectedSubId, subObj, descObj) {
+        tooltip.innerHTML = ''; // Clear sub choices
+
+        // Header (Back button and title)
+        const header = document.createElement('div');
+        header.style.cssText = `display:flex; align-items:center; gap:8px; width:100%; border-bottom:1px solid #ccc; padding-bottom:6px; margin-bottom:4px; box-sizing:border-box;`;
+
+        const backBtn = document.createElement('button');
+        backBtn.innerText = '←';
+        backBtn.style.cssText = `background:none; border:none; color:${idolColor}; font-size:${isMobile ? '0.9rem' : '1.1rem'}; font-weight:bold; cursor:pointer; padding:0 4px; line-height:1; margin-left:auto;`;
+        backBtn.onclick = (e) => {
+            e.stopPropagation();
+            renderSubOptionsScreen(selectedItem, descObj);
+        };
+
+        const iconWrapper = document.createElement('div');
+        iconWrapper.style.cssText = `display:flex; align-items:center; gap:4px;`;
+
+        const icon1 = document.createElement('img');
+        icon1.src = `icons/cal/${selectedItem}.webp`;
+        icon1.style.cssText = `width:${isMobile ? '20px' : '24px'}; height:${isMobile ? '20px' : '24px'}; min-width:${isMobile ? '20px' : '24px'} !important; flex-shrink:0; border-radius:4px; object-fit:contain; border:1px solid #eee; box-sizing:border-box;`;
+
+        const arrow = document.createElement('span');
+        arrow.innerText = '›';
+        arrow.style.cssText = `font-size:${isMobile ? '0.6rem' : '0.8rem'}; color:#aaa; font-weight:bold; line-height:1; display:flex; align-items:center;`;
+
+        const icon2 = document.createElement('img');
+        icon2.src = `icons/cal/${selectedSubId}.webp`;
+        icon2.style.cssText = `width:${isMobile ? '20px' : '24px'}; height:${isMobile ? '20px' : '24px'}; min-width:${isMobile ? '20px' : '24px'} !important; flex-shrink:0; border-radius:4px; object-fit:contain; border:1px solid #eee; box-sizing:border-box;`;
+
+        iconWrapper.appendChild(icon1);
+        iconWrapper.appendChild(arrow);
+        iconWrapper.appendChild(icon2);
+
+        header.appendChild(iconWrapper);
+        header.appendChild(backBtn);
+        tooltip.appendChild(header);
+
+        // Sub Sub options
+        subObj.subOptions.forEach(subSub => {
+            const subSubRow = document.createElement('div');
+            subSubRow.style.cssText = `display:flex; align-items:center; gap:8px; padding:6px; border-radius:6px; cursor:pointer; transition:background 0.2s; width:100%; box-sizing:border-box;`;
+
+            subSubRow.onmouseenter = () => { subSubRow.style.backgroundColor = `${idolColor}15`; };
+            subSubRow.onmouseleave = () => { subSubRow.style.backgroundColor = 'transparent'; };
+
+            const text = getPItemDescriptionText(descObj, selectedSubId, subSub.id);
+            subSubRow.innerHTML = `
+                <img src="icons/cal/${subSub.id}.webp" style="width:${btnSize}; height:${btnSize}; min-width:${btnSize} !important; flex-shrink:0; aspect-ratio:1/1; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;" onerror="this.src='icons/cal/${selectedSubId}.webp'; this.onerror=null;">
+                <span style="font-size: ${isMobile ? '0.54rem' : '0.68rem'}; color: #333; line-height: 1.3;">${text}</span>
+            `;
+
+            subSubRow.onclick = (e) => {
+                e.stopPropagation();
+                calcStore.pItems[idx] = selectedItem;
+                calcStore.pItemSubOpts[idx] = selectedSubId;
+                calcStore.pItemSubSubOpts[idx] = subSub.id;
+
+                calcStore.save();
+                refreshAll();
+                tooltip.remove();
+            };
+            tooltip.appendChild(subSubRow);
+        });
+
+        // Instantly adjust size and position
+        adjustTooltipPosition();
+    }
+
+    slotItems.forEach(item => {
+        if (isHif) {
+            const descObj = pItemDescriptions.hif?.find(d => d.icons.includes(item));
+            const descText = getPItemDescriptionText(descObj, null);
+
+            const row = document.createElement('div');
+            row.style.cssText = `display:flex; align-items:center; gap:8px; cursor:pointer; padding:6px; border-radius:6px; transition:background 0.2s; width:100%; box-sizing:border-box;`;
+
+            row.onmouseenter = () => { row.style.backgroundColor = `${idolColor}15`; };
+            row.onmouseleave = () => { row.style.backgroundColor = 'transparent'; };
+
+            row.innerHTML = `
+                <img src="icons/cal/${item}.webp" style="width:${btnSize}; height:${btnSize}; min-width:${btnSize} !important; flex-shrink:0; aspect-ratio:1/1; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;">
+                <span style="font-size: ${isMobile ? '0.54rem' : '0.68rem'}; color: #333; white-space: normal; line-height: 1.3;">${descText}</span>
+            `;
+            row.onclick = (e) => {
+                e.stopPropagation();
+                console.log('[DEBUG showPItemSelectorTooltip] clicked:', item, 'planType:', calcStore.planType, 'descObj:', descObj);
+                if (descObj && descObj.subOptions && descObj.subOptions.length > 0) {
+                    renderSubOptionsScreen(item, descObj);
+                } else {
+                    calcStore.pItems[idx] = item;
+                    calcStore.pItemSubOpts[idx] = null;
+                    calcStore.pItemSubSubOpts[idx] = null;
+                    calcStore.save(); refreshAll(); tooltip.remove();
+                }
+            };
+            tooltip.appendChild(row);
+        } else {
+            const img = document.createElement('img');
+            img.src = `icons/cal/${item}.webp`;
+            img.style.cssText = `width:${btnSize}; height:${btnSize}; min-width:0 !important; aspect-ratio:1/1; cursor:pointer; border:1px solid #eee; border-radius:4px; box-sizing:border-box; object-fit:contain;`;
+            img.onclick = () => {
+                calcStore.pItems[idx] = item;
+                calcStore.pItemSubOpts[idx] = null;
+                calcStore.pItemSubSubOpts[idx] = null;
+                calcStore.save(); refreshAll(); tooltip.remove();
+            };
+            tooltip.appendChild(img);
+        }
     });
 
     document.body.appendChild(tooltip);
@@ -1082,15 +1482,94 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     tooltip.className = 'calc-tooltip p-item-info-tooltip';
     tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
 
-    const items = pItemDescriptions[calcStore.type] || [];
-    let contentHtml = items.map(item => {
-        if (item.type === 'separator') return `<div style="height: 1px; background: #eee; margin: 1px 0;"></div>`;
-        const iconsHtml = item.icons.map(icon => `<img src="icons/cal/${icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px;">`).join('<div style="width:2px;"></div>');
-        return `<div style="display: flex; align-items: center; gap: ${gap};">
-                    <div style="display: flex; align-items: center; gap: 2px;">${iconsHtml}</div>
-                    <span>${state.currentLang === 'en' ? (item.en || item.ja || item.ko) : (isJa ? (item.ja || item.ko) : item.ko)}</span>
-                </div>`;
-    }).join('');
+    let selectedItems = [];
+    const maxSlots = calcStore.type === 'nia' ? 5 : (calcStore.type === 'hif' ? 1 : 2);
+
+    for (let i = 0; i < maxSlots; i++) {
+        const itemId = calcStore.pItems[i];
+        if (!itemId) continue;
+
+        const descObj = pItemDescriptions[calcStore.type]?.find(d => d.icons?.includes(itemId));
+        if (!descObj) continue;
+
+        if (calcStore.type === 'hif') {
+            // 1차 메인 P-아이템 효과 추가
+            selectedItems.push({
+                icon: itemId,
+                text: getPItemDescriptionText(descObj, null, null)
+            });
+
+            // 2차 서브 옵션 효과 추가
+            const subId = calcStore.pItemSubOpts[i];
+            if (subId) {
+                selectedItems.push({
+                    icon: subId,
+                    text: getPItemDescriptionText(descObj, subId, null)
+                });
+
+                // 3차 추가 세부 옵션 효과 추가
+                const subSubId = calcStore.pItemSubSubOpts[i];
+                if (subSubId) {
+                    selectedItems.push({
+                        icon: subSubId,
+                        text: getPItemDescriptionText(descObj, subId, subSubId)
+                    });
+                }
+            }
+        } else {
+            // 일반 아이돌은 슬롯별 메인 아이콘/효과 표시
+            selectedItems.push({
+                icon: itemId,
+                text: getPItemDescriptionText(descObj, null, null)
+            });
+        }
+    }
+
+    let contentHtml = '';
+    if (selectedItems.length === 0) {
+        const fallbackText = state.currentLang === 'en' ? 'No P-items equipped.' : (state.currentLang === 'ja' ? '装備されたPアイテムがありません。' : '장착된 P-아이템이 없습니다.');
+        contentHtml = `<div style="text-align: center; color: #999; padding: 4px 0;">${fallbackText}</div>`;
+    } else {
+        if (calcStore.type === 'hif') {
+            // HIF 모드에서는 각 단계별 활성 구간 타이틀과 경계선을 융합하여 렌더링 (하드코딩 방식)
+            const sections = [];
+            selectedItems.forEach((item, index) => {
+                const dashCount = (item.icon.match(/-/g) || []).length;
+                let titleText = '';
+                if (dashCount === 0) {
+                    titleText = state.currentLang === 'en' ? 'Selection Exam Day 7 ~ 12' : (state.currentLang === 'ja' ? '選抜試験7日~12日' : '선발시험 7일 ~ 12일');
+                } else if (dashCount === 1) {
+                    titleText = state.currentLang === 'en' ? 'Selection Exam Day 14 ~ 19' : (state.currentLang === 'ja' ? '選抜試験14日~19日' : '선발시험 14일 ~ 19일');
+                } else if (dashCount === 2) {
+                    titleText = state.currentLang === 'en' ? 'Finals Day 1 ~ 6' : (state.currentLang === 'ja' ? '本戦1日~6日' : '본선 1일 ~ 6일');
+                }
+
+                const sectionHeaderHtml = `
+                    <div style="display: flex; align-items: center; gap: 8px; margin: ${index === 0 ? '2px' : '8px'} 0 4px 0; width: 100%; box-sizing: border-box;">
+                        <span style="font-size: ${isMobile ? '0.52rem' : '0.6rem'}; font-weight: bold; color: #888; white-space: nowrap;">${titleText}</span>
+                        <div style="height: 1px; flex-grow: 1; background: #ddd;"></div>
+                    </div>
+                `;
+
+                sections.push(`
+                    ${sectionHeaderHtml}
+                    <div style="display: flex; align-items: center; gap: ${gap}; padding-left: 4px; box-sizing: border-box; width: 100%;">
+                        <img src="icons/cal/${item.icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/cal/hif1.webp'; this.onerror=null;">
+                        <span style="font-size: ${fontSize}; color: #333; line-height: 1.3; white-space: normal;">${item.text}</span>
+                    </div>
+                `);
+            });
+            contentHtml = sections.join('');
+        } else {
+            // 일반 아이돌은 기존처럼 리스트만 출력
+            contentHtml = selectedItems.map(item => {
+                return `<div style="display: flex; align-items: center; gap: ${gap};">
+                            <img src="icons/cal/${item.icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/cal/hif1.webp'; this.onerror=null;">
+                            <span style="font-size: ${fontSize}; color: #333; line-height: 1.3;">${item.text}</span>
+                        </div>`;
+            }).join('');
+        }
+    }
 
     tooltip.innerHTML = `<div style="display: flex; flex-direction: column; gap: ${gap};">${contentHtml}</div>`;
     document.body.appendChild(tooltip);
@@ -1151,124 +1630,7 @@ export function showSupportItemTooltip(slot, cardId) {
     tooltip.style.cssText = `position: absolute; display: inline-flex; flex-direction: row; align-items: center; gap: ${gap}; width: auto; max-width: ${maxWidth}; padding: ${padding}; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: ${borderWidth} solid ${borderColor}; border-radius: 8px; font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 40000;`;
 
     // 아이템 효과 텍스트 생성
-    const effects = card.item_effects.map(eff => {
-        const labels = {
-            get: t('support_effect_get'),
-            get_concentration: t('support_effect_get_concentration'),
-            get_goodcondition: t('support_effect_get_goodcondition'),
-            get_motivation: t('support_effect_get_motivation'),
-            get_goodimpression: t('support_effect_get_goodimpression'),
-            get_genki: t('support_effect_get_genki'),
-            get_preservation: t('support_effect_get_preservation'),
-            get_enthusiasm: t('support_effect_get_enthusiasm'),
-            get_fullpower: t('support_effect_get_fullpower'),
-            get_drink: t('support_effect_get_drink'),
-            get_item: t('support_effect_get_item'),
-            get_ssr: t('support_effect_get_ssr'),
-            purchase_drink: t('support_effect_purchase_drink'),
-            gift: t('support_effect_gift'),
-            goout: t('support_effect_goout'),
-            lesson: t('support_effect_lesson'),
-            sp: t('support_effect_sp'),
-            sp_lesson: t('support_effect_sp_lesson'),
-            audition: t('support_effect_audition'),
-            advice: t('support_effect_advice'),
-            rest: t('support_effect_rest'),
-            test: t('support_effect_test'),
-            round_hif: t('support_effect_round_hif'),
-            class: t('support_effect_class'),
-            spclass: t('support_effect_spclass'),
-            enhance: t('support_effect_enhance'),
-            delete: t('support_effect_delete'),
-            delete_t: t('support_effect_delete_t'),
-            change: t('support_effect_change')
-        };
-
-        const statLabels = {
-            vocal: t('attr_vocal'),
-            dance: t('attr_dance'),
-            visual: t('attr_visual')
-        };
-
-        // 트리거 처리 (배열인 경우 모든 요소를 매핑하여 합침)
-        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-        const trigger = triggers.map(t => labels[t] || t).join(', ');
-        const maxSuffix = (eff.max && eff.max < 9) ? t('support_effect_max_suffix', { count: eff.max }) : '';
-
-        if (eff.type === 'action') {
-            let effectDescParts = [];
-            if (eff.stats) {
-                const statsStr = Object.entries(eff.stats).map(([k, v]) => `${statLabels[k] || k.toUpperCase()} +${v}`).join(', ');
-                effectDescParts.push(statsStr);
-            }
-            if (eff.target) {
-                let displayText = null;
-                if (eff.display) {
-                    if (typeof eff.display === 'object') {
-                        displayText = eff.display[state.currentLang] || eff.display.ja || eff.display.ko || '';
-                    } else {
-                        displayText = eff.display;
-                    }
-                }
-
-                let targetStr = "";
-                if (displayText) {
-                    targetStr = displayText;
-                } else {
-                    const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
-                    targetStr = targets.map(t => labels[t] || t).join(', ');
-                }
-
-                if (eff.value) targetStr += ` +${eff.value}`;
-                effectDescParts.push(targetStr);
-            }
-            if (eff.targettext) {
-                const tTexts = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
-                tTexts.forEach(tt => {
-                    const match = tt.match(/^(ppoint|hp)(\d+)$/i);
-                    if (match) {
-                        const type = match[1].toLowerCase();
-                        const val = match[2];
-                        effectDescParts.push(t(`support_effect_targettext_${type}`, { val }));
-                    } else {
-                        effectDescParts.push(tt);
-                    }
-                });
-            }
-            const effectDesc = effectDescParts.join(', ');
-            let finalDesc = t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
-
-            if (eff.triggertext) {
-                const tTexts = Array.isArray(eff.triggertext) ? eff.triggertext : [eff.triggertext];
-                const prefixStr = tTexts.map(tt => {
-                    const percentMatch = tt.match(/^(hp)(\d+)percent(up|down)$/i);
-                    if (percentMatch) {
-                        const num = percentMatch[2];
-                        const dir = percentMatch[3].toLowerCase();
-                        return t(`support_effect_condition_percent_${dir}`, { num });
-                    }
-
-                    const match = tt.match(/^(vocal|dance|visual|hp)(\d+)(up|down)?$/i);
-                    if (match) {
-                        const attrKey = match[1].toLowerCase();
-                        const num = match[2];
-                        const dir = match[3] ? match[3].toLowerCase() : 'up';
-                        const attrName = attrKey === 'hp' ? 'HP' : t(`attr_${attrKey}`);
-                        return t(`support_effect_condition_${dir}`, { attr: attrName, num: num });
-                    }
-                    return tt + (state.currentLang === 'ja' ? '、' : ', ');
-                }).join('');
-                finalDesc = prefixStr + finalDesc;
-            }
-
-            return finalDesc;
-        } else if (eff.type === 'add_count') {
-            const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
-            const target = targets.map(t => labels[t] || t).join(', ');
-            return `${target} +${eff.value}${maxSuffix}`;
-        }
-        return '';
-    }).filter(t => t).join('<br>');
+    const effects = getParsedItemEffectsText(card.item_effects);
 
     tooltip.innerHTML = `
         <img src="images/support/${cardId}_item.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; border: 1px solid #eee; flex-shrink: 0;" onerror="this.src='images/support/${cardId}.webp'; this.onerror=null;">
