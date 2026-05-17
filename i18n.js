@@ -295,10 +295,10 @@ const translations = {
     ja: {
         btn_empty: "アイドル",
         btn_supporter: "サポートカード",
-        btn_calc: "ステータス計算",
+        btn_calc: "パラメータ計算",
         btn_gacha: "ガシャシミュレーター",
         desc_idol: "実装済みアイドルの画像やリストを確認でき、各アイドルが参加したMVリンクを提供します。",
-        desc_support: "サポートカードの効果を確認し、凸状態を指定できます。凸状態やカードの除外状態はステータス計算機に反映されます。",
+        desc_support: "サポートカードの効果を確認し、凸状態を指定できます。凸状態やカードの除外状態はパラメータ計算機に反映されます。",
         desc_calc: "プロデュースで使用するサポートカードの性能確認や、スケジュールに応じたサポカ編成の自動推薦を提供します。",
         desc_gacha: "ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。（70%完成）",
         ui_no_cards_found_for: "{idolName}のカードが見つかりません。",
@@ -448,8 +448,8 @@ const translations = {
         calc_detail_hif_percent: "HIFボーナス(%)",
         calc_detail_hif_fixed: "HIFボーナス(固定)",
         hif_param_limit_title: "パラメータ上限増加",
-        hif_test_tooltip_desc: "試験で獲得したステータスを入力してください。<br>(%ボーナスを除く)",
-        hif_test_tooltip_desc_inc: "試験で獲得したステータスを入力してください。<br>(%ボーナスを含む)",
+        hif_test_tooltip_desc: "試験で獲得したパラメータを入力してください。<br>(%ボーナスを除く)",
+        hif_test_tooltip_desc_inc: "試験で獲得したパラメータを入力してください。<br>(%ボーナスを含む)",
         hif_test_complete: "完了",
         calc_detail_final_total: "総合計",
         calc_option_class_hif1: "カードチェンジ",
@@ -581,8 +581,8 @@ const translations = {
         idol_fullname_ume: "花海 佑芽",
         idol_fullname_misuzu: "秦谷 美鈴",
         support_tooltip_1: "• 花マークをクリックして、開花段階を設定できます。",
-        support_tooltip_2: "• カードを長押しすると除外状態になり、<br>リストの一番下に移動します。ステータス計算には含まれません。",
-        talent_bloom_desc_2: "アイドルの基本ステータスは <span style=\"color: #ff4d8d; font-weight: bold;\">親愛度20↑(HIF実装アイドルは37↑)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4特訓以上</span> を基準としており、一部の特定アイドル（2nd莉波、2ndことね等）の場合は反映されていません。"
+        support_tooltip_2: "• カードを長押しすると除外状態になり、<br>リストの一番下に移動します。パラメータ計算には含まれません。",
+        talent_bloom_desc_2: "アイドルの基本パラメータは <span style=\"color: #ff4d8d; font-weight: bold;\">親愛度20↑(HIF実装アイドルは37↑)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4特訓以上</span> を基準としており、一部の特定アイドル（2nd莉波、2ndことね等）の場合は反映されていません。"
     },
     en: {
         btn_empty: "Idols",
