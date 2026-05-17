@@ -594,7 +594,7 @@ function startWeeklyPlan(type) {
                                     </div>
                                     <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; width:100%;">
                                         <button class="hif-test-perc-btn" style="width:${isMobile ? '26px' : '30px'}; height:${isMobile ? '26px' : '30px'}; background:${savedOpts.hif_test_use_perc === 'true' ? idolColor : 'white'}; color:${savedOpts.hif_test_use_perc === 'true' ? 'white' : idolColor}; border:1px solid ${idolColor}; border-radius:50%; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">%</button>
-                                        <button class="hif-test-complete-btn" style="flex:1; height:${isMobile ? '26px' : '30px'}; background:${idolColor}; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center;">완료</button>
+                                        <button class="hif-test-complete-btn" style="flex:1; height:${isMobile ? '26px' : '30px'}; background:${idolColor}; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center;">${t('hif_test_complete')}</button>
                                     </div>
                                 </div>
                             `;
