@@ -221,8 +221,9 @@ export function buildSupportSlotData() {
 }
 
 // [추가] 슬롯 저장/로드 기능
-export function saveToSlot(slotId) {
+export function saveToSlot(slotId, customName) {
     const saveData = buildSupportSlotData();
+    if (customName) saveData.customName = customName;
     localStorage.setItem(`support_slot_${slotId}`, JSON.stringify(saveData));
 }
 
@@ -231,6 +232,7 @@ export function setSlotData(slotId, slotData) {
     localStorage.setItem(`support_slot_${slotId}`, JSON.stringify({
         supportLB: slotData.supportLB || {},
         disabledCards: slotData.disabledCards || {},
+        customName: slotData.customName || `Slot ${slotId}`,
         timestamp: slotData.timestamp || new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
     }));
 }

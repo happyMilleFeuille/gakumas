@@ -460,19 +460,22 @@ function openSlotModal() {
     const renderSlots = () => {
         let slotsHtml = '';
         for (let i = 1; i <= 3; i++) {
-            const info = getSlotInfo(i);
+            const data = getSlotData(i);
+            const timeInfo = data ? data.timestamp : null;
+            const customName = data && data.customName ? data.customName : `Slot ${i}`;
+            
             slotsHtml += `
                 <div class="slot-modal-item" style="position: relative; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
-                    <button class="slot-btn delete" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="position: absolute; top: 7px; right: 9px; background: transparent; color: #b0b0b0; border: none; width: auto; height: auto; padding: 0; border-radius: 0; display: block; font-size: 0.95rem; line-height: 1; cursor: pointer;">&times;</button>
+                    <button class="slot-btn delete" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="position: absolute; top: 7px; right: 9px; background: transparent; color: #b0b0b0; border: none; width: auto; height: auto; padding: 0; border-radius: 0; display: block; font-size: 0.95rem; line-height: 1; cursor: pointer;">&times;</button>
                     <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left; flex: 1; min-width: 0;">
-                        <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333;">Slot ${i}</span>
-                        <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${info || t('ui_slot_empty')}</span>
+                        <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 15px;">${customName}</span>
+                        <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${timeInfo || t('ui_slot_empty')}</span>
                     </div>
                     <div class="slot-modal-actions" style="display: flex; align-items: center; gap: 6px; padding-top: 10px; padding-right: 2px;">
                         <button class="slot-btn save" data-slot="${i}" style="width: 32px; height: 28px; flex: none; padding: 0; background: #ffe4ef; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/save.svg" alt="${t('ui_slot_save')}" style="width: 16px; height: 16px; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
                         </button>
-                        <button class="slot-btn load" data-slot="${i}" ${!info ? 'style="display:none;"' : ''} style="width: 32px; height: 28px; flex: none; padding: 0; background: #e3f2fd; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <button class="slot-btn load" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="width: 32px; height: 28px; flex: none; padding: 0; background: #e3f2fd; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/upload.svg" alt="${t('ui_slot_load')}" style="width: 16px; height: 16px; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
                         </button>
                         <button class="slot-btn share" data-slot="${i}" style="width: 32px; height: 28px; flex: none; padding: 0; background: #fff1cc; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
@@ -517,10 +520,7 @@ function openSlotModal() {
 
         if (saveBtn) {
             const slotId = saveBtn.dataset.slot;
-            if (confirm(t('ui_slot_save_confirm', { slotId }))) {
-                saveToSlot(slotId);
-                modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
-            }
+            showSupportSavePresetModal(slotId, modal, renderSlots);
         }
 
         if (loadBtn) {
@@ -547,6 +547,89 @@ function openSlotModal() {
             }
         }
     });
+}
+
+function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
+    const isJa = state.currentLang === 'ja';
+    const isEn = state.currentLang === 'en';
+    const themeColor = '#ff4d8d';
+    const defaultPresetName = `Slot ${slotId}`;
+            
+    const backdrop = document.createElement('div');
+    backdrop.id = 'support-preset-save-modal';
+    backdrop.className = 'modal';
+    backdrop.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 30000;
+    `;
+    
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+        background: white; border-radius: 14px; width: 90%; max-width: 320px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); padding: 20px; box-sizing: border-box;
+        border: 2px solid ${themeColor}; display: flex; flex-direction: column; gap: 12px;
+    `;
+    
+    const headerTitle = isJa ? 'プリセット保存' : isEn ? 'Save Preset' : '프리셋 저장';
+    const descLabel = isJa ? '保存するプリセット名を入力してください:' : isEn ? 'Enter a name for the preset:' : '저장할 프리셋의 이름을 입력하세요:';
+    const cancelText = isJa ? 'キャンセル' : isEn ? 'Cancel' : '취소';
+    const saveText = isJa ? '保存' : isEn ? 'Save' : '저장';
+    
+    dialog.innerHTML = `
+        <div style="font-size: 1rem; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none;">
+            <div style="width: 4px; height: 16px; background-color: ${themeColor}; border-radius: 2px;"></div>
+            <span>${headerTitle}</span>
+        </div>
+        <div style="font-size: 0.8rem; color: #666; font-weight: 500; line-height: 1.4; user-select: none;">${descLabel}</div>
+        <input type="text" class="preset-name-input" value="${defaultPresetName}" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
+            <button class="modal-cancel-btn" style="padding: 6px 14px; background: #f5f5f5; color: #555; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; transition: background 0.1s;">${cancelText}</button>
+            <button class="modal-save-btn" style="padding: 6px 16px; background: ${themeColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${themeColor}33; transition: background 0.1s;">${saveText}</button>
+        </div>
+    `;
+    
+    backdrop.appendChild(dialog);
+    document.body.appendChild(backdrop);
+    history.pushState({ modalOpen: 'supportPresetSave' }, "");
+    
+    const input = dialog.querySelector('.preset-name-input');
+    const cancelBtn = dialog.querySelector('.modal-cancel-btn');
+    const saveBtn = dialog.querySelector('.modal-save-btn');
+    
+    if (input) {
+        input.focus(); input.select();
+        input.onfocus = () => { input.style.borderColor = themeColor; };
+        input.onblur = () => { input.style.borderColor = '#ddd'; };
+    }
+    
+    const onPopState = () => {
+        backdrop.remove();
+        window.removeEventListener('popstate', onPopState);
+    };
+    window.addEventListener('popstate', onPopState);
+    
+    const closeModal = () => history.back();
+    
+    const executeSave = () => {
+        const val = input.value.trim();
+        if (val) {
+            saveToSlot(slotId, val);
+            if (renderSlotsFn) {
+                container.querySelector('.slot-modal-list').innerHTML = renderSlotsFn();
+            }
+            closeModal();
+        }
+    };
+    
+    let isMouseDownOnBackdrop = false;
+    backdrop.onmousedown = (e) => { isMouseDownOnBackdrop = (e.target === backdrop); };
+    backdrop.onclick = (e) => { if (e.target === backdrop && isMouseDownOnBackdrop) closeModal(); };
+    cancelBtn.onclick = closeModal;
+    saveBtn.onclick = executeSave;
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') executeSave();
+        else if (e.key === 'Escape') closeModal();
+    };
 }
 
 export function renderSupport() {

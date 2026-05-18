@@ -385,6 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const memorySelectModal = document.getElementById('calc-memory-select-modal');
         const tuneModal = document.getElementById('calc-tune-modal');
         const statDetailModal = document.getElementById('stat-detail-modal');
+        const presetSaveModal = document.getElementById('preset-save-modal');
+        const supportPresetSaveModal = document.getElementById('support-preset-save-modal');
+        const slotShareModal = document.getElementById('slot-share-modal');
         const isVideoModalOpen = window.__videoModalOpen ||
             window.__videoModalPendingClose ||
             document.body.classList.contains('video-modal-open') ||
@@ -417,6 +420,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tuneModal && tuneModal.style.display !== 'none' && !tuneModal.classList.contains('hidden')) {
             tuneModal.remove();
+            return;
+        }
+
+        if (presetSaveModal && presetSaveModal.style.display !== 'none' && !presetSaveModal.classList.contains('hidden')) {
+            presetSaveModal.remove();
+            return;
+        }
+
+        if (supportPresetSaveModal && supportPresetSaveModal.style.display !== 'none' && !supportPresetSaveModal.classList.contains('hidden')) {
+            supportPresetSaveModal.remove();
+            return;
+        }
+
+        if (slotShareModal && slotShareModal.style.display !== 'none' && !slotShareModal.classList.contains('hidden')) {
+            slotShareModal.remove();
             return;
         }
 
