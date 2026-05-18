@@ -15,7 +15,7 @@ const translations = {
         ui_slot_load: "로드",
         ui_slot_export: "내보내기",
         ui_slot_share: "공유",
-        ui_slot_empty: "데이터 없음",
+        ui_slot_empty: "No data",
         ui_slot_title: "프리셋 저장/로드",
         ui_slot_share_title: "프리셋 공유",
         ui_slot_save_confirm: "슬롯 {slotId} 에 현재 상태를 저장하시겠습니까?",

@@ -47,6 +47,16 @@ function enforceHifPrimaEligibility() {
 export function initCalc(mode) {
     window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
 
+    sessionStorage.removeItem('is_loading_preset');
+
+    const loadedToast = sessionStorage.getItem('preset_loaded_toast');
+    if (loadedToast) {
+        sessionStorage.removeItem('preset_loaded_toast');
+        setTimeout(() => {
+            showToast(loadedToast);
+        }, 300);
+    }
+
     // mode가 명시적으로 있거나, 혹은 localStorage에 기록이 있는 경우 해당 모드로 진입
     // 단, URL이 정확히 #calc라면 메뉴를 보여주기 위해 localStorage를 무시함
     const lastType = mode || (window.location.hash === '#calc' ? null : localStorage.getItem('last_calc_type'));
@@ -135,11 +145,14 @@ function applyCalcThemeColor(color) {
     const statHeader = document.querySelector('.stat-header');
     if (statHeader) statHeader.style.borderColor = color;
 
-    const boardTitleRow = document.querySelector('.board-title-row');
-    if (boardTitleRow) {
-        boardTitleRow.style.backgroundColor = color;
-        boardTitleRow.style.borderColor = color;
-    }
+    document.querySelectorAll('.board-title-row').forEach(row => {
+        row.style.backgroundColor = color;
+        row.style.borderColor = color;
+    });
+
+    document.querySelectorAll('.preset-brand-icon').forEach(icon => {
+        icon.style.backgroundColor = color;
+    });
 
     const totalContainer = document.getElementById('total-stats-sum-container');
     if (totalContainer) {
@@ -238,6 +251,12 @@ function bindIdolSelector(grid, refreshAll) {
 
             // [추가] 프리마 스텔라 버튼 활성화 상태 즉시 갱신
             enforceHifPrimaEligibility();
+            
+            // 프리셋 슬롯 상세는 닫고, 5개 프리셋 아이콘만 즉시 갱신
+            const previewEl = document.getElementById('preset-preview');
+            if (previewEl) renderPresetPreview(previewEl);
+            const slotsContainer = document.getElementById('calc-preset-slots-container');
+            if (slotsContainer) slotsContainer.style.display = 'none';
 
             refreshAll();
         };
@@ -414,7 +433,41 @@ function startWeeklyPlan(type) {
 
             document.querySelectorAll('.plan-type-btn').forEach(btn => {
                 btn.onclick = () => {
-                    if (btn.classList.contains('active')) return;
+                    if (btn.classList.contains('active')) {
+                        // ON상태에서 클릭 시 프리셋 토글!
+                        window._showPreset = !window._showPreset;
+                        localStorage.setItem('calc_show_preset', window._showPreset ? 'true' : 'false');
+                        
+                        const integratedCard = document.getElementById('preset-integrated-card');
+                        if (integratedCard) {
+                            integratedCard.style.display = window._showPreset ? 'flex' : 'none';
+                        }
+                        
+                        const optionsRow = document.querySelector('.idol-options-row');
+                        if (optionsRow) {
+                            optionsRow.style.marginBottom = window._showPreset ? '0' : '12px';
+                            optionsRow.style.borderBottomLeftRadius = window._showPreset ? '0' : '12px';
+                            optionsRow.style.borderBottomRightRadius = window._showPreset ? '0' : '12px';
+                            optionsRow.style.borderBottom = window._showPreset ? '1px solid #ccc' : '1px solid #ddd';
+                        }
+                        
+                        if (window._showPreset) {
+                            window._activePresetSlot = null;
+                            const previewEl = document.getElementById('preset-preview');
+                            if (previewEl) renderPresetPreview(previewEl);
+                            
+                            const slotsContainer = document.getElementById('calc-preset-slots-container');
+                            if (slotsContainer) {
+                                slotsContainer.style.display = 'none';
+                            }
+                        }
+                        return;
+                    }
+                    
+                    // OFF상태에서 클릭 시 플랜 변경 및 프리셋 강제 오픈!
+                    window._showPreset = true;
+                    localStorage.setItem('calc_show_preset', 'true');
+                    
                     // [추가] 플랜 전환 직전에 현재 스크롤 위치 저장
                     const currentGrid = document.getElementById('idol-selector-grid');
                     if (currentGrid) window._lastIdolScrollLeft = currentGrid.scrollLeft;
@@ -768,6 +821,22 @@ function startWeeklyPlan(type) {
                             }
                             wrapper.appendChild(tooltip);
 
+                            // [추가] 바깥 클릭 시 주간 계획 옵션 툴팁 닫기
+                            setTimeout(() => {
+                                const closeWeeklyTooltip = (e) => {
+                                    if (!tooltip.parentElement) {
+                                        document.removeEventListener('click', closeWeeklyTooltip);
+                                        return;
+                                    }
+                                    if (!tooltip.contains(e.target) && !wrapper.contains(e.target) && !e.target.closest('.calc-sub-tooltip')) {
+                                        tooltip.remove();
+                                        document.querySelectorAll('.calc-sub-tooltip').forEach(st => st.remove());
+                                        document.removeEventListener('click', closeWeeklyTooltip);
+                                    }
+                                };
+                                document.addEventListener('click', closeWeeklyTooltip);
+                            }, 10);
+
                             const tooltipWidth = tooltip.offsetWidth;
                             const tooltipHeight = tooltip.offsetHeight;
 
@@ -850,6 +919,11 @@ function startWeeklyPlan(type) {
             }
             const calcBtn = document.getElementById('btn-run-calc');
             if (calcBtn) calcBtn.onclick = () => toggleSupportCardPanel(calcStore.planType, refreshAll);
+
+            const previewEl = document.getElementById('preset-preview');
+            if (previewEl) renderPresetPreview(previewEl);
+
+
 
             const floatingBtn = document.getElementById('floating-skill-btn');
 
@@ -1245,31 +1319,340 @@ function setupMemorySelector() {
     });
 }
 
-// 화면 리사이즈 감지 (768px 경계 안정화)
-let lastWidth = window.innerWidth;
-window.addEventListener('resize', () => {
-    const currentWidth = window.innerWidth;
-    // 768px 경계를 넘어갈 때만 실행
-    if ((lastWidth <= 768 && currentWidth > 768) || (lastWidth > 768 && currentWidth <= 768)) {
-        if (typeof closeSupportCardPanel === 'function') closeSupportCardPanel();
-        const panel = document.getElementById('calc-side-panel');
-        const overlay = document.getElementById('panel-overlay');
-        if (panel) panel.remove();
-        if (overlay) overlay.remove();
+function closePresetPanel() {
+    const slotsContainer = document.getElementById('calc-preset-slots-container');
+    const integratedCard = document.getElementById('preset-integrated-card');
+    const previewEl = document.getElementById('preset-preview');
+    if (slotsContainer) slotsContainer.style.display = 'none';
+    if (integratedCard) {
+        integratedCard.style.background = 'transparent';
+        integratedCard.style.borderColor = 'transparent';
+        integratedCard.style.boxShadow = 'none';
     }
-    lastWidth = currentWidth;
-});
-
-if (!window._calcGlobalInit) {
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.modal') || e.target.closest('.modal-content')) return;
-        if (!e.target.closest('.calc-tooltip, .calc-sub-tooltip, .plan-icon-wrapper, .dist-btn, .p-item-slot, .other-tune-btn')) {
-            document.querySelectorAll('.calc-tooltip:not(.hif-test-tooltip), .calc-sub-tooltip, .p-item-tooltip, .support-item-tooltip').forEach(t => t.remove());
-            const changed = clearIncompleteWeekSelections();
-            if (changed && typeof window.refreshAll === 'function') {
-                window.refreshAll();
-            }
-        }
-    });
-    window._calcGlobalInit = true;
+    if (previewEl) previewEl.style.display = 'none';
 }
+
+function renderPresetPreview(el) {
+    if (window._activePresetSlot === undefined) window._activePresetSlot = null;
+    const activeSlot = window._activePresetSlot;
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    const idolColor = idolColors[idol] || "#ff4d8d";
+    let iconsHtml = '';
+    
+    for (let i = 1; i <= 5; i++) {
+        const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${planType}_${i}`);
+        let hasData = false;
+        if (raw) {
+            try {
+                const data = JSON.parse(raw);
+                if (data && data.calcState) {
+                    hasData = true;
+                    const isActive = i === activeSlot;
+                    const activeStyle = isActive ? `border: 2px solid ${idolColor};` : `border: 1.5px solid #ccc;`;
+                    
+                    iconsHtml += `<div class="preset-circle-slot" data-slot="${i}" style="position: relative; display: flex; align-items: center; cursor: pointer;">
+                        <img src="icons/idolicons/${idol}_c.png" onerror="this.src='icons/idol.png'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: contain; box-sizing: border-box; ${activeStyle}">
+                        <span style="position: absolute; bottom: -2px; right: -2px; font-size: 0.5rem; background: ${idolColor}; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">${i}</span>
+                    </div>`;
+                }
+            } catch (e) {}
+        }
+        if (!hasData) {
+            const isActive = i === activeSlot;
+            const borderStyle = isActive ? `border: 2px solid ${idolColor}; color: ${idolColor}; background: ${idolColor}10;` : 'border: 1.5px dashed #ccc; color: #aaa; background: transparent;';
+            iconsHtml += `<div class="preset-circle-slot empty" data-slot="${i}" style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: all 0.15s; box-sizing: border-box; ${borderStyle}">
+                ${i}
+            </div>`;
+        }
+    }
+    el.innerHTML = iconsHtml;
+
+    el.querySelectorAll('.preset-circle-slot').forEach(circle => {
+        circle.onclick = (e) => {
+            e.stopPropagation();
+            const slotId = parseInt(circle.dataset.slot);
+            const container = document.getElementById('calc-preset-slots-container');
+            if (window._activePresetSlot === slotId && container && container.style.display === 'flex') {
+                container.style.display = 'none';
+                window._activePresetSlot = null;
+                renderPresetPreview(el);
+            } else {
+                window._activePresetSlot = slotId;
+                renderPresetPreview(el);
+                if (container) {
+                    container.style.display = 'flex';
+                    renderCalcPresetSlots(container);
+                }
+            }
+        };
+    });
+}
+
+function renderCalcPresetSlots(container) {
+    if (window._activePresetSlot === undefined || window._activePresetSlot === null) window._activePresetSlot = 1;
+    const i = window._activePresetSlot;
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    let html = '';
+    
+    const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${i}`;
+    const raw = localStorage.getItem(slotKey);
+    let data = null;
+    try { if (raw) data = JSON.parse(raw); } catch (e) {}
+
+    const isMobile = window.innerWidth <= 768;
+    const slotPad = isMobile ? '6px 8px' : '10px 12px';
+    const iconSize = isMobile ? '24px' : '32px';
+    const nameSize = isMobile ? '0.75rem' : '0.9rem';
+    const timeSize = isMobile ? '0.55rem' : '0.65rem';
+    const noDataSize = isMobile ? '0.72rem' : '0.85rem';
+    const btnSize = isMobile ? '22px' : '28px';
+    const btnIconSize = isMobile ? '11px' : '14px';
+    const btnRadius = isMobile ? '5px' : '6px';
+    const contentGap = isMobile ? '6px' : '10px';
+    const btnGap = isMobile ? '4px' : '6px';
+    
+    if (data && data.calcState) {
+        const idolIcon = `icons/idolicons/${data.calcState.selectedIdol || 'saki'}_c.png`;
+        const customName = data.customName || `Slot ${i}`;
+        const time = data.timestamp || '';
+        
+        html += `
+            <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: white; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: ${contentGap}; flex: 1; min-width: 0;">
+                    <img src="${idolIcon}" style="width: ${iconSize}; height: ${iconSize}; border-radius: 50%; border: 1px solid #ddd; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/idol.png'">
+                    <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+                        <span style="font-weight: bold; font-size: ${nameSize}; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${customName}</span>
+                        <div style="display: flex; align-items: center; font-size: ${timeSize};">
+                            <span style="color: #888;">${time}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
+                    <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="저장">
+                        <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                    </button>
+                    <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="불러오기">
+                        <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
+                    </button>
+                    <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="삭제">
+                        <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
+                    </button>
+                </div>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: #fdfdfd; border: 1px dashed #ddd; border-radius: 8px;">
+                <div style="font-size: ${noDataSize}; color: #aaa; font-weight: 500;">Slot ${i} - No data</div>
+                <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; flex: none; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="저장">
+                    <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                </button>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+    
+    container.querySelectorAll('.slot-save').forEach(btn => {
+        btn.onclick = () => {
+            showSavePresetModal(btn.dataset.slot, container);
+        };
+    });
+    container.querySelectorAll('.slot-load').forEach(btn => btn.onclick = () => loadCalcPreset(btn.dataset.slot));
+    container.querySelectorAll('.slot-delete').forEach(btn => {
+        btn.onclick = () => {
+            if (confirm(`슬롯 ${btn.dataset.slot}의 데이터를 삭제하시겠습니까?`)) {
+                const idol = calcStore.selectedIdol || 'saki';
+                const planType = calcStore.planType || 'sense';
+                localStorage.removeItem(`calc_preset_slot_${mode}_${idol}_${planType}_${btn.dataset.slot}`);
+                renderCalcPresetSlots(container);
+                const previewEl = document.getElementById('preset-preview');
+                if (previewEl) renderPresetPreview(previewEl);
+            }
+        };
+    });
+}
+
+function showSavePresetModal(slotId, container) {
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    const idolColor = getIdolDisplayColor(idol);
+    const isJa = state.currentLang === 'ja';
+    const isEn = state.currentLang === 'en';
+    
+    const planLabel = planType.toUpperCase();
+    
+    const defaultPresetName = `${idol.toUpperCase()}-${planLabel} ${slotId}`;
+            
+    const backdrop = document.createElement('div');
+    backdrop.id = 'preset-save-modal';
+    backdrop.className = 'modal';
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 30000;
+    `;
+    
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+        background: white;
+        border-radius: 14px;
+        width: 90%;
+        max-width: 320px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        box-sizing: border-box;
+        border: 2px solid ${idolColor};
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    `;
+    
+    const headerTitle = isJa ? 'プリセット保存' : isEn ? 'Save Preset' : '프리셋 저장';
+    const descLabel = isJa 
+        ? '保存するプリセット名を入力してください:' 
+        : isEn 
+            ? 'Enter a name for the preset:'
+            : '저장할 프리셋의 이름을 입력하세요:';
+            
+    const cancelText = isJa ? 'キャンセル' : isEn ? 'Cancel' : '취소';
+    const saveText = isJa ? '保存' : isEn ? 'Save' : '저장';
+    
+    dialog.innerHTML = `
+        <div style="font-size: 1rem; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none;">
+            <div style="width: 4px; height: 16px; background-color: ${idolColor}; border-radius: 2px;"></div>
+            <span>${headerTitle}</span>
+        </div>
+        <div style="font-size: 0.8rem; color: #666; font-weight: 500; line-height: 1.4; user-select: none;">${descLabel}</div>
+        <input type="text" class="preset-name-input" value="${defaultPresetName}" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
+            <button class="modal-cancel-btn" style="padding: 6px 14px; background: #f5f5f5; color: #555; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; transition: background 0.1s;">${cancelText}</button>
+            <button class="modal-save-btn" style="padding: 6px 16px; background: ${idolColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${idolColor}33; transition: background 0.1s;">${saveText}</button>
+        </div>
+    `;
+    
+    backdrop.appendChild(dialog);
+    document.body.appendChild(backdrop);
+    
+    // 브라우저 뒤로가기 처리를 위해 history state 추가
+    history.pushState({ modalOpen: 'presetSave' }, "");
+    
+    const input = dialog.querySelector('.preset-name-input');
+    const cancelBtn = dialog.querySelector('.modal-cancel-btn');
+    const saveBtn = dialog.querySelector('.modal-save-btn');
+    
+    if (input) {
+        input.focus();
+        input.select();
+        
+        input.onfocus = () => { input.style.borderColor = idolColor; };
+        input.onblur = () => { input.style.borderColor = '#ddd'; };
+    }
+    
+    const onPopState = () => {
+        backdrop.remove();
+        window.removeEventListener('popstate', onPopState);
+    };
+    window.addEventListener('popstate', onPopState);
+    
+    const closeModal = () => {
+        history.back();
+    };
+    
+    const executeSave = () => {
+        const val = input.value.trim();
+        if (val) {
+            saveCalcPreset(slotId, val, container);
+            closeModal();
+        }
+    };
+    
+    let isMouseDownOnBackdrop = false;
+    backdrop.onmousedown = (e) => {
+        isMouseDownOnBackdrop = (e.target === backdrop);
+    };
+    
+    backdrop.onclick = (e) => {
+        if (e.target === backdrop && isMouseDownOnBackdrop) {
+            closeModal();
+        }
+    };
+    
+    cancelBtn.onclick = closeModal;
+    saveBtn.onclick = executeSave;
+    
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+            executeSave();
+        } else if (e.key === 'Escape') {
+            closeModal();
+        }
+    };
+}
+
+function saveCalcPreset(slotId, customName, container) {
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    const data = {
+        slotId: parseInt(slotId),
+        customName: customName || `Slot ${slotId}`,
+        type: mode,
+        timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }),
+        calcState: calcStore.serializeState()
+    };
+    localStorage.setItem(`calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`, JSON.stringify(data));
+    showToast(`슬롯 ${slotId}에 성공적으로 저장되었습니다.`);
+    renderCalcPresetSlots(container);
+    const previewEl = document.getElementById('preset-preview');
+    if (previewEl) renderPresetPreview(previewEl);
+}
+
+function loadCalcPreset(slotId) {
+    if (!confirm(`슬롯 ${slotId}의 데이터를 로드하시겠습니까? 현재 변경사항이 사라질 수 있습니다.`)) return;
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`);
+    if (!raw) return;
+    try {
+        const data = JSON.parse(raw);
+        if (data && data.calcState && data.type) {
+            // Set flag to prevent pagehide/beforeunload from overwriting this preset
+            sessionStorage.setItem('is_loading_preset', 'true');
+            
+            // Ensure the preset wins the updatedAt comparison in loadPersistedState
+            data.calcState.updatedAt = Date.now();
+            const serialized = JSON.stringify(data.calcState);
+            
+            // Write to ALL 3 storage keys so loadPersistedState always picks the preset
+            localStorage.setItem(`calc_state_${data.type}`, serialized);
+            localStorage.setItem(`calc_state_shadow_${data.type}`, serialized);
+            sessionStorage.setItem(`calc_state_session_${data.type}`, serialized);
+            localStorage.setItem('last_calc_type', data.type);
+            
+            // Set toast in session storage to display after reload
+            sessionStorage.setItem('preset_loaded_toast', `슬롯 ${slotId}의 데이터가 성공적으로 로드되었습니다.`);
+            
+            // Reload the page to guarantee a perfect and pristine UI refresh
+            window.location.reload();
+        }
+    } catch (e) {
+        showToast('데이터 로드에 실패했습니다.');
+    }
+}
+
+
+

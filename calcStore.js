@@ -82,6 +82,9 @@ export const calcStore = {
 
         const flush = () => {
             if (!this.type) return;
+            if (sessionStorage.getItem('is_loading_preset') === 'true') {
+                return;
+            }
             this.persistState();
         };
 
@@ -116,6 +119,7 @@ export const calcStore = {
             isKyouka: this.isKyouka,
             recommendSettings: this.recommendSettings,
             hifStats: this.hifStats,
+            hifParamLimitLevel: this.hifParamLimitLevel || 0,
             updatedAt: Date.now()
         };
     },
@@ -207,6 +211,7 @@ export const calcStore = {
         this.isKyouka = !!saved.isKyouka;
         this.recommendSettings = { ...createDefaultRecommendSettings(), ...(saved.recommendSettings || {}) };
         this.hifStats = { vocal: 0, dance: 0, visual: 0, ...(saved.hifStats || {}) };
+        this.hifParamLimitLevel = saved.hifParamLimitLevel || 0;
     },
 
     /**

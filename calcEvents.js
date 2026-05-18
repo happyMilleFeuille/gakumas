@@ -1,4 +1,4 @@
-﻿// calcEvents.js
+// calcEvents.js
 import { cardList } from './carddata.js';
 import { state } from './state.js';
 import { showOtherTuneModal } from './calcModals.js';
@@ -28,53 +28,7 @@ export function initGlobalDistListener(refreshAll) {
         const slotImg = e.target.closest('.slot-frame img');
         const emptySlotFrame = e.target.closest('.selected-card-slot.empty .slot-frame');
 
-        // 0. 장착된 서포트 카드 이미지 클릭 (툴팁 표시)
-        if (slotImg) {
-            const slotEl = slotImg.closest('.selected-card-slot');
-            const cardId = slotEl?.dataset.id;
-            if (cardId) {
-                const card = cardList.find(c => c.id === cardId);
-                if (card?.item_effects) {
-                    showSupportItemTooltip(slotEl, cardId);
-                    return;
-                }
-            }
-        }
-
-        // 0-1. 빈 서포트 카드 슬롯 클릭 시 계산 버튼 트리거 (서포트 패널이 닫혀있을 때만)
-        if (emptySlotFrame) {
-            const sidePanel = document.getElementById('calc-side-panel');
-            if (!sidePanel || !sidePanel.classList.contains('open')) {
-                const calcBtn = document.getElementById('btn-run-calc');
-                if (calcBtn) { calcBtn.click(); return; }
-            }
-        }
-
-        // 1. 카드 활성화 체크박스
-        if (cardCheckBtn) {
-            calcStore.cardChecked[cardCheckBtn.dataset.id] = cardCheckBtn.checked;
-            calcStore.save();
-            refreshAll();
-            return;
-        }
-
-        // 1-2. 카드 엑스트라 옵션 체크박스
-        if (cardOptCheckBtn) {
-            calcStore.cardExtraChecked[cardOptCheckBtn.dataset.id] = cardOptCheckBtn.checked;
-            calcStore.save();
-            refreshAll();
-            return;
-        }
-
-        // 1-3. 카드 이벤트(Option 1) 체크박스
-        if (cardEventCheckBtn) {
-            calcStore.cardEventChecked[cardEventCheckBtn.dataset.id] = cardEventCheckBtn.checked;
-            calcStore.save();
-            refreshAll();
-            return;
-        }
-
-        // 2. 카드 슬롯에서 제거
+        // 0. 카드 슬롯에서 제거 (X 버튼) — 반드시 slotImg보다 먼저 체크
         if (cardRemoveBtn) {
             const id = cardRemoveBtn.dataset.id;
             const plan = calcStore.planType;
@@ -83,7 +37,6 @@ export function initGlobalDistListener(refreshAll) {
             // 카드 제거 시 해당 카드의 체크박스 옵션들(이벤트, 강화, 체인지 등) 초기화
             delete calcStore.cardEventChecked[id];
             delete calcStore.cardExtraChecked[id];
-
 
             // 사이드 패널 동기화
             const sidePanel = document.getElementById('calc-side-panel');
@@ -138,11 +91,58 @@ export function initGlobalDistListener(refreshAll) {
                     });
                 });
             }
-
             calcStore.save();
             refreshAll();
             return;
         }
+
+        // 0-1. 장착된 서포트 카드 이미지 클릭 (툴팁 표시)
+        if (slotImg && !e.target.closest('.card-slot-remove')) {
+            const slotEl = slotImg.closest('.selected-card-slot');
+            const cardId = slotEl?.dataset.id;
+            if (cardId) {
+                const card = cardList.find(c => c.id === cardId);
+                if (card?.item_effects) {
+                    showSupportItemTooltip(slotEl, cardId);
+                    return;
+                }
+            }
+        }
+
+        // 0-2. 빈 서포트 카드 슬롯 클릭 시 계산 버튼 트리거 (서포트 패널이 닫혀있을 때만)
+        if (emptySlotFrame) {
+            const sidePanel = document.getElementById('calc-side-panel');
+            if (!sidePanel || !sidePanel.classList.contains('open')) {
+                const calcBtn = document.getElementById('btn-run-calc');
+                if (calcBtn) { calcBtn.click(); return; }
+            }
+        }
+
+        // 1. 카드 활성화 체크박스
+        if (cardCheckBtn) {
+            calcStore.cardChecked[cardCheckBtn.dataset.id] = cardCheckBtn.checked;
+            calcStore.save();
+            refreshAll();
+            return;
+        }
+
+        // 1-2. 카드 엑스트라 옵션 체크박스
+        if (cardOptCheckBtn) {
+            calcStore.cardExtraChecked[cardOptCheckBtn.dataset.id] = cardOptCheckBtn.checked;
+            calcStore.save();
+            refreshAll();
+            return;
+        }
+
+        // 1-3. 카드 이벤트(Option 1) 체크박스
+        if (cardEventCheckBtn) {
+            calcStore.cardEventChecked[cardEventCheckBtn.dataset.id] = cardEventCheckBtn.checked;
+            calcStore.save();
+            refreshAll();
+            return;
+        }
+
+
 
         // 3. 아이템 효과 카운터 (+/-)
         if (counterBtn) {

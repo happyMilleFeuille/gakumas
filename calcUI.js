@@ -644,6 +644,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
     const isJa = state.currentLang === 'ja';
     const idolColor = getIdolDisplayColor(store.selectedIdol);
 
+    if (window._showPreset === undefined) {
+        window._showPreset = localStorage.getItem('calc_show_preset') === 'true';
+    }
+
     const idolsHtml = idolList.map(name => {
         const isActive = store.selectedIdol === name;
         const color = getIdolDisplayColor(name);
@@ -707,8 +711,9 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <button class="back-btn primary-btn">${t('calc_label_back')}</button>
                 </div>
 
+
                 <div class="idol-selector-grid" id="idol-selector-grid">${idolsHtml}</div>
-                <div class="idol-options-row">
+                <div class="idol-options-row" style="margin-bottom: ${window._showPreset ? '0' : '12px'}; border-bottom-left-radius: ${window._showPreset ? '0' : '12px'}; border-bottom-right-radius: ${window._showPreset ? '0' : '12px'}; border-bottom: ${window._showPreset ? '1px solid #ccc' : '1px solid #ddd'};">
                     ${(store.type === 'nia' || store.type === 'hajime' || store.type === 'hif') ? `
                     <div class="sr-toggle-item ${store.isSR ? 'active' : ''}" id="sr-toggle">
                         <img src="icons/sr.png" onerror="this.src='icons/sr.webp'">
@@ -730,6 +735,27 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         const activeStyle = isActive ? `style="--idol-color: ${idolColor};"` : '';
         return `<div class="plan-type-btn ${isActive ? 'active' : ''}" data-type="${pt}" ${activeStyle}><img src="icons/${pt}.webp"></div>`;
     }).join('')}
+                    </div>
+                </div>
+
+                <!-- 통합 프리셋 카드 (상시 노출, 상단 캐릭터/플랜 선택 칸과 밀착 결합형 구조) -->
+                <div id="preset-integrated-card" style="width: 100%; margin-bottom: 12px; background: #f5f5f5; border-radius: 0 0 12px 12px; border: 1px solid #ddd; border-top: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; display: ${window._showPreset ? 'flex' : 'none'}; flex-direction: column; overflow: hidden;">
+                    <!-- 상단 헤더 (타이틀 + 5개 슬롯 동그라미) -->
+                    <div id="preset-header-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 38px; padding: 0 16px; box-sizing: border-box;">
+                        <!-- 좌측: 심플한 텍스트 타이틀 (회색) + 플랜 미니 아이콘 -->
+                        <div id="preset-title" style="font-size: 0.75rem; color: #888; font-weight: bold; user-select: none; letter-spacing: -0.2px; display: flex; align-items: center; gap: 6px;">
+                            ${(store.type === 'hif' || store.type === 'nia') ? `
+                            <div class="preset-brand-icon" style="width: 28px; height: 14px; background-color: ${idolColor}; -webkit-mask-image: url('icons/${store.type}.webp'); mask-image: url('icons/${store.type}.webp'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;"></div>
+                            ` : ''}
+                            <span>Preset</span>
+                        </div>
+                        <!-- 우측: 5개 슬롯 동그라미 미리보기 영역 -->
+                        <div id="preset-preview" style="display: flex; align-items: center; gap: 18px;">
+                        </div>
+                    </div>
+                    <!-- 하단 상세 정보 영역 (기본 display: none) -->
+                    <div id="calc-preset-slots-container" style="display: none; flex-direction: column; padding: 12px 14px; border-top: 1px solid #eee; gap: 10px; width: 100%;">
+                        <!-- 슬롯 상세 내용이 JS로 들어갑니다 -->
                     </div>
                 </div>
 
@@ -901,7 +927,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 <div class="activity-counter" id="activity-counter"></div>
                 <div class="board-title-row" style="background-color: ${idolColor}; border-color: ${idolColor};">
                     ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="board-title-icon ${store.type}-icon">` : ''}
-                    <div class="board-title-tab">SCHEDULE SELECT</div>
+                    <div class="board-title-tab">SCHEDULE</div>
                     <button class="board-reset-btn" id="btn-reset-weeks" data-i18n="calc_reset_weeks">${isJa ? 'リセット' : '초기화'}</button>
                 </div>
                 <div class="unified-plan-board" data-calc-type="${store.type}">${weeksHtml}</div>
@@ -1453,7 +1479,7 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
         const idolContainer = document.getElementById('idol');
         const closeTooltip = (e) => {
             if (!tooltip.parentElement) return;
-            if (e.type === 'scroll' || (!tooltip.contains(e.target) && e.target !== slot)) {
+            if (e.type === 'scroll' || (!tooltip.contains(e.target) && !slot.contains(e.target))) {
                 tooltip.remove();
                 document.removeEventListener('click', closeTooltip);
                 if (idolContainer) idolContainer.removeEventListener('scroll', closeTooltip);
@@ -1461,7 +1487,7 @@ export function showPItemSelectorTooltip(slot, idx, itemsBySlot, refreshAll) {
         };
         document.addEventListener('click', closeTooltip);
         if (idolContainer) idolContainer.addEventListener('scroll', closeTooltip, { passive: true });
-    }, 0);
+    }, 10);
 }
 
 /**
@@ -1591,12 +1617,17 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
     // 스크롤 시 닫기 리스너 추가
     setTimeout(() => {
         const idolContainer = document.getElementById('idol');
-        const onScrollClose = () => {
-            tooltip.remove();
-            if (idolContainer) idolContainer.removeEventListener('scroll', onScrollClose);
+        const closeTooltip = (e) => {
+            if (!tooltip.parentElement) return;
+            if (e.type === 'scroll' || (!tooltip.contains(e.target) && !infoBtn.contains(e.target))) {
+                tooltip.remove();
+                document.removeEventListener('click', closeTooltip);
+                if (idolContainer) idolContainer.removeEventListener('scroll', closeTooltip);
+            }
         };
-        if (idolContainer) idolContainer.addEventListener('scroll', onScrollClose, { passive: true });
-    }, 0);
+        document.addEventListener('click', closeTooltip);
+        if (idolContainer) idolContainer.addEventListener('scroll', closeTooltip, { passive: true });
+    }, 10);
 }
 
 /**
@@ -1725,13 +1756,13 @@ export function showTalentBloomInfoTooltip(infoBtn) {
     setTimeout(() => {
         const closeTooltip = (e) => {
             if (!tooltip.parentElement) return;
-            if (!tooltip.contains(e.target) && e.target !== infoBtn) {
+            if (!tooltip.contains(e.target) && !infoBtn.contains(e.target)) {
                 tooltip.remove();
                 document.removeEventListener('click', closeTooltip);
             }
         };
         document.addEventListener('click', closeTooltip);
-    }, 0);
+    }, 10);
 }
 
 /**

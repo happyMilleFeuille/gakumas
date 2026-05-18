@@ -216,7 +216,7 @@ export function buildSupportSlotData() {
     return {
         supportLB: state.supportLB,
         disabledCards: state.disabledCards,
-        timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+        timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
     };
 }
 
@@ -231,7 +231,7 @@ export function setSlotData(slotId, slotData) {
     localStorage.setItem(`support_slot_${slotId}`, JSON.stringify({
         supportLB: slotData.supportLB || {},
         disabledCards: slotData.disabledCards || {},
-        timestamp: slotData.timestamp || new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+        timestamp: slotData.timestamp || new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
     }));
 }
 
