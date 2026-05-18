@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextStage = getLayoutStage(window.innerWidth);
         if (currentStage !== nextStage) {
             currentStage = nextStage;
+            
+            // 서포트 패널 닫기 (768px 경계를 넘나들 때 UI 깨짐 방지)
+            if (typeof window.closeSupportCardPanel === 'function') {
+                window.closeSupportCardPanel();
+            }
+
             // 로드맵 컨테이너가 존재하는 경우에만 재렌더링
             if (document.getElementById('pssr-roadmap-list')) {
                 import('./roadmap.js').then(m => {
