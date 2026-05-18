@@ -667,7 +667,7 @@ const translations = {
         calc_label_motivation: "Motiv.",
         calc_label_goodimpression: "Good Imp.",
         calc_label_preservation: "Preserve",
-        calc_label_enthusiasm: "Enthusiasm",
+        calc_label_enthusiasm: "Enthu.",
         calc_label_fullpower: "Full Power",
         calc_label_select: "Select",
         support_effect_targettext_goodcondition: "Good Cond.+{val}",

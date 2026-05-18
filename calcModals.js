@@ -8,6 +8,7 @@ import { getTriggerCounts, calculateTotals } from './calcLogic.js';
 import { updateSelectedCardsUI, getIdolDisplayColor } from './calcUI.js';
 import { calcStore } from './calcStore.js';
 import { translate } from './utils.js';
+import { abilityData } from './abilitydata.js';
 
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
@@ -73,6 +74,24 @@ export function showStatDetailModal(breakdown) {
         visual: (breakdown.idol.visual || 0) + (breakdown.supportPercent.visual || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.visual || 0) : 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
     };
 
+        const getAbilityName = (key) => {
+        if (key === 'item_effect') {
+            return state.currentLang === 'en' ? 'P-Item Effect' : (state.currentLang === 'ja' ? 'Pアイテム効果' : 'P아이템 효과');
+        }
+        const ab = abilityData[key];
+        if (ab && ab.name && ab.name[state.currentLang]) {
+            return ab.name[state.currentLang];
+        }
+        return key;
+    };
+
+    const hasSupportFixedFactors = breakdown.supportFixed && breakdown.supportFixed.factors && Object.keys(breakdown.supportFixed.factors).length > 0;
+    const supportFixedFactorsHtml = hasSupportFixedFactors ? Object.keys(breakdown.supportFixed.factors).map(key => {
+        const factor = breakdown.supportFixed.factors[key];
+        if (factor.vocal === 0 && factor.dance === 0 && factor.visual === 0) return '';
+        return renderRow(getAbilityName(key), factor, null, 'row-sub-item');
+    }).join('') : '';
+
     modal.innerHTML = `
         <div class="stat-detail-modal-content">
             <span class="stat-detail-close">&times;</span>
@@ -86,7 +105,8 @@ export function showStatDetailModal(breakdown) {
                 </div>
                 
                 ${renderRow(t('calc_detail_idol_fixed'), breakdown.idolBase, null, 'row-base')}
-                ${renderRow(t('calc_detail_support_fixed'), breakdown.supportFixed, null, 'row-base')}
+                ${hasSupportFixedFactors ? renderRow(`<span id="support-fixed-toggle-icon" style="margin-right: 4px;">▶</span>${t('calc_detail_support_fixed')}`, breakdown.supportFixed, null, 'row-base row-support-fixed-total') : renderRow(t('calc_detail_support_fixed'), breakdown.supportFixed, null, 'row-base')}
+                ${hasSupportFixedFactors ? `<div id="support-fixed-sub-items">${supportFixedFactorsHtml}</div>` : ''}
                 ${renderRow(t('calc_detail_memory_fixed'), breakdown.memory?.fixed, null, 'row-base')}
                 ${calcStore.type === 'hif' ? renderRow(t('calc_detail_hif_fixed'), breakdown.hif?.fixed, null, 'row-base') : ''}
                 ${calcStore.type !== 'hif' ? renderRow(calcStore.type === 'nia' ? t('calc_detail_pitem_nia_base') : t('calc_detail_pitem'), breakdown.item?.base, null, 'row-base') : ''}
@@ -167,6 +187,29 @@ export function showStatDetailModal(breakdown) {
                 subItemsContainer.style.display = 'block';
                 toggleIcon.textContent = '▼';
                 bonusRow.classList.remove('collapsed');
+            }
+        });
+    }
+
+        const sfRow = modal.querySelector('.row-support-fixed-total');
+    const sfSubItemsContainer = modal.querySelector('#support-fixed-sub-items');
+    const sfToggleIcon = modal.querySelector('#support-fixed-toggle-icon');
+
+    if (sfRow && sfSubItemsContainer && sfToggleIcon) {
+        sfSubItemsContainer.style.display = 'none';
+        sfToggleIcon.textContent = '▶';
+        sfRow.classList.add('collapsed');
+        sfRow.style.cursor = 'pointer';
+        sfRow.addEventListener('click', () => {
+            const isCollapsing = sfSubItemsContainer.style.display !== 'none';
+            if (isCollapsing) {
+                sfSubItemsContainer.style.display = 'none';
+                sfToggleIcon.textContent = '▶';
+                sfRow.classList.add('collapsed');
+            } else {
+                sfSubItemsContainer.style.display = 'block';
+                sfToggleIcon.textContent = '▼';
+                sfRow.classList.remove('collapsed');
             }
         });
     }

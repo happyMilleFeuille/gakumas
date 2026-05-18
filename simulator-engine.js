@@ -29,10 +29,24 @@ export function getTriggerCounts(calcState) {
  * @param {boolean} includeBase - (선택) 기본 보너스(Option 1) 포함 여부
  */
 export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, includeBase = false) {
-    const results = { vocal: 0, dance: 0, visual: 0, percent: 0 };
+    const results = { vocal: 0, dance: 0, visual: 0, percent: 0, breakdowns: {} };
     const rarity = card.rarity;
     const isDist = card.source === 'dist';
     const cardType = card.type; // vocal, dance, visual
+
+    // 내부 도우미 함수: 합산과 동시에 breakdowns 기록
+    const applyStat = (type, val, sourceId) => {
+        if (type === 'vocal') results.vocal += val;
+        else if (type === 'dance') results.dance += val;
+        else if (type === 'visual') results.visual += val;
+
+        if (sourceId) {
+            if (!results.breakdowns[sourceId]) results.breakdowns[sourceId] = { vocal: 0, dance: 0, visual: 0 };
+            if (type === 'vocal') results.breakdowns[sourceId].vocal += val;
+            else if (type === 'dance') results.breakdowns[sourceId].dance += val;
+            else if (type === 'visual') results.breakdowns[sourceId].visual += val;
+        }
+    };
 
     // --- 1. 등급별 기본 보너스 및 event_paraup 적용 ---
     if (includeBase) {
@@ -49,7 +63,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
                 baseBonus = Math.floor(baseBonus * (1 + (epVal / 100)));
             }
         }
-        applyStat(results, cardType, baseBonus);
+        applyStat(cardType, baseBonus, 'fixedparam');
     }
 
     // --- 2. 아이템 효과(Item Effects) 계산 ---
@@ -59,9 +73,9 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
 
         card.item_effects.forEach(eff => {
             if (eff.type === 'fixed' && eff.stats) {
-                applyStat(results, 'vocal', eff.stats.vocal || 0);
-                applyStat(results, 'dance', eff.stats.dance || 0);
-                applyStat(results, 'visual', eff.stats.visual || 0);
+                applyStat('vocal', eff.stats.vocal || 0, 'item_effect');
+                applyStat('dance', eff.stats.dance || 0, 'item_effect');
+                applyStat('visual', eff.stats.visual || 0, 'item_effect');
             } else if (eff.type === 'action' && eff.stats && itemCounter > 0) {
                 let multiplier = itemCounter;
                 if (eff.trigger) {
@@ -91,9 +105,9 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
                     multiplier = Math.min(totalTriggerCount, itemCounter);
                 }
                 if (multiplier > 0) {
-                    applyStat(results, 'vocal', (eff.stats.vocal || 0) * multiplier);
-                    applyStat(results, 'dance', (eff.stats.dance || 0) * multiplier);
-                    applyStat(results, 'visual', (eff.stats.visual || 0) * multiplier);
+                    applyStat('vocal', (eff.stats.vocal || 0) * multiplier, 'item_effect');
+                    applyStat('dance', (eff.stats.dance || 0) * multiplier, 'item_effect');
+                    applyStat('visual', (eff.stats.visual || 0) * multiplier, 'item_effect');
                 }
             }
         });
@@ -162,7 +176,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
         }
         // 3. 트리거 없는 경우: 초기 스탯 보너스
         else {
-            applyStat(results, cardType, bonusVal);
+            applyStat(cardType, bonusVal, abilityId);
             return;
         }
 
@@ -170,20 +184,11 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
         if (ability.max) count = Math.min(count, ability.max);
 
         if (count > 0) {
-            applyStat(results, cardType, bonusVal * count);
+            applyStat(cardType, bonusVal * count, abilityId);
         }
     });
 
     return results;
-}
-
-/**
- * 타입에 맞춰 스탯 합산
- */
-function applyStat(results, type, val) {
-    if (type === 'vocal') results.vocal += val;
-    else if (type === 'dance') results.dance += val;
-    else if (type === 'visual') results.visual += val;
 }
 
 /**

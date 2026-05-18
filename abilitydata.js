@@ -16,6 +16,7 @@ export const abilityData = {
         }
     },
     "fixedparam": {
+        name: { ko: "초기 스탯", ja: "初期パラメータ", en: "Initial Stats" },
         format: { ko: "초기 {type} 상승+{val}", ja: "初期{type}上昇+{val}", en: "Initial {type} Up +{val}" },
         levels: {
             "SSR": { 1: 52, 2: 55, 3: 59, 4: 62, 5: 65 },
@@ -39,6 +40,7 @@ export const abilityData = {
         }
     },
     "sp_param": {
+        name: { ko: "SP레슨", ja: "SPレッスン", en: "SP Lesson" },
         format: { ko: "{type} SP레슨 종료시 {type} 상승+{val}", ja: "{type}SPレッスン終了時、{type}上昇+{val}", en: "After {type} SP Lesson, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 13, 2: 17 },
@@ -47,6 +49,7 @@ export const abilityData = {
         },
     },
     "sp_param20": {
+        name: { ko: "SP레슨(20장)", ja: "SPレッスン(20枚)", en: "SP Lesson(20Cards)" },
         format: { ko: "SP레슨 종료시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロヂュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 15, 2: 21 },
@@ -56,6 +59,7 @@ export const abilityData = {
         trigger: ["sp"], max: 4,
     },
     "lesson_param": {
+        name: { ko: "레슨", ja: "レッスン", en: "Lesson" },
         format: { ko: "{type} 레슨 종료시 {type} 상승+{val}", ja: "{type}レッスン終了時、{type}上昇+{val}", en: "After {type} Lesson, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 4, 2: 6 },
@@ -64,6 +68,7 @@ export const abilityData = {
         },
     },
     "normallesson_param": {
+        name: { ko: "통상레슨", ja: "通常レッスン", en: "Normal Lesson" },
         format: { ko: "{type} 통상레슨 종료시 {type} 상승+{val}", ja: "{type}通常レッスン終了時、{type}上昇+{val}", en: "After Normal {type} Lesson, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
@@ -143,6 +148,7 @@ export const abilityData = {
         }
     },
     "enhance": {
+        name: { ko: "강화", ja: "強化", en: "Enhance" },
         format: { ko: "카드 강화 시 {type} 상승+{val}", ja: "スキルカード強化時、{type}上昇+{val}", en: "When enhancing a card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -152,6 +158,7 @@ export const abilityData = {
         trigger: ["enhance_m", "enhance_a"],
     },
     "enhance_mental": {
+        name: { ko: "강화(멘탈)", ja: "強化(メンタル)", en: "Enhance(Mental)" },
         format: { ko: "멘탈 카드 강화 시 {type} 상승+{val}", ja: "メンタルスキルカード強化時、{type}上昇+{val}", en: "When enhancing a Mental card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 7, 2: 9 },
@@ -161,6 +168,7 @@ export const abilityData = {
         trigger: ["enhance_m"],
     },
     "enhance_active": {
+        name: { ko: "강화(액티브)", ja: "強化(アクティブ)", en: "Enhance(Active)" },
         format: { ko: "액티브 카드 강화 시 {type} 상승+{val}", ja: "アクティブスキルカード強化時、{type}上昇+{val}", en: "When enhancing an Active card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 7, 2: 9 },
@@ -170,6 +178,7 @@ export const abilityData = {
         trigger: ["enhance_a"],
     },
     "get": {
+        name: { ko: "카드 획득", ja: "カード獲得", en: "Get card" },
         format: { ko: "카드 획득 시 {type} 상승+{val}", ja: "スキルカード獲得時、{type}上昇+{val}", en: "When getting a card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
@@ -179,6 +188,7 @@ export const abilityData = {
         trigger: ["get_t", "get_m", "get_a", "purchase_m", "purchase_a"],
     },
     "get_mental": {
+        name: { ko: "카드 획득(멘탈)", ja: "カード獲得(メンタル)", en: "Get card(Mental)" },
         format: { ko: "멘탈 카드 획득 시 {type} 상승+{val}", ja: "メンタルスキルカード獲得時、{type}上昇+{val}", en: "When getting a Mental card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 2, 2: 3 },
@@ -188,6 +198,7 @@ export const abilityData = {
         trigger: ["get_m"],
     },
     "get_active": {
+        name: { ko: "카드 획득(액티브)", ja: "カード獲得(アクティブ)", en: "Get card(Active)" },
         format: { ko: "액티브 카드 획득 시 {type} 상승+{val}", ja: "アクティブスキルカード獲得時、{type}上昇+{val}", en: "When getting an Active card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 2, 2: 3 },
@@ -197,6 +208,7 @@ export const abilityData = {
         trigger: ["get_a"],
     },
     "get_goodcondition": {
+        name: { ko: "카드 획득(호조)", ja: "カード獲得(好調)", en: "Get card(GoodCond.)" },
         format: { ko: "호조 카드 획득 시 {type} 상승+{val}", ja: "好調キルカード獲得時、{type}上昇+{val}", en: "When getting a Good Condition card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -206,6 +218,7 @@ export const abilityData = {
         trigger: ["get_goodcondition"],
     },
     "get_concentration": {
+        name: { ko: "카드 획득(집중)", ja: "カード獲得(集中)", en: "Get card(Conc.)" },
         format: { ko: "집중 카드 획득 시 {type} 상승+{val}", ja: "集中スキルカード獲得時、{type}上昇+{val}", en: "When getting a Concentration card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -215,6 +228,7 @@ export const abilityData = {
         trigger: ["get_concentration"],
     },
     "get_goodimpression": {
+        name: { ko: "카드 획득(호인상)", ja: "カード獲得(好印象)", en: "Get card(GoodImp.)" },
         format: { ko: "호인상 카드 획득 시 {type} 상승+{val}", ja: "好印象スキルカード獲得時、{type}上昇+{val}", en: "When getting a Good Impression card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -224,6 +238,7 @@ export const abilityData = {
         trigger: ["get_goodimpression"],
     },
     "get_motivation": {
+        name: { ko: "카드 획득(의욕)", ja: "カード獲得(やる気)", en: "Get card(Motiv.)" },
         format: { ko: "의욕 카드 획득 시 {type} 상승+{val}", ja: "やる気スキルカード獲得時、{type}上昇+{val}", en: "When getting a Motivation card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -233,6 +248,7 @@ export const abilityData = {
         trigger: ["get_motivation"],
     },
     "get_genki": {
+        name: { ko: "카드 획득(원기)", ja: "カード獲得(元気)", en: "Get card(Genki)" },
         format: { ko: "원기 카드 획득 시 {type} 상승+{val}", ja: "元気スキルカード獲得時、{type}上昇+{val}", en: "When getting a Genki card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -242,6 +258,7 @@ export const abilityData = {
         trigger: ["get_genki"],
     },
     "get_enthusiasm": {
+        name: { ko: "카드 획득(강기)", ja: "カード獲得(強気)", en: "Get card(Enthu.)" },
         format: { ko: "강기 카드 획득 시 {type} 상승+{val}", ja: "強気スキルカード獲得時、{type}上昇+{val}", en: "When getting an Enthusiasm card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -251,6 +268,7 @@ export const abilityData = {
         trigger: ["get_enthusiasm"],
     },
     "get_preservation": {
+        name: { ko: "카드 획득(온존)", ja: "カード獲得(温存)", en: "Get card(Preserve)" },
         format: { ko: "온존 카드 획득 시 {type} 상승+{val}", ja: "温存スキルカード獲得時、{type}上昇+{val}", en: "When getting a Preservation card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -260,6 +278,7 @@ export const abilityData = {
         trigger: ["get_preservation"],
     },
     "get_fullpower": {
+        name: { ko: "카드 획득(전력)", ja: "カード獲得(全力)", en: "Get card(FullPower)" },
         format: { ko: "전력 카드 획득 시 {type} 상승+{val}", ja: "全力スキルカード獲得時、{type}上昇+{val}", en: "When getting a Full Power card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
@@ -269,6 +288,7 @@ export const abilityData = {
         trigger: ["get_fullpower"],
     },
     "get_ssr": {
+        name: { ko: "카드 획득(SSR)", ja: "カード獲得(SSR)", en: "Get card(SSR)" },
         format: { ko: "SSR 카드 획득 시 {type} 상승+{val}", ja: "スキルカード(SSR)獲得時、{type}上昇+{val}", en: "When getting an SSR card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 5, 2: 6 },
@@ -278,6 +298,7 @@ export const abilityData = {
         trigger: ["get_ssr"],
     },
     "get_item6": {
+        name: { ko: "P아이템 획득(6회)", ja: "Pアイテム獲得(6回)", en: "Get P Item(6 times)" },
         format: { ko: "P아이템 획득 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "Pアイテム獲得時、{type}上昇+{val} (プロヂュース中6回)", en: "When getting a P Item, {type} Up +{val} (6 times during Produce)" },
         levels: {
             "SSR": { 1: 11, 2: 15 },
@@ -287,7 +308,8 @@ export const abilityData = {
         trigger: ["get_item"], max: 6,
     },
     "get_drink": {
-        format: { ko: "P드링크 획득 시 {type} 상승+{val}", ja: "Pドリンク獲得時、{type}上昇+{val}", en: "When getting a P Drink, {type} Up +{val}" },
+        name: { ko: "P드링크 획득", ja: "Pドリンク獲得", en: "Get P-Drink" },
+        format: { ko: "P드링크 획득 시 {type} 상승+{val}", ja: "Pドリンク獲得時、{type}上昇+{val}", en: "When getting a P-Drink, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 4, 2: 5 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -296,7 +318,8 @@ export const abilityData = {
         trigger: ["get_drink", "purchase_drink"],
     },
     "purchase_drink": {
-        format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}", en: "When buying a P Drink in Advice, {type} Up +{val}" },
+        name: { ko: "P드링크 구매", ja: "Pドリンク交換", en: "Purchase P-Drink" },
+        format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}", en: "When buying a P-Drink in Advice, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 8, 2: 11 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -305,6 +328,7 @@ export const abilityData = {
         trigger: ["purchase_drink"],
     },
     "gift": {
+        name: { ko: "활동지급/사시이레", ja: "活動支給/差し入れ", en: "Supplies/Gift" },
         format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val}", ja: "活動支給・差し入れ選択時、{type}上昇+{val}", en: "When choosing Supplies / Gift, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 12, 2: 17 },
@@ -322,6 +346,7 @@ export const abilityData = {
         }
     },
     "goout": {
+        name: { ko: "외출", ja: "おでかけ", en: "Go Out" },
         format: { ko: "외출 종료 시 {type} 상승+{val}", ja: "おでかけ終了時、{type}上昇+{val}", en: "After Go Out, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 11, 2: 15 },
@@ -331,6 +356,7 @@ export const abilityData = {
         trigger: ["goout_hajime", "goout_nia", "goout_hif"],
     },
     "goout2": {
+        name: { ko: "외출(2회)", ja: "おでかけ(2回)", en: "Go Out(2 times)" },
         format: { ko: "외출 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "おでかけ終了時、{type}上昇+{val} (プロヂュース中2回)", en: "After Go Out, {type} Up +{val} (2 times during Produce)" },
         levels: {
             "SSR": { 1: 28, 2: 38 },
@@ -340,6 +366,7 @@ export const abilityData = {
         trigger: ["goout_hajime", "goout_nia", "goout_hif"],
     },
     "class": {
+        name: { ko: "수업/영업", ja: "授業/営業", en: "Class/Promotion" },
         format: { ko: "수업・영업 종료 시 {type} 상승+{val}", ja: "授業・営業終了時、{type}上昇+{val}", en: "After Class / Promotion, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 5, 2: 7 },
@@ -349,6 +376,7 @@ export const abilityData = {
         trigger: ["class_hajime", "class_nia", "class_hif0", "class_hif1"],
     },
     "advice": {
+        name: { ko: "상담", ja: "相談", en: "Advice" },
         format: { ko: "상담 선택 시 {type} 상승+{val}", ja: "相談選択時、{type}上昇+{val}", en: "When choosing Advice, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 14, 2: 18 },
@@ -358,6 +386,7 @@ export const abilityData = {
         trigger: ["advice"],
     },
     "rest": {
+        name: { ko: "휴식", ja: "休む", en: "Rest" },
         format: { ko: "휴식 선택 시 {type} 상승+{val}", ja: "休む選択時、{type}上昇+{val}", en: "When choosing Rest, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
@@ -367,6 +396,7 @@ export const abilityData = {
         trigger: ["rest"],
     },
     "test": {
+        name: { ko: "시험/오디션", ja: "試験/オーディション", en: "Exam/Audition" },
         format: { ko: "시험・오디션 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "試験・オーディション終了時、{type}上昇+{val} (プロヂュース中2回)", en: "After Exam or Audition, {type} Up +{val} (2 times during Produce)" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
@@ -376,6 +406,7 @@ export const abilityData = {
         trigger: ["test", "audition", "round_hif"], max: 2,
     },
     "spclass": {
+        name: { ko: "특별지도", ja: "特別指導", en: "Special Guidance" },
         format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
@@ -385,6 +416,7 @@ export const abilityData = {
         trigger: ["spclass"], max: 3,
     },
     "delete": {
+        name: { ko: "삭제", ja: "削除", en: "Delete" },
         format: { ko: "카드 삭제 시 {type} 상승+{val}", ja: "スキルカード削除時、{type}上昇+{val}", en: "When deleting a card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 8, 2: 11 },
@@ -395,6 +427,7 @@ export const abilityData = {
 
     },
     "delete_mental3": {
+        name: { ko: "삭제(멘탈)", ja: "削除(メンタル)", en: "Delete(Mental)" },
         format: { ko: "멘탈카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "アクティブスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When deleting a Mental card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
@@ -405,6 +438,7 @@ export const abilityData = {
 
     },
     "delete_active3": {
+        name: { ko: "삭제(액티브)", ja: "削除(アクティブ)", en: "Delete(Active)" },
         format: { ko: "액티브카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "メンタルスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When deleting an Active card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
@@ -415,6 +449,7 @@ export const abilityData = {
 
     },
     "change3": {
+        name: { ko: "체인지", ja: "チェンジ", en: "Change" },
         format: { ko: "카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When changing a card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 21 },
@@ -425,6 +460,7 @@ export const abilityData = {
 
     },
     "customize6": {
+        name: { ko: "개조(6회)", ja: "カスタマイズ(6回)", en: "Customize(6 times)" },
         format: { ko: "카드 개조 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "スキルカードカスタマイズ時、{type}上昇+{val} (プロヂュース中6回)", en: "When customizing a card, {type} Up +{val} (6 times during Produce)" },
         levels: {
             "SSR": { 1: 8, 2: 11 },

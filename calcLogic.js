@@ -544,7 +544,7 @@ export function calculateTotals(store, detailedCounts) {
     // 2. Support Card Percentages
     const activePlan = store.planType || 'sense', selectedIds = store.planCards[activePlan] || [];
     let supportPercs = { vocal: 0, dance: 0, visual: 0 };
-    let supportFixedTotal = { vocal: 0, dance: 0, visual: 0 };
+    let supportFixedTotal = { vocal: 0, dance: 0, visual: 0, factors: {} };
 
     selectedIds.forEach(cardId => {
         if (!cardId) return;
@@ -558,6 +558,16 @@ export function calculateTotals(store, detailedCounts) {
         supportFixedTotal.vocal += bonusResult.vocal || 0;
         supportFixedTotal.dance += bonusResult.dance || 0;
         supportFixedTotal.visual += bonusResult.visual || 0;
+        
+        if (bonusResult.breakdowns) {
+            Object.keys(bonusResult.breakdowns).forEach(key => {
+                if (!supportFixedTotal.factors[key]) supportFixedTotal.factors[key] = { vocal: 0, dance: 0, visual: 0 };
+                supportFixedTotal.factors[key].vocal += bonusResult.breakdowns[key].vocal || 0;
+                supportFixedTotal.factors[key].dance += bonusResult.breakdowns[key].dance || 0;
+                supportFixedTotal.factors[key].visual += bonusResult.breakdowns[key].visual || 0;
+            });
+        }
+
         if (bonusResult.percent > 0) supportPercs[card.type] += bonusResult.percent;
     });
 
