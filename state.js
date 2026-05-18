@@ -50,8 +50,8 @@ export const state = {
     }),
     roadmapFilters: (() => {
         const defaults = {
-            another: true,
-            dist: true,
+            another: false,
+            dist: false,
             fes: true,
             limited: true,
             unit: true,
