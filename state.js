@@ -48,17 +48,21 @@ export const state = {
         rarity: [],
         ability: []
     }),
-    roadmapFilters: safeParse('roadmapFilters', {
-        another: true,
-        dist: true,
-        fes: true,
-        limited: true,
-        unit: true,
-        normal: true,
-        logic: true,
-        sense: true,
-        anomaly: true
-    }),
+    roadmapFilters: (() => {
+        const defaults = {
+            another: true,
+            dist: true,
+            fes: true,
+            limited: true,
+            unit: true,
+            normal: true,
+            logic: true,
+            sense: true,
+            anomaly: true
+        };
+        const loaded = safeParse('roadmapFilters', {});
+        return { ...defaults, ...loaded };
+    })(),
     sortBy: localStorage.getItem('sortBy') || 'id',
     sortOrder: localStorage.getItem('sortOrder') || 'desc',
     extraFiltersOpen: false,
