@@ -1432,13 +1432,13 @@ function renderCalcPresetSlots(container) {
                     </div>
                 </div>
                 <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
-                    <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="저장">
+                    <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
                         <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
                     </button>
-                    <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="불러오기">
+                    <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
                         <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
                     </button>
-                    <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="삭제">
+                    <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
                         <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
                     </button>
                 </div>
@@ -1447,8 +1447,8 @@ function renderCalcPresetSlots(container) {
     } else {
         html += `
             <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: #fdfdfd; border: 1px dashed #ddd; border-radius: 8px;">
-                <div style="font-size: ${noDataSize}; color: #aaa; font-weight: 500;">Slot ${i} - No data</div>
-                <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; flex: none; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="저장">
+                <div style="font-size: ${noDataSize}; color: #aaa; font-weight: 500;">Slot ${i} - ${t('ui_slot_empty')}</div>
+                <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; flex: none; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
                     <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
                 </button>
             </div>
@@ -1465,7 +1465,7 @@ function renderCalcPresetSlots(container) {
     container.querySelectorAll('.slot-load').forEach(btn => btn.onclick = () => loadCalcPreset(btn.dataset.slot));
     container.querySelectorAll('.slot-delete').forEach(btn => {
         btn.onclick = () => {
-            if (confirm(`슬롯 ${btn.dataset.slot}의 데이터를 삭제하시겠습니까?`)) {
+            if (confirm(t('ui_slot_delete_confirm', { slotId: btn.dataset.slot }))) {
                 const idol = calcStore.selectedIdol || 'saki';
                 const planType = calcStore.planType || 'sense';
                 localStorage.removeItem(`calc_preset_slot_${mode}_${idol}_${planType}_${btn.dataset.slot}`);
@@ -1614,14 +1614,14 @@ function saveCalcPreset(slotId, customName, container) {
         calcState: calcStore.serializeState()
     };
     localStorage.setItem(`calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`, JSON.stringify(data));
-    showToast(`슬롯 ${slotId}에 성공적으로 저장되었습니다.`);
+    showToast(t('calc_preset_save_success', { slotId }));
     renderCalcPresetSlots(container);
     const previewEl = document.getElementById('preset-preview');
     if (previewEl) renderPresetPreview(previewEl);
 }
 
 function loadCalcPreset(slotId) {
-    if (!confirm(`슬롯 ${slotId}의 데이터를 로드하시겠습니까? 현재 변경사항이 사라질 수 있습니다.`)) return;
+    if (!confirm(t('calc_preset_load_confirm', { slotId }))) return;
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
     const planType = calcStore.planType || 'sense';
@@ -1644,13 +1644,13 @@ function loadCalcPreset(slotId) {
             localStorage.setItem('last_calc_type', data.type);
             
             // Set toast in session storage to display after reload
-            sessionStorage.setItem('preset_loaded_toast', `슬롯 ${slotId}의 데이터가 성공적으로 로드되었습니다.`);
+            sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
             
             // Reload the page to guarantee a perfect and pristine UI refresh
             window.location.reload();
         }
     } catch (e) {
-        showToast('데이터 로드에 실패했습니다.');
+        showToast(t('calc_preset_load_failed'));
     }
 }
 
