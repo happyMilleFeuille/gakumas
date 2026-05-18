@@ -3377,3 +3377,4 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
     opacity: 1;
     transform: translateY(0);
 }
+#preset-preview::-webkit-scrollbar { display: none; }

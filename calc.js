@@ -1340,8 +1340,14 @@ function renderPresetPreview(el) {
     const planType = calcStore.planType || 'sense';
     const idolColor = idolColors[idol] || "#ff4d8d";
     let iconsHtml = '';
+
+    const isMobile = window.innerWidth <= 768;
+    const size = isMobile ? '20px' : '24px';
+    const fontSize = isMobile ? '0.55rem' : '0.65rem';
+    const badgeFontSize = isMobile ? '0.4rem' : '0.5rem';
+    const badgeOffset = isMobile ? '-3px' : '-2px';
     
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 10; i++) {
         const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${planType}_${i}`);
         let hasData = false;
         if (raw) {
@@ -1352,9 +1358,9 @@ function renderPresetPreview(el) {
                     const isActive = i === activeSlot;
                     const activeStyle = isActive ? `border: 2px solid ${idolColor};` : `border: 1.5px solid #ccc;`;
                     
-                    iconsHtml += `<div class="preset-circle-slot" data-slot="${i}" style="position: relative; display: flex; align-items: center; cursor: pointer;">
-                        <img src="icons/idolicons/${idol}_c.png" onerror="this.src='icons/idol.png'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: contain; box-sizing: border-box; ${activeStyle}">
-                        <span style="position: absolute; bottom: -2px; right: -2px; font-size: 0.5rem; background: ${idolColor}; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">${i}</span>
+                    iconsHtml += `<div class="preset-circle-slot" data-slot="${i}" style="position: relative; display: flex; align-items: center; cursor: pointer; flex-shrink: 0;">
+                        <img src="icons/idolicons/${idol}_c.png" onerror="this.src='icons/idol.png'" style="width: ${size}; height: ${size}; border-radius: 50%; object-fit: contain; box-sizing: border-box; ${activeStyle}">
+                        <span style="position: absolute; bottom: ${badgeOffset}; right: ${badgeOffset}; font-size: ${badgeFontSize}; background: ${idolColor}; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">${i}</span>
                     </div>`;
                 }
             } catch (e) {}
@@ -1362,7 +1368,7 @@ function renderPresetPreview(el) {
         if (!hasData) {
             const isActive = i === activeSlot;
             const borderStyle = isActive ? `border: 2px solid ${idolColor}; color: ${idolColor}; background: ${idolColor}10;` : 'border: 1.5px dashed #ccc; color: #aaa; background: transparent;';
-            iconsHtml += `<div class="preset-circle-slot empty" data-slot="${i}" style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: all 0.15s; box-sizing: border-box; ${borderStyle}">
+            iconsHtml += `<div class="preset-circle-slot empty" data-slot="${i}" style="width: ${size}; height: ${size}; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: ${fontSize}; font-weight: bold; cursor: pointer; transition: all 0.15s; box-sizing: border-box; flex-shrink: 0; ${borderStyle}">
                 ${i}
             </div>`;
         }

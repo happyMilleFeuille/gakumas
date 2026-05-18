@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeScrollContainer = null;
 
     document.addEventListener('mousedown', (e) => {
-        const scrollContainer = e.target.closest('.idol-grid, .idol-video-list');
+        const scrollContainer = e.target.closest('.idol-grid, .idol-video-list, #preset-preview');
         if (!scrollContainer) return;
         isDown = true;
         activeScrollContainer = scrollContainer;
