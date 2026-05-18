@@ -14,7 +14,7 @@ const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
  * @param {Object} spSettings - 필수 포함할 SP 레슨 확률 업 카드 설정 {vocal, dance, visual}
  * @returns {Array} 추천된 카드 ID 배열 (6개)
  */
-export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vocal: 0, dance: 0, visual: 0 }) {
+export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vocal: 0, dance: 0, visual: 0 }, lockedCards = [], lockedRentalId = null) {
     const planType = store.planType || 'sense';
     const currentCards = [...(store.planCards[planType] || [])];
     const cardMap = new Map(cardList.map(card => [card.id, card]));
@@ -102,9 +102,21 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         if (nextEval.overflowAmount !== currentEval.overflowAmount) return nextEval.overflowAmount < currentEval.overflowAmount;
         return nextEval.baseScore > currentEval.baseScore;
     };
+    // 고정 카드 세트
+    const lockedSet = new Set(lockedCards);
+
     const normalizeCardsForRentalSlot = (cards) => {
         if (!cards || cards.length !== 6 || cards.some(id => !id)) {
             return { cards, evaluation: buildInvalidEvaluation() };
+        }
+
+        // 렌탈이 고정이면 재배치 없이 그대로 평가
+        if (lockedRentalId) {
+            // 렌탈 카드를 반드시 6번째에 배치
+            const owned = cards.filter(id => id !== lockedRentalId);
+            const fixed = [...owned.slice(0, 5), lockedRentalId];
+            const evaluation = evaluate(fixed);
+            return { cards: fixed, evaluation };
         }
 
         let bestCards = [...cards];
@@ -128,15 +140,22 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         return { cards: bestCards, evaluation: bestEvaluation };
     };
     const fillSeedToSix = (seed) => {
-        const nextSeed = [...seed];
+        // 고정 카드를 항상 우선 포함 (렌탈 고정 카드는 제외하고 1~5번에 배치)
+        const filteredSeed = seed.filter(id => id !== lockedRentalId);
+        const nextSeed = [...new Set([...lockedCards, ...filteredSeed])];
         while (nextSeed.length < 5) {
-            const cand = poolA.find(card => !nextSeed.includes(card.id));
+            const cand = poolA.find(card => !nextSeed.includes(card.id) && card.id !== lockedRentalId);
             if (!cand) break;
             nextSeed.push(cand.id);
         }
         if (nextSeed.length === 5) {
-            const rentalCand = poolB.find(card => !nextSeed.includes(card.id));
-            if (rentalCand) nextSeed.push(rentalCand.id);
+            if (lockedRentalId) {
+                // 렌탈 고정 카드를 6번째에 강제 배치
+                nextSeed.push(lockedRentalId);
+            } else {
+                const rentalCand = poolB.find(card => !nextSeed.includes(card.id));
+                if (rentalCand) nextSeed.push(rentalCand.id);
+            }
         }
         return nextSeed.slice(0, 6);
     };
@@ -197,7 +216,6 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         return evaluation;
     };
 
-    // 최적화 루프
     const optimize = (initialCards) => {
         let { cards, evaluation } = normalizeCardsForRentalSlot([...initialCards]);
 
@@ -206,6 +224,10 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         while (improved && iter < 10) {
             improved = false; iter++;
             for (let i = 0; i < 6; i++) {
+                // 렌탈 고정이면 6번째 자리 건너뜀
+                if (i === 5 && lockedRentalId) continue;
+                // 고정된 카드는 교체하지 않음
+                if (lockedSet.has(cards[i])) continue;
                 const pool = (i === 5) ? poolB : poolA;
                 for (const cand of pool) {
                     if (cards.includes(cand.id) || cand.id === cards[i]) continue;
@@ -233,8 +255,8 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         seeds.push(seed);
     };
 
-    // 시드 1: 현재 덱 기반 최적화
-    addSeed(fillSeedToSix(currentCards.filter(Boolean)));
+    // 시드 1: 현재 덱 기반 최적화 (고정 카드 포함)
+    addSeed(fillSeedToSix([...lockedCards, ...currentCards.filter(id => id && !lockedSet.has(id))]));
 
     // 시드 2: SP 요구사항을 충실히 반영한 초기 덱 구성
     const spPools = {
@@ -243,11 +265,11 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         visual: poolA.filter(c => getCardAttr(c.id) === 'visual' && isSPCard(c.id))
     };
 
-    const seed2 = [];
+    const seed2 = [...lockedCards];
     ['vocal', 'dance', 'visual'].forEach(attr => {
         const target = spSettings[attr] || 0;
         for (let i = 0; i < target; i++) {
-            if (spPools[attr][i]) seed2.push(spPools[attr][i].id);
+            if (spPools[attr][i] && !lockedSet.has(spPools[attr][i].id)) seed2.push(spPools[attr][i].id);
         }
     });
     addSeed(fillSeedToSix(seed2));
@@ -261,30 +283,30 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         visual: poolA.filter(card => getCardAttr(card.id) === 'visual').slice(0, 4).map(card => card.id)
     };
 
-    addSeed(fillSeedToSix(seedPoolAIds.slice(0, 5)));
-    addSeed(fillSeedToSix([
-        ...seedAttrIds.vocal.slice(0, 2),
-        ...seedAttrIds.dance.slice(0, 2),
-        ...seedAttrIds.visual.slice(0, 2)
+    addSeed(fillSeedToSix([...lockedCards, ...seedPoolAIds.filter(id => !lockedSet.has(id)).slice(0, 5)]));
+    addSeed(fillSeedToSix([...lockedCards,
+        ...seedAttrIds.vocal.filter(id => !lockedSet.has(id)).slice(0, 2),
+        ...seedAttrIds.dance.filter(id => !lockedSet.has(id)).slice(0, 2),
+        ...seedAttrIds.visual.filter(id => !lockedSet.has(id)).slice(0, 2)
     ]));
-    addSeed(fillSeedToSix([
-        ...seedAttrIds.vocal.slice(0, 3),
-        ...seedAttrIds.dance.slice(0, 1),
-        ...seedAttrIds.visual.slice(0, 1)
+    addSeed(fillSeedToSix([...lockedCards,
+        ...seedAttrIds.vocal.filter(id => !lockedSet.has(id)).slice(0, 3),
+        ...seedAttrIds.dance.filter(id => !lockedSet.has(id)).slice(0, 1),
+        ...seedAttrIds.visual.filter(id => !lockedSet.has(id)).slice(0, 1)
     ]));
-    addSeed(fillSeedToSix([
-        ...seedAttrIds.vocal.slice(0, 1),
-        ...seedAttrIds.dance.slice(0, 3),
-        ...seedAttrIds.visual.slice(0, 1)
+    addSeed(fillSeedToSix([...lockedCards,
+        ...seedAttrIds.vocal.filter(id => !lockedSet.has(id)).slice(0, 1),
+        ...seedAttrIds.dance.filter(id => !lockedSet.has(id)).slice(0, 3),
+        ...seedAttrIds.visual.filter(id => !lockedSet.has(id)).slice(0, 1)
     ]));
-    addSeed(fillSeedToSix([
-        ...seedAttrIds.vocal.slice(0, 1),
-        ...seedAttrIds.dance.slice(0, 1),
-        ...seedAttrIds.visual.slice(0, 3)
+    addSeed(fillSeedToSix([...lockedCards,
+        ...seedAttrIds.vocal.filter(id => !lockedSet.has(id)).slice(0, 1),
+        ...seedAttrIds.dance.filter(id => !lockedSet.has(id)).slice(0, 1),
+        ...seedAttrIds.visual.filter(id => !lockedSet.has(id)).slice(0, 3)
     ]));
 
     seedPoolBIds.forEach(rentalId => {
-        const baseSeed = fillSeedToSix(seedPoolAIds.slice(0, 5));
+        const baseSeed = fillSeedToSix([...lockedCards, ...seedPoolAIds.filter(id => !lockedSet.has(id)).slice(0, 5)]);
         if (baseSeed.length === 6) {
             baseSeed[5] = rentalId;
             addSeed(baseSeed);
@@ -339,8 +361,19 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
             return;
         }
 
-        showRecommendModal((settings) => {
-            const result = getRecommendedCards(store, 'all', settings);
+        showRecommendModal((settings, lockEnabled, selectedLockedCards) => {
+            const lockedCards = [];
+            let lockedRentalId = null;
+            if (lockEnabled && selectedLockedCards && selectedLockedCards.length > 0) {
+                const planType = store.planType || 'sense';
+                const current = store.planCards[planType] || [];
+                selectedLockedCards.forEach(id => {
+                    const idx = current.indexOf(id);
+                    if (idx === 5) lockedRentalId = id;
+                    else if (idx >= 0) lockedCards.push(id);
+                });
+            }
+            const result = getRecommendedCards(store, 'all', settings, lockedCards, lockedRentalId);
             if (applyRecommendedCards(store, result.cards, result.bestEnhance)) {
                 store.save();
                 refreshAll();

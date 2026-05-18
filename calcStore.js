@@ -60,6 +60,7 @@ export const calcStore = {
     memories: [null, null, null, null],
     isKyouka: false,
     recommendSettings: { vocal: 0, dance: 0, visual: 0 },
+    lockCards: false,
     hifStats: { vocal: 0, dance: 0, visual: 0 },
     activeWeek: null,
     _persistenceReady: false,
@@ -118,6 +119,7 @@ export const calcStore = {
             memories: this.memories,
             isKyouka: this.isKyouka,
             recommendSettings: this.recommendSettings,
+            lockCards: this.lockCards,
             hifStats: this.hifStats,
             hifParamLimitLevel: this.hifParamLimitLevel || 0,
             updatedAt: Date.now()

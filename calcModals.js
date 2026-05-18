@@ -1060,7 +1060,7 @@ export function showRecommendModal(onConfirm) {
     `;
 
     modal.innerHTML = `
-        <div class="confirm-modal-content" style="border: 1px solid #ddd; border-radius: 12px; padding: 24px; background: #fff; max-width: 320px; width: 95%; margin: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: modal-fade-in 0.2s ease-out;">
+        <div class="confirm-modal-content" style="border: 1px solid #ddd; border-radius: 12px; padding: 24px; background: #fff; max-width: 380px; width: 95%; margin: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: modal-fade-in 0.2s ease-out;">
             <div style="font-size: 17px; font-weight: bold; margin-bottom: 20px; color: #333; text-align: center;">${titleText}</div>
             
             <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
@@ -1071,6 +1071,21 @@ export function showRecommendModal(onConfirm) {
                 ${renderSubRow('vocal')}
                 ${renderSubRow('dance')}
                 ${renderSubRow('visual')}
+            </div>
+
+            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
+                <label id="lock-cards-toggle" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; cursor: pointer; user-select: none;">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-size: 14px; font-weight: bold; color: #333;">${t('calc_lock_current_cards')}</span>
+                        <span style="font-size: 11px; color: #999;">${t('calc_lock_current_cards_desc')}</span>
+                    </div>
+                    <div style="position: relative; width: 44px; height: 24px; flex-shrink: 0; margin-left: 12px;">
+                        <input type="checkbox" id="lock-cards-checkbox" ${calcStore.lockCards ? 'checked' : ''} style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <div class="lock-toggle-track" style="position: absolute; inset: 0; background: #ddd; border-radius: 12px; transition: background 0.2s;"></div>
+                        <div class="lock-toggle-thumb" style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.2s;"></div>
+                    </div>
+                </label>
+                <div id="lock-cards-preview" style="display: none; padding: 8px 12px; border-top: 1px solid #f0f0f0; background: #fafafa;"></div>
             </div>
 
             <div style="margin-bottom: 20px; padding: 0 4px;">
@@ -1094,6 +1109,15 @@ export function showRecommendModal(onConfirm) {
                 color: #fff !important;
                 border-color: ${idolColor} !important;
                 box-shadow: 0 2px 6px ${idolColor}44;
+            }
+            @media (max-width: 768px) {
+                .confirm-modal-content { padding: 18px !important; }
+                .confirm-modal-content > div:first-child { font-size: 15px !important; margin-bottom: 14px !important; }
+                .confirm-modal-content span[style*="font-size: 14px"] { font-size: 12px !important; }
+                .confirm-modal-content span[style*="font-size: 13px"] { font-size: 11px !important; }
+                .confirm-modal-content .sp-opt-btn { width: 24px !important; height: 24px !important; font-size: 10px !important; }
+                #lock-cards-toggle span[style*="font-size: 14px"] { font-size: 12px !important; }
+                #lock-cards-toggle span[style*="font-size: 11px"] { font-size: 10px !important; }
             }
         </style>
     `;
@@ -1128,6 +1152,78 @@ export function showRecommendModal(onConfirm) {
         });
     });
 
+    // 서포카 고정 토글 이벤트
+    const lockToggle = modal.querySelector('#lock-cards-toggle');
+    const lockCheckbox = modal.querySelector('#lock-cards-checkbox');
+    const lockTrack = modal.querySelector('.lock-toggle-track');
+    const lockThumb = modal.querySelector('.lock-toggle-thumb');
+    const lockPreview = modal.querySelector('#lock-cards-preview');
+
+    // 개별 카드 고정 상태 추적
+    const lockedCardSet = new Set();
+
+    const updateLockUI = () => {
+        const checked = lockCheckbox.checked;
+        lockTrack.style.background = checked ? idolColor : '#ddd';
+        lockThumb.style.transform = checked ? 'translateX(20px)' : 'translateX(0)';
+        
+        if (checked) {
+            const planType = calcStore.planType || 'sense';
+            const currentCards = (calcStore.planCards[planType] || []).filter(Boolean);
+            if (currentCards.length > 0) {
+                lockPreview.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">${currentCards.map((id, idx) => {
+                    const card = (typeof cardList !== 'undefined' ? cardList : []).find(c => c.id === id);
+                    const attrColor = card?.type === 'vocal' ? '#ff4d8d' : (card?.type === 'dance' ? '#46a4f3' : '#fcc75e');
+                    const isRental = idx === 5;
+                    const isLocked = lockedCardSet.has(id);
+                    const borderColor = isLocked ? (isRental ? '#5ECFB1' : attrColor) : '#88888866';
+                    return `<div class="lock-card-item" data-card-id="${id}" style="position: relative; width: 81px; height: 45px; border-radius: 4px; overflow: hidden; border: 2px solid ${borderColor}; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s;">
+                        <img src="images/support/${id}.webp" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="lock-card-overlay" style="position: absolute; inset: 0; background: ${isLocked ? 'transparent' : 'rgba(0,0,0,0.55)'}; transition: background 0.2s; display: flex; align-items: center; justify-content: center;">
+                            ${(!isLocked && isRental) ? '<span style="color: #fff; font-size: 10px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">RENTAL</span>' : ''}
+                        </div>
+                    </div>`;
+                }).join('')}</div>`;
+                lockPreview.style.display = 'block';
+
+                // 각 카드 클릭 이벤트
+                lockPreview.querySelectorAll('.lock-card-item').forEach(el => {
+                    el.onclick = (e) => {
+                        e.stopPropagation();
+                        const cardId = el.dataset.cardId;
+                        if (lockedCardSet.has(cardId)) {
+                            lockedCardSet.delete(cardId);
+                        } else {
+                            lockedCardSet.add(cardId);
+                        }
+                        updateLockUI();
+                    };
+                });
+            } else {
+                lockPreview.innerHTML = '<div style="font-size: 11px; color: #bbb; text-align: center; padding: 4px 0;">—</div>';
+                lockPreview.style.display = 'block';
+            }
+        } else {
+            lockPreview.style.display = 'none';
+        }
+    };
+
+    // 이전 토글 상태 복원
+    if (calcStore.lockCards && lockCheckbox) {
+        lockCheckbox.checked = true;
+        updateLockUI();
+    }
+
+    if (lockToggle) {
+        lockToggle.onclick = (e) => {
+            e.preventDefault();
+            lockCheckbox.checked = !lockCheckbox.checked;
+            calcStore.lockCards = lockCheckbox.checked;
+            calcStore.save();
+            updateLockUI();
+        };
+    }
+
     const close = (isPopState = false) => {
         if (!isPopState) history.back();
         else modal.style.display = 'none';
@@ -1146,7 +1242,9 @@ export function showRecommendModal(onConfirm) {
         `;
 
         setTimeout(() => {
-            onConfirm(settings);
+            const lockEnabled = modal.querySelector('#lock-cards-checkbox')?.checked || false;
+            const selectedLockedCards = lockEnabled ? [...lockedCardSet] : [];
+            onConfirm(settings, lockEnabled, selectedLockedCards);
             close();
         }, 100);
     };
