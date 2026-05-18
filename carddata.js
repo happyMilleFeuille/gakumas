@@ -2736,10 +2736,10 @@ export const cardList = [
         abilities:
             [
                 "fixedparam",
-                "sp_recovery",
+                "sp_lessonup",
                 "supportrateup",
-                "lesson_param",
-                "advice",
+                "sp_param",
+                "goout",
                 "event_paraup"
             ]
     },
