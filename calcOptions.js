@@ -59,7 +59,7 @@ export const activityOptions = {
         { id: "enhance", results: ["enhance"], mainLabelKey: "calc_option_main_enhance", labelKey: "calc_option_advice_enhance", type: "counter", max: 9 },
         { id: "change", results: ["change"], mainLabelKey: "calc_option_main_change", labelKey: "calc_option_advice_change", type: "counter", max: 9 },
         { id: "purchase_ssr", results: ["get"], mainLabelKey: "calc_option_main_card", labelKey: "calc_option_purchase_ssr", type: "counter", max: 9 },
-        { id: "purchase_drink", results: ["purchase_drink"], mainLabelKey: "calc_option_main_drink", labelKey: "calc_option_purchase_drink", type: "counter", max: 9 },
+        { id: "purchase_drink", results: ["get_drink"], mainLabelKey: "calc_option_main_drink", labelKey: "calc_option_purchase_drink", type: "counter", max: 9 },
         { id: "spclass_customize", results: ["customize"], mainLabelKey: "calc_option_main_customize", labelKey: "calc_option_spclass_customize", type: "counter", max: 9 },
     ],
     spclass: [
