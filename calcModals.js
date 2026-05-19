@@ -261,7 +261,7 @@ export function renderSidePanelContent(panel, selectedPlan) {
             <div class="side-card-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'is-disabled-card' : ''}" data-id="${c.id}" ${style}>
                 <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
                 <img src="images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'card' : 'item'}.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'item' : 'card'}.webp'; this.onerror=null;">
-                <div class="calc-card-stars">${Array.from({ length: 4 }, (_, i) => `<img src="icons/flower.png" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
+                <div class="calc-card-stars">${Array.from({ length: 4 }, (_, i) => `<img src="icons/flower.webp" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
                 <div class="card-bonus-overlay"><span class="bonus-val"></span></div>
                 <div class="info-btn">i</div>
             </div>`;

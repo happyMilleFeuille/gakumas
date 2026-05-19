@@ -2123,8 +2123,9 @@
     width: 10px !important;
     height: 10px !important;
     object-fit: contain !important;
-    opacity: 0.25 !important;
-    filter: brightness(0) !important;
+    content: url('../icons/flowerback.webp') !important;
+    opacity: 1 !important;
+    filter: none !important;
 }
 
 @media (min-width: 769px) {
@@ -2135,7 +2136,7 @@
 }
 
 .calc-card-star.active {
-    opacity: 1 !important;
+    content: url('../icons/flower.webp') !important;
     filter: none !important;
 }
 
