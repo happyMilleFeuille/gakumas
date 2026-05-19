@@ -5,7 +5,7 @@ import { skillCardList } from './skillcarddata.js';
 import { produceList } from './producedata.js';
 import { calculateCardBonus } from './simulator-engine.js';
 import { getTriggerCounts, calculateTotals } from './calcLogic.js';
-import { updateSelectedCardsUI, getIdolDisplayColor } from './calcUI.js';
+import { updateSelectedCardsUI, getIdolDisplayColor, getNormalizedSelectedCardIds, getParsedItemEffectsText } from './calcUI.js';
 import { calcStore } from './calcStore.js';
 import { translate } from './utils.js';
 import { abilityData } from './abilitydata.js';
@@ -507,7 +507,7 @@ window.closeSupportCardPanel = closeSupportCardPanel;
 /**
  * 스킬 카드 선택(조정) 모달
  */
-export function showOtherTuneModal(refreshAll) {
+export function showOtherTuneModal(refreshAll, showSidebar = false) {
     const activePlan = calcStore.planType;
     const selectedSkills = calcStore.planSkills[activePlan] || {};
     const counts = getTriggerCounts(calcStore);
@@ -625,6 +625,7 @@ export function showOtherTuneModal(refreshAll) {
     modal.addEventListener('click', (e) => e.stopPropagation());
 
     const isJa = state.currentLang === 'ja';
+    const isPCView = showSidebar && window.innerWidth > 768;
     const renderCardItem = (id) => {
         if (id.startsWith('header-')) {
             const type = id.replace('header-', '');
@@ -677,7 +678,90 @@ export function showOtherTuneModal(refreshAll) {
 
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
+    // PC 전용: 서포카 사이드바 렌더링 함수
+    const renderTuneSidebar = (container) => {
+        const { ids: selectedIds } = getNormalizedSelectedCardIds(calcStore);
+        let html = '';
+        for (let i = 0; i < 6; i++) {
+            const cardId = selectedIds[i];
+            if (cardId) {
+                const cardData = cardList.find(c => c.id === cardId);
+                const checked = calcStore.cardChecked[cardId];
+                const optChecked = calcStore.cardExtraChecked[cardId];
+                const eventChecked = calcStore.cardEventChecked[cardId];
+                const counter = calcStore.itemCounters[cardId] || 0;
+                const isRental = i === 5;
+                const attrColor = cardData?.type === 'vocal' ? '#ff4d8d' : (cardData?.type === 'dance' ? '#46a4f3' : '#fcc75e');
+                const borderColor = isRental ? '#8FDDBA' : attrColor;
+
+                let extraOptHtml = '';
+                if (cardData?.extra2) {
+                    let optLabel = '';
+                    const e2 = cardData.extra2;
+                    if (e2.includes('enhance')) optLabel = t('calc_label_enhance');
+                    else if (e2.includes('change')) optLabel = t('calc_label_change');
+                    else if (e2.includes('del')) optLabel = t('calc_label_delete');
+                    else optLabel = t('calc_label_option');
+                    extraOptHtml = `
+                        <label class="opt-check-label" style="font-size: 0.55rem; gap: 2px; justify-content: center;">
+                            <input type="checkbox" class="card-opt-check" data-id="${cardId}" ${optChecked ? 'checked' : ''}>
+                            <span>${optLabel}</span>
+                        </label>`;
+                }
+
+                let counterHtml = '';
+                if (cardData?.item_effects?.some(e => e.type === 'action' || e.type === 'add_count')) {
+                    counterHtml = `
+                        <div class="card-item-counter" style="margin-top: 1px;">
+                            <button class="card-counter-btn minus" data-id="${cardId}">
+                                <img src="icons/minus.svg" class="cnt-btn-icon" style="width: 7px; height: 7px; filter: brightness(0) invert(1);">
+                            </button>
+                            <span class="card-counter-val" style="font-size: 0.65rem;">${counter}</span>
+                            <button class="card-counter-btn plus" data-id="${cardId}">
+                                <img src="icons/plus.svg" class="cnt-btn-icon" style="width: 7px; height: 7px; filter: brightness(0) invert(1);">
+                            </button>
+                        </div>`;
+                } else {
+                    counterHtml = `<div style="height: 18px; margin-top: 1px;"></div>`;
+                }
+
+                const imgSuffix = cardData?.have?.startsWith('card') ? 'card' : 'item';
+                const fallbackSuffix = imgSuffix === 'card' ? 'item' : 'card';
+
+                html += `
+                    <div class="tune-sidebar-card selected-card-slot filled" data-id="${cardId}" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="display: flex; gap: 2px; justify-content: center; margin-bottom: 2px;">
+                            ${extraOptHtml}
+                            <label class="opt-check-label" style="font-size: 0.55rem; gap: 2px; justify-content: center;">
+                                <input type="checkbox" class="card-event-check" data-id="${cardId}" ${eventChecked ? 'checked' : ''}>
+                                <span>${t('calc_label_event')}</span>
+                            </label>
+                        </div>
+                        <div class="slot-frame" style="width: 70px; height: 70px; border-radius: 6px; overflow: hidden; border: 2px solid ${borderColor}; position: relative; margin: 0 auto;">
+                            <img src="images/support/${cardId}_${imgSuffix}.webp" onerror="this.src='images/support/${cardId}_${fallbackSuffix}.webp'; this.onerror=null;" style="width: 100%; height: 100%; object-fit: cover;">
+                            <input type="checkbox" class="card-slot-check" data-id="${cardId}" ${checked ? 'checked' : ''} style="position: absolute; top: 1px; right: 1px; width: 13px; height: 13px;">
+                        </div>
+                        ${counterHtml}
+                    </div>`;
+            } else {
+                const label = i === 5 ? t('calc_label_rental') : '';
+                html += `
+                    <div class="tune-sidebar-card" style="display: flex; flex-direction: column; align-items: center; opacity: 0.25;">
+                        <div style="width: 70px; height: 70px; border-radius: 6px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #bbb; margin: 0 auto;">${label}</div>
+                    </div>`;
+            }
+        }
+        container.innerHTML = html;
+    };
+
+    const sidebarHtml = isPCView ? `
+        <div id="tune-sidebar" style="width: 150px; overflow-y: auto; background: white; border: 1px solid #ddd; border-radius: 12px; padding: 8px 6px; display: flex; flex-direction: column; box-sizing: border-box; flex-shrink: 0;">
+            <div style="font-size: 0.65rem; font-weight: bold; color: #999; text-align: center; padding-bottom: 6px; border-bottom: 1px solid #eee; margin-bottom: 6px; letter-spacing: 1px;">SUPPORT CARD</div>
+            <div id="tune-sidebar-cards" style="display: grid; grid-template-columns: 1fr; gap: 6px; flex: 1; align-content: start;"></div>
+        </div>` : '';
+
     modal.innerHTML = `
+        <div style="display: flex; gap: 12px; align-items: stretch; justify-content: center; max-height: 90vh;">
         <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
             <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: ${idolColor}; font-size: 1rem;"></h3>
             <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => {
@@ -698,10 +782,61 @@ export function showOtherTuneModal(refreshAll) {
                 <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_label_bulk_reset')}</button>
                 <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: ${idolColor}; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('gacha_close')}</button>
             </div>
+        </div>
+        ${sidebarHtml}
         </div>`;
     document.body.appendChild(modal);
     history.pushState({ modalOpen: 'tune' }, "");
     modal.onclick = (e) => { if (e.target === modal) history.back(); };
+
+    // PC 사이드바 초기 렌더링 및 이벤트 바인딩
+    const sidebarInitContainer = document.getElementById('tune-sidebar-cards');
+    if (sidebarInitContainer) {
+        renderTuneSidebar(sidebarInitContainer);
+
+        // 사이드바 이벤트 delegation (모달의 stopPropagation 때문에 직접 처리)
+        const tuneSidebar = document.getElementById('tune-sidebar');
+        if (tuneSidebar) {
+            tuneSidebar.addEventListener('click', (e) => {
+                const counterBtn = e.target.closest('.card-counter-btn');
+                const cardCheckBtn = e.target.closest('.card-slot-check');
+                const cardOptCheckBtn = e.target.closest('.card-opt-check');
+                const cardEventCheckBtn = e.target.closest('.card-event-check');
+
+                if (counterBtn) {
+                    const id = counterBtn.dataset.id;
+                    const card = cardList.find(c => c.id === id);
+                    if (!card) return;
+                    const maxVal = card.item_effects?.find(e => e.max)?.max || 99;
+                    let count = calcStore.itemCounters[id] || 0;
+                    if (counterBtn.classList.contains('plus')) { if (count < maxVal) count++; }
+                    else { if (count > 0) count--; }
+                    calcStore.itemCounters[id] = count;
+                    calcStore.save(); refreshAll();
+                    renderTuneSidebar(sidebarInitContainer);
+                    return;
+                }
+                if (cardCheckBtn) {
+                    calcStore.cardChecked[cardCheckBtn.dataset.id] = cardCheckBtn.checked;
+                    calcStore.save(); refreshAll();
+                    renderTuneSidebar(sidebarInitContainer);
+                    return;
+                }
+                if (cardOptCheckBtn) {
+                    calcStore.cardExtraChecked[cardOptCheckBtn.dataset.id] = cardOptCheckBtn.checked;
+                    calcStore.save(); refreshAll();
+                    renderTuneSidebar(sidebarInitContainer);
+                    return;
+                }
+                if (cardEventCheckBtn) {
+                    calcStore.cardEventChecked[cardEventCheckBtn.dataset.id] = cardEventCheckBtn.checked;
+                    calcStore.save(); refreshAll();
+                    renderTuneSidebar(sidebarInitContainer);
+                    return;
+                }
+            });
+        }
+    }
 
     const updateTitle = () => {
         const counts = getTriggerCounts(calcStore);
@@ -760,6 +895,8 @@ export function showOtherTuneModal(refreshAll) {
                 skills[id] = (skills[id] || 0) + 1;
             }
             calcStore.save(); refreshAll(); updateTitle();
+            const sidebarContainer = document.getElementById('tune-sidebar-cards');
+            if (sidebarContainer) renderTuneSidebar(sidebarContainer);
             modal.querySelectorAll('.tune-card-item').forEach(el => {
                 const cid = el.dataset.id; if (cid === 'trouble' || cid === primaSkillId) return;
                 const count = skills[cid] || 0;
@@ -776,6 +913,8 @@ export function showOtherTuneModal(refreshAll) {
         const resetConfirm = t('calc_confirm_reset_skills');
         if (!confirm(resetConfirm)) return;
         calcStore.planSkills[activePlan] = {}; calcStore.save(); refreshAll(); updateTitle();
+        const sidebarContainer2 = document.getElementById('tune-sidebar-cards');
+        if (sidebarContainer2) renderTuneSidebar(sidebarContainer2);
         modal.querySelectorAll('.tune-card-item').forEach(el => {
             const cid = el.dataset.id; if (cid === 'trouble' || cid === primaSkillId) return;
             el.classList.remove('selected');

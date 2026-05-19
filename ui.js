@@ -553,7 +553,16 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
     const isJa = state.currentLang === 'ja';
     const isEn = state.currentLang === 'en';
     const themeColor = '#ff4d8d';
-    const defaultPresetName = `Slot ${slotId}`;
+    
+    let existingName = '';
+    try {
+        const data = getSlotData(slotId);
+        if (data && data.customName) {
+            existingName = data.customName;
+        }
+    } catch(e) {}
+    
+    const defaultPresetName = existingName || `Slot ${slotId}`;
             
     const backdrop = document.createElement('div');
     backdrop.id = 'support-preset-save-modal';

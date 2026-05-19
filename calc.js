@@ -1490,7 +1490,19 @@ function showSavePresetModal(slotId, container) {
     
     const planLabel = planType.toUpperCase();
     
-    const defaultPresetName = `${idol.toUpperCase()}-${planLabel} ${slotId}`;
+    const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`;
+    let existingName = '';
+    try {
+        const raw = localStorage.getItem(slotKey);
+        if (raw) {
+            const data = JSON.parse(raw);
+            if (data && data.customName) {
+                existingName = data.customName;
+            }
+        }
+    } catch(e) {}
+    
+    const defaultPresetName = existingName || `${idol.toUpperCase()}-${planLabel} ${slotId}`;
             
     const backdrop = document.createElement('div');
     backdrop.id = 'preset-save-modal';

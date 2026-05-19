@@ -167,7 +167,8 @@ export function initGlobalDistListener(refreshAll) {
 
         // 4. 스킬 카드 조정 모달 열기
         if (tuneBtn) {
-            showOtherTuneModal(refreshAll);
+            const fromFloating = !!e.target.closest('#floating-skill-btn');
+            showOtherTuneModal(refreshAll, fromFloating);
             return;
         }
 
