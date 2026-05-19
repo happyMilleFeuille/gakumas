@@ -3,15 +3,15 @@
 
 export const activityOptions = {
     class_hajime: [
-        { id: "class_hajime1", results: ["get", "get_t", "change"], mainLabelKey: "calc_option_main_change", labelKey: "calc_option_class_hajime1", type: "checkbox" },
+        { id: "class_hajime1", results: ["get_t", "change"], mainLabelKey: "calc_option_main_change", labelKey: "calc_option_class_hajime1", type: "checkbox" },
         { id: "class_hajime2", results: ["get"], labelKey: "calc_option_none", type: "checkbox" },
     ],
     class_hif1: [
         { id: "class_hif1", results: ["change"], mainLabelKey: "calc_option_main_change", labelKey: "calc_option_class_hif1", type: "checkbox" },
-        { id: "class_hif2", results: ["get", "get_t", "change"], mainlabel: "change_t", labelKey: "calc_option_class_hif2", type: "checkbox" },
+        { id: "class_hif2", results: ["get_t", "change"], mainlabel: "change_t", labelKey: "calc_option_class_hif2", type: "checkbox" },
     ],
     class_hif0: [
-        { id: "class_hajime1", results: ["get", "get_t", "change"], mainLabelKey: "calc_option_main_change", labelKey: "calc_option_class_hajime1", type: "checkbox" },
+        { id: "class_hajime1", results: ["get_t", "change"], mainLabelKey: "calc_option_main_change", labelKey: "calc_option_class_hajime1", type: "checkbox" },
         { id: "class_hajime2", results: ["get"], labelKey: "calc_option_none", type: "checkbox" },
     ],
     class_nia: [
@@ -34,7 +34,7 @@ export const activityOptions = {
     ],
     goout_hif: [
         { id: "goout_hif1", results: ["get_drink", "get", "get"], mainlabel: "-50p", labelKey: "calc_option_goout_hif1", type: "checkbox" },
-        { id: "goout_hif2", results: ["get_drink", "get_t", "get", "get", "get"], mainlabel: "get_t", labelKey: "calc_option_goout_hif2", type: "checkbox" },
+        { id: "goout_hif2", results: ["get_drink", "get_t", "get", "get"], mainlabel: "get_t", labelKey: "calc_option_goout_hif2", type: "checkbox" },
         { id: "goout_hif3", results: ["get", "get_drink"], labelKey: "calc_option_goout_hif3", type: "checkbox" },
     ],
     lessonvo: [

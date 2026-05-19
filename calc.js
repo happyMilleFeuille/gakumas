@@ -1015,9 +1015,6 @@ function refreshAll() {
             // 1. 선택된 스킬들 합계
             let selectedCount = Object.values(skills).reduce((a, b) => a + b, 0);
             
-            // 3. 트러블 카드 합계
-            selectedCount += (counts.total.get_t || 0);
-            
             // 4. 서포트 카드 획득 스킬 중 체크된 것들
             const selectedIds = calcStore.planCards[activePlan] || [];
             selectedIds.forEach(id => {

@@ -155,7 +155,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 2, 2: 3 },
             "SR": { 1: 2, 2: 3 }
         },
-        trigger: ["enhance_m", "enhance_a"],
+        trigger: ["enhance"],
     },
     "enhance_mental": {
         name: { ko: "강화(멘탈)", ja: "強化(メンタル)", en: "Enhance(Mental)" },
@@ -185,7 +185,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 1, 2: 2 }
         },
-        trigger: ["get_t", "get_m", "get_a", "purchase_m", "purchase_a"],
+        trigger: ["get"],
     },
     "get_mental": {
         name: { ko: "카드 획득(멘탈)", ja: "カード獲得(メンタル)", en: "Get card(Mental)" },
