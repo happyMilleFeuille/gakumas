@@ -168,10 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, evt === 'touchstart' ? { passive: true } : false);
     });
 
-    // [반응형 대응] 주요 경계(768px, 1024px)를 넘나들 때 로드맵 재렌더링
+    // [반응형 대응] 768px 경계를 넘나들 때 서포트 패널 닫기 및 로드맵 재렌더링
     const getLayoutStage = (w) => {
         if (w <= 768) return 'mobile';
-        if (w <= 1024) return 'tablet';
         return 'pc';
     };
 
