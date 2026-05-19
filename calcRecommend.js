@@ -123,8 +123,6 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         let bestEvaluation = null;
 
         cards.forEach(rentalId => {
-            // 고정된 카드는 렌탈 슬롯으로 이동시키지 않음
-            if (lockedSet.has(rentalId)) return;
             const ordered = cards.filter(id => id !== rentalId);
             if (ordered.some(id => !poolASet.has(id))) return;
             ordered.push(rentalId);
@@ -230,7 +228,6 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
                 if (i === 5 && lockedRentalId) continue;
                 // 고정된 카드는 교체하지 않음
                 if (lockedSet.has(cards[i])) continue;
-                let swapped = false;
                 const pool = (i === 5) ? poolB : poolA;
                 for (const cand of pool) {
                     if (cards.includes(cand.id) || cand.id === cards[i]) continue;
@@ -244,11 +241,8 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
                         evaluation = normalized.evaluation;
                         cards = normalized.cards;
                         improved = true;
-                        swapped = true;
-                        break; // 카드 배열이 변경되었으므로 인덱스 루프 재시작
                     }
                 }
-                if (swapped) break; // for(i) 루프도 중단하고 while에서 재시작
             }
         }
         return { cards, score: evaluation.finalScore, evaluation };
