@@ -2,7 +2,7 @@
 import { state, setLanguage } from './state.js';
 import { updatePageTranslations, initMobileHeightFix } from './utils.js';
 import { handleNavigation } from './router.js';
-import { renderSupport, updateGlobalBackgroundColor, preloadSupportImages } from './ui.js';
+import { renderSupport, updateGlobalBackgroundColor, preloadSupportImages, preloadCalcImages } from './ui.js';
 import { renderGacha } from './gacha.js';
 
 // Idol Grid Drag-to-Scroll Implementation (글로벌 스코프로 이동하여 에러 방지)
@@ -160,11 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 서포트 카드 탭/버튼 프리로드 연결 (이벤트 위임)
+    // 서포트 카드 및 계산기 탭/버튼 프리로드 연결 (이벤트 위임)
     ['mouseover', 'touchstart'].forEach(evt => {
         document.addEventListener(evt, (e) => {
-            const btn = e.target.closest('.menu-btn[data-target="support"], .home-quick-btn[data-target="support"]');
-            if (btn) preloadSupportImages();
+            const supportBtn = e.target.closest('.menu-btn[data-target="support"], .home-quick-btn[data-target="support"]');
+            if (supportBtn) preloadSupportImages();
+
+            const calcBtn = e.target.closest('.menu-btn[data-target="calc"], .home-quick-btn[data-target="calc"]');
+            if (calcBtn) preloadCalcImages();
         }, evt === 'touchstart' ? { passive: true } : false);
     });
 

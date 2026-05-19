@@ -7,6 +7,7 @@ import { initCalc } from './calc.js';
 import { calcStore } from './calcStore.js';
 import { renderPSSRRoadmap } from './roadmap.js';
 import { showCardModal } from './cardModal.js';
+import { pItemDescriptions } from './pItemData.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -44,6 +45,54 @@ export function preloadSupportImages() {
         const img2 = new Image();
         img2.onload = () => { if (!card._extraPath) card._extraPath = path2; };
         img2.src = path2;
+    });
+}
+
+// 계산기 화면 이미지 프리로드 (P-아이템 및 공통 아이콘)
+let preloadedCalc = false;
+export function preloadCalcImages() {
+    if (preloadedCalc) return;
+    preloadedCalc = true;
+
+    const urls = [];
+
+    // 1. 공통 계산기 UI 아이콘
+    const commonIcons = [
+        'advice', 'advice_hif', 'audition', 'drink', 'lessondan', 'lessonvi', 'lessonvo',
+        'oikomi', 'spclass', 'test', 'test_hif', 'round_hif',
+        'class_hajime', 'class_hif0', 'class_hif1', 'class_nia',
+        'gift_hajime', 'gift_hif', 'gift_nia',
+        'goout_hajime', 'goout_hif', 'goout_nia'
+    ];
+    commonIcons.forEach(icon => urls.push(`icons/cal/${icon}.webp`));
+
+    // 2. pItemData에서 P아이템 아이콘 수집
+    if (pItemDescriptions) {
+        Object.keys(pItemDescriptions).forEach(key => {
+            const list = pItemDescriptions[key];
+            if (!Array.isArray(list)) return;
+
+            const traverse = (obj) => {
+                if (obj.icons && Array.isArray(obj.icons)) {
+                    obj.icons.forEach(icon => urls.push(`icons/cal/${icon}.webp`));
+                }
+                if (obj.id) {
+                    urls.push(`icons/cal/${obj.id}.webp`);
+                }
+                if (obj.subOptions && Array.isArray(obj.subOptions)) {
+                    obj.subOptions.forEach(sub => traverse(sub));
+                }
+            };
+
+            list.forEach(item => traverse(item));
+        });
+    }
+
+    // 중복 제거 및 이미지 객체 생성하여 프리로드
+    const uniqueUrls = [...new Set(urls)];
+    uniqueUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
     });
 }
 
@@ -154,6 +203,7 @@ export function renderHome() {
 
 export function renderCalc(mode) {
     if (!contentArea) return;
+    preloadCalcImages();
     const tpl = document.getElementById('tpl-calc');
     contentArea.innerHTML = '';
     contentArea.appendChild(tpl.content.cloneNode(true));

@@ -1515,19 +1515,21 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
 
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip p-item-info-tooltip';
-    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '6px 8px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
+    tooltip.style.cssText = `position: absolute; width: max-content; max-width: 95vw; padding: ${isMobile ? '8px 10px' : '12px 15px'}; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 2px solid ${idolColor}; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: ${fontSize}; color: #333; line-height: 1.2; z-index: 10000; white-space: nowrap;`;
 
-    let selectedItems = [];
-    const maxSlots = calcStore.type === 'nia' ? 5 : (calcStore.type === 'hif' ? 1 : 2);
+    let contentHtml = '';
 
-    for (let i = 0; i < maxSlots; i++) {
-        const itemId = calcStore.pItems[i];
-        if (!itemId) continue;
+    if (calcStore.type === 'hif') {
+        let selectedItems = [];
+        const maxSlots = 1;
 
-        const descObj = pItemDescriptions[calcStore.type]?.find(d => d.icons?.includes(itemId));
-        if (!descObj) continue;
+        for (let i = 0; i < maxSlots; i++) {
+            const itemId = calcStore.pItems[i];
+            if (!itemId) continue;
 
-        if (calcStore.type === 'hif') {
+            const descObj = pItemDescriptions.hif?.find(d => d.icons?.includes(itemId));
+            if (!descObj) continue;
+
             // 1차 메인 P-아이템 효과 추가
             selectedItems.push({
                 icon: itemId,
@@ -1551,21 +1553,12 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
                     });
                 }
             }
-        } else {
-            // 일반 아이돌은 슬롯별 메인 아이콘/효과 표시
-            selectedItems.push({
-                icon: itemId,
-                text: getPItemDescriptionText(descObj, null, null)
-            });
         }
-    }
 
-    let contentHtml = '';
-    if (selectedItems.length === 0) {
-        const fallbackText = state.currentLang === 'en' ? 'No P-items equipped.' : (state.currentLang === 'ja' ? '装備されたPアイテムがありません。' : '장착된 P-아이템이 없습니다.');
-        contentHtml = `<div style="text-align: center; color: #999; padding: 4px 0;">${fallbackText}</div>`;
-    } else {
-        if (calcStore.type === 'hif') {
+        if (selectedItems.length === 0) {
+            const fallbackText = state.currentLang === 'en' ? 'No P-items equipped.' : (state.currentLang === 'ja' ? '装備されたPアイテムがありません。' : '장착된 P-아이템이 없습니다.');
+            contentHtml = `<div style="text-align: center; color: #999; padding: 4px 0;">${fallbackText}</div>`;
+        } else {
             // HIF 모드에서는 각 단계별 활성 구간 타이틀과 경계선을 융합하여 렌더링 (하드코딩 방식)
             const sections = [];
             selectedItems.forEach((item, index) => {
@@ -1595,15 +1588,29 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
                 `);
             });
             contentHtml = sections.join('');
-        } else {
-            // 일반 아이돌은 기존처럼 리스트만 출력
-            contentHtml = selectedItems.map(item => {
-                return `<div style="display: flex; align-items: center; gap: ${gap};">
-                            <img src="icons/cal/${item.icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/cal/hif1.webp'; this.onerror=null;">
-                            <span style="font-size: ${fontSize}; color: #333; line-height: 1.3;">${item.text}</span>
-                        </div>`;
-            }).join('');
         }
+    } else {
+        // 하지메나 니아 등 일반 아이돌 모드일 때는 선택 상태와 무관하게 모든 P-아이템 도감을 툴팁에 뿌려줌
+        const list = pItemDescriptions[calcStore.type] || [];
+        const rows = [];
+        list.forEach(item => {
+            if (item.type === 'separator') {
+                rows.push(`<div style="height: 1px; background: #ddd; margin: 6px 0; width: 100%;"></div>`);
+            } else {
+                const text = getPItemDescriptionText(item, null, null);
+                const iconsHtml = (item.icons || []).map(icon => `
+                    <img src="icons/cal/${icon}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/cal/hif1.webp'; this.onerror=null;">
+                `).join('');
+
+                rows.push(`
+                    <div style="display: flex; align-items: center; gap: ${gap}; width: 100%; box-sizing: border-box;">
+                        <div style="display: flex; gap: 2px; align-items: center; flex-shrink: 0;">${iconsHtml}</div>
+                        <span style="font-size: ${fontSize}; color: #333; line-height: 1.3; white-space: normal;">${text}</span>
+                    </div>
+                `);
+            }
+        });
+        contentHtml = rows.join('');
     }
 
     tooltip.innerHTML = `<div style="display: flex; flex-direction: column; gap: ${gap};">${contentHtml}</div>`;
@@ -1618,7 +1625,6 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
 
     if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
     if (left < 10) left = 10;
-    // 무조건 아래로 표시되도록 위로 뜨는 로직 제거
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
