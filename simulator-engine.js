@@ -63,7 +63,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
                 baseBonus = Math.floor(baseBonus * (1 + (epVal / 100)));
             }
         }
-        applyStat(cardType, baseBonus, 'fixedparam');
+        applyStat(cardType, baseBonus, 'event');
     }
 
     // --- 2. 아이템 효과(Item Effects) 계산 ---

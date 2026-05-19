@@ -78,6 +78,9 @@ export function showStatDetailModal(breakdown) {
         if (key === 'item_effect') {
             return state.currentLang === 'en' ? 'P-Item Effect' : (state.currentLang === 'ja' ? 'Pアイテム効果' : 'P아이템 효과');
         }
+        if (key === 'event') {
+            return state.currentLang === 'en' ? 'Event' : (state.currentLang === 'ja' ? 'イベント' : '이벤트');
+        }
         const ab = abilityData[key];
         if (ab && ab.name && ab.name[state.currentLang]) {
             return ab.name[state.currentLang];
@@ -86,7 +89,11 @@ export function showStatDetailModal(breakdown) {
     };
 
     const hasSupportFixedFactors = breakdown.supportFixed && breakdown.supportFixed.factors && Object.keys(breakdown.supportFixed.factors).length > 0;
-    const supportFixedFactorsHtml = hasSupportFixedFactors ? Object.keys(breakdown.supportFixed.factors).map(key => {
+    const supportFixedFactorsHtml = hasSupportFixedFactors ? Object.keys(breakdown.supportFixed.factors).sort((a, b) => {
+        if (a === 'fixedparam') return -1;
+        if (b === 'fixedparam') return 1;
+        return 0;
+    }).map(key => {
         const factor = breakdown.supportFixed.factors[key];
         if (factor.vocal === 0 && factor.dance === 0 && factor.visual === 0) return '';
         return renderRow(getAbilityName(key), factor, null, 'row-sub-item');
