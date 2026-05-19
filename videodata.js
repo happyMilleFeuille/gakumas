@@ -90,6 +90,13 @@ export const videoList = {
             url: "https://youtu.be/QCsb89zRVVE?si=-Gu8oG2Hejwg6K96",
             date: "2026.05.08."
         },
+        {
+            title: "生誕ミニライブ2026",
+            title_ko: "생일 미니라이브2026",
+            title_en: "Birthday MiniLive 2026",
+            url: "https://youtu.be/cmb_bFgzxNo?si=S_qx7xDCsc9Zn7-l",
+            date: "2026.05.20."
+        },
     ],
     mao: [
         {
