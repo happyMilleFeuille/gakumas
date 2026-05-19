@@ -3378,3 +3378,83 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
     transform: translateY(0);
 }
 #preset-preview::-webkit-scrollbar { display: none; }
+
+.hif-eval-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(calc(-50% - 1px));
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .hif-eval-btn {
+        right: 6px;
+        padding: 2px 5px;
+        font-size: 0.52rem;
+        border-radius: 3px;
+    }
+}
+
+/* HIF 평가 모달 내 숫자 입력창의 스핀 버튼(위아래 삼각형 화살표) 제거 */
+#hif-eval-modal input::-webkit-outer-spin-button,
+#hif-eval-modal input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#hif-eval-modal input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* 모바일 전용: HIF 평가 계산 모달을 더욱 컴팩트하게 최적화 */
+@media (max-width: 768px) {
+    #hif-eval-modal .stat-detail-modal-content {
+        padding: 12px 14px !important;
+        max-width: 92% !important;
+        width: 280px !important;
+        border-radius: 10px !important;
+    }
+    #hif-eval-modal h3 {
+        margin-top: 0;
+        margin-bottom: 10px !important;
+        font-size: 0.95rem !important;
+        padding-bottom: 6px !important;
+    }
+    #hif-eval-modal .stat-detail-close {
+        top: 6px !important;
+        right: 10px !important;
+        font-size: 20px !important;
+    }
+    #hif-eval-modal div[style*="display: flex"][style*="flex-direction: column"] {
+        gap: 8px !important; /* 입력 그룹 간 격차 축소 */
+    }
+    #hif-eval-modal label {
+        font-size: 0.72rem !important;
+    }
+    #hif-eval-modal input {
+        padding: 5px 8px !important;
+        font-size: 0.8rem !important;
+        border-radius: 6px !important;
+    }
+    #hif-eval-modal div[style*="margin-top: 10px"] {
+        margin-top: 4px !important;
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+    }
+    #btn-close-hif-eval {
+        margin-top: 10px !important;
+        padding: 6px !important;
+        font-size: 0.78rem !important;
+        border-radius: 6px !important;
+    }
+}

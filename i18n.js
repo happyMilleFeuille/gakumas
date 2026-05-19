@@ -298,7 +298,15 @@ const translations = {
         idol_fullname_misuzu: "하타야 미스즈",
         support_tooltip_1: "• 꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.",
         support_tooltip_2: "• 카드를 길게 누르면 비활성화되며,<br>리스트의 맨 아래로 이동되고 스텟계산에서 제외됩니다.",
-        talent_bloom_desc_2: "아이돌의 기본 스텟은 <span style=\"color: #ff4d8d; font-weight: bold;\">친애도 20↑(HIF 실장 아이돌은 37↑)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4특훈 이상</span>을 기준으로 하며, 일부 특정 아이돌(2차 리나미, 2차 코토네 등)의 경우는 반영하지 않습니다."
+        talent_bloom_desc_2: "아이돌의 기본 스텟은 <span style=\"color: #ff4d8d; font-weight: bold;\">친애도 20↑(HIF 실장 아이돌은 37↑)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4특훈 이상</span>을 기준으로 하며, 일부 특정 아이돌(2차 리나미, 2차 코토네 등)의 경우는 반영하지 않습니다.",
+        calc_hif_eval_btn: "평가치",
+        calc_hif_eval_title: "HIF 평가치 계산",
+        calc_hif_eval_stat: "총스텟",
+        calc_hif_eval_r1: "본선 1R",
+        calc_hif_eval_r2: "본선 2R",
+        calc_hif_eval_star: "스타성",
+        calc_hif_eval_result: "계산 결과",
+        calc_hif_eval_close: "닫기"
     },
     ja: {
         btn_empty: "アイドル",
@@ -598,7 +606,15 @@ const translations = {
         idol_fullname_misuzu: "秦谷 美鈴",
         support_tooltip_1: "• 花マークをクリックして、開花段階を設定できます。",
         support_tooltip_2: "• カードを長押しすると除外状態になり、<br>リストの一番下に移動します。パラメータ計算には含まれません。",
-        talent_bloom_desc_2: "アイドルの基本パラメータは <span style=\"color: #ff4d8d; font-weight: bold;\">親愛度20↑(HIF実装アイドルは37↑)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4特訓以上</span> を基準としており、一部の特定アイドル（2nd莉波、2ndことね等）の場合は反映されていません。"
+        talent_bloom_desc_2: "アイドルの基本パラメータは <span style=\"color: #ff4d8d; font-weight: bold;\">親愛度20↑(HIF実装アイドルは37↑)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR</span>, <span style=\"color: #fcc75e; font-weight: bold;\">4特訓以上</span> を基準としており、一部の特定アイドル（2nd莉波、2ndことね等）の場合は反映されていません。",
+        calc_hif_eval_btn: "評価値",
+        calc_hif_eval_title: "HIF評価値計算",
+        calc_hif_eval_stat: "総ステータス",
+        calc_hif_eval_r1: "本戦1Round",
+        calc_hif_eval_r2: "本戦2Round",
+        calc_hif_eval_star: "スター性",
+        calc_hif_eval_result: "計算結果",
+        calc_hif_eval_close: "閉じる"
     },
     en: {
         btn_empty: "Idols",
@@ -895,7 +911,15 @@ const translations = {
         idol_fullname_misuzu: "Misuzu Hataya",
         support_tooltip_1: "• Click the flower icon to set the limit break level.",
         support_tooltip_2: "• Press and hold a card to disable it,<br>move it to the bottom of the list, and exclude it from stat calculation.",
-        talent_bloom_desc_2: "An idol's base stats are calculated using <span style=\"color: #ff4d8d; font-weight: bold;\">Bond Lv. 20+(HIF release idols 37+)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, and <span style=\"color: #fcc75e; font-weight: bold;\">4+ Training</span> as the standard, and do not reflect certain specific idols such as 2nd Rinami or 2nd Kotone."
+        talent_bloom_desc_2: "An idol's base stats are calculated using <span style=\"color: #ff4d8d; font-weight: bold;\">Bond Lv. 20+(HIF release idols 37+)</span>, <span style=\"color: #46a4f3; font-weight: bold;\">SSR/SR</span>, and <span style=\"color: #fcc75e; font-weight: bold;\">4+ Training</span> as the standard, and do not reflect certain specific idols such as 2nd Rinami or 2nd Kotone.",
+        calc_hif_eval_btn: "Eval",
+        calc_hif_eval_title: "HIF Evaluation Calc",
+        calc_hif_eval_stat: "Total Stats",
+        calc_hif_eval_r1: "Round 1",
+        calc_hif_eval_r2: "Round 2",
+        calc_hif_eval_star: "Star Quality",
+        calc_hif_eval_result: "Result",
+        calc_hif_eval_close: "Close"
     }
 };
 

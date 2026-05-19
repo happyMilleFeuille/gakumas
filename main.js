@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const presetSaveModal = document.getElementById('preset-save-modal');
         const supportPresetSaveModal = document.getElementById('support-preset-save-modal');
         const slotShareModal = document.getElementById('slot-share-modal');
+        const hifEvalModal = document.getElementById('hif-eval-modal');
         const isVideoModalOpen = window.__videoModalOpen ||
             window.__videoModalPendingClose ||
             document.body.classList.contains('video-modal-open') ||
@@ -419,6 +420,15 @@ document.addEventListener('DOMContentLoaded', () => {
             else {
                 statDetailModal.classList.add('hidden');
                 statDetailModal.style.display = 'none';
+            }
+            return;
+        }
+
+        if (hifEvalModal && hifEvalModal.style.display !== 'none' && !hifEvalModal.classList.contains('hidden')) {
+            if (typeof window.closeHifEvalModal === 'function') window.closeHifEvalModal(true);
+            else {
+                hifEvalModal.classList.add('hidden');
+                hifEvalModal.style.display = 'none';
             }
             return;
         }

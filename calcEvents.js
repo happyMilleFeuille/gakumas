@@ -1,7 +1,7 @@
 // calcEvents.js
 import { cardList } from './carddata.js';
 import { state } from './state.js';
-import { showOtherTuneModal } from './calcModals.js';
+import { showOtherTuneModal, showHifEvalModal } from './calcModals.js';
 import { calcStore } from './calcStore.js';
 import { showSupportItemTooltip } from './calcUI.js';
 import { translate } from './utils.js';
@@ -169,6 +169,13 @@ export function initGlobalDistListener(refreshAll) {
         if (tuneBtn) {
             const fromFloating = !!e.target.closest('#floating-skill-btn');
             showOtherTuneModal(refreshAll, fromFloating);
+            return;
+        }
+
+        // 4-2. HIF 평가치 계산 모달 열기
+        const hifEvalBtn = e.target.closest('#btn-hif-eval');
+        if (hifEvalBtn) {
+            showHifEvalModal();
             return;
         }
 

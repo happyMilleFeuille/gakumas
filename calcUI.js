@@ -763,6 +763,11 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div class="stat-header-top-bar" style="background-color: ${idolColor};">
                         ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="stat-header-icon ${store.type}-icon">` : ''}
                         <span class="stat-header-title">PRODUCE RESULT</span>
+                        ${store.type === 'hif' ? `
+                        <button id="btn-hif-eval" class="hif-eval-btn" style="border-color: color-mix(in srgb, ${idolColor} 95%, #000) !important;">
+                            ${t('calc_hif_eval_btn')}
+                        </button>
+                        ` : ''}
                     </div>
                     <div class="stat-header-content">
                         ${store.type !== 'hif' ? `
@@ -1036,6 +1041,10 @@ export function updateStatHeaderUI(store, breakdown) {
     if (totalSumContainer) {
         totalSumContainer.style.backgroundColor = idolColor;
         totalSumContainer.style.boxShadow = `0 2px 6px ${idolColor}33`;
+    }
+    const hifEvalBtn = document.getElementById('btn-hif-eval');
+    if (hifEvalBtn) {
+        hifEvalBtn.style.setProperty('border-color', `color-mix(in srgb, ${idolColor} 95%, #000)`, 'important');
     }
 
     let sum = 0;

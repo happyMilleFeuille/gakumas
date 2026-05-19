@@ -9,6 +9,7 @@ import { updateSelectedCardsUI, getIdolDisplayColor, getNormalizedSelectedCardId
 import { calcStore } from './calcStore.js';
 import { translate } from './utils.js';
 import { abilityData } from './abilitydata.js';
+import { hifParameterLimitBonuses } from './calcData.js';
 
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
@@ -74,7 +75,7 @@ export function showStatDetailModal(breakdown) {
         visual: (breakdown.idol.visual || 0) + (breakdown.supportPercent.visual || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.visual || 0) : 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
     };
 
-        const getAbilityName = (key) => {
+    const getAbilityName = (key) => {
         if (key === 'item_effect') {
             return state.currentLang === 'en' ? 'P-Item Effect' : (state.currentLang === 'ja' ? 'Pアイテム効果' : 'P아이템 효과');
         }
@@ -198,7 +199,7 @@ export function showStatDetailModal(breakdown) {
         });
     }
 
-        const sfRow = modal.querySelector('.row-support-fixed-total');
+    const sfRow = modal.querySelector('.row-support-fixed-total');
     const sfSubItemsContainer = modal.querySelector('#support-fixed-sub-items');
     const sfToggleIcon = modal.querySelector('#support-fixed-toggle-icon');
 
@@ -787,9 +788,9 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         </div>`;
     document.body.appendChild(modal);
     history.pushState({ modalOpen: 'tune' }, "");
-    modal.onclick = (e) => { 
+    modal.onclick = (e) => {
         if (e.target === modal || e.target.closest('#calc-tune-modal-wrapper') === e.target) {
-            history.back(); 
+            history.back();
         }
     };
 
@@ -1315,7 +1316,7 @@ export function showRecommendModal(onConfirm) {
         const checked = lockCheckbox.checked;
         lockTrack.style.background = checked ? idolColor : '#ddd';
         lockThumb.style.transform = checked ? 'translateX(20px)' : 'translateX(0)';
-        
+
         if (checked) {
             const planType = calcStore.planType || 'sense';
             const currentCards = (calcStore.planCards[planType] || []).filter(Boolean);
@@ -1409,4 +1410,251 @@ export function showRecommendModal(onConfirm) {
         `;
         document.head.appendChild(style);
     }
+}
+
+/**
+ * 헥사 색상을 주어진 비율만큼 어둡게 만드는 헬퍼 함수
+ */
+function getDarkenedColor(hex, percent = 45) {
+    if (!hex || !hex.startsWith('#')) return '#222222';
+    let num = parseInt(hex.slice(1), 16),
+        amt = Math.round(2.55 * percent),
+        R = (num >> 16) - amt,
+        G = (num >> 8 & 0x00FF) - amt,
+        B = (num & 0x0000FF) - amt;
+    R = R < 0 ? 0 : R > 255 ? 255 : R;
+    G = G < 0 ? 0 : G > 255 ? 255 : G;
+    B = B < 0 ? 0 : B > 255 ? 255 : B;
+    return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+/**
+ * HIF 평가치 계산 모달 표시
+ */
+export function showHifEvalModal() {
+    const modalId = 'hif-eval-modal';
+    let modal = document.getElementById(modalId);
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = modalId;
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+
+    const closeHifEvalModal = (isPopState = false) => {
+        const evalModal = document.getElementById(modalId);
+        if (!evalModal) return;
+        if (!isPopState) {
+            history.back();
+            return;
+        }
+        evalModal.style.display = 'none';
+        evalModal.classList.add('hidden');
+    };
+    window.closeHifEvalModal = closeHifEvalModal;
+
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
+    modal.innerHTML = `
+        <div class="stat-detail-modal-content" style="max-width: 320px; border-color: ${idolColor};">
+            <span class="stat-detail-close">&times;</span>
+            <h3 style="margin-top: 0; margin-bottom: 15px; text-align: center; color: ${idolColor}; font-size: 1.0rem; font-weight: 800; border-bottom: 2px solid ${idolColor}; padding-bottom: 8px;">
+                ${t('calc_hif_eval_title')}
+            </h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0; display: flex; align-items: center; gap: 4px;">
+                        ${t('calc_hif_eval_stat')}
+                        <span style="display: inline-flex; align-items: center; gap: 2px; margin-left: 1px;">
+                            <img src="icons/vocal.png" alt="Vocal" style="width: 12px; height: 12px; object-fit: contain;" />
+                            <img src="icons/dance.png" alt="Dance" style="width: 12px; height: 12px; object-fit: contain;" />
+                            <img src="icons/visual.png" alt="Visual" style="width: 12px; height: 12px; object-fit: contain;" />
+                        </span>
+                    </label>
+                    <input type="number" id="hif-eval-in-0" placeholder="0" max="10000" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0; display: flex; align-items: center; gap: 5px;">
+                        <img src="icons/cal/round_hif.webp" alt="Round" style="width: 25px; height: 25px; object-fit: contain;" />
+                        ${t('calc_hif_eval_r1')}
+                    </label>
+                    <input type="number" id="hif-eval-in-1" placeholder="0" max="1400000" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0; display: flex; align-items: center; gap: 5px;">
+                        <img src="icons/cal/round_hif.webp" alt="Round" style="width: 25px; height: 25px; object-fit: contain;" />
+                        ${t('calc_hif_eval_r2')}
+                    </label>
+                    <input type="number" id="hif-eval-in-2" placeholder="0" max="2400000" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0;">
+                        ${t('calc_hif_eval_star')}
+                    </label>
+                    <input type="number" id="hif-eval-in-3" placeholder="0" max="1335" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
+                </div>
+                
+                <div style="margin-top: 10px; padding: 12px; background: ${idolColor}1a; border: 1px solid ${idolColor}; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
+                    <span id="hif-eval-result" style="font-size: 1.5rem; font-weight: 900; color: ${idolColor}; display: flex; align-items: center; justify-content: center; gap: 8px;">0</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const in0 = modal.querySelector('#hif-eval-in-0');
+    const in1 = modal.querySelector('#hif-eval-in-1');
+    const in2 = modal.querySelector('#hif-eval-in-2');
+    const in3 = modal.querySelector('#hif-eval-in-3');
+    const resultEl = modal.querySelector('#hif-eval-result');
+
+    in1.value = localStorage.getItem('hif_eval_in_1') || "";
+    in2.value = localStorage.getItem('hif_eval_in_2') || "";
+    in3.value = localStorage.getItem('hif_eval_in_3') || "";
+
+    if (calcStore.finalTotal) {
+        const hifParamLimitBonus = calcStore.type === 'hif' ? (hifParameterLimitBonuses[calcStore.hifParamLimitLevel || 0] || 0) : 0;
+        const maxStat = calcStore.type === 'hajime'
+            ? 3000
+            : (calcStore.type === 'hif' ? (3000 + hifParamLimitBonus) : (calcStore.type === 'nia' ? 2600 : 0));
+
+        const v = Math.floor(calcStore.finalTotal.vocal || 0);
+        const d = Math.floor(calcStore.finalTotal.dance || 0);
+        const vi = Math.floor(calcStore.finalTotal.visual || 0);
+
+        const cappedVo = maxStat > 0 ? Math.min(v, maxStat) : v;
+        const cappedDa = maxStat > 0 ? Math.min(d, maxStat) : d;
+        const cappedVi = maxStat > 0 ? Math.min(vi, maxStat) : vi;
+
+        const totalCappedStats = cappedVo + cappedDa + cappedVi;
+        in0.value = totalCappedStats || "";
+    }
+
+    const calculate = () => {
+        let v0 = parseFloat(in0.value) || 0;
+        if (v0 > 10000) {
+            v0 = 10000;
+            in0.value = 10000;
+        }
+        let v1 = parseFloat(in1.value) || 0;
+        if (v1 > 1400000) {
+            v1 = 1400000;
+            in1.value = 1400000;
+        }
+        localStorage.setItem('hif_eval_in_1', in1.value);
+
+        // 본선 1Round 점수 -> 평가 포인트 구간제 연산
+        let v1Pts = 0;
+        if (v1 <= 300000) {
+            v1Pts = 0;
+        } else if (v1 <= 700000) {
+            v1Pts = (v1 - 300000) * 0.01;
+        } else if (v1 <= 1000000) {
+            v1Pts = 4000 + (v1 - 700000) * 0.003;
+        } else if (v1 <= 1200000) {
+            v1Pts = 4900 + (v1 - 1000000) * 0.002;
+        } else {
+            v1Pts = 5300 + (v1 - 1200000) * 0.001;
+        }
+
+        let v2 = parseFloat(in2.value) || 0;
+        if (v2 > 2400000) {
+            v2 = 2400000;
+            in2.value = 2400000;
+        }
+        localStorage.setItem('hif_eval_in_2', in2.value);
+
+        // 본선 2Round 점수 -> 평가 포인트 구간제 연산
+        let v2Pts = 0;
+        if (v2 <= 600000) {
+            v2Pts = 0;
+        } else if (v2 <= 900000) {
+            v2Pts = (v2 - 600000) * 0.004;
+        } else if (v2 <= 1500000) {
+            v2Pts = 1200 + (v2 - 900000) * 0.008;
+        } else if (v2 <= 2000000) {
+            v2Pts = 6000 + (v2 - 1500000) * 0.002;
+        } else {
+            v2Pts = 7000 + (v2 - 2000000) * 0.001;
+        }
+
+        let v3 = parseFloat(in3.value) || 0;
+        if (v3 > 1335) {
+            v3 = 1335;
+            in3.value = 1335;
+        }
+        localStorage.setItem('hif_eval_in_3', in3.value);
+        const sum = Math.max(0, Math.floor((v0 * 2) + v1Pts + v2Pts + (v3 * 7.5)) - 2000);
+
+        const getProduceRank = (score) => {
+            if (score >= 35000) return 'S5';
+            if (score >= 30000) return 'S4+';
+            if (score >= 26000) return 'S4';
+            if (score >= 23000) return 'SSS+';
+            if (score >= 20000) return 'SSS';
+            if (score >= 18000) return 'SS+';
+            if (score >= 16000) return 'SS';
+            if (score >= 14500) return 'S+';
+            if (score >= 13000) return 'S';
+            if (score >= 11500) return 'A+';
+            if (score >= 10000) return 'A';
+            if (score >= 8000) return 'B+';
+            if (score >= 6000) return 'B';
+            if (score >= 4500) return 'C+';
+            if (score >= 3000) return 'C';
+            return 'D';
+        };
+        const rank = getProduceRank(sum);
+        const rankColors = {
+            'S5': '#ff3e80', 'S4+': '#ff4d8d', 'S4': '#ff609d',
+            'SSS+': '#fcae21', 'SSS': '#fcbd3f', 'SS+': '#fcc75e', 'SS': '#fcd07d',
+            'S+': '#46a4f3', 'S': '#69b4f5',
+            'A+': '#a288e3', 'A': '#b39df5',
+            'B+': '#2ec4b6', 'B': '#5bc8af',
+            'C+': '#9a9eab', 'C': '#b2b5be',
+            'D': '#cdcfd6'
+        };
+        const rankColor = rankColors[rank] || idolColor;
+        resultEl.innerHTML = `<span style="color: ${rankColor}; font-weight: 900; font-size: 1.65rem; text-shadow: 0 1px 2px rgba(0,0,0,0.05); -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important;">${rank}</span> <span style="font-size: 1.2rem; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 700 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; color: #555; margin-left: 5px;">${sum.toLocaleString()}</span>`;
+    };
+
+    in0.addEventListener('input', calculate);
+    in1.addEventListener('input', calculate);
+    in2.addEventListener('input', calculate);
+    in3.addEventListener('input', calculate);
+
+    calculate();
+
+    [in0, in1, in2, in3].forEach(input => {
+        input.addEventListener('focus', () => {
+            input.style.backgroundColor = '#ffffff';
+            input.style.borderColor = idolColor;
+            input.style.boxShadow = `0 0 0 3px ${idolColor}22`;
+        });
+        input.addEventListener('blur', () => {
+            input.style.backgroundColor = `${idolColor}0d`;
+            input.style.borderColor = `${idolColor}44`;
+            input.style.boxShadow = 'none';
+        });
+    });
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+
+    modal.querySelector('.stat-detail-close').onclick = () => closeHifEvalModal();
+    let isMouseDownOnBackdrop = false;
+    modal.onmousedown = (e) => {
+        isMouseDownOnBackdrop = (e.target === modal);
+    };
+    modal.onmouseup = (e) => {
+        if (isMouseDownOnBackdrop && e.target === modal) {
+            closeHifEvalModal();
+        }
+        isMouseDownOnBackdrop = false;
+    };
+
+    history.pushState({ modalOpen: modalId }, "");
 }
