@@ -761,7 +761,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         </div>` : '';
 
     modal.innerHTML = `
-        <div style="display: flex; gap: 12px; align-items: stretch; justify-content: center; max-height: 90vh;">
+        <div style="display: flex; gap: 12px; align-items: stretch; justify-content: center; max-height: 90vh; width: 100%; max-width: 100vw; box-sizing: border-box;">
         <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
             <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: ${idolColor}; font-size: 1rem;"></h3>
             <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => {
