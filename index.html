@@ -16,7 +16,7 @@
     <meta name="robots" content="index,follow">
     <script>
         // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
-        const APP_VERSION = '1.2.1';
+        const APP_VERSION = '1.2.2';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
@@ -482,12 +482,16 @@
                             <button class="filter-btn" data-val="dist" data-i18n="filter_dist">Distribution</button>
                         </div>
                         <div class="filter-group" id="filter-ability">
-                            <button class="filter-btn" data-val="sp_lessonup" data-i18n="filter_sp_lessonup">SP%
-                                ↑</button>
-                            <button class="filter-btn" data-val="percentparam"
-                                data-i18n="filter_percentparam">Bonus(%)</button>
-                            <button class="filter-btn" data-val="fixedparam"
-                                data-i18n="filter_fixedparam">Bonus(fixed)</button>
+                            <button class="filter-btn" id="btn-ability-dropdown" data-i18n="filter_ability_label">More
+                                Details</button>
+                            <div id="ability-dropdown" class="ability-dropdown hidden">
+                                <button class="filter-btn ability-sub-btn" data-val="sp_lessonup"
+                                    data-i18n="filter_sp_lessonup">SP% ↑</button>
+                                <button class="filter-btn ability-sub-btn" data-val="percentparam"
+                                    data-i18n="filter_percentparam">Bonus(%)</button>
+                                <button class="filter-btn ability-sub-btn" data-val="fixedparam"
+                                    data-i18n="filter_fixedparam">Bonus(fixed)</button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,7 @@
 import { state, setFilter, setSupportLB, setPSSRIndex, setFavoriteIdol, idolColors, toggleDisabledCard, saveToSlot, setSlotData, loadFromSlot, getSlotInfo, getSlotData, deleteSlot, setSortBy, setSortOrder } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { cardList } from './carddata.js';
+import { abilityData } from './abilitydata.js';
 import { initCalc } from './calc.js';
 import { calcStore } from './calcStore.js';
 import { renderPSSRRoadmap } from './roadmap.js';
@@ -658,7 +659,7 @@ export function renderSupport() {
 }
 
 function setupStaticListeners(container) {
-    const filterGroups = ['plan', 'attr', 'source', 'rarity', 'ability'];
+    const filterGroups = ['plan', 'attr', 'source', 'rarity'];
     filterGroups.forEach(type => {
         const group = container.querySelector(`#filter-${type}`);
         if (!group) return;
@@ -669,6 +670,69 @@ function setupStaticListeners(container) {
             renderSupport();
         });
     });
+
+    // Ability filter dropdown
+    const abilityDropdownBtn = container.querySelector('#btn-ability-dropdown');
+    const abilityDropdown = container.querySelector('#ability-dropdown');
+    if (abilityDropdownBtn && abilityDropdown) {
+        // Dynamically populate dropdown from abilityData (entries with name:)
+        abilityDropdown.innerHTML = '';
+        // Add sp_lessonup and percentparam first (these don't have name: in abilityData)
+        const specialEntries = [
+            { key: 'sp_lessonup', name: { ko: 'SP% ↑', ja: 'SP% ↑', en: 'SP% ↑' } },
+            { key: 'percentparam', name: { ko: '보너스(%)', ja: 'ボーナス(%)', en: 'Bonus(%)' } },
+        ];
+        for (const entry of specialEntries) {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn ability-sub-btn';
+            btn.dataset.val = entry.key;
+            btn.textContent = entry.name[state.currentLang] || entry.name.en;
+            abilityDropdown.appendChild(btn);
+        }
+        // Add all abilityData entries that have name:
+        for (const [key, data] of Object.entries(abilityData)) {
+            if (!data.name) continue;
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn ability-sub-btn';
+            btn.dataset.val = key;
+            btn.textContent = data.name[state.currentLang] || data.name.en;
+            abilityDropdown.appendChild(btn);
+        }
+
+        // Add Reset button
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'filter-btn ability-sub-btn ability-reset-btn';
+        resetBtn.dataset.i18n = 'filter_ability_reset';
+        resetBtn.textContent = translate('filter_ability_reset') || 'Reset';
+        abilityDropdown.appendChild(resetBtn);
+
+        abilityDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            abilityDropdown.classList.toggle('hidden');
+        });
+        abilityDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const resetBtn = e.target.closest('.ability-reset-btn');
+            if (resetBtn) {
+                state.filters.ability = [];
+                localStorage.setItem('filters', JSON.stringify(state.filters));
+                syncFilterUI(container);
+                updateSupportGrid(container);
+                return;
+            }
+
+            const btn = e.target.closest('.ability-sub-btn');
+            if (!btn) return;
+            setFilter('ability', btn.dataset.val);
+            syncFilterUI(container);
+            updateSupportGrid(container);
+        });
+        document.addEventListener('click', (e) => {
+            if (!abilityDropdownBtn.contains(e.target) && !abilityDropdown.contains(e.target)) {
+                abilityDropdown.classList.add('hidden');
+            }
+        });
+    }
     
     // 서포트 정보 툴팁 클릭 이벤트
     const infoBtn = container.querySelector('.support-info-btn');
@@ -841,7 +905,7 @@ function setupStaticListeners(container) {
 }
 
 function syncFilterUI(container) {
-    const filterGroups = ['plan', 'attr', 'source', 'rarity', 'ability'];
+    const filterGroups = ['plan', 'attr', 'source', 'rarity'];
     filterGroups.forEach(type => {
         const btns = container.querySelectorAll(`#filter-${type} .filter-btn`);
         btns.forEach(btn => {
@@ -855,6 +919,19 @@ function syncFilterUI(container) {
             btn.classList.toggle('active', isActive);
         });
     });
+
+    // Ability sub-buttons active state
+    const abilityBtns = container.querySelectorAll('.ability-sub-btn');
+    abilityBtns.forEach(btn => {
+        const val = btn.dataset.val;
+        btn.classList.toggle('active', state.filters.ability.includes(val));
+    });
+
+    // Dropdown trigger button: highlight if any ability filter is active
+    const dropdownBtn = container.querySelector('#btn-ability-dropdown');
+    if (dropdownBtn) {
+        dropdownBtn.classList.toggle('has-active', state.filters.ability.length > 0);
+    }
 
     const toggleBtn = container.querySelector('#btn-toggle-extra');
     const extraWrapper = container.querySelector('#extra-filters');

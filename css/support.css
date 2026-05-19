@@ -428,14 +428,12 @@
 }
 
 #filter-rarity .filter-btn:first-child,
-#filter-source .filter-btn:first-child,
-#filter-ability .filter-btn:first-child {
+#filter-source .filter-btn:first-child {
     border-radius: 8px 0 0 8px !important;
 }
 
 #filter-rarity .filter-btn:last-child,
-#filter-source .filter-btn:last-child,
-#filter-ability .filter-btn:last-child {
+#filter-source .filter-btn:last-child {
     border-radius: 0 8px 8px 0 !important;
 }
 
@@ -1449,5 +1447,84 @@ select.sort-select {
         top: 130%;
         min-width: 240px;
         /* Keep mobile compact */
+    }
+}
+
+/* Ability filter dropdown */
+#filter-ability {
+    position: relative;
+}
+
+#filter-ability #btn-ability-dropdown {
+    border-radius: 8px !important;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#btn-ability-dropdown.has-active {
+    background: rgba(253, 195, 97, 0.2) !important;
+    color: #d18e15 !important;
+    border-color: #fdc361 !important;
+}
+
+.ability-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 90vw;
+    background: #fff;
+    border: 1.5px solid #fdc361;
+    border-radius: 8px;
+    padding: 6px;
+    z-index: 100020;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.ability-dropdown.hidden {
+    display: none;
+}
+
+#filter-ability .ability-dropdown .ability-sub-btn {
+    border-radius: 6px !important;
+    border: 1px solid #eee !important;
+    font-size: 0.7rem !important;
+    height: 1.8rem !important;
+    min-height: 1.8rem !important;
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+}
+
+.ability-dropdown .ability-reset-btn {
+    grid-column: 1 / -1;
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+.ability-dropdown .ability-sub-btn.active {
+    background: rgba(253, 195, 97, 0.2) !important;
+    color: #d18e15 !important;
+    border-color: #fdc361 !important;
+}
+
+@media (max-width: 768px) {
+    .ability-dropdown {
+        width: 75vw;
+    }
+    #filter-ability .ability-dropdown .ability-sub-btn {
+        height: 1.5rem !important;
+        min-height: 1.5rem !important;
+        font-size: 0.4rem !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .ability-dropdown {
+        min-width: 400px;
     }
 }

@@ -148,15 +148,6 @@ export function setFilter(type, value) {
             if (index > -1) {
                 state.filters[type].splice(index, 1);
             } else {
-                if (type === 'ability') {
-                    if (value === 'percentparam') {
-                        const idx = state.filters[type].indexOf('fixedparam');
-                        if (idx > -1) state.filters[type].splice(idx, 1);
-                    } else if (value === 'fixedparam') {
-                        const idx = state.filters[type].indexOf('percentparam');
-                        if (idx > -1) state.filters[type].splice(idx, 1);
-                    }
-                }
                 state.filters[type].push(value);
             }
         } else {

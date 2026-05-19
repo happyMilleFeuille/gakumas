@@ -328,7 +328,7 @@ export const abilityData = {
         trigger: ["purchase_drink"],
     },
     "gift": {
-        name: { ko: "활동지급/사시이레", ja: "活動支給/差し入れ", en: "Supplies/Gift" },
+        name: { ko: "활동지급/사시이레", ja: "活動支給・差し入れ", en: "Supplies/Gift" },
         format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val}", ja: "活動支給・差し入れ選択時、{type}上昇+{val}", en: "When choosing Supplies / Gift, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 12, 2: 17 },
@@ -366,7 +366,7 @@ export const abilityData = {
         trigger: ["goout_hajime", "goout_nia", "goout_hif"],
     },
     "class": {
-        name: { ko: "수업/영업", ja: "授業/営業", en: "Class/Promotion" },
+        name: { ko: "수업/영업", ja: "授業・営業", en: "Class/Promotion" },
         format: { ko: "수업・영업 종료 시 {type} 상승+{val}", ja: "授業・営業終了時、{type}上昇+{val}", en: "After Class / Promotion, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 5, 2: 7 },
