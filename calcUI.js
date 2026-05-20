@@ -1734,14 +1734,12 @@ export function showTalentBloomInfoTooltip(infoBtn) {
 
     const srRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/sr.png" onerror="this.src='icons/sr.webp'" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8;"><span>${isEn ? 'SR Idol' : (isJa ? 'SRアイドル' : 'SR 등급')}</span></div>`;
     const sainouRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/sainou.webp" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8;"><span>${isEn ? 'Bloom 3+' : (isJa ? '才能開花3段階以上' : '재능개화 3단계 이상')}</span></div>`;
-    const primaRow = calcStore.type === 'hif' ? `<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 16px; height: 16px; background-color: ${idolColor}; -webkit-mask-image: url('icons/primastella.webp'); mask-image: url('icons/primastella.webp'); -webkit-mask-size: contain; mask-size: contain; mask-position: center; mask-repeat: no-repeat; opacity: 0.8;"></div><span>${isEn ? 'Primastella' : (isJa ? '一番星解放' : '프리마스텔라 해방')}</span></div>` : '';
 
     tooltip.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 8px; color: #333; align-items: center; text-align: center;">
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
                 ${srRow}
                 ${sainouRow}
-                ${primaRow}
             </div>
             <div style="width: 100%; height: 1px; background: #ddd; margin: 2px 0;"></div>
             <div style="line-height: 1.4; text-align: left;">${t('talent_bloom_desc_2')}</div>

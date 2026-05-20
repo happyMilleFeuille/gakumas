@@ -653,9 +653,8 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
                 </div>`;
         }
         const skill = skillCardList[id] || {};
-        const isForcedPrima = primaSkillId === id;
-        const count = isForcedPrima ? 1 : (selectedSkills[id] || 0);
-        const isSelected = isForcedPrima || count > 0;
+        const count = selectedSkills[id] || 0;
+        const isSelected = count > 0;
         let imgSrc = `icons/cal/card/${id}.webp`;
         if (skill.isKyoukaOnly || skill.primastella) {
             const parts = id.split('-');
@@ -664,14 +663,13 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
             imgSrc = `idols/${plan}/${fileName}.webp`;
         }
         return `
-            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" data-multi="true" ${isForcedPrima ? 'data-forced-prima="true"' : ''} ${isForcedPrima ? 'style="pointer-events: none; opacity: 0.9; filter: saturate(1.2);"' : ''}>
+            <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" data-multi="true">
                 <img src="${imgSrc}" onerror="this.parentElement.style.display='none';">
                 <div class="card-count-badge ${count > 1 ? '' : 'hidden'}">x${count}</div>
-                <div class="card-reset-btn ${isSelected && !isForcedPrima ? '' : 'hidden'}">×</div>
+                <div class="card-reset-btn ${isSelected ? '' : 'hidden'}">×</div>
             </div>`;
     };
 
-    if (primaSkillId) cardGroups.unshift([primaSkillId]);
     if (counts.total.get_t > 0) cardGroups.unshift(['trouble']);
 
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
@@ -886,7 +884,6 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         item.onclick = (e) => {
             e.preventDefault(); e.stopPropagation();
             const id = item.dataset.id, skill = skillCardList[id] || {}, resetBtn = e.target.closest('.card-reset-btn');
-            if (id === primaSkillId) return;
             const currentPlan = calcStore.planType;
             if (!calcStore.planSkills[currentPlan]) calcStore.planSkills[currentPlan] = {};
             const skills = calcStore.planSkills[currentPlan];
@@ -900,7 +897,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
             const sidebarContainer = document.getElementById('tune-sidebar-cards');
             if (sidebarContainer) renderTuneSidebar(sidebarContainer);
             modal.querySelectorAll('.tune-card-item').forEach(el => {
-                const cid = el.dataset.id; if (cid === 'trouble' || cid === primaSkillId) return;
+                const cid = el.dataset.id; if (cid === 'trouble') return;
                 const count = skills[cid] || 0;
                 el.classList.toggle('selected', count > 0);
                 const badge = el.querySelector('.card-count-badge');
@@ -918,7 +915,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         const sidebarContainer2 = document.getElementById('tune-sidebar-cards');
         if (sidebarContainer2) renderTuneSidebar(sidebarContainer2);
         modal.querySelectorAll('.tune-card-item').forEach(el => {
-            const cid = el.dataset.id; if (cid === 'trouble' || cid === primaSkillId) return;
+            const cid = el.dataset.id; if (cid === 'trouble') return;
             el.classList.remove('selected');
             const badge = el.querySelector('.card-count-badge'); if (badge) badge.classList.add('hidden');
             const rb = el.querySelector('.card-reset-btn'); if (rb) rb.classList.add('hidden');
