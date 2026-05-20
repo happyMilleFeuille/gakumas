@@ -285,7 +285,6 @@ export const calcStore = {
             this.pItemChecked = false;
         }
         if (skillCards) {
-            this.planCards = { sense: [], logic: [], anomaly: [] };
             this.planSkills = { sense: {}, logic: {}, anomaly: {} };
         }
         if (supportCards) {
