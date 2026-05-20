@@ -852,6 +852,8 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
                 if (card && card.have?.startsWith('card_')) total++;
             }
         });
+        const tCount = counts.total.get_t || 0;
+        total += tCount;
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
             const planLabel = t(`calc_tune_plan_${currentPlan}`);

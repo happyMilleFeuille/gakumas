@@ -1073,6 +1073,9 @@ function refreshAll() {
                 }
             });
 
+            const tCount = counts.total.get_t || 0;
+            selectedCount += tCount;
+
             // 색상 동기화 및 툴팁 업데이트 준비
             const idolColor = (typeof getIdolDisplayColor === 'function')
                 ? getIdolDisplayColor(calcStore.selectedIdol || 'saki')
