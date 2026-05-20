@@ -11,7 +11,7 @@ import { pItemDescriptions } from './pItemData.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
-const PRESET_EXPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSafeNbHyCmIU9YHHXX-mdtKukA8fcEHlWkzOegXxOwQTUnoSp4MKa_EMBkQU_PuiE/exec';
+export const PRESET_EXPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSafeNbHyCmIU9YHHXX-mdtKukA8fcEHlWkzOegXxOwQTUnoSp4MKa_EMBkQU_PuiE/exec';
 
 // 계산기 화면 복귀 이벤트 리스너
 window.addEventListener('renderCalcRequested', () => {
@@ -234,8 +234,41 @@ function openSlotModal() {
     const updateExportResult = (rootEl, slotId, message, color = '#666') => {
         const resultEl = rootEl?.querySelector(`[data-export-result="${slotId}"]`);
         if (!resultEl) return;
-        resultEl.textContent = message || '';
-        resultEl.style.color = color;
+        
+        const isMobile = window.innerWidth <= 768;
+        const resultPadding = isMobile ? '3px 6px' : '4px 8px';
+        const resultFontSize = isMobile ? '0.65rem' : '0.72rem';
+        
+        if (message) {
+            resultEl.textContent = message;
+            resultEl.style.display = 'inline-block';
+            resultEl.style.flex = '1';
+            resultEl.style.boxSizing = 'border-box';
+            resultEl.style.textAlign = 'center';
+            resultEl.style.padding = resultPadding;
+            resultEl.style.borderRadius = '5px';
+            resultEl.style.fontSize = resultFontSize;
+            resultEl.style.fontWeight = 'bold';
+            resultEl.style.userSelect = 'text';
+            resultEl.style.background = '#fafafa';
+            resultEl.style.border = '1px solid #e0e0e0';
+            resultEl.style.color = '#333';
+        } else {
+            const unissuedText = state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue');
+            resultEl.textContent = unissuedText;
+            resultEl.style.display = 'inline-block';
+            resultEl.style.flex = '1';
+            resultEl.style.boxSizing = 'border-box';
+            resultEl.style.textAlign = 'center';
+            resultEl.style.padding = resultPadding;
+            resultEl.style.borderRadius = '5px';
+            resultEl.style.fontSize = resultFontSize;
+            resultEl.style.fontWeight = 'bold';
+            resultEl.style.color = '#888';
+            resultEl.style.background = '#fafafa';
+            resultEl.style.border = '1px dashed #dcdcdc';
+            resultEl.style.userSelect = 'none';
+        }
     };
 
     const updateImportResult = (rootEl, slotId, message, color = '#666') => {
@@ -299,6 +332,7 @@ function openSlotModal() {
                     'Content-Type': 'text/plain;charset=utf-8'
                 },
                 body: JSON.stringify({
+                    type: 'support',
                     slotId: Number(slotId),
                     lang: state.currentLang,
                     exportedAt: new Date().toISOString(),
@@ -372,7 +406,11 @@ function openSlotModal() {
         const inputEl = rootEl?.querySelector(`[data-import-input="${slotId}"]`);
         const importBtn = rootEl?.querySelector(`[data-import-btn="${slotId}"]`);
         const rawCode = inputEl?.value || '';
-        const code = rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
+        let cleanInput = rawCode.trim().toUpperCase();
+        if (cleanInput.startsWith('C-')) {
+            cleanInput = cleanInput.substring(2);
+        }
+        const code = cleanInput.replace(/[^A-Z0-9]/g, '').trim();
 
         if (!PRESET_EXPORT_ENDPOINT) {
             updateImportResult(rootEl, slotId, t('ui_slot_export_missing_config'), '#ef5350');
@@ -401,6 +439,7 @@ function openSlotModal() {
                 },
                 body: JSON.stringify({
                     action: 'import',
+                    type: 'support',
                     code
                 })
             });
@@ -419,6 +458,11 @@ function openSlotModal() {
 
             if (!result?.ok || !result?.preset) {
                 throw new Error(result?.error || 'Invalid import response');
+            }
+
+            // Validate that the imported preset is a support card preset
+            if (result.preset.calcState) {
+                throw new Error(state.currentLang === 'ko' ? '올바른 서포트 카드 프리셋이 아닙니다. (계산기 프리셋 코드로 보입니다)' : state.currentLang === 'ja' ? '正しいサポートカードプリセットではありません。(計算機プリセットコードのようです)' : 'Not a valid support card preset. (Appears to be a calculator preset code)');
             }
 
             applyImportedPreset(slotId, result.preset);
@@ -442,31 +486,62 @@ function openSlotModal() {
         if (shareModal) shareModal.remove();
 
         const slotInfo = getSlotInfo(slotId);
+        const slotData = getSlotData(slotId);
+        const displayName = slotData && slotData.customName ? `Slot ${slotId} - ${slotData.customName}` : `Slot ${slotId}`;
+        const themeColor = '#ff4d8d';
+        const headerTitle = t('ui_slot_share_title');
+
         shareModal = document.createElement('div');
         shareModal.className = 'modal';
         shareModal.id = 'slot-share-modal';
 
+        const isMobile = window.innerWidth <= 768;
+        const modalPadding = isMobile ? '12px 14px 10px' : '18px 18px 16px';
+        const modalGap = isMobile ? '8px' : '10px';
+        const titleFontSize = isMobile ? '0.85rem' : '1rem';
+        const titleBarHeight = isMobile ? '12px' : '16px';
+        const containerPadding = isMobile ? '10px' : '12px';
+        const nameFontSize = isMobile ? '0.78rem' : '0.85rem';
+        const nameMarginBottom = isMobile ? '6px' : '8px';
+        const exportMarginBottom = isMobile ? '8px' : '12px';
+        const resultFontSize = isMobile ? '0.65rem' : '0.72rem';
+        const resultPadding = isMobile ? '3px 6px' : '4px 8px';
+        const actionBtnWidth = isMobile ? '28px' : '32px';
+        const actionBtnHeight = isMobile ? '28px' : '32px';
+        const exportBtnHeight = isMobile ? '26px' : '30px';
+        const dividerMargin = isMobile ? '8px 0 8px' : '10px 0 12px';
+        const inputHeight = isMobile ? '28px' : '32px';
+        const inputFontSize = isMobile ? '0.75rem' : '0.8rem';
+        const importResultMarginTop = isMobile ? '5px' : '7px';
+        const importResultFontSize = isMobile ? '0.65rem' : '0.7rem';
+
         shareModal.innerHTML = `
-            <div class="modal-content" style="max-width: 340px; padding: 18px 18px 16px;">
-                <div style="padding: 12px; background: #f9f9f9; border: 1px solid #eee; border-radius: 10px;">
-                    <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 12px;">
+            <div class="modal-content" style="max-width: 400px; padding: ${modalPadding}; display: flex; flex-direction: column; gap: ${modalGap};">
+                <div style="font-size: ${titleFontSize}; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none; margin-bottom: 2px;">
+                    <div style="width: 4px; height: ${titleBarHeight}; background-color: ${themeColor}; border-radius: 2px;"></div>
+                    <span>${headerTitle}</span>
+                </div>
+                <div style="padding: ${containerPadding}; background: #f9f9f9; border: 1px solid #eee; border-radius: 10px;">
+                    <div style="font-size: ${nameFontSize}; font-weight: bold; color: #333; margin-bottom: ${nameMarginBottom}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none;">
+                        ${displayName}
+                    </div>
+                    <div style="display:flex; align-items:center; gap: 8px; margin-bottom: ${exportMarginBottom};">
                         <div style="display:flex; align-items:center; gap: 6px; min-width: 0; flex: 1;">
-                            <span style="font-weight: bold; color: #333; white-space: nowrap;">Slot ${slotId}</span>
-                            <span data-export-result="${slotId}" style="font-size: 0.72rem; color: #666; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+                            <span data-export-result="${slotId}" style="font-size: ${resultFontSize}; color: #888; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; flex: 1; box-sizing: border-box; text-align: center; padding: ${resultPadding}; background: #fafafa; border: 1px dashed #dcdcdc; border-radius: 5px; font-weight: bold; user-select: none;">${state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')}</span>
+                            <button class="slot-btn copy-code ${state.currentLang === 'ja' ? 'lang-ja' : ''}" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
                         </div>
-                        <button class="slot-btn copy-code ${state.currentLang === 'ja' ? 'lang-ja' : ''}" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
-                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: 32px; height: 30px; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: ${actionBtnWidth}; height: ${exportBtnHeight}; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/upload-cloud.svg" alt="${t('ui_slot_export')}" style="width: 16px; height: 16px; filter: invert(48%) sepia(90%) saturate(1250%) hue-rotate(3deg) brightness(101%) contrast(101%);">
                         </button>
                     </div>
-                    <div style="height: 1px; background: #ececec; margin: 10px 0 12px;"></div>
+                    <div style="height: 1px; background: #ececec; margin: ${dividerMargin};"></div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: 32px; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.8rem; outline: none;">
-                        <button class="slot-btn import" data-import-btn="${slotId}" style="width: 32px; height: 32px; flex: none; padding: 0; background: #e8f5e9; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: ${inputHeight}; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: ${inputFontSize}; outline: none;">
+                        <button class="slot-btn import" data-import-btn="${slotId}" style="width: ${actionBtnWidth}; height: ${actionBtnHeight}; flex: none; padding: 0; background: #e8f5e9; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/download-cloud.svg" alt="${t('ui_slot_import')}" style="width: 16px; height: 16px; filter: invert(41%) sepia(12%) saturate(2641%) hue-rotate(81deg) brightness(94%) contrast(87%);">
                         </button>
                     </div>
-                    <div data-import-result="${slotId}" style="font-size: 0.7rem; color: #999; margin-top: 7px;"></div>
+                    <div data-import-result="${slotId}" style="font-size: ${importResultFontSize}; color: #999; margin-top: ${importResultMarginTop};"></div>
                 </div>
             </div>`;
 
@@ -508,6 +583,13 @@ function openSlotModal() {
         });
     };
 
+    const isMobile = window.innerWidth <= 768;
+    const btnWidth = isMobile ? '28px' : '32px';
+    const btnHeight = isMobile ? '24px' : '28px';
+    const btnIconSize = isMobile ? '13px' : '16px';
+    const btnRadius = isMobile ? '5px' : '6px';
+    const actionGap = isMobile ? '4px' : '6px';
+
     const renderSlots = () => {
         let slotsHtml = '';
         for (let i = 1; i <= 3; i++) {
@@ -522,23 +604,21 @@ function openSlotModal() {
                         <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 15px;">${customName}</span>
                         <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${timeInfo || t('ui_slot_empty')}</span>
                     </div>
-                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: 6px; padding-top: 10px; padding-right: 2px;">
-                        <button class="slot-btn save" data-slot="${i}" style="width: 32px; height: 28px; flex: none; padding: 0; background: #ffe4ef; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                            <img src="icons/save.svg" alt="${t('ui_slot_save')}" style="width: 16px; height: 16px; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: ${actionGap}; padding-top: 10px; padding-right: 2px;">
+                        <button class="slot-btn save" data-slot="${i}" style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/save.svg" alt="${t('ui_slot_save')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
                         </button>
-                        <button class="slot-btn load" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="width: 32px; height: 28px; flex: none; padding: 0; background: #e3f2fd; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                            <img src="icons/upload.svg" alt="${t('ui_slot_load')}" style="width: 16px; height: 16px; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
+                        <button class="slot-btn load" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/upload.svg" alt="${t('ui_slot_load')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
                         </button>
-                        <button class="slot-btn share" data-slot="${i}" style="width: 32px; height: 28px; flex: none; padding: 0; background: #fff1cc; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                            <img src="icons/cloud.svg" alt="${t('ui_slot_share')}" style="width: 16px; height: 16px; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                        <button class="slot-btn share" data-slot="${i}" style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/cloud.svg" alt="${t('ui_slot_share')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
                         </button>
                     </div>
                 </div>`;
         }
         return slotsHtml;
     };
-
-    const isMobile = window.innerWidth <= 768;
 
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 350px; padding: ${isMobile ? '15px' : '20px'};">
@@ -641,7 +721,7 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
             <span>${headerTitle}</span>
         </div>
         <div style="font-size: 0.8rem; color: #666; font-weight: 500; line-height: 1.4; user-select: none;">${descLabel}</div>
-        <input type="text" class="preset-name-input" value="${defaultPresetName}" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
+        <input type="text" class="preset-name-input" value="${defaultPresetName}" maxlength="15" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
             <button class="modal-cancel-btn" style="padding: 6px 14px; background: #f5f5f5; color: #555; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; transition: background 0.1s;">${cancelText}</button>
             <button class="modal-save-btn" style="padding: 6px 16px; background: ${themeColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${themeColor}33; transition: background 0.1s;">${saveText}</button>

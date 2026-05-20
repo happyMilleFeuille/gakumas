@@ -1,6 +1,7 @@
 // calc.js
 import { state, idolColors } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
+import { PRESET_EXPORT_ENDPOINT } from './ui.js';
 import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios, hifPrimaStellaIdols, hifParameterLimitBonuses, canUseHifPrimaStella } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
@@ -1412,11 +1413,11 @@ function renderCalcPresetSlots(container) {
     const nameSize = isMobile ? '0.75rem' : '0.9rem';
     const timeSize = isMobile ? '0.55rem' : '0.65rem';
     const noDataSize = isMobile ? '0.72rem' : '0.85rem';
-    const btnSize = isMobile ? '22px' : '28px';
-    const btnIconSize = isMobile ? '11px' : '14px';
-    const btnRadius = isMobile ? '5px' : '6px';
+    const btnSize = isMobile ? '20px' : '28px';
+    const btnIconSize = isMobile ? '10px' : '14px';
+    const btnRadius = isMobile ? '4px' : '6px';
     const contentGap = isMobile ? '6px' : '10px';
-    const btnGap = isMobile ? '4px' : '6px';
+    const btnGap = isMobile ? '3px' : '6px';
     
     if (data && data.calcState) {
         const idolIcon = `icons/idolicons/${data.calcState.selectedIdol || 'saki'}_c.png`;
@@ -1441,6 +1442,9 @@ function renderCalcPresetSlots(container) {
                     <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
                         <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
                     </button>
+                    <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
+                        <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                    </button>
                     <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
                         <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
                     </button>
@@ -1451,9 +1455,14 @@ function renderCalcPresetSlots(container) {
         html += `
             <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: #fdfdfd; border: 1px dashed #ddd; border-radius: 8px;">
                 <div style="font-size: ${noDataSize}; color: #aaa; font-weight: 500;">Slot ${i} - ${t('ui_slot_empty')}</div>
-                <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; flex: none; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
-                    <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
-                </button>
+                <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
+                    <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
+                        <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                    </button>
+                    <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
+                        <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                    </button>
+                </div>
             </div>
         `;
     }
@@ -1466,6 +1475,11 @@ function renderCalcPresetSlots(container) {
         };
     });
     container.querySelectorAll('.slot-load').forEach(btn => btn.onclick = () => loadCalcPreset(btn.dataset.slot));
+    container.querySelectorAll('.slot-share').forEach(btn => {
+        btn.onclick = () => {
+            openCalcShareModal(btn.dataset.slot, container);
+        };
+    });
     container.querySelectorAll('.slot-delete').forEach(btn => {
         btn.onclick = () => {
             if (confirm(t('ui_slot_delete_confirm', { slotId: btn.dataset.slot }))) {
@@ -1551,7 +1565,7 @@ function showSavePresetModal(slotId, container) {
             <span>${headerTitle}</span>
         </div>
         <div style="font-size: 0.8rem; color: #666; font-weight: 500; line-height: 1.4; user-select: none;">${descLabel}</div>
-        <input type="text" class="preset-name-input" value="${defaultPresetName}" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
+        <input type="text" class="preset-name-input" value="${defaultPresetName}" maxlength="15" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
             <button class="modal-cancel-btn" style="padding: 6px 14px; background: #f5f5f5; color: #555; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; transition: background 0.1s;">${cancelText}</button>
             <button class="modal-save-btn" style="padding: 6px 16px; background: ${idolColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${idolColor}33; transition: background 0.1s;">${saveText}</button>
@@ -1667,6 +1681,386 @@ function loadCalcPreset(slotId) {
     } catch (e) {
         showToast(t('calc_preset_load_failed'));
     }
+}
+
+function openCalcShareModal(slotId, container) {
+    let shareModal = document.getElementById('slot-share-modal');
+    if (shareModal) shareModal.remove();
+
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`;
+    
+    const raw = localStorage.getItem(slotKey);
+    let data = null;
+    try { if (raw) data = JSON.parse(raw); } catch (e) {}
+
+    const displayName = data && data.customName ? `Slot ${slotId} - ${data.customName}` : `Slot ${slotId}`;
+    const themeColor = '#ff4d8d';
+    const headerTitle = t('ui_slot_share_title');
+
+    const isMobile = window.innerWidth <= 768;
+    const modalPadding = isMobile ? '12px 14px 10px' : '18px 18px 16px';
+    const modalGap = isMobile ? '8px' : '10px';
+    const titleFontSize = isMobile ? '0.85rem' : '1rem';
+    const titleBarHeight = isMobile ? '12px' : '16px';
+    const containerPadding = isMobile ? '10px' : '12px';
+    const nameFontSize = isMobile ? '0.78rem' : '0.85rem';
+    const nameMarginBottom = isMobile ? '6px' : '8px';
+    const exportMarginBottom = isMobile ? '8px' : '12px';
+    const resultFontSize = isMobile ? '0.65rem' : '0.72rem';
+    const resultPadding = isMobile ? '3px 6px' : '4px 8px';
+    const actionBtnWidth = isMobile ? '28px' : '32px';
+    const actionBtnHeight = isMobile ? '28px' : '32px';
+    const exportBtnHeight = isMobile ? '26px' : '30px';
+    const dividerMargin = isMobile ? '8px 0 8px' : '10px 0 12px';
+    const inputHeight = isMobile ? '28px' : '32px';
+    const inputFontSize = isMobile ? '0.75rem' : '0.8rem';
+    const importResultMarginTop = isMobile ? '5px' : '7px';
+    const importResultFontSize = isMobile ? '0.65rem' : '0.7rem';
+
+    shareModal = document.createElement('div');
+    shareModal.className = 'modal';
+    shareModal.id = 'slot-share-modal';
+
+    shareModal.innerHTML = `
+        <div class="modal-content" style="max-width: 400px; padding: ${modalPadding}; display: flex; flex-direction: column; gap: ${modalGap};">
+            <div style="font-size: ${titleFontSize}; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none; margin-bottom: 2px;">
+                <div style="width: 4px; height: ${titleBarHeight}; background-color: ${themeColor}; border-radius: 2px;"></div>
+                <span>${headerTitle}</span>
+            </div>
+            <div style="padding: ${containerPadding}; background: #f9f9f9; border: 1px solid #eee; border-radius: 10px;">
+                <div style="font-size: ${nameFontSize}; font-weight: bold; color: #333; margin-bottom: ${nameMarginBottom}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none;">
+                    ${displayName}
+                </div>
+                <div style="display:flex; align-items:center; gap: 8px; margin-bottom: ${exportMarginBottom};">
+                    <div style="display:flex; align-items:center; gap: 6px; min-width: 0; flex: 1;">
+                        <span data-export-result="${slotId}" style="font-size: ${resultFontSize}; color: #888; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; flex: 1; box-sizing: border-box; text-align: center; padding: ${resultPadding}; background: #fafafa; border: 1px dashed #dcdcdc; border-radius: 5px; font-weight: bold; user-select: none;">${state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')}</span>
+                        <button class="slot-btn copy-code ${state.currentLang === 'ja' ? 'lang-ja' : ''}" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
+                    </div>
+                    <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!data ? 'style="display:none;"' : ''} style="width: ${actionBtnWidth}; height: ${exportBtnHeight}; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <img src="icons/upload-cloud.svg" alt="${t('ui_slot_export')}" style="width: 16px; height: 16px; filter: invert(48%) sepia(90%) saturate(1250%) hue-rotate(3deg) brightness(101%) contrast(101%);">
+                    </button>
+                </div>
+                <div style="height: 1px; background: #ececec; margin: ${dividerMargin};"></div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: ${inputHeight}; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: ${inputFontSize}; outline: none;">
+                    <button class="slot-btn import" data-import-btn="${slotId}" style="width: ${actionBtnWidth}; height: ${actionBtnHeight}; flex: none; padding: 0; background: #e8f5e9; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <img src="icons/download-cloud.svg" alt="${t('ui_slot_import')}" style="width: 16px; height: 16px; filter: invert(41%) sepia(12%) saturate(2641%) hue-rotate(81deg) brightness(94%) contrast(87%);">
+                    </button>
+                </div>
+                <div data-import-result="${slotId}" style="font-size: ${importResultFontSize}; color: #999; margin-top: ${importResultMarginTop};"></div>
+            </div>
+        </div>`;
+
+    document.body.appendChild(shareModal);
+    shareModal.style.display = 'flex';
+
+    const closeShareModal = () => {
+        shareModal.remove();
+    };
+
+    shareModal.onclick = (e) => {
+        if (e.target === shareModal) closeShareModal();
+    };
+
+    const updateCopyButton = (rootEl, slotId, visible, code = '') => {
+        const copyBtn = rootEl?.querySelector(`[data-copy-slot="${slotId}"]`);
+        if (!copyBtn) return;
+        copyBtn.dataset.code = code;
+        copyBtn.textContent = t('ui_slot_copy');
+        copyBtn.style.display = visible ? 'inline-block' : 'none';
+    };
+
+    const updateExportResult = (rootEl, slotId, message, color = '#666') => {
+        const resultEl = rootEl?.querySelector(`[data-export-result="${slotId}"]`);
+        if (!resultEl) return;
+        
+        const isMobile = window.innerWidth <= 768;
+        const resultPadding = isMobile ? '3px 6px' : '4px 8px';
+        const resultFontSize = isMobile ? '0.65rem' : '0.72rem';
+        
+        if (message) {
+            resultEl.textContent = message;
+            resultEl.style.display = 'inline-block';
+            resultEl.style.flex = '1';
+            resultEl.style.boxSizing = 'border-box';
+            resultEl.style.textAlign = 'center';
+            resultEl.style.padding = resultPadding;
+            resultEl.style.borderRadius = '5px';
+            resultEl.style.fontSize = resultFontSize;
+            resultEl.style.fontWeight = 'bold';
+            resultEl.style.userSelect = 'text';
+            resultEl.style.background = '#fafafa';
+            resultEl.style.border = '1px solid #e0e0e0';
+            resultEl.style.color = '#333';
+        } else {
+            const unissuedText = state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue');
+            resultEl.textContent = unissuedText;
+            resultEl.style.display = 'inline-block';
+            resultEl.style.flex = '1';
+            resultEl.style.boxSizing = 'border-box';
+            resultEl.style.textAlign = 'center';
+            resultEl.style.padding = resultPadding;
+            resultEl.style.borderRadius = '5px';
+            resultEl.style.fontSize = resultFontSize;
+            resultEl.style.fontWeight = 'bold';
+            resultEl.style.color = '#888';
+            resultEl.style.background = '#fafafa';
+            resultEl.style.border = '1px dashed #dcdcdc';
+            resultEl.style.userSelect = 'none';
+        }
+    };
+
+    const updateImportResult = (rootEl, slotId, message, color = '#666') => {
+        const resultEl = rootEl?.querySelector(`[data-import-result="${slotId}"]`);
+        if (!resultEl) return;
+        resultEl.textContent = message || '';
+        resultEl.style.color = color;
+    };
+
+    const lockExportButton = (rootEl, slotId) => {
+        const exportBtn = rootEl?.querySelector(`[data-export-btn="${slotId}"]`);
+        if (!exportBtn) return;
+        exportBtn.disabled = true;
+        exportBtn.dataset.locked = 'true';
+        exportBtn.style.cursor = 'default';
+        exportBtn.style.opacity = '0.55';
+        exportBtn.style.pointerEvents = 'none';
+        exportBtn.style.transform = 'none';
+        exportBtn.blur();
+    };
+
+    const exportSlotPreset = async (slotId, rootEl) => {
+        const exportBtn = rootEl?.querySelector(`[data-export-btn="${slotId}"]`);
+        if (exportBtn?.dataset.locked === 'true') return;
+
+        if (!PRESET_EXPORT_ENDPOINT) {
+            updateExportResult(rootEl, slotId, t('ui_slot_export_missing_config'), '#ef5350');
+            updateCopyButton(rootEl, slotId, false);
+            return;
+        }
+
+        const rawData = localStorage.getItem(slotKey);
+        let saved = null;
+        try { if (rawData) saved = JSON.parse(rawData); } catch (e) {}
+
+        if (!saved) {
+            updateExportResult(rootEl, slotId, t('ui_slot_export_empty'), '#ef5350');
+            updateCopyButton(rootEl, slotId, false);
+            return;
+        }
+
+        lockExportButton(rootEl, slotId);
+        updateExportResult(rootEl, slotId, t('ui_slot_exporting'), '#1976d2');
+        updateCopyButton(rootEl, slotId, false);
+
+        try {
+            const response = await fetch(PRESET_EXPORT_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    type: 'calc',
+                    slotId: Number(slotId),
+                    lang: state.currentLang,
+                    exportedAt: new Date().toISOString(),
+                    preset: saved
+                })
+            });
+
+            const responseText = await response.text();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${responseText}`);
+            }
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                throw new Error(`Invalid JSON response: ${responseText.slice(0, 200)}`);
+            }
+
+            if (!result?.ok || !result?.code) {
+                throw new Error(result?.error || 'Invalid export response');
+            }
+
+            const visualCode = `C-${result.code}`;
+            updateExportResult(rootEl, slotId, t('ui_slot_export_success', { code: visualCode }), '#2e7d32');
+            updateCopyButton(rootEl, slotId, true, visualCode);
+        } catch (error) {
+            console.warn('Preset export failed:', error);
+            const detail = error?.message ? ` ${error.message}` : '';
+            updateExportResult(rootEl, slotId, `${t('ui_slot_export_failed')}${detail}`, '#ef5350');
+            updateCopyButton(rootEl, slotId, false);
+        }
+    };
+
+    const copyExportCode = async (slotId, rootEl) => {
+        const copyBtn = rootEl?.querySelector(`[data-copy-slot="${slotId}"]`);
+        const code = copyBtn?.dataset.code || '';
+        if (!copyBtn || !code) return;
+
+        let copied = false;
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(code);
+                copied = true;
+            }
+        } catch {}
+
+        if (!copied) {
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            tempInput.setAttribute('readonly', '');
+            tempInput.style.position = 'fixed';
+            tempInput.style.opacity = '0';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, code.length);
+            copied = document.execCommand('copy');
+            tempInput.remove();
+        }
+
+        copyBtn.textContent = copied ? t('ui_slot_copied') : t('ui_slot_copy_failed');
+        window.setTimeout(() => {
+            if (document.body.contains(copyBtn)) {
+                copyBtn.textContent = t('ui_slot_copy');
+            }
+        }, 1500);
+    };
+
+    const importSlotPreset = async (slotId, rootEl) => {
+        const inputEl = rootEl?.querySelector(`[data-import-input="${slotId}"]`);
+        const importBtn = rootEl?.querySelector(`[data-import-btn="${slotId}"]`);
+        const rawCode = inputEl?.value || '';
+        let cleanInput = rawCode.trim().toUpperCase();
+        if (cleanInput.startsWith('C-')) {
+            cleanInput = cleanInput.substring(2);
+        }
+        const code = cleanInput.replace(/[^A-Z0-9]/g, '').trim();
+
+        if (!PRESET_EXPORT_ENDPOINT) {
+            updateImportResult(rootEl, slotId, t('ui_slot_export_missing_config'), '#ef5350');
+            return;
+        }
+
+        if (!code) {
+            updateImportResult(rootEl, slotId, t('ui_slot_import_empty'), '#ef5350');
+            inputEl?.focus();
+            return;
+        }
+
+        if (inputEl) inputEl.value = `C-${code}`;
+        if (importBtn) {
+            importBtn.disabled = true;
+            importBtn.style.cursor = 'default';
+            importBtn.style.opacity = '0.7';
+        }
+        updateImportResult(rootEl, slotId, t('ui_slot_importing'), '#1976d2');
+
+        try {
+            const response = await fetch(PRESET_EXPORT_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    action: 'import',
+                    type: 'calc',
+                    code
+                })
+            });
+
+            const responseText = await response.text();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${responseText}`);
+            }
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                throw new Error(`Invalid JSON response: ${responseText.slice(0, 200)}`);
+            }
+
+            if (!result?.ok || !result?.preset) {
+                throw new Error(result?.error || 'Invalid import response');
+            }
+
+            // Validate that the imported preset is a calculator preset
+            if (!result.preset.calcState) {
+                throw new Error(state.currentLang === 'ko' ? '올바른 계산기 프리셋이 아닙니다. (서포트 카드 프리셋 코드로 보입니다)' : state.currentLang === 'ja' ? '正しい計算機プリセットではありません。(サポートカードプリセットコードのようです)' : 'Not a valid calculator preset. (Appears to be a support card preset code)');
+            }
+
+            // Write to slot key
+            const importedPreset = result.preset;
+            importedPreset.slotId = parseInt(slotId);
+            importedPreset.timestamp = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+            
+            localStorage.setItem(slotKey, JSON.stringify(importedPreset));
+
+            updateImportResult(rootEl, slotId, t('ui_slot_import_success'), '#2e7d32');
+
+            // Force load it immediately!
+            sessionStorage.setItem('is_loading_preset', 'true');
+            importedPreset.calcState.updatedAt = Date.now();
+            const serialized = JSON.stringify(importedPreset.calcState);
+            
+            localStorage.setItem(`calc_state_${mode}`, serialized);
+            localStorage.setItem(`calc_state_shadow_${mode}`, serialized);
+            sessionStorage.setItem(`calc_state_session_${mode}`, serialized);
+            localStorage.setItem('last_calc_type', mode);
+            
+            // Set toast in session storage to display after reload
+            sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
+
+            // Close the modal
+            closeShareModal();
+
+            // Reload the page to guarantee a perfect and pristine UI refresh
+            window.location.reload();
+        } catch (error) {
+            console.warn('Preset import failed:', error);
+            const detail = error?.message ? ` ${error.message}` : '';
+            updateImportResult(rootEl, slotId, `${t('ui_slot_import_failed')}${detail}`, '#ef5350');
+        } finally {
+            if (importBtn) {
+                importBtn.disabled = false;
+                importBtn.style.cursor = 'pointer';
+                importBtn.style.opacity = '1';
+            }
+        }
+    };
+
+    shareModal.addEventListener('click', (e) => {
+        const exportBtn = e.target.closest('.export');
+        const copyBtn = e.target.closest('.copy-code');
+        const importBtn = e.target.closest('.import');
+
+        if (exportBtn) {
+            exportSlotPreset(exportBtn.dataset.slot, shareModal);
+        }
+
+        if (copyBtn) {
+            copyExportCode(copyBtn.dataset.copySlot, shareModal);
+        }
+
+        if (importBtn) {
+            importSlotPreset(slotId, shareModal);
+        }
+    });
+
+    const importInput = shareModal.querySelector(`[data-import-input="${slotId}"]`);
+    importInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            importSlotPreset(slotId, shareModal);
+        }
+    });
 }
 
 
