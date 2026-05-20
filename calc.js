@@ -459,9 +459,6 @@ function startWeeklyPlan(type) {
                     if (currentGrid) window._lastIdolScrollLeft = currentGrid.scrollLeft;
 
                     calcStore.setPlanType(btn.dataset.type);
-                    if (type === 'hif') {
-                        enforceHifPrimaEligibility();
-                    }
                     startWeeklyPlan(type);
                 };
             });
