@@ -28,6 +28,30 @@
         } catch (e) {
             // Storage를 사용할 수 없는 환경(일부 크롤러/프라이버시 모드)에서는 조용히 통과
         }
+
+        // 캐시 방지(Cache Busting)를 위해 모든 ESM 모듈 경로에 자동으로 버전 쿼리를 추가하는 importmap을 동적 생성합니다.
+        try {
+            const jsFiles = [
+                'main.js', 'state.js', 'utils.js', 'router.js', 'ui.js', 'gacha.js', 
+                'calc.js', 'videodata.js', 'i18n.js', 'carddata.js', 'abilitydata.js', 
+                'calcStore.js', 'roadmap.js', 'cardModal.js', 'pItemData.js', 
+                'simulator-engine.js', 'idolUI.js', 'producedata.js', 'gacharates.js', 
+                'gachalist.js', 'gachaconfig.js', 'gachaanimation.js', 'gachalog.js', 
+                'currency.js', 'gacha-assets.js', 'gacha-drawer.js', 'calcData.js',
+                'calcEvents.js', 'calcLogic.js', 'calcModals.js', 'calcOptions.js', 
+                'calcRecommend.js', 'calcUI.js', 'gacha-ui-render.js', 'gacha-utils.js'
+            ];
+            const imports = {};
+            jsFiles.forEach(file => {
+                imports[`./${file}`] = `./${file}?v=${APP_VERSION}`;
+            });
+            const im = document.createElement('script');
+            im.type = 'importmap';
+            im.textContent = JSON.stringify({ imports });
+            document.head.appendChild(im);
+        } catch (e) {
+            console.warn('Importmap generation failed:', e);
+        }
     </script>
     <meta name="google-site-verification" content="WTUIctiVOEH6W01p9L-cLTHTsY584U27fPXIGb1RGSk" />
     <title>Gakumas Note | Gakuen Idolmaster Gacha Simulator & Support Card Calculator</title>
@@ -68,18 +92,18 @@
     <link rel="icon" type="image/png" sizes="16x16"
         href="https://happymillefeuille.github.io/gakumas/icons/icon16x16.png">
     <link rel="apple-touch-icon" href="https://happymillefeuille.github.io/gakumas/icons/icon192x192.png">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/idol.css">
-    <link rel="stylesheet" href="css/support.css">
-    <link rel="stylesheet" href="css/gacha.css">
-    <link rel="stylesheet" href="css/gacha-drawer.css">
-    <link rel="stylesheet" href="css/gachalog.css">
-    <link rel="stylesheet" href="css/gacharates.css">
-    <link rel="stylesheet" href="css/gacha_anim.css">
-    <link rel="stylesheet" href="css/calc.css">
-    <link rel="stylesheet" href="css/stat-detail.css">
-    <link rel="stylesheet" href="css/memory.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/base.css?v=1.2.6">
+    <link rel="stylesheet" href="css/idol.css?v=1.2.6">
+    <link rel="stylesheet" href="css/support.css?v=1.2.6">
+    <link rel="stylesheet" href="css/gacha.css?v=1.2.6">
+    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.2.6">
+    <link rel="stylesheet" href="css/gachalog.css?v=1.2.6">
+    <link rel="stylesheet" href="css/gacharates.css?v=1.2.6">
+    <link rel="stylesheet" href="css/gacha_anim.css?v=1.2.6">
+    <link rel="stylesheet" href="css/calc.css?v=1.2.6">
+    <link rel="stylesheet" href="css/stat-detail.css?v=1.2.6">
+    <link rel="stylesheet" href="css/memory.css?v=1.2.6">
+    <link rel="stylesheet" href="css/home.css?v=1.2.6">
 
     <!-- Character Icon Preload for Performance -->
     <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
@@ -280,7 +304,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main.js?v=1.2.6"></script>
 
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
