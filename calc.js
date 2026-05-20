@@ -1450,10 +1450,9 @@ function renderCalcPresetSlots(container) {
         customName = customName.replace(/^\[(SENSE|LOGIC|ANOMALY)\]\s*/i, '');
         // Remove general prefix like SAKI-SENSE or SENSE or SAKI-SENSE 1
         customName = customName.replace(/^(?:(?:SAKI|TEMARI|KOTONE|TSUBAME|MAO|LILJA|CHINA|SUMIKA|HIRO|SENA|MISUZU|UME|RINAMI)-(?:SENSE|LOGIC|ANOMALY)|(?:SENSE|LOGIC|ANOMALY))\s*/i, '');
-        // If the resulting name is empty or just a number, make it a clean slot name
-        if (!customName.trim() || /^\d+$/.test(customName.trim())) {
-            const num = customName.trim() || i;
-            customName = `Slot ${num}`;
+        // If the resulting name is empty or matches the slot index, make it a clean slot name
+        if (!customName.trim() || customName.trim() === String(i)) {
+            customName = `Slot ${i}`;
         }
         const time = data.timestamp || '';
         const plan = data.calcState?.planType || 'sense';
