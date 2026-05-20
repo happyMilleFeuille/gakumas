@@ -775,7 +775,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         return renderCardItem(g[0]);
     }).join('')}</div>
             <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%; box-sizing: border-box;">
-                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_label_bulk_reset')}</button>
+                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_reset_weeks')}</button>
                 <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: ${idolColor}; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('gacha_close')}</button>
             </div>
         </div>
@@ -909,8 +909,6 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
     });
 
     document.getElementById('reset-all-skills').onclick = () => {
-        const resetConfirm = t('calc_confirm_reset_skills');
-        if (!confirm(resetConfirm)) return;
         calcStore.planSkills[activePlan] = {}; calcStore.save(); refreshAll(); updateTitle();
         const sidebarContainer2 = document.getElementById('tune-sidebar-cards');
         if (sidebarContainer2) renderTuneSidebar(sidebarContainer2);
@@ -1651,4 +1649,236 @@ export function showHifEvalModal() {
     };
 
     history.pushState({ modalOpen: modalId }, "");
+}
+
+/**
+ * 초기화 확인 모달 표시
+ */
+export function showConfirmResetModal(onConfirm) {
+    const modalId = 'calc-confirm-reset-weeks-modal'; // 동일 아이디로 백버튼 호환
+    let modal = document.getElementById(modalId);
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = modalId;
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+    history.pushState({ modalOpen: 'confirmResetWeeks' }, "");
+
+    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
+    const closeConfirmResetWeeksModal = (isPopState = false) => {
+        const targetModal = document.getElementById(modalId);
+        if (!targetModal) return;
+        if (!isPopState) {
+            history.back();
+            return;
+        }
+        targetModal.style.display = 'none';
+        targetModal.classList.add('hidden');
+    };
+    window.closeConfirmResetWeeksModal = closeConfirmResetWeeksModal;
+
+    modal.innerHTML = `
+        <div class="confirm-modal-content" style="border: 1px solid ${idolColor}33; border-radius: 20px; padding: 28px 24px; background: #fff; max-width: 400px; width: 90%; margin: auto; position: relative; box-shadow: 0 20px 45px rgba(0,0,0,0.18); animation: modal-fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; box-sizing: border-box;">
+            <style>
+                .reset-toggle-checkbox:checked + .custom-switch-slider {
+                    background-color: ${idolColor} !important;
+                }
+                .reset-toggle-checkbox:checked + .custom-switch-slider:before {
+                    transform: translateX(20px);
+                }
+                .custom-switch-slider {
+                    background-color: #e2e8f0;
+                }
+                .custom-switch-slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 18px;
+                    width: 18px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: .25s cubic-bezier(0.16, 1, 0.3, 1);
+                    border-radius: 50%;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+                }
+                .reset-toggle-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    padding: 12px 14px;
+                    border-radius: 12px;
+                    background: #f8fafc;
+                    border: 1px solid #f1f5f9;
+                    cursor: pointer;
+                    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+                    user-select: none;
+                    box-sizing: border-box;
+                }
+                .reset-toggle-row:hover {
+                    background-color: #f1f5f9;
+                    border-color: ${idolColor}33;
+                }
+                .reset-toggle-row:hover .toggle-icon {
+                    border-color: ${idolColor}44;
+                    color: ${idolColor};
+                }
+                .confirm-btn.ok:disabled {
+                    opacity: 0.4 !important;
+                    cursor: not-allowed !important;
+                    box-shadow: none !important;
+                }
+            </style>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="font-size: 1.15rem; font-weight: 800; color: #1e293b; letter-spacing: -0.02em;">
+                    ${t('calc_reset_title', {}, '초기화')}
+                </div>
+                <div style="font-size: 0.85rem; color: #64748b; line-height: 1.4; font-weight: 500; word-break: keep-all; padding: 0 16px;">
+                    ${t('calc_reset_desc', {}, '초기화할 항목을 선택해 주세요.')}
+                </div>
+            </div>
+
+            <!-- Toggles Container -->
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                
+                <!-- Memories Toggle -->
+                <label class="reset-toggle-row">
+                    <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <span class="toggle-icon" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                        </span>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: #334155;">${t('calc_reset_memories', {}, '메모리')}</span>
+                    </div>
+                    <div class="custom-switch-wrapper" style="position: relative; width: 44px; height: 24px;">
+                        <input type="checkbox" class="reset-toggle-checkbox" data-key="memories" style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <span class="custom-switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .25s; border-radius: 24px;"></span>
+                    </div>
+                </label>
+
+                <!-- P-Items Toggle -->
+                <label class="reset-toggle-row">
+                    <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <span class="toggle-icon" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a5 5 0 0 0-5 5v3.66c0 .8.3 1.58.85 2.14l1.3 1.3c.55.55.85 1.3.85 2.06v.84h4v-.84c0-.76.3-1.5.85-2.06l1.3-1.3c.55-.56.85-1.34.85-2.14V7a5 5 0 0 0-5-5z"/>
+                            </svg>
+                        </span>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: #334155;">${t('calc_reset_pitems', {}, 'P아이템')}</span>
+                    </div>
+                    <div class="custom-switch-wrapper" style="position: relative; width: 44px; height: 24px;">
+                        <input type="checkbox" class="reset-toggle-checkbox" data-key="pItems" style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <span class="custom-switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .25s; border-radius: 24px;"></span>
+                    </div>
+                </label>
+
+                <!-- Skill Cards Toggle -->
+                <label class="reset-toggle-row">
+                    <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <span class="toggle-icon" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+                            </svg>
+                        </span>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: #334155;">${t('calc_reset_skillcards', {}, '스킬카드')}</span>
+                    </div>
+                    <div class="custom-switch-wrapper" style="position: relative; width: 44px; height: 24px;">
+                        <input type="checkbox" class="reset-toggle-checkbox" data-key="skillCards" style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <span class="custom-switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .25s; border-radius: 24px;"></span>
+                    </div>
+                </label>
+
+                <!-- Support Cards Toggle -->
+                <label class="reset-toggle-row">
+                    <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <span class="toggle-icon" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>
+                            </svg>
+                        </span>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: #334155;">${t('calc_reset_supportcards', {}, '서포카 상태')}</span>
+                    </div>
+                    <div class="custom-switch-wrapper" style="position: relative; width: 44px; height: 24px;">
+                        <input type="checkbox" class="reset-toggle-checkbox" data-key="supportCards" style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <span class="custom-switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .25s; border-radius: 24px;"></span>
+                    </div>
+                </label>
+
+                <!-- Schedule Toggle -->
+                <label class="reset-toggle-row">
+                    <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <span class="toggle-icon" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </span>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: #334155;">${t('calc_reset_schedule', {}, '스케쥴')}</span>
+                    </div>
+                    <div class="custom-switch-wrapper" style="position: relative; width: 44px; height: 24px;">
+                        <input type="checkbox" class="reset-toggle-checkbox" data-key="schedule" style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <span class="custom-switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .25s; border-radius: 24px;"></span>
+                    </div>
+                </label>
+
+            </div>
+            
+            <div style="display: flex; gap: 12px; width: 100%; margin-top: 6px;">
+                <button class="confirm-btn cancel" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #475569; cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+                    ${t('ui_cancel', {}, '취소')}
+                </button>
+                <button class="confirm-btn ok" style="flex: 1.2; padding: 12px; border-radius: 12px; border: none; background: ${idolColor}; color: #fff; cursor: pointer; font-size: 0.88rem; font-weight: bold; transition: all 0.2s; box-shadow: 0 4px 12px ${idolColor}33;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                    ${t('ui_confirm', {}, '확인')}
+                </button>
+            </div>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+
+    const okBtn = modal.querySelector('.confirm-btn.ok');
+    const cancelBtn = modal.querySelector('.confirm-btn.cancel');
+    const checkboxes = modal.querySelectorAll('.reset-toggle-checkbox');
+
+    const updateOkBtnState = () => {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        okBtn.disabled = !anyChecked;
+    };
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateOkBtnState);
+    });
+
+    updateOkBtnState(); // Initial check
+
+    cancelBtn.onclick = () => {
+        closeConfirmResetWeeksModal();
+    };
+
+    okBtn.onclick = () => {
+        closeConfirmResetWeeksModal();
+        if (typeof onConfirm === 'function') {
+            const results = {};
+            checkboxes.forEach(cb => {
+                results[cb.dataset.key] = cb.checked;
+            });
+            onConfirm(results);
+        }
+    };
+
+    let isMouseDownOnBackdrop = false;
+    modal.onmousedown = (e) => {
+        isMouseDownOnBackdrop = (e.target === modal);
+    };
+    modal.onmouseup = (e) => {
+        if (isMouseDownOnBackdrop && e.target === modal) {
+            closeConfirmResetWeeksModal();
+        }
+        isMouseDownOnBackdrop = false;
+    };
 }

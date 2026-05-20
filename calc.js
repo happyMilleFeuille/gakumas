@@ -19,7 +19,7 @@ import {
     showToast
 } from './calcUI.js';
 import { initGlobalDistListener } from './calcEvents.js';
-import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syncSupportPanelUI, showRecommendModal, showOtherTuneModal } from './calcModals.js';
+import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syncSupportPanelUI, showRecommendModal, showOtherTuneModal, showConfirmResetModal } from './calcModals.js';
 import { initRecommendationFeature } from './calcRecommend.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
@@ -31,8 +31,65 @@ function getVisibleIdolList(type) {
     return idolList;
 }
 
+function migrateOldPresets() {
+    try {
+        const migratedFlag = localStorage.getItem('calc_presets_migrated_to_unified_v2');
+        if (migratedFlag === 'true') return;
+
+        const modes = ['hajime', 'nia', 'hif'];
+        const plans = ['sense', 'logic', 'anomaly'];
+        const idols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
+
+        idols.forEach(idol => {
+            modes.forEach(mode => {
+                const oldPresets = [];
+                plans.forEach(planType => {
+                    for (let i = 1; i <= 10; i++) {
+                        const oldKey = `calc_preset_slot_${mode}_${idol}_${planType}_${i}`;
+                        const raw = localStorage.getItem(oldKey);
+                        if (raw) {
+                            try {
+                                const parsed = JSON.parse(raw);
+                                if (parsed && parsed.calcState) {
+                                    oldPresets.push({
+                                        oldKey,
+                                        data: parsed
+                                    });
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                });
+
+                if (oldPresets.length === 0) return;
+
+                let nextNewSlot = 1;
+                oldPresets.forEach(item => {
+                    while (nextNewSlot <= 10) {
+                        const newKey = `calc_preset_slot_${mode}_${idol}_${nextNewSlot}`;
+                        if (!localStorage.getItem(newKey)) {
+                            item.data.slotId = nextNewSlot;
+                            // No text prefixing needed, visual icons are displayed instead
+                            localStorage.setItem(newKey, JSON.stringify(item.data));
+                            localStorage.removeItem(item.oldKey);
+                            nextNewSlot++;
+                            break;
+                        }
+                        nextNewSlot++;
+                    }
+                });
+            });
+        });
+
+        localStorage.setItem('calc_presets_migrated_to_unified_v2', 'true');
+    } catch (err) {
+        console.warn('Failed to migrate old presets:', err);
+    }
+}
+
 
 export function initCalc(mode) {
+    migrateOldPresets();
     window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
 
     sessionStorage.removeItem('is_loading_preset');
@@ -913,24 +970,33 @@ function startWeeklyPlan(type) {
             const resetWeeksBtn = document.getElementById('btn-reset-weeks');
             if (resetWeeksBtn) {
                 resetWeeksBtn.onclick = () => {
-                    const scrollContainer = document.getElementById('idol');
-                    const scrollTop = scrollContainer?.scrollTop ?? window.scrollY ?? document.documentElement.scrollTop ?? 0;
-                    calcStore.resetWeeks();
-                    showToast(t('calc_toast_reset_weeks'));
-                    startWeeklyPlan(type);
-                    requestAnimationFrame(() => {
-                        if (scrollContainer) scrollContainer.scrollTop = scrollTop;
-                        window.scrollTo(0, scrollTop);
+                    showConfirmResetModal((options) => {
+                        const scrollContainer = document.getElementById('idol');
+                        const scrollTop = scrollContainer?.scrollTop ?? window.scrollY ?? document.documentElement.scrollTop ?? 0;
+                        
+                        calcStore.resetState(options);
+                        showToast(t('calc_reset_success'));
+                        
+                        if (options.supportCards) {
+                            if (typeof syncSupportPanelUI === 'function') syncSupportPanelUI();
+                        }
+                        
+                        startWeeklyPlan(type);
+                        
                         requestAnimationFrame(() => {
                             if (scrollContainer) scrollContainer.scrollTop = scrollTop;
                             window.scrollTo(0, scrollTop);
+                            requestAnimationFrame(() => {
+                                if (scrollContainer) scrollContainer.scrollTop = scrollTop;
+                                window.scrollTo(0, scrollTop);
+                            });
                         });
                     });
                 };
             }
             const kyoukaBtn = document.getElementById('btn-kyouka');
             if (kyoukaBtn) {
-                if (calcStore.isKyouka) kyoukaBtn.classList.add('active');
+                kyoukaBtn.classList.toggle('active', !!calcStore.isKyouka);
                 kyoukaBtn.onclick = () => {
                     calcStore.isKyouka = !calcStore.isKyouka;
 
@@ -1301,7 +1367,7 @@ function renderPresetPreview(el) {
     const badgeOffset = isMobile ? '-3px' : '-2px';
 
     for (let i = 1; i <= 10; i++) {
-        const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${planType}_${i}`);
+        const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${i}`);
         let hasData = false;
         if (raw) {
             try {
@@ -1309,10 +1375,13 @@ function renderPresetPreview(el) {
                 if (data && data.calcState) {
                     hasData = true;
                     const isActive = i === activeSlot;
-                    const activeStyle = isActive ? `border: 2px solid ${idolColor};` : `border: 1.5px solid #ccc;`;
+                    const activeStyle = isActive ? `border: 2px solid ${idolColor};` : 'border: none;';
 
-                    iconsHtml += `<div class="preset-circle-slot" data-slot="${i}" style="position: relative; display: flex; align-items: center; cursor: pointer; flex-shrink: 0;">
-                        <img src="icons/idolicons/${idol}_c.png" onerror="this.src='icons/idol.png'" style="width: ${size}; height: ${size}; border-radius: 50%; object-fit: contain; box-sizing: border-box; ${activeStyle}">
+                    const plan = data.calcState?.planType || 'sense';
+                    const logicShift = plan === 'logic' ? 'transform: translateX(-1px);' : '';
+
+                    iconsHtml += `<div class="preset-circle-slot" data-slot="${i}" style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; width: ${size}; height: ${size}; border-radius: 50%; box-sizing: border-box; ${activeStyle}">
+                        <img src="icons/${plan}.webp" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%; ${logicShift}">
                         <span style="position: absolute; bottom: ${badgeOffset}; right: ${badgeOffset}; font-size: ${badgeFontSize}; background: ${idolColor}; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">${i}</span>
                     </div>`;
                 }
@@ -1354,10 +1423,9 @@ function renderCalcPresetSlots(container) {
     const i = window._activePresetSlot;
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
-    const planType = calcStore.planType || 'sense';
     let html = '';
 
-    const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${i}`;
+    const slotKey = `calc_preset_slot_${mode}_${idol}_${i}`;
     const raw = localStorage.getItem(slotKey);
     let data = null;
     try { if (raw) data = JSON.parse(raw); } catch (e) { }
@@ -1376,15 +1444,30 @@ function renderCalcPresetSlots(container) {
 
     if (data && data.calcState) {
         const idolIcon = `icons/idolicons/${data.calcState.selectedIdol || 'saki'}_c.png`;
-        const customName = data.customName || `Slot ${i}`;
+        let customName = data.customName || `Slot ${i}`;
+        // Remove brackets prefix e.g., [SENSE]
+        customName = customName.replace(/^\[(SENSE|LOGIC|ANOMALY)\]\s*/i, '');
+        // Remove general prefix like SAKI-SENSE or SENSE or SAKI-SENSE 1
+        customName = customName.replace(/^(?:(?:SAKI|TEMARI|KOTONE|TSUBAME|MAO|LILJA|CHINA|SUMIKA|HIRO|SENA|MISUZU|UME|RINAMI)-(?:SENSE|LOGIC|ANOMALY)|(?:SENSE|LOGIC|ANOMALY))\s*/i, '');
+        // If the resulting name is empty or just a number, make it a clean slot name
+        if (!customName.trim() || /^\d+$/.test(customName.trim())) {
+            const num = customName.trim() || i;
+            customName = `Slot ${num}`;
+        }
         const time = data.timestamp || '';
+        const plan = data.calcState?.planType || 'sense';
+        const idolIconHtmlMain = `<img src="${idolIcon}" style="width: ${iconSize}; height: ${iconSize}; border-radius: 50%; border: 1px solid #ddd; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/idol.png'">`;
+        const planIconHtmlSub = `<img src="icons/${plan}.webp" style="width: 14px; height: 14px; object-fit: contain; flex-shrink: 0;" title="${plan.toUpperCase()}">`;
 
         html += `
             <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: white; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: ${contentGap}; flex: 1; min-width: 0;">
-                    <img src="${idolIcon}" style="width: ${iconSize}; height: ${iconSize}; border-radius: 50%; border: 1px solid #ddd; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/idol.png'">
+                    ${idolIconHtmlMain}
                     <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
-                        <span style="font-weight: bold; font-size: ${nameSize}; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${customName}</span>
+                        <div style="display: flex; align-items: center; gap: 4px; min-width: 0;">
+                            ${planIconHtmlSub}
+                            <span style="font-weight: bold; font-size: ${nameSize}; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${customName}</span>
+                        </div>
                         <div style="display: flex; align-items: center; font-size: ${timeSize};">
                             <span style="color: #888;">${time}</span>
                         </div>
@@ -1439,8 +1522,7 @@ function renderCalcPresetSlots(container) {
         btn.onclick = () => {
             if (confirm(t('ui_slot_delete_confirm', { slotId: btn.dataset.slot }))) {
                 const idol = calcStore.selectedIdol || 'saki';
-                const planType = calcStore.planType || 'sense';
-                localStorage.removeItem(`calc_preset_slot_${mode}_${idol}_${planType}_${btn.dataset.slot}`);
+                localStorage.removeItem(`calc_preset_slot_${mode}_${idol}_${btn.dataset.slot}`);
                 renderCalcPresetSlots(container);
                 const previewEl = document.getElementById('preset-preview');
                 if (previewEl) renderPresetPreview(previewEl);
@@ -1459,7 +1541,7 @@ function showSavePresetModal(slotId, container) {
 
     const planLabel = planType.toUpperCase();
 
-    const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`;
+    const slotKey = `calc_preset_slot_${mode}_${idol}_${slotId}`;
     let existingName = '';
     try {
         const raw = localStorage.getItem(slotKey);
@@ -1471,7 +1553,7 @@ function showSavePresetModal(slotId, container) {
         }
     } catch (e) { }
 
-    const defaultPresetName = existingName || `${idol.toUpperCase()}-${planLabel} ${slotId}`;
+    const defaultPresetName = existingName || `Slot ${slotId}`;
 
     const backdrop = document.createElement('div');
     backdrop.id = 'preset-save-modal';
@@ -1514,10 +1596,17 @@ function showSavePresetModal(slotId, container) {
     const cancelText = isJa ? 'キャンセル' : isEn ? 'Cancel' : '취소';
     const saveText = isJa ? '保存' : isEn ? 'Save' : '저장';
 
+    const planIconHtml = `<img src="icons/${planType}.webp" style="width: 14px; height: 14px; object-fit: contain; flex-shrink: 0;" title="${planLabel}">`;
+    const idolIconHtml = `<img src="icons/idolicons/${idol}_c.png" style="width: 18px; height: 18px; border-radius: 50%; border: 1px solid #ddd; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/idol.png'">`;
+
     dialog.innerHTML = `
         <div style="font-size: 1rem; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none;">
             <div style="width: 4px; height: 16px; background-color: ${idolColor}; border-radius: 2px;"></div>
             <span>${headerTitle}</span>
+            <div style="display: flex; align-items: center; gap: 4px; margin-left: auto;">
+                ${idolIconHtml}
+                ${planIconHtml}
+            </div>
         </div>
         <div style="font-size: 0.8rem; color: #666; font-weight: 500; line-height: 1.4; user-select: none;">${descLabel}</div>
         <input type="text" class="preset-name-input" value="${defaultPresetName}" maxlength="15" style="width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; outline: none; font-family: inherit; font-weight: 500; transition: border-color 0.15s;">
@@ -1589,7 +1678,6 @@ function showSavePresetModal(slotId, container) {
 function saveCalcPreset(slotId, customName, container) {
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
-    const planType = calcStore.planType || 'sense';
     const data = {
         slotId: parseInt(slotId),
         customName: customName || `Slot ${slotId}`,
@@ -1597,7 +1685,7 @@ function saveCalcPreset(slotId, customName, container) {
         timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }),
         calcState: calcStore.serializeState()
     };
-    localStorage.setItem(`calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`, JSON.stringify(data));
+    localStorage.setItem(`calc_preset_slot_${mode}_${idol}_${slotId}`, JSON.stringify(data));
     showToast(t('calc_preset_save_success', { slotId }));
     renderCalcPresetSlots(container);
     const previewEl = document.getElementById('preset-preview');
@@ -1608,14 +1696,14 @@ function loadCalcPreset(slotId) {
     if (!confirm(t('calc_preset_load_confirm', { slotId }))) return;
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
-    const planType = calcStore.planType || 'sense';
-    const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`);
+    const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${slotId}`);
     if (!raw) return;
     try {
         const data = JSON.parse(raw);
-        if (data && data.calcState && data.type) {
+        if (data && data.calcState) {
+            const targetType = data.type || data.calcState.type || mode;
             // Merge preset state with current state to preserve other plans' skill & card selections
-            const currentRaw = localStorage.getItem(`calc_state_${data.type}`);
+            const currentRaw = localStorage.getItem(`calc_state_${targetType}`);
             if (currentRaw) {
                 try {
                     const currentState = JSON.parse(currentRaw);
@@ -1669,10 +1757,10 @@ function loadCalcPreset(slotId) {
             const serialized = JSON.stringify(data.calcState);
 
             // Write to ALL 3 storage keys so loadPersistedState always picks the preset
-            localStorage.setItem(`calc_state_${data.type}`, serialized);
-            localStorage.setItem(`calc_state_shadow_${data.type}`, serialized);
-            sessionStorage.setItem(`calc_state_session_${data.type}`, serialized);
-            localStorage.setItem('last_calc_type', data.type);
+            localStorage.setItem(`calc_state_${targetType}`, serialized);
+            localStorage.setItem(`calc_state_shadow_${targetType}`, serialized);
+            sessionStorage.setItem(`calc_state_session_${targetType}`, serialized);
+            localStorage.setItem('last_calc_type', targetType);
 
             // Set toast in session storage to display after reload
             sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
@@ -1691,8 +1779,7 @@ function openCalcShareModal(slotId, container) {
 
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
-    const planType = calcStore.planType || 'sense';
-    const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`;
+    const slotKey = `calc_preset_slot_${mode}_${idol}_${slotId}`;
 
     const raw = localStorage.getItem(slotKey);
     let data = null;
@@ -2083,17 +2170,13 @@ function openCalcShareModal(slotId, container) {
                 }
             }
 
-            if (targetPlan !== planType || targetIdol !== idol || targetMode !== mode) {
+            if (targetIdol !== idol || targetMode !== mode) {
                 const modeMap = {
                     'hajime': state.currentLang === 'ko' ? '하지메' : (state.currentLang === 'ja' ? '初' : 'HAJIME'),
                     'nia': state.currentLang === 'ko' ? '니아' : 'NIA',
                     'hif': 'HIF'
                 };
 
-                let tPlan = t(`calc_tune_plan_${targetPlan}`);
-                if (!tPlan || tPlan === `calc_tune_plan_${targetPlan}`) {
-                    tPlan = targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1);
-                }
                 const tMode = modeMap[targetMode] || targetMode.toUpperCase();
 
                 // Fetch dynamic short name from i18n, fallback to UPPERCASE if key doesn't exist yet
@@ -2104,11 +2187,11 @@ function openCalcShareModal(slotId, container) {
 
                 let errMsg = '';
                 if (state.currentLang === 'ko') {
-                    errMsg = `가져올 프리셋 설정이 다릅니다. [${tMode} - ${tIdol} - ${tPlan}]로 전환 후 다시 시도해주세요.`;
+                    errMsg = `가져올 프리셋 설정이 다릅니다. [${tMode} - ${tIdol}]로 전환 후 다시 시도해주세요.`;
                 } else if (state.currentLang === 'ja') {
-                    errMsg = `設定が異なります。[${tMode} - ${tIdol} - ${tPlan}] に手動で切り替えてから再度お試しください。`;
+                    errMsg = `設定が異なります。[${tMode} - ${tIdol}] に手動で切り替えてから再度お試しください。`;
                 } else {
-                    errMsg = `Config mismatch. Switch to [${tMode} - ${tIdol} - ${tPlan}] manually and retry.`;
+                    errMsg = `Config mismatch. Switch to [${tMode} - ${tIdol}] manually and retry.`;
                 }
                 throw new Error(errMsg);
             }

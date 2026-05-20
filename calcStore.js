@@ -236,7 +236,7 @@ export const calcStore = {
 
                 if (isInitial) {
                     if (options && options.length > 0) {
-                        currentWeeks[w] = { value: options[0].value, opts: {} };
+                        currentWeeks[w] = { value: '', opts: {} };
                     }
                 } else {
                     const isValidValue = savedWeek && 
@@ -247,7 +247,7 @@ export const calcStore = {
                     } else {
                         // 주차가 새로 추가되었거나, 이전 선택값이 무효화된 경우 기본값으로 덮어씀
                         if (options && options.length > 0) {
-                            currentWeeks[w] = { value: options[0].value, opts: {} };
+                            currentWeeks[w] = { value: '', opts: {} };
                         }
                     }
                 }
@@ -270,6 +270,44 @@ export const calcStore = {
             Object.keys(planData.weeks).forEach(w => {
                 this.weeks[w] = { value: '', opts: {} };
             });
+        }
+        this.save();
+    },
+
+    resetState({ memories, pItems, skillCards, supportCards, schedule }) {
+        if (memories) {
+            this.memories = [[], [], [], []];
+        }
+        if (pItems) {
+            this.pItems = [null, null, null, null, null];
+            this.pItemSubOpts = [null, null, null, null, null];
+            this.pItemSubSubOpts = [null, null, null, null, null];
+            this.pItemChecked = false;
+        }
+        if (skillCards) {
+            this.planCards = { sense: [], logic: [], anomaly: [] };
+            this.planSkills = { sense: {}, logic: {}, anomaly: {} };
+        }
+        if (supportCards) {
+            this.cardChecked = {};
+            this.cardExtraChecked = {};
+            this.cardEventChecked = {};
+            this.itemCounters = {};
+            this.manualEnhance = { m: 0, a: 0 };
+            this.manualDelete = { m: 0, a: 0, t: 0 };
+            this.manualGet = { m: 0, a: 0, t: 0 };
+        }
+        if (schedule) {
+            this.weeks = {};
+            const planData = calcPlans[this.type];
+            if (planData?.weeks) {
+                Object.keys(planData.weeks).forEach(w => {
+                    this.weeks[w] = { value: '', opts: {} };
+                });
+            }
+        }
+        if (memories && pItems && skillCards && supportCards && schedule) {
+            this.isKyouka = false;
         }
         this.save();
     },

@@ -456,6 +456,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const confirmResetWeeksModal = document.getElementById('calc-confirm-reset-weeks-modal');
+        if (confirmResetWeeksModal && confirmResetWeeksModal.style.display !== 'none' && !confirmResetWeeksModal.classList.contains('hidden')) {
+            if (typeof window.closeConfirmResetWeeksModal === 'function') window.closeConfirmResetWeeksModal(true);
+            else {
+                confirmResetWeeksModal.classList.add('hidden');
+                confirmResetWeeksModal.style.display = 'none';
+            }
+            return;
+        }
+
         if (tuneModal && tuneModal.style.display !== 'none' && !tuneModal.classList.contains('hidden')) {
             tuneModal.remove();
             return;
