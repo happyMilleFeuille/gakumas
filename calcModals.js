@@ -70,9 +70,9 @@ export function showStatDetailModal(breakdown) {
     };
 
     const bonusTotal = {
-        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.vocal || 0) : 0) + (breakdown.memory?.percent?.vocal || 0) + (breakdown.hif?.fixed?.vocal || 0) + (breakdown.hif?.percent?.vocal || 0),
-        dance: (breakdown.idol.dance || 0) + (breakdown.supportPercent.dance || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.dance || 0) : 0) + (breakdown.memory?.percent?.dance || 0) + (breakdown.hif?.fixed?.dance || 0) + (breakdown.hif?.percent?.dance || 0),
-        visual: (breakdown.idol.visual || 0) + (breakdown.supportPercent.visual || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.visual || 0) : 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
+        vocal: (breakdown.idol.vocal || 0) + (breakdown.supportPercent.vocal || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.vocal || 0) : 0) + (breakdown.memory?.percent?.vocal || 0) + (breakdown.hif?.percent?.vocal || 0),
+        dance: (breakdown.idol.dance || 0) + (breakdown.supportPercent.dance || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.dance || 0) : 0) + (breakdown.memory?.percent?.dance || 0) + (breakdown.hif?.percent?.dance || 0),
+        visual: (breakdown.idol.visual || 0) + (breakdown.supportPercent.visual || 0) + (calcStore.type === 'nia' ? (breakdown.item?.perc?.visual || 0) : 0) + (breakdown.memory?.percent?.visual || 0) + (breakdown.hif?.percent?.visual || 0)
     };
 
     const getAbilityName = (key) => {
@@ -146,9 +146,9 @@ export function showStatDetailModal(breakdown) {
                 </div>
             </div>
             ${renderRow(t('calc_detail_final_total'), {
-        vocal: breakdown.base.vocal + breakdown.idolBase.vocal + (breakdown.supportFixed?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.item?.base?.vocal || 0) + bonusTotal.vocal,
-        dance: breakdown.base.dance + breakdown.idolBase.dance + (breakdown.supportFixed?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.item?.base?.dance || 0) + bonusTotal.dance,
-        visual: breakdown.base.visual + breakdown.idolBase.visual + (breakdown.supportFixed?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.item?.base?.visual || 0) + bonusTotal.visual
+        vocal: breakdown.base.vocal + breakdown.idolBase.vocal + (breakdown.supportFixed?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.item?.base?.vocal || 0) + (breakdown.hif?.fixed?.vocal || 0) + bonusTotal.vocal,
+        dance: breakdown.base.dance + breakdown.idolBase.dance + (breakdown.supportFixed?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.item?.base?.dance || 0) + (breakdown.hif?.fixed?.dance || 0) + bonusTotal.dance,
+        visual: breakdown.base.visual + breakdown.idolBase.visual + (breakdown.supportFixed?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.item?.base?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + bonusTotal.visual
     }, null, 'row-total')}
         </div>`;
 
@@ -158,9 +158,9 @@ export function showStatDetailModal(breakdown) {
         const baseVo = (breakdown.lesson?.vocal || 0) + (breakdown.exam?.vocal || 0);
         const baseDa = (breakdown.lesson?.dance || 0) + (breakdown.exam?.dance || 0);
         const baseVi = (breakdown.lesson?.visual || 0) + (breakdown.exam?.visual || 0);
-        const tVo = Math.floor(baseVo + breakdown.idolBase.vocal + (breakdown.supportFixed?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.item?.base?.vocal || 0) + (breakdown.class?.vocal || 0) + bonusTotal.vocal);
-        const tDa = Math.floor(baseDa + breakdown.idolBase.dance + (breakdown.supportFixed?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.item?.base?.dance || 0) + (breakdown.class?.dance || 0) + bonusTotal.dance);
-        const tVi = Math.floor(baseVi + breakdown.idolBase.visual + (breakdown.supportFixed?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.item?.base?.visual || 0) + (breakdown.class?.visual || 0) + bonusTotal.visual);
+        const tVo = Math.floor(baseVo + breakdown.idolBase.vocal + (breakdown.supportFixed?.vocal || 0) + (breakdown.memory?.fixed?.vocal || 0) + (breakdown.item?.base?.vocal || 0) + (breakdown.class?.vocal || 0) + (breakdown.hif?.fixed?.vocal || 0) + bonusTotal.vocal);
+        const tDa = Math.floor(baseDa + breakdown.idolBase.dance + (breakdown.supportFixed?.dance || 0) + (breakdown.memory?.fixed?.dance || 0) + (breakdown.item?.base?.dance || 0) + (breakdown.class?.dance || 0) + (breakdown.hif?.fixed?.dance || 0) + bonusTotal.dance);
+        const tVi = Math.floor(baseVi + breakdown.idolBase.visual + (breakdown.supportFixed?.visual || 0) + (breakdown.memory?.fixed?.visual || 0) + (breakdown.item?.base?.visual || 0) + (breakdown.class?.visual || 0) + (breakdown.hif?.fixed?.visual || 0) + bonusTotal.visual);
         const tSum = tVo + tDa + tVi;
 
         const cells = finalTotalRow.querySelectorAll('.stat-main-val');
