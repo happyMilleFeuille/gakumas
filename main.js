@@ -194,6 +194,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     m.renderPSSRRoadmap(false);
                 });
             }
+
+            // [추가] 계산기 화면 프리셋 반응형 대응 갱신
+            const previewEl = document.getElementById('preset-preview');
+            if (previewEl && typeof window.renderPresetPreview === 'function') {
+                window.renderPresetPreview(previewEl);
+            }
+            const slotsContainer = document.getElementById('calc-preset-slots-container');
+            if (slotsContainer && slotsContainer.style.display !== 'none' && typeof window.renderCalcPresetSlots === 'function') {
+                window.renderCalcPresetSlots(slotsContainer);
+            }
+
+            // [추가] 서포트/계산기 공유 및 모달 반응형 대응을 위해 닫기
+            const slotShareModal = document.getElementById('slot-share-modal');
+            if (slotShareModal && slotShareModal.dataset.processing !== 'true') {
+                slotShareModal.remove();
+            }
+            const slotModal = document.getElementById('slot-modal');
+            if (slotModal) {
+                slotModal.remove();
+            }
         }
     });
 
@@ -452,6 +472,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (slotShareModal && slotShareModal.style.display !== 'none' && !slotShareModal.classList.contains('hidden')) {
+            if (slotShareModal.dataset.processing === 'true') {
+                history.pushState(null, "");
+                return;
+            }
             slotShareModal.remove();
             return;
         }

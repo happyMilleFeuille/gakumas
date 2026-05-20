@@ -595,11 +595,11 @@
     color: #558b2f;
 }
 
-.slot-btn:hover {
+.slot-btn:hover:not(:disabled) {
     filter: brightness(0.9);
 }
 
-.slot-btn:active {
+.slot-btn:active:not(:disabled) {
     transform: scale(0.95);
 }
 

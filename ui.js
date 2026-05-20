@@ -304,7 +304,37 @@ function openSlotModal() {
         renderSupport();
     };
 
+    const setModalProcessing = (rootEl, isProcessing, slotId) => {
+        if (!rootEl) return;
+        rootEl.dataset.processing = isProcessing ? 'true' : 'false';
+        const inputEl = rootEl.querySelector(`[data-import-input="${slotId}"]`);
+        if (inputEl) {
+            inputEl.disabled = isProcessing;
+            inputEl.style.opacity = isProcessing ? '0.7' : '1';
+        }
+        const importBtn = rootEl.querySelector(`[data-import-btn="${slotId}"]`);
+        if (importBtn) {
+            importBtn.disabled = isProcessing;
+            importBtn.style.cursor = isProcessing ? 'default' : 'pointer';
+            importBtn.style.opacity = isProcessing ? '0.7' : '1';
+        }
+        const exportBtn = rootEl.querySelector(`[data-export-btn="${slotId}"]`);
+        if (exportBtn) {
+            const isLocked = exportBtn.dataset.locked === 'true';
+            if (isProcessing) {
+                exportBtn.disabled = true;
+                exportBtn.style.cursor = 'default';
+                exportBtn.style.opacity = '0.55';
+            } else {
+                exportBtn.disabled = isLocked;
+                exportBtn.style.cursor = isLocked ? 'default' : 'pointer';
+                exportBtn.style.opacity = isLocked ? '0.55' : '1';
+            }
+        }
+    };
+
     const exportSlotPreset = async (slotId, rootEl) => {
+        if (rootEl?.dataset.processing === 'true') return;
         const exportBtn = rootEl?.querySelector(`[data-export-btn="${slotId}"]`);
         if (exportBtn?.dataset.locked === 'true') return;
 
@@ -321,6 +351,7 @@ function openSlotModal() {
             return;
         }
 
+        setModalProcessing(rootEl, true, slotId);
         lockExportButton(rootEl, slotId);
         updateExportResult(rootEl, slotId, t('ui_slot_exporting'), '#1976d2');
         updateCopyButton(rootEl, slotId, false);
@@ -363,6 +394,8 @@ function openSlotModal() {
             const detail = error?.message ? ` ${error.message}` : '';
             updateExportResult(rootEl, slotId, `${t('ui_slot_export_failed')}${detail}`, '#ef5350');
             updateCopyButton(rootEl, slotId, false);
+        } finally {
+            setModalProcessing(rootEl, false, slotId);
         }
     };
 
@@ -403,9 +436,26 @@ function openSlotModal() {
     };
 
     const importSlotPreset = async (slotId, rootEl) => {
+        if (rootEl?.dataset.processing === 'true') return;
         const inputEl = rootEl?.querySelector(`[data-import-input="${slotId}"]`);
         const importBtn = rootEl?.querySelector(`[data-import-btn="${slotId}"]`);
         const rawCode = inputEl?.value || '';
+
+        const alphaNumOnly = rawCode.replace(/[^A-Za-z0-9]/g, '');
+        if (alphaNumOnly.length !== 6) {
+            let errMsg = '';
+            if (state.currentLang === 'ko') {
+                errMsg = '올바른 코드 길이가 아닙니다. (6자리)';
+            } else if (state.currentLang === 'ja') {
+                errMsg = 'コードの長さが正しくありません。(6桁)';
+            } else {
+                errMsg = 'Invalid code length. (6 characters)';
+            }
+            updateImportResult(rootEl, slotId, errMsg, '#ef5350');
+            inputEl?.focus();
+            return;
+        }
+
         let cleanInput = rawCode.trim().toUpperCase();
         if (cleanInput.startsWith('C-')) {
             cleanInput = cleanInput.substring(2);
@@ -417,18 +467,8 @@ function openSlotModal() {
             return;
         }
 
-        if (!code) {
-            updateImportResult(rootEl, slotId, t('ui_slot_import_empty'), '#ef5350');
-            inputEl?.focus();
-            return;
-        }
-
         if (inputEl) inputEl.value = code;
-        if (importBtn) {
-            importBtn.disabled = true;
-            importBtn.style.cursor = 'default';
-            importBtn.style.opacity = '0.7';
-        }
+        setModalProcessing(rootEl, true, slotId);
         updateImportResult(rootEl, slotId, t('ui_slot_importing'), '#1976d2');
 
         try {
@@ -473,11 +513,7 @@ function openSlotModal() {
             const detail = error?.message ? ` ${error.message}` : '';
             updateImportResult(rootEl, slotId, `${t('ui_slot_import_failed')}${detail}`, '#ef5350');
         } finally {
-            if (importBtn) {
-                importBtn.disabled = false;
-                importBtn.style.cursor = 'pointer';
-                importBtn.style.opacity = '1';
-            }
+            setModalProcessing(rootEl, false, slotId);
         }
     };
 
@@ -536,7 +572,7 @@ function openSlotModal() {
                     </div>
                     <div style="height: 1px; background: #ececec; margin: ${dividerMargin};"></div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <input type="text" data-import-input="${slotId}" value="" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: ${inputHeight}; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: ${inputFontSize}; outline: none;">
+                        <input type="text" data-import-input="${slotId}" value="" maxlength="10" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: ${inputHeight}; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: ${inputFontSize}; outline: none;">
                         <button class="slot-btn import" data-import-btn="${slotId}" style="width: ${actionBtnWidth}; height: ${actionBtnHeight}; flex: none; padding: 0; background: #e8f5e9; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/download-cloud.svg" alt="${t('ui_slot_import')}" style="width: 16px; height: 16px; filter: invert(41%) sepia(12%) saturate(2641%) hue-rotate(81deg) brightness(94%) contrast(87%);">
                         </button>
@@ -552,11 +588,19 @@ function openSlotModal() {
             shareModal.remove();
         };
 
-        shareModal.onclick = (e) => {
-            if (e.target === shareModal) closeShareModal();
-        };
+        let mousedownTarget = null;
+        shareModal.addEventListener('mousedown', (e) => {
+            mousedownTarget = e.target;
+        });
+        shareModal.addEventListener('mouseup', (e) => {
+            if (e.target === shareModal && mousedownTarget === shareModal) {
+                if (shareModal.dataset.processing === 'true') return;
+                closeShareModal();
+            }
+        });
 
         shareModal.addEventListener('click', (e) => {
+            if (shareModal.dataset.processing === 'true') return;
             const exportBtn = e.target.closest('.export');
             const copyBtn = e.target.closest('.copy-code');
             const importBtn = e.target.closest('.import');
@@ -578,6 +622,7 @@ function openSlotModal() {
         importInput?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
+                if (shareModal.dataset.processing === 'true') return;
                 importSlotPreset(slotId, shareModal);
             }
         });
