@@ -982,12 +982,12 @@ export function updateMainLabel(w) {
         container.style.gap = gap;
         container.style.fontSize = fontSize;
         container.style.marginTop = '2px';
-        container.style.flexWrap = 'wrap';
+        container.style.flexWrap = 'nowrap';
 
         if (savedOpts.hif_test_use_perc === 'true') {
             const percSpan = document.createElement('span');
             percSpan.textContent = '%';
-            percSpan.style.color = '#888';
+            percSpan.style.color = '#ffffff';
             percSpan.style.fontWeight = '800';
             percSpan.style.marginRight = '1px';
             container.appendChild(percSpan);
