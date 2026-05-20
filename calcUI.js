@@ -736,7 +736,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 <!-- 통합 프리셋 카드 (상시 노출, 상단 캐릭터/플랜 선택 칸과 밀착 결합형 구조) -->
                 <div id="preset-integrated-card" style="width: 100%; margin-bottom: 12px; background: #f5f5f5; border-radius: 0 0 12px 12px; border: 1px solid #ddd; border-top: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; display: ${window._showPreset ? 'flex' : 'none'}; flex-direction: column; overflow: hidden;">
-                    <!-- 상단 헤더 (타이틀 + 15개 슬롯 동그라미) -->
+                    <!-- 상단 헤더 (타이틀 + 5개 슬롯 동그라미) -->
                     <div id="preset-header-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 38px; padding: 0 16px; box-sizing: border-box; gap: 24px;">
                         <!-- 좌측: 심플한 텍스트 타이틀 (회색) + 플랜 미니 아이콘 -->
                         <div id="preset-title" style="font-size: 0.75rem; color: #888; font-weight: bold; user-select: none; letter-spacing: -0.2px; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
@@ -745,7 +745,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             ` : ''}
                             <span>Preset</span>
                         </div>
-                        <!-- 우측: 15개 슬롯 동그라미 미리보기 영역 -->
+                        <!-- 우측: 5개 슬롯 동그라미 미리보기 영역 -->
                         <div id="preset-preview" style="display: flex; align-items: center; gap: 14px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; min-width: 0;">
                         </div>
                     </div>

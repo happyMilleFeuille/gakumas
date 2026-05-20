@@ -1366,7 +1366,7 @@ function renderPresetPreview(el) {
     const badgeFontSize = isMobile ? '0.4rem' : '0.5rem';
     const badgeOffset = isMobile ? '-3px' : '-2px';
 
-    for (let i = 1; i <= 15; i++) {
+    for (let i = 1; i <= 5; i++) {
         const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${i}`);
         let hasData = false;
         if (raw) {
