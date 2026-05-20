@@ -44,7 +44,7 @@ function migrateOldPresets() {
             modes.forEach(mode => {
                 const oldPresets = [];
                 plans.forEach(planType => {
-                    for (let i = 1; i <= 10; i++) {
+                    for (let i = 1; i <= 15; i++) {
                         const oldKey = `calc_preset_slot_${mode}_${idol}_${planType}_${i}`;
                         const raw = localStorage.getItem(oldKey);
                         if (raw) {
@@ -65,7 +65,7 @@ function migrateOldPresets() {
 
                 let nextNewSlot = 1;
                 oldPresets.forEach(item => {
-                    while (nextNewSlot <= 10) {
+                    while (nextNewSlot <= 15) {
                         const newKey = `calc_preset_slot_${mode}_${idol}_${nextNewSlot}`;
                         if (!localStorage.getItem(newKey)) {
                             item.data.slotId = nextNewSlot;
@@ -1366,7 +1366,7 @@ function renderPresetPreview(el) {
     const badgeFontSize = isMobile ? '0.4rem' : '0.5rem';
     const badgeOffset = isMobile ? '-3px' : '-2px';
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 15; i++) {
         const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${i}`);
         let hasData = false;
         if (raw) {
@@ -1431,16 +1431,17 @@ function renderCalcPresetSlots(container) {
     try { if (raw) data = JSON.parse(raw); } catch (e) { }
 
     const isMobile = window.innerWidth <= 768;
-    const slotPad = isMobile ? '6px 8px' : '10px 12px';
-    const iconSize = isMobile ? '24px' : '32px';
-    const nameSize = isMobile ? '0.75rem' : '0.9rem';
-    const timeSize = isMobile ? '0.55rem' : '0.65rem';
-    const noDataSize = isMobile ? '0.72rem' : '0.85rem';
-    const btnSize = isMobile ? '20px' : '28px';
-    const btnIconSize = isMobile ? '10px' : '14px';
-    const btnRadius = isMobile ? '4px' : '6px';
-    const contentGap = isMobile ? '6px' : '10px';
-    const btnGap = isMobile ? '3px' : '6px';
+    const slotPad = isMobile ? '5px 7px' : '10px 12px';
+    const iconSize = isMobile ? '22px' : '32px';
+    const planIconSize = isMobile ? '12px' : '18px';
+    const nameSize = isMobile ? '0.7rem' : '0.9rem';
+    const timeSize = isMobile ? '0.5rem' : '0.65rem';
+    const noDataSize = isMobile ? '0.68rem' : '0.85rem';
+    const btnSize = isMobile ? '18px' : '28px';
+    const btnIconSize = isMobile ? '9px' : '14px';
+    const btnRadius = isMobile ? '3px' : '6px';
+    const contentGap = isMobile ? '5px' : '10px';
+    const btnGap = isMobile ? '2px' : '6px';
 
     if (data && data.calcState) {
         const idolIcon = `icons/idolicons/${data.calcState.selectedIdol || 'saki'}_c.png`;
@@ -1457,36 +1458,125 @@ function renderCalcPresetSlots(container) {
         const time = data.timestamp || '';
         const plan = data.calcState?.planType || 'sense';
         const idolIconHtmlMain = `<img src="${idolIcon}" style="width: ${iconSize}; height: ${iconSize}; border-radius: 50%; border: 1px solid #ddd; object-fit: contain; flex-shrink: 0;" onerror="this.src='icons/idol.png'">`;
-        const planIconHtmlSub = `<img src="icons/${plan}.webp" style="width: 14px; height: 14px; object-fit: contain; flex-shrink: 0;" title="${plan.toUpperCase()}">`;
+        const planIconHtmlSub = `<img src="icons/${plan}.webp" style="width: ${planIconSize}; height: ${planIconSize}; object-fit: contain; flex-shrink: 0;" title="${plan.toUpperCase()}">`;
 
-        html += `
-            <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: white; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-                <div style="display: flex; align-items: center; gap: ${contentGap}; flex: 1; min-width: 0;">
-                    ${idolIconHtmlMain}
-                    <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
-                        <div style="display: flex; align-items: center; gap: 4px; min-width: 0;">
-                            ${planIconHtmlSub}
-                            <span style="font-weight: bold; font-size: ${nameSize}; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${customName}</span>
+        let finalStats = data.finalStats;
+        let percentBonus = data.percentBonus;
+
+        if (!finalStats && data.calcState) {
+            try {
+                const counts = getTriggerCounts(data.calcState);
+                const { finalTotal, breakdown } = calculateTotals(data.calcState, counts);
+                if (finalTotal) {
+                    finalStats = {
+                        vocal: Math.floor(finalTotal.vocal ?? 0),
+                        dance: Math.floor(finalTotal.dance ?? 0),
+                        visual: Math.floor(finalTotal.visual ?? 0),
+                        total: Math.floor((finalTotal.vocal ?? 0) + (finalTotal.dance ?? 0) + (finalTotal.visual ?? 0))
+                    };
+                }
+                if (breakdown && breakdown.totalPercs) {
+                    percentBonus = {
+                        vocal: parseFloat((breakdown.totalPercs.vocal ?? 0).toFixed(1)),
+                        dance: parseFloat((breakdown.totalPercs.dance ?? 0).toFixed(1)),
+                        visual: parseFloat((breakdown.totalPercs.visual ?? 0).toFixed(1))
+                    };
+                }
+            } catch (e) {
+                console.error("Failed to dynamically calculate stats for preset:", e);
+            }
+        }
+
+        let statsHtml = '';
+        if (finalStats) {
+            const vo = Number(finalStats.vocal ?? 0);
+            const da = Number(finalStats.dance ?? 0);
+            const vi = Number(finalStats.visual ?? 0);
+            const total = Number(finalStats.total ?? (vo + da + vi));
+            
+            const voP = Number(percentBonus?.vocal ?? 0);
+            const daP = Number(percentBonus?.dance ?? 0);
+            const viP = Number(percentBonus?.visual ?? 0);
+
+            const labelTotal = 'TOTAL';
+            const statBoxPad = isMobile ? '2px 4px' : '4px 8px';
+            const statFontSize = isMobile ? '0.6rem' : '0.8rem';
+            const statValFontSize = isMobile ? '0.65rem' : '0.85rem';
+
+            const iconSizeAttr = isMobile ? '10px' : '14px';
+            const iconVocal = `<img src="icons/vocal.png" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
+            const iconDance = `<img src="icons/dance.png" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
+            const iconVisual = `<img src="icons/visual.png" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
+
+            statsHtml = `
+                <div style="border-top: 1px dashed #e2e8f0; margin-top: 6px; padding-top: 6px; display: flex; flex-direction: column; gap: ${isMobile ? '3px' : '5px'}; width: 100%;">
+                    <!-- Row 1: Attribute Stats -->
+                    <div style="display: flex; align-items: center; gap: 4px; width: 100%; justify-content: space-between;">
+                        <!-- Vocal Badge -->
+                        <div style="display: flex; align-items: center; gap: 4px; background: #fff5f8; border: 1px solid #ffe4ef; border-radius: 6px; padding: ${statBoxPad}; flex: 1; justify-content: center; min-width: 0;">
+                            ${iconVocal}
+                            <div style="display: flex; flex-direction: column; align-items: center; line-height: 1.1; gap: 1px; min-width: 0;">
+                                <span style="font-size: ${statValFontSize}; font-weight: 800; color: #d62d6c; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${vo}</span>
+                                <span style="font-size: ${isMobile ? '0.5rem' : '0.65rem'}; font-weight: 600; color: #ff8cb6; white-space: nowrap;">+${voP.toFixed(1)}%</span>
+                            </div>
                         </div>
-                        <div style="display: flex; align-items: center; font-size: ${timeSize};">
-                            <span style="color: #888;">${time}</span>
+                        <!-- Dance Badge -->
+                        <div style="display: flex; align-items: center; gap: 4px; background: #f0f8ff; border: 1px solid #e3f2fd; border-radius: 6px; padding: ${statBoxPad}; flex: 1; justify-content: center; min-width: 0;">
+                            ${iconDance}
+                            <div style="display: flex; flex-direction: column; align-items: center; line-height: 1.1; gap: 1px; min-width: 0;">
+                                <span style="font-size: ${statValFontSize}; font-weight: 800; color: #1565c0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${da}</span>
+                                <span style="font-size: ${isMobile ? '0.5rem' : '0.65rem'}; font-weight: 600; color: #7cbbf2; white-space: nowrap;">+${daP.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <!-- Visual Badge -->
+                        <div style="display: flex; align-items: center; gap: 4px; background: #fffdf5; border: 1px solid #fff1cc; border-radius: 6px; padding: ${statBoxPad}; flex: 1; justify-content: center; min-width: 0;">
+                            ${iconVisual}
+                            <div style="display: flex; flex-direction: column; align-items: center; line-height: 1.1; gap: 1px; min-width: 0;">
+                                <span style="font-size: ${statValFontSize}; font-weight: 800; color: #b87c0a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${vi}</span>
+                                <span style="font-size: ${isMobile ? '0.5rem' : '0.65rem'}; font-weight: 600; color: #f2cc80; white-space: nowrap;">+${viP.toFixed(1)}%</span>
+                            </div>
                         </div>
                     </div>
+                    <!-- Row 2: Total Badge -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: ${statBoxPad}; font-size: ${statFontSize}; color: #475569; font-weight: 700; width: 100%; box-sizing: border-box;">
+                        <span>${labelTotal}</span>
+                        <span style="font-size: ${statValFontSize}; font-weight: 800; color: #0f172a;">${total}</span>
+                    </div>
                 </div>
-                <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
-                    <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
-                        <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
-                    </button>
-                    <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
-                        <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
-                    </button>
-                    <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
-                        <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
-                    </button>
-                    <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
-                        <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
-                    </button>
+            `;
+        }
+
+        html += `
+            <div class="preset-slot-item" style="display: flex; flex-direction: column; align-items: stretch; padding: ${slotPad}; background: white; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); gap: ${isMobile ? '4px' : '6px'};">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: ${contentGap};">
+                    <div style="display: flex; align-items: center; gap: ${contentGap}; flex: 1; min-width: 0;">
+                        ${idolIconHtmlMain}
+                        <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+                            <div style="display: flex; align-items: center; gap: 4px; min-width: 0;">
+                                ${planIconHtmlSub}
+                                <span style="font-weight: bold; font-size: ${nameSize}; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${customName}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; font-size: ${timeSize}; flex-wrap: wrap;">
+                                <span style="color: #888;">${time}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
+                        <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
+                            <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                        </button>
+                        <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
+                            <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
+                        </button>
+                        <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
+                            <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                        </button>
+                        <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
+                            <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
+                        </button>
+                    </div>
                 </div>
+                ${statsHtml}
             </div>
         `;
     } else {
@@ -1678,12 +1768,40 @@ function showSavePresetModal(slotId, container) {
 function saveCalcPreset(slotId, customName, container) {
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
+
+    // Calculate current stats and percentage bonuses
+    let finalStats = null;
+    let percentBonus = null;
+    try {
+        const counts = getTriggerCounts(calcStore);
+        const { finalTotal, breakdown } = calculateTotals(calcStore, counts);
+        if (finalTotal) {
+            finalStats = {
+                vocal: Math.floor(finalTotal.vocal ?? 0),
+                dance: Math.floor(finalTotal.dance ?? 0),
+                visual: Math.floor(finalTotal.visual ?? 0),
+                total: Math.floor((finalTotal.vocal ?? 0) + (finalTotal.dance ?? 0) + (finalTotal.visual ?? 0))
+            };
+        }
+        if (breakdown && breakdown.totalPercs) {
+            percentBonus = {
+                vocal: parseFloat((breakdown.totalPercs.vocal ?? 0).toFixed(1)),
+                dance: parseFloat((breakdown.totalPercs.dance ?? 0).toFixed(1)),
+                visual: parseFloat((breakdown.totalPercs.visual ?? 0).toFixed(1))
+            };
+        }
+    } catch (e) {
+        console.error("Failed to pre-calculate stats for preset:", e);
+    }
+
     const data = {
         slotId: parseInt(slotId),
         customName: customName || `Slot ${slotId}`,
         type: mode,
         timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }),
-        calcState: calcStore.serializeState()
+        calcState: calcStore.serializeState(),
+        finalStats,
+        percentBonus
     };
     localStorage.setItem(`calc_preset_slot_${mode}_${idol}_${slotId}`, JSON.stringify(data));
     showToast(t('calc_preset_save_success', { slotId }));

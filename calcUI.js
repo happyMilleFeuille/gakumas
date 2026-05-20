@@ -736,7 +736,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 
                 <!-- 통합 프리셋 카드 (상시 노출, 상단 캐릭터/플랜 선택 칸과 밀착 결합형 구조) -->
                 <div id="preset-integrated-card" style="width: 100%; margin-bottom: 12px; background: #f5f5f5; border-radius: 0 0 12px 12px; border: 1px solid #ddd; border-top: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; display: ${window._showPreset ? 'flex' : 'none'}; flex-direction: column; overflow: hidden;">
-                    <!-- 상단 헤더 (타이틀 + 10개 슬롯 동그라미) -->
+                    <!-- 상단 헤더 (타이틀 + 15개 슬롯 동그라미) -->
                     <div id="preset-header-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 38px; padding: 0 16px; box-sizing: border-box; gap: 24px;">
                         <!-- 좌측: 심플한 텍스트 타이틀 (회색) + 플랜 미니 아이콘 -->
                         <div id="preset-title" style="font-size: 0.75rem; color: #888; font-weight: bold; user-select: none; letter-spacing: -0.2px; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
@@ -745,7 +745,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             ` : ''}
                             <span>Preset</span>
                         </div>
-                        <!-- 우측: 10개 슬롯 동그라미 미리보기 영역 -->
+                        <!-- 우측: 15개 슬롯 동그라미 미리보기 영역 -->
                         <div id="preset-preview" style="display: flex; align-items: center; gap: 14px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; min-width: 0;">
                         </div>
                     </div>
@@ -968,16 +968,61 @@ export function updateMainLabel(w) {
         const vo = parseInt(savedOpts.hif_test_vocal);
         const da = parseInt(savedOpts.hif_test_dance);
         const vi = parseInt(savedOpts.hif_test_visual);
-        const labels = [];
-        if (!isNaN(vo) && vo > 0) labels.push(`Vo ${vo}`);
-        if (!isNaN(da) && da > 0) labels.push(`Da ${da}`);
-        if (!isNaN(vi) && vi > 0) labels.push(`Vi ${vi}`);
-        if (labels.length > 0) {
-            const l = document.createElement('div');
-            l.className = 'main-label-text';
-            const prefix = savedOpts.hif_test_use_perc === 'true' ? '(%) ' : '';
-            l.textContent = prefix + labels.join(' ');
-            w.appendChild(l);
+
+        const isMobile = window.innerWidth <= 768;
+        const iconSize = isMobile ? '10px' : '12px';
+        const fontSize = isMobile ? '0.55rem' : '0.65rem';
+        const gap = isMobile ? '3px' : '5px';
+
+        const container = document.createElement('div');
+        container.className = 'main-label-text';
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'center';
+        container.style.gap = gap;
+        container.style.fontSize = fontSize;
+        container.style.marginTop = '2px';
+        container.style.flexWrap = 'wrap';
+
+        if (savedOpts.hif_test_use_perc === 'true') {
+            const percSpan = document.createElement('span');
+            percSpan.textContent = '%';
+            percSpan.style.color = '#888';
+            percSpan.style.fontWeight = '800';
+            percSpan.style.marginRight = '1px';
+            container.appendChild(percSpan);
+        }
+
+        const addBadge = (attr, val, color) => {
+            if (isNaN(val) || val <= 0) return;
+            const badge = document.createElement('div');
+            badge.style.display = 'flex';
+            badge.style.alignItems = 'center';
+            badge.style.gap = '2px';
+            badge.style.color = color;
+            badge.style.fontWeight = '700';
+
+            const img = document.createElement('img');
+            img.src = `icons/${attr}.png`;
+            img.style.width = iconSize;
+            img.style.height = iconSize;
+            img.style.objectFit = 'contain';
+            img.style.flexShrink = '0';
+
+            const span = document.createElement('span');
+            span.textContent = val;
+
+            badge.appendChild(img);
+            badge.appendChild(span);
+            container.appendChild(badge);
+        };
+
+        addBadge('vocal', vo, '#ff4d8d');
+        addBadge('dance', da, '#46a4f3');
+        addBadge('visual', vi, '#fcc75e');
+
+        if (container.children.length > (savedOpts.hif_test_use_perc === 'true' ? 1 : 0)) {
+            w.appendChild(container);
         }
         return;
     }

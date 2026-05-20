@@ -637,7 +637,7 @@ function openSlotModal() {
 
     const renderSlots = () => {
         let slotsHtml = '';
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 15; i++) {
             const data = getSlotData(i);
             const timeInfo = data ? data.timestamp : null;
             const customName = data && data.customName ? data.customName : `Slot ${i}`;

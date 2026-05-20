@@ -637,6 +637,9 @@
     flex-direction: column;
     gap: 12px;
     margin-top: 10px;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 .slot-modal-item {
