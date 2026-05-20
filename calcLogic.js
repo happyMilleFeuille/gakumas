@@ -74,7 +74,7 @@ export const getHifLessonStat = (actionId, isSP, week, selectedSubAttr = null) =
  */
 export function getTriggerCounts(store) {
     const counts = {
-        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_drink: 0, purchase_drink: 0, get_item: ((store.type === 'nia' || store.type === 'hif') ? 1 : 0), change: 0 },
+        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_t: 0, get_drink: 0, purchase_drink: 0, get_item: ((store.type === 'nia' || store.type === 'hif') ? 1 : 0), change: 0 },
         lessons: { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } }
     };
 
@@ -102,7 +102,7 @@ export function getTriggerCounts(store) {
             actionDef.results.forEach(rid => {
                 const id = rid.trim();
                 if (id === 'get') counts.total.get++;
-                else if (id === 'get_t') counts.total.get_t++;
+                else if (id === 'get_t') { counts.total.get_t++; counts.total.get++; }
                 else if (id === 'delete') counts.total.delete++;
                 else if (id === 'delete_t') counts.total.delete_t++;
                 else if (id === 'get_drink') counts.total.get_drink++;
@@ -143,6 +143,7 @@ export function getTriggerCounts(store) {
                 else if (id === 'get') counts.total.get += countInc;
                 else if (id === 'get_m') { counts.total.get += countInc; counts.total.get_m += countInc; }
                 else if (id === 'get_a') { counts.total.get += countInc; counts.total.get_a += countInc; }
+                else if (id === 'get_t') { counts.total.get += countInc; counts.total.get_t += countInc; }
                 else if (counts.total.hasOwnProperty(id)) counts.total[id] += countInc;
                 else counts.total[id] = (counts.total[id] || 0) + countInc;
             });
@@ -254,7 +255,11 @@ export function getTriggerCounts(store) {
                         const targets = Array.isArray(rawTarget) ? rawTarget : [rawTarget];
                         targets.forEach(t => {
                             const bonusValue = multiplier;
-                            if (t === 'delete_t' || t === 'get_t') counts.total[t] = (counts.total[t] || 0) + bonusValue;
+                            if (t === 'delete_t') counts.total[t] = (counts.total[t] || 0) + bonusValue;
+                            else if (t === 'get_t') {
+                                counts.total[t] = (counts.total[t] || 0) + bonusValue;
+                                counts.total.get = (counts.total.get || 0) + bonusValue;
+                            }
                             else if (counts.total.hasOwnProperty(t)) counts.total[t] += bonusValue;
                             else counts.total[t] = (counts.total[t] || 0) + bonusValue;
                         });
@@ -404,7 +409,11 @@ export function getTriggerCounts(store) {
                         const rawTarget = eff.target || eff.targets;
                         const targetList = Array.isArray(rawTarget) ? rawTarget : (rawTarget ? [rawTarget] : []);
                         targetList.forEach(t => {
-                            if (t === 'delete_t' || t === 'get_t') counts.total[t] += bonusValue;
+                            if (t === 'delete_t') counts.total[t] += bonusValue;
+                            else if (t === 'get_t') {
+                                counts.total[t] = (counts.total[t] || 0) + bonusValue;
+                                counts.total.get = (counts.total.get || 0) + bonusValue;
+                            }
                             else if (counts.total.hasOwnProperty(t)) counts.total[t] += bonusValue;
                             else counts.total[t] = (counts.total[t] || 0) + bonusValue;
                         });
