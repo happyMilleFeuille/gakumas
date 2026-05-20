@@ -1276,11 +1276,14 @@ function setupPItemSelector() {
         }
 
         container.querySelectorAll('.hif-stat-controls').forEach(ctrl => {
+            if (ctrl.dataset.bound === 'true') return;
+            ctrl.dataset.bound = 'true';
             ctrl.onclick = (e) => {
                 e.stopPropagation();
                 const btn = e.target.closest('.cnt-btn');
                 if (!btn) return;
                 const attr = ctrl.dataset.attr;
+                if (!attr) return;
                 let cur = calcStore.hifStats?.[attr] || 0;
                 if (btn.classList.contains('plus') && cur < 5) cur++;
                 else if (btn.classList.contains('minus') && cur > 0) cur--;
@@ -1304,6 +1307,8 @@ function setupPItemSelector() {
         });
 
         container.querySelectorAll('.hif-param-limit-controls').forEach(ctrl => {
+            if (ctrl.dataset.bound === 'true') return;
+            ctrl.dataset.bound = 'true';
             ctrl.onclick = (e) => {
                 e.stopPropagation();
                 const btn = e.target.closest('.cnt-btn');

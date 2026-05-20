@@ -880,7 +880,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                                     <span>+${hifParameterLimitBonuses[store.hifParamLimitLevel || 0] || 0}</span>
                                 </div>
                             </div>
-                            <div class="counter-controls hif-stat-controls hif-param-limit-controls" style="border-color: #5960fb40;">
+                            <div class="counter-controls hif-param-limit-controls" style="border-color: #5960fb40;">
                                 <button class="cnt-btn minus" style="border-right: 1px solid #5960fb20;">
                                     <img src="icons/minus.svg" class="cnt-btn-icon">
                                 </button>
