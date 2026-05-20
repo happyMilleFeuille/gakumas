@@ -1,7 +1,7 @@
 import { state, idolColors } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { activityOptions } from './calcOptions.js';
-import { idolData, hifParameterLimitBonuses, canUseHifPrimaStella } from './calcData.js';
+import { idolData, hifParameterLimitBonuses } from './calcData.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
@@ -721,11 +721,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div class="talent-toggle-item ${store.pItemChecked ? 'active' : ''}" id="p-item-toggle" style="--idol-color: ${idolColor};">
                         <img src="icons/sainou.webp">
                     </div>
-                    ${store.type === 'hif' ? `
-                    <div class="talent-toggle-item ${store.hifPrimaChecked ? 'active' : ''} ${!canUseHifPrimaStella(store.selectedIdol, store.planType) ? 'disabled' : ''}" id="hif-prima-toggle" style="--idol-color: ${idolColor};">
-                        <div style="width: 19px; height: 19px; background-color: var(--idol-color, #ff4d8d); -webkit-mask-image: url('icons/primastella.webp'); mask-image: url('icons/primastella.webp'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;"></div>
-                    </div>
-                    ` : ''}
+
                     <button class="talent-bloom-info-btn">i</button>
                     <div class="idol-opt-divider"></div>
                     ` : ''}

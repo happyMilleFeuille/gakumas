@@ -340,19 +340,7 @@ export function getTriggerCounts(store) {
         }
     });
 
-    const forcedPrimaSkillId = (store.type === 'hif' && store.hifPrimaChecked && store.weeks?.['21']?.value)
-        ? `${activePlan}-prima_${store.selectedIdol}1`
-        : null;
-    const forcedPrimaSkill = forcedPrimaSkillId ? skillCardList[forcedPrimaSkillId] : null;
-    /* [임시 비활성화] 프리마스텔라 카드 획득 카운트
-    if (forcedPrimaSkill) {
-        counts.total.get += 1;
-        if (forcedPrimaSkill.type === 'active') counts.total.get_a += 1;
-        else if (forcedPrimaSkill.type === 'mental') counts.total.get_m += 1;
-        if (forcedPrimaSkill.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + 1;
-        if (forcedPrimaSkill.attrs) forcedPrimaSkill.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + 1; });
-    }
-    */
+
 
     selectedIds = store.planCards?.[activePlan] || [];
     selectedIds.forEach(id => {

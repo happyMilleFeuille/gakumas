@@ -514,9 +514,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
     const counts = getTriggerCounts(calcStore);
     const cardGroups = [];
     const allCardIds = Object.keys(skillCardList);
-    const primaSkillId = (calcStore.type === 'hif' && !!calcStore.hifPrimaChecked && !!calcStore.weeks?.['21']?.value)
-        ? allCardIds.find(id => id === `${activePlan}-prima_${calcStore.selectedIdol}1`)
-        : null;
+
     const rarities = ['r', 'sr', 'ssr'];
     if (calcStore.type === 'hajime') rarities.push('legend');
 
@@ -527,7 +525,6 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
                 const skill = skillCardList[id];
                 if (!id.startsWith(`${activePlan}-${r}`) || id.endsWith('alt')) return false;
                 if (skill.isKyoukaOnly) return false; // 강화월간 전용은 여기서 제외
-                if (skill.primastella) return false; // 프리마스텔라 전용은 기본 모달에서 제외
                 return true;
             })
             .sort((a, b) => {

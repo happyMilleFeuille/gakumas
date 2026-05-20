@@ -288,9 +288,4 @@ export const skillCardList = {
     "sense-ssrtsubame_campusfes": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrume_christmaslimited": { type: "mental", attrs: ["goodcondition"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrume_endlesslimited": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
-
-    "sense-prima_mao1": { type: "mental", attrs: [], rarity: "legend", primastella: true },
-    "anomaly-prima_misuzu1": { type: "active", attrs: [], rarity: "legend", primastella: true },
-    "logic-prima_rinami1": { type: "mental", attrs: [], rarity: "legend", primastella: true },
-    "anomaly-prima_temari1": { type: "active", attrs: [], rarity: "legend", primastella: true },
 };

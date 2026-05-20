@@ -635,20 +635,3 @@ if (typeof window !== 'undefined') {
 // HIF 모드 프리마 스텔라 해금 캐릭터 리스트
 export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari'];
 
-// HIF 프리마 스텔라 플랜 제한
-export const hifPrimaStellaPlanRestrictions = {
-    temari: ['anomaly'],
-    rinami: ['logic'],
-    mao: ['sense'],
-    misuzu: ['anomaly']
-};
-
-export function canUseHifPrimaStella(idolId, planType) {
-    const normalizedIdolId = String(idolId || '').toLowerCase();
-    if (!hifPrimaStellaIdols.includes(normalizedIdolId)) return false;
-
-    const allowedPlans = hifPrimaStellaPlanRestrictions[normalizedIdolId];
-    if (!allowedPlans || allowedPlans.length === 0) return true;
-
-    return allowedPlans.includes(planType);
-}

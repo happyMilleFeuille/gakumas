@@ -2,7 +2,7 @@
 import { state, idolColors } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { PRESET_EXPORT_ENDPOINT } from './ui.js';
-import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios, hifPrimaStellaIdols, hifParameterLimitBonuses, canUseHifPrimaStella } from './calcData.js';
+import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios, hifPrimaStellaIdols, hifParameterLimitBonuses } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
@@ -31,19 +31,6 @@ function getVisibleIdolList(type) {
     return idolList;
 }
 
-function enforceHifPrimaEligibility() {
-    const primaToggle = document.getElementById('hif-prima-toggle');
-    if (!primaToggle) return;
-
-    const isAllowed = canUseHifPrimaStella(calcStore.selectedIdol, calcStore.planType);
-    primaToggle.classList.toggle('disabled', !isAllowed);
-
-    if (!isAllowed && calcStore.hifPrimaChecked) {
-        calcStore.hifPrimaChecked = false;
-        primaToggle.classList.remove('active');
-        calcStore.save();
-    }
-}
 
 export function initCalc(mode) {
     window._lastIdolScrollLeft = undefined; // 메뉴 진입 시 스크롤 위치 초기화
@@ -250,8 +237,6 @@ function bindIdolSelector(grid, refreshAll) {
 
             applyCalcThemeColor(color);
 
-            // [추가] 프리마 스텔라 버튼 활성화 상태 즉시 갱신
-            enforceHifPrimaEligibility();
 
             // 프리셋 슬롯 상세는 닫고, 5개 프리셋 아이콘만 즉시 갱신
             const previewEl = document.getElementById('preset-preview');
@@ -973,9 +958,7 @@ function startWeeklyPlan(type) {
     };
 
     renderWeeklyPlan(calcStore, calcPlans, visibleIdolList, handlers);
-    if (type === 'hif') {
-        enforceHifPrimaEligibility();
-    }
+
     window.refreshAll = refreshAll;
     window.renderPresetPreview = renderPresetPreview;
     window.renderCalcPresetSlots = renderCalcPresetSlots;
@@ -1155,38 +1138,11 @@ function setupPItemSelector() {
         };
     }
 
-    const hifPrimaToggle = document.getElementById('hif-prima-toggle');
-    if (hifPrimaToggle) {
-        hifPrimaToggle.onclick = (e) => {
-            e.preventDefault();
-            if (!canUseHifPrimaStella(calcStore.selectedIdol, calcStore.planType)) return;
-            calcStore.hifPrimaChecked = !calcStore.hifPrimaChecked;
-
-            // 프리마스텔라가 켜지면 SR은 끈다
-            if (calcStore.hifPrimaChecked) {
-                calcStore.isSR = false;
-                const srToggle = document.getElementById('sr-toggle');
-                if (srToggle) srToggle.classList.remove('active');
-            }
-
-            calcStore.save();
-            hifPrimaToggle.classList.toggle('active', calcStore.hifPrimaChecked);
-            refreshAll();
-        };
-    }
-
     const srToggle = document.getElementById('sr-toggle');
     if (srToggle) {
         srToggle.onclick = (e) => {
             e.preventDefault();
             calcStore.isSR = !calcStore.isSR;
-
-            // SR이 켜지면 프리마스텔라는 끈다
-            if (calcStore.isSR) {
-                calcStore.hifPrimaChecked = false;
-                const hifPrimaToggle = document.getElementById('hif-prima-toggle');
-                if (hifPrimaToggle) hifPrimaToggle.classList.remove('active');
-            }
 
             calcStore.save();
 

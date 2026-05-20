@@ -55,7 +55,6 @@ export const calcStore = {
     pItemSubOpts: [null, null, null, null, null],
     pItemSubSubOpts: [null, null, null, null, null],
     pItemChecked: false,
-    hifPrimaChecked: false,
     isSR: false,
     memories: [null, null, null, null],
     isKyouka: false,
@@ -115,7 +114,6 @@ export const calcStore = {
             pItemSubOpts: this.pItemSubOpts,
             pItemSubSubOpts: this.pItemSubSubOpts,
             pItemChecked: this.pItemChecked,
-            hifPrimaChecked: this.hifPrimaChecked,
             isSR: this.isSR,
             memories: this.memories,
             isKyouka: this.isKyouka,
@@ -201,7 +199,6 @@ export const calcStore = {
         this.pItemSubOpts = Array.isArray(saved.pItemSubOpts) ? saved.pItemSubOpts : [null, null, null, null, null];
         this.pItemSubSubOpts = Array.isArray(saved.pItemSubSubOpts) ? saved.pItemSubSubOpts : [null, null, null, null, null];
         this.pItemChecked = saved.pItemChecked === true || saved.pItemChecked === 'true';
-        this.hifPrimaChecked = saved.hifPrimaChecked === true || saved.hifPrimaChecked === 'true';
         this.isSR = saved.isSR === true || saved.isSR === 'true';
 
         // 마이그레이션: 메모리가 과거 방식(단일 문자열 요소 배열)인지 확인 후 배열의 배열로 변환
