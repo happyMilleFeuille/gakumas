@@ -1614,6 +1614,53 @@ function loadCalcPreset(slotId) {
     try {
         const data = JSON.parse(raw);
         if (data && data.calcState && data.type) {
+            // Merge preset state with current state to preserve other plans' skill & card selections
+            const currentRaw = localStorage.getItem(`calc_state_${data.type}`);
+            if (currentRaw) {
+                try {
+                    const currentState = JSON.parse(currentRaw);
+                    if (currentState) {
+                        const targetPlan = data.calcState.planType || 'sense';
+                        
+                        // Normalize preset planSkills/planCards
+                        let presetSkills = data.calcState.planSkills || {};
+                        if (!presetSkills.sense && !presetSkills.logic && !presetSkills.anomaly) {
+                            presetSkills = { sense: { ...presetSkills }, logic: { ...presetSkills }, anomaly: { ...presetSkills } };
+                        }
+                        let presetCards = data.calcState.planCards || {};
+                        if (Array.isArray(presetCards)) {
+                            presetCards = { sense: [...presetCards], logic: [...presetCards], anomaly: [...presetCards] };
+                        }
+                        
+                        // Normalize current planSkills/planCards
+                        let currentSkills = currentState.planSkills || {};
+                        if (!currentSkills.sense && !currentSkills.logic && !currentSkills.anomaly) {
+                            currentSkills = { sense: { ...currentSkills }, logic: { ...currentSkills }, anomaly: { ...currentSkills } };
+                        }
+                        let currentCards = currentState.planCards || {};
+                        if (Array.isArray(currentCards)) {
+                            currentCards = { sense: [...currentCards], logic: [...currentCards], anomaly: [...currentCards] };
+                        }
+                        
+                        // Merge: only keep the preset's target plan selections, and retain current selections for the other plans
+                        const mergedSkills = { ...presetSkills };
+                        const mergedCards = { ...presetCards };
+                        
+                        ['sense', 'logic', 'anomaly'].forEach(plan => {
+                            if (plan !== targetPlan) {
+                                mergedSkills[plan] = currentSkills[plan] || {};
+                                mergedCards[plan] = currentCards[plan] || [];
+                            }
+                        });
+                        
+                        data.calcState.planSkills = mergedSkills;
+                        data.calcState.planCards = mergedCards;
+                    }
+                } catch (err) {
+                    console.warn('Failed to merge current state with preset:', err);
+                }
+            }
+
             // Set flag to prevent pagehide/beforeunload from overwriting this preset
             sessionStorage.setItem('is_loading_preset', 'true');
 
@@ -2076,6 +2123,53 @@ function openCalcShareModal(slotId, container) {
             localStorage.setItem(slotKey, JSON.stringify(importedPreset));
 
             updateImportResult(rootEl, slotId, t('ui_slot_import_success'), '#2e7d32');
+
+            // Merge preset state with current state to preserve other plans' skill & card selections
+            const currentRaw = localStorage.getItem(`calc_state_${mode}`);
+            if (currentRaw) {
+                try {
+                    const currentState = JSON.parse(currentRaw);
+                    if (currentState) {
+                        const targetPlan = importedPreset.calcState.planType || 'sense';
+                        
+                        // Normalize preset planSkills/planCards
+                        let presetSkills = importedPreset.calcState.planSkills || {};
+                        if (!presetSkills.sense && !presetSkills.logic && !presetSkills.anomaly) {
+                            presetSkills = { sense: { ...presetSkills }, logic: { ...presetSkills }, anomaly: { ...presetSkills } };
+                        }
+                        let presetCards = importedPreset.calcState.planCards || {};
+                        if (Array.isArray(presetCards)) {
+                            presetCards = { sense: [...presetCards], logic: [...presetCards], anomaly: [...presetCards] };
+                        }
+                        
+                        // Normalize current planSkills/planCards
+                        let currentSkills = currentState.planSkills || {};
+                        if (!currentSkills.sense && !currentSkills.logic && !currentSkills.anomaly) {
+                            currentSkills = { sense: { ...currentSkills }, logic: { ...currentSkills }, anomaly: { ...currentSkills } };
+                        }
+                        let currentCards = currentState.planCards || {};
+                        if (Array.isArray(currentCards)) {
+                            currentCards = { sense: [...currentCards], logic: [...currentCards], anomaly: [...currentCards] };
+                        }
+                        
+                        // Merge: only keep the preset's target plan selections, and retain current selections for the other plans
+                        const mergedSkills = { ...presetSkills };
+                        const mergedCards = { ...presetCards };
+                        
+                        ['sense', 'logic', 'anomaly'].forEach(plan => {
+                            if (plan !== targetPlan) {
+                                mergedSkills[plan] = currentSkills[plan] || {};
+                                mergedCards[plan] = currentCards[plan] || [];
+                            }
+                        });
+                        
+                        importedPreset.calcState.planSkills = mergedSkills;
+                        importedPreset.calcState.planCards = mergedCards;
+                    }
+                } catch (err) {
+                    console.warn('Failed to merge current state with preset:', err);
+                }
+            }
 
             // Force load it immediately into the CURRENT configuration
             sessionStorage.setItem('is_loading_preset', 'true');
