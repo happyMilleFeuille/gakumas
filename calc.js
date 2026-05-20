@@ -252,7 +252,7 @@ function bindIdolSelector(grid, refreshAll) {
 
             // [추가] 프리마 스텔라 버튼 활성화 상태 즉시 갱신
             enforceHifPrimaEligibility();
-            
+
             // 프리셋 슬롯 상세는 닫고, 5개 프리셋 아이콘만 즉시 갱신
             const previewEl = document.getElementById('preset-preview');
             if (previewEl) renderPresetPreview(previewEl);
@@ -438,12 +438,12 @@ function startWeeklyPlan(type) {
                         // ON상태에서 클릭 시 프리셋 토글!
                         window._showPreset = !window._showPreset;
                         localStorage.setItem('calc_show_preset', window._showPreset ? 'true' : 'false');
-                        
+
                         const integratedCard = document.getElementById('preset-integrated-card');
                         if (integratedCard) {
                             integratedCard.style.display = window._showPreset ? 'flex' : 'none';
                         }
-                        
+
                         const optionsRow = document.querySelector('.idol-options-row');
                         if (optionsRow) {
                             optionsRow.style.marginBottom = window._showPreset ? '0' : '12px';
@@ -451,12 +451,12 @@ function startWeeklyPlan(type) {
                             optionsRow.style.borderBottomRightRadius = window._showPreset ? '0' : '12px';
                             optionsRow.style.borderBottom = window._showPreset ? '1px solid #ccc' : '1px solid #ddd';
                         }
-                        
+
                         if (window._showPreset) {
                             window._activePresetSlot = null;
                             const previewEl = document.getElementById('preset-preview');
                             if (previewEl) renderPresetPreview(previewEl);
-                            
+
                             const slotsContainer = document.getElementById('calc-preset-slots-container');
                             if (slotsContainer) {
                                 slotsContainer.style.display = 'none';
@@ -464,11 +464,11 @@ function startWeeklyPlan(type) {
                         }
                         return;
                     }
-                    
+
                     // OFF상태에서 클릭 시 플랜 변경 및 프리셋 강제 오픈!
                     window._showPreset = true;
                     localStorage.setItem('calc_show_preset', 'true');
-                    
+
                     // [추가] 플랜 전환 직전에 현재 스크롤 위치 저장
                     const currentGrid = document.getElementById('idol-selector-grid');
                     if (currentGrid) window._lastIdolScrollLeft = currentGrid.scrollLeft;
@@ -522,11 +522,11 @@ function startWeeklyPlan(type) {
                                 const v = input.value.trim();
                                 return v === "" || v === "0";
                             });
-                            
+
                             if (allZero) {
                                 // 값이 없으면 저장소에서 해당 주차 행동을 'none'으로 초기화
                                 calcStore.setWeekAction(weekIdx, 'none', {});
-                                
+
                                 // 화면상의 아이콘 상태도 즉시 초기화
                                 const targetWrapper = document.querySelector(`.week-row[data-week="${weekIdx}"] .plan-icon-wrapper.active[data-value="test"]`);
                                 if (targetWrapper) {
@@ -656,7 +656,7 @@ function startWeeklyPlan(type) {
                             // 아이콘(wrapper)에 직접 추가하여 스크롤 시 완벽하게 따라가도록 설정
                             const originalZ = wrapper.style.zIndex;
                             const originalFilter = wrapper.style.filter; // 기존 필터 저장
-                            
+
                             wrapper.style.zIndex = '50002'; // 다른 주차보다 위에 표시되도록
                             wrapper.style.setProperty('filter', 'none', 'important'); // CSS의 drop-shadow 끄기
                             wrapper.appendChild(tooltip);
@@ -671,11 +671,11 @@ function startWeeklyPlan(type) {
                             // 완료 버튼 클릭 시에만 닫기
                             tooltip.querySelector('.hif-test-complete-btn').onclick = (e) => {
                                 e.stopPropagation();
-                                
+
                                 // 모든 입력값이 0인지 확인
                                 const inputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
                                 const allZero = inputs.every(input => (parseInt(input.value) || 0) === 0);
-                                
+
                                 if (allZero) {
                                     // 값이 없으면 선택 해제
                                     calcStore.setWeekAction(weekNum, 'none', {});
@@ -684,7 +684,7 @@ function startWeeklyPlan(type) {
                                     wrapper.style.borderColor = '';
                                     wrapper.style.boxShadow = '';
                                     wrapper.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
-                                    updateSPBadge(wrapper, calcStore.selectedIdol); 
+                                    updateSPBadge(wrapper, calcStore.selectedIdol);
                                     updateMainLabel(wrapper);
                                 }
 
@@ -705,7 +705,7 @@ function startWeeklyPlan(type) {
                                 e.stopPropagation();
                                 const isCurrentlyPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
                                 const nextState = !isCurrentlyPerc;
-                                
+
                                 calcStore.updateWeekOpt(weekNum, 'hif_test_use_perc', String(nextState));
                                 percBtn.style.background = nextState ? idolColor : 'white';
                                 percBtn.style.color = nextState ? 'white' : idolColor;
@@ -715,7 +715,7 @@ function startWeeklyPlan(type) {
                                 if (descEl) {
                                     descEl.innerHTML = t(nextState ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc');
                                 }
-                                
+
                                 refreshAll();
                             };
 
@@ -996,7 +996,7 @@ function refreshAll() {
         calcStore.bonusTotal = bonusTotal;
         calcStore.finalTotal = finalTotal;
         window._lastStatBreakdown = breakdown; // 상세 모달용 데이터
-        
+
         // 플로팅 버튼 데이터 및 색상 업데이트
         const floatingBtn = document.getElementById('floating-skill-btn');
         if (floatingBtn && finalTotal) {
@@ -1007,15 +1007,15 @@ function refreshAll() {
                 tooltip.className = 'floating-tooltip';
                 floatingBtn.appendChild(tooltip);
             }
-            
+
             // 카드 수 계산 (모달 헤더 로직과 동일하게 맞춤)
             const activePlan = calcStore.planType;
             const skills = calcStore.planSkills[activePlan] || {};
             const boardGetCount = counts.total.get || 0;
-            
+
             // 1. 선택된 스킬들 합계
             let selectedCount = Object.values(skills).reduce((a, b) => a + b, 0);
-            
+
             // 4. 서포트 카드 획득 스킬 중 체크된 것들
             const selectedIds = calcStore.planCards[activePlan] || [];
             selectedIds.forEach(id => {
@@ -1026,10 +1026,10 @@ function refreshAll() {
             });
 
             // 색상 동기화 및 툴팁 업데이트 준비
-            const idolColor = (typeof getIdolDisplayColor === 'function') 
-                ? getIdolDisplayColor(calcStore.selectedIdol || 'saki') 
+            const idolColor = (typeof getIdolDisplayColor === 'function')
+                ? getIdolDisplayColor(calcStore.selectedIdol || 'saki')
                 : '#ff4d8d';
-            
+
             floatingBtn.style.setProperty('--idol-color', idolColor);
             floatingBtn.style.setProperty('--idol-color-shadow', idolColor + '66');
 
@@ -1216,7 +1216,7 @@ function setupPItemSelector() {
         container.querySelectorAll('.p-item-slot').forEach((slot, idx) => {
             const val = calcStore.pItems[idx];
             slot.style.borderColor = val ? 'transparent' : '#ddd';
-            
+
             let slotHtml = '';
             if (val) {
                 let iconName = val;
@@ -1344,7 +1344,7 @@ function renderPresetPreview(el) {
     const fontSize = isMobile ? '0.55rem' : '0.65rem';
     const badgeFontSize = isMobile ? '0.4rem' : '0.5rem';
     const badgeOffset = isMobile ? '-3px' : '-2px';
-    
+
     for (let i = 1; i <= 10; i++) {
         const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${planType}_${i}`);
         let hasData = false;
@@ -1355,13 +1355,13 @@ function renderPresetPreview(el) {
                     hasData = true;
                     const isActive = i === activeSlot;
                     const activeStyle = isActive ? `border: 2px solid ${idolColor};` : `border: 1.5px solid #ccc;`;
-                    
+
                     iconsHtml += `<div class="preset-circle-slot" data-slot="${i}" style="position: relative; display: flex; align-items: center; cursor: pointer; flex-shrink: 0;">
                         <img src="icons/idolicons/${idol}_c.png" onerror="this.src='icons/idol.png'" style="width: ${size}; height: ${size}; border-radius: 50%; object-fit: contain; box-sizing: border-box; ${activeStyle}">
                         <span style="position: absolute; bottom: ${badgeOffset}; right: ${badgeOffset}; font-size: ${badgeFontSize}; background: ${idolColor}; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">${i}</span>
                     </div>`;
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
         if (!hasData) {
             const isActive = i === activeSlot;
@@ -1401,11 +1401,11 @@ function renderCalcPresetSlots(container) {
     const idol = calcStore.selectedIdol || 'saki';
     const planType = calcStore.planType || 'sense';
     let html = '';
-    
+
     const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${i}`;
     const raw = localStorage.getItem(slotKey);
     let data = null;
-    try { if (raw) data = JSON.parse(raw); } catch (e) {}
+    try { if (raw) data = JSON.parse(raw); } catch (e) { }
 
     const isMobile = window.innerWidth <= 768;
     const slotPad = isMobile ? '6px 8px' : '10px 12px';
@@ -1418,12 +1418,12 @@ function renderCalcPresetSlots(container) {
     const btnRadius = isMobile ? '4px' : '6px';
     const contentGap = isMobile ? '6px' : '10px';
     const btnGap = isMobile ? '3px' : '6px';
-    
+
     if (data && data.calcState) {
         const idolIcon = `icons/idolicons/${data.calcState.selectedIdol || 'saki'}_c.png`;
         const customName = data.customName || `Slot ${i}`;
         const time = data.timestamp || '';
-        
+
         html += `
             <div class="preset-slot-item" style="display: flex; align-items: center; justify-content: space-between; padding: ${slotPad}; background: white; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                 <div style="display: flex; align-items: center; gap: ${contentGap}; flex: 1; min-width: 0;">
@@ -1466,9 +1466,9 @@ function renderCalcPresetSlots(container) {
             </div>
         `;
     }
-    
+
     container.innerHTML = html;
-    
+
     container.querySelectorAll('.slot-save').forEach(btn => {
         btn.onclick = () => {
             showSavePresetModal(btn.dataset.slot, container);
@@ -1501,9 +1501,9 @@ function showSavePresetModal(slotId, container) {
     const idolColor = getIdolDisplayColor(idol);
     const isJa = state.currentLang === 'ja';
     const isEn = state.currentLang === 'en';
-    
+
     const planLabel = planType.toUpperCase();
-    
+
     const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`;
     let existingName = '';
     try {
@@ -1514,10 +1514,10 @@ function showSavePresetModal(slotId, container) {
                 existingName = data.customName;
             }
         }
-    } catch(e) {}
-    
+    } catch (e) { }
+
     const defaultPresetName = existingName || `${idol.toUpperCase()}-${planLabel} ${slotId}`;
-            
+
     const backdrop = document.createElement('div');
     backdrop.id = 'preset-save-modal';
     backdrop.className = 'modal';
@@ -1533,7 +1533,7 @@ function showSavePresetModal(slotId, container) {
         justify-content: center;
         z-index: 30000;
     `;
-    
+
     const dialog = document.createElement('div');
     dialog.style.cssText = `
         background: white;
@@ -1548,17 +1548,17 @@ function showSavePresetModal(slotId, container) {
         flex-direction: column;
         gap: 12px;
     `;
-    
+
     const headerTitle = isJa ? 'プリセット保存' : isEn ? 'Save Preset' : '프리셋 저장';
-    const descLabel = isJa 
-        ? '保存するプリセット名を入力してください:' 
-        : isEn 
+    const descLabel = isJa
+        ? '保存するプリセット名を入力してください:'
+        : isEn
             ? 'Enter a name for the preset:'
             : '저장할 프리셋의 이름을 입력하세요:';
-            
+
     const cancelText = isJa ? 'キャンセル' : isEn ? 'Cancel' : '취소';
     const saveText = isJa ? '保存' : isEn ? 'Save' : '저장';
-    
+
     dialog.innerHTML = `
         <div style="font-size: 1rem; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none;">
             <div style="width: 4px; height: 16px; background-color: ${idolColor}; border-radius: 2px;"></div>
@@ -1571,35 +1571,35 @@ function showSavePresetModal(slotId, container) {
             <button class="modal-save-btn" style="padding: 6px 16px; background: ${idolColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${idolColor}33; transition: background 0.1s;">${saveText}</button>
         </div>
     `;
-    
+
     backdrop.appendChild(dialog);
     document.body.appendChild(backdrop);
-    
+
     // 브라우저 뒤로가기 처리를 위해 history state 추가
     history.pushState({ modalOpen: 'presetSave' }, "");
-    
+
     const input = dialog.querySelector('.preset-name-input');
     const cancelBtn = dialog.querySelector('.modal-cancel-btn');
     const saveBtn = dialog.querySelector('.modal-save-btn');
-    
+
     if (input) {
         input.focus();
         input.select();
-        
+
         input.onfocus = () => { input.style.borderColor = idolColor; };
         input.onblur = () => { input.style.borderColor = '#ddd'; };
     }
-    
+
     const onPopState = () => {
         backdrop.remove();
         window.removeEventListener('popstate', onPopState);
     };
     window.addEventListener('popstate', onPopState);
-    
+
     const closeModal = () => {
         history.back();
     };
-    
+
     const executeSave = () => {
         const val = input.value.trim();
         if (val) {
@@ -1607,21 +1607,21 @@ function showSavePresetModal(slotId, container) {
             closeModal();
         }
     };
-    
+
     let isMouseDownOnBackdrop = false;
     backdrop.onmousedown = (e) => {
         isMouseDownOnBackdrop = (e.target === backdrop);
     };
-    
+
     backdrop.onclick = (e) => {
         if (e.target === backdrop && isMouseDownOnBackdrop) {
             closeModal();
         }
     };
-    
+
     cancelBtn.onclick = closeModal;
     saveBtn.onclick = executeSave;
-    
+
     input.onkeydown = (e) => {
         if (e.key === 'Enter') {
             executeSave();
@@ -1661,20 +1661,20 @@ function loadCalcPreset(slotId) {
         if (data && data.calcState && data.type) {
             // Set flag to prevent pagehide/beforeunload from overwriting this preset
             sessionStorage.setItem('is_loading_preset', 'true');
-            
+
             // Ensure the preset wins the updatedAt comparison in loadPersistedState
             data.calcState.updatedAt = Date.now();
             const serialized = JSON.stringify(data.calcState);
-            
+
             // Write to ALL 3 storage keys so loadPersistedState always picks the preset
             localStorage.setItem(`calc_state_${data.type}`, serialized);
             localStorage.setItem(`calc_state_shadow_${data.type}`, serialized);
             sessionStorage.setItem(`calc_state_session_${data.type}`, serialized);
             localStorage.setItem('last_calc_type', data.type);
-            
+
             // Set toast in session storage to display after reload
             sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
-            
+
             // Reload the page to guarantee a perfect and pristine UI refresh
             window.location.reload();
         }
@@ -1691,10 +1691,10 @@ function openCalcShareModal(slotId, container) {
     const idol = calcStore.selectedIdol || 'saki';
     const planType = calcStore.planType || 'sense';
     const slotKey = `calc_preset_slot_${mode}_${idol}_${planType}_${slotId}`;
-    
+
     const raw = localStorage.getItem(slotKey);
     let data = null;
-    try { if (raw) data = JSON.parse(raw); } catch (e) {}
+    try { if (raw) data = JSON.parse(raw); } catch (e) { }
 
     const displayName = data && data.customName ? `Slot ${slotId} - ${data.customName}` : `Slot ${slotId}`;
     const themeColor = '#ff4d8d';
@@ -1776,11 +1776,11 @@ function openCalcShareModal(slotId, container) {
     const updateExportResult = (rootEl, slotId, message, color = '#666') => {
         const resultEl = rootEl?.querySelector(`[data-export-result="${slotId}"]`);
         if (!resultEl) return;
-        
+
         const isMobile = window.innerWidth <= 768;
         const resultPadding = isMobile ? '3px 6px' : '4px 8px';
         const resultFontSize = isMobile ? '0.65rem' : '0.72rem';
-        
+
         if (message) {
             resultEl.textContent = message;
             resultEl.style.display = 'inline-block';
@@ -1844,13 +1844,14 @@ function openCalcShareModal(slotId, container) {
 
         const rawData = localStorage.getItem(slotKey);
         let saved = null;
-        try { if (rawData) saved = JSON.parse(rawData); } catch (e) {}
+        try { if (rawData) saved = JSON.parse(rawData); } catch (e) { }
 
         if (!saved) {
             updateExportResult(rootEl, slotId, t('ui_slot_export_empty'), '#ef5350');
             updateCopyButton(rootEl, slotId, false);
             return;
         }
+
 
         lockExportButton(rootEl, slotId);
         updateExportResult(rootEl, slotId, t('ui_slot_exporting'), '#1976d2');
@@ -1887,7 +1888,7 @@ function openCalcShareModal(slotId, container) {
                 throw new Error(result?.error || 'Invalid export response');
             }
 
-            const visualCode = `C-${result.code}`;
+            const visualCode = `C${result.code}`;
             updateExportResult(rootEl, slotId, t('ui_slot_export_success', { code: visualCode }), '#2e7d32');
             updateCopyButton(rootEl, slotId, true, visualCode);
         } catch (error) {
@@ -1910,7 +1911,7 @@ function openCalcShareModal(slotId, container) {
                 await navigator.clipboard.writeText(code);
                 copied = true;
             }
-        } catch {}
+        } catch { }
 
         if (!copied) {
             const tempInput = document.createElement('input');
@@ -1940,6 +1941,9 @@ function openCalcShareModal(slotId, container) {
         let cleanInput = rawCode.trim().toUpperCase();
         if (cleanInput.startsWith('C-')) {
             cleanInput = cleanInput.substring(2);
+        } else if (cleanInput.startsWith('C') && cleanInput.replace(/[^A-Z0-9]/g, '').length === 7) {
+            // Strip the 'C' prefix only if the remaining alphanumeric code would be exactly 6 characters.
+            cleanInput = cleanInput.substring(1);
         }
         const code = cleanInput.replace(/[^A-Z0-9]/g, '').trim();
 
@@ -1954,7 +1958,6 @@ function openCalcShareModal(slotId, container) {
             return;
         }
 
-        if (inputEl) inputEl.value = `C-${code}`;
         if (importBtn) {
             importBtn.disabled = true;
             importBtn.style.cursor = 'default';
@@ -1993,29 +1996,95 @@ function openCalcShareModal(slotId, container) {
 
             // Validate that the imported preset is a calculator preset
             if (!result.preset.calcState) {
-                throw new Error(state.currentLang === 'ko' ? '올바른 계산기 프리셋이 아닙니다. (서포트 카드 프리셋 코드로 보입니다)' : state.currentLang === 'ja' ? '正しい計算機プリセットではありません。(サポートカードプリセットコードのようです)' : 'Not a valid calculator preset. (Appears to be a support card preset code)');
+                throw new Error(state.currentLang === 'ko' ? '올바른 계산기 프리셋이 아닙니다.' : state.currentLang === 'ja' ? '正しい計算機プリセットではありません。' : 'Not a valid calculator preset.');
             }
 
-            // Write to slot key
+            // Parse calcState if it comes as a string from Google Apps Script to prevent double-serialization bugs
+            let presetState = result.preset.calcState;
+            if (typeof presetState === 'string') {
+                try {
+                    presetState = JSON.parse(presetState);
+                } catch (e) {
+                    throw new Error(state.currentLang === 'ko' ? '프리셋 데이터 구문 분석에 실패했습니다.' : 'Failed to parse preset state.');
+                }
+            }
+            result.preset.calcState = presetState;
+
+            // Validate if the imported preset matches the current calculator settings
+            const targetPlan = presetState.planType || 'sense';
+            const targetIdol = presetState.selectedIdol || 'saki';
+            
+            let targetMode = presetState.type || result.preset.type;
+            if (!targetMode || targetMode === 'calc' || targetMode === 'hajime') {
+                const weekKeys = Object.keys(presetState.weeks || {});
+                const maxWeek = Math.max(...weekKeys.map(Number).filter(n => !isNaN(n)), 0);
+                if (maxWeek > 26) {
+                    targetMode = 'hif';
+                } else if (maxWeek > 18) {
+                    targetMode = 'nia';
+                } else {
+                    let hasHifAct = false;
+                    let hasNiaAct = false;
+                    for (const wk of Object.values(presetState.weeks || {})) {
+                        const val = wk.value || '';
+                        if (val.includes('hif')) { hasHifAct = true; break; }
+                        if (val.includes('nia')) { hasNiaAct = true; }
+                    }
+                    targetMode = hasHifAct ? 'hif' : (hasNiaAct ? 'nia' : 'hajime');
+                }
+            }
+
+            if (targetPlan !== planType || targetIdol !== idol || targetMode !== mode) {
+                const modeMap = {
+                    'hajime': state.currentLang === 'ko' ? '하지메' : (state.currentLang === 'ja' ? '初' : 'HAJIME'),
+                    'nia': state.currentLang === 'ko' ? '니아' : 'NIA',
+                    'hif': 'HIF'
+                };
+
+                let tPlan = t(`calc_tune_plan_${targetPlan}`);
+                if (!tPlan || tPlan === `calc_tune_plan_${targetPlan}`) {
+                    tPlan = targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1);
+                }
+                const tMode = modeMap[targetMode] || targetMode.toUpperCase();
+
+                // Fetch dynamic short name from i18n, fallback to UPPERCASE if key doesn't exist yet
+                let tIdol = t(`idol_name_${targetIdol}`);
+                if (!tIdol || tIdol === `idol_name_${targetIdol}`) {
+                    tIdol = targetIdol.toUpperCase();
+                }
+
+                let errMsg = '';
+                if (state.currentLang === 'ko') {
+                    errMsg = `가져올 프리셋 설정이 다릅니다. [${tMode} - ${tIdol} - ${tPlan}]로 전환 후 다시 시도해주세요.`;
+                } else if (state.currentLang === 'ja') {
+                    errMsg = `設定が異なります。[${tMode} - ${tIdol} - ${tPlan}] に手動で切り替えてから再度お試しください。`;
+                } else {
+                    errMsg = `Config mismatch. Switch to [${tMode} - ${tIdol} - ${tPlan}] manually and retry.`;
+                }
+                throw new Error(errMsg);
+            }
+
+            // Write to current active slot key
             const importedPreset = result.preset;
+            
+
             importedPreset.slotId = parseInt(slotId);
             importedPreset.timestamp = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
-            
+
             localStorage.setItem(slotKey, JSON.stringify(importedPreset));
 
             updateImportResult(rootEl, slotId, t('ui_slot_import_success'), '#2e7d32');
 
-            // Force load it immediately!
+            // Force load it immediately into the CURRENT configuration
             sessionStorage.setItem('is_loading_preset', 'true');
             importedPreset.calcState.updatedAt = Date.now();
             const serialized = JSON.stringify(importedPreset.calcState);
-            
+
             localStorage.setItem(`calc_state_${mode}`, serialized);
             localStorage.setItem(`calc_state_shadow_${mode}`, serialized);
             sessionStorage.setItem(`calc_state_session_${mode}`, serialized);
             localStorage.setItem('last_calc_type', mode);
-            
-            // Set toast in session storage to display after reload
+
             sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
 
             // Close the modal

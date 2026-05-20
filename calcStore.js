@@ -98,6 +98,7 @@ export const calcStore = {
 
     serializeState() {
         return {
+            type: this.type,
             selectedIdol: this.selectedIdol,
             planType: this.planType,
             weeks: this.weeks,
