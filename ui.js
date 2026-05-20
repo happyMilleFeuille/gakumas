@@ -254,7 +254,8 @@ function openSlotModal() {
             resultEl.style.border = '1px solid #e0e0e0';
             resultEl.style.color = '#333';
         } else {
-            const unissuedText = state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue');
+            const slotInfo = getSlotInfo(slotId);
+            const unissuedText = slotInfo ? (state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')) : '';
             resultEl.textContent = unissuedText;
             resultEl.style.display = 'inline-block';
             resultEl.style.flex = '1';
@@ -561,16 +562,16 @@ function openSlotModal() {
                     <div style="font-size: ${nameFontSize}; font-weight: bold; color: #333; margin-bottom: ${nameMarginBottom}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none;">
                         ${displayName}
                     </div>
-                    <div style="display:flex; align-items:center; gap: 8px; margin-bottom: ${exportMarginBottom};">
+                    <div style="display:${slotInfo ? 'flex' : 'none'}; align-items:center; gap: 8px; margin-bottom: ${exportMarginBottom};">
                         <div style="display:flex; align-items:center; gap: 6px; min-width: 0; flex: 1;">
-                            <span data-export-result="${slotId}" style="font-size: ${resultFontSize}; color: #888; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; flex: 1; box-sizing: border-box; text-align: center; padding: ${resultPadding}; background: #fafafa; border: 1px dashed #dcdcdc; border-radius: 5px; font-weight: bold; user-select: none;">${state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')}</span>
+                            <span data-export-result="${slotId}" style="font-size: ${resultFontSize}; color: #888; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; flex: 1; box-sizing: border-box; text-align: center; padding: ${resultPadding}; background: #fafafa; border: 1px dashed #dcdcdc; border-radius: 5px; font-weight: bold; user-select: none;">${slotInfo ? (state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')) : ''}</span>
                             <button class="slot-btn copy-code ${state.currentLang === 'ja' ? 'lang-ja' : ''}" data-copy-slot="${slotId}" data-code="" style="display: none; width: auto; min-width: 0; flex: 0 0 auto; padding: 0; margin: 0; font-size: 0.62rem; background: transparent; color: #5e35b1; border: none; border-radius: 0; cursor: pointer; font-weight: bold; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; vertical-align: baseline;">${t('ui_slot_copy')}</button>
                         </div>
-                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" ${!slotInfo ? 'style="display:none;"' : ''} style="width: ${actionBtnWidth}; height: ${exportBtnHeight}; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <button class="slot-btn export" data-slot="${slotId}" data-export-btn="${slotId}" style="width: ${actionBtnWidth}; height: ${exportBtnHeight}; flex: none; padding: 0; background: #fff3e0; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/upload-cloud.svg" alt="${t('ui_slot_export')}" style="width: 16px; height: 16px; filter: invert(48%) sepia(90%) saturate(1250%) hue-rotate(3deg) brightness(101%) contrast(101%);">
                         </button>
                     </div>
-                    <div style="height: 1px; background: #ececec; margin: ${dividerMargin};"></div>
+                    ${slotInfo ? `<div style="height: 1px; background: #ececec; margin: ${dividerMargin};"></div>` : ''}
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <input type="text" data-import-input="${slotId}" value="" maxlength="10" placeholder="${t('ui_slot_import_placeholder')}" style="flex: 1; min-width: 0; height: ${inputHeight}; padding: 0 9px; border: 1px solid #ddd; border-radius: 6px; font-size: ${inputFontSize}; outline: none;">
                         <button class="slot-btn import" data-import-btn="${slotId}" style="width: ${actionBtnWidth}; height: ${actionBtnHeight}; flex: none; padding: 0; background: #e8f5e9; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
