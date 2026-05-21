@@ -757,7 +757,7 @@ function startWeeklyPlan(type) {
                                     wrapper.style.filter = '';
                                     wrapper.style.borderColor = '';
                                     wrapper.style.boxShadow = '';
-                                    wrapper.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
+                                    wrapper.querySelectorAll('.sp-badge, .main-label-text, .class-attr-badge').forEach(el => el.remove());
                                     updateSPBadge(wrapper, calcStore.selectedIdol);
                                     updateMainLabel(wrapper);
                                 }
