@@ -611,7 +611,7 @@ function startWeeklyPlan(type) {
                             w.style.borderColor = '';
                             w.style.boxShadow = '';
                             Object.keys(w.dataset).forEach(k => { if (k.startsWith('opt')) delete w.dataset[k]; });
-                            w.querySelectorAll('.sp-badge, .main-label-text').forEach(el => el.remove());
+                            w.querySelectorAll('.sp-badge, .main-label-text, .class-attr-badge').forEach(el => el.remove());
                         });
                         calcStore.setWeekAction(weekNum, val, {});
                         wrapper.classList.add('active');
