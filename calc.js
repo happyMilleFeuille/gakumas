@@ -388,7 +388,12 @@ function startWeeklyPlan(type) {
 
                     if (idolInfo && ratios) {
                         let stageIdx = 0;
-                        if (calcStore.type === 'nia' || calcStore.type === 'hif') {
+                        if (calcStore.type === 'hif') {
+                            if (weekNum <= 10) stageIdx = 1;      // 7주차
+                            else if (weekNum <= 15) stageIdx = 2; // 13주차
+                            else if (weekNum <= 20) stageIdx = 3; // 20주차
+                            else stageIdx = 4;                    // 라운드 (27주차, 29주차)
+                        } else if (calcStore.type === 'nia') {
                             if (weekNum <= 10) stageIdx = 1;
                             else if (weekNum <= 20) stageIdx = 2;
                             else stageIdx = 3;
@@ -450,16 +455,16 @@ function startWeeklyPlan(type) {
                         </div>
                     `;
 
-                    // [수정] body가 아닌 공통 부모(icon-outer-container)에 추가하여 버튼과 함께 스크롤되게 함
-                    const container = btn.closest('.icon-outer-container');
+                    // [수정] i 버튼이 week-row에 직접 배치되므로 week-row 기준으로 툴팁 추가
+                    const container = btn.closest('.week-row');
                     if (container) {
                         const idolId = calcStore.selectedIdol;
                         const idolColor = idolColors[idolId] || "#ff4d8d";
 
                         container.appendChild(tooltip);
-                        tooltip.style.left = '50%';
-                        tooltip.style.top = '-5px';
-                        tooltip.style.transform = 'translate(-50%, -100%)';
+                        tooltip.style.right = '20px';
+                        tooltip.style.top = '50%';
+                        tooltip.style.transform = 'translateY(-100%) translateY(-12px)';
                         tooltip.style.borderColor = idolColor;
                     }
 

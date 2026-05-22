@@ -592,9 +592,10 @@ export const judgingRatios = {
         3: { protruded: { circle: [1389, 834, 556] }, balanced: { circle: [1105, 912, 746] } }
     },
     hif: {
-        1: { protruded: { circle: [100, 100, 100] }, balanced: { circle: [100, 100, 100] } },
-        2: { protruded: { circle: [100, 100, 100] }, balanced: { circle: [100, 100, 100] } },
-        3: { protruded: { circle: [100, 100, 100] }, balanced: { circle: [100, 100, 100] } }
+        1: { protruded: { circle: [312, 208, 174] }, balanced: { circle: [297, 222, 173] } },
+        2: { protruded: { circle: [614, 411, 342] }, balanced: { circle: [586, 436, 341] } },
+        3: { protruded: { circle: [1036, 691, 576] }, balanced: { circle: [989, 736, 575] } },
+        4: { protruded: { circle: [1961, 1308, 1090] }, balanced: { circle: [1872, 1393, 1089] } }
     }
 };
 

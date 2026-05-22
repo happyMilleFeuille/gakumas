@@ -662,7 +662,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
         const savedWeek = store.weeks[i] || {};
         const optionsHtml = options.map(opt => {
             const isActive = savedWeek.value === opt.value;
-            const isLarge = ['audition', 'test', 'oikomi', 'round_hif1', 'round_hif2'].includes(opt.value);
+            const isLarge = ['audition', 'test', 'oikomi', 'round_hif', 'round_hif1', 'round_hif2'].includes(opt.value);
             let optAttrs = isActive && savedWeek.opts ? Object.keys(savedWeek.opts).map(k => ` data-opt${k}="${savedWeek.opts[k]}"`).join('') : '';
 
             let activeStyle = '';
@@ -674,19 +674,21 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 }
             }
 
-            const isTestOrAudition = ['test', 'audition'].includes(opt.value) && !(store.type === 'hif' && opt.value === 'test');
-            const infoBtnHtml = isTestOrAudition ? `<div class="info-i-btn" data-type="${opt.value}" style="background-color: ${idolColor};">i</div>` : '';
-
             return `
                 <div class="icon-outer-container ${isLarge ? 'large-container' : ''}">
                     <div class="plan-icon-wrapper ${isLarge ? 'large-icon' : ''} ${isActive ? 'active' : ''}" data-value="${opt.value}" ${optAttrs} ${activeStyle}>
                         <img src="${getCalcIconSrc(opt.value, store.type)}" class="plan-icon-img">
                     </div>
-                    ${infoBtnHtml}
                 </div>`;
         }).join('');
         const isHif = store.type === 'hif';
         const displayedWeekNum = isHif && i >= 21 ? (i - 20) : i;
+
+        // i 버튼은 week-row의 오른쪽 끝에 직접 배치
+        const infoOpt = options.find(opt => ['test', 'audition', 'round_hif'].includes(opt.value));
+        // HIF의 R2(9일차/29일차)에는 i 버튼을 보여주지 않음
+        const showInfoBtn = infoOpt && !(isHif && displayedWeekNum === 9);
+        const rowInfoBtnHtml = showInfoBtn ? `<div class="info-i-btn" data-type="${infoOpt.value}" style="background-color: ${idolColor};">i</div>` : '';
         const hifSpecialLabels = {
             7: '<small>R</small><span class="week-num">1</span>',
             8: '<small>Break</small>',
@@ -699,7 +701,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 ? `<small>${isHif ? 'D' : 'W'}</small><span class="week-num">${displayedWeekNum}</span>`
                 : `<span class="week-num">${displayedWeekNum}</span><small>${isHif ? (isJa ? '日' : '일') : (isJa ? '週' : '주')}</small>`;
         const rowClass = `week-row${isHif && i === 21 ? ' hif-reset-boundary' : ''}`;
-        return `<div class="${rowClass}" data-week="${i}"><div class="week-diamond">✦</div><div class="week-header"><span class="week-label">${weekLabelContent}</span></div><div class="plan-icons-container">${optionsHtml}</div></div>`;
+        return `<div class="${rowClass}" data-week="${i}"><div class="week-diamond">✦</div><div class="week-header"><span class="week-label">${weekLabelContent}</span></div><div class="plan-icons-container">${optionsHtml}</div>${rowInfoBtnHtml}</div>`;
     }).join('');
 
     root.innerHTML = `
