@@ -100,6 +100,11 @@ export const videoList = {
     ],
     mao: [
         {
+            title: "Top Secret",
+            url: "https://youtu.be/J8fGYM03jsU?si=zmjJRID9ZC9E_DQt",
+            date: "2026.05.22."
+        },
+        {
             title: "生誕ミニライブ2026",
             title_ko: "생일 미니라이브2026",
             title_en: "Birthday MiniLive 2026",
