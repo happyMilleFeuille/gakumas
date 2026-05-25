@@ -3,9 +3,17 @@ export const abilityData = {
     "hpmax": {
         format: { ko: "최대체력상승+{val}", ja: "最大体力上昇+{val}", en: "Max HP Up +{val}" },
         levels: {
-            "SSR": { 1: 9, 2: 9, },
-            "SSR_DIST": { 1: 9, 2: 9 },
-            "SR": { 1: 3, 2: 3 },
+            "SSR": { 1: 6, 2: 7, 3: 8, 4: 9, 5: 9 },
+            "SSR_DIST": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+            "SR": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+        }
+    },
+    "subhpmax": {
+        format: { ko: "최대체력상승+{val}", ja: "最大体力上昇+{val}", en: "Max HP Up +{val}" },
+        levels: {
+            "SSR": { 1: 0, 2: 0, },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 3, 2: 4 },
         }
     },
     "percentparam": {
@@ -166,8 +174,8 @@ export const abilityData = {
     "test_recovery": {
         format: { ko: "시험・오디션 종료 시, 체력회복+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、体力回復+{val} (プロヂュース中1回)", en: "Recover HP +{val} after Exam or Audition (once during Produce)" },
         levels: {
-            "SSR": { 1: 3, 2: 4 },
-            "SSR_DIST": { 1: 2, 2: 6 },
+            "SSR": { 1: 6, 2: 8 },
+            "SSR_DIST": { 1: 4, 2: 6 },
             "SR": { 1: 0, 2: 0 },
         }
     },

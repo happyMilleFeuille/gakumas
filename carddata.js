@@ -2267,7 +2267,7 @@ export const cardList = [
                 "fixedparam",
                 "sp_lessonup",
                 "supportrateup",
-                "hpmax",
+                "subhpmax",
                 "get",
                 "event_paraup"
             ]
@@ -2760,7 +2760,7 @@ export const cardList = [
                 "fixedparam",
                 "sp_lessonup",
                 "supportrateup",
-                "hpmax",
+                "subhpmax",
                 "advice",
                 "event_paraup"
             ]
@@ -3290,7 +3290,7 @@ export const cardList = [
                 "fixedparam",
                 "sp_lessonup",
                 "supportrateup",
-                "hpmax",
+                "subhpmax",
                 "goout",
                 "event_paraup"
             ]

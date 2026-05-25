@@ -127,7 +127,7 @@ export function showCardModal(card, displayName, imgSrc) {
                     if (rarity === 'SSR' && isDist && data.levels['SSR_DIST']) rarityKey = 'SSR_DIST';
 
                     let val = 0;
-                    if (abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam' || abId === 'assistppoint') {
+                    if (abId === 'hpmax' || abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam' || abId === 'assistppoint') {
                         const targetLv = lb + 1;
                         const bonusLevels = data.levels[rarityKey] || data.levels[rarity] || data.levels;
                         val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length-1];
