@@ -2125,6 +2125,29 @@ export const cardList = [
     //  SR 구간
     //  SR 구간
     {
+        id: "assist_srfree1",
+        name: "처음 사귄 친구",
+        name_ja: "はじめてのお友達",
+        extra1: "ppoint",
+        type: "assist",
+        plan: "free",
+        rarity: "SR",
+        source: "limited",
+        gacha: false,
+        have: "card_m",
+        releasedAt: "2024-05-16",
+        rarity: "SR",
+        abilities:
+            [
+                "assistppoint",
+                "allsp_lessonup",
+                "supportrateup",
+                "discount_drink",
+                "alllesson_ppoint",
+                "event_ppointup"
+            ]
+    },
+    {
         id: "vocal_srfree1",
         name: "지금은 등을 돌리고",
         name_ja: "今はあえて、背を向けて",

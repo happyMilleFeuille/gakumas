@@ -28,7 +28,15 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 10.5, 2: 14 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 },
+            "SR": { 1: 5.2, 2: 10.5 },
+        }
+    },
+    "discount_drink": {
+        format: { ko: "상담의 P드링크 {val}% 할인", ja: "相談のPドリンクを{val}%割引", en: "Consultation P Drink -{val}%" },
+        levels: {
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 7.9, 2: 15.8 },
         }
     },
     "sp_lessonup": {
@@ -99,12 +107,28 @@ export const abilityData = {
             3: 100
         }
     },
+    "event_ppointup": {
+        format: { ko: "해당 서포트 카드의 이벤트로 인한 P포인트 획득량 {val}% 증가", ja: "このサポートカードのイベントによる獲得Pポイント{val}%増加", en: "This support card's event P-Point gains +{val}%" },
+        levels: {
+            1: 50,
+            2: 75,
+            3: 100
+        }
+    },
     "alllesson_ppoint": {
         format: { ko: "레슨종료 시 P포인트 획득량 증가 +{val}%", ja: "レッスン終了時、Pポイント獲得量増加+{val}%", en: "P Point gain after Lesson +{val}%" },
         levels: {
             "SSR": { 1: 16.5, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 8.3, 2: 16.5 },
+        }
+    },
+    "assistppoint": {
+        format: { ko: "초기 P포인트+{val}", ja: "初期Pポイント+{val}", en: "Initial P Points +{val}" },
+        levels: {
+            "SSR": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+            "SSR_DIST": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+            "SR": { 1: 65, 2: 71, 3: 76, 4: 81, 5: 86 },
         }
     },
     "ppoint": {
@@ -319,7 +343,7 @@ export const abilityData = {
     },
     "purchase_drink": {
         name: { ko: "P드링크 구매", ja: "Pドリンク交換", en: "Purchase P-Drink" },
-        format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}", en: "When buying a P-Drink in Advice, {type} Up +{val}" },
+        format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}", en: "When buying a P-Drink in consultation, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 8, 2: 11 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -376,8 +400,8 @@ export const abilityData = {
         trigger: ["class_hajime", "class_nia", "class_hif0", "class_hif1"],
     },
     "advice": {
-        name: { ko: "상담", ja: "相談", en: "Advice" },
-        format: { ko: "상담 선택 시 {type} 상승+{val}", ja: "相談選択時、{type}上昇+{val}", en: "When choosing Advice, {type} Up +{val}" },
+        name: { ko: "상담", ja: "相談", en: "consultation" },
+        format: { ko: "상담 선택 시 {type} 상승+{val}", ja: "相談選択時、{type}上昇+{val}", en: "When choosing consultation, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 14, 2: 18 },
             "SSR_DIST": { 1: 9, 2: 14 },

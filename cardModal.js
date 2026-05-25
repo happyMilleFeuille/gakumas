@@ -92,6 +92,11 @@ export function showCardModal(card, displayName, imgSrc) {
             const translatedType = translations[state.currentLang][attrKey] || card.type;
             const format = translations[state.currentLang]['extra_param'] || '{type} 상승+{val}';
             resultText = format.replace('{type}', translatedType).replace('{val}', valNum);
+        } else if (val === 'ppoint') {
+            const rarity = card.rarity || 'SSR';
+            const valNum = (rarity === 'SR') ? 25 : 40;
+            const format = translations[state.currentLang]['extra_ppoint'] || 'P포인트+{val}';
+            resultText = format.replace('{val}', valNum);
         } else {
             const key = `extra_${val}`;
             resultText = translations[state.currentLang][key] || val;
@@ -122,9 +127,9 @@ export function showCardModal(card, displayName, imgSrc) {
                     if (rarity === 'SSR' && isDist && data.levels['SSR_DIST']) rarityKey = 'SSR_DIST';
 
                     let val = 0;
-                    if (abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam') {
+                    if (abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam' || abId === 'assistppoint') {
                         const targetLv = lb + 1;
-                        const bonusLevels = data.levels[rarity] || data.levels;
+                        const bonusLevels = data.levels[rarityKey] || data.levels[rarity] || data.levels;
                         val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length-1];
                     } else if (abId === 'event_paraup' || abId === 'event_recoveryup') {
                         let targetLv = (rarity === 'SSR') ? (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1)) : (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));

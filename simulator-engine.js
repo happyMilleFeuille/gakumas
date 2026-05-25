@@ -134,7 +134,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
 
         // --- 레벨 결정 로직 ---
         let targetLv = 1;
-        if (abilityId === 'percentparam' || abilityId === 'fixedparam') {
+        if (abilityId === 'percentparam' || abilityId === 'fixedparam' || abilityId === 'assistppoint') {
             targetLv = lb + 1;
         } else {
             if (index === 1) targetLv = (rarity === 'SSR' ? (lb >= 2 ? 2 : 1) : (lb >= 1 ? 2 : 1));

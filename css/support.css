@@ -208,7 +208,7 @@
 
 /* 보댄비 필터 전용 (원형 스타일) */
 #filter-attr {
-    gap: 0.6rem;
+    gap: 0.45rem;
     /* 버튼 사이 간격 복구 */
     position: relative;
     z-index: 1000;
@@ -218,12 +218,14 @@
 #filter-attr .filter-btn {
     border-radius: 50%;
     /* 완전 원형 */
-    width: 3.2rem;
+    width: 2.9rem;
     /* 고정 너비 (정원 유지) */
-    height: 3.2rem;
+    height: 2.9rem;
     /* 고정 높이 */
     padding: 0;
     margin-left: 0;
+    font-size: 0.68rem;
+    line-height: 1.05;
 }
 
 .filter-group {
@@ -914,6 +916,11 @@ select.sort-select {
     border-color: #fdc361;
 }
 
+#filter-attr .filter-btn[data-val="assist"] {
+    color: #72da49;
+    border-color: #72da49;
+}
+
 #filter-attr .filter-btn[data-val="vocal"].active {
     background: #f766a4;
     color: #fff;
@@ -926,6 +933,11 @@ select.sort-select {
 
 #filter-attr .filter-btn[data-val="visual"].active {
     background: #fdc361;
+    color: #fff;
+}
+
+#filter-attr .filter-btn[data-val="assist"].active {
+    background: #72da49;
     color: #fff;
 }
 
@@ -1197,7 +1209,7 @@ select.sort-select {
 
     .support-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        gap: 8px;
     }
 
     .support-card {
@@ -1216,9 +1228,10 @@ select.sort-select {
 
     /* 보댄비 원형 필터 모바일 크기 */
     #filter-attr .filter-btn {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 2.15rem;
+        height: 2.15rem;
         padding: 0;
+        font-size: 0.55rem;
     }
 
     .sort-select {
@@ -1355,8 +1368,8 @@ select.sort-select {
 /* Support Info Button & Tooltip */
 .support-info-wrapper {
     position: absolute;
-    left: 6px;
-    top: 6px;
+    left: 2px;
+    top: 2px;
     display: flex;
     align-items: center;
     z-index: 1000;
