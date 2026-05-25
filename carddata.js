@@ -49,7 +49,7 @@ export const cardList = [
         id: "assist_fesfree1",
         name: "우리도 성장해 가자고!",
         name_ja: "私たちも成長していくぞ！",
-        extra1: "ppoint", extra2: "enhance",
+        extra1: "ppoint", extra2: "ranenhance",
         type: "assist",
         have: "item",
         releasedAt: "2026-05-26",
