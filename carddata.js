@@ -62,7 +62,7 @@ export const cardList = [
                 "supportrateup",
                 "hpmax",
                 "hpmax",
-                "event_recoveryup"
+                "event_ppointup"
             ]
     },
     {

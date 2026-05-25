@@ -821,6 +821,8 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
 export function renderSupport() {
     if (!contentArea) return;
 
+    preloadSupportImages();
+
     let container = contentArea.querySelector('.support-container');
     if (!container) {
         contentArea.innerHTML = '';
