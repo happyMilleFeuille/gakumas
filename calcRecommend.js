@@ -161,10 +161,10 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     };
     const seedKey = (cards) => cards.join('|');
 
-    // 어시스트 제외 및 플랜 필터링
-    const baseFilter = (c) => !state.disabledCards[c.id] && (c.plan === 'free' || c.plan === planType) && c.type !== 'assist';
+    // 플랜 필터링
+    const baseFilter = (c) => !state.disabledCards[c.id] && (c.plan === 'free' || c.plan === planType);
     const poolA = cardList.filter(baseFilter);
-    const poolB = cardList.filter(c => (c.plan === 'free' || c.plan === planType) && c.type !== 'assist');
+    const poolB = cardList.filter(c => (c.plan === 'free' || c.plan === planType));
     const poolASet = new Set(poolA.map(card => card.id));
 
     // 평가 함수 (7:3 강화 배분 기대값 반영)
