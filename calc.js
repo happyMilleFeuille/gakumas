@@ -1250,12 +1250,27 @@ function refreshAll() {
         selectedIds.forEach(id => {
             if (!id) return;
             const card = cardList.find(c => c.id === id);
-            if (card?.abilities?.includes('sp_lessonup')) {
-                const lb = (selectedIds.indexOf(id) === 5) ? 4 : (state.supportLB[id] || 0);
+            if (!card?.abilities) return;
+
+            const lb = (selectedIds.indexOf(id) === 5) ? 4 : (state.supportLB[id] || 0);
+            const rarityKey = (card.rarity === 'SSR' && card.source === 'dist' && abilityData['sp_lessonup']?.levels?.['SSR_DIST']) ? 'SSR_DIST' : card.rarity;
+
+            if (card.abilities.includes('sp_lessonup')) {
                 const ability = abilityData['sp_lessonup'];
                 if (ability) {
-                    const bonusLevels = ability.levels[card.rarity] || ability.levels;
+                    const bonusLevels = ability.levels[rarityKey] || ability.levels[card.rarity] || ability.levels;
                     spTotals[card.type] += (bonusLevels[lb >= 2 ? 2 : 1] || bonusLevels[1]);
+                }
+            }
+
+            if (card.abilities.includes('allsp_lessonup')) {
+                const ability = abilityData['allsp_lessonup'];
+                if (ability) {
+                    const bonusLevels = ability.levels[rarityKey] || ability.levels[card.rarity] || ability.levels;
+                    const spValue = (bonusLevels[lb >= 2 ? 2 : 1] || bonusLevels[1] || 0);
+                    spTotals.vocal += spValue;
+                    spTotals.dance += spValue;
+                    spTotals.visual += spValue;
                 }
             }
         });
