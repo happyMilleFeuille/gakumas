@@ -1303,6 +1303,9 @@ export function showRecommendModal(onConfirm) {
     const lockThumb = modal.querySelector('.lock-toggle-thumb');
     const lockPreview = modal.querySelector('#lock-cards-preview');
 
+    const planType = calcStore.planType || 'sense';
+    const currentCards = (calcStore.planCards[planType] || []).filter(Boolean);
+
     // 개별 카드 고정 상태 추적
     const lockedCardSet = new Set();
 
@@ -1312,8 +1315,6 @@ export function showRecommendModal(onConfirm) {
         lockThumb.style.transform = checked ? 'translateX(20px)' : 'translateX(0)';
 
         if (checked) {
-            const planType = calcStore.planType || 'sense';
-            const currentCards = (calcStore.planCards[planType] || []).filter(Boolean);
             if (currentCards.length > 0) {
                 lockPreview.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">${currentCards.map((id, idx) => {
                     const card = (typeof cardList !== 'undefined' ? cardList : []).find(c => c.id === id);
@@ -1364,6 +1365,12 @@ export function showRecommendModal(onConfirm) {
             lockCheckbox.checked = !lockCheckbox.checked;
             calcStore.lockCards = lockCheckbox.checked;
             calcStore.save();
+
+            // 토글을 껐을 때는 고정 선택을 모두 해제(비움)
+            if (!lockCheckbox.checked) {
+                lockedCardSet.clear();
+            }
+
             updateLockUI();
         };
     }
@@ -1847,13 +1854,28 @@ export function showConfirmResetModal(onConfirm) {
     const cancelBtn = modal.querySelector('.confirm-btn.cancel');
     const checkboxes = modal.querySelectorAll('.reset-toggle-checkbox');
 
+    // 이전 체크 상태 복원 (기본값은 true로 설정)
+    checkboxes.forEach(cb => {
+        const key = cb.dataset.key;
+        const saved = localStorage.getItem(`calc_reset_pref_${key}`);
+        if (saved !== null) {
+            cb.checked = saved === 'true';
+        } else {
+            cb.checked = true;
+        }
+    });
+
     const updateOkBtnState = () => {
         const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
         okBtn.disabled = !anyChecked;
     };
 
     checkboxes.forEach(cb => {
-        cb.addEventListener('change', updateOkBtnState);
+        cb.addEventListener('change', () => {
+            const key = cb.dataset.key;
+            localStorage.setItem(`calc_reset_pref_${key}`, cb.checked);
+            updateOkBtnState();
+        });
     });
 
     updateOkBtnState(); // Initial check

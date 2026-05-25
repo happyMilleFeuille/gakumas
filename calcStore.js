@@ -212,6 +212,7 @@ export const calcStore = {
         this.recommendSettings = { ...createDefaultRecommendSettings(), ...(saved.recommendSettings || {}) };
         this.hifStats = { vocal: 0, dance: 0, visual: 0, ...(saved.hifStats || {}) };
         this.hifParamLimitLevel = saved.hifParamLimitLevel || 0;
+        this.lockCards = saved.lockCards === true || saved.lockCards === 'true';
     },
 
     /**

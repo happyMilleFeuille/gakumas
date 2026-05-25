@@ -373,12 +373,19 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         if (isNew) existingIdsSet.add(card.id);
 
         let getSrc = 'gasya/spotget_rsupport.mp4';
+        let revealSfx = null;
         const isSupport = card.type !== 'produce';
         if (isSupport) {
             if (card.displayRarity === 'SR') getSrc = 'gasya/spotget_srsupport.mp4';
             else if (card.displayRarity === 'SSR') getSrc = 'gasya/spotget_ssrsupport.mp4';
         } else {
-            getSrc = (card.rarity === 'PSSR') ? 'gasya/spotget_pssr.mp4' : (card.rarity === 'PSR' ? 'gasya/spotget_psr.mp4' : 'gasya/spotget_pr.mp4');
+            if (card.rarity === 'PSSR') {
+                // Test tuning: keep the alt intro uncommon, but visible enough to verify.
+                getSrc = Math.random() < 0.1 ? 'gasya/spotget_pssralt1.mp4' : 'gasya/spotget_pssr.mp4';
+                revealSfx = getSrc.includes('alt1') ? 'gasya/get_pssralt1.mp3' : 'gasya/get_pssr.mp3';
+            } else {
+                getSrc = (card.rarity === 'PSR') ? 'gasya/spotget_psr.mp4' : 'gasya/spotget_pr.mp4';
+            }
         }
 
         videoNext.src = assetBlobs[getSrc] || getSrc;
@@ -419,7 +426,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             }
 
             if (!state.gachaMuted && !soundPlayed) {
-                const sfx = (card.rarity === 'PSSR' || card.displayRarity === 'SSR') ? 'gasya/get_pssr.mp3' : (card.displayRarity === 'SR' ? 'gasya/spotget_sr.mp3' : 'gasya/spotget_r.mp3');
+                const sfx = revealSfx || ((card.rarity === 'PSSR' || card.displayRarity === 'SSR') ? 'gasya/get_pssr.mp3' : (card.displayRarity === 'SR' ? 'gasya/spotget_sr.mp3' : 'gasya/spotget_r.mp3'));
                 stopStepSfx();
                 activeStepSfx = playSound(sfx);
                 soundPlayed = true;

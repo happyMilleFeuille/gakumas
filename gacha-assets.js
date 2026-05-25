@@ -18,8 +18,8 @@ export const GACHA_ASSETS = [
     'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
     'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 
     'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 
-    'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 
-    'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3', 'gasya/getssr.mp3'
+    'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 'gasya/spotget_pssralt1.mp4',
+    'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3', 'gasya/get_pssralt1.mp3', 'gasya/getssr.mp3'
 ];
 
 let isAssetsLoading = false;

@@ -46,6 +46,26 @@ export const cardList = [
             ]
     },
     {
+        id: "assist_fesfree1",
+        name: "우리도 성장해 가자고!",
+        name_ja: "私たちも成長していくぞ！",
+        extra1: "ppoint", extra2: "enhance",
+        type: "assist",
+        have: "item",
+        releasedAt: "2026-05-26",
+        plan: "free",
+        rarity: "SSR",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_recoveryup"
+            ]
+    },
+    {
         id: "vocal_free1",
         name: "귀여움과 귀여움으로 귀여워!",
         name_ja: "可愛いと可愛いで可愛い！",

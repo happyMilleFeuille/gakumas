@@ -931,7 +931,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                 <div class="board-title-row" style="background-color: ${idolColor}; border-color: ${idolColor};">
                     ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="board-title-icon ${store.type}-icon">` : ''}
                     <div class="board-title-tab">SCHEDULE</div>
-                    <button class="board-reset-btn" id="btn-reset-weeks" data-i18n="calc_reset_weeks">${isJa ? 'リセット' : '초기화'}</button>
+                    <button class="board-reset-btn" id="btn-reset-weeks" data-i18n="calc_reset_weeks">${isJa ? 'リセット設定' : '초기화 설정'}</button>
                 </div>
                 <div class="unified-plan-board" data-calc-type="${store.type}">${weeksHtml}</div>
             </div>
