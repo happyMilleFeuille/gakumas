@@ -2089,6 +2089,11 @@
     color: white !important;
 }
 
+.bonus-val.sp-assist {
+    background-color: #72da49 !important;
+    color: white !important;
+}
+
 @media (max-width: 768px) {
     .bonus-val {
         font-size: 0.7rem;

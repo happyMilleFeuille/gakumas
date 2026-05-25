@@ -1335,8 +1335,10 @@ function updateSidePanelBonuses(panel, counts) {
                 const displayVal = Math.floor(totalVal);
                 bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '+0';
 
-                bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual');
-                if (card.abilities?.includes('sp_lessonup')) {
+                bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual', 'sp-assist');
+                if (card.abilities?.includes('allsp_lessonup')) {
+                    bonusEl.classList.add('sp-assist');
+                } else if (card.abilities?.includes('sp_lessonup')) {
                     bonusEl.classList.add(`sp-${card.type}`);
                 }
             }
