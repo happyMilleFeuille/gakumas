@@ -430,7 +430,7 @@ function startWeeklyPlan(type) {
                         <div class="graph-column">
                             <div class="graph-bar-bg">
                                 <div class="graph-bar-fill" style="height: ${height}%; background: ${color};"></div>
-                                <div class="graph-icon" style="bottom: ${height}%;"><img src="icons/${icon}.png"></div>
+                                <div class="graph-icon" style="bottom: ${height}%;"><img src="icons/${icon}.webp"></div>
                             </div>
                         </div>`;
                     };
@@ -697,7 +697,7 @@ function startWeeklyPlan(type) {
                                     <div style="display:grid; grid-template-columns:repeat(3, minmax(${isMobile ? '48px' : '58px'}, 1fr)); gap:${isMobile ? '6px' : '10px'}; align-items:start;">
                                     ${fields.map(field => `
                                         <label style="display:flex; flex-direction:column; align-items:center; gap:${isMobile ? '4px' : '6px'};">
-                                            <img src="icons/${field.icon}.png" alt="${field.label}" style="width:${isMobile ? '15px' : '18px'}; height:${isMobile ? '15px' : '18px'};">
+                                            <img src="icons/${field.icon}.webp" alt="${field.label}" style="width:${isMobile ? '15px' : '18px'}; height:${isMobile ? '15px' : '18px'};">
                                             <input
                                                 type="number"
                                                 inputmode="numeric"
@@ -951,12 +951,12 @@ function startWeeklyPlan(type) {
                                 const attrItems = isClass
                                     ? ['vocal', 'dance', 'visual'].map(attr => `
                                         <div class="attr-icon-button ${selectedAttr === attr ? 'active' : ''}" data-attr="${attr}" title="${t(`attr_${attr}`)}">
-                                            <img src="icons/${attr}.png" alt="${attr}">
+                                            <img src="icons/${attr}.webp" alt="${attr}">
                                         </div>
                                     `).join('')
                                     : lessonSubAttrs.map(attr => `
                                         <div class="attr-icon-button ${selectedSubAttr === attr ? 'active' : ''}" data-sub-attr="${attr}" title="${t(`attr_${attr}`)}">
-                                            <img src="icons/${attr}.png" alt="${attr}">
+                                            <img src="icons/${attr}.webp" alt="${attr}">
                                         </div>
                                     `).join('');
 
@@ -1231,15 +1231,15 @@ function refreshAll() {
                     <span style="font-size: 0.8rem; font-weight: 800; color: #ffffff;"> / ${boardGetCount}</span>
                 </div>
                 <div class="tooltip-row">
-                    <div class="tooltip-label"><img src="icons/vocal.png"></div>
+                    <div class="tooltip-label"><img src="icons/vocal.webp"></div>
                     <span class="tooltip-val vo">${Math.floor(finalTotal.vocal)}</span>
                 </div>
                 <div class="tooltip-row">
-                    <div class="tooltip-label"><img src="icons/dance.png"></div>
+                    <div class="tooltip-label"><img src="icons/dance.webp"></div>
                     <span class="tooltip-val da">${Math.floor(finalTotal.dance)}</span>
                 </div>
                 <div class="tooltip-row">
-                    <div class="tooltip-label"><img src="icons/visual.png"></div>
+                    <div class="tooltip-label"><img src="icons/visual.webp"></div>
                     <span class="tooltip-val vi">${Math.floor(finalTotal.visual)}</span>
                 </div>
             `;
@@ -1671,9 +1671,9 @@ function renderCalcPresetSlots(container) {
             const statValFontSize = isMobile ? '0.65rem' : '0.85rem';
 
             const iconSizeAttr = isMobile ? '10px' : '14px';
-            const iconVocal = `<img src="icons/vocal.png" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
-            const iconDance = `<img src="icons/dance.png" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
-            const iconVisual = `<img src="icons/visual.png" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
+            const iconVocal = `<img src="icons/vocal.webp" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
+            const iconDance = `<img src="icons/dance.webp" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
+            const iconVisual = `<img src="icons/visual.webp" style="width: ${iconSizeAttr}; height: ${iconSizeAttr}; object-fit: contain; flex-shrink: 0;">`;
 
             statsHtml = `
                 <div style="border-top: 1px dashed #e2e8f0; margin-top: 6px; padding-top: 6px; display: flex; flex-direction: column; gap: ${isMobile ? '3px' : '5px'}; width: 100%;">

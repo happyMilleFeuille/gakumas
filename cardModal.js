@@ -28,7 +28,7 @@ export function showCardModal(card, displayName, imgSrc) {
     mTitle.textContent = displayName;
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
     mPlan.src = `icons/${(card.plan || 'free').toLowerCase()}.webp`;
-    mType.src = `icons/${card.type.toLowerCase()}.png`;
+    mType.src = `icons/${card.type.toLowerCase()}.webp`;
 
     mTitle.classList.remove('title-vocal', 'title-dance', 'title-visual', 'title-assist');
     mTitle.classList.add(`title-${card.type.toLowerCase()}`);

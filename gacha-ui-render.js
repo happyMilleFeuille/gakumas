@@ -188,7 +188,7 @@ function setupSupportTooltips(container) {
         const cardData = cardList.find(c => c.id === cardId);
 
         if (cardData) {
-            attrIcon.src = `icons/${cardData.type}.png`;
+            attrIcon.src = `icons/${cardData.type}.webp`;
             attrIcon.style.display = 'block';
             rarityImg.src = `icons/${cardData.rarity.toLowerCase()}.png`;
             rarityImg.style.display = 'block';

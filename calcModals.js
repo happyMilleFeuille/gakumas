@@ -106,9 +106,9 @@ export function showStatDetailModal(breakdown) {
             <div class="stat-detail-grid">
                 <div class="stat-grid-header">
                     <span class="header-label"></span>
-                    <span class="color-vo"><img src="icons/vocal.png" class="stat-detail-header-icon"></span>
-                    <span class="color-da"><img src="icons/dance.png" class="stat-detail-header-icon"></span>
-                    <span class="color-vi"><img src="icons/visual.png" class="stat-detail-header-icon"></span>
+                    <span class="color-vo"><img src="icons/vocal.webp" class="stat-detail-header-icon"></span>
+                    <span class="color-da"><img src="icons/dance.webp" class="stat-detail-header-icon"></span>
+                    <span class="color-vi"><img src="icons/visual.webp" class="stat-detail-header-icon"></span>
                     <span style="border-left: 1px solid transparent;"></span>
                 </div>
                 
@@ -292,9 +292,9 @@ export function renderSidePanelContent(panel, selectedPlan) {
 
     panel.innerHTML = `
         <div class="side-panel-tabs" style="${tabsStyle} position: relative;">
-            <div class="panel-tab-item"><img src="icons/vocal.png"></div>
-            <div class="panel-tab-item"><img src="icons/dance.png"></div>
-            <div class="panel-tab-item"><img src="icons/visual.png"></div>
+            <div class="panel-tab-item"><img src="icons/vocal.webp"></div>
+            <div class="panel-tab-item"><img src="icons/dance.webp"></div>
+            <div class="panel-tab-item"><img src="icons/visual.webp"></div>
             ${isSelectingSixth ? `<span class="rental-badge" style="position: absolute; top: 2px; left: 6px; font-size: 8px; font-weight: bold; color: #fff; letter-spacing: 0.5px; z-index: 10; opacity: 0.8;">${t('calc_label_rental')}</span>` : ''}
         </div>
         <div class="side-panel-content" style="${contentStyle}">
@@ -305,12 +305,48 @@ export function renderSidePanelContent(panel, selectedPlan) {
             ${assistCardsHtml ? `
             <div class="side-panel-assist-section">
                 <div class="side-panel-assist-header">
-                    <img src="icons/assist.png" alt="Assist">
+                    <img src="icons/assist.webp" alt="Assist">
                     <span>Assist</span>
                 </div>
                 <div class="side-panel-assist-grid">${assistCardsHtml}</div>
             </div>` : ''}
-        </div>`;
+        </div>
+        ${assistCardsHtml ? `
+        <div class="side-panel-assist-hint" aria-hidden="true">
+            <img src="icons/assist.webp" alt="">
+            <span class="assist-hint-arrow">▼</span>
+        </div>` : ''}`;
+}
+
+function updateSupportPanelAssistHint(panel) {
+    if (!panel) return;
+
+    const content = panel.querySelector('.side-panel-content');
+    const assistSection = panel.querySelector('.side-panel-assist-section');
+    const hint = panel.querySelector('.side-panel-assist-hint');
+    if (!content || !assistSection || !hint) return;
+
+    const canScrollMore = content.scrollTop + content.clientHeight < content.scrollHeight - 8;
+    const assistBelowViewport = assistSection.offsetTop > (content.scrollTop + content.clientHeight - 28);
+    hint.classList.toggle('visible', canScrollMore && assistBelowViewport);
+}
+
+function setupSupportPanelAssistHint(panel) {
+    if (!panel) return;
+
+    const content = panel.querySelector('.side-panel-content');
+    const hint = panel.querySelector('.side-panel-assist-hint');
+    if (!content || !hint) return;
+
+    if (panel._assistHintScrollHandler) {
+        content.removeEventListener('scroll', panel._assistHintScrollHandler);
+    }
+
+    const update = () => updateSupportPanelAssistHint(panel);
+    panel._assistHintScrollHandler = update;
+    content.addEventListener('scroll', update, { passive: true });
+    requestAnimationFrame(update);
+    setTimeout(update, 180);
 }
 
 /**
@@ -438,6 +474,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
     }
 
     renderSidePanelContent(panel, selectedPlan);
+    setupSupportPanelAssistHint(panel);
     const planCards = calcStore.planCards[selectedPlan] || [];
     planCards.forEach(id => {
         if (!id) return;
@@ -451,7 +488,10 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
         history.pushState({ modalOpen: 'sidePanel' }, "");
         setTimeout(() => {
             try { refreshAll(); } catch (err) { console.error(err); }
-            finally { document.getElementById('calc-side-spinner-overlay')?.remove(); }
+            finally {
+                document.getElementById('calc-side-spinner-overlay')?.remove();
+                updateSupportPanelAssistHint(panel);
+            }
         }, 150);
     });
 }
@@ -529,6 +569,8 @@ export function syncSupportPanelUI() {
             else star.classList.remove('active');
         });
     });
+
+    updateSupportPanelAssistHint(panel);
 }
 
 window.closeSupportCardPanel = closeSupportCardPanel;
@@ -1035,7 +1077,7 @@ export function showMemorySelectModal(slotIndex, refreshAll) {
             title.style.padding = '4px 0';
 
             const icon = document.createElement('img');
-            icon.src = `icons/${type}.png`;
+            icon.src = `icons/${type}.webp`;
             icon.style.width = isMobile ? '18px' : '22px';
             icon.style.height = 'auto';
             icon.style.objectFit = 'contain';
@@ -1496,9 +1538,9 @@ export function showHifEvalModal() {
                     <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0; display: flex; align-items: center; gap: 4px;">
                         ${t('calc_hif_eval_stat')}
                         <span style="display: inline-flex; align-items: center; gap: 2px; margin-left: 1px;">
-                            <img src="icons/vocal.png" alt="Vocal" style="width: 12px; height: 12px; object-fit: contain;" />
-                            <img src="icons/dance.png" alt="Dance" style="width: 12px; height: 12px; object-fit: contain;" />
-                            <img src="icons/visual.png" alt="Visual" style="width: 12px; height: 12px; object-fit: contain;" />
+                            <img src="icons/vocal.webp" alt="Vocal" style="width: 12px; height: 12px; object-fit: contain;" />
+                            <img src="icons/dance.webp" alt="Dance" style="width: 12px; height: 12px; object-fit: contain;" />
+                            <img src="icons/visual.webp" alt="Visual" style="width: 12px; height: 12px; object-fit: contain;" />
                         </span>
                     </label>
                     <input type="number" id="hif-eval-in-0" placeholder="0" max="10000" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />

@@ -460,7 +460,7 @@
         width: auto !important;
         min-width: 250px !important;
         max-width: 560px !important;
-        height: 75vh !important;
+        height: 80vh !important;
         z-index: 100 !important;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
         order: -1;
@@ -2026,6 +2026,41 @@
     gap: 10px;
 }
 
+.side-panel-assist-hint {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 30;
+}
+
+.side-panel-assist-hint.visible {
+    opacity: 1;
+}
+
+.side-panel-assist-hint img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    opacity: 0.85;
+}
+
+.side-panel-assist-hint .assist-hint-arrow {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1;
+}
+
 .side-card-item {
     position: relative;
     display: flex;
@@ -3446,6 +3481,11 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
     .side-panel-assist-section {
         margin-top: 2px;
         padding-top: 10px;
+    }
+
+    .side-panel-assist-hint {
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        padding: 5px 9px;
     }
 }
 

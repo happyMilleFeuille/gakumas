@@ -218,7 +218,7 @@ function renderMemorySlotContent(memArray, isJa, slotIndex) {
         const opt = memKey ? window.calcData.memoryOptions[memKey] : null;
         if (opt) {
             const attrColor = (sName === 'vocal' ? '#ff4d8d' : (sName === 'dance' ? '#46a4f3' : '#fcc75e'));
-            const icon = `<img src="icons/${sName}.png" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
+            const icon = `<img src="icons/${sName}.webp" style="width:12px; height:12px; vertical-align:middle; margin-right:2px; margin-top:-2px;">`;
             const valText = (isJa ? opt.label_ja : opt.label_ko).replace(/^(Vo|Da|Vi)\s*/, '');
             linesHtml += `<div class="memory-slot-line title" style="color: ${attrColor}; display:flex; align-items:center; justify-content:center; gap:2px;">${icon}<span>${valText}</span></div>`;
         } else {
@@ -780,17 +780,17 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         </div>
                         <div class="stat-items-row">
                             <div class="stat-item item-vocal">
-                                <img src="icons/vocal.png">
+                                <img src="icons/vocal.webp">
                                 <span id="final-vocal" class="final-stat-label" style="font-size: 0.8rem; color: #ff4d8d;">0</span>
                                 <span id="total-perc-vocal" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
                             </div>
                             <div class="stat-item item-dance">
-                                <img src="icons/dance.png">
+                                <img src="icons/dance.webp">
                                 <span id="final-dance" class="final-stat-label" style="font-size: 0.8rem; color: #46a4f3;">0</span>
                                 <span id="total-perc-dance" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
                             </div>
                             <div class="stat-item item-visual">
-                                <img src="icons/visual.png">
+                                <img src="icons/visual.webp">
                                 <span id="final-visual" class="final-stat-label" style="font-size: 0.8rem; color: #fcc75e;">0</span>
                                 <span id="total-perc-visual" style="font-size: 0.65rem; color: #aaa; margin-top: -2px; font-weight: 600;">0%</span>
                             </div>
@@ -856,7 +856,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                             ${index > 0 ? '<div class="hif-stat-divider"></div>' : ''}
                             <div class="hif-stat-item">
                                 <div class="hif-stat-top">
-                                    <img src="icons/${attr}.png" class="hif-stat-img">
+                                    <img src="icons/${attr}.webp" class="hif-stat-img">
                                     <div class="hif-bonus-vals" style="color: ${attrColor};">
                                         <span>+${(store.hifStats?.[attr] || 0) * 20}</span>
                                         <span>+${(store.hifStats?.[attr] || 0) * 2}%</span>
@@ -1005,7 +1005,7 @@ export function updateMainLabel(w) {
             badge.style.fontWeight = '700';
 
             const img = document.createElement('img');
-            img.src = `icons/${attr}.png`;
+            img.src = `icons/${attr}.webp`;
             img.style.width = iconSize;
             img.style.height = iconSize;
             img.style.objectFit = 'contain';
@@ -1034,7 +1034,7 @@ export function updateMainLabel(w) {
     if (attrBadge) {
         const b = document.createElement('div');
         b.className = 'class-attr-badge';
-        b.innerHTML = `<img src="icons/${attrBadge}.png" alt="${attrBadge}">`;
+        b.innerHTML = `<img src="icons/${attrBadge}.webp" alt="${attrBadge}">`;
         w.appendChild(b);
     }
 

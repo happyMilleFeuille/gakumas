@@ -1217,7 +1217,7 @@ function updateSupportGrid(container) {
 
             const plan = (card.plan || 'free').toLowerCase();
             item.querySelector('.card-plan-icon').src = `icons/${plan}.webp`;
-            item.querySelector('.card-type-icon').src = `icons/${card.type.toLowerCase()}.png`;
+            item.querySelector('.card-type-icon').src = `icons/${card.type.toLowerCase()}.webp`;
 
             fragment.appendChild(item);
         });
