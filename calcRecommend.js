@@ -41,10 +41,22 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         maxStackCache.set(id, maxStack);
         return maxStack;
     };
-    const isSPCard = (id) => {
+    const getSPAttrs = (id) => {
         const card = getCardData(id);
-        return card && card.abilities && card.abilities.includes('sp_lessonup');
+        if (!card?.abilities) return [];
+
+        if (card.abilities.includes('allsp_lessonup') || card.abilities.includes('suballsp_lessonup')) {
+            return ['vocal', 'dance', 'visual'];
+        }
+
+        if (card.abilities.includes('sp_lessonup')) {
+            const attr = getCardAttr(id);
+            return attr ? [attr] : [];
+        }
+
+        return [];
     };
+    const isSPCard = (id) => getSPAttrs(id).length > 0;
     const getCardAttr = (id) => {
         const card = getCardData(id);
         if (!card || !card.type) return null;
@@ -175,10 +187,9 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
 
         const spCounts = { vocal: 0, dance: 0, visual: 0 };
         cards.forEach(id => {
-            if (isSPCard(id)) {
-                const attr = getCardAttr(id);
-                if (attr && spCounts.hasOwnProperty(attr)) spCounts[attr]++;
-            }
+            getSPAttrs(id).forEach(attr => {
+                if (spCounts.hasOwnProperty(attr)) spCounts[attr]++;
+            });
         });
 
         let penalty = 0;
@@ -264,9 +275,9 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
 
     // 시드 2: SP 요구사항을 충실히 반영한 초기 덱 구성
     const spPools = {
-        vocal: poolA.filter(c => getCardAttr(c.id) === 'vocal' && isSPCard(c.id)),
-        dance: poolA.filter(c => getCardAttr(c.id) === 'dance' && isSPCard(c.id)),
-        visual: poolA.filter(c => getCardAttr(c.id) === 'visual' && isSPCard(c.id))
+        vocal: poolA.filter(c => getSPAttrs(c.id).includes('vocal')),
+        dance: poolA.filter(c => getSPAttrs(c.id).includes('dance')),
+        visual: poolA.filter(c => getSPAttrs(c.id).includes('visual'))
     };
 
     const seed2 = [...lockedCards];

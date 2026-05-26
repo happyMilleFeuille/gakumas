@@ -34,6 +34,14 @@ export const abilityData = {
     "allsp_lessonup": {
         format: { ko: "보컬, 댄스, 비쥬얼 모든 SP레슨 발생률+{val}%", ja: "ボーカル、ダンス、ビジュアルすべてのSPレッスン発生率+{val}%", en: "All Vocal, Dance, and Visual SP Lesson Rates +{val}%" },
         levels: {
+            "SSR": { 1: 22.5, 2: 24, 3: 25.5, 4: 27, 5: 28 },
+            "SSR_DIST": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+            "SR": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+        }
+    },
+    "suballsp_lessonup": {
+        format: { ko: "보컬, 댄스, 비쥬얼 모든 SP레슨 발생률+{val}%", ja: "ボーカル、ダンス、ビジュアルすべてのSPレッスン発生率+{val}%", en: "All Vocal, Dance, and Visual SP Lesson Rates +{val}%" },
+        levels: {
             "SSR": { 1: 10.5, 2: 14 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 5.2, 2: 10.5 },
@@ -369,6 +377,16 @@ export const abilityData = {
         },
         trigger: ["gift_hajime", "gift_nia", "gift_hif"],
     },
+    "gift2": {
+        name: { ko: "활동지급/사시이레(2회)", ja: "活動支給・差し入れ(2回)", en: "Supplies/Gift(2 times)" },
+        format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "活動支給・差し入れ選択時、{type}上昇+{val} (プロヂュース中2回)", en: "When choosing Supplies / Gift, {type} Up +{val} (2 times during Produce)" },
+        levels: {
+            "SSR": { 1: 28, 2: 38 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["gift_hajime", "gift_nia", "gift_hif"], max: 2,
+    },
     "gift_recovery": {
         format: { ko: "활동지급・사시이레 선택 시 체력회복+{val}", ja: "活動支給・差し入れ選択時、体力回復+{val}", en: "Recover HP +{val} when choosing Supplies / Gift" },
         levels: {
@@ -395,8 +413,9 @@ export const abilityData = {
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
-        trigger: ["goout_hajime", "goout_nia", "goout_hif"],
+        trigger: ["goout_hajime", "goout_nia", "goout_hif"], max: 2,
     },
+
     "class": {
         name: { ko: "수업/영업", ja: "授業・営業", en: "Class/Promotion" },
         format: { ko: "수업・영업 종료 시 {type} 상승+{val}", ja: "授業・営業終了時、{type}上昇+{val}", en: "After Class / Promotion, {type} Up +{val}" },
@@ -416,6 +435,16 @@ export const abilityData = {
             "SR": { 1: 7, 2: 14 }
         },
         trigger: ["advice"],
+    },
+    "advice2": {
+        name: { ko: "상담(2회)", ja: "相談(2回)", en: "Consultation(2 times)" },
+        format: { ko: "상담 선택 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "相談選択時、{type}上昇+{val} (プロヂュース中2回)", en: "When choosing consultation, {type} Up +{val} (2 times during Produce)" },
+        levels: {
+            "SSR": { 1: 28, 2: 38 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["advice"], max: 2,
     },
     "rest": {
         name: { ko: "휴식", ja: "休む", en: "Rest" },

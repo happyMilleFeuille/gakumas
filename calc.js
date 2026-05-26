@@ -1251,6 +1251,7 @@ function refreshAll() {
             if (!id) return;
             const card = cardList.find(c => c.id === id);
             if (!card?.abilities) return;
+            const hasAllSpLessonUp = card.abilities.includes('allsp_lessonup') || card.abilities.includes('suballsp_lessonup');
 
             const lb = (selectedIds.indexOf(id) === 5) ? 4 : (state.supportLB[id] || 0);
             const rarityKey = (card.rarity === 'SSR' && card.source === 'dist' && abilityData['sp_lessonup']?.levels?.['SSR_DIST']) ? 'SSR_DIST' : card.rarity;
@@ -1263,11 +1264,12 @@ function refreshAll() {
                 }
             }
 
-            if (card.abilities.includes('allsp_lessonup')) {
-                const ability = abilityData['allsp_lessonup'];
+            if (hasAllSpLessonUp) {
+                const abilityKey = card.abilities.includes('allsp_lessonup') ? 'allsp_lessonup' : 'suballsp_lessonup';
+                const ability = abilityData[abilityKey];
                 if (ability) {
                     const bonusLevels = ability.levels[rarityKey] || ability.levels[card.rarity] || ability.levels;
-                    const spValue = (bonusLevels[lb >= 2 ? 2 : 1] || bonusLevels[1] || 0);
+                    const spValue = (bonusLevels[lb + 1] || bonusLevels[5] || bonusLevels[1] || 0);
                     spTotals.vocal += spValue;
                     spTotals.dance += spValue;
                     spTotals.visual += spValue;
@@ -1336,7 +1338,7 @@ function updateSidePanelBonuses(panel, counts) {
                 bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '+0';
 
                 bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual', 'sp-assist');
-                if (card.abilities?.includes('allsp_lessonup')) {
+                if (card.abilities?.includes('allsp_lessonup') || card.abilities?.includes('suballsp_lessonup')) {
                     bonusEl.classList.add('sp-assist');
                 } else if (card.abilities?.includes('sp_lessonup')) {
                     bonusEl.classList.add(`sp-${card.type}`);

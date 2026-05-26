@@ -121,17 +121,18 @@ export function showCardModal(card, displayName, imgSrc) {
             card.abilities.forEach((abId, index) => {
                 const data = abilityData[abId];
                 if (data) {
+                    const displayTarget = card.abilityTargets?.[abId] || card.type;
                     const rarity = card.rarity || 'SSR';
                     const isDist = card.source === 'dist';
                     let rarityKey = rarity;
                     if (rarity === 'SSR' && isDist && data.levels['SSR_DIST']) rarityKey = 'SSR_DIST';
 
                     let val = 0;
-                    if (abId === 'hpmax' || abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam' || abId === 'assistppoint') {
+                    if (abId === 'hpmax' || abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam' || abId === 'assistppoint' || abId === 'allsp_lessonup') {
                         const targetLv = lb + 1;
                         const bonusLevels = data.levels[rarityKey] || data.levels[rarity] || data.levels;
                         val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length-1];
-                    } else if (abId === 'event_paraup' || abId === 'event_recoveryup') {
+                    } else if (abId === 'event_paraup' || abId === 'event_recoveryup' || abId === 'event_ppointup') {
                         let targetLv = (rarity === 'SSR') ? (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1)) : (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
                         val = data.levels[targetLv] || data.levels[1];
                     } else {
@@ -146,8 +147,8 @@ export function showCardModal(card, displayName, imgSrc) {
                     }
 
                     const format = data.format[state.currentLang] || data.format['ko'];
-                    const attrKey = `attr_${card.type.toLowerCase()}`;
-                    const translatedType = translations[state.currentLang][attrKey] || card.type;
+                    const attrKey = `attr_${displayTarget.toLowerCase()}`;
+                    const translatedType = translations[state.currentLang][attrKey] || displayTarget;
                     const rawText = format.replaceAll('{val}', val).replaceAll('{type}', translatedType);
                     const highlightedText = highlightNumbers(rawText, card.type);
                     

@@ -205,7 +205,7 @@ export const produceList = [
     { id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09" },
     { id: "ssrtemari_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.5, plan: "logic", source: "limited_f", releasedAt: "2026-05-16" },
     { id: "ssrrinami_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "goodcondition", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.6, plan: "sense", source: "limited_f", releasedAt: "2026-05-16" },
-    { id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", source: "limited_f", releasedAt: "2026-05-26" },
+    { id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26" },
 
     // 한정 (Limited)
     { id: "ssrmao_summerdist", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "concentration", releasedAt: "2024-07-01", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6" },

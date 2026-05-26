@@ -33,6 +33,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
     const rarity = card.rarity;
     const isDist = card.source === 'dist';
     const cardType = card.type; // vocal, dance, visual
+    const getAbilityTarget = (abilityId) => card.abilityTargets?.[abilityId] || cardType;
 
     // 내부 도우미 함수: 합산과 동시에 breakdowns 기록
     const applyStat = (type, val, sourceId) => {
@@ -131,6 +132,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
 
         const ability = abilityData[abilityId];
         if (!ability) return;
+        const abilityTarget = getAbilityTarget(abilityId);
 
         // --- 레벨 결정 로직 ---
         let targetLv = 1;
@@ -161,11 +163,11 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
 
         // 1. 특이 케이스: 카드 타입과 레슨 타입이 일치해야 하는 항목들
         if (abilityId === 'sp_param') {
-            count = lessonCounts[cardType]?.sp || 0;
+            count = lessonCounts[abilityTarget]?.sp || 0;
         } else if (abilityId === 'normallesson_param') {
-            count = lessonCounts[cardType]?.normal || 0;
+            count = lessonCounts[abilityTarget]?.normal || 0;
         } else if (abilityId === 'lesson_param') {
-            const c = lessonCounts[cardType];
+            const c = lessonCounts[abilityTarget];
             count = c ? (c.normal + c.sp) : 0;
         }
         // 2. 범용 케이스: abilitydata.js의 trigger 배열을 그대로 따름 (sp_param20 등)
@@ -176,7 +178,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
         }
         // 3. 트리거 없는 경우: 초기 스탯 보너스
         else {
-            applyStat(cardType, bonusVal, abilityId);
+            applyStat(abilityTarget, bonusVal, abilityId);
             return;
         }
 
@@ -184,7 +186,7 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
         if (ability.max) count = Math.min(count, ability.max);
 
         if (count > 0) {
-            applyStat(cardType, bonusVal * count, abilityId);
+            applyStat(abilityTarget, bonusVal * count, abilityId);
         }
     });
 

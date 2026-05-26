@@ -18,7 +18,7 @@ export const cardList = [
         abilities:
             [
                 "hpmax",
-                "allsp_lessonup",
+                "suballsp_lessonup",
                 "supportrateup",
                 "allsp_recovery",
                 "test_recovery",
@@ -38,7 +38,7 @@ export const cardList = [
         abilities:
             [
                 "hpmax",
-                "allsp_lessonup",
+                "suballsp_lessonup",
                 "supportrateup",
                 "alllesson_ppoint",
                 "ppoint",
@@ -57,13 +57,18 @@ export const cardList = [
         rarity: "SSR",
         abilities:
             [
-                "hpmax",
-                "hpmax",
+                "allsp_lessonup",
+                "gift2",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "advice2",
+                "goout2",
                 "event_ppointup"
-            ]
+            ],
+        abilityTargets: {
+            gift2: "visual",
+            advice2: "vocal",
+            goout2: "dance"
+        }
     },
     {
         id: "vocal_free1",
@@ -2140,7 +2145,7 @@ export const cardList = [
         abilities:
             [
                 "assistppoint",
-                "allsp_lessonup",
+                "suballsp_lessonup",
                 "supportrateup",
                 "discount_drink",
                 "alllesson_ppoint",
