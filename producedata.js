@@ -40,7 +40,7 @@ export const produceList = [
     { id: "ssrchina_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.3, releasedAt: "2026-02-27", another: true },
     { id: "ssrchina_2nd", name: "매일, 발견적 스텝!", name_en: "Every steps are for discovery!", name_ja: "日々、発見的ステップ!", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4 },
-    { id: "ssrchina_3rd", name: "하늘과 약속", name_en: "A Tiny Brave Promise", osusume: "goodcondition", name_ja: "空と約束", rarity: "PSSR", plan: "sense", releasedAt: "2025-10-21", source: "normal", youtube_url: "https://youtu.be/WxFmsuy4nrM?si=AD1GxXNrDtL2AG29" },
+    { id: "ssrchina_3rd", name: "하늘과 약속", name_en: "A Tiny Brave Promise", osusume: "goodcondition", name_ja: "空と約束", rarity: "PSSR", plan: "sense", releasedAt: "2025-10-21", source: "normal", jumpTime2: 9.0, youtube_url: "https://youtu.be/WxFmsuy4nrM?si=AD1GxXNrDtL2AG29" },
 
     // --- 스미카 SSR (PSSR) ---
     { id: "ssrsumika_1st", name: "Tame-Lie-One-Step", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 6.4, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/O0Ylv6GNWMQ?si=0OKoVjMM8dpoSSeN" },
