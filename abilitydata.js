@@ -34,7 +34,7 @@ export const abilityData = {
     "allsp_lessonup": {
         format: { ko: "보컬, 댄스, 비쥬얼 모든 SP레슨 발생률+{val}%", ja: "ボーカル、ダンス、ビジュアルすべてのSPレッスン発生率+{val}%", en: "All Vocal, Dance, and Visual SP Lesson Rates +{val}%" },
         levels: {
-            "SSR": { 1: 22.5, 2: 24, 3: 25.5, 4: 27, 5: 28 },
+            "SSR": { 1: 22.5, 2: 24, 3: 25, 4: 26.5, 5: 28 },
             "SSR_DIST": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
             "SR": { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
         }
