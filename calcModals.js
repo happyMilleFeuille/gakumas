@@ -1291,7 +1291,7 @@ export function showRecommendModal(onConfirm) {
                 <label id="lock-cards-toggle" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; cursor: pointer; user-select: none;">
                     <div style="display: flex; flex-direction: column; gap: 2px;">
                         <span style="font-size: 14px; font-weight: bold; color: #333;">${t('calc_lock_current_cards')}</span>
-                        <span style="font-size: 11px; color: #999;">${t('calc_lock_current_cards_desc')}</span>
+                        <span id="lock-cards-desc" style="font-size: 11px; color: #999;">${t('calc_lock_current_cards_desc')}</span>
                     </div>
                     <div style="position: relative; width: 44px; height: 24px; flex-shrink: 0; margin-left: 12px;">
                         <input type="checkbox" id="lock-cards-checkbox" ${calcStore.lockCards ? 'checked' : ''} style="opacity: 0; width: 0; height: 0; position: absolute;">
@@ -1372,6 +1372,7 @@ export function showRecommendModal(onConfirm) {
     const lockTrack = modal.querySelector('.lock-toggle-track');
     const lockThumb = modal.querySelector('.lock-toggle-thumb');
     const lockPreview = modal.querySelector('#lock-cards-preview');
+    const lockDesc = modal.querySelector('#lock-cards-desc');
 
     const planType = calcStore.planType || 'sense';
     const currentCards = (calcStore.planCards[planType] || []).filter(Boolean);
@@ -1383,6 +1384,7 @@ export function showRecommendModal(onConfirm) {
         const checked = lockCheckbox.checked;
         lockTrack.style.background = checked ? idolColor : '#ddd';
         lockThumb.style.transform = checked ? 'translateX(20px)' : 'translateX(0)';
+        if (lockDesc) lockDesc.style.display = checked ? 'block' : 'none';
 
         if (checked) {
             if (currentCards.length > 0) {

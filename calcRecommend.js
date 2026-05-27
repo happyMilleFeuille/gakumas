@@ -111,7 +111,7 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     const isBetterEvaluation = (nextEval, currentEval) => {
         if (!currentEval) return true;
         if (nextEval.finalScore !== currentEval.finalScore) return nextEval.finalScore > currentEval.finalScore;
-        if (nextEval.overflowAmount !== currentEval.overflowAmount) return nextEval.overflowAmount < currentEval.overflowAmount;
+        if (nextEval.overflowAmount !== currentEval.overflowAmount) return nextEval.overflowAmount > currentEval.overflowAmount;
         return nextEval.baseScore > currentEval.baseScore;
     };
     // 고정 카드 세트
@@ -318,6 +318,16 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         ...seedAttrIds.vocal.filter(id => !lockedSet.has(id)).slice(0, 1),
         ...seedAttrIds.dance.filter(id => !lockedSet.has(id)).slice(0, 1),
         ...seedAttrIds.visual.filter(id => !lockedSet.has(id)).slice(0, 3)
+    ]));
+    addSeed(fillSeedToSix([...lockedCards,
+        ...currentCards.filter(id => id && !lockedSet.has(id)).slice(0, 2),
+        ...seedPoolAIds.filter(id => !lockedSet.has(id)).slice(0, 3)
+    ]));
+    addSeed(fillSeedToSix([...lockedCards,
+        ...spPools.vocal.filter(c => !lockedSet.has(c.id)).slice(0, 1).map(c => c.id),
+        ...spPools.dance.filter(c => !lockedSet.has(c.id)).slice(0, 1).map(c => c.id),
+        ...spPools.visual.filter(c => !lockedSet.has(c.id)).slice(0, 1).map(c => c.id),
+        ...seedPoolAIds.filter(id => !lockedSet.has(id)).slice(0, 2)
     ]));
 
     seedPoolBIds.forEach(rentalId => {
