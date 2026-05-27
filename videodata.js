@@ -201,7 +201,7 @@ export const videoList = {
             title: "コンテンポラリのダンス",
             title_ko: "컨템포러리 댄스",
             title_en: "contemporary dance",
-            url: "https://youtu.be/iq7BCUXAaxA?si=3TmX5W7DI_bjLjVs",
+            url: "https://youtu.be/82SGsHkhySg?si=IjDzZSluj4HLMlqv",
             date: "2026.05.27."
         },
         {
