@@ -198,6 +198,13 @@ export const videoList = {
     ],
     hiro: [
         {
+            title: "コンテンポラリのダンス",
+            title_ko: "컨템포러리 댄스",
+            title_en: "contemporary dance",
+            url: "https://youtu.be/iq7BCUXAaxA?si=3TmX5W7DI_bjLjVs",
+            date: "2026.05.27."
+        },
+        {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             title_en: "Birthday MiniLive 2025",
