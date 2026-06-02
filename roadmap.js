@@ -38,9 +38,12 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     const unitToggle = document.getElementById('pssr-unit-toggle');
     const limitedToggle = document.getElementById('pssr-limited-toggle');
     const normalToggle = document.getElementById('pssr-normal-toggle');
-    const senseToggle = document.getElementById('pssr-sense-toggle');
-    const logicToggle = document.getElementById('pssr-logic-toggle');
-    const anomalyToggle = document.getElementById('pssr-anomaly-toggle');
+    const concentrationToggle = document.getElementById('pssr-concentration-toggle');
+    const goodconditionToggle = document.getElementById('pssr-goodcondition-toggle');
+    const goodimpressionToggle = document.getElementById('pssr-goodimpression-toggle');
+    const motivationToggle = document.getElementById('pssr-motivation-toggle');
+    const fullpowerToggle = document.getElementById('pssr-fullpower-toggle');
+    const enthusiasmToggle = document.getElementById('pssr-enthusiasm-toggle');
 
     const registerToggle = (el, filterType) => {
         if (el) {
@@ -54,9 +57,12 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     registerToggle(unitToggle, 'unit');
     registerToggle(limitedToggle, 'limited');
     registerToggle(normalToggle, 'normal');
-    registerToggle(senseToggle, 'sense');
-    registerToggle(logicToggle, 'logic');
-    registerToggle(anomalyToggle, 'anomaly');
+    registerToggle(concentrationToggle, 'concentration');
+    registerToggle(goodconditionToggle, 'goodcondition');
+    registerToggle(goodimpressionToggle, 'goodimpression');
+    registerToggle(motivationToggle, 'motivation');
+    registerToggle(fullpowerToggle, 'fullpower');
+    registerToggle(enthusiasmToggle, 'enthusiasm');
 
     const showAnother = state.roadmapFilters.another;
     const showDist = state.roadmapFilters.dist;
@@ -64,9 +70,12 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     const showUnit = state.roadmapFilters.unit;
     const showLimited = state.roadmapFilters.limited;
     const showNormal = state.roadmapFilters.normal;
-    const showSense = state.roadmapFilters.sense;
-    const showLogic = state.roadmapFilters.logic;
-    const showAnomaly = state.roadmapFilters.anomaly;
+    const showConcentration = state.roadmapFilters.concentration;
+    const showGoodCondition = state.roadmapFilters.goodcondition;
+    const showGoodImpression = state.roadmapFilters.goodimpression;
+    const showMotivation = state.roadmapFilters.motivation;
+    const showFullPower = state.roadmapFilters.fullpower;
+    const showEnthusiasm = state.roadmapFilters.enthusiasm;
 
     // 2. 날짜 및 높이 계산
     const start = new Date(2024, 4, 1, 0, 0, 0, 0);
@@ -105,10 +114,15 @@ export function renderPSSRRoadmap(shouldScroll = false) {
         const idolPSSRs = produceList.filter(p => {
             if (p.rarity !== 'PSSR' || !p.releasedAt || !p.id.startsWith(`ssr${idolName}_`)) return false;
             
-            // 1차: 플랜별 필터 (Sense, Logic, Anomaly)
-            if (p.plan === 'sense' && !showSense) return false;
-            if (p.plan === 'logic' && !showLogic) return false;
-            if (p.plan === 'anomaly' && !showAnomaly) return false;
+            // 1차: 오스스메별 필터
+            if (p.osusume) {
+                if (p.osusume === 'concentration' && !showConcentration) return false;
+                if (p.osusume === 'goodcondition' && !showGoodCondition) return false;
+                if (p.osusume === 'goodimpression' && !showGoodImpression) return false;
+                if (p.osusume === 'motivation' && !showMotivation) return false;
+                if ((p.osusume === 'fullpower' || p.osusume === 'preservation') && !showFullPower) return false;
+                if (p.osusume === 'enthusiasm' && !showEnthusiasm) return false;
+            }
 
             // 2차: 출처별 필터
             if (p.another) return showAnother;
@@ -151,10 +165,15 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
     let roadmapData = produceList.filter(p => p.rarity === 'PSSR' && p.releasedAt);
     roadmapData = roadmapData.filter(p => {
-        // 1차: 플랜별 필터
-        if (p.plan === 'sense' && !showSense) return false;
-        if (p.plan === 'logic' && !showLogic) return false;
-        if (p.plan === 'anomaly' && !showAnomaly) return false;
+        // 1차: 오스스메별 필터
+        if (p.osusume) {
+            if (p.osusume === 'concentration' && !showConcentration) return false;
+            if (p.osusume === 'goodcondition' && !showGoodCondition) return false;
+            if (p.osusume === 'goodimpression' && !showGoodImpression) return false;
+            if (p.osusume === 'motivation' && !showMotivation) return false;
+            if ((p.osusume === 'fullpower' || p.osusume === 'preservation') && !showFullPower) return false;
+            if (p.osusume === 'enthusiasm' && !showEnthusiasm) return false;
+        }
 
         // 2차: 출처별 필터
         if (p.another) return showAnother;

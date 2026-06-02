@@ -341,14 +341,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 12px;
+    padding: 4px 12px;
     background: #fff;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid #f2f2f2;
     /* 기본 미선택 상태 테두리 */
-    min-width: 90px;
+    min-width: 96px;
 }
 
 .filter-divider {
@@ -359,8 +359,8 @@
 }
 
 .plan-icon-small {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
     vertical-align: middle;
 }
@@ -377,7 +377,7 @@
 }
 
 .toggle-label {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #555;
     font-weight: 700;
     white-space: nowrap;

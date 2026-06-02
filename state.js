@@ -60,9 +60,12 @@ export const state = {
             limited: true,
             unit: true,
             normal: true,
-            logic: true,
-            sense: true,
-            anomaly: true
+            concentration: true,
+            goodcondition: true,
+            goodimpression: true,
+            motivation: true,
+            fullpower: true,
+            enthusiasm: true
         };
         const loaded = safeSessionParse('roadmapFilters', {});
         return { ...defaults, ...loaded };
