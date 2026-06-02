@@ -52,6 +52,7 @@ export const cardList = [
         extra1: "ppoint", extra2: "ranenhance",
         type: "assist",
         have: "item",
+        source: "limited_f",
         releasedAt: "2026-05-26",
         plan: "free",
         rarity: "SSR",
