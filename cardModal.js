@@ -3,6 +3,66 @@ import { state, setSupportLB } from './state.js';
 import { abilityData } from './abilitydata.js';
 import translations from './i18n.js';
 import { showSupportItemTooltip } from './calcUI.js';
+import { FES_CONFIG, UNIT_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG } from './gachaconfig.js';
+import { produceList } from './producedata.js';
+
+const getLocalizedName = (item) => {
+    if (!item) return '';
+    if (state.currentLang === 'en' && item.name_en) return item.name_en;
+    if (state.currentLang === 'ja' && item.name_ja) return item.name_ja;
+    return item.name || '';
+};
+
+const normalizePoolIds = (entries = []) => entries.map(entry => typeof entry === 'string' ? entry : entry?.id).filter(Boolean);
+
+const getSourceDetailLabel = (detail) => {
+    if (detail !== 'sale') return '';
+    if (state.currentLang === 'ja') return '販売';
+    if (state.currentLang === 'en') return 'sale';
+    return '판매';
+};
+
+const getProduceChar = (entry) => {
+    if (!entry) return '';
+    if (typeof entry !== 'string' && entry.char) return entry.char;
+
+    const id = typeof entry === 'string' ? entry : entry.id;
+    const charIds = ['rinami', 'saki', 'china', 'sumika', 'mao', 'kotone', 'temari', 'lilja', 'hiro', 'tsubame', 'sena', 'ume', 'misuzu'];
+    return charIds.find(charId => id?.startsWith(`ssr${charId}`)) || '';
+};
+
+const normalizeCardChars = (chars) => {
+    if (!chars) return [];
+    return [...new Set((Array.isArray(chars) ? chars : [chars]).filter(Boolean))];
+};
+
+const getSupportGachaInfo = (cardId) => {
+    const configs = [...FES_CONFIG, ...UNIT_CONFIG, ...NORMAL_CONFIG, ...LIMITED_CONFIG];
+    const matchedConfigs = configs.filter(config => {
+        const supportIds = [
+            ...normalizePoolIds(config.pool?.sssr),
+            ...normalizePoolIds(config.pool?.sr_card)
+        ];
+        return supportIds.includes(cardId);
+    });
+    if (matchedConfigs.length === 0) return { name: '', chars: [] };
+
+    const chars = [...new Set(matchedConfigs.flatMap(config =>
+        (config.pool?.pssr || []).map(entry => getProduceChar(entry)).filter(Boolean)
+    ))];
+
+    const names = matchedConfigs.map(config => {
+        const configName = getLocalizedName(config);
+        if (configName) return configName;
+
+        const pssrId = normalizePoolIds(config.pool?.pssr)[0];
+        const pssrName = getLocalizedName(produceList.find(card => card.id === pssrId));
+
+        return pssrName || config.id;
+    });
+
+    return { name: names.find(Boolean) || '', chars };
+};
 
 // 모달 표시 함수
 export function showCardModal(card, displayName, imgSrc) {
@@ -18,6 +78,9 @@ export function showCardModal(card, displayName, imgSrc) {
     const mRarity = document.getElementById('modal-rarity');
     const mPlan = document.getElementById('modal-plan');
     const mType = document.getElementById('modal-type');
+    const mReleaseDate = document.getElementById('modal-release-date');
+    const mSource = document.getElementById('modal-source');
+    const mGachaName = document.getElementById('modal-gacha-name');
     const mExtraIcon = document.getElementById('modal-extra-icon');
     const mExtra1 = document.getElementById('modal-extra-1');
     const mExtra2 = document.getElementById('modal-extra-2');
@@ -29,17 +92,48 @@ export function showCardModal(card, displayName, imgSrc) {
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
     mPlan.src = `icons/${(card.plan || 'free').toLowerCase()}.webp`;
     mType.src = `icons/${card.type.toLowerCase()}.webp`;
+    if (mReleaseDate) mReleaseDate.textContent = card.releasedAt || '';
+    if (mSource) {
+        const sourceKeyMap = {
+            limited: 'filter_limited',
+            limited_f: 'filter_limited_f',
+            limited_u: 'filter_limited_u',
+            dist: 'filter_dist'
+        };
+        const sourceKey = sourceKeyMap[card.source] || 'filter_normal';
+        const sourceText = translations[state.currentLang]?.[sourceKey] || translations.ko[sourceKey] || '';
+        const sourceDetailText = getSourceDetailLabel(card.source_details);
+        mSource.textContent = sourceDetailText ? `${sourceText} ${sourceDetailText}` : sourceText;
+    }
+    if (mGachaName) {
+        const gachaInfo = card.gacha === false ? { name: '', chars: [] } : getSupportGachaInfo(card.id);
+        const displayChars = normalizeCardChars(card.char);
+        const chars = displayChars.length > 0 ? displayChars : gachaInfo.chars;
+        mGachaName.innerHTML = '';
+        (chars || []).forEach(char => {
+            const icon = document.createElement('img');
+            icon.className = 'modal-gacha-char-icon';
+            icon.src = `icons/idolicons/${char}_c.png`;
+            icon.alt = '';
+            mGachaName.appendChild(icon);
+        });
+        const nameText = document.createElement('span');
+        nameText.className = 'modal-gacha-name-text';
+        nameText.textContent = card.name_modal || gachaInfo.name;
+        mGachaName.appendChild(nameText);
+        mGachaName.classList.toggle('hidden', !(card.name_modal || gachaInfo.name));
+    }
 
     mTitle.classList.remove('title-vocal', 'title-dance', 'title-visual', 'title-assist');
     mTitle.classList.add(`title-${card.type.toLowerCase()}`);
-    
+
     // 미리 확인된 경로가 있으면 즉시 사용, 없으면 추측 경로 사용
     const baseIconPath = `images/support/${card.id}`;
     const isCardType = card.have && card.have.startsWith('card');
     const guessedPath = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
-    
+
     mExtraIcon.src = card._extraPath || guessedPath;
-    
+
     // 혹시 모를 상황 대비 (프리로드가 안 됐을 경우)
     if (!card._extraPath) {
         mExtraIcon.onerror = () => {
@@ -80,7 +174,7 @@ export function showCardModal(card, displayName, imgSrc) {
         if (!text) return '';
         const colorClass = `highlight-${type.toLowerCase()}`;
         return text.replace(/([0-9]+[0-9.]*[%]*)/g, `<span class="${colorClass}">$1</span>`);
-    };    
+    };
 
     const getExtraText = (val) => {
         if (!val) return '';
@@ -131,7 +225,7 @@ export function showCardModal(card, displayName, imgSrc) {
                     if (abId === 'hpmax' || abId === 'supportrateup' || abId === 'percentparam' || abId === 'fixedparam' || abId === 'assistppoint' || abId === 'allsp_lessonup') {
                         const targetLv = lb + 1;
                         const bonusLevels = data.levels[rarityKey] || data.levels[rarity] || data.levels;
-                        val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length-1];
+                        val = bonusLevels[targetLv] || bonusLevels[5] || Object.values(bonusLevels)[Object.values(bonusLevels).length - 1];
                     } else if (abId === 'event_paraup' || abId === 'event_recoveryup' || abId === 'event_ppointup') {
                         let targetLv = (rarity === 'SSR') ? (lb >= 4 ? 3 : (lb >= 1 ? 2 : 1)) : (lb >= 4 ? 3 : (lb >= 2 ? 2 : 1));
                         val = data.levels[targetLv] || data.levels[1];
@@ -151,7 +245,7 @@ export function showCardModal(card, displayName, imgSrc) {
                     const translatedType = translations[state.currentLang][attrKey] || displayTarget;
                     const rawText = format.replaceAll('{val}', val).replaceAll('{type}', translatedType);
                     const highlightedText = highlightNumbers(rawText, card.type);
-                    
+
                     const abEl = document.createElement('div');
                     abEl.className = `ability-item border-${card.type.toLowerCase()}`;
                     const shrinkClass = rawText.length > 35 ? 'shrink' : '';
@@ -177,7 +271,7 @@ export function showCardModal(card, displayName, imgSrc) {
             updateStars(currentLB);
             if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
             if (typeof window.updateActivityCounts === 'function') window.updateActivityCounts();
-            
+
             // 1. 서포트 카드 그리드 업데이트
             const cardInGrid = document.querySelector(`.support-card[data-id="${card.id}"]`);
             if (cardInGrid) {

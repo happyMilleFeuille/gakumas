@@ -893,7 +893,7 @@ function setupStaticListeners(container) {
             const resetBtn = e.target.closest('.ability-reset-btn');
             if (resetBtn) {
                 state.filters.ability = [];
-                localStorage.setItem('filters', JSON.stringify(state.filters));
+                sessionStorage.setItem('filters', JSON.stringify(state.filters));
                 syncFilterUI(container);
                 updateSupportGrid(container);
                 return;

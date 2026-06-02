@@ -3,6 +3,10 @@ const safeParse = (key, def) => {
     try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
 };
 
+const safeSessionParse = (key, def) => {
+    try { return JSON.parse(sessionStorage.getItem(key)) || def; } catch { return def; }
+};
+
 // 초기화 및 마이그레이션 로직
 let storedPulls = safeParse('totalPullsObj', null);
 if (!storedPulls) {
@@ -41,7 +45,7 @@ const getBrowserLang = () => {
 
 export const state = {
     currentLang: localStorage.getItem('lang') || getBrowserLang(),
-    filters: safeParse('filters', {
+    filters: safeSessionParse('filters', {
         plan: [],
         attr: [],
         source: [],
@@ -60,7 +64,7 @@ export const state = {
             sense: true,
             anomaly: true
         };
-        const loaded = safeParse('roadmapFilters', {});
+        const loaded = safeSessionParse('roadmapFilters', {});
         return { ...defaults, ...loaded };
     })(),
     sortBy: localStorage.getItem('sortBy') || 'id',
@@ -115,7 +119,7 @@ export function setSelectedPickup(type, id) {
 
 export function setRoadmapFilter(type, value) {
     state.roadmapFilters[type] = value;
-    localStorage.setItem('roadmapFilters', JSON.stringify(state.roadmapFilters));
+    sessionStorage.setItem('roadmapFilters', JSON.stringify(state.roadmapFilters));
 }
 
 export function setLanguage(lang) {
@@ -153,7 +157,7 @@ export function setFilter(type, value) {
         } else {
             state.filters[type] = (state.filters[type] === value) ? 'all' : value;
         }
-        localStorage.setItem('filters', JSON.stringify(state.filters));
+        sessionStorage.setItem('filters', JSON.stringify(state.filters));
     }
 }
 

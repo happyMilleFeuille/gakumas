@@ -1112,12 +1112,66 @@ select.sort-select {
 }
 
 /* Extra Info Boxes */
+.modal-meta-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin: 0.55rem 5px 0;
+    width: calc(100% - 10px);
+    max-width: calc(100% - 10px);
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    background: #fafafa;
+    overflow: hidden;
+}
+
+.modal-meta-box {
+    display: flex;
+    align-items: center;
+    width: auto;
+    max-width: 100%;
+    min-height: 30px;
+    padding: 6px 12px;
+    border-right: 1px solid #e6e6e6;
+    color: #777;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.modal-meta-box:last-child {
+    border-right: none;
+}
+
+.modal-gacha-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 5px;
+}
+
+.modal-gacha-name-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(100% - 24px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.modal-gacha-char-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
 .modal-extra-outer-container {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: 0.8rem;
-    /* 여백을 0.8rem으로 축소 */
+    margin-top: 0.55rem;
     margin-bottom: 1.2rem;
     padding: 0 5px;
 }
@@ -1324,6 +1378,21 @@ select.sort-select {
     .modal-extra-icon {
         width: 50px;
         height: 50px;
+    }
+
+    .modal-meta-row {
+        margin-top: 0.3rem;
+    }
+
+    .modal-meta-box {
+        min-height: 22px;
+        padding: 4px 6px;
+        font-size: 0.58rem;
+    }
+
+    .modal-gacha-char-icon {
+        width: 14px;
+        height: 14px;
     }
 
     .modal-abilities-container {
