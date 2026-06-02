@@ -278,7 +278,10 @@ export function renderProduceCards(idolName, container) {
         infoBox.style.backgroundImage = "none";
 
         name.style.color = '#333';
-        imgWrapper.style.backgroundColor = personalColor + "11";
+        let initWrapperBg = personalColor + "11";
+        if (idolName === 'lilja') initWrapperBg = '#EAFDFF11';
+        else if (idolName === 'sumika') initWrapperBg = '#7CFC0011';
+        imgWrapper.style.backgroundColor = initWrapperBg;
 
         const planIcon = item.querySelector('.pssr-plan-icon');
         if (card.plan) {
@@ -315,8 +318,18 @@ export function renderProduceCards(idolName, container) {
             e.stopPropagation();
             if (img.classList.contains('slide-out') || img.classList.contains('slide-prepare')) return;
 
+            let animColor = personalColor;
+            let animColor11 = personalColor + "11";
+            if (idolName === 'lilja') {
+                animColor = '#EAFDFF';
+                animColor11 = '#EAFDFF11';
+            } else if (idolName === 'sumika') {
+                animColor = '#7CFC00';
+                animColor11 = '#7CFC0011';
+            }
+
             img.classList.add('slide-out');
-            imgWrapper.style.backgroundColor = personalColor;
+            imgWrapper.style.backgroundColor = animColor;
 
             const nextIndex = (currentIndex + 1) % imageList.length;
             const nextSrc = imageList[nextIndex];
@@ -337,7 +350,7 @@ export function renderProduceCards(idolName, container) {
                             img.style.transition = '';
                             img.classList.remove('slide-prepare');
                             setTimeout(() => {
-                                imgWrapper.style.backgroundColor = personalColor + "11";
+                                imgWrapper.style.backgroundColor = animColor11;
                             }, 200);
                         });
                     });
@@ -345,7 +358,7 @@ export function renderProduceCards(idolName, container) {
             };
             tempImg.onerror = () => {
                 img.classList.remove('slide-out');
-                imgWrapper.style.backgroundColor = personalColor + "11";
+                imgWrapper.style.backgroundColor = animColor11;
             };
             tempImg.src = nextSrc;
         });
