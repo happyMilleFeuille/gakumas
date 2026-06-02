@@ -1131,7 +1131,7 @@ select.sort-select {
     width: auto;
     max-width: 100%;
     min-height: 30px;
-    padding: 6px 12px;
+    padding: 4px 12px;
     border-right: 1px solid #e6e6e6;
     color: #777;
     font-size: 0.78rem;
@@ -1147,7 +1147,7 @@ select.sort-select {
 .modal-gacha-name {
     flex: 1 1 auto;
     min-width: 0;
-    gap: 5px;
+    gap: 2px;
 }
 
 .modal-gacha-name-text {
@@ -1158,6 +1158,7 @@ select.sort-select {
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
+    margin-left: 4px;
 }
 
 .modal-gacha-name-text.long-gacha-name {
@@ -1166,8 +1167,8 @@ select.sort-select {
 }
 
 .modal-gacha-char-icon {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
     object-fit: contain;
 }

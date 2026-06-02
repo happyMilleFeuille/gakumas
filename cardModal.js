@@ -1,5 +1,5 @@
 // cardModal.js
-import { state, setSupportLB } from './state.js';
+import { state, setSupportLB, idolColors } from './state.js';
 import { abilityData } from './abilitydata.js';
 import translations from './i18n.js';
 import { showSupportItemTooltip } from './calcUI.js';
@@ -117,6 +117,27 @@ export function showCardModal(card, displayName, imgSrc) {
             icon.alt = '';
             mGachaName.appendChild(icon);
         });
+
+        // 캐릭터 고유색 수직 그라데이션 + 수평 덮개 레이어 적용 (마스킹으로 인해 글자와 아이콘이 가려지는 문제 방지)
+        const charColors = (chars || []).map(char => idolColors[char]).filter(Boolean);
+        if (charColors.length > 0) {
+            const verticalStops = charColors.map((color, idx) => {
+                const pct = Math.round((idx / (charColors.length - 1 || 1)) * 100);
+                return `${color}66 ${pct}%`;
+            }).join(', ');
+            
+            // 수평 덮개 레이어(왼쪽 투명 -> 오른쪽 40% 지점에서 회색배경 #fafafa로 완전히 덮음)를 수직 그라데이션 위에 겹쳐 쌓음
+            mGachaName.style.background = `linear-gradient(90deg, rgba(250, 250, 250, 0) 0%, #fafafa 40%, #fafafa 100%), linear-gradient(to bottom, ${verticalStops})`;
+            
+            // 기존 마스크 속성 초기화
+            mGachaName.style.webkitMaskImage = '';
+            mGachaName.style.maskImage = '';
+        } else {
+            mGachaName.style.background = '';
+            mGachaName.style.webkitMaskImage = '';
+            mGachaName.style.maskImage = '';
+        }
+
         const nameText = document.createElement('span');
         nameText.className = 'modal-gacha-name-text';
         const gachaNameText = card.name_modal || gachaInfo.name;
