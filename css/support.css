@@ -1160,6 +1160,11 @@ select.sort-select {
     text-align: center;
 }
 
+.modal-gacha-name-text.long-gacha-name {
+    font-size: 0.68rem;
+    letter-spacing: -0.03em;
+}
+
 .modal-gacha-char-icon {
     width: 18px;
     height: 18px;
@@ -1393,6 +1398,11 @@ select.sort-select {
     .modal-gacha-char-icon {
         width: 14px;
         height: 14px;
+    }
+
+    .modal-gacha-name-text.long-gacha-name {
+        font-size: 0.45rem;
+        letter-spacing: -0.04em;
     }
 
     .modal-abilities-container {

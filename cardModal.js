@@ -119,7 +119,9 @@ export function showCardModal(card, displayName, imgSrc) {
         });
         const nameText = document.createElement('span');
         nameText.className = 'modal-gacha-name-text';
-        nameText.textContent = card.name_modal || gachaInfo.name;
+        const gachaNameText = card.name_modal || gachaInfo.name;
+        nameText.textContent = gachaNameText;
+        nameText.classList.toggle('long-gacha-name', gachaNameText.length >= 18);
         mGachaName.appendChild(nameText);
         mGachaName.classList.toggle('hidden', !(card.name_modal || gachaInfo.name));
     }
