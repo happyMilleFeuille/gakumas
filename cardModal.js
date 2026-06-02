@@ -123,7 +123,7 @@ export function showCardModal(card, displayName, imgSrc) {
         if (charColors.length > 0) {
             const verticalStops = charColors.map((color, idx) => {
                 const pct = Math.round((idx / (charColors.length - 1 || 1)) * 100);
-                return `${color}66 ${pct}%`;
+                return `${color}4d ${pct}%`;
             }).join(', ');
             
             // 수평 덮개 레이어(왼쪽 투명 -> 오른쪽 40% 지점에서 회색배경 #fafafa로 완전히 덮음)를 수직 그라데이션 위에 겹쳐 쌓음

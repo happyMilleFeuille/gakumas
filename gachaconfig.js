@@ -357,8 +357,27 @@ export const NORMAL_CONFIG = [
         bannerImg: 'idols/ssrmao_2nd1.webp',
         pool: {
             pssr: [{ id: 'ssrmao_2nd', char: 'mao' }],
-            sssr: ['vocal_free8'],
+            sssr: ['vocal_free7'],
             sr_card: ['vocal_srlogic2']
+        }
+    },
+    {
+        id: 'ssrchina_onsen',
+        date: '2024-09-11',
+        bannerImg: 'idols/ssrchina_onsen1.webp',
+        pool: {
+            pssr: [{ id: 'ssrchina_onsen', char: 'china' }],
+            sssr: ['visual_free6'],
+        }
+    },
+    {
+        id: 'ssrrinami_onsen',
+        date: '2024-09-01',
+        bannerImg: 'idols/ssrrinami_onsen1.webp',
+        pool: {
+            pssr: [{ id: 'ssrrinami_onsen', char: 'rinami' }],
+            sssr: ['visual_logic2'],
+            sr_card: ['visual_srlogic2']
         }
     },
     {
