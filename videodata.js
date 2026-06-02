@@ -28,6 +28,13 @@ export const videoList = {
     ],
     temari: [
         {
+            title: "生誕記念施策2026",
+            title_ko: "생일 기념 이벤트 2026",
+            title_en: "Birthday Celebration 2026",
+            url: "https://youtu.be/QJ9Qkypdbqs?si=771sO2TWBe-SvNOG",
+            date: "2026.06.02."
+        },
+        {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             title_en: "Birthday MiniLive 2025",
