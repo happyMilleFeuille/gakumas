@@ -70,12 +70,23 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     const showUnit = state.roadmapFilters.unit;
     const showLimited = state.roadmapFilters.limited;
     const showNormal = state.roadmapFilters.normal;
-    const showConcentration = state.roadmapFilters.concentration;
-    const showGoodCondition = state.roadmapFilters.goodcondition;
-    const showGoodImpression = state.roadmapFilters.goodimpression;
-    const showMotivation = state.roadmapFilters.motivation;
-    const showFullPower = state.roadmapFilters.fullpower;
-    const showEnthusiasm = state.roadmapFilters.enthusiasm;
+    let showConcentration = state.roadmapFilters.concentration;
+    let showGoodCondition = state.roadmapFilters.goodcondition;
+    let showGoodImpression = state.roadmapFilters.goodimpression;
+    let showMotivation = state.roadmapFilters.motivation;
+    let showFullPower = state.roadmapFilters.fullpower;
+    let showEnthusiasm = state.roadmapFilters.enthusiasm;
+
+    // 아무 오스스메 필터도 선택하지 않은 경우, 모두 ON 처리
+    if (!showConcentration && !showGoodCondition && !showGoodImpression && !showMotivation && !showFullPower && !showEnthusiasm) {
+        showConcentration = true;
+        showGoodCondition = true;
+        showGoodImpression = true;
+        showMotivation = true;
+        showFullPower = true;
+        showEnthusiasm = true;
+    }
+
 
     // 2. 날짜 및 높이 계산
     const start = new Date(2024, 4, 1, 0, 0, 0, 0);

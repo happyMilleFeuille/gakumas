@@ -60,12 +60,12 @@ export const state = {
             limited: true,
             unit: true,
             normal: true,
-            concentration: true,
-            goodcondition: true,
-            goodimpression: true,
-            motivation: true,
-            fullpower: true,
-            enthusiasm: true
+            concentration: false,
+            goodcondition: false,
+            goodimpression: false,
+            motivation: false,
+            fullpower: false,
+            enthusiasm: false
         };
         const loaded = safeSessionParse('roadmapFilters', {});
         return { ...defaults, ...loaded };
