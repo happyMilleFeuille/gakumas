@@ -249,16 +249,26 @@ export function renderPSSRRoadmap(shouldScroll = false) {
             const node = document.createElement('div');
             node.className = 'roadmap-node';
             node.style.bottom = `${bottomOffset}px`;
+
+            const cardDate = new Date(card.releasedAt);
+            cardDate.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const diffDays = Math.floor((today - cardDate) / (1000 * 60 * 60 * 24));
+            const dDayText = diffDays === 0 ? " (D-Day)" : (diffDays > 0 ? ` (D+${diffDays})` : ` (D${diffDays})`);
+
             const displayName = (state.currentLang === 'en' && card.name_en) ? card.name_en : ((state.currentLang !== 'ko' && card.name_ja) ? card.name_ja : card.name);
             node.innerHTML = `
                 <div class="roadmap-node-inner"><img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
                 <div class="roadmap-tooltip">
                     <img src="idols/${card.id}1.webp" class="tooltip-card-img" decoding="async">
                     <div class="tooltip-text">
-                        <strong>${displayName}</strong>
-                        <span>
-                            ${card.releasedAt}
+                        <strong>
                             <img src="icons/${card.plan}.webp" class="plan-icon-tooltip" alt="${card.plan}">
+                            ${displayName}
+                        </strong>
+                        <span>
+                            ${card.releasedAt}${dDayText}
                         </span>
                     </div>
                 </div>
