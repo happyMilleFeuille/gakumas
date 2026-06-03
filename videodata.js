@@ -33,9 +33,9 @@ export const videoList = {
             date: "2026.06.03."
         },
         {
-            title: "生誕記念施策2026",
+            title: "生誕記念配信2026",
             title_ko: "생일 라이브방송2026",
-            title_en: "Birthday Celebration 2026",
+            title_en: "Birthday stream 2026",
             url: "https://youtu.be/QJ9Qkypdbqs?si=771sO2TWBe-SvNOG",
             date: "2026.06.02."
         },
