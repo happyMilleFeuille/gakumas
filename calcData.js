@@ -642,5 +642,5 @@ if (typeof window !== 'undefined') {
 }
 
 // HIF 모드 프리마 스텔라 해금 캐릭터 리스트
-export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari', 'china', 'hiro'];
+export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari', 'china', 'hiro', 'lilja', 'sumika'];
 

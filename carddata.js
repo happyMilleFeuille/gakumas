@@ -1325,6 +1325,28 @@ export const cardList = [
             ]
     },
     {
+        id: "dance_feslogic1",
+        name: "날 즐겁게 해봐",
+        name_ja: "私を楽しませろ",
+        type: "dance",
+        plan: "logic",
+        have: "card_m",
+        attrs: ["motivation"],
+        releasedAt: "2026-06-05",
+        source: "limited_f",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "dance_anomaly1",
         name: "기다리렴!",
         name_ja: "待ちなさーい!",
