@@ -874,7 +874,7 @@ export function calculateTotals(store, detailedCounts) {
 /**
  * 특정 카드의 % 보너스가 현재 계획에서 실제로 몇 점을 올려주는지 계산 (레슨별 개별 내림 반영)
  */
-export function getSupportPercentBonusForCard(store, cardPercent, cardType) {
+export function getSupportPercentBonusForCard(store, cardPercent, cardType, totalPercs = null) {
     if (!cardPercent || !cardType || !store.weeks) return 0;
     let totalFlooredBonus = 0;
 
@@ -899,6 +899,43 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType) {
                         const baseVal = vals[data.priority.indexOf(cardType)];
                         if (baseVal) {
                             // 니아 오디션 % 보너스: UI 표시용으로는 계수(0.55) 없이 생수치로 계산
+                            totalFlooredBonus += Math.floor(baseVal * (cardPercent / 100));
+                        }
+                    }
+                }
+            } else if (store.type === 'hif' && actionId === 'test') {
+                const manualVo = parseInt(week.opts.hif_test_vocal);
+                const manualDa = parseInt(week.opts.hif_test_dance);
+                const manualVi = parseInt(week.opts.hif_test_visual);
+                const hasManualInput = !isNaN(manualVo) || !isNaN(manualDa) || !isNaN(manualVi);
+
+                if (hasManualInput) {
+                    let val = 0;
+                    if (cardType === 'vocal' && !isNaN(manualVo)) val = manualVo;
+                    else if (cardType === 'dance' && !isNaN(manualDa)) val = manualDa;
+                    else if (cardType === 'visual' && !isNaN(manualVi)) val = manualVi;
+
+                    if (val > 0) {
+                        let baseVal = val;
+                        if (week.opts.hif_test_use_perc === 'true' && totalPercs) {
+                            const bonusFactor = 1 + (totalPercs[cardType] / 100);
+                            const rawBase = val / bonusFactor;
+                            baseVal = Math.ceil(Math.round(rawBase * 10000) / 10000);
+                        }
+                        totalFlooredBonus += Math.floor(baseVal * (cardPercent / 100));
+                    }
+                } else {
+                    const testStat = hifTestStats[wInt];
+                    const data = idolData[store.selectedIdol];
+                    if (testStat && data?.priority?.length === 3) {
+                        const priorities = data.priority;
+                        const idx = priorities.indexOf(cardType);
+                        let baseVal = 0;
+                        if (idx === 0) baseVal = testStat.first ?? 0;
+                        else if (idx === 1) baseVal = testStat.second ?? 0;
+                        else if (idx === 2) baseVal = testStat.third ?? 0;
+
+                        if (baseVal > 0) {
                             totalFlooredBonus += Math.floor(baseVal * (cardPercent / 100));
                         }
                     }

@@ -1309,7 +1309,8 @@ function refreshAll() {
  */
 function updateSidePanelBonuses(panel, counts) {
     try {
-        const { baseTotal, bonusTotal } = calculateTotals(calcStore, counts);
+        const { baseTotal, bonusTotal, breakdown } = calculateTotals(calcStore, counts);
+        const totalPercs = breakdown?.totalPercs;
         const bonusItems = panel.querySelectorAll('.side-card-item');
         const planCards = calcStore.planCards[calcStore.planType] || [];
         const filledCount = planCards.filter(id => id !== null).length;
@@ -1329,7 +1330,7 @@ function updateSidePanelBonuses(panel, counts) {
 
             let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
             if (bonus.percent > 0 && card.type) {
-                totalVal += getSupportPercentBonusForCard(calcStore, bonus.percent, card.type);
+                totalVal += getSupportPercentBonusForCard(calcStore, bonus.percent, card.type, totalPercs);
             }
 
             const bonusEl = item.querySelector('.bonus-val');
