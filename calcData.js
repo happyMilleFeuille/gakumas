@@ -348,8 +348,8 @@ export const idolData = {
                 bonus: { vocal: 0, dance: 0, visual: 0 }
             },
             37: {
-                base: { vocal: 0, dance: 0, visual: 0 },
-                bonus: { vocal: 0, dance: 0, visual: 0 }
+                base: { vocal: 15, dance: 0, visual: 5 },
+                bonus: { vocal: 0, dance: 3, visual: 3 }
             }
         },
         // 보너스 % (단계별)
@@ -416,8 +416,8 @@ export const idolData = {
                 bonus: { vocal: 0, dance: 0, visual: 0 }
             },
             37: {
-                base: { vocal: 0, dance: 0, visual: 0 },
-                bonus: { vocal: 0, dance: 0, visual: 0 }
+                base: { vocal: 5, dance: 0, visual: 5 },
+                bonus: { vocal: 3, dance: 2, visual: 1 }
             }
         },
         // 보너스 % (단계별)
