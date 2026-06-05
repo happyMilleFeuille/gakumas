@@ -887,7 +887,7 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType, tota
         if (store.type === 'nia' || store.type === 'hif') {
             if (['lessonvo', 'lessondan', 'lessonvi'].includes(actionId)) {
                 stats = store.type === 'hif'
-                    ? getHifLessonStat(actionId, isSP, wInt)
+                    ? getHifLessonStat(actionId, isSP, wInt, week.opts.selectedSubAttr)
                     : getNiaLessonStat(actionId, isSP, wInt);
             } else if (actionId === 'audition') {
                 const data = idolData[store.selectedIdol];
