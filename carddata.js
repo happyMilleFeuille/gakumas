@@ -2190,7 +2190,7 @@ export const cardList = [
         type: "vocal",
         plan: "free",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["sp"], triggertext: ["vocal400"], target: "enhance", value: 1, max: 9 }],
+        item_effects: [{ type: "action", trigger: ["sp"], triggertext: ["vocal400"], target: "enhance", max: 9 }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
