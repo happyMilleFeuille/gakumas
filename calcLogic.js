@@ -724,7 +724,7 @@ export function calculateTotals(store, detailedCounts) {
             } else {
                 // 레슨/시험 개별 내림 보너스
                 ['vocal', 'dance', 'visual'].forEach(attr => {
-                    if (stats[attr] > 0) applyLessonBonus(stats[attr], attr);
+                    if (stats[attr] > 0 && actionId !== 'audition') applyLessonBonus(stats[attr], attr);
                 });
 
                 baseTotal.vocal += stats.vocal || 0;
@@ -889,20 +889,6 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType, tota
                 stats = store.type === 'hif'
                     ? getHifLessonStat(actionId, isSP, wInt)
                     : getNiaLessonStat(actionId, isSP, wInt);
-            } else if (actionId === 'audition') {
-                const data = idolData[store.selectedIdol];
-                if (data) {
-                    const stage = wInt === 9 ? 1 : (wInt === 17 ? 2 : (wInt === 26 ? 3 : 0));
-                    const stageStats = niaAuditionStats[stage];
-                    if (stageStats) {
-                        const vals = data.growthType === 'protruded' ? stageStats.protruded : stageStats.balanced;
-                        const baseVal = vals[data.priority.indexOf(cardType)];
-                        if (baseVal) {
-                            // 니아 오디션 % 보너스: UI 표시용으로는 계수(0.55) 없이 생수치로 계산
-                            totalFlooredBonus += Math.floor(baseVal * (cardPercent / 100));
-                        }
-                    }
-                }
             } else if (store.type === 'hif' && actionId === 'test') {
                 const manualVo = parseInt(week.opts.hif_test_vocal);
                 const manualDa = parseInt(week.opts.hif_test_dance);
