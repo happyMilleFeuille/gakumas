@@ -186,7 +186,9 @@ export function getDisplayStrategy(poolType = state.gachaType) {
     const strategy = { ...(GACHA_STRATEGIES[poolType] || GACHA_STRATEGIES.normal) };
     if (poolType === 'selection') {
         const activeConfig = getActiveGachaConfig(poolType);
-        if (activeConfig?.ssr_guaranteed) {
+        if (activeConfig?.pssr_guaranteed) {
+            strategy.guaranteed = { PSSR: 1.0, SSSR: 0, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
+        } else if (activeConfig?.ssr_guaranteed) {
             strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
         }
     }
@@ -437,7 +439,9 @@ export function pickGacha(count = 1, poolType = 'normal', customPool = null) {
         
         if (poolType === 'selection' && isLastSlot) {
             const sel = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId);
-            if (sel?.ssr_guaranteed) {
+            if (sel?.pssr_guaranteed) {
+                rates = { PSSR: 1.0, SSSR: 0, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
+            } else if (sel?.ssr_guaranteed) {
                 rates = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
             }
         }
