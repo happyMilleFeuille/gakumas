@@ -683,6 +683,38 @@ export const LIMITED_CONFIG = [
 // 셀렉션 가챠 상세 설정 (드로어 리스트 및 가챠 풀)
 export const SELECTION_CONFIG = [
     {
+        id: 'HIF_day1',
+        name: 'The and period HIF DAY1',
+        display_date: '2026-06-06',
+        date: '2026-03-19',
+        bannerImg: 'gasya/gasya_HIF1.webp',
+        only_pool_pssr: true,
+        ssr_guaranteed: true, // 10회째 SSR 확정 설정 추가
+        is_limited: true, // 한정 가챠 풀 포함        
+        pull_count: 10,
+        max_pulls: 10, // 최대 뽑기 가능 횟수 설정 추가
+        pool: {
+            pssr: ['ssrsaki_3rd', 'ssrsena_endlesslimited', 'ssrume_endlesslimited', 'ssrsena_3rd', 'ssrtemari_3rd', 'ssrmisuzu_2nd', 'ssrume_2nd', 'ssrtsubame_1st', 'ssrmao_3rd', 'ssrchina_3rd', 'ssrrinami_3rd', 'ssrhiro_miraclelimited', 'ssrmao_miraclelimited', 'ssrkotone_3rd', 'ssrhiro_3rd', 'ssrsumika_3rd', 'ssrsumika_sakuralimited', 'ssrsaki_sakuralimited', 'ssrsaki_animate', 'ssrtemari_halloweenlimited', 'ssrhiro_halloweenlimited', 'ssrlilja_kanmurilimited', 'ssrkotone_kanmurilimited', 'ssrsumika_summerlimited', 'ssrrinami_summerlimited']
+        },
+        exclude: {
+            sssr: [
+                // 한정 시리즈 (가무샤라, 하울링, 유키도케니, 발렌타인)
+                'vocal_limitedlogic3', 'vocal_limitedsense3',
+                'visual_limitedlogic2', 'dance_limitedanomaly1',
+                'visual_limitedanomaly2', 'dance_limitedlogic4',
+                'vocal_limitedlogic1', 'visual_limitedanomaly1'
+            ],
+            sr_card: [
+                // 한정 시리즈 (가무샤라, 하울링, 유키도케니, 발렌타인)
+                'vocal_srlimitedlogic3', 'dance_srlimitedsense3',
+                'visual_srlimitedlogic1', 'dance_srlimitedanomaly1',
+                'visual_srlimitedanomaly2', 'dance_srlimitedlogic3',
+                'vocal_srlimitedlogic2', 'visual_srlimitedanomaly1'
+            ]
+        }
+    },
+
+    {
         id: '2ani100ren',
         name: '시즌한정 포함 100연',
         name_en: '100 Free Pulls with Seasonal Limiteds',

@@ -880,7 +880,7 @@ export const cardList = [
     {
         id: "dance_free6",
         name: "혼자 설 수 있겠어요?",
-        name_ja: "一人で立てますか?",
+        name_ja: "ひとりで立てますか?",
         type: "dance",
         releasedAt: "2025-03-21",
         plan: "free",
@@ -1742,8 +1742,8 @@ export const cardList = [
     },
     {
         id: "visual_limitedsense1",
-        name: "불꽃놀이, 하지않을래요?",
-        name_ja: "花火、やりませんか?",
+        name: "불꽃놀이, 하지않을래요......?",
+        name_ja: "花火、やりませんか……?",
         type: "visual",
         plan: "sense",
         have: "card_a",
