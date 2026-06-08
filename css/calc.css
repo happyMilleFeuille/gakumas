@@ -2766,6 +2766,11 @@
         border-radius: 2px !important;
     }
 
+    .enhance-item-content.compact-dist .other-tune-btn .tune-btn-icon {
+        width: 10px !important;
+        height: 10px !important;
+    }
+
     .counter-count {
         font-size: 0.68rem !important;
         /* 0.72rem -> 0.68rem로 소폭 축소하여 라벨과 밸런스 조정 */

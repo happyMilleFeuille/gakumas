@@ -430,7 +430,7 @@ export function updateActivityCountsUI(store, counts) {
                         </div>
                         <div style="width: 100%; height: 1px; background: rgba(156,39,176,0.1); margin: 4px 0;"></div>
                         <button class="other-tune-btn" id="btn-other-tune" style="width: 85%; height: 26px; margin: 6px auto 8px; display: flex; align-items: center; justify-content: center; gap: 4px; background: ${getIdolDisplayColor(store.selectedIdol)}; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.65rem;">
-                            <img src="icons/check-square.svg" style="width: 12px; height: 12px; filter: invert(1);">
+                            <img src="icons/check-square.svg" class="tune-btn-icon" style="width: 12px; height: 12px; filter: invert(1);">
                             ${t('calc_label_select')}
                         </button>
                     </div>

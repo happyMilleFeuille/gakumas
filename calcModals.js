@@ -829,7 +829,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
     modal.innerHTML = `
         <div id="calc-tune-modal-wrapper" style="display: flex; gap: 12px; align-items: stretch; justify-content: center; max-height: 90vh; width: 100%; max-width: 100vw; box-sizing: border-box;">
         <div class="modal-content" style="max-width: 90%; width: 500px; max-height: 80vh; padding: 12px; display: flex; flex-direction: column; position: relative; box-sizing: border-box;">
-            <h3 id="modal-tune-title" style="margin-top: 0; margin-bottom: 12px; text-align: center; color: ${idolColor}; font-size: 1rem;"></h3>
+            <h3 id="modal-tune-title" style="margin: -12px -12px 12px -12px; text-align: center; color: #fff; font-size: 1rem; background-color: ${idolColor}; padding: 12px; border-radius: 12px 12px 0 0; position: relative;"></h3>
             <div class="tune-card-grid" style="flex: 1; overflow-y: auto;">${cardGroups.map(g => {
         if (g.length > 1) {
             if (g[0].startsWith('header-')) {
@@ -845,7 +845,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         return renderCardItem(g[0]);
     }).join('')}</div>
             <div style="display: flex; gap: 8px; margin-top: 12px; width: 100%; box-sizing: border-box;">
-                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_reset_weeks')}</button>
+                <button class="primary-btn" id="reset-all-skills" style="flex: 1; background: #666; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('calc_reset_skills_btn')}</button>
                 <button class="primary-btn" id="close-tune-modal" style="flex: 1; background: ${idolColor}; padding: 8px 4px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; min-width: 0;">${t('gacha_close')}</button>
             </div>
         </div>
@@ -926,9 +926,10 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
         total += tCount;
         const titleEl = document.getElementById('modal-tune-title');
         if (titleEl) {
-            const planLabel = t(`calc_tune_plan_${currentPlan}`);
             const kyoukaPrefix = calcStore.isKyouka ? t('calc_tune_prefix_kyouka') : '';
-            titleEl.textContent = t('calc_tune_title_format', { prefix: kyoukaPrefix, plan: planLabel, selected: total, total: boardGetCount });
+            const planIcon = `<img src="icons/${currentPlan}.webp" style="width: 28px; height: 28px; object-fit: contain; position: absolute; left: 18px; top: 50%; transform: translateY(-50%);">`;
+            const titleText = t('calc_tune_title_format', { prefix: kyoukaPrefix, plan: '', selected: total, total: boardGetCount });
+            titleEl.innerHTML = planIcon + titleText;
         }
     };
     updateTitle();
