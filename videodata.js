@@ -140,6 +140,11 @@ export const videoList = {
     ],
     lilja: [
         {
+            title: "Fragile Heart",
+            url: "https://youtu.be/LNFkXBmr44g?si=HGXSr23_SaAFfEXE",
+            date: "2026.06.08."
+        },
+        {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             title_en: "Birthday MiniLive 2025",
