@@ -118,7 +118,7 @@ const translations = {
         calc_option_goout_nia4: "카드강화",
         calc_option_goout_nia5: "(-50)기본카드 삭제, 드링크 2개 획득",
         calc_option_goout_nia6: "드링크 획득",
-        calc_option_goout_hif1: "(-50) 드링크 획득, 강화카드와 스킬카드 획득 ",
+        calc_option_goout_hif1: "(-50) 드링크 획득, 강화카드 및 카드 획득 ",
         calc_option_goout_hif2: "드링크 획득, 트러블 카드 추가, 강화카드 및 카드 획득",
         calc_option_goout_hif3: "드링크 획득 및 카드 획득",
         calc_option_class_hif1: "카드 체인지",
