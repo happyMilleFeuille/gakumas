@@ -684,7 +684,7 @@ export const LIMITED_CONFIG = [
 export const SELECTION_CONFIG = [
     {
         id: 'HIF_day2',
-        name: 'The and period HIF DAY2',
+        name: 'The 2nd period HIF DAY2',
         display_date: '2026-06-07',
         date: '2026-03-19',
         bannerImg: 'gasya/gasya_HIF2.webp',
@@ -719,7 +719,7 @@ export const SELECTION_CONFIG = [
     },
     {
         id: 'HIF_day1',
-        name: 'The and period HIF DAY1',
+        name: 'The 2nd period HIF DAY1',
         display_date: '2026-06-06',
         date: '2026-03-19',
         bannerImg: 'gasya/gasya_HIF1.webp',
