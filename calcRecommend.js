@@ -176,7 +176,7 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     // 플랜 필터링
     const baseFilter = (c) => !state.disabledCards[c.id] && (c.plan === 'free' || c.plan === planType);
     const poolA = cardList.filter(baseFilter);
-    const poolB = cardList.filter(c => (c.plan === 'free' || c.plan === planType));
+    let poolB = cardList.filter(c => (c.plan === 'free' || c.plan === planType));
     const poolASet = new Set(poolA.map(card => card.id));
 
     // 평가 함수 (7:3 강화 배분 기대값 반영)
@@ -226,6 +226,23 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         evaluationCache.set(cacheKey, evaluation);
         return evaluation;
     };
+
+    // 렌탈 카드 풀(poolB) 사전 정렬 로직 (보유 덱 기준 최적 렌탈 기용 시뮬레이션)
+    const currentOwned = currentCards.filter(id => id && !lockedSet.has(id)).slice(0, 5);
+    const evaluatedPoolB = poolB.map(card => {
+        if (currentOwned.includes(card.id)) {
+            return { card, score: -Infinity };
+        }
+        const tempDeck = fillSeedToSix([...lockedCards, ...currentOwned]);
+        if (tempDeck.length === 6) {
+            tempDeck[5] = card.id;
+            const normalized = normalizeCardsForRentalSlot(tempDeck);
+            return { card, score: normalized.evaluation.finalScore };
+        }
+        return { card, score: -Infinity };
+    });
+    evaluatedPoolB.sort((a, b) => b.score - a.score);
+    poolB = evaluatedPoolB.map(x => x.card);
 
     const optimize = (initialCards) => {
         let { cards, evaluation } = normalizeCardsForRentalSlot([...initialCards]);
