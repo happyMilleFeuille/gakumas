@@ -201,8 +201,9 @@ export function getRarityRateEntries(rarityKey, options = {}) {
     const strategy = options.strategy || getDisplayStrategy(poolType);
     const pool = options.pool || getGachaPool(poolType);
     const rarityPool = pool[rarityKey] || [];
-    const totalRate = options.totalRate ?? strategy.rates[rarityKey] ?? 0;
-    const totalGuaranteed = options.totalGuaranteed ?? strategy.guaranteed[rarityKey] ?? 0;
+    const lookupKey = rarityKey === 'SR_CARD' ? 'SSR_CARD' : rarityKey;
+    const totalRate = options.totalRate ?? strategy.rates[lookupKey] ?? 0;
+    const totalGuaranteed = options.totalGuaranteed ?? strategy.guaranteed[lookupKey] ?? 0;
 
     if (rarityPool.length === 0) return [];
 
@@ -225,10 +226,15 @@ export function getRarityRateEntries(rarityKey, options = {}) {
     pickupInfo.buckets.forEach(bucket => {
         const perCardRate = bucket.cards.length > 0 ? (bucket.totalRate / bucket.cards.length) : 0;
         bucket.cards.forEach(card => {
+            const isPk = pickupInfo.pickupIds.includes(card.id);
+            let gRate = perCardRate * guaranteedRatio;
+            if (rarityKey === 'SR_CARD' && isPk) {
+                gRate = 0.2236 / pickupInfo.pickupIds.length;
+            }
             rateMap.set(card.id, {
                 normalRate: perCardRate,
-                guaranteedRate: perCardRate * guaranteedRatio,
-                isPickup: pickupInfo.pickupIds.includes(card.id)
+                guaranteedRate: gRate,
+                isPickup: isPk
             });
         });
     });
@@ -274,7 +280,7 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
         return getRandomFrom(targetPool);
     }
     if (key === 'SR_CARD' && srCardList.length > 0) {
-        const baseRate = isGuaranteedSlot ? (0.223529 / 0.57) : (0.04 / rates.SSR_CARD);
+        const baseRate = isGuaranteedSlot ? (0.2236 / 0.57) : (0.04 / rates.SSR_CARD);
         if (rand < baseRate) return getRandomFrom(srCardList.map(id => cardList.find(c => c.id === id)).filter(Boolean));
         targetPool = targetPool.filter(card => !srCardList.includes(card.id));
     }
@@ -290,12 +296,7 @@ export const GACHA_STRATEGIES = {
     selection: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool, isGuaranteedSlot, rates, guaranteed, customPickups) => handleStandardPickup(key, pool, 'selection', isGuaranteedSlot, rates, guaranteed, customPickups) }
     };
 
-function isReleased(card) {
-    if (!card.releasedAt) return true;
-    const releaseDate = new Date(card.releasedAt);
-    const today = new Date();
-    return releaseDate <= today;
-}
+
 
 export function getGachaPool(poolType) {
     let config = CURRENT_PICKUPS[poolType] || {};
@@ -396,15 +397,15 @@ export function getGachaPool(poolType) {
         SSSR: filterExclude(cardList.filter(card => card.rarity === 'SSR' && isInPool(card)), 'sssr'),
         PSR: filterExclude(produceList.filter(p => p.rarity === 'PSR' && isInPool(p)), 'psr'),
         SR_CARD: filterExclude(
-                    cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased).length > 0 
-                    ? cardList.filter(card => card.rarity === 'SR' && isInPool(card)).filter(isReleased) 
+                    cardList.filter(card => card.rarity === 'SR' && isInPool(card)).length > 0 
+                    ? cardList.filter(card => card.rarity === 'SR' && isInPool(card)) 
                     : dummyData.SR_CARD, 
                     'sr_card'
                  ),
-        PR: filterExclude(produceList.filter(p => p.rarity === 'PR' && isInPool(p)).filter(isReleased), 'pr'),
+        PR: filterExclude(produceList.filter(p => p.rarity === 'PR' && isInPool(p)), 'pr'),
         R_CARD: filterExclude(
-                    cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased).length > 0 
-                    ? cardList.filter(card => card.rarity === 'R' && isInPool(card)).filter(isReleased) 
+                    cardList.filter(card => card.rarity === 'R' && isInPool(card)).length > 0 
+                    ? cardList.filter(card => card.rarity === 'R' && isInPool(card)) 
                     : dummyData.R_CARD,
                     'r_card'
                  )
