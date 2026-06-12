@@ -1769,7 +1769,6 @@ export const cardList = [
         type: "visual",
         plan: "sense",
         have: "item",
-        source: "limited",
         releasedAt: "2025-06-19",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -2139,6 +2138,48 @@ export const cardList = [
                 "supportrateup",
                 "gift",
                 "get_ssr",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_unitanomaly1",
+        name: "??",
+        name_ja: "??",
+        type: "visual",
+        plan: "anomaly",
+        have: "card_a",
+        releasedAt: "2026-06-15",
+        rarity: "SSR",
+        source: "limited_u",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_srunitsense2",
+        name: "??",
+        name_ja: "??",
+        type: "visual",
+        plan: "sense",
+        have: "card_a",
+        releasedAt: "2026-06-15",
+        rarity: "SR",
+        source: "limited_u",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
