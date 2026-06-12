@@ -267,7 +267,8 @@ export const produceList = [
     { id: "srhiro_1sr", name: "가장 적성에 안맞는 일", name_en: "The Thing I'm Least Suited For", name_ja: "一番向いてないこと", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
     { id: "srlilja_1sr", name: "한 발 내딛은 앞에는", name_en: "Beyond That First Step", name_ja: "一つ踏み出した先に", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
     { id: "srmao_1sr", name: "시작은 멋있게", name_en: "A Cool Start", name_ja: "はじまりはカッコよく", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
-    { id: "srkotone_1sr", name: "귀여움♡시작했어요", name_en: "Cute♡ and Here I Come", name_ja: "カワイイ♡はじめました", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
+    { id: "srkotone_1sr", name: "귀여움♡시작했어요", name_en: "Started Being Cute♡", name_ja: "カワイイ♡はじめました", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
+    { id: "srsumika_1sr", name: "꿈을 향한 리스타트", name_en: "Restart Towards Her Dreams", name_ja: "夢へのリスタート", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
     { id: "srtemari_1sr", name: "한마리의 늑대", name_en: "A Lone Wolf", name_ja: "一匹狼", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
     { id: "srsaki_1sr", name: "내가 1번!", name_en: "I'm Number One!", name_ja: "わたしが一番!", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
 
