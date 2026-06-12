@@ -2141,48 +2141,6 @@ export const cardList = [
                 "event_paraup"
             ]
     },
-    {
-        id: "visual_unitanomaly1",
-        name: "??",
-        name_ja: "??",
-        type: "visual",
-        plan: "anomaly",
-        have: "card_a",
-        releasedAt: "2026-06-15",
-        rarity: "SSR",
-        source: "limited_u",
-        extra1: "param", extra2: "ranenhance",
-        abilities:
-            [
-                "fixedparam",
-                "hpmax",
-                "supportrateup",
-                "hpmax",
-                "hpmax",
-                "event_paraup"
-            ]
-    },
-    {
-        id: "visual_srunitsense2",
-        name: "??",
-        name_ja: "??",
-        type: "visual",
-        plan: "sense",
-        have: "card_a",
-        releasedAt: "2026-06-15",
-        rarity: "SR",
-        source: "limited_u",
-        extra1: "param",
-        abilities:
-            [
-                "fixedparam",
-                "hpmax",
-                "supportrateup",
-                "hpmax",
-                "hpmax",
-                "event_paraup"
-            ]
-    },
 
 
 
