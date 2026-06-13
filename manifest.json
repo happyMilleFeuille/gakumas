@@ -1,0 +1,18 @@
+{
+  "id": "/gakumas/",
+  "name": "Gakumas Note",
+  "short_name": "Gakumas Note",
+  "description": "Gakuen Idolmaster Gacha Simulator & Support Card Calculator",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icons/icon192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

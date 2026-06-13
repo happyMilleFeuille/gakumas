@@ -20,6 +20,9 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 .gacha-vid.hidden { display: none !important; }
 

@@ -49,14 +49,14 @@ export function renderPickupSelector(ui) {
             <div class="pickup-wrapper ${ (isSelection || isMulti) ? 'selection-wrapper' : ''}">
                 <div class="pickup-item ${itemClass}">
                     <div class="pickup-name">${displayName}</div>
-                    <div class="pickup-img-wrapper idol-main-img" style="border: 1px solid ${favColor}; ${isMulti ? 'display: flex; position: relative;' : 'position: relative;'} box-shadow: 0 0 20px 5px ${favColor}99;">
+                    <div class="pickup-img-wrapper idol-main-img" style="border: 1px solid ${favColor}; ${isMulti ? 'display: flex; position: absolute;' : 'position: absolute;'} box-shadow: 0 0 20px 5px ${favColor}99;">
                         ${ isMulti ? 
                             currentCfg.pool.pssr.map((p, idx) => {
                                 const pid = typeof p === 'string' ? p : p.id;
                                 const imgVer = checkHasCard(pid) ? '2' : '1';
                                 const cardData = produceList.find(c => c.id === pid);
                                 const isMobile = window.innerWidth <= 768;
-                                const planIconSize = isMobile ? '28px' : '38px';
+                                const planIconSize = isMobile ? '24px' : '32px';
                                 const osusumeIconSize = isMobile ? '20px' : '28px';
                                 const rarityIconSize = isMobile ? '28px' : '52px'; // 등급 크기 약간 키움
                                 
@@ -70,19 +70,22 @@ export function renderPickupSelector(ui) {
                                 const rarityIcon = cardData?.rarity ? `<img src="icons/${rarityKey}.png" class="pickup-rarity-icon" style="position: absolute; bottom: 6px; right: 6px; width: ${rarityIconSize}; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : '';
                                 
                                 return `
-                                <div style="flex: 1; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative; ${idx < currentCfg.pool.pssr.length - 1 ? `border-right: 1px solid ${favColor}88;` : ''}">
+                                <div style="flex: 1; position: relative; overflow: hidden; ${idx < currentCfg.pool.pssr.length - 1 ? `border-right: 1px solid ${favColor}88;` : ''}">
+                                    <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                                     ${planIcon}
                                     ${osusumeIcon}
                                     ${rarityIcon}
                                 </div>`;
                             }).join('')
                             : `
-                            <div class="selection-banner-img" style="background-image: url('${bannerImg}'); width: 100%; height: 100%; background-size: cover; background-position: top;"></div>
+                            <div class="selection-banner-img" style="width: 100%; height: 100%; overflow: hidden; position: relative;">
+                                <img src="${bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                            </div>
                             ${ (currentCfg.pool?.pssr?.[0] && !isSelection) ? (() => {
                                 const pid = typeof currentCfg.pool.pssr[0] === 'string' ? currentCfg.pool.pssr[0] : currentCfg.pool.pssr[0].id;
                                 const cardData = produceList.find(c => c.id === pid);
                                 const isMobile = window.innerWidth <= 768;
-                                const planIconSize = isMobile ? '32px' : '48px';
+                                const planIconSize = isMobile ? '28px' : '40px';
                                 const osusumeIconSize = isMobile ? '22px' : '32px';
                                 const rarityIconSize = isMobile ? '35px' : '70px';
                                 
@@ -102,8 +105,8 @@ export function renderPickupSelector(ui) {
                     </div>
                     ${gachaDate ? `<div class="pickup-date ${type === 'unit' ? 'is-unit' : ''}">${gachaDate}</div>` : ''}
                     <div class="pickup-support-column">
-                        ${sssrPickups.map(id => `<div class="support-pickup-mini" data-rarity="SSR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
-                        ${srPickups.map(id => `<div class="support-pickup-mini" data-rarity="SR" style="background-image: url('images/support/${id}.webp');"></div>`).join('')}
+                        ${sssrPickups.map(id => `<div class="support-pickup-mini" data-rarity="SSR" style="background-image: url('images/support/thumb/${id}.webp');"></div>`).join('')}
+                        ${srPickups.map(id => `<div class="support-pickup-mini" data-rarity="SR" style="background-image: url('images/support/thumb/${id}.webp');"></div>`).join('')}
                     </div>
                 </div>
             </div>
@@ -141,9 +144,9 @@ function setupSupportTooltips(container) {
         tooltip.style.position = 'fixed';
         tooltip.style.zIndex = '9999';
         tooltip.style.pointerEvents = 'none';
-        tooltip.style.border = '2px solid #fff';
-        tooltip.style.borderRadius = '8px';
-        tooltip.style.transition = 'opacity = 0.15s ease';
+        tooltip.style.border = '3px solid #fff';
+        tooltip.style.borderRadius = '12px';
+        tooltip.style.transition = 'none';
         tooltip.style.display = 'none';
         tooltip.style.opacity = '0';
         tooltip.style.overflow = 'hidden';
@@ -155,8 +158,8 @@ function setupSupportTooltips(container) {
     
     // 내부 구조 고정 (쏠림 방지를 위해 전용 컨테이너 사용)
     tooltip.innerHTML = `
-        <div class="tooltip-container" style="position: relative; width: 100%; height: 100%; overflow: hidden; display: block; background: #000;">
-            <img src="" class="tooltip-main-img" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1;">
+        <div class="tooltip-container" style="position: relative; width: 100%; height: auto; display: block; background: #000;">
+            <img src="" class="tooltip-main-img" style="width: 100%; height: auto; display: block;">
             <img src="" class="tooltip-attr-icon" style="position: absolute; top: 8px; left: 8px; z-index: 5; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
             <div class="tooltip-card-name" style="position: absolute; bottom: 8px; right: 8px; z-index: 10; color: #fff; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); padding: 2px 0; pointer-events: none; white-space: nowrap;"></div>
             <img src="" class="tooltip-rarity-img" style="position: absolute; bottom: 8px; left: 8px; z-index: 5;">
@@ -205,15 +208,28 @@ function setupSupportTooltips(container) {
         }
 
         tImg.style.opacity = '0';
+        tImg.onload = () => { tImg.style.opacity = '1'; };
+        tImg.onerror = () => {
+            // 고해상도 이미지 로드 실패 시 섬네일이라도 보여주기
+            tImg.src = bgImgPath;
+            tImg.onload = () => { tImg.style.opacity = '1'; };
+            tImg.onerror = () => {
+                tooltip.style.opacity = '0';
+                setTimeout(() => { tooltip.style.display = 'none'; }, 150);
+            };
+        };
         tImg.src = `images/support/${cardId}.webp`; // 이미지 로드 시도
-        tImg.onload = () => tImg.style.opacity = '1';
-        tImg.src = bgImgPath;
         
         const rarity = item.dataset.rarity;
-        const color = rarity === 'SSR' ? '#d4a5ff' : '#ffe082';
+        const ssrGradient = 'linear-gradient(135deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)';
+        const srGradient = 'linear-gradient(135deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)';
+        const borderGradient = rarity === 'SSR' ? ssrGradient : (rarity === 'SR' ? srGradient : 'linear-gradient(135deg, #fff, #fff)');
         const shadow = rarity === 'SSR' ? 'rgba(212, 165, 255, 0.4)' : 'rgba(255, 224, 130, 0.3)';
 
-        tooltip.style.borderColor = color;
+        tooltip.style.border = '3px solid transparent';
+        tooltip.style.backgroundImage = `linear-gradient(#000, #000), ${borderGradient}`;
+        tooltip.style.backgroundOrigin = 'border-box';
+        tooltip.style.backgroundClip = 'padding-box, border-box';
         tooltip.style.boxShadow = `0 10px 40px ${shadow}`;
         tooltip.style.display = 'block';
         
@@ -252,9 +268,7 @@ function setupSupportTooltips(container) {
         if (y < 10) y = 10;
 
         tooltip.style.setProperty('width', tw + 'px', 'important');
-        tooltip.style.setProperty('height', th + 'px', 'important');
         tooltip.style.setProperty('min-width', tw + 'px', 'important');
-        tooltip.style.setProperty('min-height', th + 'px', 'important');
         tooltip.style.left = x + 'px';
         tooltip.style.top = y + 'px';
         
@@ -379,7 +393,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
         bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
     } else if (type === 'limited') {
         currentCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
@@ -389,7 +403,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
         bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
     } else if (type === 'unit') {
         currentCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
@@ -399,7 +413,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
         bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
     } else if (type === 'fes') {
         currentCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
@@ -409,7 +423,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
         bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
     }
     return { currentCfg, favColor, displayName, bannerImg, bgImg };

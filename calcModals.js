@@ -258,7 +258,7 @@ export function renderSidePanelContent(panel, selectedPlan) {
 
         return `
             <div class="side-card-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'is-disabled-card' : ''}" data-id="${c.id}" ${style}>
-                <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
+                <img src="images/support/thumb/${c.id}.webp" onerror="this.src='icons/card.png'">
                 <img src="images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'card' : 'item'}.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'item' : 'card'}.webp'; this.onerror=null;">
                 <div class="calc-card-stars">${Array.from({ length: 4 }, (_, i) => `<img src="icons/flower.webp" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
                 <div class="card-bonus-overlay"><span class="bonus-val"></span></div>
@@ -277,7 +277,7 @@ export function renderSidePanelContent(panel, selectedPlan) {
 
         return `
             <div class="side-card-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'is-disabled-card' : ''}" data-id="${c.id}" ${style}>
-                <img src="images/support/${c.id}.webp" onerror="this.src='icons/card.png'">
+                <img src="images/support/thumb/${c.id}.webp" onerror="this.src='icons/card.png'">
                 <img src="images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'card' : 'item'}.webp" class="side-card-overlay-icon" onerror="this.src='images/support/${c.id}_${c.have && c.have.startsWith('card') ? 'item' : 'card'}.webp'; this.onerror=null;">
                 <div class="calc-card-stars">${Array.from({ length: 4 }, (_, i) => `<img src="icons/flower.webp" class="calc-card-star ${i < lb ? 'active' : ''}">`).join('')}</div>
                 <div class="card-bonus-overlay"><span class="bonus-val"></span></div>
@@ -1396,7 +1396,7 @@ export function showRecommendModal(onConfirm) {
                     const isLocked = lockedCardSet.has(id);
                     const borderColor = isLocked ? (isRental ? '#5ECFB1' : attrColor) : '#88888866';
                     return `<div class="lock-card-item" data-card-id="${id}" style="position: relative; width: 81px; height: 45px; border-radius: 4px; overflow: hidden; border: 2px solid ${borderColor}; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s;">
-                        <img src="images/support/${id}.webp" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="images/support/thumb/${id}.webp" style="width: 100%; height: 100%; object-fit: cover;">
                         <div class="lock-card-overlay" style="position: absolute; inset: 0; background: ${isLocked ? 'transparent' : 'rgba(0,0,0,0.55)'}; transition: background 0.2s; display: flex; align-items: center; justify-content: center;">
                             ${(!isLocked && isRental) ? '<span style="color: #fff; font-size: 10px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">RENTAL</span>' : ''}
                         </div>

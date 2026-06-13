@@ -182,7 +182,7 @@ body.gacha-result-active .gacha-container {
 }
 
 .pickup-group:hover .pickup-images-inner {
-    transform: translateY(-8px);
+    top: -8px;
 }
 
 .pickup-group.selected {
@@ -195,6 +195,7 @@ body.gacha-result-active .gacha-container {
     align-items: center;
     width: 100%;
     height: 100%;
+    top: 0;
 }
 
 .pickup-name {
@@ -306,7 +307,7 @@ body.gacha-result-active .gacha-container {
     border-radius: 0 50px 0 50px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease;
+    transition: top 0.3s ease;
 }
 
 /* 이미지 중복 스타일 삭제 */
@@ -412,24 +413,42 @@ body.gacha-result-active .gacha-container {
     /* PC 크기 70px로 축소 */
     aspect-ratio: 1 / 1;
     border-radius: 50%;
-    border: 2px solid #fff;
-    overflow: hidden;
+    border: 2px solid transparent;
+    background-clip: padding-box !important;
+    position: relative;
     background-size: cover;
     background-position: center;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
     pointer-events: auto;
-    transform: none;
     transition: transform 0.2s ease;
 }
 
+.support-pickup-mini::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
 .support-pickup-mini[data-rarity="SSR"] {
-    border-color: #d4a5ff !important;
     box-shadow: 0 0 15px rgba(212, 165, 255, 0.4);
 }
 
+.support-pickup-mini[data-rarity="SSR"]::before {
+    background: linear-gradient(135deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%);
+}
+
 .support-pickup-mini[data-rarity="SR"] {
-    border-color: #ffe082 !important;
     box-shadow: 0 0 12px rgba(255, 224, 130, 0.3);
+}
+
+.support-pickup-mini[data-rarity="SR"]::before {
+    background: linear-gradient(135deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%);
 }
 
 @media (max-width: 768px) {
@@ -1400,18 +1419,25 @@ body.immersive-mode {
     }
 }
 
-/* 호버 애니메이션: 이미지만 독립 이동 */
-.pickup-item:hover .pickup-img-wrapper,
+/* 호버 애니메이션: 이미지만 독립 이동 (CPU 기반 top 전환으로 GPU 컴포지팅 화질 저하 방지) */
+.pickup-item:hover .pickup-img-wrapper {
+    top: -10px !important;
+}
 .pickup-group:hover .pickup-images-inner {
-    transform: translateY(-10px) !important;
+    top: -10px !important;
 }
 
 /* 서포트 카드 영역 호버 시 이미지 이동 무효화 */
 .pickup-item:has(.pickup-support-column:hover) .pickup-img-wrapper {
-    transform: none !important;
+    top: 0 !important;
 }
 
-.pickup-img-wrapper,
-.pickup-images-inner {
-    transition: transform 0.3s ease !important;
+.pickup-img-wrapper {
+    top: 0;
+    transition: top 0.3s ease !important;
 }
+.pickup-images-inner {
+    top: 0;
+    transition: top 0.3s ease !important;
+}
+

@@ -203,8 +203,8 @@
 
 .pssr-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    /* 최소 너비 220px로 확대 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    /* 최소 너비를 280px로 확대하여 PC에서 최대 3열로 조절 */
     gap: 1.5rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -295,7 +295,8 @@
     /* 초고밀도 자간 축소 */
 }
 
-.pssr-youtube-link {
+.pssr-youtube-link,
+.pssr-gacha-video-link {
     display: flex;
     align-items: center;
     opacity: 0.8;
@@ -303,9 +304,24 @@
     flex-shrink: 0;
 }
 
-.pssr-youtube-link:hover {
+.pssr-youtube-link:hover,
+.pssr-gacha-video-link:hover {
     transform: scale(1.1);
     opacity: 1;
+}
+
+.pssr-play-icon-mask {
+    width: 20px;
+    height: 20px;
+    background-color: var(--button-color, #ff4d8d);
+    mask-image: url('../icons/play-circle.svg');
+    -webkit-mask-image: url('../icons/play-circle.svg');
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
 }
 
 .pssr-youtube-icon {
@@ -351,27 +367,58 @@
         padding-top: 180%;
     }
 
+    .pssr-card {
+        position: relative;
+    }
+
+    .pssr-info {
+        position: static;
+    }
+
+    .pssr-rarity-wrap {
+        width: 100% !important;
+        align-self: stretch !important;
+        gap: 1px !important;
+    }
+
     .pssr-name {
         font-size: 0.65rem;
     }
 
     .pssr-plan-icon {
-        width: 24px;
-        height: 24px;
-        top: -12px;
-        right: 36px;
-        /* osusume-icon(24px) + 간격(4px) + 우측 여백(8px) */
+        width: 18px;
+        height: 18px;
+        bottom: 8px;
+        top: auto;
+        left: 8px;
+        right: auto;
     }
 
     .pssr-osusume-icon {
-        width: 24px;
-        height: 24px;
-        top: -12px;
-        right: 8px;
+        width: 18px;
+        height: 18px;
+        bottom: 8px;
+        top: auto;
+        left: 30px;
+        right: auto;
     }
 
     .pssr-rarity-icon {
         height: 14px;
+    }
+
+    .pssr-source-badge {
+        font-size: 0.5rem !important;
+    }
+
+    .pssr-play-icon-mask {
+        width: 16px;
+        height: 16px;
+    }
+
+    .pssr-youtube-icon {
+        width: 16px;
+        height: 16px;
     }
 }
 

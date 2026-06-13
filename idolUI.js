@@ -21,6 +21,8 @@ const getLocalizedCardName = (card) => {
     return card.name;
 };
 
+let activeTab = 'p-idol';
+
 export function renderIdolList() {
     if (!contentArea) return;
     contentArea.innerHTML = '';
@@ -54,13 +56,15 @@ export function renderIdolList() {
                 p.another !== true;
         });
 
+        const imageFolder = 'idols';
+
         cards.forEach(card => {
             const imageList = [
-                `idols/${card.id}1.webp`,
-                `idols/${card.id}2.webp`
+                `${imageFolder}/${card.id}1.webp`,
+                `${imageFolder}/${card.id}2.webp`
             ];
             const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
-            anothers.forEach(a => imageList.push(`idols/${a.id}1.webp`));
+            anothers.forEach(a => imageList.push(`${imageFolder}/${a.id}1.webp`));
 
             let currentIndex = state.pssrIndex[card.id] || 0;
             if (currentIndex >= imageList.length) currentIndex = 0;
@@ -297,16 +301,19 @@ export function renderProduceCards(idolName, container) {
             planIcon.parentElement.insertBefore(osusumeIcon, planIcon);
         }
 
+        const imageFolder = 'idols';
         const rarityIcon = item.querySelector('.pssr-rarity-icon');
 
         const imageList = [
-            `idols/${card.id}1.webp`,
-            `idols/${card.id}2.webp`
+            `${imageFolder}/${card.id}1.webp`,
+            `${imageFolder}/${card.id}2.webp`
         ];
+        const videoIdList = [card.id, card.id];
 
         const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
         anothers.forEach(a => {
-            imageList.push(`idols/${a.id}1.webp`);
+            imageList.push(`${imageFolder}/${a.id}1.webp`);
+            videoIdList.push(a.id);
         });
 
         let currentIndex = state.pssrIndex[card.id] || 0;
@@ -339,6 +346,7 @@ export function renderProduceCards(idolName, container) {
                 setTimeout(() => {
                     currentIndex = nextIndex;
                     setPSSRIndex(card.id, currentIndex);
+                    if (typeof updateGachaVideo === 'function') updateGachaVideo(currentIndex);
 
                     img.style.transition = 'none';
                     img.classList.remove('slide-out');
@@ -427,6 +435,66 @@ export function renderProduceCards(idolName, container) {
                 youtubeLink.classList.remove('hidden');
             } else {
                 youtubeLink.classList.add('hidden');
+            }
+        }
+
+        const gachaVideoLink = item.querySelector('.pssr-gacha-video-link');
+        let currentVideoUrl = '';
+
+        function updateGachaVideo(idx) {
+            if (!gachaVideoLink || card.rarity !== 'PSSR') return;
+            const vidId = videoIdList[idx];
+            currentVideoUrl = `gasya/pssr/${vidId}.mp4`;
+            gachaVideoLink.classList.add('hidden');
+            fetch(currentVideoUrl, { method: 'HEAD' })
+                .then(res => {
+                    if (res.ok) gachaVideoLink.classList.remove('hidden');
+                })
+                .catch(() => {});
+        }
+
+        if (gachaVideoLink) {
+            if (card.rarity === 'PSSR') {
+                updateGachaVideo(currentIndex);
+
+                gachaVideoLink.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!currentVideoUrl) return;
+                    const color = idolColors[idolName] || '#ff4d8d';
+                    getCommonUI().then(m => m.openVideoModal(currentVideoUrl, color, true));
+                };
+                gachaVideoLink.style.setProperty('--button-color', idolColors[idolName] || '#ff4d8d');
+            } else {
+                gachaVideoLink.classList.add('hidden');
+            }
+        }
+
+        // 모바일: 재생 버튼들을 rarity-wrap 오른쪽으로 이동
+        if (window.innerWidth <= 768) {
+            const rarityWrap = item.querySelector('.pssr-rarity-wrap');
+            if (rarityWrap) {
+                rarityWrap.style.width = '100%';
+                rarityWrap.style.alignSelf = 'stretch';
+                const ytLink = item.querySelector('.pssr-youtube-link');
+                const gachaLink = item.querySelector('.pssr-gacha-video-link');
+                
+                // 버튼들을 오른쪽으로 밀기 위한 빈 공간 생성
+                const spacer = document.createElement('div');
+                spacer.style.flex = '1';
+                rarityWrap.appendChild(spacer);
+                
+                if (gachaLink) rarityWrap.appendChild(gachaLink);
+                if (ytLink) rarityWrap.appendChild(ytLink);
+            }
+
+            // 플랜/오스스메 아이콘을 이미지 영역으로 이동
+            const imgWrapper = item.querySelector('.pssr-img-wrapper');
+            if (imgWrapper) {
+                const planIcon = item.querySelector('.pssr-plan-icon');
+                const osusumeIcon = item.querySelector('.pssr-osusume-icon');
+                if (planIcon) imgWrapper.appendChild(planIcon);
+                if (osusumeIcon) imgWrapper.appendChild(osusumeIcon);
             }
         }
 

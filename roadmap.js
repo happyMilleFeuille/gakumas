@@ -2,6 +2,16 @@
 import { state, setRoadmapFilter, idolColors } from './state.js';
 import { produceList } from './producedata.js';
 
+// 해외 접속자도 항상 JST/KST(일본/한국) 기준으로 동일한 날짜를 보도록 강제하는 함수
+function getJSTDate(dateStr = null) {
+    if (dateStr) {
+        // "2024-05-16" 형태를 "2024/05/16"로 변환하여 브라우저 로컬 시차와 무관하게 자정으로 파싱
+        return new Date(dateStr.replace(/-/g, '/'));
+    }
+    const jstString = new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" });
+    return new Date(jstString);
+}
+
 export const idolList = [
     'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja',
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
@@ -90,11 +100,13 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
     // 2. 날짜 및 높이 계산
     const start = new Date(2024, 4, 1, 0, 0, 0, 0);
-    const now = new Date();
+    const now = getJSTDate();
     
     const width = window.innerWidth;
+    const isMobile = width <= 768;
+    const imageFolder = 'idols/thumb';
     // PC는 +10일, 모바일(768px 이하)은 +30일 여유 공간 배분
-    const paddingDays = width <= 768 ? 30 : 10;
+    const paddingDays = isMobile ? 30 : 10;
     const end = new Date(now.getTime() + paddingDays * 24 * 60 * 60 * 1000);
     
     const rangeMs = end.getTime() - start.getTime();
@@ -107,10 +119,8 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
     // 3. 헤더 렌더링 (항상 노출되는 영역)
     headerContainer.innerHTML = '';
-    const dateSpacer = document.createElement('div');
-    dateSpacer.className = 'roadmap-date-column-spacer';
-    dateSpacer.style.flex = `0 0 clamp(35px, 10vw, 70px)`;
-    headerContainer.appendChild(dateSpacer);
+    // 날짜 컬럼 스페이서 제거 (선 안쪽으로 텍스트를 넣기 위함)
+
 
     idolList.forEach((idolName) => {
         const columnHeader = document.createElement('div');
@@ -147,10 +157,10 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
         let daysText = "";
         if (idolPSSRs.length > 0) {
-            const latestCard = [...idolPSSRs].sort((a, b) => new Date(b.releasedAt) - new Date(a.releasedAt))[0];
-            const lastDate = new Date(latestCard.releasedAt);
+            const latestCard = [...idolPSSRs].sort((a, b) => getJSTDate(b.releasedAt) - getJSTDate(a.releasedAt))[0];
+            const lastDate = getJSTDate(latestCard.releasedAt);
             lastDate.setHours(0, 0, 0, 0);
-            const today = new Date();
+            const today = getJSTDate();
             today.setHours(0, 0, 0, 0);
             const diffDays = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
             if (diffDays === 0) {
@@ -201,10 +211,8 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     graphWrapper.className = 'roadmap-graph-wrapper';
     graphWrapper.style.height = `${GRAPH_HEIGHT}px`;
     listContainer.appendChild(graphWrapper);
+    // 날짜 컬럼 요소 제거 (선 안쪽으로 텍스트 이동)
 
-    const dateColumn = document.createElement('div');
-    dateColumn.className = 'roadmap-date-column';
-    graphWrapper.appendChild(dateColumn);
 
     for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
         d.setDate(1); d.setHours(0, 0, 0, 0);
@@ -213,7 +221,12 @@ export function renderPSSRRoadmap(shouldScroll = false) {
         const marker = document.createElement('div');
         marker.className = 'time-marker';
         marker.style.bottom = `${bottomOffset}px`;
-        marker.innerHTML = `<span class="time-label">${d.getFullYear()}.${d.getMonth() + 1}</span>`;
+        
+        // 현재 시점보다 미래의 달이면 글씨(라벨)를 표시하지 않음
+        if (d <= now) {
+            marker.innerHTML = `<span class="time-label">${d.getFullYear()}.${d.getMonth() + 1}</span>`;
+        }
+        
         graphWrapper.appendChild(marker);
     }
 
@@ -234,7 +247,7 @@ export function renderPSSRRoadmap(shouldScroll = false) {
         let minBottom = GRAPH_HEIGHT;
         if (idolPSSRs.length > 0) {
             idolPSSRs.forEach(card => {
-                const ratio = (new Date(card.releasedAt).getTime() - start.getTime()) / rangeMs;
+                const ratio = (getJSTDate(card.releasedAt).getTime() - start.getTime()) / rangeMs;
                 const bottomOffset = ratio * GRAPH_HEIGHT;
                 if (bottomOffset < minBottom) minBottom = bottomOffset;
             });
@@ -244,22 +257,22 @@ export function renderPSSRRoadmap(shouldScroll = false) {
         }
 
         idolPSSRs.forEach(card => {
-            const ratio = (new Date(card.releasedAt).getTime() - start.getTime()) / rangeMs;
+            const ratio = (getJSTDate(card.releasedAt).getTime() - start.getTime()) / rangeMs;
             const bottomOffset = ratio * GRAPH_HEIGHT;
             const node = document.createElement('div');
             node.className = 'roadmap-node';
             node.style.bottom = `${bottomOffset}px`;
 
-            const cardDate = new Date(card.releasedAt);
+            const cardDate = getJSTDate(card.releasedAt);
             cardDate.setHours(0, 0, 0, 0);
-            const today = new Date();
+            const today = getJSTDate();
             today.setHours(0, 0, 0, 0);
             const diffDays = Math.floor((today - cardDate) / (1000 * 60 * 60 * 24));
             const dDayText = diffDays === 0 ? " (D-Day)" : (diffDays > 0 ? ` (D+${diffDays})` : ` (D${diffDays})`);
 
             const displayName = (state.currentLang === 'en' && card.name_en) ? card.name_en : ((state.currentLang !== 'ko' && card.name_ja) ? card.name_ja : card.name);
             node.innerHTML = `
-                <div class="roadmap-node-inner"><img src="idols/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
+                <div class="roadmap-node-inner"><img src="${imageFolder}/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
                 <div class="roadmap-tooltip">
                     <img src="idols/${card.id}1.webp" class="tooltip-card-img" decoding="async">
                     <div class="tooltip-text">

@@ -115,7 +115,9 @@ export function getTriggerCounts(store) {
             const wInt = parseInt(weekNum);
             if (store.type === 'hajime' && wInt === 10 && actionId === 'test') {
                 counts.total.get_item++;
-            } else if ((store.type === 'nia' || store.type === 'hif') && (wInt === 9 || wInt === 17) && actionId === 'audition') {
+            } else if (store.type === 'nia' && (wInt === 9 || wInt === 17) && actionId === 'audition') {
+                counts.total.get_item++;
+            } else if (store.type === 'hif' && (wInt === 7 || wInt === 13 || wInt === 20) && actionId === 'test') {
                 counts.total.get_item++;
             }
         }

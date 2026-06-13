@@ -164,7 +164,7 @@ function applyCalcThemeColor(color) {
         btn.style.setProperty('--idol-color', color);
     });
 
-    document.querySelectorAll('.talent-toggle-item').forEach(btn => {
+    document.querySelectorAll('.talent-toggle-item, .kyouka-btn').forEach(btn => {
         btn.style.setProperty('--idol-color', color);
     });
 
@@ -340,20 +340,6 @@ function bindIdolSelector(grid, refreshAll) {
 
 function startWeeklyPlan(type) {
     calcStore.init(type);
-
-    // [추가] HIF 모드인 경우 강화월간 강제 해제 및 전용 카드 제거
-    if (type === 'hif') {
-        calcStore.isKyouka = false;
-        Object.keys(calcStore.planSkills).forEach(plan => {
-            const selected = calcStore.planSkills[plan];
-            Object.keys(selected).forEach(id => {
-                if (skillCardList[id]?.isKyoukaOnly) {
-                    delete selected[id];
-                }
-            });
-        });
-        calcStore.save();
-    }
 
     const visibleIdolList = getVisibleIdolList(type);
     if (visibleIdolList.length > 0 && !visibleIdolList.includes(calcStore.selectedIdol)) {

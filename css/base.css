@@ -543,6 +543,14 @@ body.gacha-result-active .button-group.horizontal {
     height: 100%;
 }
 
+.vertical-video-modal {
+    max-width: 400px;
+}
+
+.vertical-video-modal .video-container {
+    padding-top: 177.77%; /* 9:16 Aspect Ratio */
+}
+
 @media (max-width: 768px) {
     .video-modal-content {
         width: 92%;

@@ -132,6 +132,7 @@ export function openGachaRatesModal() {
             <tbody id="rates-accordion-body">
                 ${mainGroups.map(group => {
                     const tN = group.subRarities.reduce((s, r) => s + (strategy.rates[rateKeys[r.key]] || 0), 0), tG = group.subRarities.reduce((s, r) => s + (strategy.guaranteed[rateKeys[r.key]] || 0), 0);
+
                     return `<tr class="rate-row main-group expandable" data-target="group-${group.id}"><td class="rarity-label rarity-${group.id.toLowerCase()}"><span class="expand-icon">▶</span> ${group.label}</td><td>${formatPercent(tN)}</td><td>${tG > 0 ? formatPercent(tG) : '-'}</td></tr>
                         <tr class="sub-group-row hidden" id="group-${group.id}"><td colspan="3" style="padding: 0;"><table class="sub-rates-table"><tbody>
                             ${group.subRarities.map(sub => {
@@ -141,7 +142,7 @@ export function openGachaRatesModal() {
                                     <tr class="detail-row hidden" id="detail-${sub.key}"><td colspan="3"><div class="detail-container"><div class="detail-header"><span class="header-name">${t.gacha_rates_header_name}</span><span class="header-rate">${t.gacha_rates_header_normal}</span><span class="header-rate">${t.gacha_rates_header_guaranteed}</span></div>
                                     <div class="detail-list">${cards.map(c => {
                                         if (!c || !c.card) return "";
-                                        const isSupport = c.rarity.includes('CARD') || c.rarity === 'SSSR', imgTag = isSupport ? `<img src="images/support/${c.card.id}.webp" class="detail-card-img" onerror="this.style.display='none'" alt="">` : "";
+                                        const isSupport = c.rarity.includes('CARD') || c.rarity === 'SSSR', imgTag = isSupport ? `<img src="images/support/thumb/${c.card.id}.webp" class="detail-card-img" data-card-id="${c.card.id}" onerror="this.style.display='none'" alt="">` : "";
                                         const isPk = c.isPk && !config.isOnlyPool;
                                         const pkClass = isPk ? 'is-pickup' : '';
                                         const displayNormalRate = c.normalRate > 0.000001 ? formatPercent(c.normalRate) : '-';
@@ -157,7 +158,13 @@ export function openGachaRatesModal() {
 
     const setupEvents = () => {
         let tooltip = document.getElementById('card-preview-tooltip');
-        if (!tooltip) { tooltip = document.createElement('div'); tooltip.id = 'card-preview-tooltip'; tooltip.innerHTML = '<img src="" alt="">'; document.body.appendChild(tooltip); }
+        if (!tooltip) { 
+            tooltip = document.createElement('div'); 
+            tooltip.id = 'card-preview-tooltip'; 
+            tooltip.innerHTML = '<img src="" alt="">'; 
+            tooltip.style.transition = 'none'; // GPU 컴포지팅 화질 저하 방지
+            document.body.appendChild(tooltip); 
+        }
         const tImg = tooltip.querySelector('img'), accordionBody = body.querySelector('#rates-accordion-body');
         accordionBody.addEventListener('click', (e) => {
             const row = e.target.closest('.expandable'); if (!row) return;
@@ -168,8 +175,30 @@ export function openGachaRatesModal() {
             }
         });
         const hideTooltip = () => { tooltip.style.opacity = '0'; setTimeout(() => { if(tooltip.style.opacity === '0') tooltip.style.display = 'none'; }, 150); };
-        accordionBody.addEventListener('mouseover', (e) => { if (window.innerWidth <= 768) return; const img = e.target.closest('.detail-card-img'); if (!img) return; tImg.src = img.src; tooltip.style.display = 'block'; setTimeout(() => tooltip.style.opacity = '1', 10); });
-        accordionBody.addEventListener('mousemove', (e) => { if (window.innerWidth <= 768 || tooltip.style.display !== 'block') return; const offset = 20; let x = e.clientX + offset, y = e.clientY + offset; if (x + 260 > window.innerWidth) x = e.clientX - 260 - offset; if (y + 200 > window.innerHeight) y = e.clientY - 200 - offset; tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px'; });
+        accordionBody.addEventListener('mouseover', (e) => { 
+            if (window.innerWidth <= 768) return; 
+            const img = e.target.closest('.detail-card-img'); 
+            if (!img) return; 
+            const cardId = img.dataset.cardId;
+            tImg.onload = () => { tooltip.style.opacity = '1'; };
+            tImg.onerror = () => {
+                // 고해상도 이미지 로드 실패 시 섬네일로 폴백
+                tImg.src = img.src; 
+                tImg.onload = () => { tooltip.style.opacity = '1'; };
+                tImg.onerror = () => { tooltip.style.display = 'none'; };
+            };
+            tImg.src = `images/support/${cardId}.webp`; // 툴팁은 원본 고해상도 카드 이미지 사용
+            tooltip.style.display = 'block'; 
+        });
+        accordionBody.addEventListener('mousemove', (e) => { 
+            if (window.innerWidth <= 768 || tooltip.style.display !== 'block') return; 
+            const offset = 20; 
+            let x = e.clientX + offset, y = e.clientY + offset; 
+            if (x + 310 > window.innerWidth) x = e.clientX - 310 - offset; 
+            if (y + 185 > window.innerHeight) y = e.clientY - 185 - offset; 
+            tooltip.style.left = x + 'px'; 
+            tooltip.style.top = y + 'px'; 
+        });
         accordionBody.addEventListener('mouseout', (e) => { if (window.innerWidth <= 768) return; if (e.target.closest('.detail-card-img')) hideTooltip(); });
         modal.addEventListener('scroll', hideTooltip, { passive: true });
     };

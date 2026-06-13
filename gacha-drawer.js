@@ -345,7 +345,8 @@ function renderPickupList(itemsLayer, indicatorLayer) {
         const imgVer = checkHasCard(pid) ? '2' : '1';
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('idols/${pid}${imgVer}.webp'); border: 1px solid ${color};">
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
+                <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
             </div>
             <div class="drawer-item-name">${getLocalizedCardName(cardData) || pid}</div>`;
@@ -377,7 +378,8 @@ function renderNormalList(itemsLayer, indicatorLayer) {
         const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};">
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;
@@ -410,7 +412,8 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
         const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color};">
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;
@@ -454,7 +457,8 @@ function renderUnitList(itemsLayer, indicatorLayer) {
                     const imgVer = checkHasCard(pid) ? '2' : '1';
                     const memberData = produceList.find(c => c.id === pid);
                     const memberPlan = memberData?.plan ? `<img src="icons/${memberData.plan}.webp" class="drawer-plan-icon" style="top: 4px; left: 4px; width: ${isMobile ? '16px' : '20px'};">` : '';
-                    return `<div style="flex: 1; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative;">
+                    return `<div style="flex: 1; position: relative; overflow: hidden;">
+                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                         ${memberPlan}
                     </div>`;
                 }).join('')}
@@ -462,7 +466,8 @@ function renderUnitList(itemsLayer, indicatorLayer) {
         } else {
             const imgVer = checkHasCard(pid) ? '2' : '1';
             const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-            imgInnerHtml = `<div style="width: 100%; height: 100%; background-image: url('idols/${pid}${imgVer}.webp'); background-size: cover; background-position: top; position: relative;">
+            imgInnerHtml = `<div style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+                <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
             </div>`;
         }
@@ -500,7 +505,8 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon" style="z-index: 20;">` : '';
 
         const displayName = getConfigDisplayName(cfg);
-        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${favColor}; overflow: hidden; background-image: url('${cfg.bannerImg}'); background-size: cover; background-position: top; position: relative;">
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${favColor}; overflow: hidden; position: relative;">
+                <img src="${cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;
@@ -533,7 +539,8 @@ function renderFesList(itemsLayer, indicatorLayer) {
         const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-        item.innerHTML = `<div class="drawer-card-img" style="background-image: url('${pid ? `idols/${pid}${imgVer}.webp` : cfg.bannerImg}'); border: 1px solid ${color}; position: relative;">
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;

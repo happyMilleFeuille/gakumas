@@ -381,7 +381,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         } else {
             if (card.rarity === 'PSSR') {
                 // Test tuning: keep the alt intro uncommon, but visible enough to verify.
-                getSrc = Math.random() < 0.15 ? 'gasya/spotget_pssralt1.mp4' : 'gasya/spotget_pssr.mp4';
+                getSrc = Math.random() < 0.10 ? 'gasya/spotget_pssralt1.mp4' : 'gasya/spotget_pssr.mp4';
                 revealSfx = getSrc.includes('alt1') ? 'gasya/get_pssralt1.mp3' : 'gasya/get_pssr.mp3';
             } else {
                 getSrc = (card.rarity === 'PSR') ? 'gasya/spotget_psr.mp4' : 'gasya/spotget_pr.mp4';

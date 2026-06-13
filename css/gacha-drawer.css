@@ -119,6 +119,16 @@
     z-index: 5;
 }
 
+.drawer-card-img img {
+    transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+    .drawer-card-img img {
+        transform: scale(1);
+    }
+}
+
 .drawer-item.selection-type { width: 280px; }
 .drawer-item.selection-type .drawer-card-img { 
     aspect-ratio: 16 / 9; 

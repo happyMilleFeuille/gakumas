@@ -420,27 +420,25 @@
     height: 0;
     border-top: 1px solid #e9ecef;
     /* 가로선 색상을 더 진하게 변경 */
-    display: flex;
-    align-items: center;
     pointer-events: none;
     z-index: 1;
     /* 배경으로 보내기 */
 }
 
 .time-label {
-    width: clamp(35px, 10vw, 70px);
-    /* 날짜 컬럼 폭과 동일하게 설정 */
-    text-align: center;
-    font-size: clamp(0.55rem, 1.8vw, 0.7rem);
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+    width: auto;
+    text-align: left;
+    font-size: clamp(0.45rem, 1.5vw, 0.55rem);
     font-weight: 800;
     color: #888;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.8);
     padding: 1px 4px;
     border-radius: 4px;
-    margin-left: 0;
     white-space: nowrap;
     z-index: 2;
-    /* 라벨은 선보다 조금 위 */
 }
 
 /* 캐릭터별 기둥 */
@@ -820,10 +818,17 @@
 
     .roadmap-date-column,
     .roadmap-date-column-spacer,
-    .time-label,
     .roadmap-node::after,
     .roadmap-node-inner {
         display: none !important;
+    }
+
+    .time-label {
+        font-size: 0.25rem !important;
+        padding: 0 2px !important;
+        background: rgba(255, 255, 255, 0.5) !important;
+        bottom: 1px !important;
+        left: 1px !important;
     }
 
     .column-idol-icon {

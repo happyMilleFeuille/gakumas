@@ -725,6 +725,11 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     </div>
 
                     <button class="talent-bloom-info-btn">i</button>
+
+                    <button id="btn-kyouka" class="kyouka-btn ${store.isKyouka ? 'active' : ''}" style="--idol-color: ${idolColor};">
+                        <div class="kyouka-icon-img"></div>
+                    </button>
+
                     <div class="idol-opt-divider"></div>
                     ` : ''}
                     <div class="plan-type-btns-group">
@@ -768,11 +773,6 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         ` : ''}
                     </div>
                     <div class="stat-header-content">
-                        ${store.type !== 'hif' ? `
-                        <button id="btn-kyouka" class="kyouka-btn header-kyouka-btn">
-                            <img src="icons/kyoukagekkan${state.currentLang === 'ko' ? '-k' : ''}.webp" alt="Kyouka">
-                        </button>
-                        ` : ''}
                         <div class="total-stats-sum" id="total-stats-sum-container" style="background-color: ${idolColor}; box-shadow: 0 2px 6px ${idolColor}33;">
                             <span class="sum-label">TOTAL</span>
                             <span id="total-stats-sum-value">0</span>
@@ -1722,7 +1722,7 @@ export function showSupportItemTooltip(slot, cardId) {
     const effects = getParsedItemEffectsText(card.item_effects);
 
     tooltip.innerHTML = `
-        <img src="images/support/${cardId}_item.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; border: 1px solid #eee; flex-shrink: 0;" onerror="this.src='images/support/${cardId}.webp'; this.onerror=null;">
+        <img src="images/support/${cardId}_item.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; border: 1px solid #eee; flex-shrink: 0;" onerror="this.src='images/support/thumb/${cardId}.webp'; this.onerror=null;">
         <div style="opacity: 0.9;">${effects}</div>
     `;
 
@@ -1781,12 +1781,14 @@ export function showTalentBloomInfoTooltip(infoBtn) {
 
     const srRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/sr.png" onerror="this.src='icons/sr.webp'" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8;"><span>${isEn ? 'SR Idol' : (isJa ? 'SRアイドル' : 'SR 등급')}</span></div>`;
     const sainouRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/sainou.webp" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8;"><span>${isEn ? 'Bloom 3+' : (isJa ? '才能開花3段階以上' : '재능개화 3단계 이상')}</span></div>`;
+    const kyoukaRow = `<div style="display: flex; align-items: center; gap: 6px;"><img src="icons/kyoukagekkan.webp" style="width: 16px; height: 16px; object-fit: contain; opacity: 0.8; border-radius: 2px;"><span>${isEn ? 'Support Month' : (isJa ? '強化月間' : '강화월간')}</span></div>`;
 
     tooltip.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 8px; color: #333; align-items: center; text-align: center;">
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
                 ${srRow}
                 ${sainouRow}
+                ${kyoukaRow}
             </div>
             <div style="width: 100%; height: 1px; background: #ddd; margin: 2px 0;"></div>
             <div style="line-height: 1.4; text-align: left;">${t('talent_bloom_desc_2')}</div>

@@ -2446,7 +2446,8 @@
 
     /* 토글 버튼 크기 축소 (재조정: 20px -> 22px) */
     .sr-toggle-item,
-    .talent-toggle-item {
+    .talent-toggle-item,
+    .kyouka-btn {
         width: 22px !important;
         height: 22px !important;
     }
@@ -2456,6 +2457,11 @@
     .talent-toggle-item div[style*="mask-image"] {
         width: 16px !important;
         height: 16px !important;
+    }
+
+    .kyouka-btn .kyouka-icon-img {
+        width: 17px !important;
+        height: 17px !important;
     }
 
     /* 모바일 간격 축소 */
@@ -2910,37 +2916,45 @@
 }
 
 .kyouka-btn {
-    background: none;
-    border: none;
-    padding: 0;
+    width: 27px;
+    height: 27px;
     cursor: pointer;
-    height: 24px;
-    /* 헤더 우측 상단에 맞춰 크기 소폭 조정 */
     display: flex;
     align-items: center;
-    transition: transform 0.2s;
+    justify-content: center;
+    opacity: 0.4;
+    transition: all 0.2s;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.kyouka-btn img {
-    height: 100%;
-    width: auto;
-    border-radius: 4px;
-    filter: grayscale(100%) opacity(0.6) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
-    /* 범위 축소, 색 농도 복구 */
-    transition: all 0.3s ease;
+.kyouka-btn .kyouka-icon-img {
+    width: 21px;
+    height: 21px;
+    background-color: #777;
+    -webkit-mask-image: url('../icons/kyoukagekkan.webp');
+    mask-image: url('../icons/kyoukagekkan.webp');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
-.kyouka-btn:hover img {
-    filter: grayscale(50%) opacity(0.8) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+.kyouka-btn.active {
+    opacity: 1;
+    border-color: #46a4f3; /* Dance color (sky blue) */
+    transform: scale(1.1);
 }
 
-.kyouka-btn.active img {
-    filter: grayscale(0%) opacity(1);
-    /* 활성 시 컬러 복구, 그림자 제거 */
-}
-
-.kyouka-btn.active:hover img {
-    transform: scale(1.05);
+.kyouka-btn.active .kyouka-icon-img {
+    background-color: var(--idol-color, #46a4f3);
 }
 
 /* 6th slot dynamic colors */
@@ -3299,13 +3313,6 @@
         font-size: 0.62rem;
     }
 
-    /* 토탈 스탯 우측 강화월간 이미지 버튼 크기 축소 */
-    img[alt="Kyouka"] {
-        width: 50px !important;
-        height: auto !important;
-        margin-left: 5px !important;
-        cursor: pointer;
-    }
 }
 
 .stat-detail-header-icon {

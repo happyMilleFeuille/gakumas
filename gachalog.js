@@ -197,10 +197,10 @@ function createLogItem(item) {
     const img = document.createElement('img');
     img.className = 'log-card-img'; // 클래스 추가
     if (isProduce) {
-        img.src = `idols/${item.id}1.webp`;
+        img.src = `idols/thumb/${item.id}1.webp`;
         img.loading = 'lazy';
     } else {
-        img.src = item.id.includes('dummy') ? 'icons/idol.png' : `images/support/${item.id}.webp`;
+        img.src = item.id.includes('dummy') ? 'icons/idol.png' : `images/support/thumb/${item.id}.webp`;
         img.loading = 'lazy';
     }
     el.appendChild(img);

@@ -30,8 +30,10 @@ export function preloadSupportImages() {
     if (preloadedSupport) return;
     preloadedSupport = true;
 
+    const baseDir = 'images/support/thumb';
+
     cardList.forEach(card => {
-        const baseIconPath = `images/support/${card.id}`;
+        const baseIconPath = `${baseDir}/${card.id}`;
 
         // 내부 아이템/카드 이미지 프리로드 및 실제 경로 판별
         const isCardType = card.have && card.have.startsWith('card');
@@ -104,17 +106,42 @@ const getLocalizedCardName = (card) => {
     return card.name;
 };
 
-export function openVideoModal(embedUrl, borderColor = '#ff4d8d') {
+export function openVideoModal(embedUrl, borderColor = '#ff4d8d', isVertical = false) {
     const videoModal = document.getElementById('video-modal');
     const iframe = document.getElementById('video-iframe');
     if (!videoModal || !iframe) return;
 
     const modalContent = videoModal.querySelector('.video-modal-content');
     const innerContainer = videoModal.querySelector('.video-container');
-    if (modalContent) modalContent.style.borderColor = borderColor;
+    const localVideo = document.getElementById('video-local-player');
+    
+    if (modalContent) {
+        modalContent.style.borderColor = borderColor;
+        if (isVertical) {
+            modalContent.classList.add('vertical-video-modal');
+        } else {
+            modalContent.classList.remove('vertical-video-modal');
+        }
+    }
     if (innerContainer) innerContainer.style.borderColor = borderColor;
 
-    iframe.src = embedUrl;
+    if (embedUrl.endsWith('.mp4')) {
+        if (iframe) iframe.classList.add('hidden');
+        if (localVideo) {
+            localVideo.src = embedUrl;
+            localVideo.classList.remove('hidden');
+        }
+    } else {
+        if (localVideo) {
+            localVideo.classList.add('hidden');
+            localVideo.pause();
+        }
+        if (iframe) {
+            iframe.src = embedUrl;
+            iframe.classList.remove('hidden');
+        }
+    }
+
     videoModal.classList.remove('hidden');
     videoModal.style.display = 'flex';
     document.body.classList.add('video-modal-open');
@@ -150,6 +177,11 @@ export function closeVideoModal(isPopState = false) {
         return;
     }
 
+    const localVideo = document.getElementById('video-local-player');
+    if (localVideo) {
+        localVideo.pause();
+        localVideo.src = '';
+    }
     if (iframe) iframe.src = '';
     if (videoModal) {
         const resetModal = videoModal.cloneNode(true);
@@ -1211,7 +1243,7 @@ function updateSupportGrid(container) {
             cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
             if (isDeactivated) cardEl.classList.add('is-disabled');
 
-            const imgSrc = card.image || `images/support/${cardId}.webp`;
+            const imgSrc = card.image || `images/support/thumb/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
             item.querySelectorAll('.card-star').forEach((s, idx) => s.classList.toggle('active', idx < currentLB));
 

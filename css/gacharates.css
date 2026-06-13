@@ -231,20 +231,20 @@
     z-index: 100000;
     pointer-events: none;
     background: #fff;
-    border: 2px solid #ff4081;
-    border-radius: 10px;
+    border: 3px solid #ff4081;
+    border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     padding: 5px;
     display: none;
-    transition: opacity 0.15s ease-out;
+    transition: none; /* GPU 컴포지팅 화질 저하 방지 */
     opacity: 0;
+    width: 310px; /* 300px 이미지 + 10px 패딩 */
+    height: auto;
 }
 
 #card-preview-tooltip img {
-    width: 300px;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 6px;
+    width: 100%;
+    height: auto;
     display: block;
 }
 
@@ -276,3 +276,4 @@
 .detail-container::-webkit-scrollbar { width: 4px; }
 .detail-container::-webkit-scrollbar-track { background: #f1f1f1; }
 .detail-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
