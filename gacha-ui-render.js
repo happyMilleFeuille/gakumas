@@ -207,18 +207,24 @@ function setupSupportTooltips(container) {
             }
         }
 
-        tImg.style.opacity = '0';
-        tImg.onload = () => { tImg.style.opacity = '1'; };
-        tImg.onerror = () => {
-            // 고해상도 이미지 로드 실패 시 섬네일이라도 보여주기
+        tImg.dataset.targetId = cardId;
+        const highResSrc = `images/support/${cardId}.webp`;
+        const highResImg = new Image();
+        highResImg.src = highResSrc;
+
+        if (highResImg.complete) {
+            tImg.src = highResSrc;
+            tImg.style.opacity = '1';
+        } else {
             tImg.src = bgImgPath;
-            tImg.onload = () => { tImg.style.opacity = '1'; };
-            tImg.onerror = () => {
-                tooltip.style.opacity = '0';
-                setTimeout(() => { tooltip.style.display = 'none'; }, 150);
+            tImg.style.opacity = '1';
+
+            highResImg.onload = () => {
+                if (tImg.dataset.targetId === cardId) {
+                    tImg.src = highResSrc;
+                }
             };
-        };
-        tImg.src = `images/support/${cardId}.webp`; // 이미지 로드 시도
+        }
         
         const rarity = item.dataset.rarity;
         const ssrGradient = 'linear-gradient(135deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)';

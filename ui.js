@@ -1328,7 +1328,9 @@ function updateSupportGrid(container) {
     // 화면에 나타나는 카드 감지를 위한 Observer 초기화 및 등록
     initSupportObserver();
     grid.querySelectorAll('.support-card').forEach(el => {
-        supportCardObserver.observe(el);
+        if (supportCardObserver) {
+            supportCardObserver.observe(el);
+        }
     });
 
     updatePageTranslations(container);
