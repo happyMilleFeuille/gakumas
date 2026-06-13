@@ -78,8 +78,8 @@ img {
     -webkit-backdrop-filter: blur(12px);
     transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
     z-index: 110;
-    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-    flex-shrink: 0; /* 컨테이너 내에서 줄어들지 않도록 설정 */
+    white-space: nowrap; /* ?�스??줄바�?방�? */
+    flex-shrink: 0; /* 컨테?�너 ?�에??줄어?��? ?�도�??�정 */
 }
 
 .lang-select-wrap:hover {
@@ -117,7 +117,7 @@ img {
     cursor: pointer;
     outline: none;
     border-radius: 999px;
-    flex-shrink: 0; /* 버튼 너비 유지 */
+    flex-shrink: 0; /* 버튼 ?�비 ?��? */
 }
 
 .lang-options {
@@ -154,7 +154,7 @@ img {
     background: rgba(0, 0, 0, 0.06);
 }
 
-/* PC 화면 전용 스타일 */
+/* PC ?�면 ?�용 ?��???*/
 @media (min-width: 769px) {
     .lang-switch-container {
         height: 85px;
@@ -167,7 +167,7 @@ img {
         padding: 5px 12px;
         gap: 10px;
         height: auto;
-        min-width: 100px; /* PC에서 최소 너비 보장 */
+        min-width: 100px; /* PC?�서 최소 ?�비 보장 */
     }
 
     .lang-select-label {
@@ -176,7 +176,7 @@ img {
 
     .lang-select {
         font-size: 0.86rem;
-        min-width: 42px; /* 살짝 여유 있게 조정 */
+        min-width: 42px; /* ?�짝 ?�유 ?�게 조정 */
         height: auto;
         padding: 4px 8px;
     }
@@ -193,7 +193,7 @@ img {
 main {
     max-width: var(--max-width);
     margin: 1rem auto 0;
-    /* 하단 auto를 0으로 변경하여 여백 제거 */
+    /* ?�단 auto�?0?�로 변경하???�백 ?�거 */
     padding: 0 1rem;
 }
 
@@ -202,8 +202,8 @@ main {
     padding: 1.5rem 1rem 0;
     border-radius: 15px;
     position: relative;
-    height: 85dvh;
-    /* 85vh -> 85dvh로 변경하여 PWA/앱 모드에서 세로 영역 확보 */
+    height: 87dvh;
+    /* 85dvh -> 87dvh�?미세 조정 */
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -260,7 +260,7 @@ h1 {
 @media (max-width: 768px) {
     #fixed-bg {
         -webkit-mask-size: 300px;
-        /* 모바일용 배경 크기 */
+        /* 모바?�용 배경 ?�기 */
         mask-size: 300px;
     }
 
@@ -299,7 +299,7 @@ footer {
     text-align: center;
     padding: 2rem;
     padding-bottom: 60px;
-    /* 120px에서 60px로 축소 */
+    /* 120px?�서 60px�?축소 */
     color: #777;
 }
 
@@ -328,9 +328,9 @@ footer {
 .button-group.horizontal {
     display: flex;
     justify-content: center;
-    align-items: center; /* flex-start -> center로 수직 중앙 정렬 */
+    align-items: center; /* flex-start -> center�??�직 중앙 ?�렬 */
 
-    gap: 0.8rem; /* PC는 다시 여유 있게 */
+    gap: 0.8rem; /* PC???�시 ?�유 ?�게 */
 
     width: 100%;
     position: fixed;
@@ -338,9 +338,9 @@ footer {
     left: 0;
     transform: none;
     z-index: 10000;
-    padding: 12px 0; /* 위아래 여백을 12px씩 균등하게 배분 */
+    padding: 12px 0; /* ?�아???�백??12px??균등?�게 배분 */
 
-    /* 배경 설정을 직접 추가 */
+    /* 배경 ?�정??직접 추�? */
     background: rgba(255, 255, 255, 0.95);
     border-top: none;
     box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
@@ -368,7 +368,7 @@ footer {
     cursor: pointer;
     transition: all 0.3s ease;
     flex: 1;
-    max-width: 85px; /* PC는 다시 여유 있게 */
+    max-width: 85px; /* PC???�시 ?�유 ?�게 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -395,10 +395,10 @@ footer {
     }
 
     #idol {
-        height: 85dvh;
-        /* 모바일에서도 85dvh로 늘려 PWA 화면 최대로 활용 */
+        height: 87dvh;
+        /* 모바?�에?�도 87dvh�?미세 조정 */
         padding: 0;
-        /* 모든 여백 제거 (좌우 패딩 포함) */
+        /* 모든 ?�백 ?�거 (좌우 ?�딩 ?�함) */
         overflow-y: auto;
     }
 
@@ -408,22 +408,21 @@ footer {
     }
 
     .button-group.horizontal {
-        width: 100%;
-        height: 80px;
+        height: 70px;
     }
 
     .button-group.horizontal {
-        gap: 0.35rem; /* 모바일 간격 살짝 확대 */
+        gap: 0.35rem; /* 모바??간격 ?�짝 ?��? */
     }
 
     .menu-btn {
-        max-width: 65px; /* 모바일 간격 살짝 확대 */
+        max-width: 65px; /* 모바??간격 ?�짝 ?��? */
         font-size: 0.65rem;
         gap: 5px;
     }
 
     .btn-icon {
-        width: 26px; /* 모바일은 큼직하게 유지 */
+        width: 26px; /* 모바?��? ?�직?�게 ?��? */
         height: 26px;
     }
 }
@@ -495,7 +494,7 @@ footer {
     text-align: center;
 }
 
-/* 가챠 결과 화면에서 하단 메뉴만 숨김 */
+/* 가�?결과 ?�면?�서 ?�단 메뉴�??��? */
 body.gacha-result-active .button-group.horizontal {
     display: none !important;
 }
@@ -519,7 +518,7 @@ body.gacha-result-active .button-group.horizontal {
     max-width: 850px;
     background: transparent;
     border-radius: 0;
-    /* 테두리를 각지게 설정 */
+    /* ?�두리�? 각�?�??�정 */
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     margin: 60px auto;
@@ -610,3 +609,48 @@ body.gacha-result-active .button-group.horizontal {
         margin: 3px 0;
     }
 }
+
+
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff4d8d;
+    transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+}
+
+.splash-bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/background.webp');
+    background-repeat: repeat;
+    background-size: 400px;
+    opacity: 0.8; /* User requested 80% opacity */
+    pointer-events: none;
+}
+
+.splash-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: contain;
+    z-index: 1;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: splashPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes splashPulse {
+    0% { transform: scale(0.95); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.9; }
+}
+

@@ -188,10 +188,13 @@ export function openVideoModal(embedUrl, borderColor = '#ff4d8d', isVertical = f
     }
     if (innerContainer) innerContainer.style.borderColor = borderColor;
 
-    if (embedUrl.endsWith('.mp4')) {
+    const isLocalMp4 = embedUrl.split('#')[0].split('?')[0].endsWith('.mp4');
+
+    if (isLocalMp4) {
         if (iframe) iframe.classList.add('hidden');
         if (localVideo) {
             localVideo.src = embedUrl;
+            localVideo.volume = (window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent)) ? 0.5 : 1.0;
             localVideo.classList.remove('hidden');
         }
     } else {
@@ -1342,6 +1345,14 @@ export function updateGlobalBackgroundColor() {
     const idolColor = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColors[state.favoriteIdol] : '#ff4d8d';
 
     document.documentElement.style.setProperty('--idol-theme-color', idolColor);
+    
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (!metaThemeColor) {
+        metaThemeColor = document.createElement('meta');
+        metaThemeColor.name = 'theme-color';
+        document.head.appendChild(metaThemeColor);
+    }
+    metaThemeColor.content = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColor : '#ffffff';
 
     if (isHif && fixedBg) {
         // HIF 전용 5색 그라데이션 전역 배경 복구
