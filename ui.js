@@ -30,12 +30,16 @@ export function preloadSupportImages() {
     if (preloadedSupport) return;
     preloadedSupport = true;
 
-    const baseDir = 'images/support/thumb';
+    const thumbDir = 'images/support/thumb';
+    const mainDir = 'images/support';
 
     cardList.forEach(card => {
-        const baseIconPath = `${baseDir}/${card.id}`;
+        // 1. 메인 리스트용 썸네일 프리로드
+        const thumbImg = new Image();
+        thumbImg.src = `${thumbDir}/${card.id}.webp`;
 
-        // 내부 아이템/카드 이미지 프리로드 및 실제 경로 판별
+        // 2. 내부 아이템/카드 이미지 프리로드 및 실제 경로 판별 (모달용)
+        const baseIconPath = `${mainDir}/${card.id}`;
         const isCardType = card.have && card.have.startsWith('card');
         const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
         const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
