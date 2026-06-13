@@ -302,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('card-modal');
     const gachaLogModal = document.getElementById('gacha-log-modal');
     const gachaRatesModal = document.getElementById('gacha-rates-modal');
-    const closeModal = document.querySelector('.close-modal');
     const closeGachaLogModal = document.querySelector('.close-log-modal');
     const closeGachaRatesModal = document.querySelector('.close-rates-modal');
 
@@ -349,16 +348,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gachaRatesModal.classList.add('hidden');
             gachaRatesModal.style.display = 'none';
         }
-    }
-
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            if (modal && (modal.style.display === 'flex' || !modal.classList.contains('hidden'))) {
-                history.back();
-            } else {
-                hideModal();
-            }
-        });
     }
 
     if (closeGachaLogModal) {

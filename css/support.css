@@ -977,19 +977,6 @@ select.sort-select {
     position: relative;
 }
 
-.close-modal {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-    color: #aaa;
-}
-
-.close-modal:hover {
-    color: #000;
-}
-
 .modal-body {
     text-align: center;
     width: 100%;

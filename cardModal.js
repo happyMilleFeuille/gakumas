@@ -87,7 +87,19 @@ export function showCardModal(card, displayName, imgSrc) {
     const mAbilities = document.getElementById('modal-abilities');
     const stars = document.querySelectorAll('.star');
 
-    mImg.src = imgSrc;
+    const thumbSrc = card.image || `images/support/thumb/${card.id}.webp`;
+    mImg.src = thumbSrc;
+    mImg.style.filter = 'blur(8px)';
+    mImg.style.transition = 'filter 0.3s ease-out';
+
+    const highResImg = new Image();
+    highResImg.onload = () => {
+        if (window._modalCardId === card.id) {
+            mImg.src = imgSrc;
+            mImg.style.filter = 'none';
+        }
+    };
+    highResImg.src = imgSrc;
     mTitle.textContent = displayName;
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
     mPlan.src = `icons/${(card.plan || 'free').toLowerCase()}.webp`;
