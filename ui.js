@@ -31,7 +31,10 @@ const mainImagePreloadQueue = new Set();
 const preloadedMainImages = new Set();
 let preloadIntervalId = null;
 
+const isMobileDevice = () => window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+
 const preloadMainImage = (cardId) => {
+    if (isMobileDevice()) return;
     if (!cardId || preloadedMainImages.has(cardId)) return;
     preloadedMainImages.add(cardId);
     mainImagePreloadQueue.delete(cardId);
@@ -41,7 +44,7 @@ const preloadMainImage = (cardId) => {
 
 let supportCardObserver = null;
 function initSupportObserver() {
-    if (supportCardObserver) return;
+    if (isMobileDevice() || supportCardObserver) return;
     supportCardObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -55,6 +58,7 @@ function initSupportObserver() {
 }
 
 function startBackgroundSequentialPreload() {
+    if (isMobileDevice()) return;
     if (preloadIntervalId) clearInterval(preloadIntervalId);
     mainImagePreloadQueue.clear();
     cardList.forEach(card => {
