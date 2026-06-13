@@ -33,25 +33,37 @@ export function preloadSupportImages() {
     const thumbDir = 'images/support/thumb';
     const mainDir = 'images/support';
 
+    // 1순위: 메인 리스트용 썸네일 프리로드 (즉시)
     cardList.forEach(card => {
-        // 1. 메인 리스트용 썸네일 프리로드
         const thumbImg = new Image();
         thumbImg.src = `${thumbDir}/${card.id}.webp`;
-
-        // 2. 내부 아이템/카드 이미지 프리로드 및 실제 경로 판별 (모달용)
-        const baseIconPath = `${mainDir}/${card.id}`;
-        const isCardType = card.have && card.have.startsWith('card');
-        const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
-        const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
-
-        const img1 = new Image();
-        img1.onload = () => { card._extraPath = path1; };
-        img1.src = path1;
-
-        const img2 = new Image();
-        img2.onload = () => { if (!card._extraPath) card._extraPath = path2; };
-        img2.src = path2;
     });
+
+    // 2순위: 모달용 아이콘 이미지 프리로드 (썸네일 로딩 후 시작하도록 딜레이)
+    setTimeout(() => {
+        cardList.forEach(card => {
+            const baseIconPath = `${mainDir}/${card.id}`;
+            const isCardType = card.have && card.have.startsWith('card');
+            const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
+            const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+
+            const img1 = new Image();
+            img1.onload = () => { card._extraPath = path1; };
+            img1.src = path1;
+
+            const img2 = new Image();
+            img2.onload = () => { if (!card._extraPath) card._extraPath = path2; };
+            img2.src = path2;
+        });
+    }, 600);
+
+    // 3순위: 원본 메인 이미지 프리로드 (가장 마지막에 백그라운드에서 천천히)
+    setTimeout(() => {
+        cardList.forEach(card => {
+            const mainImg = new Image();
+            mainImg.src = `${mainDir}/${card.id}.webp`;
+        });
+    }, 1500);
 }
 
 // 계산기 화면 이미지 프리로드 (P-아이템 및 공통 아이콘)
