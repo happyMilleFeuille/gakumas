@@ -997,8 +997,8 @@ select.sort-select {
 
 .modal-img-container {
     position: relative;
-    display: inline-block;
-    max-width: 100%;
+    display: block;
+    width: 100%;
 }
 
 /* 모달 메인 이미지만 크게 설정 */
