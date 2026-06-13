@@ -24,8 +24,56 @@ window.__videoModalOpen = false;
 window.__videoModalHistoryPushed = false;
 window.__videoModalPendingClose = false;
 
-// 서포트 카드 이미지 프리로드 (호버/클릭 시)
+// 서포트 카드 이미지 프리로드 (호버/클릭/스크롤 시)
 let preloadedSupport = false;
+
+const mainImagePreloadQueue = new Set();
+const preloadedMainImages = new Set();
+let preloadIntervalId = null;
+
+const preloadMainImage = (cardId) => {
+    if (!cardId || preloadedMainImages.has(cardId)) return;
+    preloadedMainImages.add(cardId);
+    mainImagePreloadQueue.delete(cardId);
+    const img = new Image();
+    img.src = `images/support/${cardId}.webp`;
+};
+
+let supportCardObserver = null;
+function initSupportObserver() {
+    if (supportCardObserver) return;
+    supportCardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const cardEl = entry.target;
+                const cardId = cardEl.dataset.id;
+                preloadMainImage(cardId);
+                supportCardObserver.unobserve(cardEl);
+            }
+        });
+    }, { rootMargin: '100px' });
+}
+
+function startBackgroundSequentialPreload() {
+    if (preloadIntervalId) clearInterval(preloadIntervalId);
+    mainImagePreloadQueue.clear();
+    cardList.forEach(card => {
+        if (!preloadedMainImages.has(card.id)) {
+            mainImagePreloadQueue.add(card.id);
+        }
+    });
+    setTimeout(() => {
+        preloadIntervalId = setInterval(() => {
+            if (mainImagePreloadQueue.size === 0) {
+                clearInterval(preloadIntervalId);
+                return;
+            }
+            const nextId = mainImagePreloadQueue.values().next().value;
+            preloadMainImage(nextId);
+        }, 150); // 0.15초마다 하나씩
+    }, 1500);
+}
+
 export function preloadSupportImages() {
     if (preloadedSupport) return;
     preloadedSupport = true;
@@ -57,13 +105,8 @@ export function preloadSupportImages() {
         });
     }, 600);
 
-    // 3순위: 원본 메인 이미지 프리로드 (가장 마지막에 백그라운드에서 천천히)
-    setTimeout(() => {
-        cardList.forEach(card => {
-            const mainImg = new Image();
-            mainImg.src = `${mainDir}/${card.id}.webp`;
-        });
-    }, 1500);
+    // 3순위: 화면에 보이는 것 우선 및 나머지는 백그라운드에서 순차적으로 프리로드 시작
+    startBackgroundSequentialPreload();
 }
 
 // 계산기 화면 이미지 프리로드 (P-아이템 및 공통 아이콘)
@@ -1047,14 +1090,6 @@ function setupStaticListeners(container) {
     let longPressTimer;
     let isLongPress = false;
 
-    const preloadedMainImages = new Set();
-    const preloadMainImage = (cardId) => {
-        if (!cardId || preloadedMainImages.has(cardId)) return;
-        preloadedMainImages.add(cardId);
-        const img = new Image();
-        img.src = `images/support/${cardId}.webp`;
-    };
-
     grid.addEventListener('mouseover', (e) => {
         const cardEl = e.target.closest('.support-card');
         if (cardEl) preloadMainImage(cardEl.dataset.id);
@@ -1285,6 +1320,13 @@ function updateSupportGrid(container) {
         });
         grid.appendChild(fragment);
     }
+    
+    // 화면에 나타나는 카드 감지를 위한 Observer 초기화 및 등록
+    initSupportObserver();
+    grid.querySelectorAll('.support-card').forEach(el => {
+        supportCardObserver.observe(el);
+    });
+
     updatePageTranslations(container);
 }
 
