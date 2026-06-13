@@ -1035,6 +1035,19 @@ function setupStaticListeners(container) {
     let longPressTimer;
     let isLongPress = false;
 
+    const preloadedMainImages = new Set();
+    const preloadMainImage = (cardId) => {
+        if (!cardId || preloadedMainImages.has(cardId)) return;
+        preloadedMainImages.add(cardId);
+        const img = new Image();
+        img.src = `images/support/${cardId}.webp`;
+    };
+
+    grid.addEventListener('mouseover', (e) => {
+        const cardEl = e.target.closest('.support-card');
+        if (cardEl) preloadMainImage(cardEl.dataset.id);
+    });
+
     grid.addEventListener('mousedown', (e) => {
         const cardEl = e.target.closest('.support-card');
         if (!cardEl) return;
@@ -1059,6 +1072,7 @@ function setupStaticListeners(container) {
     grid.addEventListener('touchstart', (e) => {
         const cardEl = e.target.closest('.support-card');
         if (!cardEl) return;
+        preloadMainImage(cardEl.dataset.id);
         isLongPress = false;
         longPressTimer = setTimeout(() => {
             isLongPress = true;
