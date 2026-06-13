@@ -1352,7 +1352,7 @@ export function updateGlobalBackgroundColor() {
         metaThemeColor.name = 'theme-color';
         document.head.appendChild(metaThemeColor);
     }
-    metaThemeColor.content = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColor : '#ffffff';
+    metaThemeColor.content = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColor : '#e9533f';
 
     if (isHif && fixedBg) {
         // HIF 전용 5색 그라데이션 전역 배경 복구
