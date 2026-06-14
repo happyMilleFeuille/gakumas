@@ -124,6 +124,12 @@ export function showCardModal(card, displayName, imgSrc) {
         const cached = getCachedImage(originalSrc);
         if (cached) return cached;
 
+        // 모바일 환경에서는 캔버스 리사이즈 로직을 건너뛰고 브라우저 자체 렌더링에 위임
+        const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            return originalSrc;
+        }
+
         try {
             const mImg = document.getElementById('modal-img');
             const displayWidth = mImg.clientWidth || 460;
@@ -143,7 +149,7 @@ export function showCardModal(card, displayName, imgSrc) {
             let ctx = canvas.getContext('2d');
             ctx.drawImage(bitmap, 0, 0);
 
-            const hqBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const hqBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.95));
             const blobUrl = URL.createObjectURL(hqBlob);
             
             setCachedImage(originalSrc, blobUrl);
