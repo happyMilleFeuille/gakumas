@@ -53,6 +53,18 @@ export function preloadSupportImages() {
     const thumbDir = 'images/support/thumb';
     const mainDir = 'images/support';
 
+    // 0순위: 모달 및 UI에서 공통으로 쓰는 작은 아이콘들 싹 다 미리 메모리에 올리기 (깜빡임 방지)
+    const coreUIIcons = [
+        'icons/ssr.png', 'icons/sr.png', 'icons/r.png',
+        'icons/sense.webp', 'icons/logic.webp', 'icons/anomaly.webp', 'icons/free.webp',
+        'icons/flower.webp', 'icons/flowerback.webp',
+        'icons/vocal.webp', 'icons/dance.webp', 'icons/visual.webp'
+    ];
+    coreUIIcons.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
     // 1순위: 메인 리스트용 썸네일 프리로드 (즉시)
     cardList.forEach(card => {
         const thumbImg = new Image();
