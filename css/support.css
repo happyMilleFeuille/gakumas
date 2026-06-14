@@ -993,6 +993,8 @@ select.sort-select {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    background-size: cover;
+    background-position: center;
     border-radius: 8px;
     box-shadow: var(--shadow);
     display: block;

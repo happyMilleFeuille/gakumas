@@ -88,6 +88,9 @@ export function showCardModal(card, displayName, imgSrc) {
     const stars = document.querySelectorAll('.star');
 
     const thumbSrc = card.image || `images/support/thumb/${card.id}.webp`;
+    
+    // Set thumbnail as a background placeholder to mask any decode delay
+    mImg.style.backgroundImage = `url(${thumbSrc})`;
 
     if (!(window._hqImageCache instanceof Map)) {
         window._hqImageCache = new Map();

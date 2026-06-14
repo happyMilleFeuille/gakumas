@@ -34,48 +34,16 @@ let preloadIntervalId = null;
 const isMobileDevice = () => window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 
 const preloadMainImage = (cardId) => {
-    if (isMobileDevice()) return;
-    if (!cardId || preloadedMainImages.has(cardId)) return;
-    preloadedMainImages.add(cardId);
-    mainImagePreloadQueue.delete(cardId);
-    const img = new Image();
-    img.src = `images/support/${cardId}.webp`;
+    return; // Disabled for all devices to prevent bulk download side effects
 };
 
 let supportCardObserver = null;
 function initSupportObserver() {
-    if (isMobileDevice() || supportCardObserver) return;
-    supportCardObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const cardEl = entry.target;
-                const cardId = cardEl.dataset.id;
-                preloadMainImage(cardId);
-                supportCardObserver.unobserve(cardEl);
-            }
-        });
-    }, { rootMargin: '100px' });
+    return; // Disabled for all devices
 }
 
 function startBackgroundSequentialPreload() {
-    if (isMobileDevice()) return;
-    if (preloadIntervalId) clearInterval(preloadIntervalId);
-    mainImagePreloadQueue.clear();
-    cardList.forEach(card => {
-        if (!preloadedMainImages.has(card.id)) {
-            mainImagePreloadQueue.add(card.id);
-        }
-    });
-    setTimeout(() => {
-        preloadIntervalId = setInterval(() => {
-            if (mainImagePreloadQueue.size === 0) {
-                clearInterval(preloadIntervalId);
-                return;
-            }
-            const nextId = mainImagePreloadQueue.values().next().value;
-            preloadMainImage(nextId);
-        }, 150); // 0.15초마다 하나씩
-    }, 1500);
+    return; // Disabled for all devices
 }
 
 export function preloadSupportImages() {
