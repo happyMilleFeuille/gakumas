@@ -305,7 +305,7 @@ export function showCardModal(card, displayName, imgSrc) {
     };
 
     const getExtraText = (val) => {
-        if (!val) return '';
+        if (!val) return null;
         let resultText = '';
         if (val === 'param') {
             const rarity = card.rarity || 'SSR';
@@ -323,15 +323,35 @@ export function showCardModal(card, displayName, imgSrc) {
             const key = `extra_${val}`;
             resultText = translations[state.currentLang][key] || val;
         }
-        return highlightNumbers(resultText, card.type);
+        return {
+            html: highlightNumbers(resultText, card.type),
+            length: resultText.length
+        };
     };
 
-    mExtra1.innerHTML = getExtraText(card.extra1);
+    const ex1 = getExtraText(card.extra1);
+    if (ex1) {
+        mExtra1.innerHTML = ex1.html;
+        mExtra1.classList.toggle('shrink', ex1.length >= 15);
+    } else {
+        mExtra1.innerHTML = '';
+        mExtra1.classList.remove('shrink');
+    }
+
     if (card.rarity === 'SSR') {
-        mExtra2.innerHTML = getExtraText(card.extra2);
-        mExtra2.classList.remove('hidden');
+        const ex2 = getExtraText(card.extra2);
+        if (ex2) {
+            mExtra2.innerHTML = ex2.html;
+            mExtra2.classList.toggle('shrink', ex2.length >= 15);
+            mExtra2.classList.remove('hidden');
+        } else {
+            mExtra2.innerHTML = '';
+            mExtra2.classList.remove('shrink');
+            mExtra2.classList.add('hidden');
+        }
     } else {
         mExtra2.innerHTML = '';
+        mExtra2.classList.remove('shrink');
         mExtra2.classList.add('hidden');
     }
 

@@ -1206,6 +1206,11 @@ select.sort-select {
     /* 왼쪽 정렬 강제 */
 }
 
+.modal-extra-box.shrink {
+    font-size: 0.72rem;
+    letter-spacing: -0.5px;
+}
+
 /* Abilities */
 .modal-abilities-container {
     margin-top: 1.5rem;
@@ -1339,7 +1344,6 @@ select.sort-select {
         width: 16px;
         height: 16px;
         object-fit: contain;
-        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
         z-index: 10;
     }
 
@@ -1371,6 +1375,13 @@ select.sort-select {
         font-size: 0.65rem !important;
         padding: 4px 8px;
         min-height: 28px;
+    }
+
+    .modal-extra-box.shrink {
+        font-size: 0.52rem !important;
+        letter-spacing: -0.8px;
+        line-height: 1.1;
+        padding: 3px 6px;
     }
 
     .modal-extra-icon {
