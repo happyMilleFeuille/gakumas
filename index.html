@@ -15,8 +15,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index,follow">
     <script>
-        // 버전 변�???기존 ?�용?�에게는 최신 리소??반영???�해 1??강제 ?�로고침???�행?�니??
-        const APP_VERSION = '1.4.8';
+        // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
+        const APP_VERSION = '1.4.9';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
@@ -26,10 +26,10 @@
                 localStorage.setItem('gakumas_note_version', APP_VERSION);
             }
         } catch (e) {
-            // Storage�??�용?????�는 ?�경(?��? ?�롤???�라?�버??모드)?�서??조용???�과
+            // Storage를 사용할 수 없는 환경(일부 크롤러/프라이버시 모드)에서는 조용히 통과
         }
 
-        // 캐시 방�?(Cache Busting)�??�해 모든 ESM 모듈 경로???�동?�로 버전 쿼리�?추�??�는 importmap???�적 ?�성?�니??
+        // 캐시 방지(Cache Busting)를 위해 모든 ESM 모듈 경로에 자동으로 버전 쿼리를 추가하는 importmap을 동적 생성합니다.
         try {
             const jsFiles = [
                 'main.js', 'state.js', 'utils.js', 'router.js', 'ui.js', 'gacha.js',
@@ -58,27 +58,27 @@
     <meta property="og:site_name" content="Gakumas Note">
     <meta name="apple-mobile-web-app-title" content="Gakumas Note">
     <meta name="description"
-        content="Gakumas Note (gakunote / ?�마?�트 / 学ノ?�ト) provides a gacha simulator and support card calculator. Unofficial fan site for Gakuen Idolmaster. ">
+        content="Gakumas Note (gakunote / 학마노트 / 学ノート) provides a gacha simulator and support card calculator. Unofficial fan site for Gakuen Idolmaster. ">
     <meta name="keywords"
-        content="Gakuen Idolmaster, Gakumas, ?�마?? 学マ??学マ?�ノ?�ト, Gakumas Note, gakunote, ?�마?�트, 学ノ?�ト, Gacha Simulator, Support Card Calculator, 学マ?�計算機, �?��?�イ?�ル?�ス?�ー, ?�シ?�シ?�ュ?�ー?�ー, ?�ポ??>
-    <meta property="og:title" content="Gakumas Note - ?�シ?�シ?�ュ?�ー?�ー & ?�テ?�タ?�計算機">
+        content="Gakuen Idolmaster, Gakumas, 학마스, 学マス,学マスノート, Gakumas Note, gakunote, 학마노트, 学ノート, Gacha Simulator, Support Card Calculator, 学マス計算機, 学園アイドルマスター, ガシャシミュレーター, サポカ">
+    <meta property="og:title" content="Gakumas Note - ガシャシミュレーター & ステータス計算機">
     <meta property="og:description"
-        content="Gakumas Note (gakunote / ?�마?�트 / 学ノ?�ト) provides a gacha simulator and support card calculator. Unofficial fan site for Gakuen Idolmaster. ">
+        content="Gakumas Note (gakunote / 학마노트 / 学ノート) provides a gacha simulator and support card calculator. Unofficial fan site for Gakuen Idolmaster. ">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://happymillefeuille.github.io/gakumas/icons/linktitle.webp">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Gakumas Note - ?�シ?�シ?�ュ?�ー?�ー & ?�テ?�タ?�計算機">
+    <meta name="twitter:title" content="Gakumas Note - ガシャシミュレーター & ステータス計算機">
     <meta name="twitter:description"
-        content="Gakumas Note (gakunote / ?�마?�트 / 学ノ?�ト) provides a gacha simulator and support card calculator. Unofficial fan site for Gakuen Idolmaster.">
+        content="Gakumas Note (gakunote / 학마노트 / 学ノート) provides a gacha simulator and support card calculator. Unofficial fan site for Gakuen Idolmaster.">
     <meta name="twitter:image" content="https://happymillefeuille.github.io/gakumas/icons/linktitle.webp">
     <link rel="canonical" href="https://happymillefeuille.github.io/gakumas/">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Gakumas Note - ?�シ?�シ?�ュ?�ー?�ー & ?�テ?�タ?�計算機",
-      "alternateName": ["?�원 ?�이?�마?�터", "?�원마스", "?�마?�트", "�?��?�イ?�ル?�ス?�ー","学マ?�ノ?�ト", "学ノ?�ト","?�く??��??, "gakunote", "学マ??, "가쿠마??, "가쿠마???�트","?�마 계산�?,"?�마 ?�텟계산�?,"?�마 가챠시�?,"가쿠마??계산�?],
-      "description": "Gakuen Idolmaster Gacha Simulator & Support Card Calculator (�?��?�イ?�ル?�ス?�ー ?�シ?�シ?�ュ?�ー?�ー & 学マ?�計算機)",
+      "name": "Gakumas Note - ガシャシミュレーター & ステータス計算機",
+      "alternateName": ["학원 아이돌마스터", "학원마스", "학마노트", "学園アイドルマスター","学マスノート", "学ノート","がくのーと", "gakunote", "学マス", "가쿠마스", "가쿠마스 노트","학마 계산기","학마 스텟계산기","학마 가챠시뮬","가쿠마스 계산기"],
+      "description": "Gakuen Idolmaster Gacha Simulator & Support Card Calculator (学園アイドルマスター ガシャシミュレーター & 学マス計算機)",
       "url": "https://happymillefeuille.github.io/gakumas/"
     }
     </script>
@@ -96,18 +96,18 @@
     <meta name="theme-color" content="#ff4d8d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="stylesheet" href="css/base.css?v=1.4.8">
-    <link rel="stylesheet" href="css/idol.css?v=1.4.8">
-    <link rel="stylesheet" href="css/support.css?v=1.4.8">
-    <link rel="stylesheet" href="css/gacha.css?v=1.4.8">
-    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.4.8">
-    <link rel="stylesheet" href="css/gachalog.css?v=1.4.8">
-    <link rel="stylesheet" href="css/gacharates.css?v=1.4.8">
-    <link rel="stylesheet" href="css/gacha_anim.css?v=1.4.8">
-    <link rel="stylesheet" href="css/calc.css?v=1.4.8">
-    <link rel="stylesheet" href="css/stat-detail.css?v=1.4.8">
-    <link rel="stylesheet" href="css/memory.css?v=1.4.8">
-    <link rel="stylesheet" href="css/home.css?v=1.4.8">
+    <link rel="stylesheet" href="css/base.css?v=1.4.9">
+    <link rel="stylesheet" href="css/idol.css?v=1.4.9">
+    <link rel="stylesheet" href="css/support.css?v=1.4.9">
+    <link rel="stylesheet" href="css/gacha.css?v=1.4.9">
+    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.4.9">
+    <link rel="stylesheet" href="css/gachalog.css?v=1.4.9">
+    <link rel="stylesheet" href="css/gacharates.css?v=1.4.9">
+    <link rel="stylesheet" href="css/gacha_anim.css?v=1.4.9">
+    <link rel="stylesheet" href="css/calc.css?v=1.4.9">
+    <link rel="stylesheet" href="css/stat-detail.css?v=1.4.9">
+    <link rel="stylesheet" href="css/memory.css?v=1.4.9">
+    <link rel="stylesheet" href="css/home.css?v=1.4.9">
 
     <!-- Character Icon Preload for Performance -->
     <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
@@ -136,11 +136,11 @@
         <div id="gacha-progress-text">0%</div>
     </div>
 
-    <!-- 가�??�택 ?�랍 (최상??배치) -->
+    <!-- 가챠 선택 서랍 (최상위 배치) -->
     <div id="gacha-drawer" class="gacha-drawer">
         <div class="drawer-header">
             <span id="drawer-title">PICKUP SELECT</span>
-            <button id="btn-close-drawer" class="drawer-close-btn">??/button>
+            <button id="btn-close-drawer" class="drawer-close-btn">✕</button>
         </div>
         <div id="drawer-content" class="drawer-content-scroll"></div>
     </div>
@@ -166,31 +166,31 @@
                 </div>
             </div>
             <div id="content-area">
-                <!-- JavaScript実行?�の?�期表示 (SEO対策) -->
+                <!-- JavaScript実行前の初期表示 (SEO対策) -->
                 <div id="seo-intro">
                     <h1>Gakumas Note</h1>
                     <p>
-                        Gakumas Note (学ノ?�ト) ??���??�ア?�ド?�マ?�タ?�の?�シ?�シ?�ュ?�ー?�ー?�サ?�ー?�カ?�ド計算機を?�供?�る?�公式フ?�ン?�イ?�で?��?
+                        Gakumas Note (学ノート) は、学園アイドルマスターのガシャシミュレーターとサポートカード計算機を提供する非公式ファンサイトです。
                     </p>
                     <div class="seo-desc">
-                        <p>??<b>?�テ?�タ?�計�?/b>: ?�ロ?�ュ?�ス?�使?�す?�サ?�ー?�カ?�ド??��能確認?�、編?�の?�動?�薦?�提供し?�す??/p>
-                        <p>??<b>?�シ?�シ?�ュ?�ー?�ー</b>: ?�ー?�内?�同?�確?�で好き?�ア?�ド?�の?�シ?�を体験?�き?�す??/p>
+                        <p>• <b>ステータス計算</b>: プロデュースで使用するサポートカードの性能確認や、編成の自動推薦を提供します。</p>
+                        <p>• <b>ガシャシミュレーター</b>: ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。</p>
                         <p>Gakumas Note is an unofficial Gakuen Idolmaster fan site with a gacha simulator, support card
                             browser, and stat calculator.</p>
-                        <p>?�마?�트???�원 ?�이?�마?�터 비공???�사?�트�? 가�??��??�이?��? ?�포??카드 ?�보, ?�탯 계산기�? ?�공?�니??</p>
+                        <p>학마노트는 학원 아이돌마스터 비공식 팬사이트로, 가챠 시뮬레이터와 서포트 카드 정보, 스탯 계산기를 제공합니다.</p>
                     </div>
                 </div>
             </div>
-            <!-- 가�??�용 고정 버튼 ?�역 (기본 ?��?) -->
+            <!-- 가챠 전용 고정 버튼 영역 (기본 숨김) -->
             <div id="gacha-fixed-buttons" class="gacha-buttons hidden" style="display: none;">
                 <div class="total-pulls-box">
                     <span id="total-pull-count">0</span>
-                    <button id="btn-gacha-reset" class="log-btn reset-btn hidden" data-i18n="gacha_reset">초기??/button>
+                    <button id="btn-gacha-reset" class="log-btn reset-btn hidden" data-i18n="gacha_reset">초기화</button>
                 </div>
                 <div class="gacha-controls-top">
                     <button id="btn-prev-gacha" class="type-nav-btn circle-btn"><span></span></button>
                     <div class="capsule-container">
-                        <div id="current-gacha-type-display" class="current-type-display capsule-box"><span>?�상</span>
+                        <div id="current-gacha-type-display" class="current-type-display capsule-box"><span>통상</span>
                         </div>
                         <div id="gacha-type-indicator" class="gacha-type-indicator">
                             <span class="dot active"></span>
@@ -202,12 +202,12 @@
                     </div>
                     <button id="btn-next-gacha" class="type-nav-btn circle-btn"><span></span></button>
                 </div>
-                <button class="primary-btn gacha-btn" id="btn-1pull-fixed" data-i18n="gacha_1pull">1??뽑기</button>
-                <button class="primary-btn gacha-btn" id="btn-10pull-fixed" data-i18n="gacha_10pull">10??뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-1pull-fixed" data-i18n="gacha_1pull">1회 뽑기</button>
+                <button class="primary-btn gacha-btn" id="btn-10pull-fixed" data-i18n="gacha_10pull">10회 뽑기</button>
             </div>
             <div class="gacha-sub-buttons">
-                <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">가�?기록</button>
-                <button id="btn-gacha-rates" class="log-btn hidden" data-i18n="gacha_rates">가�??�률</button>
+                <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">가챠 기록</button>
+                <button id="btn-gacha-rates" class="log-btn hidden" data-i18n="gacha_rates">가챠 확률</button>
             </div>
             <div id="gacha-header-controls" class="gacha-header-controls hidden">
                 <button id="gacha-mute-btn" class="mute-toggle-btn" type="button" aria-label="Toggle mute">
@@ -271,7 +271,7 @@
                     </div>
                 </div>
                 <div id="modal-abilities" class="modal-abilities-container">
-                    <!-- ?�빌리티?�이 ?�기???�적?�로 ?�성??-->
+                    <!-- 어빌리티들이 여기에 동적으로 생성됨 -->
                 </div>
             </div>
         </div>
@@ -281,10 +281,10 @@
         <div class="modal-content log-modal-content">
             <span class="close-log-modal">&times;</span>
             <div id="gacha-log-stats" class="gacha-log-stats">
-                <!-- ?�계 ?�치가 ?�기???�어�?-->
+                <!-- 통계 수치가 여기에 들어감 -->
             </div>
             <div id="gacha-log-list" class="gacha-log-list">
-                <!-- 가�?기록???�기???�적?�로 추�???-->
+                <!-- 가챠 기록이 여기에 동적으로 추가됨 -->
             </div>
         </div>
     </div>
@@ -293,15 +293,15 @@
     <div id="gacha-rates-modal" class="modal hidden">
         <div class="modal-content rates-modal-content">
             <span class="close-rates-modal">&times;</span>
-            <h2 id="rates-modal-title" class="rates-title">가�??�률 ?�보</h2>
+            <h2 id="rates-modal-title" class="rates-title">가챠 확률 정보</h2>
             <div id="gacha-rates-body" class="gacha-rates-body">
-                <!-- ?�률 ?�보가 ?�적?�로 ?�입??-->
+                <!-- 확률 정보가 동적으로 삽입됨 -->
             </div>
         </div>
     </div>
 
 
-    <!-- 비디??모달 추�? -->
+    <!-- 비디오 모달 추가 -->
     <div id="video-modal" class="modal hidden">
         <div class="video-modal-content">
             <div class="video-container">
@@ -315,7 +315,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=1.4.8"></script>
+    <script type="module" src="main.js?v=1.4.9"></script>
 
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
@@ -327,28 +327,28 @@
         <section class="brand-intro" aria-label="Gakumas Note introduction">
             <p><strong>Gakumas Note</strong> is an unofficial fan site for <strong>Gakuen Idolmaster</strong>.</p>
             <p>It provides a gacha simulator, support card browser, and stat calculator for Gakumas players.</p>
-            <p>Also known as <strong>gakunote</strong>, <strong>?�마?�트</strong>, and <strong>学ノ?�ト</strong>.</p>
+            <p>Also known as <strong>gakunote</strong>, <strong>학마노트</strong>, and <strong>学ノート</strong>.</p>
         </section>
 
-        <!-- ????메뉴 바로가�?-->
+        <!-- 홈 퀵 메뉴 바로가기 -->
         <div class="home-quick-nav">
             <button class="home-quick-btn" data-target="idol">
                 <div class="quick-btn-header">
-                    <div class="quick-btn-title" data-i18n="btn_empty">?�イ?�ル</div>
+                    <div class="quick-btn-title" data-i18n="btn_empty">アイドル</div>
                 </div>
                 <div class="quick-btn-body">
                     <div class="quick-btn-icon-wrap">
                         <img src="icons/idol.svg" alt="" class="quick-btn-icon">
                     </div>
                     <div class="quick-btn-text-wrap">
-                        <div class="quick-btn-desc" data-i18n="desc_idol">実装済み?�イ?�ル??��?�や?�報?�確認で?�、各?�イ?�ル?�参?�し?�MV?�ン??��?�供?�ま?��?
+                        <div class="quick-btn-desc" data-i18n="desc_idol">実装済みアイドルの画像や情報を確認でき、各アイドルが参加したMVリンクを提供します。
                         </div>
                     </div>
                 </div>
             </button>
             <button class="home-quick-btn" data-target="calc">
                 <div class="quick-btn-header">
-                    <div class="quick-btn-title" data-i18n="btn_calc">?�テ?�タ?�計�?/div>
+                    <div class="quick-btn-title" data-i18n="btn_calc">ステータス計算</div>
                 </div>
                 <div class="quick-btn-body">
                     <div class="quick-btn-icon-wrap">
@@ -356,13 +356,13 @@
                     </div>
                     <div class="quick-btn-text-wrap">
                         <div class="quick-btn-desc" data-i18n="desc_calc">
-                            ?�ロ?�ュ?�ス?�使?�す?�サ?�ー?�カ?�ド??��能確認?�、ス?�ジ?�ー?�に応じ?�サ?�カ編成??��?�推?�を?�供?�ま?��?/div>
+                            プロデュースで使用するサポートカードの性能確認や、スケジュールに応じたサポカ編成の自動推薦を提供します。</div>
                     </div>
                 </div>
             </button>
             <button class="home-quick-btn" data-target="support">
                 <div class="quick-btn-header">
-                    <div class="quick-btn-title font-small" data-i18n="btn_supporter">?�ポ?�ト?�ー??/div>
+                    <div class="quick-btn-title font-small" data-i18n="btn_supporter">サポートカード</div>
                 </div>
                 <div class="quick-btn-body">
                     <div class="quick-btn-icon-wrap">
@@ -370,30 +370,30 @@
                     </div>
                     <div class="quick-btn-text-wrap">
                         <div class="quick-btn-desc" data-i18n="desc_support">
-                            ?�ポ?�ト?�ー?�の?�果?�確認し?�凸?�態?�指定で?�ま?�。凸?�態?�カ?�ド??��?�化??��?�ー?�ス計算機に?�映?�れ?�す??/div>
+                            サポートカードの効果を確認し、凸状態を指定できます。凸状態やカードの無効化はステータス計算機に反映されます。</div>
                     </div>
                 </div>
             </button>
             <button class="home-quick-btn" data-target="gacha">
                 <div class="quick-btn-header">
-                    <div class="quick-btn-title font-small" data-i18n="btn_gacha">?�シ?�シ?�ュ?�ー?�ー</div>
+                    <div class="quick-btn-title font-small" data-i18n="btn_gacha">ガシャシミュレーター</div>
                 </div>
                 <div class="quick-btn-body">
                     <div class="quick-btn-icon-wrap">
                         <img src="icons/gasha.svg" alt="" class="quick-btn-icon">
                     </div>
                     <div class="quick-btn-text-wrap">
-                        <div class="quick-btn-desc" data-i18n="desc_gacha">?�ー?�内?�同?�確?�で好き?�ア?�ド?�の?�シ?�を体験?�き?�す??(Beta)</div>
+                        <div class="quick-btn-desc" data-i18n="desc_gacha">ゲーム内と同じ確率で好きなアイドルのガシャを体験できます。 (Beta)</div>
                     </div>
                 </div>
             </button>
         </div>
 
-        <!-- PSSR 출시 로드�?-->
+        <!-- PSSR 출시 로드맵 -->
         <div class="roadmap-filter-wrap">
             <div class="roadmap-control-group">
                 <button id="btn-roadmap-expand" class="roadmap-expand-btn">
-                    <span data-i18n="roadmap_since_release">実装?�イ?�ラ?�ン</span>
+                    <span data-i18n="roadmap_since_release">実装タイムライン</span>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                         stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;">
                         <path d="m6 9 6 6 6-6" />
@@ -402,7 +402,7 @@
                 <div class="roadmap-v-divider"></div>
                 <div class="roadmap-filter-container">
                     <button id="roadmap-filter-btn" class="roadmap-filter-btn">
-                        <span data-i18n="roadmap_filter">?�터</span>
+                        <span data-i18n="roadmap_filter">필터</span>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6" />
@@ -412,7 +412,7 @@
                         <div class="roadmap-controls">
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-another-toggle" checked>
-                                <span class="toggle-label" data-i18n="roadmap_show_another">?�나??/span>
+                                <span class="toggle-label" data-i18n="roadmap_show_another">어나더</span>
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-dist-toggle" checked>
@@ -420,24 +420,24 @@
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-fes-toggle" checked>
-                                <span class="toggle-label" data-i18n="roadmap_show_fes">?�스</span>
+                                <span class="toggle-label" data-i18n="roadmap_show_fes">페스</span>
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-limited-toggle" checked>
-                                <span class="toggle-label" data-i18n="roadmap_show_limited">?�정</span>
+                                <span class="toggle-label" data-i18n="roadmap_show_limited">한정</span>
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-unit-toggle" checked>
-                                <span class="toggle-label" data-i18n="roadmap_show_unit">?�닛</span>
+                                <span class="toggle-label" data-i18n="roadmap_show_unit">유닛</span>
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-normal-toggle" checked>
-                                <span class="toggle-label" data-i18n="roadmap_show_normal">?�상</span>
+                                <span class="toggle-label" data-i18n="roadmap_show_normal">통상</span>
                             </label>
                             <div class="filter-divider"></div>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-goodcondition-toggle" checked>
-                                <img src="icons/goodcondition.webp" class="plan-icon-small" alt="?�조">
+                                <img src="icons/goodcondition.webp" class="plan-icon-small" alt="호조">
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-concentration-toggle" checked>
@@ -445,19 +445,19 @@
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-goodimpression-toggle" checked>
-                                <img src="icons/goodimpression.webp" class="plan-icon-small" alt="좋�? ?�상">
+                                <img src="icons/goodimpression.webp" class="plan-icon-small" alt="좋은 인상">
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-motivation-toggle" checked>
-                                <img src="icons/motivation.webp" class="plan-icon-small" alt="?�욕">
+                                <img src="icons/motivation.webp" class="plan-icon-small" alt="의욕">
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-fullpower-toggle" checked>
-                                <img src="icons/fullpower.webp" class="plan-icon-small" alt="?�축??>
+                                <img src="icons/fullpower.webp" class="plan-icon-small" alt="힘축적">
                             </label>
                             <label class="toggle-container">
                                 <input type="checkbox" id="pssr-enthusiasm-toggle" checked>
-                                <img src="icons/enthusiasm.webp" class="plan-icon-small" alt="?�의">
+                                <img src="icons/enthusiasm.webp" class="plan-icon-small" alt="열의">
                             </label>
                         </div>
                     </div>
@@ -471,7 +471,7 @@
         </div>
 
         <div class="disclaimer-container">
-            <p data-i18n="disclaimer_1">Gakumas Note (gakunote / ?�마?�트 / 学ノ?�ト) provides a gacha simulator and support
+            <p data-i18n="disclaimer_1">Gakumas Note (gakunote / 학마노트 / 学ノート) provides a gacha simulator and support
                 card calculator.</p>
             <p data-i18n="disclaimer_2">Unofficial fan site for Gakuen Idolmaster.</p>
         </div>
@@ -494,10 +494,10 @@
                             <div class="support-info-wrapper">
                                 <button class="support-info-btn">i</button>
                                 <div class="support-info-tooltip">
-                                    <p><span data-i18n="support_tooltip_1">??꽃모?�을 ?�릭???�파 ?�계�??�정?????�습?�다.</span></p>
-                                    <p><span data-i18n="support_tooltip_2">??카드�?길게 ?�르�?비활?�화?�며,<br>리스?�의 �??�래�??�동?�고
-                                            ?�텟계산?�서
-                                            ?�외?�니??</span></p>
+                                    <p><span data-i18n="support_tooltip_1">• 꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.</span></p>
+                                    <p><span data-i18n="support_tooltip_2">• 카드를 길게 누르면 비활성화되며,<br>리스트의 맨 아래로 이동하고
+                                            스텟계산에서
+                                            제외됩니다.</span></p>
                                 </div>
                             </div>
                         </div>
@@ -514,7 +514,7 @@
                         </div>
                     </div>
                     <button id="btn-toggle-extra" class="filter-toggle-btn">Details <span
-                            class="toggle-icon">??/span></button>
+                            class="toggle-icon">▼</span></button>
                     <div id="extra-filters" class="extra-filters-wrapper hidden">
                         <div class="filter-group" id="filter-rarity">
                             <button class="filter-btn" data-val="SSR"><img src="icons/ssr.png" alt="SSR"
@@ -534,7 +534,7 @@
                                 Details</button>
                             <div id="ability-dropdown" class="ability-dropdown hidden">
                                 <button class="filter-btn ability-sub-btn" data-val="sp_lessonup"
-                                    data-i18n="filter_sp_lessonup">SP% ??/button>
+                                    data-i18n="filter_sp_lessonup">SP% ↑</button>
                                 <button class="filter-btn ability-sub-btn" data-val="percentparam"
                                     data-i18n="filter_percentparam">Bonus(%)</button>
                                 <button class="filter-btn ability-sub-btn" data-val="fixedparam"
@@ -547,18 +547,18 @@
 
             <div class="sort-controls">
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <button id="btn-all-max-lb" class="calc-btn" data-i18n="btn_all_max_lb">?�괄 조정</button>
+                    <button id="btn-all-max-lb" class="calc-btn" data-i18n="btn_all_max_lb">일괄 조정</button>
                     <button id="btn-open-slot-modal" class="calc-btn">
-                        <span data-i18n="btn_manage_slots">?�리??/span>
+                        <span data-i18n="btn_manage_slots">프리셋</span>
                     </button>
                 </div>
                 <div class="sort-group">
                     <select id="sort-select" class="sort-select">
-                        <option value="id" data-i18n="ui_sort_latest">최신??/option>
-                        <option value="lb" data-i18n="ui_sort_lb">?�파??/option>
+                        <option value="id" data-i18n="ui_sort_latest">최신순</option>
+                        <option value="lb" data-i18n="ui_sort_lb">돌파순</option>
                     </select>
                     <button id="btn-sort-order" class="sort-order-btn-toggle">
-                        <span id="sort-order-arrow">??/span>
+                        <span id="sort-order-arrow">↑</span>
                         <img src="icons/list.svg" alt="Sort Order" class="sort-order-icon">
                     </button>
                 </div>
@@ -568,21 +568,21 @@
         </div>
     </template>
 
-    <!-- 가�??�운로드 ?�인 모달 ?�플�?-->
+    <!-- 가챠 다운로드 확인 모달 템플릿 -->
     <template id="tpl-gacha-confirm">
         <div id="gacha-confirm-modal" class="gacha-confirm-overlay">
             <div class="gacha-confirm-content">
-                <div class="gacha-confirm-header" data-i18n="gacha_confirm_title">리소???�운로드</div>
+                <div class="gacha-confirm-header" data-i18n="gacha_confirm_title">리소스 다운로드</div>
                 <div class="gacha-confirm-body">
-                    <p data-i18n="gacha_confirm_body">가�??�출 �??�원 리소?��? ?�운로드?�니?? (??70MB)</p>
-                    <p class="gacha-confirm-sub" data-i18n="gacha_confirm_sub1">캐릭???�출???�라 추�? ?�이???�운로드가 ?�을 ???�습?�다.</p>
-                    <p class="gacha-confirm-sub" data-i18n="gacha_confirm_sub2">Wi-Fi ?�경?�서 권장?�며, ?�이???�금??발생?????�습?�다.</p>
+                    <p data-i18n="gacha_confirm_body">가챠 연출 및 음원 리소스를 다운로드합니다. (약 70MB)</p>
+                    <p class="gacha-confirm-sub" data-i18n="gacha_confirm_sub1">캐릭터 연출에 따라 추가 데이터 다운로드가 있을 수 있습니다.</p>
+                    <p class="gacha-confirm-sub" data-i18n="gacha_confirm_sub2">Wi-Fi 환경에서 권장하며, 데이터 요금이 발생할 수 있습니다.</p>
                 </div>
                 <div class="gacha-confirm-footer">
                     <button id="btn-gacha-cancel" class="gacha-confirm-btn cancel"
                         data-i18n="gacha_confirm_cancel">취소</button>
-                    <button id="btn-gacha-start" class="gacha-confirm-btn start" data-i18n="gacha_confirm_start">?�운로드
-                        ?�작</button>
+                    <button id="btn-gacha-start" class="gacha-confirm-btn start" data-i18n="gacha_confirm_start">다운로드
+                        시작</button>
                 </div>
             </div>
         </div>
@@ -590,18 +590,18 @@
 
     <template id="tpl-gacha">
         <div class="gacha-container">
-            <!-- 가???�체 배경 ?�이??-->
+            <!-- 가터 전체 배경 레이어 -->
             <div id="gacha-bg-layer" class="selector-bg-container"></div>
 
-            <!-- ?�단 UI ?�역 (컨테?�너 ?��???고정) -->
+            <!-- 상단 UI 영역 (컨테이너 내부에 고정) -->
             <div class="gacha-top-ui-wrapper">
-                <!-- ?�쪽: 기록, ?�률 버튼 -->
+                <!-- 왼쪽: 기록, 확률 버튼 -->
                 <div id="gacha-header-controls" class="gacha-header-controls">
                     <button id="btn-gacha-log" class="log-btn hidden" data-i18n="gacha_log">기록</button>
-                    <button id="btn-gacha-rates" class="log-btn rates-btn hidden" data-i18n="gacha_rates">?�률</button>
+                    <button id="btn-gacha-rates" class="log-btn rates-btn hidden" data-i18n="gacha_rates">확률</button>
                 </div>
 
-                <!-- ?�른�? 쥬얼�?+ ?�소�?버튼 -->
+                <!-- 오른쪽: 쥬얼칸 + 음소거 버튼 -->
                 <div class="gacha-right-ui-group">
                     <div id="jewel-container" class="jewel-container hidden">
                         <div class="jewel-box">
