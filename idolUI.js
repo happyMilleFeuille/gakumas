@@ -22,6 +22,7 @@ const getLocalizedCardName = (card) => {
 };
 
 let activeTab = 'p-idol';
+const videoExistenceCache = new Map();
 
 export function renderIdolList() {
     if (!contentArea) return;
@@ -445,16 +446,56 @@ export function renderProduceCards(idolName, container) {
             if (!gachaVideoLink || card.rarity !== 'PSSR') return;
             const vidId = videoIdList[idx];
             currentVideoUrl = `gasya/pssr/${vidId}.mp4`;
-            gachaVideoLink.classList.add('hidden');
-            fetch(currentVideoUrl, { method: 'HEAD' })
-                .then(res => {
-                    if (res.ok) gachaVideoLink.classList.remove('hidden');
-                })
-                .catch(() => {});
+            
+            if (videoExistenceCache.has(currentVideoUrl)) {
+                if (videoExistenceCache.get(currentVideoUrl)) {
+                    gachaVideoLink.classList.remove('hidden');
+                } else {
+                    gachaVideoLink.classList.add('hidden');
+                }
+            } else {
+                gachaVideoLink.classList.add('hidden');
+                const checkUrl = currentVideoUrl;
+                fetch(checkUrl, { method: 'HEAD' })
+                    .then(res => {
+                        videoExistenceCache.set(checkUrl, res.ok);
+                        if (currentVideoUrl === checkUrl) {
+                            if (res.ok) gachaVideoLink.classList.remove('hidden');
+                            else gachaVideoLink.classList.add('hidden');
+                        }
+                    })
+                    .catch(() => {
+                        videoExistenceCache.set(checkUrl, false);
+                        if (currentVideoUrl === checkUrl) {
+                            gachaVideoLink.classList.add('hidden');
+                        }
+                    });
+            }
         }
 
         if (gachaVideoLink) {
             if (card.rarity === 'PSSR') {
+                // Precheck all video resources for this card to avoid lag on click
+                videoIdList.forEach(vidId => {
+                    const url = `gasya/pssr/${vidId}.mp4`;
+                    if (!videoExistenceCache.has(url)) {
+                        fetch(url, { method: 'HEAD' })
+                            .then(res => {
+                                videoExistenceCache.set(url, res.ok);
+                                if (url === currentVideoUrl) {
+                                    if (res.ok) gachaVideoLink.classList.remove('hidden');
+                                    else gachaVideoLink.classList.add('hidden');
+                                }
+                            })
+                            .catch(() => {
+                                videoExistenceCache.set(url, false);
+                                if (url === currentVideoUrl) {
+                                    gachaVideoLink.classList.add('hidden');
+                                }
+                            });
+                    }
+                });
+
                 updateGachaVideo(currentIndex);
 
                 gachaVideoLink.onclick = (e) => {
