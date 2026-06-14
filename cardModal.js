@@ -124,7 +124,7 @@ export function showCardModal(card, displayName, imgSrc) {
         const cached = getCachedImage(originalSrc);
         if (cached) return cached;
 
-        // 모바일 환경에서는 캔버스 리사이즈 로직을 건너뛰고 브라우저 자체 렌더링에 위임
+        // 모바일은 픽셀 밀도(DPI)가 높아 계단 현상이 안 보이므로, 캔버스 렌더링을 우회
         const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
         if (isMobile) {
             return originalSrc;
@@ -149,6 +149,7 @@ export function showCardModal(card, displayName, imgSrc) {
             let ctx = canvas.getContext('2d');
             ctx.drawImage(bitmap, 0, 0);
 
+            // 속도와 화질의 합리적인 타협점인 WebP 0.95로 설정
             const hqBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.95));
             const blobUrl = URL.createObjectURL(hqBlob);
             

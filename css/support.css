@@ -968,12 +968,12 @@ select.sort-select {
     display: none;
 }
 
-.modal-content {
+#card-modal .modal-content {
     background: #fff;
     padding: 20px;
     border-radius: 12px;
     width: 90%;
-    max-width: 500px;
+    max-width: 540px; /* 1000px 원본 이미지 기준 최적 크기 */
     position: relative;
 }
 
