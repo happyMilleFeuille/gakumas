@@ -89,18 +89,99 @@ export function showCardModal(card, displayName, imgSrc) {
 
     const thumbSrc = card.image || `images/support/thumb/${card.id}.webp`;
 
-    const highResImg = new Image();
-    highResImg.onload = () => {
-        if (window._modalCardId === card.id) {
-            mImg.src = imgSrc;
+    if (!(window._hqImageCache instanceof Map)) {
+        window._hqImageCache = new Map();
+    }
+    const MAX_CACHE_SIZE = 30;
+
+    const getCachedImage = (src) => {
+        if (window._hqImageCache.has(src)) {
+            const url = window._hqImageCache.get(src);
+            window._hqImageCache.delete(src);
+            window._hqImageCache.set(src, url); // refresh
+            return url;
+        }
+        return null;
+    };
+
+    const setCachedImage = (src, blobUrl) => {
+        if (window._hqImageCache.has(src)) {
+            window._hqImageCache.delete(src);
+        }
+        window._hqImageCache.set(src, blobUrl);
+        if (window._hqImageCache.size > MAX_CACHE_SIZE) {
+            const oldestKey = window._hqImageCache.keys().next().value;
+            const oldestUrl = window._hqImageCache.get(oldestKey);
+            URL.revokeObjectURL(oldestUrl); // Free memory
+            window._hqImageCache.delete(oldestKey);
         }
     };
-    highResImg.src = imgSrc;
 
-    if (highResImg.complete) {
-        mImg.src = imgSrc;
+    const getHighQualityResized = async (originalSrc) => {
+        const cached = getCachedImage(originalSrc);
+        if (cached) return cached;
+
+        try {
+            const mImg = document.getElementById('modal-img');
+            const displayWidth = mImg.clientWidth || 460;
+            const targetWidth = displayWidth * 2; 
+
+            const response = await fetch(originalSrc);
+            const blob = await response.blob();
+
+            const bitmap = await createImageBitmap(blob, {
+                resizeWidth: targetWidth,
+                resizeQuality: 'high'
+            });
+
+            let canvas = document.createElement('canvas');
+            canvas.width = bitmap.width;
+            canvas.height = bitmap.height;
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(bitmap, 0, 0);
+
+            const hqBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const blobUrl = URL.createObjectURL(hqBlob);
+            
+            setCachedImage(originalSrc, blobUrl);
+            return blobUrl;
+        } catch (e) {
+            console.warn('HQ resize failed, falling back to original', e);
+            return originalSrc;
+        }
+    };
+
+    const cachedUrl = getCachedImage(imgSrc);
+    if (cachedUrl) {
+        mImg.src = cachedUrl;
     } else {
-        mImg.src = thumbSrc;
+        const highResImg = new Image();
+        let isUpgrading = false;
+
+        const upgradeImage = async () => {
+            if (isUpgrading) return;
+            isUpgrading = true;
+            const hqSrc = await getHighQualityResized(imgSrc);
+            if (window._modalCardId === card.id) {
+                mImg.src = hqSrc;
+            }
+        };
+
+        highResImg.onload = () => {
+            const currentCache = getCachedImage(imgSrc);
+            if (window._modalCardId === card.id && mImg.src !== currentCache) {
+                mImg.src = imgSrc;
+                upgradeImage();
+            }
+        };
+        highResImg.src = imgSrc;
+
+        if (highResImg.complete) {
+            mImg.src = imgSrc;
+            upgradeImage();
+        } else {
+            mImg.src = thumbSrc;
+        }
     }
     mTitle.textContent = displayName;
     mRarity.src = `icons/${card.rarity.toLowerCase()}.png`;
