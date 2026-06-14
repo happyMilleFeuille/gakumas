@@ -767,7 +767,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="stat-header-icon ${store.type}-icon">` : ''}
                         <span class="stat-header-title">PRODUCE RESULT</span>
                         ${store.type === 'hif' ? `
-                        <button id="btn-hif-eval" class="hif-eval-btn" style="border-color: color-mix(in srgb, ${idolColor} 95%, #000) !important;">
+                        <button id="btn-hif-eval" class="hif-eval-btn" style="border-color: color-mix(in srgb, ${idolColor} 95%, #000) !important;${store.isKyouka ? ' display: none;' : ''}">
                             ${t('calc_hif_eval_btn')}
                         </button>
                         ` : ''}
@@ -1088,6 +1088,7 @@ export function updateStatHeaderUI(store, breakdown) {
     const hifEvalBtn = document.getElementById('btn-hif-eval');
     if (hifEvalBtn) {
         hifEvalBtn.style.setProperty('border-color', `color-mix(in srgb, ${idolColor} 95%, #000)`, 'important');
+        hifEvalBtn.style.display = store.isKyouka ? 'none' : '';
     }
 
     let sum = 0;

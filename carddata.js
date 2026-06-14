@@ -2141,6 +2141,27 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "visual_unitanomaly1",
+        name: "어-떻게 되는거야?",
+        name_ja: "どーなちゃうの~?",
+        type: "visual",
+        plan: "anomaly",
+        have: "item",
+        releasedAt: "2026-06-15",
+        rarity: "SSR",
+        source: "limited_u",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
 
 
 
@@ -2329,6 +2350,29 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "vocal_srunitsense2",
+        name: "양보할 수 없는 것",
+        name_ja: "ゆずれないもの",
+        type: "vocal",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["gift"], triggertext: ["vocal700"], stats: { vocal: 20 }, target: "get", display: { ko: "카드 복제", ja: "カードコピー", en: "Copy Card" }, max: 1 }],
+        releasedAt: "2026-06-15",
+        rarity: "SR",
+        source: "limited_u",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+
     {
         id: "vocal_srsense1",
         name: "제5종 접근 조우",

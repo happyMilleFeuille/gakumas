@@ -626,9 +626,24 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
 
     // 2. 강화월간 전용 카드들 그룹화 (로직, 센스, 어노말리 SSR인 경우)
     if (calcStore.isKyouka && (activePlan === 'logic' || activePlan === 'sense' || activePlan === 'anomaly')) {
+        const getReleaseTime = (id) => {
+            const fileName = id.split('-')[1] || id;
+            let produce = produceList.find(p => p.id === fileName);
+            if (!produce) {
+                const altName = fileName.includes('limited') ? fileName.replace('limited', 'dist') : fileName.replace('dist', 'limited');
+                produce = produceList.find(p => p.id === altName);
+            }
+            return produce && produce.releasedAt ? new Date(produce.releasedAt).getTime() : 0;
+        };
+
         const kyoukaCards = allCardIds
             .filter(id => id.startsWith(`${activePlan}-ssr`) && skillCardList[id].isKyoukaOnly)
-            .sort((a, b) => a.localeCompare(b));
+            .sort((a, b) => {
+                const timeA = getReleaseTime(a);
+                const timeB = getReleaseTime(b);
+                if (timeA !== timeB) return timeA - timeB;
+                return a.localeCompare(b);
+            });
 
         if (kyoukaCards.length > 0) {
             const groups = {
@@ -1260,7 +1275,7 @@ export function showRecommendModal(onConfirm) {
     const renderSubRow = (key) => `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 24px; border-bottom: 1px solid #f9f9f9;">
             <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #666;">
-                <img src="icons/${key}.png" style="width: 15px; height: 15px;">
+                <img src="icons/${key}.webp" style="width: 15px; height: 15px;">
                 <span style="font-weight: 700; letter-spacing: -0.01em;">SP</span>
             </span>
             <div style="display: flex; gap: 4px;" class="sp-sub-options" data-key="${key}">

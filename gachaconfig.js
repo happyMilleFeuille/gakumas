@@ -88,6 +88,19 @@ export const FES_CONFIG = [
 // 유닛 가챠 상세 설정
 export const UNIT_CONFIG = [
     {
+        id: 'sugarunit',
+        date: '2026-06-15',
+        bannerImg: 'idols/ssrmao_sugarunit1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrmao_sugarunit', char: 'mao' },
+                { id: 'ssrrinami_sugarunit', char: 'rinami' }
+            ],
+            sssr: ['visual_unitanomaly1'],
+            sr_card: ['vocal_srunitsense2']
+        }
+    },
+    {
         id: 'dokimekiunit',
         date: '2026-04-01',
         bannerImg: 'idols/ssrsumika_dokimekiunit1.webp',

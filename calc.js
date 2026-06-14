@@ -1646,7 +1646,21 @@ function renderCalcPresetSlots(container) {
             const vo = Number(finalStats.vocal ?? 0);
             const da = Number(finalStats.dance ?? 0);
             const vi = Number(finalStats.visual ?? 0);
-            const total = Number(finalStats.total ?? (vo + da + vi));
+
+            const modeName = data.type || mode;
+            const hifLimitBonus = modeName === 'hif' ? (hifParameterLimitBonuses[data.calcState?.hifParamLimitLevel || 0] || 0) : 0;
+            const maxStat = modeName === 'hajime' ? 3000 : (modeName === 'hif' ? (3000 + hifLimitBonus) : (modeName === 'nia' ? 2600 : 0));
+            
+            let displayTotal = vo + da + vi;
+            let overflow = 0;
+            if (maxStat > 0) {
+                const cVo = Math.min(vo, maxStat);
+                const cDa = Math.min(da, maxStat);
+                const cVi = Math.min(vi, maxStat);
+                displayTotal = cVo + cDa + cVi;
+                overflow = (vo - cVo) + (da - cDa) + (vi - cVi);
+            }
+            const total = overflow > 0 ? `${displayTotal}<span style="font-size: 0.6em; color: #ff6b6b; margin-left: 2px;">(-${overflow})</span>` : `${displayTotal}`;
             
             const voP = Number(percentBonus?.vocal ?? 0);
             const daP = Number(percentBonus?.dance ?? 0);

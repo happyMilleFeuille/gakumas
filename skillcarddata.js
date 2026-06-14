@@ -86,6 +86,7 @@ export const skillCardList = {
     "anomaly-ssrume_2nd": { type: "active", attrs: ["enthusiasm"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrume_campusfes": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrmisuzu_3rd": { type: "active", attrs: ["enthusiasm"], rarity: "SSR", isKyoukaOnly: true },
+    "anomaly-ssrrinami_sugarunit": { type: "active", attrs: ["enthusiasm", "preservation"], rarity: "SSR", isKyoukaOnly: true },
 
     // --- Free ---
     "free-r1": { type: "mental", attrs: ["genki"], rarity: "R", multi: true },
@@ -288,4 +289,5 @@ export const skillCardList = {
     "sense-ssrtsubame_campusfes": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrume_christmaslimited": { type: "mental", attrs: ["goodcondition"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrume_endlesslimited": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
+    "sense-ssrmao_sugarunit": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
 };
