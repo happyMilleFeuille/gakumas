@@ -1711,7 +1711,7 @@ export function showSupportItemTooltip(slot, cardId) {
     // 모바일 대응 스타일 조정
     const padding = isMobile ? '6px 10px' : '10px 14px';
     const borderWidth = isMobile ? '1.2px' : '2px';
-    const fontSize = isMobile ? '0.7rem' : '0.8rem';
+    const fontSize = isMobile ? '0.55rem' : '0.75rem';
     const imgSize = isMobile ? '24px' : '32px';
 
     const borderColor = attrColors[card.type] || getIdolDisplayColor(calcStore.selectedIdol || 'saki');

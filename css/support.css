@@ -1125,6 +1125,7 @@ select.sort-select {
     padding: 4px 12px;
     border-right: 1px solid #e6e6e6;
     color: #777;
+    font-weight: bold;
     font-size: 0.78rem;
     line-height: 1.2;
     text-align: left;
@@ -1173,8 +1174,8 @@ select.sort-select {
 }
 
 .modal-extra-icon {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     flex-shrink: 0;
     object-fit: contain;
     background: #fff;
@@ -1371,22 +1372,29 @@ select.sort-select {
         line-height: 1.1;
     }
 
+    .highlight-vocal,
+    .highlight-dance,
+    .highlight-visual,
+    .highlight-assist {
+        font-weight: bold;
+    }
+
     .modal-extra-box {
-        font-size: 0.65rem !important;
+        font-size: 0.55rem !important;
         padding: 4px 8px;
         min-height: 28px;
     }
 
     .modal-extra-box.shrink {
-        font-size: 0.52rem !important;
+        font-size: 0.48rem !important;
         letter-spacing: -0.8px;
         line-height: 1.1;
         padding: 3px 6px;
     }
 
     .modal-extra-icon {
-        width: 50px;
-        height: 50px;
+        width: 54px;
+        height: 54px;
     }
 
     .modal-meta-row {
@@ -1428,6 +1436,7 @@ select.sort-select {
         bottom: 15px !important;
         /* 위로 올림 */
         left: 10px !important;
+        filter: drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.45));
     }
 
     .modal-plan-icon {
@@ -1438,6 +1447,7 @@ select.sort-select {
         left: 10px !important;
         top: auto !important;
         /* 기존 top 제거 */
+        filter: drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.45));
     }
 
     .modal-type-icon {
@@ -1445,6 +1455,7 @@ select.sort-select {
         height: 24px !important;
         top: 8px !important;
         left: 8px !important;
+        filter: drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.45));
     }
 }
 

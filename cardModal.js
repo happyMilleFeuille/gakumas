@@ -392,7 +392,7 @@ export function showCardModal(card, displayName, imgSrc) {
                     const attrKey = `attr_${displayTarget.toLowerCase()}`;
                     const translatedType = translations[state.currentLang][attrKey] || displayTarget;
                     const rawText = format.replaceAll('{val}', val).replaceAll('{type}', translatedType);
-                    const highlightedText = highlightNumbers(rawText, card.type);
+                    const highlightedText = highlightNumbers(rawText, displayTarget);
 
                     const abEl = document.createElement('div');
                     abEl.className = `ability-item border-${card.type.toLowerCase()}`;
