@@ -306,7 +306,7 @@ export const cardList = [
         name_ja: "ぜったいにとるんだ！",
         type: "vocal",
         plan: "free",
-        have: "item",
+        have: "card_m",
         releasedAt: "2025-11-10",
         rarity: "SSR",
         source: "dist",
