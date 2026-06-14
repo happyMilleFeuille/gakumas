@@ -1294,6 +1294,13 @@ function updateSupportGrid(container) {
             cardEl.dataset.id = cardId;
             cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
             if (isDeactivated) cardEl.classList.add('is-disabled');
+            
+            cardEl.addEventListener('mouseenter', () => {
+                if (!isMobileDevice()) {
+                    const img = new Image();
+                    img.src = `images/support/${cardId}.webp`;
+                }
+            }, { once: true });
 
             const imgSrc = card.image || `images/support/thumb/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
