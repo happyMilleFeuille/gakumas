@@ -617,4 +617,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // [추가] 페이지 로드 직후 가벼운 썸네일 및 핵심 아이콘 즉시 프리로드 (사용자 체감 성능 향상)
+    setTimeout(() => {
+        preloadSupportImages();
+    }, 100);
 });
