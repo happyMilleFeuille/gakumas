@@ -2143,7 +2143,7 @@ export const cardList = [
     },
     {
         id: "visual_unitanomaly1",
-        name: "어-떻게 되는거야?",
+        name: "어-떻게 되는 거야?",
         name_ja: "どーなちゃうの~?",
         type: "visual",
         plan: "anomaly",
