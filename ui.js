@@ -65,29 +65,44 @@ export function preloadSupportImages() {
         img.src = src;
     });
 
-    // 1순위: 메인 리스트용 썸네일 프리로드 (즉시)
+    // 1순위: 메인 리스트용 썸네일 프리로드 (디스크 캐시에만 저장, RAM 디코딩 방지)
+    const fragment = document.createDocumentFragment();
     cardList.forEach(card => {
-        const thumbImg = new Image();
-        thumbImg.src = `${thumbDir}/${card.id}.webp`;
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = `${thumbDir}/${card.id}.webp`;
+        fragment.appendChild(link);
     });
 
     // 2순위: 모달용 아이콘 이미지 프리로드 (썸네일 로딩 후 시작하도록 딜레이)
     setTimeout(() => {
+        const modalFragment = document.createDocumentFragment();
         cardList.forEach(card => {
             const baseIconPath = `${mainDir}/${card.id}`;
             const isCardType = card.have && card.have.startsWith('card');
             const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
             const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
 
-            const img1 = new Image();
-            img1.onload = () => { card._extraPath = path1; };
-            img1.src = path1;
+            // 모달 열 때 path1/path2를 쓸 수 있도록 경로만 세팅
+            card._extraPath = path1; // 일단 path1을 기본으로 세팅
 
-            const img2 = new Image();
-            img2.onload = () => { if (!card._extraPath) card._extraPath = path2; };
-            img2.src = path2;
+            const link1 = document.createElement('link');
+            link1.rel = 'preload';
+            link1.as = 'image';
+            link1.href = path1;
+            modalFragment.appendChild(link1);
+
+            const link2 = document.createElement('link');
+            link2.rel = 'preload';
+            link2.as = 'image';
+            link2.href = path2;
+            modalFragment.appendChild(link2);
         });
+        document.head.appendChild(modalFragment);
     }, 600);
+    
+    document.head.appendChild(fragment);
 
     // 3순위: 화면에 보이는 것 우선 및 나머지는 백그라운드에서 순차적으로 프리로드 시작
     startBackgroundSequentialPreload();
