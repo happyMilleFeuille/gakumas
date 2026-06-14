@@ -157,7 +157,7 @@ export function openVideoModal(embedUrl, borderColor = '#ff4d8d', isVertical = f
     const modalContent = videoModal.querySelector('.video-modal-content');
     const innerContainer = videoModal.querySelector('.video-container');
     const localVideo = document.getElementById('video-local-player');
-    
+
     if (modalContent) {
         modalContent.style.borderColor = borderColor;
         if (isVertical) {
@@ -312,11 +312,11 @@ function openSlotModal() {
     const updateExportResult = (rootEl, slotId, message, color = '#666') => {
         const resultEl = rootEl?.querySelector(`[data-export-result="${slotId}"]`);
         if (!resultEl) return;
-        
+
         const isMobile = window.innerWidth <= 768;
         const resultPadding = isMobile ? '3px 6px' : '4px 8px';
         const resultFontSize = isMobile ? '0.65rem' : '0.72rem';
-        
+
         if (message) {
             resultEl.textContent = message;
             resultEl.style.display = 'inline-block';
@@ -333,7 +333,7 @@ function openSlotModal() {
             resultEl.style.color = '#333';
         } else {
             const slotInfo = getSlotInfo(slotId);
-            const unissuedText = slotInfo ? (state.currentLang === 'ko' ? '오른쪽의 버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')) : '';
+            const unissuedText = slotInfo ? (state.currentLang === 'ko' ? '오른쪽의 공유버튼을 누르면 코드가 발급됩니다.' : (state.currentLang === 'ja' ? '右側のボタンを押すとコードが発行されます' : 'Press the button on the right to issue')) : '';
             resultEl.textContent = unissuedText;
             resultEl.style.display = 'inline-block';
             resultEl.style.flex = '1';
@@ -720,7 +720,7 @@ function openSlotModal() {
             const data = getSlotData(i);
             const timeInfo = data ? data.timestamp : null;
             const customName = data && data.customName ? data.customName : `Slot ${i}`;
-            
+
             slotsHtml += `
                 <div class="slot-modal-item" style="position: relative; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
                     <button class="slot-btn delete" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="position: absolute; top: 7px; right: 9px; background: transparent; color: #b0b0b0; border: none; width: auto; height: auto; padding: 0; border-radius: 0; display: block; font-size: 0.95rem; line-height: 1; cursor: pointer;">&times;</button>
@@ -808,17 +808,17 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
     const isJa = state.currentLang === 'ja';
     const isEn = state.currentLang === 'en';
     const themeColor = '#ff4d8d';
-    
+
     let existingName = '';
     try {
         const data = getSlotData(slotId);
         if (data && data.customName) {
             existingName = data.customName;
         }
-    } catch(e) {}
-    
+    } catch (e) { }
+
     const defaultPresetName = existingName || `Slot ${slotId}`;
-            
+
     const backdrop = document.createElement('div');
     backdrop.id = 'support-preset-save-modal';
     backdrop.className = 'modal';
@@ -826,19 +826,19 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
         background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 30000;
     `;
-    
+
     const dialog = document.createElement('div');
     dialog.style.cssText = `
         background: white; border-radius: 14px; width: 90%; max-width: 320px;
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); padding: 20px; box-sizing: border-box;
         border: 2px solid ${themeColor}; display: flex; flex-direction: column; gap: 12px;
     `;
-    
+
     const headerTitle = isJa ? 'プリセット保存' : isEn ? 'Save Preset' : '프리셋 저장';
     const descLabel = isJa ? '保存するプリセット名を入力してください:' : isEn ? 'Enter a name for the preset:' : '저장할 프리셋의 이름을 입력하세요:';
     const cancelText = isJa ? 'キャンセル' : isEn ? 'Cancel' : '취소';
     const saveText = isJa ? '保存' : isEn ? 'Save' : '저장';
-    
+
     dialog.innerHTML = `
         <div style="font-size: 1rem; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none;">
             <div style="width: 4px; height: 16px; background-color: ${themeColor}; border-radius: 2px;"></div>
@@ -851,29 +851,29 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
             <button class="modal-save-btn" style="padding: 6px 16px; background: ${themeColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${themeColor}33; transition: background 0.1s;">${saveText}</button>
         </div>
     `;
-    
+
     backdrop.appendChild(dialog);
     document.body.appendChild(backdrop);
     history.pushState({ modalOpen: 'supportPresetSave' }, "");
-    
+
     const input = dialog.querySelector('.preset-name-input');
     const cancelBtn = dialog.querySelector('.modal-cancel-btn');
     const saveBtn = dialog.querySelector('.modal-save-btn');
-    
+
     if (input) {
         input.focus(); input.select();
         input.onfocus = () => { input.style.borderColor = themeColor; };
         input.onblur = () => { input.style.borderColor = '#ddd'; };
     }
-    
+
     const onPopState = () => {
         backdrop.remove();
         window.removeEventListener('popstate', onPopState);
     };
     window.addEventListener('popstate', onPopState);
-    
+
     const closeModal = () => history.back();
-    
+
     const executeSave = () => {
         const val = input.value.trim();
         if (val) {
@@ -884,7 +884,7 @@ function showSupportSavePresetModal(slotId, container, renderSlotsFn) {
             closeModal();
         }
     };
-    
+
     let isMouseDownOnBackdrop = false;
     backdrop.onmousedown = (e) => { isMouseDownOnBackdrop = (e.target === backdrop); };
     backdrop.onclick = (e) => { if (e.target === backdrop && isMouseDownOnBackdrop) closeModal(); };
@@ -989,7 +989,7 @@ function setupStaticListeners(container) {
             }
         });
     }
-    
+
     // 서포트 정보 툴팁 클릭 이벤트
     const infoBtn = container.querySelector('.support-info-btn');
     const infoTooltip = container.querySelector('.support-info-tooltip');
@@ -998,7 +998,7 @@ function setupStaticListeners(container) {
             e.stopPropagation();
             infoTooltip.classList.toggle('visible');
         });
-        
+
         // 툴팁 외부 클릭 시 닫기
         document.addEventListener('click', (e) => {
             if (!infoBtn.contains(e.target) && !infoTooltip.contains(e.target)) {
@@ -1029,7 +1029,7 @@ function setupStaticListeners(container) {
             renderSupport();
         });
     }
-    
+
     const sortOrderBtn = container.querySelector('#btn-sort-order');
     if (sortOrderBtn) {
         sortOrderBtn.addEventListener('click', () => {
@@ -1228,7 +1228,7 @@ function updateSupportGrid(container) {
         const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
         const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
         const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
-        
+
         // ability filter uses AND logic (must have all selected abilities)
         const abilityMatch = (state.filters.ability.length === 0) || state.filters.ability.every(ab => {
             if (!card.abilities) return false;
@@ -1257,12 +1257,12 @@ function updateSupportGrid(container) {
             const dateA = a.releasedAt || "0000.00.00";
             const dateB = b.releasedAt || "0000.00.00";
             if (dateA !== dateB) return isAsc ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
-            
+
             const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
             const rA = rarityOrder[a.rarity] || 0;
             const rB = rarityOrder[b.rarity] || 0;
             if (rA !== rB) return rB - rA;
-            
+
             const idA = getNumericId(a.id);
             const idB = getNumericId(b.id);
             return isAsc ? (idA - idB) : (idB - idA);
@@ -1307,7 +1307,7 @@ function updateSupportGrid(container) {
         });
         grid.appendChild(fragment);
     }
-    
+
     // 화면에 나타나는 카드 감지를 위한 Observer 초기화 및 등록
     initSupportObserver();
     grid.querySelectorAll('.support-card').forEach(el => {
@@ -1325,7 +1325,7 @@ export function updateGlobalBackgroundColor() {
     const idolColor = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColors[state.favoriteIdol] : '#ff4d8d';
 
     document.documentElement.style.setProperty('--idol-theme-color', idolColor);
-    
+
     let metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (!metaThemeColor) {
         metaThemeColor = document.createElement('meta');
