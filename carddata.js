@@ -307,6 +307,7 @@ export const cardList = [
         type: "vocal",
         plan: "free",
         have: "card_m",
+        attrs: ["genki"],
         releasedAt: "2025-11-10",
         rarity: "SSR",
         source: "dist",
