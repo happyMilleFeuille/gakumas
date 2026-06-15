@@ -255,8 +255,8 @@ export const produceList = [
     { id: "ssrhiro_michinaruunit", name: "미지로 펼쳐지는", name_en: "Unknown Unbound", name_ja: "みちなるひろがる", osusume: "goodimpression", releasedAt: "2026-01-27", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO" },
     { id: "ssrlilja_dokimekiunit", name: "두근두근 이모션", name_en: "Tokimeki Emotion", name_ja: "どきめきエモーション", osusume: "goodcondition", releasedAt: "2026-04-01", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-" },
     { id: "ssrsumika_dokimekiunit", name: "두근두근 이모션", name_en: "Tokimeki Emotion", name_ja: "どきめきエモーション", osusume: "enthusiasm", releasedAt: "2026-04-01", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-" },
-    { id: "ssrmao_sugarunit", name: "SUGAR FLAVOR", osusume: "goodcondition", releasedAt: "2026-06-15", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N" },
-    { id: "ssrrinami_sugarunit", name: "SUGAR FLAVOR", osusume: "enthusiasm", releasedAt: "2026-06-15", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N" },
+    { id: "ssrmao_sugarunit", name: "SUGAR FLAVOR", osusume: "goodcondition", releasedAt: "2026-06-15", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 9.1, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N" },
+    { id: "ssrrinami_sugarunit", name: "SUGAR FLAVOR", osusume: "enthusiasm", releasedAt: "2026-06-15", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 9.1, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N" },
 
     // --- PSR (Produce SR) ---
     { id: "srrinami_1sr", name: "『나다움』의 시작", name_en: "The Beginning of \"Being Myself\"", name_ja: "『私らしさ』のはじまり", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
