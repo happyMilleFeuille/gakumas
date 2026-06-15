@@ -682,6 +682,9 @@
     border-radius: 0;
     gap: 2px;
 }
+.pssr-plan-filters .pssr-filter-btn {
+    width: 36px;
+}
 
 .pssr-filter-btn {
     border: none;
@@ -742,7 +745,7 @@
         height: 20px;
         padding: 0;
         box-sizing: border-box;
-        font-size: 0.55rem;
+        font-size: 0.42rem;
         gap: 3px;
     }
     .pssr-filter-btn img {
@@ -750,6 +753,9 @@
         width: auto;
         max-width: 90%;
         object-fit: contain;
+    }
+    .pssr-plan-filters .pssr-filter-btn {
+        width: 28px;
     }
 }
 
@@ -796,7 +802,8 @@
 
 /* Consolidation of filters into a single wrapper */
 .pssr-filter-wrapper,
-.pssr-sub-filter-wrapper {
+.pssr-sub-filter-wrapper,
+.pssr-mobile-sort-wrapper {
     display: flex;
     align-items: center;
     background: rgba(0, 0, 0, 0.05);
@@ -836,9 +843,15 @@
     white-space: nowrap;
 }
 
+.pssr-mobile-sort-wrapper,
+.pssr-mobile-sort-btn {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
     .pssr-filter-wrapper,
-    .pssr-sub-filter-wrapper {
+    .pssr-sub-filter-wrapper,
+    .pssr-mobile-sort-wrapper {
         border-radius: 15px;
         padding: 2px;
         gap: 2px;
@@ -857,6 +870,21 @@
         position: static;
         transform: none;
         margin-left: 0;
+        margin-top: 0px;
+    }
+    .pssr-desktop-sort-btn,
+    .pssr-pc-sort-divider {
+        display: none !important;
+    }
+    .pssr-mobile-sort-wrapper,
+    .pssr-mobile-sort-btn {
+        display: flex !important;
+    }
+    .pssr-bottom-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
         margin-top: 6px;
     }
 }
@@ -883,6 +911,7 @@
     .pssr-sort-order-btn-capsule {
         min-width: 28px;
         padding: 0 2px !important;
+        gap: 0px !important;
     }
     #pssr-sort-order-arrow {
         font-size: 0.75rem;
