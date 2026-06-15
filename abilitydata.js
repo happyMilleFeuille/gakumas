@@ -470,7 +470,7 @@ export const abilityData = {
         name: { ko: "특별지도", ja: "特別指導", en: "Special Guidance" },
         format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },
         levels: {
-            "SSR": { 1: 19, 2: 25 },
+            "SSR": { 1: 18, 2: 25 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 9, 2: 18 }
         },
