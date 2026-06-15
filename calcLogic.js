@@ -117,7 +117,7 @@ export function getTriggerCounts(store) {
                 counts.total.get_item++;
             } else if (store.type === 'nia' && (wInt === 9 || wInt === 17) && actionId === 'audition') {
                 counts.total.get_item++;
-            } else if (store.type === 'hif' && (wInt === 7 || wInt === 13 || wInt === 20) && actionId === 'test') {
+            } else if (store.type === 'hif' && wInt === 27 && actionId === 'round_hif') {
                 counts.total.get_item++;
             }
         }
@@ -557,7 +557,7 @@ export function calculateTotals(store, detailedCounts) {
         supportFixedTotal.vocal += bonusResult.vocal || 0;
         supportFixedTotal.dance += bonusResult.dance || 0;
         supportFixedTotal.visual += bonusResult.visual || 0;
-        
+
         if (bonusResult.breakdowns) {
             Object.keys(bonusResult.breakdowns).forEach(key => {
                 if (!supportFixedTotal.factors[key]) supportFixedTotal.factors[key] = { vocal: 0, dance: 0, visual: 0 };

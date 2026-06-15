@@ -1295,9 +1295,7 @@ function updateSupportGrid(container) {
     });
 
     grid.innerHTML = '';
-    if (filteredList.length === 0) {
-        grid.innerHTML = `<p style="text-align:center; width:100%; grid-column:1/-1; padding:2rem;">${t('ui_no_cards_found', {}, 'No cards found.')}</p>`;
-    } else {
+    if (filteredList.length > 0) {
         const fragment = document.createDocumentFragment();
         filteredList.forEach(card => {
             const item = itemTpl.content.cloneNode(true);

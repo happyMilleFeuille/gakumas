@@ -196,7 +196,7 @@
 
 /* PSSR Display Styles */
 .pssr-container {
-    margin-top: 1rem;
+    margin-top: 0.2rem;
     width: 100%;
     padding: 0 1rem 5rem;
 }
@@ -662,5 +662,252 @@
     }
     .menu-logo-text {
         display: block;
+    }
+}
+
+/* PSSR Plan Filter Bar */
+.pssr-filter-bar {
+    max-width: 1000px;
+    margin: 0 auto 0.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+}
+
+.pssr-plan-filters {
+    display: flex;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    gap: 2px;
+}
+
+.pssr-filter-btn {
+    border: none;
+    background: transparent;
+    width: 44px;
+    height: 29px;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.pssr-filter-btn img {
+    height: 18px;
+    width: auto;
+    max-width: 90%;
+    object-fit: contain;
+}
+
+.pssr-filter-btn:hover {
+    color: #111;
+}
+
+.pssr-filter-btn.active {
+    background: #fff;
+    color: var(--pssr-active-color, #ff4d8d);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pssr-filter-btn[data-sub="goodcondition"].active,
+.pssr-filter-btn[data-sub="concentration"].active {
+    color: #e0458a;
+}
+.pssr-filter-btn[data-sub="goodimpression"].active,
+.pssr-filter-btn[data-sub="motivation"].active {
+    color: #3b8edb;
+}
+.pssr-filter-btn[data-sub="fullpower"].active,
+.pssr-filter-btn[data-sub="enthusiasm"].active {
+    color: #d18e15;
+}
+
+@media (max-width: 768px) {
+    .pssr-filter-bar {
+        margin-bottom: 0.3rem;
+        padding: 0.15rem 0.25rem;
+    }
+    .pssr-filter-btn {
+        width: 32px;
+        height: 20px;
+        padding: 0;
+        box-sizing: border-box;
+        font-size: 0.55rem;
+        gap: 3px;
+    }
+    .pssr-filter-btn img {
+        height: 12px;
+        width: auto;
+        max-width: 90%;
+        object-fit: contain;
+    }
+}
+
+/* Sub filters layout */
+.pssr-filter-bar {
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.pssr-divider {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.12);
+    align-self: center;
+}
+
+.pssr-sub-filters {
+    display: flex;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    gap: 2px;
+}
+
+
+/* Rarity filters layout */
+.pssr-rarity-filters {
+    display: flex;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    gap: 2px;
+}
+
+.pssr-filter-btn[data-rarity="PSSR"].active {
+    color: var(--pssr-active-color, #ff4d8d);
+}
+.pssr-filter-btn[data-rarity="PSR"].active {
+    color: #ffb300;
+}
+.pssr-filter-btn[data-rarity="PR"].active {
+    color: #4caf50;
+}
+
+/* Consolidation of filters into a single wrapper */
+.pssr-filter-wrapper,
+.pssr-sub-filter-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 3px;
+    border-radius: 30px;
+    gap: 2px;
+}
+
+.pssr-divider-v {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.12);
+    margin: 0 2px;
+}
+
+.pssr-divider {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.12);
+    margin: 0 2px;
+}
+
+/* Outer wrapper for filter bar to keep main filter centered */
+.pssr-filter-wrapper-outer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pssr-sub-filter-wrapper {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .pssr-filter-wrapper,
+    .pssr-sub-filter-wrapper {
+        border-radius: 15px;
+        padding: 2px;
+        gap: 2px;
+    }
+    .pssr-divider-v,
+    .pssr-divider {
+        height: 11px;
+        margin: 0 1.5px;
+    }
+    .pssr-filter-wrapper-outer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .pssr-sub-filter-wrapper {
+        position: static;
+        transform: none;
+        margin-left: 0;
+        margin-top: 6px;
+    }
+}
+
+/* Sort Order Button inside Capsule */
+.pssr-sort-order-btn-capsule {
+    width: auto !important;
+    min-width: 40px;
+    padding: 0 4px !important;
+    gap: 2px !important;
+}
+#pssr-sort-order-arrow {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: inherit;
+}
+.pssr-sort-order-btn-capsule .sort-order-icon {
+    height: 13px !important;
+    width: auto;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+@media (max-width: 768px) {
+    .pssr-sort-order-btn-capsule {
+        min-width: 28px;
+        padding: 0 2px !important;
+    }
+    #pssr-sort-order-arrow {
+        font-size: 0.75rem;
+    }
+    .pssr-sort-order-btn-capsule .sort-order-icon {
+        height: 9px !important;
+    }
+}
+
+/* Source Filter Capsule Buttons */
+.pssr-source-filters {
+    display: flex;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    gap: 2px;
+}
+.pssr-source-filters .pssr-filter-btn {
+    width: auto !important;
+    min-width: 40px;
+    padding: 0 6px !important;
+}
+@media (max-width: 768px) {
+    .pssr-source-filters .pssr-filter-btn {
+        min-width: 28px;
+        padding: 0 3px !important;
     }
 }

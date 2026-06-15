@@ -23,10 +23,39 @@ const getLocalizedCardName = (card) => {
 
 let activeTab = 'p-idol';
 const videoExistenceCache = new Map();
+let currentSelectedIdol = 'all';
+let activePlanFilter = 'all';
+let activeSubFilter = 'all';
+let activeRarityFilter = 'all';
+const activeSourceFilters = new Set();
+let activeSortOrder = 'desc';
+
+function updateActiveFilterColorCSS() {
+    const getActiveFilterColor = () => {
+        if (currentSelectedIdol && currentSelectedIdol !== 'all') {
+            return idolColors[currentSelectedIdol] || '#ff4d8d';
+        }
+        if (state.favoriteIdol && state.favoriteIdol !== 'all') {
+            return idolColors[state.favoriteIdol] || '#ff4d8d';
+        }
+        return '#ff4d8d';
+    };
+    const color = getActiveFilterColor();
+    const pssrArea = document.querySelector('.pssr-container');
+    if (pssrArea) {
+        pssrArea.style.setProperty('--pssr-active-color', color);
+    }
+}
 
 export function renderIdolList() {
     if (!contentArea) return;
     contentArea.innerHTML = '';
+
+    currentSelectedIdol = state.favoriteIdol || 'all';
+    activePlanFilter = 'all';
+    activeSubFilter = 'all';
+    activeRarityFilter = 'all';
+    activeSourceFilters.clear();
 
     const gridTpl = document.getElementById('tpl-idol-grid');
     const itemTpl = document.getElementById('tpl-idol-item');
@@ -40,8 +69,110 @@ export function renderIdolList() {
 
     const pssrArea = document.createElement('div');
     pssrArea.className = 'pssr-container';
-    pssrArea.innerHTML = '<div class="pssr-grid"></div>';
+    pssrArea.innerHTML = `
+        <div class="pssr-filter-bar">
+            <div class="pssr-filter-wrapper-outer">
+                <div class="pssr-filter-wrapper">
+                    <div class="pssr-source-filters">
+                        <button class="pssr-filter-btn" data-source="normal">${t('filter_normal', {}, '통상')}</button>
+                        <button class="pssr-filter-btn" data-source="limited">${t('filter_limited', {}, '한정')}</button>
+                        <button class="pssr-filter-btn" data-source="limited_f">${t('filter_limited_f', {}, '페스')}</button>
+                        <button class="pssr-filter-btn" data-source="limited_u">${t('filter_limited_u', {}, '유닛')}</button>
+                        <button class="pssr-filter-btn" data-source="dist">${t('filter_dist', {}, '배포')}</button>
+                    </div>
+                    <div class="pssr-divider-v"></div>
+                    <div class="pssr-rarity-filters">
+                        <button class="pssr-filter-btn" data-rarity="PSSR"><img src="icons/ssr.png" alt="SSR"></button>
+                    </div>
+                    <div class="pssr-divider-v"></div>
+                    <div class="pssr-plan-filters">
+                        <button class="pssr-filter-btn" data-plan="sense"><img src="icons/sense.webp" alt="Sense"></button>
+                        <button class="pssr-filter-btn" data-plan="logic"><img src="icons/logic.webp" alt="Logic"></button>
+                        <button class="pssr-filter-btn" data-plan="anomaly"><img src="icons/anomaly.webp" alt="Anomaly"></button>
+                    </div>
+                    <div class="pssr-divider-v"></div>
+                    <button id="pssr-btn-sort-order" class="pssr-filter-btn pssr-sort-order-btn-capsule">
+                        <span id="pssr-sort-order-arrow">↓</span>
+                        <img src="icons/list.svg" alt="Sort Order" class="sort-order-icon">
+                    </button>
+                </div>
+                <div class="pssr-sub-filter-wrapper hidden">
+                    <div class="pssr-sub-filters"></div>
+                </div>
+            </div>
+        </div>
+        <div class="pssr-grid"></div>
+    `;
     const pssrGrid = pssrArea.querySelector('.pssr-grid');
+
+    const sortOrderBtn = pssrArea.querySelector('#pssr-btn-sort-order');
+    const sortOrderArrow = pssrArea.querySelector('#pssr-sort-order-arrow');
+    
+    if (sortOrderArrow) {
+        sortOrderArrow.textContent = (activeSortOrder === 'asc') ? '↑' : '↓';
+    }
+    
+    if (sortOrderBtn) {
+        sortOrderBtn.addEventListener('click', () => {
+            activeSortOrder = (activeSortOrder === 'asc') ? 'desc' : 'asc';
+            if (sortOrderArrow) {
+                sortOrderArrow.textContent = (activeSortOrder === 'asc') ? '↑' : '↓';
+            }
+            renderProduceCards(currentSelectedIdol, pssrGrid);
+        });
+    }
+
+    // Rarity Filters click handler
+    pssrArea.querySelectorAll('.pssr-rarity-filters .pssr-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const isAlreadyActive = btn.classList.contains('active');
+
+            pssrArea.querySelectorAll('.pssr-rarity-filters .pssr-filter-btn').forEach(b => b.classList.remove('active'));
+
+            if (isAlreadyActive) {
+                activeRarityFilter = 'all';
+            } else {
+                btn.classList.add('active');
+                activeRarityFilter = btn.dataset.rarity;
+            }
+            renderProduceCards(currentSelectedIdol, pssrGrid);
+        });
+    });
+
+    // Plan Filters click handler
+    pssrArea.querySelectorAll('.pssr-plan-filters .pssr-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const isAlreadyActive = btn.classList.contains('active');
+
+            pssrArea.querySelectorAll('.pssr-plan-filters .pssr-filter-btn').forEach(b => b.classList.remove('active'));
+
+            if (isAlreadyActive) {
+                activePlanFilter = 'all';
+            } else {
+                btn.classList.add('active');
+                activePlanFilter = btn.dataset.plan;
+            }
+            updateSubFiltersUI(pssrArea, pssrGrid);
+            renderProduceCards(currentSelectedIdol, pssrGrid);
+        });
+    });
+
+    // Source Filters click handler - Toggle-off multi-select
+    pssrArea.querySelectorAll('.pssr-source-filters .pssr-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const source = btn.dataset.source;
+            if (activeSourceFilters.has(source)) {
+                activeSourceFilters.delete(source);
+                btn.classList.remove('active');
+            } else {
+                activeSourceFilters.add(source);
+                btn.classList.add('active');
+            }
+            renderProduceCards(currentSelectedIdol, pssrGrid);
+        });
+    });
+
+    updateSubFiltersUI(pssrArea, pssrGrid);
 
     const preloadedIdols = new Set();
     function preloadIdolImages(idolName) {
@@ -104,15 +235,27 @@ export function renderIdolList() {
             }
 
             getCommonUI().then(m => m.updateGlobalBackgroundColor());
+            updateActiveFilterColorCSS();
         });
 
         img.addEventListener('click', (e) => {
+            const isAlreadySelected = img.classList.contains('selected');
+
             document.querySelectorAll('.idol-icon').forEach(icon => {
                 icon.classList.remove('selected');
                 icon.style.borderColor = '';
                 icon.style.boxShadow = '';
             });
 
+            if (isAlreadySelected) {
+                currentSelectedIdol = 'all';
+                videoArea.style.display = 'none';
+                updateActiveFilterColorCSS();
+                renderProduceCards('all', pssrGrid);
+                return;
+            }
+
+            currentSelectedIdol = name;
             img.classList.add('selected');
             const color = (idolColors[name] || "#ff4d8d");
             img.style.borderColor = color;
@@ -128,8 +271,10 @@ export function renderIdolList() {
                 gridContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
             }
 
+            videoArea.style.display = 'block';
             videoArea.style.setProperty('--idol-border-color', `${color}66`);
             renderIdolVideos(name, videoListEl);
+            updateActiveFilterColorCSS();
             renderProduceCards(name, pssrGrid);
         });
         grid.appendChild(item);
@@ -139,9 +284,14 @@ export function renderIdolList() {
     contentArea.appendChild(videoArea);
     contentArea.appendChild(pssrArea);
 
+    updateActiveFilterColorCSS();
+
+    let initialSelected = false;
     if (state.favoriteIdol) {
         const favIcon = contentArea.querySelector(`.idol-icon[alt="${state.favoriteIdol}"]`);
         if (favIcon) {
+            initialSelected = true;
+            currentSelectedIdol = state.favoriteIdol;
             favIcon.classList.add('selected');
             const color = (idolColors[state.favoriteIdol] || "#ff4d8d");
             favIcon.style.borderColor = color;
@@ -155,9 +305,16 @@ export function renderIdolList() {
                 gridContainer.scrollTo({ left: scrollPos, behavior: 'auto' });
             }
 
+            videoArea.style.display = 'block';
             renderIdolVideos(state.favoriteIdol, videoListEl);
             renderProduceCards(state.favoriteIdol, pssrGrid);
         }
+    }
+
+    if (!initialSelected) {
+        currentSelectedIdol = 'all';
+        videoArea.style.display = 'none';
+        renderProduceCards('all', pssrGrid);
     }
 }
 
@@ -232,37 +389,127 @@ export function renderIdolVideos(idolName, container) {
     });
 }
 
+function getIdolNameFromCardId(cardId) {
+    const match = cardId.match(/^(?:ssr|sr|r)([a-z]+)_/);
+    return match ? match[1] : '';
+}
+
+function updateSubFiltersUI(pssrArea, pssrGrid) {
+    const subWrapper = pssrArea.querySelector('.pssr-sub-filter-wrapper');
+    const subContainer = pssrArea.querySelector('.pssr-sub-filters');
+    if (!subWrapper || !subContainer) return;
+
+    subContainer.innerHTML = '';
+    activeSubFilter = 'all';
+
+    if (activePlanFilter === 'all') {
+        subWrapper.classList.add('hidden');
+        return;
+    }
+
+    subWrapper.classList.remove('hidden');
+
+    let subPlans = [];
+    if (activePlanFilter === 'sense') {
+        subPlans = [
+            { key: 'goodcondition', icon: 'goodcondition.webp', label: '호조' },
+            { key: 'concentration', icon: 'concentration.webp', label: '집중' }
+        ];
+    } else if (activePlanFilter === 'logic') {
+        subPlans = [
+            { key: 'goodimpression', icon: 'goodimpression.webp', label: '호인상' },
+            { key: 'motivation', icon: 'motivation.webp', label: '의욕' }
+        ];
+    } else if (activePlanFilter === 'anomaly') {
+        subPlans = [
+            { key: 'fullpower', icon: 'fullpower.webp', label: '힘축적' },
+            { key: 'enthusiasm', icon: 'enthusiasm.webp', label: '열의' }
+        ];
+    }
+
+    subPlans.forEach(sub => {
+        const btn = document.createElement('button');
+        btn.className = 'pssr-filter-btn';
+        btn.dataset.sub = sub.key;
+        btn.innerHTML = `<img src="icons/${sub.icon}" alt="${sub.label}">`;
+        btn.addEventListener('click', () => {
+            const isAlreadyActive = btn.classList.contains('active');
+            subContainer.querySelectorAll('.pssr-filter-btn').forEach(b => b.classList.remove('active'));
+
+            if (isAlreadyActive) {
+                activeSubFilter = 'all';
+            } else {
+                btn.classList.add('active');
+                activeSubFilter = sub.key;
+            }
+            renderProduceCards(currentSelectedIdol, pssrGrid);
+        });
+        subContainer.appendChild(btn);
+    });
+}
+
 export function renderProduceCards(idolName, container) {
     container.innerHTML = '';
     const itemTpl = document.getElementById('tpl-pssr-item');
     if (!itemTpl) return;
 
+    const isAll = (idolName === 'all' || !idolName);
     const produceCards = produceList.filter(p => {
-        const nameMatch = p.id.startsWith(`ssr${idolName}_`) ||
+        const nameMatch = isAll ||
+            p.id.startsWith(`ssr${idolName}_`) ||
             p.id.startsWith(`sr${idolName}_`) ||
             p.id.startsWith(`r${idolName}_`);
 
-        return nameMatch &&
+        const planMatch = activePlanFilter === 'all' || p.plan === activePlanFilter;
+
+        let cardOsusume = p.osusume;
+        if (p.id === 'ssrmisuzu_1st' || p.id === 'rmisuzu_1r') {
+            cardOsusume = 'fullpower';
+        } else if (p.id === 'srmisuzu_1sr') {
+            cardOsusume = 'enthusiasm';
+        }
+        
+        const subMatch = activeSubFilter === 'all' || cardOsusume === activeSubFilter;
+        const rarityMatch = activeRarityFilter === 'all' || p.rarity === activeRarityFilter;
+        const sourceMatch = activeSourceFilters.size === 0 || activeSourceFilters.has(p.source);
+
+        return nameMatch && planMatch && subMatch && rarityMatch && sourceMatch &&
             (p.rarity === 'PSSR' || p.rarity === 'PSR' || p.rarity === 'PR') &&
             p.another !== true;
     });
 
-    produceCards.sort((a, b) => {
-        const rarityOrder = { 'PSSR': 3, 'PSR': 2, 'PR': 1 };
-        const rA = rarityOrder[a.rarity] || 0;
-        const rB = rarityOrder[b.rarity] || 0;
+    const isAsc = (activeSortOrder === 'asc');
 
-        if (rA !== rB) {
-            return rB - rA;
-        }
+    if (isAll) {
+        produceCards.sort((a, b) => {
+            const dateA = a.releasedAt || "";
+            const dateB = b.releasedAt || "";
+            if (dateA !== dateB) {
+                return isAsc ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
+            }
+            const rarityOrder = { 'PSSR': 3, 'PSR': 2, 'PR': 1 };
+            const rA = rarityOrder[a.rarity] || 0;
+            const rB = rarityOrder[b.rarity] || 0;
+            return isAsc ? (rA - rB) : (rB - rA);
+        });
+    } else {
+        produceCards.sort((a, b) => {
+            const rarityOrder = { 'PSSR': 3, 'PSR': 2, 'PR': 1 };
+            const rA = rarityOrder[a.rarity] || 0;
+            const rB = rarityOrder[b.rarity] || 0;
 
-        const dateA = a.releasedAt || "";
-        const dateB = b.releasedAt || "";
-        return dateB.localeCompare(dateA);
-    });
+            if (rA !== rB) {
+                return isAsc ? (rA - rB) : (rB - rA);
+            }
+
+            const dateA = a.releasedAt || "";
+            const dateB = b.releasedAt || "";
+            return isAsc ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
+        });
+    }
 
     if (produceCards.length === 0) {
-        container.innerHTML = `<p style="color:#999; padding:2rem; width:100%; text-align:center;">${t('ui_no_cards_found_for', { idolName }, `No cards found for ${idolName}.`)}</p>`;
+        container.innerHTML = '';
         return;
     }
 
@@ -273,7 +520,9 @@ export function renderProduceCards(idolName, container) {
         const imgWrapper = item.querySelector('.pssr-img-wrapper');
         const infoBox = item.querySelector('.pssr-info');
         const name = item.querySelector('.pssr-name');
-        const personalColor = idolColors[idolName] || "#ffffff";
+        
+        const cardIdolName = isAll ? getIdolNameFromCardId(card.id) : idolName;
+        const personalColor = idolColors[cardIdolName] || "#ffffff";
 
         const mixedBg = `linear-gradient(${personalColor}26, ${personalColor}26)`;
         cardEl.style.backgroundColor = "#ffffff";
@@ -284,8 +533,8 @@ export function renderProduceCards(idolName, container) {
 
         name.style.color = '#333';
         let initWrapperBg = personalColor + "11";
-        if (idolName === 'lilja') initWrapperBg = '#EAFDFF11';
-        else if (idolName === 'sumika') initWrapperBg = '#7CFC0011';
+        if (cardIdolName === 'lilja') initWrapperBg = '#EAFDFF11';
+        else if (cardIdolName === 'sumika') initWrapperBg = '#7CFC0011';
         imgWrapper.style.backgroundColor = initWrapperBg;
 
         const planIcon = item.querySelector('.pssr-plan-icon');
@@ -328,10 +577,10 @@ export function renderProduceCards(idolName, container) {
 
             let animColor = personalColor;
             let animColor11 = personalColor + "11";
-            if (idolName === 'lilja') {
+            if (cardIdolName === 'lilja') {
                 animColor = '#EAFDFF';
                 animColor11 = '#EAFDFF11';
-            } else if (idolName === 'sumika') {
+            } else if (cardIdolName === 'sumika') {
                 animColor = '#7CFC00';
                 animColor11 = '#7CFC0011';
             }
@@ -430,7 +679,7 @@ export function renderProduceCards(idolName, container) {
                         const videoId = finalUrl.split('youtu.be/')[1].split('?')[0];
                         embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
                     }
-                    const color = idolColors[idolName] || '#ff4d8d';
+                    const color = idolColors[cardIdolName] || '#ff4d8d';
                     getCommonUI().then(m => m.openVideoModal(embedUrl, color));
                 };
                 youtubeLink.classList.remove('hidden');
@@ -502,10 +751,10 @@ export function renderProduceCards(idolName, container) {
                     e.preventDefault();
                     e.stopPropagation();
                     if (!currentVideoUrl) return;
-                    const color = idolColors[idolName] || '#ff4d8d';
+                    const color = idolColors[cardIdolName] || '#ff4d8d';
                     getCommonUI().then(m => m.openVideoModal(currentVideoUrl, color, true));
                 };
-                gachaVideoLink.style.setProperty('--button-color', idolColors[idolName] || '#ff4d8d');
+                gachaVideoLink.style.setProperty('--button-color', idolColors[cardIdolName] || '#ff4d8d');
             } else {
                 gachaVideoLink.classList.add('hidden');
             }
