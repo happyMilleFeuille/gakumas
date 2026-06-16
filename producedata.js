@@ -900,12 +900,12 @@ export const produceList = [
         },
         card: {
             name: "ダークヒーローの誕生",
-            desc: "startingcard\n✦ 파라미터 상승량 증가 10%\n✦ 마지막 턴 종료 시 param30 (호조효과의 2배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "startingcard\n✦ パラメータ上昇量増加10%\n✦ 最終ターンのターン終了時、param30（好調効果の2倍適用） \n<span style = 'color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ 파라미터 상승량 증가 10%\n✦ 마지막 턴 종료 시 param30 (호조효과 2배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ パラメータ上昇量増加10%\n✦ 最終ターンのターン終了時、param30（好調効果を2倍適用） \n<span style = 'color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "startingcard\n✦ 파라미터 상승량 증가 10%\n✦ 마지막 턴 종료 시 param50 (호조효과의 2배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "startingcard\n✦ パラメータ上昇量増加10%\n✦ 最終ターンのターン終了時、param50（好調効果の2倍適用） \n<span style = 'color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ 파라미터 상승량 증가 10%\n✦ 마지막 턴 종료 시 param50 (호조효과 2배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ パラメータ上昇量増加10%\n✦ 最終ターンのターン終了時、param50（好調効果を2倍適用） \n<span style = 'color:#8B8FD8'>nooverlab limit1",
         }
     },
     { id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2025-01-02" },
