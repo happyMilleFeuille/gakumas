@@ -632,11 +632,15 @@ export function renderProduceCards(idolName, container) {
 
         const infoBtn = item.querySelector('.pssr-info-btn');
         if (infoBtn) {
-            infoBtn.style.color = personalColor;
-            infoBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showProduceCardInfoModal(card, personalColor);
-            });
+            if (card.rarity === 'PR') {
+                infoBtn.remove();
+            } else {
+                infoBtn.style.color = personalColor;
+                infoBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showProduceCardInfoModal(card, personalColor);
+                });
+            }
         }
 
         cardEl.addEventListener('click', (e) => {
