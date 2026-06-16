@@ -18,14 +18,19 @@ const replaceDescIcons = (text) => {
     // --- 1. Normalization Phase (Run first to shield terms from keyword matches) ---
     result = result.replace(/(원기|元気)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `genki${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(의욕|やる気)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `motivation${spanOpen || ''}${num}${spanClose || ''}`);
+    // 절호조/絶好調 must be normalized BEFORE 호조/好調 to prevent partial match
+    result = result.replace(/(절호조|絶好調)\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?\s*(턴|ターン)?/gi, (match, term, spanOpen, num, spanClose) => `goodconditionz${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/(절호조|絶好調)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `goodconditionz${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(호조|好調)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `goodcondition${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/호조\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?\s*턴/gi, (match, spanOpen, num, spanClose) => `goodcondition${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/好調\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?\s*ターン/gi, (match, spanOpen, num, spanClose) => `goodcondition${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(집중|集中)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `concentration${spanOpen || ''}${num}${spanClose || ''}`);
-    result = result.replace(/(전력|全力)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `fullpower${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/(전력치|전력|全力値|全力)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `fullpower${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(호인상|好印象)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `goodimpression${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/스킬카드\s*사용\s*수\s*추가\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `use${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/スキルカード使用数追加\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `use${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/(파라미터|パラメータ)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `param${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/(열의\s*추가|熱意追加)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `netsui${spanOpen || ''}${num}${spanClose || ''}`);
     
     // 1. 체력 소비 / 体力消費
     result = result.replace(/(체력\s*소비|소비\s*체력|体力\s*消費|消費\s*体力)/g, (match) => {
@@ -48,7 +53,7 @@ const replaceDescIcons = (text) => {
     });
     
     // 4. 전력 / 全力
-    result = result.replace(/(전력|全力)/g, (match) => {
+    result = result.replace(/(전력치|전력|全力値|全力)/g, (match) => {
         return `<img src="icons/fullpower.webp" alt="Full Power" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
     
@@ -70,6 +75,16 @@ const replaceDescIcons = (text) => {
     // 8. 집중 / 集中
     result = result.replace(/(집중|集中)/g, (match) => {
         return `<img src="icons/concentration.webp" alt="Concentration" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+    
+    // 9. 여유 / のんびり
+    result = result.replace(/(여유|のんびり)/g, (match) => {
+        return `<img src="icons/nonbiri.webp" alt="Nonbiri" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+    
+    // 9-2. 원기 / 元気
+    result = result.replace(/(원기|元気)/g, (match) => {
+        return `<img src="icons/genki.webp" alt="Genki" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
     
     // 9. 시작 카드 / 레슨 개시 시 손패로 이동 / レッスン開始時手札に入る -> Map to startingcard first for dynamic localization
@@ -214,6 +229,19 @@ const replaceDescIcons = (text) => {
         return `<img src="icons/motivation.webp" alt="Motivation" class="pssr-info-modal-desc-inline-icon">${label}`;
     });
 
+    // goodconditionz[num] - must be processed BEFORE goodcondition to prevent partial match
+    result = result.replace(/goodconditionz\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        let label = '';
+        if (state.currentLang === 'ko') {
+            label = `절호조 ${spanOpen || ''}${num}${spanClose || ''}턴`;
+        } else if (state.currentLang === 'ja') {
+            label = `絶好調${spanOpen || ''}${num}${spanClose || ''}ターン`;
+        } else {
+            label = `Perfect Condition for ${spanOpen || ''}${num}${spanClose || ''} turn(s)`;
+        }
+        return `<img src="icons/goodcondition.webp" alt="Perfect Condition" class="pssr-info-modal-desc-inline-icon">${label}`;
+    });
+
     // goodcondition[num]
     result = result.replace(/goodcondition\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         let label = '';
@@ -244,9 +272,9 @@ const replaceDescIcons = (text) => {
     result = result.replace(/fullpower\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         let label = '';
         if (state.currentLang === 'ko') {
-            label = `전력+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `전력치+${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
-            label = `全力+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `全力値+${spanOpen || ''}${num}${spanClose || ''}`;
         } else {
             label = `Full Power +${spanOpen || ''}${num}${spanClose || ''}`;
         }
@@ -268,12 +296,58 @@ const replaceDescIcons = (text) => {
 
     // use[num] (optional span tags wrapping the number are preserved)
     result = result.replace(/use\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        let label = '';
         if (state.currentLang === 'ko') {
-            return `스킬카드 사용 수 추가+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `스킬카드 사용 수 추가+${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
-            return `スキルカード使用数追加+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `スキルカード使用数追加+${spanOpen || ''}${num}${spanClose || ''}`;
         } else {
-            return `Additional skill card plays +${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `Additional skill card plays +${spanOpen || ''}${num}${spanClose || ''}`;
+        }
+        return `<img src="icons/carduseplus.webp" alt="Skill Plays" class="pssr-info-modal-desc-inline-icon">${label}`;
+    });
+
+    // param[num]
+    result = result.replace(/param\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        if (state.currentLang === 'ko') {
+            return `파라미터+${spanOpen || ''}${num}${spanClose || ''}`;
+        } else if (state.currentLang === 'ja') {
+            return `パラメータ+${spanOpen || ''}${num}${spanClose || ''}`;
+        } else {
+            return `Parameter +${spanOpen || ''}${num}${spanClose || ''}`;
+        }
+    });
+
+    // netsui[num]
+    result = result.replace(/netsui\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        if (state.currentLang === 'ko') {
+            return `열의 추가+${spanOpen || ''}${num}${spanClose || ''}`;
+        } else if (state.currentLang === 'ja') {
+            return `熱意追加+${spanOpen || ''}${num}${spanClose || ''}`;
+        } else {
+            return `Enthusiasm +${spanOpen || ''}${num}${spanClose || ''}`;
+        }
+    });
+
+    // plusattack[num]
+    result = result.replace(/plusattack\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        if (state.currentLang === 'ko') {
+            return `파라미터 상승 횟수 증가+${spanOpen || ''}${num}${spanClose || ''}`;
+        } else if (state.currentLang === 'ja') {
+            return `パラメータ上昇回数増加+${spanOpen || ''}${num}${spanClose || ''}`;
+        } else {
+            return `Parameter increase count +${spanOpen || ''}${num}${spanClose || ''}`;
+        }
+    });
+
+    // lessonstart
+    result = result.replace(/lessonstart/gi, (match) => {
+        if (state.currentLang === 'ko') {
+            return '레슨 개시 시';
+        } else if (state.currentLang === 'ja') {
+            return 'レッスン開始時、';
+        } else {
+            return 'At lesson start,';
         }
     });
     
@@ -297,7 +371,8 @@ const getLocalizedItem = (item) => {
     if (Array.isArray(item)) {
         return {
             name: item[0] || '',
-            desc: item[1] || ''
+            desc: item[1] || '',
+            referimage: null
         };
     }
     let name = '';
@@ -312,7 +387,32 @@ const getLocalizedItem = (item) => {
         name = item.name || '';
         desc = (item.desc || '').replace(/\n/g, '<br>');
     }
-    return { name, desc };
+    return { name, desc, referimage: item.referimage };
+};
+
+const getLocalizedCustomItem = (item) => {
+    if (!item) return null;
+    let name = '';
+    let desc = '';
+    if (item.name) {
+        if (state.currentLang === 'en') {
+            name = item.name.en || item.name.ja || item.name.ko || '';
+        } else if (useJaNames()) {
+            name = item.name.ja || item.name.ko || '';
+        } else {
+            name = item.name.ko || item.name.ja || '';
+        }
+    }
+    if (item.desc) {
+        if (state.currentLang === 'en') {
+            desc = (item.desc.en || item.desc.ja || item.desc.ko || '').replace(/\n/g, '<br>');
+        } else if (useJaNames()) {
+            desc = (item.desc.ja || item.desc.ko || '').replace(/\n/g, '<br>');
+        } else {
+            desc = (item.desc.ko || item.desc.ja || '').replace(/\n/g, '<br>');
+        }
+    }
+    return { name, desc, cost: item.cost || '' };
 };
 
 const getBadgeText = (isPlus) => {
@@ -441,16 +541,70 @@ const tokenize = (str) => {
     return str.match(regex) || [];
 };
 
+const diffTokens = (str1, str2) => {
+    const tokens1 = tokenize(str1);
+    const tokens2 = tokenize(str2);
+    
+    const dp = Array(tokens1.length + 1).fill(0).map(() => Array(tokens2.length + 1).fill(0));
+    for (let i = 1; i <= tokens1.length; i++) {
+        for (let j = 1; j <= tokens2.length; j++) {
+            if (tokens1[i - 1] === tokens2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    
+    let i = tokens1.length;
+    let j = tokens2.length;
+    const result = [];
+    
+    while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && tokens1[i - 1] === tokens2[j - 1] && dp[i][j - 1] < dp[i][j]) {
+            result.unshift({ type: 'equal', val: tokens1[i - 1] });
+            i--;
+            j--;
+        } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+            result.unshift({ type: 'insert', val: tokens2[j - 1] });
+            j--;
+        } else {
+            i--;
+        }
+    }
+    
+    let html = '';
+    let currentSpan = '';
+    for (const token of result) {
+        if (token.type === 'insert') {
+            currentSpan += token.val;
+        } else {
+            if (currentSpan) {
+                html += `<span class="pssr-info-modal-diff-added">${currentSpan}</span>`;
+                currentSpan = '';
+            }
+            html += token.val;
+        }
+    }
+    if (currentSpan) {
+        html += `<span class="pssr-info-modal-diff-added">${currentSpan}</span>`;
+    }
+    return html;
+};
+
 const diffStrings = (str1, str2) => {
     if (str1 === str2) return str2;
     try {
-        const tokens1 = tokenize(str1);
-        const tokens2 = tokenize(str2);
+        // Line-level LCS to find matching anchors
+        // Note: getLocalizedItem already converts \n to <br> before this is called
+        const brRegex = /<br\s*\/?>/gi;
+        const lines1 = str1.split(brRegex);
+        const lines2 = str2.split(brRegex);
         
-        const dp = Array(tokens1.length + 1).fill(0).map(() => Array(tokens2.length + 1).fill(0));
-        for (let i = 1; i <= tokens1.length; i++) {
-            for (let j = 1; j <= tokens2.length; j++) {
-                if (tokens1[i - 1] === tokens2[j - 1]) {
+        const dp = Array(lines1.length + 1).fill(0).map(() => Array(lines2.length + 1).fill(0));
+        for (let i = 1; i <= lines1.length; i++) {
+            for (let j = 1; j <= lines2.length; j++) {
+                if (lines1[i - 1] === lines2[j - 1]) {
                     dp[i][j] = dp[i - 1][j - 1] + 1;
                 } else {
                     dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
@@ -458,40 +612,51 @@ const diffStrings = (str1, str2) => {
             }
         }
         
-        let i = tokens1.length;
-        let j = tokens2.length;
-        const result = [];
-        
-        while (i > 0 || j > 0) {
-            if (i > 0 && j > 0 && tokens1[i - 1] === tokens2[j - 1]) {
-                result.unshift({ type: 'equal', val: tokens1[i - 1] });
+        // Backtrack to find LCS anchor pairs (only exact matches)
+        let i = lines1.length, j = lines2.length;
+        const anchors = [];
+        while (i > 0 && j > 0) {
+            if (lines1[i - 1] === lines2[j - 1] && dp[i][j - 1] < dp[i][j]) {
+                anchors.unshift({ i1: i - 1, i2: j - 1 });
+                i--; j--;
+            } else if (dp[i - 1][j] >= dp[i][j - 1]) {
                 i--;
-                j--;
-            } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-                result.unshift({ type: 'insert', val: tokens2[j - 1] });
-                j--;
             } else {
-                i--;
+                j--;
             }
         }
         
-        let html = '';
-        let currentSpan = '';
-        for (const token of result) {
-            if (token.type === 'insert') {
-                currentSpan += token.val;
-            } else {
-                if (currentSpan) {
-                    html += `<span class="pssr-info-modal-diff-added">${currentSpan}</span>`;
-                    currentSpan = '';
+        // Build output using anchors; between anchors, pair gap lines
+        const outputLines = [];
+        let pos1 = 0, pos2 = 0;
+        
+        const processGap = (gap1, gap2) => {
+            const maxGap = Math.max(gap1.length, gap2.length);
+            for (let k = 0; k < maxGap; k++) {
+                if (k < gap1.length && k < gap2.length) {
+                    // Both sides have a line -> token-level diff
+                    outputLines.push(diffTokens(gap1[k], gap2[k]));
+                } else if (k < gap2.length) {
+                    // Only in str2 -> entirely new line
+                    outputLines.push(`<span class="pssr-info-modal-diff-added">${gap2[k]}</span>`);
                 }
-                html += token.val;
+                // Lines only in gap1 are deleted -> skip silently
             }
+        };
+        
+        for (const anchor of anchors) {
+            const gap1 = lines1.slice(pos1, anchor.i1);
+            const gap2 = lines2.slice(pos2, anchor.i2);
+            processGap(gap1, gap2);
+            outputLines.push(lines2[anchor.i2]);
+            pos1 = anchor.i1 + 1;
+            pos2 = anchor.i2 + 1;
         }
-        if (currentSpan) {
-            html += `<span class="pssr-info-modal-diff-added">${currentSpan}</span>`;
-        }
-        return html;
+        
+        // Process remaining lines after last anchor
+        processGap(lines1.slice(pos1), lines2.slice(pos2));
+        
+        return outputLines.join('<br>');
     } catch (e) {
         console.error('Error diffing strings:', e);
         return str2;
@@ -533,6 +698,34 @@ export function showProduceCardInfoModal(card, personalColor) {
     const name2 = itemPlusData ? itemPlusData.name : (itemData ? itemData.name + '+' : getDefaultItemName(true));
     const desc2Raw = itemPlusData ? itemPlusData.desc : (itemData ? itemData.desc : getDefaultDescText());
     const desc2 = formatDescLines(replaceDescIcons(diffStrings(rawDesc1, desc2Raw)), personalColor);
+
+    const makeReferImagesHtml = (refImgArray) => {
+        if (!refImgArray || !Array.isArray(refImgArray) || refImgArray.length === 0) return '';
+        const imgs = refImgArray.map(imgName => {
+            const fileName = imgName.endsWith('.webp') ? imgName : `${imgName}.webp`;
+            return `<img src="icons/cal/card/${fileName}" alt="${imgName}" class="pssr-info-modal-refer-img" title="${imgName}">`;
+        }).join('');
+        return `<div class="pssr-info-modal-refer-images">${imgs}</div>`;
+    };
+
+    const referHtml1 = itemData ? makeReferImagesHtml(itemData.referimage) : '';
+    const referHtml2 = itemPlusData ? makeReferImagesHtml(itemPlusData.referimage) : '';
+
+
+    
+    const tokenCardData = getLocalizedItem(card.tokencard);
+    const tokenDesc = tokenCardData ? formatDescLines(replaceDescIcons(tokenCardData.desc), personalColor) : '';
+    
+    const primaCardData = getLocalizedItem(card.primacard);
+    const primaDesc = primaCardData ? formatDescLines(replaceDescIcons(primaCardData.desc), personalColor) : '';
+    const getPrimaName = () => {
+        if (!primaCardData) return '';
+        if (primaCardData.name) return primaCardData.name;
+        if (state.currentLang === 'en') return 'Prima Card';
+        if (state.currentLang === 'ja') return 'プリマカード';
+        return '프리마 카드';
+    };
+    const primaName = getPrimaName();
     
     const planIcons = getPlanIconPath(card);
     
@@ -598,7 +791,7 @@ export function showProduceCardInfoModal(card, personalColor) {
         const arrow = '<span class="pssr-info-modal-date-arrow">→</span>';
         
         // 1. 전체 출시 순서 (플랜 뱃지 표시)
-        const currentBoxPlan = makeDateBox(card, '', '', 'plan');
+        const currentBoxPlan = makeDateBox(card, 'pssr-info-modal-date-row-current', '', 'plan');
         const prevDDay = prevCard ? getRelativeDDayText(prevCard.releasedAt, card.releasedAt) : '';
         const nextDDay = nextCard ? getRelativeDDayText(nextCard.releasedAt, card.releasedAt) : '';
         const prevBox = prevCard ? makeDateBox(prevCard, 'pssr-info-modal-date-row-prev', prevDDay, 'plan') : makeDateBox(null);
@@ -608,7 +801,7 @@ export function showProduceCardInfoModal(card, personalColor) {
         const dateHtml = `<div class="pssr-info-modal-date-wrapper">${prevBox}${prevArrow}${currentBoxPlan}${nextArrow}${nextBox}</div>`;
 
         // 2. 동일 오스스메 출시 순서 (오스스메 뱃지 표시)
-        const currentBoxOsu = makeDateBox(card, '', '', 'osusume');
+        const currentBoxOsu = makeDateBox(card, 'pssr-info-modal-date-row-current', '', 'osusume');
         const prevOsuDDay = prevCardOsusume ? getRelativeDDayText(prevCardOsusume.releasedAt, card.releasedAt) : '';
         const nextOsuDDay = nextCardOsusume ? getRelativeDDayText(nextCardOsusume.releasedAt, card.releasedAt) : '';
         const prevOsuBox = prevCardOsusume ? makeDateBox(prevCardOsusume, 'pssr-info-modal-date-row-prev', prevOsuDDay, 'osusume') : makeDateBox(null);
@@ -742,9 +935,120 @@ export function showProduceCardInfoModal(card, personalColor) {
                             </div>
                         </div>
                     </div>` : '';
+
+    const tokenBlockHtml = tokenCardData ? `
+                    <div class="pssr-info-modal-item-details pssr-info-modal-token-block" style="border-top: none;">
+                        <div class="pssr-info-modal-detail-row" style="background-color: ${personalColor}1a; border-color: ${personalColor}33;">
+                            <img src="idols/${(card.plan || '').toLowerCase()}/${card.id}token.webp" alt="Token Card Icon" class="pssr-info-modal-item-icon" onerror="this.closest('.pssr-info-modal-token-block').style.display='none';">
+                            <div class="pssr-info-modal-detail-content">
+                                <div class="pssr-info-modal-detail-name">${tokenCardData.name}</div>
+                                <div class="pssr-info-modal-detail-desc">${tokenDesc}</div>
+                            </div>
+                        </div>
+                    </div>` : '';
+                    
+    const primaBadgeText = (() => {
+        if (state.currentLang === 'en') return 'H.I.F Only';
+        if (state.currentLang === 'ja') return 'H.I.F専用';
+        return 'H.I.F 전용';
+    })();
+
+    const primaBlockHtml = primaCardData ? `
+                    <div class="pssr-info-modal-item-details pssr-info-modal-prima-block" style="border-top: none;">
+                        <div class="pssr-info-modal-detail-condition-row">
+                            <div class="pssr-info-modal-sainou-box">
+                                <div class="pssr-info-modal-sainou-wrapper" style="border-color: ${personalColor}33;">
+                                    <span class="pssr-info-modal-sainou-icon" style="background-color: ${personalColor}; -webkit-mask: url('icons/primastella.webp') no-repeat center / contain; mask: url('icons/primastella.webp') no-repeat center / contain; display: inline-block;"></span>
+                                    <span class="pssr-info-modal-sainou-text">${primaBadgeText}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pssr-info-modal-detail-row" style="background-color: ${personalColor}1a; border-color: ${personalColor}33;">
+                            <img src="idols/${(card.plan || '').toLowerCase()}/${card.id}prima.webp" alt="Prima Card Icon" class="pssr-info-modal-item-icon" onerror="this.closest('.pssr-info-modal-prima-block').style.display='none';">
+                            <div class="pssr-info-modal-detail-content">
+                                <div class="pssr-info-modal-detail-name">${primaName}</div>
+                                <div class="pssr-info-modal-detail-desc">${primaDesc}</div>
+                            </div>
+                        </div>
+                    </div>` : '';
+    
+    const custom1Data = card.cardcustom ? getLocalizedCustomItem(card.cardcustom.custom1) : null;
+    const custom2Data = card.cardcustom ? getLocalizedCustomItem(card.cardcustom.custom2) : null;
+    let customBlockHtml = '';
+    if (custom1Data || custom2Data) {
+        let itemsHtml = '';
+        if (custom1Data) {
+            const diffDesc = diffStrings(cardDesc2Raw, custom1Data.desc);
+            const descHtml = formatDescLines(replaceDescIcons(diffDesc), personalColor);
+            const fallbackImg = planIcons.icon3 || `idols/${(card.plan || '').toLowerCase()}/${card.id}.webp`;
+            const cardImg = `idols/${(card.plan || '').toLowerCase()}/${card.id}custom1.webp`;
+            itemsHtml += `
+                        <div class="pssr-info-modal-custom-item" style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                            <img src="${cardImg}" alt="Custom 1 Icon" class="pssr-info-modal-item-icon" onerror="this.onerror=null; this.src='${fallbackImg}';">
+                            <div class="pssr-info-modal-detail-content">
+                                <div class="pssr-info-modal-detail-name">
+                                    ${custom1Data.name}
+                                    <span class="pssr-info-modal-custom-cost-badge" style="background-color: ${personalColor};">${custom1Data.cost} Pt</span>
+                                </div>
+                                <div class="pssr-info-modal-detail-desc">${descHtml}</div>
+                            </div>
+                        </div>`;
+        }
+        if (custom1Data && custom2Data) {
+            itemsHtml += `
+                        <div class="pssr-info-modal-custom-divider" style="height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 50%, transparent 50%); background-size: 12px 1px; background-repeat: repeat-x; margin: 8px 0; width: 100%;"></div>`;
+        }
+        if (custom2Data) {
+            const diffDesc = diffStrings(cardDesc2Raw, custom2Data.desc);
+            const descHtml = formatDescLines(replaceDescIcons(diffDesc), personalColor);
+            const fallbackImg = planIcons.icon3 || `idols/${(card.plan || '').toLowerCase()}/${card.id}.webp`;
+            const cardImg = `idols/${(card.plan || '').toLowerCase()}/${card.id}custom2.webp`;
+            itemsHtml += `
+                        <div class="pssr-info-modal-custom-item" style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                            <img src="${cardImg}" alt="Custom 2 Icon" class="pssr-info-modal-item-icon" onerror="this.onerror=null; this.src='${fallbackImg}';">
+                            <div class="pssr-info-modal-detail-content">
+                                <div class="pssr-info-modal-detail-name">
+                                    ${custom2Data.name}
+                                    <span class="pssr-info-modal-custom-cost-badge" style="background-color: ${personalColor};">${custom2Data.cost} Pt</span>
+                                </div>
+                                <div class="pssr-info-modal-detail-desc">${descHtml}</div>
+                            </div>
+                        </div>`;
+        }
+
+        customBlockHtml = `
+                    <div class="pssr-info-modal-item-details pssr-info-modal-custom-block" style="border-top: none;">
+                        <div class="pssr-info-modal-detail-condition-row">
+                            <div class="pssr-info-modal-sainou-box">
+                                <div class="pssr-info-modal-sainou-wrapper" style="border-color: ${personalColor}33;">
+                                    <img src="icons/train.webp" alt="Custom" class="pssr-info-modal-sainou-icon">
+                                    <span class="pssr-info-modal-sainou-text">7</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pssr-info-modal-detail-row pssr-info-modal-custom-row-container" style="background-color: ${personalColor}1a; border-color: ${personalColor}33; position: relative;">
+                            ${itemsHtml}
+                        </div>
+                    </div>`;
+    }
+
+    const extraBlocksHtml = [];
+    Object.keys(card).forEach(key => {
+        if (key === 'card' && trainBlockHtml) {
+            extraBlocksHtml.push(trainBlockHtml);
+        } else if (key === 'cardsecond' && train6BlockHtml) {
+            extraBlocksHtml.push(train6BlockHtml);
+        } else if (key === 'tokencard' && tokenBlockHtml) {
+            extraBlocksHtml.push(tokenBlockHtml);
+        } else if (key === 'primacard' && primaBlockHtml) {
+            extraBlocksHtml.push(primaBlockHtml);
+        } else if (key === 'cardcustom' && customBlockHtml) {
+            extraBlocksHtml.push(customBlockHtml);
+        }
+    });
         
     modal.innerHTML = `
-        <div class="pssr-info-modal-content" style="border-color: ${personalColor}; --personal-color: ${personalColor};">
+        <div class="pssr-info-modal-content" style="border-color: ${personalColor}; --personal-color: ${personalColor}; --personal-color-light: ${personalColor}33;">
             <h2 class="pssr-info-modal-title-overlay">${localizedName}</h2>
             <div class="pssr-info-modal-scroll-wrapper">
                 <div class="pssr-info-modal-images">
@@ -768,12 +1072,13 @@ export function showProduceCardInfoModal(card, personalColor) {
                                 </div>
                             </div>
                         </div>
-                        <div class="pssr-info-modal-detail-row" style="background-color: ${personalColor}33; border-color: ${personalColor}66;">
+                        <div class="pssr-info-modal-detail-row${itemData && itemData.referimage && itemData.referimage.length > 0 ? ` has-refer-image has-refer-image-${itemData.referimage.length}` : ''}" style="background-color: ${personalColor}33; border-color: ${personalColor}66;">
                             <img src="idols/item/${card.id}.webp" alt="Item Icon" class="pssr-info-modal-item-icon" onerror="this.closest('.pssr-info-modal-item-details').style.display='none';">
                             <div class="pssr-info-modal-detail-content">
                                 <div class="pssr-info-modal-detail-name">${name1}</div>
                                 <div class="pssr-info-modal-detail-desc">${desc1}</div>
                             </div>
+                            ${referHtml1}
                         </div>
                         <div class="pssr-info-modal-detail-condition-row">
                             <div class="pssr-info-modal-sainou-box">
@@ -783,7 +1088,7 @@ export function showProduceCardInfoModal(card, personalColor) {
                                 </div>
                             </div>
                         </div>
-                        <div class="pssr-info-modal-detail-row" style="background-color: ${personalColor}33; border-color: ${personalColor}66;">
+                        <div class="pssr-info-modal-detail-row${itemPlusData && itemPlusData.referimage && itemPlusData.referimage.length > 0 ? ` has-refer-image has-refer-image-${itemPlusData.referimage.length}` : ''}" style="background-color: ${personalColor}33; border-color: ${personalColor}66;">
                             <div class="pssr-info-modal-item-plus-wrapper">
                                 <img src="idols/item/${card.id}.webp" alt="Item Icon +" class="pssr-info-modal-item-icon">
                                 <img src="icons/itemplus.webp" alt="Plus" class="pssr-info-modal-item-plus-badge">
@@ -792,10 +1097,10 @@ export function showProduceCardInfoModal(card, personalColor) {
                                 <div class="pssr-info-modal-detail-name">${name2}</div>
                                 <div class="pssr-info-modal-detail-desc">${desc2}</div>
                             </div>
+                            ${referHtml2}
                         </div>
                     </div>
-                    ${trainBlockHtml}
-                    ${train6BlockHtml}
+                    ${extraBlocksHtml.join('')}
                 </div>
             </div>
         </div>

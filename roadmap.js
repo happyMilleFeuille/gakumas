@@ -230,6 +230,26 @@ export function renderPSSRRoadmap(shouldScroll = false) {
         graphWrapper.appendChild(marker);
     }
 
+    // 모바일에서만 lazy loading 적용 (IntersectionObserver)
+    let roadmapNodeObserver = null;
+    if (isMobile && 'IntersectionObserver' in window) {
+        roadmapNodeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const node = entry.target;
+                roadmapNodeObserver.unobserve(node);
+                // 노드 내부의 모든 data-src 이미지를 실제 로드
+                node.querySelectorAll('img[data-src]').forEach(img => {
+                    img.src = img.dataset.src;
+                    delete img.dataset.src;
+                });
+            });
+        }, {
+            rootMargin: '300px 0px',
+            threshold: 0.01
+        });
+    }
+
     idolList.forEach((idolName, index) => {
         const column = document.createElement('div');
         column.className = 'roadmap-column';
@@ -271,21 +291,42 @@ export function renderPSSRRoadmap(shouldScroll = false) {
             const dDayText = diffDays === 0 ? " (D-Day)" : (diffDays > 0 ? ` (D+${diffDays})` : ` (D${diffDays})`);
 
             const displayName = (state.currentLang === 'en' && card.name_en) ? card.name_en : ((state.currentLang !== 'ko' && card.name_ja) ? card.name_ja : card.name);
-            node.innerHTML = `
-                <div class="roadmap-node-inner"><img src="${imageFolder}/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
-                <div class="roadmap-tooltip">
-                    <img src="idols/${card.id}1.webp" class="tooltip-card-img" decoding="async">
-                    <div class="tooltip-text">
-                        <strong>
-                            <img src="icons/${card.plan}.webp" class="plan-icon-tooltip" alt="${card.plan}">
-                            ${displayName}
-                        </strong>
-                        <span>
-                            ${card.releasedAt}${dDayText}
-                        </span>
+            if (isMobile && roadmapNodeObserver) {
+                // 모바일: data-src로 지연 로딩
+                node.innerHTML = `
+                    <div class="roadmap-node-inner"><img data-src="${imageFolder}/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" onload="this.classList.add('loaded')"></div>
+                    <div class="roadmap-tooltip">
+                        <img data-src="idols/${card.id}1.webp" class="tooltip-card-img" decoding="async">
+                        <div class="tooltip-text">
+                            <strong>
+                                <img data-src="icons/${card.plan}.webp" class="plan-icon-tooltip" alt="${card.plan}">
+                                ${displayName}
+                            </strong>
+                            <span>
+                                ${card.releasedAt}${dDayText}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+                roadmapNodeObserver.observe(node);
+            } else {
+                // PC: 기존 eager 로딩 유지
+                node.innerHTML = `
+                    <div class="roadmap-node-inner"><img src="${imageFolder}/${card.id}1.webp" class="roadmap-node-img" alt="${card.name}" loading="eager" onload="this.classList.add('loaded')"></div>
+                    <div class="roadmap-tooltip">
+                        <img src="idols/${card.id}1.webp" class="tooltip-card-img" decoding="async">
+                        <div class="tooltip-text">
+                            <strong>
+                                <img src="icons/${card.plan}.webp" class="plan-icon-tooltip" alt="${card.plan}">
+                                ${displayName}
+                            </strong>
+                            <span>
+                                ${card.releasedAt}${dDayText}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }
             column.appendChild(node);
         });
         graphWrapper.appendChild(column);

@@ -427,6 +427,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const pssrInfoModal = document.getElementById('pssr-info-modal');
+        if (pssrInfoModal && pssrInfoModal.style.display !== 'none' && !pssrInfoModal.classList.contains('hidden')) {
+            if (typeof window.closeProduceCardInfoModal === 'function') window.closeProduceCardInfoModal(true);
+            else pssrInfoModal.remove();
+            return;
+        }
+
         if (statDetailModal && statDetailModal.style.display !== 'none' && !statDetailModal.classList.contains('hidden')) {
             if (typeof window.closeStatDetailModal === 'function') window.closeStatDetailModal(true);
             else {

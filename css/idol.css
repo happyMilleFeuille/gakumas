@@ -243,6 +243,35 @@
     opacity: 1;
 }
 
+.pssr-info-btn {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 10;
+    background: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.pssr-info-btn:hover {
+    background: #f2f2f2;
+    transform: scale(1.05);
+}
+
+.pssr-info-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
 /* 슬라이드 아웃 (왼쪽으로 사라짐) */
 .pssr-img.slide-out {
     transform: translateX(-100%);
@@ -365,6 +394,17 @@
 
     .pssr-img-wrapper {
         padding-top: 180%;
+    }
+
+    .pssr-info-btn {
+        width: 17px;
+        height: 17px;
+        top: 4px;
+        left: 4px;
+    }
+    .pssr-info-btn svg {
+        width: 15.5px;
+        height: 15.5px;
     }
 
     .pssr-card {
@@ -940,3 +980,4 @@
         padding: 0 3px !important;
     }
 }
+

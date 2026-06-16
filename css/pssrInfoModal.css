@@ -27,6 +27,7 @@
 .pssr-info-modal-scroll-wrapper {
     max-height: calc(85vh - 48px);
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 0 24px;
     margin: 24px 0;
 }
@@ -120,16 +121,16 @@
 }
 
 .pssr-info-modal-item-icon {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     object-fit: contain;
     flex-shrink: 0;
 }
 
 .pssr-info-modal-item-plus-wrapper {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     flex-shrink: 0;
 }
 
@@ -179,7 +180,7 @@
 }
 
 .pssr-info-modal-sainou-box {
-    width: 60px;
+    width: 70px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -195,13 +196,17 @@
     font-size: 0.95rem;
     color: #222222;
     margin-bottom: 4px;
+    text-align: right;
 }
 
 .pssr-info-modal-train-block .pssr-info-modal-detail-name,
-.pssr-info-modal-train6-block .pssr-info-modal-detail-name {
+.pssr-info-modal-train6-block .pssr-info-modal-detail-name,
+.pssr-info-modal-token-block .pssr-info-modal-detail-name,
+.pssr-info-modal-prima-block .pssr-info-modal-detail-name,
+.pssr-info-modal-custom-block .pssr-info-modal-detail-name {
     margin-bottom: 6px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--personal-color-light, #e5e7eb);
 }
 
 .pssr-info-modal-detail-desc {
@@ -285,7 +290,7 @@
     gap: 2px;
     background-color: #f3f4f6;
     border: 1px solid #e5e7eb;
-    padding: 10px 24px;
+    padding: 10px 12px;
     border-radius: 10px;
     position: relative;
     background-size: cover;
@@ -294,6 +299,15 @@
     overflow: visible;
     min-height: 76px;
     box-sizing: border-box;
+    background-clip: padding-box;
+}
+
+.pssr-info-modal-date-row.pssr-info-modal-date-row-current {
+    border: 2.5px solid var(--personal-color);
+}
+
+.pssr-info-modal-date-row.pssr-info-modal-date-row-current::before {
+    border-radius: 7.5px;
 }
 
 .pssr-info-modal-date-row::before {
@@ -338,6 +352,20 @@
     justify-content: center;
 }
 
+.pssr-info-modal-custom-cost-badge {
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 8px;
+    line-height: 1;
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
 .pssr-info-modal-date-wrapper {
     display: flex;
     justify-content: center;
@@ -380,7 +408,7 @@
 }
 
 .pssr-info-modal-card-name {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 800;
     color: #ffffff;
     line-height: 1.2;
@@ -392,9 +420,14 @@
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
+.pssr-info-modal-card-name-long {
+    font-size: 0.65rem;
+}
+
 .pssr-info-modal-date-row .pssr-info-modal-meta-text {
     color: #ffffff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    font-size: 0.65rem;
 }
 
 .pssr-info-modal-date-row .pssr-info-modal-dday-text {
@@ -450,6 +483,10 @@
         font-size: 0.42rem;
     }
     
+    .pssr-info-modal-date-row .pssr-info-modal-meta-text {
+        font-size: 0.42rem;
+    }
+    
     .pssr-info-modal-meta-idol-icon {
         height: 15px;
         width: 15px;
@@ -461,9 +498,17 @@
     
     .pssr-info-modal-date-row {
         margin: 6px auto 10px auto;
-        padding: 8px 18px;
+        padding: 8px 8px;
         border-radius: 8px;
         min-height: 55px;
+    }
+    
+    .pssr-info-modal-date-row.pssr-info-modal-date-row-current {
+        border-width: 1.2px;
+    }
+    
+    .pssr-info-modal-date-row.pssr-info-modal-date-row-current::before {
+        border-radius: 6.8px;
     }
     
     .pssr-info-modal-date-wrapper {
@@ -476,10 +521,10 @@
     }
     
     .pssr-info-modal-date-osusume {
-        width: 22px;
-        height: 22px;
-        top: -6px;
-        left: -6px;
+        width: 18px;
+        height: 18px;
+        top: -5px;
+        left: -5px;
     }
     
     .pssr-info-modal-date-dday-badge {
@@ -487,6 +532,13 @@
         padding: 1.5px 5px;
         top: -6px;
         right: -6px;
+    }
+    
+    .pssr-info-modal-custom-cost-badge {
+        font-size: 0.45rem;
+        padding: 1.5px 5px;
+        border-radius: 6px;
+        margin-left: 6px;
     }
     
     .pssr-info-modal-dday-text {
@@ -497,12 +549,16 @@
         font-size: 0.46rem;
     }
     
+    .pssr-info-modal-card-name-long {
+        font-size: 0.4rem;
+    }
+    
     .pssr-info-modal-detail-name {
-        font-size: 0.82rem;
+        font-size: 0.64rem;
     }
     
     .pssr-info-modal-detail-desc {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
     }
     
     .pssr-info-modal-item-icon {
@@ -513,6 +569,17 @@
     .pssr-info-modal-item-plus-wrapper {
         width: 48px;
         height: 48px;
+    }
+
+    .pssr-info-modal-item-plus-badge {
+        width: 13px;
+        height: 13px;
+        top: -2px;
+        right: -2px;
+    }
+    
+    .pssr-info-modal-sainou-box {
+        width: 48px;
     }
     
     .pssr-info-modal-detail-row {
@@ -565,10 +632,19 @@
     scrollbar-color: #e5e7eb transparent;
 }
 
-/* Diff highlight for upgrades */
 .pssr-info-modal-diff-added {
-    color: #e11d48;
+    color: var(--personal-color);
     font-weight: 800;
+}
+
+.pssr-info-modal-diff-line-changed {
+    padding: 2px 6px;
+    margin: 2px -6px;
+    border-radius: 4px;
+}
+
+.pssr-info-modal-diff-line {
+    margin: 2px 0;
 }
 
 /* Container for same osusume date slots with full-width gray background */
@@ -582,4 +658,76 @@
 
 .pssr-info-modal-date-container-osusume .pssr-info-modal-date-wrapper {
     margin: 0 auto;
+}
+
+/* Override styling for Prima Card block to support wider badge with H.I.F text */
+.pssr-info-modal-prima-block .pssr-info-modal-sainou-box {
+    width: auto;
+    justify-content: flex-start;
+}
+
+.pssr-info-modal-prima-block .pssr-info-modal-sainou-text {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .pssr-info-modal-prima-block .pssr-info-modal-sainou-text {
+        font-size: 11px;
+    }
+}
+
+.pssr-info-modal-detail-row.has-refer-image {
+    position: relative;
+}
+
+.pssr-info-modal-refer-images {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    gap: 4px;
+}
+
+.pssr-info-modal-refer-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.pssr-info-modal-detail-row.has-refer-image-1 .pssr-info-modal-detail-name {
+    padding-right: 72px;
+}
+.pssr-info-modal-detail-row.has-refer-image-2 .pssr-info-modal-detail-name {
+    padding-right: 124px;
+}
+
+.pssr-info-modal-detail-row.pssr-info-modal-custom-row-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .pssr-info-modal-refer-images {
+        top: 10px;
+        right: 12px;
+    }
+    
+    .pssr-info-modal-refer-img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .pssr-info-modal-detail-row.has-refer-image-1 .pssr-info-modal-detail-name {
+        padding-right: 54px;
+    }
+    .pssr-info-modal-detail-row.has-refer-image-2 .pssr-info-modal-detail-name {
+        padding-right: 94px;
+    }
+    
+    .pssr-info-modal-detail-row.pssr-info-modal-custom-row-container {
+        gap: 10px;
+    }
 }

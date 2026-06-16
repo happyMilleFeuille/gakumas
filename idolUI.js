@@ -3,6 +3,7 @@ import { translate, updatePageTranslations } from './utils.js';
 import { produceList } from './producedata.js';
 import { videoList } from './videodata.js';
 import { idolList } from './roadmap.js'; 
+import { showProduceCardInfoModal } from './pssrInfoModal.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -29,6 +30,50 @@ let activeSubFilter = 'all';
 let activeRarityFilter = 'all';
 const activeSourceFilters = new Set();
 let activeSortOrder = 'desc';
+let pssrImageObserver = null;
+
+function loadDeferredPSSRImage(img) {
+    const src = img?.dataset?.src;
+    if (!src) return;
+    img.src = src;
+    delete img.dataset.src;
+}
+
+function resetPSSRImageObserver(enabled) {
+    if (pssrImageObserver) {
+        pssrImageObserver.disconnect();
+        pssrImageObserver = null;
+    }
+
+    if (!enabled || !('IntersectionObserver' in window)) return;
+
+    pssrImageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const img = entry.target;
+            pssrImageObserver.unobserve(img);
+            loadDeferredPSSRImage(img);
+        });
+    }, {
+        rootMargin: '300px 0px',
+        threshold: 0.01
+    });
+}
+
+function setPSSRImage(img, src, defer) {
+    if (!img) return;
+
+    if (defer && pssrImageObserver) {
+        img.removeAttribute('src');
+        img.dataset.src = src;
+        pssrImageObserver.observe(img);
+        return;
+    }
+
+    if (pssrImageObserver) pssrImageObserver.unobserve(img);
+    delete img.dataset.src;
+    img.src = src;
+}
 
 function updateActiveFilterColorCSS() {
     const getActiveFilterColor = () => {
@@ -467,6 +512,7 @@ export function renderProduceCards(idolName, container) {
     if (!itemTpl) return;
 
     const isAll = (idolName === 'all' || !idolName);
+    resetPSSRImageObserver(isAll);
     const produceCards = produceList.filter(p => {
         const nameMatch = isAll ||
             p.id.startsWith(`ssr${idolName}_`) ||
@@ -582,7 +628,16 @@ export function renderProduceCards(idolName, container) {
         let currentIndex = state.pssrIndex[card.id] || 0;
         if (currentIndex >= imageList.length) currentIndex = 0;
 
-        img.src = imageList[currentIndex];
+        setPSSRImage(img, imageList[currentIndex], isAll);
+
+        const infoBtn = item.querySelector('.pssr-info-btn');
+        if (infoBtn) {
+            infoBtn.style.color = personalColor;
+            infoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showProduceCardInfoModal(card, personalColor);
+            });
+        }
 
         cardEl.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -614,7 +669,7 @@ export function renderProduceCards(idolName, container) {
                     img.style.transition = 'none';
                     img.classList.remove('slide-out');
                     img.classList.add('slide-prepare');
-                    img.src = nextSrc;
+                    setPSSRImage(img, nextSrc, false);
 
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
@@ -639,7 +694,7 @@ export function renderProduceCards(idolName, container) {
             if (retryCount < imageList.length) {
                 retryCount++;
                 currentIndex = (currentIndex + 1) % imageList.length;
-                img.src = imageList[currentIndex];
+                setPSSRImage(img, imageList[currentIndex], isAll);
             }
         };
 
