@@ -472,7 +472,7 @@ export const produceList = [
             desc_ja: "メンタルスキルカード使用時、強気2段階目の場合、\n✦ メンタルスキルカードの元気値増加+4\n✦ hpreduce1\n✦ inlesson3",
         },
         card: {
-            name: "放課後おしゃべり",
+            name: "きらきらプリズム",
             desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기효과 스킬카드의 파라미터치 증가+7\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存の場合、使用可\n✦ 強気2段階目に変更\n✦ 以降、メンタルスキルカード使用時、強気2段階目の場合、強気効果のスキルカードのパラメータ値増加+7\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
@@ -1303,7 +1303,7 @@ export const produceList = [
             desc_ja: "全力になった時、強気になった回数が1回以上の場合、\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+11\n✦ 次のターン、温存2段階目に変更\n✦ inlesson2",
         },
         card: {
-            name: "放課後おしゃべり",
+            name: "頬張る3色",
             desc: "✦ 강기로 지침 변경\n✦ fullpower5\n✦ 전력효과 액티브카드의 파라미터치 증가+2\n✦ 다음 턴, 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更\n✦ fullpower5\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+2\n✦ 次のターン、温存に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
