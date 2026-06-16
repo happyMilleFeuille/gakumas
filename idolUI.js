@@ -128,6 +128,8 @@ export function renderIdolList() {
                     <div class="pssr-divider-v"></div>
                     <div class="pssr-rarity-filters">
                         <button class="pssr-filter-btn" data-rarity="PSSR"><img src="icons/ssr.png" alt="SSR"></button>
+                        <button class="pssr-filter-btn pssr-pc-only" data-rarity="PSR"><img src="icons/sr.png" alt="SR"></button>
+                        <button class="pssr-filter-btn pssr-pc-only" data-rarity="PR"><img src="icons/r.png" alt="R"></button>
                     </div>
                     <div class="pssr-divider-v"></div>
                     <div class="pssr-plan-filters">

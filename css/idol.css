@@ -927,6 +927,9 @@
         gap: 6px;
         margin-top: 6px;
     }
+    .pssr-pc-only {
+        display: none !important;
+    }
 }
 
 /* Sort Order Button inside Capsule */
