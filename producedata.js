@@ -202,7 +202,31 @@ export const produceList = [
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
     { id: "ssrsumika_2nd", name: "숨겼던 나", name_en: "Two Sides Of The Same Me", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2 },
-    { id: "ssrsumika_3rd", name: "Love & Joy", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-06-19", jumpTime2: 8.6, youtube_url: "https://youtu.be/YzBr_c61TsU?si=tVarpAMm8HEV5kU1" },
+    {
+        id: "ssrsumika_3rd", name: "Love & Joy", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-06-19", jumpTime2: 8.6, youtube_url: "https://youtu.be/YzBr_c61TsU?si=tVarpAMm8HEV5kU1",
+        item: {
+            desc: "액티브카드를 2회 사용할 때마다\n✦ 집중 증가량 증가+25% (5턴)\n✦ inlesson2",
+            desc_ja: "アクティブスキルカードを2回使用するごとに、\n✦ 集中増加量増加+25%（5ターン）\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "액티브카드를 2회 사용할 때마다\n✦ 집중 증가량 증가+25% (5턴)\n✦ inlesson3",
+            desc_ja: "アクティブスキルカードを2回使用するごとに、\n✦ 集中増加量増加+25%（5ターン）\n✦ inlesson3",
+        },
+        card: {
+            name: "もうためらわない",
+            desc: "hpreduce6\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "hpreduce6\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        cardplus: {
+            desc: "hpreduce3\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "hpreduce3\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        primacard: {
+            name: "背中を押す一番星",
+            desc: "startingcard\n✦ 집중 증가량 증가+10%\n✦ use1\n✦ 다음 턴, concentration4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ 集中増加量増加+10%\n✦ use1\n✦ 次のターン、concentration4\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
 
 
     // --- 마오 SSR (PSSR) ---
@@ -514,7 +538,31 @@ export const produceList = [
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
     { id: "ssrhiro_2nd", name: "콘트라스트", name_en: "Contrast", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3 },
-    { id: "ssrhiro_3rd", name: "SUNFADED", name_en: "SUNFADED", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J" },
+    {
+        id: "ssrhiro_3rd", name: "SUNFADED", name_en: "SUNFADED", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J",
+        item: {
+            desc: "스킬카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+40%\n✦ inlesson3",
+            desc_ja: "スキルカードコストで体力減少時、\n✦ 熱意増加+40%\n✦ inlesson3",
+        },
+        itemplus: {
+            desc: "스킬카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+60%\n✦ inlesson3",
+            desc_ja: "スキルカードコストで体力減少時、\n✦ 熱意増加+60%\n✦ inlesson3",
+        },
+        card: {
+            name: "日が差す方へ",
+            desc: "hpreduce1\n✦ 지침이 강기인 경우 사용 가능\n✦ 온존으로 지침 변경\n✦ genki5\n✦ netsui8\n✦ 멘탈카드의 코스트 수치 증가+1・체력소비 코스트 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "hpreduce1\n✦ 強気の場合、使用可\n✦ 温存に変更\n✦ genki5\n✦ netsui8\n✦ メンタルスキルカードのコスト値増加+1・体力消費コスト値増加+1\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        cardplus: {
+            desc: "hpreduce1\n✦ 지침이 강기인 경우 사용 가능\n✦ 온존으로 지침 변경\n✦ genki8\n✦ netsui10\n✦ 멘탈카드의 코스트 수치 증가+1・체력소비 코스트 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "hpreduce1\n✦ 強気の場合、使用可\n✦ 温存に変更\n✦ genki8\n✦ netsui10\n✦ メンタルスキルカードのコスト値増加+1・体力消費コスト値増加+1\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        primacard: {
+            name: "奇跡を起こした一番星",
+            desc: "\n✦ 다음에 사용하는 日が差す方へ의 소비체력을 0으로 감소 (최대 5회)\n✦ use1\n✦ 강기효과 스킬카드의 파라미터치 증가+11\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "\n✦ 次に使用した日が差す方への消費体力を0にする（5回）\n✦ use1\n✦ 強気効果のスキルカードのパラメータ値増加+11\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
 
     // --- 츠바메 SSR (PSSR) ---    
     {

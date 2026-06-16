@@ -150,7 +150,7 @@ const replaceDescIcons = (text) => {
     result = result.replace(/startingcard/gi, (match) => {
         let label = '';
         if (state.currentLang === 'ko') {
-            label = '레슨 개시 시 손패로 이동';
+            label = '레슨 개시 시 손패에 추가';
         } else if (state.currentLang === 'ja') {
             label = 'レッスン開始時手札に入る';
         } else {
