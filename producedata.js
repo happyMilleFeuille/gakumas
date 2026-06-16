@@ -1259,11 +1259,11 @@ export const produceList = [
     {
         id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
-            desc: "집중이 8이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 集中減少1",
+            desc: "집중이 8이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
             desc_ja: "集中が8以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
         },
         itemplus: {
-            desc: "집중이 3이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 集中減少1",
+            desc: "집중이 3이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
             desc_ja: "集中が3以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
         },
         card: {
