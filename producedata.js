@@ -672,20 +672,20 @@ export const produceList = [
     {
         id: "ssrume_3rd", name: "새하얀 페이지와 수채의 주인공", name_en: "A Blank White Page and a Watercolor Hero", name_ja: "真っ白いページと水彩の主人公", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-04-10", jumpTime2: 7.6, youtube_url: "https://youtu.be/zpDB6GzOXq0?si=lrT8tCS6sSxg6QB1",
         item: {
-            desc: "3턴마다 턴 종료 시,\n✦ 원기의 110%만큼 파라미터를 증가시키고 원기를 전부 소모\n✦다음 턴에 draw1\n✦ inlesson3",
+            desc: "3턴마다 턴 종료 시,\n✦ 원기의 110%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦다음 턴에 draw1\n✦ inlesson3",
             desc_ja: "3ターンごとのターン終了時、\n✦ 元気の110%分パラメータ上昇させ、元気を0にする\n✦ 次のターン、draw1\n✦ inlesson3",
         },
         itemplus: {
-            desc: "3턴마다 턴 종료 시,\n✦ 원기의 130%만큼 파라미터를 증가시키고 원기를 전부 소모\n✦ 다음 턴에 draw2\n✦ inlesson3",
+            desc: "3턴마다 턴 종료 시,\n✦ 원기의 130%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ 다음 턴에 draw2\n✦ inlesson3",
             desc_ja: "3ターンごとのターン終了時、\n✦ 元気の130%分パラメータ上昇させ、元気を0にする\n✦ 次のターン、draw2\n✦ inlesson3",
         },
         card: {
             name: "あたしがいるよ",
-            desc: "✦ genki2\n✦ motivation1\n✦ 이후 3회까지 턴 개시시 원기가 0인 경우 레슨 중 소비한 원기의 80%만큼 원기 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ genki2\n✦ motivation1\n✦ 이후 3회까지 턴 개시 시 원기가 0인 경우 레슨 중 소비한 원기의 80%만큼 원기 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ genki2\n✦ motivation1\n✦ 以降3回まで、ターン開始時、元気が0の場合、レッスン中に消費した元気の80%分元気増加\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ genki2\n✦ motivation3\n✦ 이후 3회까지 턴 개시시 원기가 0인 경우 레슨 중 소비한 원기의 80%만큼 원기 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ genki2\n✦ motivation3\n✦ 이후 3회까지 턴 개시 시 원기가 0인 경우 레슨 중 소비한 원기의 80%만큼 원기 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ genki2\n✦ motivation3\n✦ 以降3回まで、ターン開始時、元気が0の場合、レッスン中に消費した元気の80%分元気増加\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -977,12 +977,12 @@ export const produceList = [
     {
         id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
         item: {
-            desc: "호조가 8턴 이상인 경우 호조 카드를 4회 사용할 때마다\n✦ goodconditionz1\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson5",
-            desc_ja: "好調が8ターン以上の場合、好調効果のスキルカードを4回使用するごとに、\n✦ 絶好調1ターン\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson5",
+            desc: "아이돌 고유 스킬카드 사용 후 현재 체력이 80% 이상인 경우\n✦ 소비체력 절감 1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
+            desc_ja: "アイドル固有スキルカード使用後、体力が80%以上の場合、\n✦ 消費体力削減1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
         },
         itemplus: {
-            desc: "호조가 6턴 이상인 경우 호조 카드를 4회 사용할 때마다\n✦ goodconditionz1\n✦ use1\n✦ draw1\n✦ inlesson5",
-            desc_ja: "好調が6ターン以上の場合、好調効果のスキルカードを4回使用するごとに、\n✦ 絶好調1ターン\n✦ use1\n✦ draw1\n✦ inlesson5",
+            desc: "아이돌 고유 스킬카드 사용 후 현재 체력이 80% 이상인 경우\n✦ 소비체력 절감 1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "アイドル固有スキルカード使用後、体力が80%以上の場合、\n✦ 消費体力削減1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
         },
         card: {
             name: "わたしだけの思い出",
