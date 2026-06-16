@@ -87,6 +87,11 @@ const replaceDescIcons = (text) => {
         return `<img src="icons/genki.webp" alt="Genki" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
     
+    // 9-3. 프라이드 / プライド
+    result = result.replace(/(프라이드|プライド)/g, (match) => {
+        return `<img src="icons/pride.webp" alt="Pride" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+    
     // 9. 시작 카드 / 레슨 개시 시 손패로 이동 / レッスン開始時手札に入る -> Map to startingcard first for dynamic localization
     result = result.replace(/(레슨\s*개시\s*시\s*손패로\s*이동|レッスン開始時手札に入る)/gi, 'startingcard');
     
