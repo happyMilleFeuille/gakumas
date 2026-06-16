@@ -214,12 +214,12 @@ export const produceList = [
         },
         card: {
             name: "もうためらわない",
-            desc: "hpreduce6\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab",
-            desc_ja: "hpreduce6\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "hpreduce6\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce6\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce3\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab",
-            desc_ja: "hpreduce3\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "hpreduce3\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce3\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
             name: "背中を押す一番星",
@@ -1256,7 +1256,27 @@ export const produceList = [
     },
     { id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
     { id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
-    { id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
+    {
+        id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
+        item: {
+            desc: "집중이 8이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 集中減少1",
+            desc_ja: "集中が8以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
+        },
+        itemplus: {
+            desc: "집중이 3이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 集中減少1",
+            desc_ja: "集中が3以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
+        },
+        card: {
+            name: "ヒーローと出会い",
+            desc: "✦ goodcondition4\n✦ concentration1 \n✦ 호조가 4이상인 경우 다음 턴, use1\n✦ 호조가 12이상인 경우 2턴 후, use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodcondition4\n✦ concentration1 \n✦ 好調が4ターン以上の場合、次のターン、use1\n✦ 好調が12ターン以上の場合、2ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+
+        },
+        cardplus: {
+            desc: "✦ goodcondition4\n✦ concentration2 \n✦ 호조가 4이상인 경우 다음 턴, use1\n✦ 호조가 12이상인 경우 2턴 후, use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodcondition4\n✦ concentration2 \n✦ 好調が4ターン以上の場合、次のターン、use1\n✦ 好調が12ターン以上の場合、2ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
     { id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
     { id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
     { id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
