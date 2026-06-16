@@ -1078,12 +1078,14 @@ export function showProduceCardInfoModal(card, personalColor) {
                             </div>
                         </div>
                         <div class="pssr-info-modal-detail-row${itemData && itemData.referimage && itemData.referimage.length > 0 ? ` has-refer-image has-refer-image-${itemData.referimage.length}` : ''}" style="background-color: ${personalColor}33; border-color: ${personalColor}66;">
-                            <img src="idols/item/${card.id}.webp" alt="Item Icon" class="pssr-info-modal-item-icon" onerror="this.closest('.pssr-info-modal-item-details').style.display='none';">
+                            <div class="pssr-info-modal-icon-container">
+                                <img src="idols/item/${card.id}.webp" alt="Item Icon" class="pssr-info-modal-item-icon" onerror="this.closest('.pssr-info-modal-item-details').style.display='none';">
+                                ${referHtml1}
+                            </div>
                             <div class="pssr-info-modal-detail-content">
                                 <div class="pssr-info-modal-detail-name">${name1}</div>
                                 <div class="pssr-info-modal-detail-desc">${desc1}</div>
                             </div>
-                            ${referHtml1}
                         </div>
                         <div class="pssr-info-modal-detail-condition-row">
                             <div class="pssr-info-modal-sainou-box">
@@ -1094,15 +1096,17 @@ export function showProduceCardInfoModal(card, personalColor) {
                             </div>
                         </div>
                         <div class="pssr-info-modal-detail-row${itemPlusData && itemPlusData.referimage && itemPlusData.referimage.length > 0 ? ` has-refer-image has-refer-image-${itemPlusData.referimage.length}` : ''}" style="background-color: ${personalColor}33; border-color: ${personalColor}66;">
-                            <div class="pssr-info-modal-item-plus-wrapper">
-                                <img src="idols/item/${card.id}.webp" alt="Item Icon +" class="pssr-info-modal-item-icon">
-                                <img src="icons/itemplus.webp" alt="Plus" class="pssr-info-modal-item-plus-badge">
+                            <div class="pssr-info-modal-icon-container">
+                                <div class="pssr-info-modal-item-plus-wrapper">
+                                    <img src="idols/item/${card.id}.webp" alt="Item Icon +" class="pssr-info-modal-item-icon">
+                                    <img src="icons/itemplus.webp" alt="Plus" class="pssr-info-modal-item-plus-badge">
+                                </div>
+                                ${referHtml2}
                             </div>
                             <div class="pssr-info-modal-detail-content">
                                 <div class="pssr-info-modal-detail-name">${name2}</div>
                                 <div class="pssr-info-modal-detail-desc">${desc2}</div>
                             </div>
-                            ${referHtml2}
                         </div>
                     </div>
                     ${extraBlocksHtml.join('')}

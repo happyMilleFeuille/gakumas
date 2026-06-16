@@ -189,6 +189,8 @@
 
 .pssr-info-modal-detail-content {
     flex: 1;
+    position: relative;
+    z-index: 2;
 }
 
 .pssr-info-modal-detail-name {
@@ -197,6 +199,7 @@
     color: #222222;
     margin-bottom: 4px;
     text-align: right;
+    padding-right: 12px;
 }
 
 .pssr-info-modal-train-block .pssr-info-modal-detail-name,
@@ -454,6 +457,10 @@
         max-width: 100%;
     }
     
+    .pssr-info-modal-img-box {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+    
     .pssr-info-modal-title-overlay {
         font-size: 0.85rem;
         top: 4px;
@@ -555,6 +562,7 @@
     
     .pssr-info-modal-detail-name {
         font-size: 0.64rem;
+        padding-right: 8px;
     }
     
     .pssr-info-modal-detail-desc {
@@ -677,29 +685,26 @@
     }
 }
 
-.pssr-info-modal-detail-row.has-refer-image {
+.pssr-info-modal-icon-container {
     position: relative;
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
 }
 
 .pssr-info-modal-refer-images {
     position: absolute;
-    top: 12px;
-    right: 16px;
+    bottom: -16px;
+    left: -8px;
     display: flex;
-    gap: 4px;
+    gap: 2px;
+    z-index: 5;
 }
 
 .pssr-info-modal-refer-img {
-    width: 48px;
-    height: 48px;
+    width: 38px;
+    height: 38px;
     object-fit: contain;
-}
-
-.pssr-info-modal-detail-row.has-refer-image-1 .pssr-info-modal-detail-name {
-    padding-right: 72px;
-}
-.pssr-info-modal-detail-row.has-refer-image-2 .pssr-info-modal-detail-name {
-    padding-right: 124px;
 }
 
 .pssr-info-modal-detail-row.pssr-info-modal-custom-row-container {
@@ -710,21 +715,19 @@
 }
 
 @media (max-width: 768px) {
+    .pssr-info-modal-icon-container {
+        width: 48px;
+        height: 48px;
+    }
+    
     .pssr-info-modal-refer-images {
-        top: 10px;
-        right: 12px;
+        bottom: -8px;
+        left: -4px;
     }
     
     .pssr-info-modal-refer-img {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .pssr-info-modal-detail-row.has-refer-image-1 .pssr-info-modal-detail-name {
-        padding-right: 54px;
-    }
-    .pssr-info-modal-detail-row.has-refer-image-2 .pssr-info-modal-detail-name {
-        padding-right: 94px;
+        width: 24px;
+        height: 24px;
     }
     
     .pssr-info-modal-detail-row.pssr-info-modal-custom-row-container {
