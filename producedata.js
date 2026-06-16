@@ -1292,7 +1292,26 @@ export const produceList = [
             desc_ja: "やる気消費\n✦ goodimpression3\n✦ 次のターン、draw1\n✦ 好印象が10以上の場合、好印象の220%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         },
     },
-    { id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
+    {
+        id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
+        item: {
+            desc: "전력으로 지침이 변경되었을 때 강기로 지침 변경된 횟수가 1회 이상인 경우\n✦ 전력효과 액티브카드의 파라미터치 증가+11\n✦ 다음 턴, 온존 2단계로 지침 변경\n✦ hpreduce2\n✦ inlesson2",
+            desc_ja: "全力になった時、強気になった回数が1回以上の場合、\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+11\n✦ 次のターン、温存2段階目に変更\n✦ hpreduce2\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "전력으로 지침이 변경되었을 때 강기로 지침 변경된 횟수가 1회 이상인 경우\n✦ 전력효과 액티브카드의 파라미터치 증가+11\n✦ 다음 턴, 온존 2단계로 지침 변경\n✦ inlesson2",
+            desc_ja: "全力になった時、強気になった回数が1回以上の場合、\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+11\n✦ 次のターン、温存2段階目に変更\n✦ inlesson2",
+        },
+        card: {
+            name: "放課後おしゃべり",
+            desc: "✦ 강기로 지침 변경\n✦ fullpower5\n✦ 전력효과 액티브카드의 파라미터치 증가+2\n✦ 다음 턴, 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ fullpower5\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+2\n✦ 次のターン、温存に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 강기로 지침 변경\n✦ fullpower5\n✦ 전력효과 액티브카드의 파라미터치 증가+4\n✦ 다음 턴, 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ fullpower5\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+4\n✦ 次のターン、温存に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
