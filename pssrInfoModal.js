@@ -12,9 +12,9 @@ const getLocalizedCardName = (card) => {
 
 const replaceDescIcons = (text) => {
     if (!text) return '';
-    
+
     let result = text;
-    
+
     // --- 1. Normalization Phase (Run first to shield terms from keyword matches) ---
     result = result.replace(/(원기|元気)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `genki${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(의욕|やる気)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `motivation${spanOpen || ''}${num}${spanClose || ''}`);
@@ -31,12 +31,12 @@ const replaceDescIcons = (text) => {
     result = result.replace(/スキルカード使用数追加\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `use${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(파라미터|パラメータ)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `param${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(열의\s*추가|熱意追加)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `netsui${spanOpen || ''}${num}${spanClose || ''}`);
-    
+
     // 1. 체력 소비 / 体力消費
     result = result.replace(/(체력\s*소비|소비\s*체력|体力\s*消費|消費\s*体力)/g, (match) => {
         return `<img src="icons/hpreduce.webp" alt="HP Reduce" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 2. 호조 / 好調 (절호조 / 絶好調 제외)
     result = result.replace(/(절호조|호조)/g, (match) => {
         if (match === '절호조') return match;
@@ -46,61 +46,61 @@ const replaceDescIcons = (text) => {
         if (match === '絶好調') return match;
         return `<img src="icons/goodcondition.webp" alt="Good Condition" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 3. 의욕 / やる気
     result = result.replace(/(의욕|やる気)/g, (match) => {
         return `<img src="icons/motivation.webp" alt="Motivation" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 4. 전력 / 全力
     result = result.replace(/(전력치|전력|全力値|全力)/g, (match) => {
         return `<img src="icons/fullpower.webp" alt="Full Power" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 5. 강기 / 強気
     result = result.replace(/(강기|強気)/g, (match) => {
         return `<img src="icons/enthusiasm.webp" alt="Enthusiasm" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 6. 온존 / 温存
     result = result.replace(/(온존|温存)/g, (match) => {
         return `<img src="icons/preservation.webp" alt="Preservation" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 7. 호인상 / 好印象
     result = result.replace(/(호인상|好印象)/g, (match) => {
         return `<img src="icons/goodimpression.webp" alt="Good Impression" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 8. 집중 / 集中
     result = result.replace(/(집중|集中)/g, (match) => {
         return `<img src="icons/concentration.webp" alt="Concentration" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 9. 여유 / のんびり
     result = result.replace(/(여유|のんびり)/g, (match) => {
         return `<img src="icons/nonbiri.webp" alt="Nonbiri" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 9-2. 원기 / 元気
     result = result.replace(/(원기|元気)/g, (match) => {
         return `<img src="icons/genki.webp" alt="Genki" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 9-3. 프라이드 / プライド
     result = result.replace(/(프라이드|プライド)/g, (match) => {
         return `<img src="icons/pride.webp" alt="Pride" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
-    
+
     // 9. 시작 카드 / 레슨 개시 시 손패로 이동 / レッスン開始時手札に入る -> Map to startingcard first for dynamic localization
-    result = result.replace(/(레슨\s*개시\s*시\s*손패로\s*이동|レッスン開始時手札に入る)/gi, 'startingcard');
-    
+    result = result.replace(/(레슨\s*개시\s*시\s*손패에\s*추가|レッスン開始時手札に入る)/gi, 'startingcard');
+
     // 10. 중복불가 / 重複不可 -> Map to nooverlab first for dynamic localization
     result = result.replace(/(중복\s*불가|重複\s*不可)/gi, 'nooverlab');
-    
+
     // 11. 레슨 중 1회 / レッスン中1回 -> Map to limit1 first for dynamic localization
     result = result.replace(/(레슨\s*중\s*1회|レッスン\s*中\s*1\s*回)/gi, 'limit1');
-    
+
     // 12. (레슨 내 [num]회) / （レッスン内[num]回） -> Map to inlesson[num] first for dynamic localization
     result = result.replace(/[（\(]레슨\s*내\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?\s*회[\)）]/gi, (match, spanOpen, num, spanClose) => {
         return `inlesson${spanOpen || ''}${num}${spanClose || ''}`;
@@ -108,7 +108,7 @@ const replaceDescIcons = (text) => {
     result = result.replace(/[（\(]レッスン\s*内\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?\s*回[\)）]/gi, (match, spanOpen, num, spanClose) => {
         return `inlesson${spanOpen || ''}${num}${spanClose || ''}`;
     });
-    
+
     // 13. 스킬카드를 [num]장 드로우 / スキルカードを[num]枚引く -> Map to draw[num] first for dynamic localization
     result = result.replace(/스킬카드를\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?장\s*드로우/gi, (match, spanOpen, num, spanClose) => {
         return `draw${spanOpen || ''}${num}${spanClose || ''}`;
@@ -118,7 +118,7 @@ const replaceDescIcons = (text) => {
         return `draw${spanOpen || ''}${num}${spanClose || ''}`;
     });
     result = result.replace(/スキルカードを\s*引く/gi, 'draw1');
-    
+
     // --- 2. Codified Tag Replacements (Run last to avoid double-matching) ---
     // hpreduce[num] (optional span tags wrapping the number are preserved)
     result = result.replace(/hpreduce\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
@@ -355,7 +355,7 @@ const replaceDescIcons = (text) => {
             return 'At lesson start,';
         }
     });
-    
+
     return result;
 };
 
@@ -495,14 +495,14 @@ const getDDayText = (dateStr) => {
     try {
         const cardDate = new Date(dateStr.replace(/-/g, '/'));
         cardDate.setHours(0, 0, 0, 0);
-        
+
         const jstString = new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" });
         const today = new Date(jstString);
         today.setHours(0, 0, 0, 0);
-        
+
         const diffMs = today.getTime() - cardDate.getTime();
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 0) {
             return ' (D-Day)';
         } else if (diffDays > 0) {
@@ -521,13 +521,13 @@ const getRelativeDDayText = (targetDateStr, baseDateStr) => {
     try {
         const targetDate = new Date(targetDateStr.replace(/-/g, '/'));
         targetDate.setHours(0, 0, 0, 0);
-        
+
         const baseDate = new Date(baseDateStr.replace(/-/g, '/'));
         baseDate.setHours(0, 0, 0, 0);
-        
+
         const diffMs = targetDate.getTime() - baseDate.getTime();
         const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 0) {
             return 'D-Day';
         } else if (diffDays > 0) {
@@ -549,7 +549,7 @@ const tokenize = (str) => {
 const diffTokens = (str1, str2) => {
     const tokens1 = tokenize(str1);
     const tokens2 = tokenize(str2);
-    
+
     const dp = Array(tokens1.length + 1).fill(0).map(() => Array(tokens2.length + 1).fill(0));
     for (let i = 1; i <= tokens1.length; i++) {
         for (let j = 1; j <= tokens2.length; j++) {
@@ -560,11 +560,11 @@ const diffTokens = (str1, str2) => {
             }
         }
     }
-    
+
     let i = tokens1.length;
     let j = tokens2.length;
     const result = [];
-    
+
     while (i > 0 || j > 0) {
         if (i > 0 && j > 0 && tokens1[i - 1] === tokens2[j - 1] && dp[i][j - 1] < dp[i][j]) {
             result.unshift({ type: 'equal', val: tokens1[i - 1] });
@@ -577,7 +577,7 @@ const diffTokens = (str1, str2) => {
             i--;
         }
     }
-    
+
     let html = '';
     let currentSpan = '';
     for (const token of result) {
@@ -605,7 +605,7 @@ const diffStrings = (str1, str2) => {
         const brRegex = /<br\s*\/?>/gi;
         const lines1 = str1.split(brRegex);
         const lines2 = str2.split(brRegex);
-        
+
         const dp = Array(lines1.length + 1).fill(0).map(() => Array(lines2.length + 1).fill(0));
         for (let i = 1; i <= lines1.length; i++) {
             for (let j = 1; j <= lines2.length; j++) {
@@ -616,7 +616,7 @@ const diffStrings = (str1, str2) => {
                 }
             }
         }
-        
+
         // Backtrack to find LCS anchor pairs (only exact matches)
         let i = lines1.length, j = lines2.length;
         const anchors = [];
@@ -630,11 +630,11 @@ const diffStrings = (str1, str2) => {
                 j--;
             }
         }
-        
+
         // Build output using anchors; between anchors, pair gap lines
         const outputLines = [];
         let pos1 = 0, pos2 = 0;
-        
+
         const processGap = (gap1, gap2) => {
             const maxGap = Math.max(gap1.length, gap2.length);
             for (let k = 0; k < maxGap; k++) {
@@ -648,7 +648,7 @@ const diffStrings = (str1, str2) => {
                 // Lines only in gap1 are deleted -> skip silently
             }
         };
-        
+
         for (const anchor of anchors) {
             const gap1 = lines1.slice(pos1, anchor.i1);
             const gap2 = lines2.slice(pos2, anchor.i2);
@@ -657,10 +657,10 @@ const diffStrings = (str1, str2) => {
             pos1 = anchor.i1 + 1;
             pos2 = anchor.i2 + 1;
         }
-        
+
         // Process remaining lines after last anchor
         processGap(lines1.slice(pos1), lines2.slice(pos2));
-        
+
         return outputLines.join('<br>');
     } catch (e) {
         console.error('Error diffing strings:', e);
@@ -687,19 +687,19 @@ export function showProduceCardInfoModal(card, personalColor) {
     const modal = document.createElement('div');
     modal.id = 'pssr-info-modal';
     modal.className = 'pssr-info-modal-overlay';
-    
+
     const isMobile = window.innerWidth <= 768;
     const img1 = isMobile ? `idols/${card.id}1.webp` : `idols/thumb/${card.id}1.webp`;
     const img2 = isMobile ? `idols/${card.id}2.webp` : `idols/thumb/${card.id}2.webp`;
     const localizedName = getLocalizedCardName(card);
-    
+
     const itemData = getLocalizedItem(card.item);
     const itemPlusData = getLocalizedItem(card.itemplus);
-    
+
     const name1 = itemData ? itemData.name : getDefaultItemName(false);
     const rawDesc1 = itemData ? itemData.desc : getDefaultDescText();
     const desc1 = formatDescLines(replaceDescIcons(rawDesc1), personalColor);
-    
+
     const name2 = itemPlusData ? itemPlusData.name : (itemData ? itemData.name + '+' : getDefaultItemName(true));
     const desc2Raw = itemPlusData ? itemPlusData.desc : (itemData ? itemData.desc : getDefaultDescText());
     const desc2 = formatDescLines(replaceDescIcons(diffStrings(rawDesc1, desc2Raw)), personalColor);
@@ -717,10 +717,10 @@ export function showProduceCardInfoModal(card, personalColor) {
     const referHtml2 = itemPlusData ? makeReferImagesHtml(itemPlusData.referimage) : '';
 
 
-    
+
     const tokenCardData = getLocalizedItem(card.tokencard);
     const tokenDesc = tokenCardData ? formatDescLines(replaceDescIcons(tokenCardData.desc), personalColor) : '';
-    
+
     const primaCardData = getLocalizedItem(card.primacard);
     const primaDesc = primaCardData ? formatDescLines(replaceDescIcons(primaCardData.desc), personalColor) : '';
     const getPrimaName = () => {
@@ -731,9 +731,9 @@ export function showProduceCardInfoModal(card, personalColor) {
         return '프리마 카드';
     };
     const primaName = getPrimaName();
-    
+
     const planIcons = getPlanIconPath(card);
-    
+
     // 같은 아이돌의 직전/직후 PSSR 찾기
     const idolMatch = card.id.match(/^ssr([a-z]+)_/);
     const idolName = idolMatch ? idolMatch[1] : '';
@@ -775,7 +775,7 @@ export function showProduceCardInfoModal(card, personalColor) {
     const makeDateBox = (c, extraClass = '', dDayText = '', badgeType = 'osusume') => {
         if (!c) return '<div class="pssr-info-modal-date-row pssr-info-modal-date-row-empty"></div>';
         const name = getLocalizedCardName(c);
-        
+
         let badge = '';
         if (badgeType === 'plan') {
             const planIcon = getPlanIcon(c.plan);
@@ -784,7 +784,7 @@ export function showProduceCardInfoModal(card, personalColor) {
             const osuIcon = getOsusumeIcon(c.osusume);
             badge = osuIcon ? `<img src="${osuIcon}" alt="${c.osusume}" class="pssr-info-modal-date-osusume">` : '';
         }
-        
+
         const dDayBadge = dDayText ? `<span class="pssr-info-modal-date-dday-badge" style="background-color: ${personalColor};">${dDayText.trim()}</span>` : '';
         const thumbBg = `background-image: url('idols/thumb/${c.id}1.webp');`;
         const isLongName = name.length >= 15;
@@ -794,7 +794,7 @@ export function showProduceCardInfoModal(card, personalColor) {
     let finalDateHtml = '';
     if (card.releasedAt && card.rarity === 'PSSR') {
         const arrow = '<span class="pssr-info-modal-date-arrow">→</span>';
-        
+
         // 1. 전체 출시 순서 (플랜 뱃지 표시)
         const currentBoxPlan = makeDateBox(card, 'pssr-info-modal-date-row-current', '', 'plan');
         const prevDDay = prevCard ? getRelativeDDayText(prevCard.releasedAt, card.releasedAt) : '';
@@ -847,8 +847,8 @@ export function showProduceCardInfoModal(card, personalColor) {
         const dDay = getDDayText(card.releasedAt);
         metaItems.push(`<span class="pssr-info-modal-meta-text">${card.releasedAt}${dDay}</span>`);
     }
-    
-    const metaHtml = metaItems.length > 0 
+
+    const metaHtml = metaItems.length > 0
         ? `<div class="pssr-info-modal-meta-row">${metaItems.join(' <span class="pssr-info-modal-meta-divider"></span> ')}</div>`
         : '';
     const metaDividerHtml = (metaHtml && finalDateHtml)
@@ -856,7 +856,7 @@ export function showProduceCardInfoModal(card, personalColor) {
         : '';
     const cardData = getLocalizedItem(card.card);
     const cardPlusData = getLocalizedItem(card.cardplus);
-    
+
     const cardName1 = cardData ? cardData.name : '';
     const rawCardDesc1 = cardData ? cardData.desc : '';
     const cardDesc1 = formatDescLines(replaceDescIcons(rawCardDesc1), personalColor);
@@ -951,7 +951,7 @@ export function showProduceCardInfoModal(card, personalColor) {
                             </div>
                         </div>
                     </div>` : '';
-                    
+
     const primaBadgeText = (() => {
         if (state.currentLang === 'en') return 'H.I.F Only';
         if (state.currentLang === 'ja') return 'H.I.F専用';
@@ -976,7 +976,7 @@ export function showProduceCardInfoModal(card, personalColor) {
                             </div>
                         </div>
                     </div>` : '';
-    
+
     const custom1Data = card.cardcustom ? getLocalizedCustomItem(card.cardcustom.custom1) : null;
     const custom2Data = card.cardcustom ? getLocalizedCustomItem(card.cardcustom.custom2) : null;
     let customBlockHtml = '';
@@ -1051,7 +1051,7 @@ export function showProduceCardInfoModal(card, personalColor) {
             extraBlocksHtml.push(customBlockHtml);
         }
     });
-        
+
     modal.innerHTML = `
         <div class="pssr-info-modal-content" style="border-color: ${personalColor}; --personal-color: ${personalColor}; --personal-color-light: ${personalColor}33;">
             <h2 class="pssr-info-modal-title-overlay">${localizedName}</h2>
@@ -1114,9 +1114,9 @@ export function showProduceCardInfoModal(card, personalColor) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // 이미지 잔상 방지 처리 (로드 완료 시 노출)
     const modalImgs = modal.querySelectorAll('.pssr-info-modal-img');
     modalImgs.forEach(img => {
@@ -1131,17 +1131,17 @@ export function showProduceCardInfoModal(card, personalColor) {
             });
         }
     });
-    
+
     window.closeProduceCardInfoModal = () => {
         modal.remove();
     };
-    
+
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             history.back();
         }
     });
-    
+
     history.pushState({ modalOpen: 'pssr-info' }, "");
 }
 window.showProduceCardInfoModal = showProduceCardInfoModal;
