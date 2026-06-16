@@ -459,7 +459,7 @@ export const produceList = [
         },
         primacard: {
             name: "勇気を届ける一番星",
-            desc: "\n✦ param20(누계 전력치의 650만큼 파라미터 상승량 증가)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "\n✦ param20 (누계 전력치의 650만큼 파라미터 상승량 증가)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "\n✦ param20（累積全力値の650%分、パラメータ上昇量増加）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
