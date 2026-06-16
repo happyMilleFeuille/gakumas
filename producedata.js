@@ -461,7 +461,26 @@ export const produceList = [
     { id: "ssrlilja_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrlilja_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrlilja_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.4, another: true },
-    { id: "ssrlilja_2nd", name: "극광", name_en: "Kyokkoo", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6 },
+    {
+        id: "ssrlilja_2nd", name: "극광", name_en: "Kyokkoo", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6,
+        item: {
+            desc: "멘탈카드 사용 시 지침이 강기 2단계인 경우\n✦ 멘탈카드의 원기 수치 증가+4\n✦ hpreduce2\n✦ inlesson3",
+            desc_ja: "メンタルスキルカード使用時、強気2段階目の場合、\n✦ メンタルスキルカードの元気値増加+4\n✦ hpreduce2\n✦ inlesson3",
+        },
+        itemplus: {
+            desc: "멘탈카드 사용 시 지침이 강기 2단계인 경우\n✦ 멘탈카드의 원기 수치 증가+4\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "メンタルスキルカード使用時、強気2段階目の場合、\n✦ メンタルスキルカードの元気値増加+4\n✦ hpreduce1\n✦ inlesson3",
+        },
+        card: {
+            name: "放課後おしゃべり",
+            desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기효과 스킬카드의 파라미터치 증가+7\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存の場合、使用可\n✦ 強気2段階目に変更\n✦ 以降、メンタルスキルカード使用時、強気2段階目の場合、強気効果のスキルカードのパラメータ値増加+7\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기효과 스킬카드의 파라미터치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存の場合、使用可\n✦ 強気2段階目に変更\n✦ 以降、メンタルスキルカード使用時、強気2段階目の場合、強気効果のスキルカードのパラメータ値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrlilja_3rd", name: "Atmosphere", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-12-08", jumpTime2: 9.5, youtube_url: "https://youtu.be/R9PEnLmv6zI?si=CG6jPxmYp4dGctXo",
         item: {
@@ -741,7 +760,26 @@ export const produceList = [
 
 
     // --- 미스즈 SSR (PSSR) ---
-    { id: "ssrmisuzu_1st", name: "달거북이", name_en: "Moon Turtle", name_ja: "ツキノカメ", osusume: "preservation", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf" },
+    {
+        id: "ssrmisuzu_1st", name: "달거북이", name_en: "Moon Turtle", name_ja: "ツキノカメ", osusume: "preservation", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf",
+        item: {
+            desc: "온존효과의 스킬카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승\n✦ hpreduce1",
+            desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の140%分パラメータ上昇\n✦ hpreduce1",
+        },
+        itemplus: {
+            desc: "온존효과의 스킬카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승",
+            desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の140%分パラメータ上昇",
+        },
+        card: {
+            name: "屋上から景色",
+            desc: "startingcard\n✦ fullpower2\n✦ 전력효과의 스킬카드의 파라미터치 증가+4\n✦ 이후 턴 개시 시 지침이 온존인 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ fullpower2\n✦ 全力効果のスキルカードのパラメータ増加+4\n✦ 以降、ターン開始時、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "startingcard\n✦ fullpower3\n✦ 전력효과의 스킬카드의 파라미터치 증가+9\n✦ 이후 턴 개시 시 지침이 온존인 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ fullpower3\n✦ 全力効果のスキルカードのパラメータ増加+9\n✦ 以降、ターン開始時、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     { id: "ssrmisuzu_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-07-07", another: true },
     { id: "ssrmisuzu_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-08-22", another: true },
     { id: "ssrmisuzu_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", releasedAt: "2025-08-29", source: "limited", another: true },
@@ -851,12 +889,12 @@ export const produceList = [
     {
         id: "ssrtsubame_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.5, releasedAt: "2025-12-26",
         item: {
-            desc: "출연 계획 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
+            desc: "出演計画 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
             desc_ja: "出演計画使用時、\n✦ use1\n✦ 除外にあるダークヒーローの誕生を手札に移動\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
             referimage: ["sense-sr11"]
         },
         itemplus: {
-            desc: "출연 계획 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition9\n✦ inlesson1",
+            desc: "出演計画 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition9\n✦ inlesson1",
             desc_ja: "出演計画使用時、\n✦ use1\n✦ 除外にあるダークヒーローの誕生を手札に移動\n✦ goodcondition9\n✦ inlesson1",
             referimage: ["sense-sr11"]
         },
@@ -1255,7 +1293,26 @@ export const produceList = [
         },
     },
     { id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s" },
-    { id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
+    {
+        id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
+        item: {
+            desc: "턴 개시 시 레슨 중 누계 전력치가 5이상인 경우\n✦ genki6\n✦ inlesson2",
+            desc_ja: "ターン開始時、このレッスン中累計全力値が5以上の場合、\n✦ genki6\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "턴 개시 시 레슨 중 누계 전력치가 5이상인 경우\n✦ genki8\n✦ inlesson2",
+            desc_ja: "ターン開始時、このレッスン中累計全力値が5以上の場合、\n✦ genki8\n✦ inlesson2",
+        },
+        card: {
+            name: "放課後おしゃべり",
+            desc: "✦ fullpower2\n✦ 다음 턴, param8(누계 전력치의 300% 만큼 파라미터 상승량 증가)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ fullpower2\n✦ 次のターン、param8（累計全力値の300%分、パラメータ上昇量増加）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ fullpower5\n✦ 다음 턴, param8(누계 전력치의 300% 만큼 파라미터 상승량 증가)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ fullpower5\n✦ 次のターン、param8（累計全力値の300%分、パラメータ上昇量増加）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
@@ -1277,9 +1334,47 @@ export const produceList = [
             desc_ja: "✦ goodcondition4\n✦ concentration2 \n✦ 好調が4ターン以上の場合、次のターン、use1\n✦ 好調が12ターン以上の場合、2ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
-    { id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR" },
+    {
+        id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
+        item: {
+            desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 스킬카드의 파라미터치 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ hpreduce3\n✦ inlesson1",
+            desc_ja: "ターン開始後、全力の場合、\n✦ genki10\n✦ fullpower3\n✦ 手札のパラメータ値増加+10\n✦ 次のターン、温存に変更\n✦ hpreduce3\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 스킬카드의 파라미터치 증가+10\n✦ 다음 턴, 온존으로 지침 변경\\n✦ inlesson1",
+            desc_ja: "ターン開始後、全力の場合、\n✦ genki10\n✦ fullpower3\n✦ 手札のパラメータ値増加+10\n✦ 次のターン、温存に変更\n✦ inlesson1",
+        },
+        card: {
+            name: "あの日、この場所で",
+            desc: "hpreduce6\n✦ fullpower10\n✦ 카드더미 혹은 버린 카드더미에 있는 스킬카드를 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce6\n✦ fullpower10\n✦ 山札か捨札にあるスキルカードを選択し、保留に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce4\n✦ fullpower10\n✦ 카드더미 혹은 버린 카드더미에 있는 스킬카드를 2장 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce4\n✦ fullpower10\n✦ 山札か捨札にあるスキルカードを2枚選択し、保留に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     { id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
-    { id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
+    {
+        id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
+        item: {
+            desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 440% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ hpreduce2\n✦ inlesson2",
+            desc_ja: "直接効果で強気になった時、元気が50以上の場合、\n✦ 元気の440%分パラメータ上昇させ、元気を0にする\n✦ hpreduce2\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 500% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ inlesson2",
+            desc_ja: "直接効果で強気になった時、元気が50以上の場合、\n✦ 元気の500%分パラメータ上昇させ、元気を0にする\n✦ inlesson2",
+        },
+        card: {
+            name: "次こそは、必ず",
+            desc: "hpreduce6\n✦ startingcard\n✦ 온존으로 지침 변경\n✦ 멘탈카드의 원기 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce6\n✦ startingcard\n✦ 温存に変更\n✦ メンタルスキルカードの元気値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce6\n✦ startingcard\n✦ 온존으로 지침 변경\n✦ 멘탈카드의 원기 수치 증가+11\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce6\n✦ startingcard\n✦ 温存に変更\n✦ メンタルスキルカードの元気値増加+11\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrlilja_howlinglimited", name: "Howling over the World", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2025-06-09", plan: "logic", source: "limited", jumpTime2: 7.3, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
@@ -1486,7 +1581,26 @@ export const produceList = [
 
 
     // 유닛 (unit)
-    { id: "ssrsena_starmineunit", name: "Star-mine", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
+    {
+        id: "ssrsena_starmineunit", name: "Star-mine", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
+        item: {
+            desc: "지침이 전력일 경우, 한 턴 내 스킬카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ 다음 턴, 온존 2단계로 지침 변경",
+            desc_ja: "全力の場合、ターン内にスキルカードを3回使用するごとに、\n✦ 全力値増加量増加+50%（1ターン）\n✦ hpreduce1\n✦ 次のターン、温存2段階目に変更",
+        },
+        itemplus: {
+            desc: "지침이 전력일 경우, 한 턴 내 스킬카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ 다음 턴, 온존 2단계로 지침 변경",
+            desc_ja: "全力の場合、ターン内にスキルカードを3回使用するごとに、\n✦ 全力値増加量増加+50%（1ターン）\n✦ 次のターン、温存2段階目に変更",
+        },
+        card: {
+            name: "待ち望んだ瞬間",
+            desc: "✦ 온존 2단계로 지침 변경\n✦ 이후 직접효과로 전력치가 증가 후 온존일 경우 fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 温存2段階目に変更\n✦ 以降、直接効果で全力値が増加後、温存の場合、fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 온존 2단계로 지침 변경\n✦ 이후 직접효과로 전력치가 증가 후 온존일 경우 fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 温存2段階目に変更\n✦ 以降、直接効果で全力値が増加後、温存の場合、fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrume_starmineunit", name: "Star-mine", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 10.4, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
         item: {
@@ -1529,7 +1643,26 @@ export const produceList = [
         },
     },
     { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", jumpTime2: 10.2, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
-    { id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-01", plan: "anomaly", source: "limited_u", jumpTime2: 9.4, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
+    {
+        id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-01", plan: "anomaly", source: "limited_u", jumpTime2: 9.4, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
+        item: {
+            desc: "멘탈카드 사용 후 지침이 온존 2단계인 경우\n✦ hpreduce1\n✦ netsui4\n✦ inlesson4",
+            desc_ja: "メンタルスキルカード使用後、温存2段階目の場合、\n✦ hpreduce1\n✦ netsui4\n✦ inlesson4",
+        },
+        itemplus: {
+            desc: "멘탈카드 사용 후 지침이 온존 2단계인 경우\n✦ netsui4\n✦ inlesson4",
+            desc_ja: "メンタルスキルカード使用後、温存2段階目の場合、\n✦ netsui4\n✦ inlesson4",
+        },
+        card: {
+            name: "あたらしい光",
+            desc: "✦ 온존 2단계로 지침 변경\n✦ netsui5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 温存2段階目に変更\n✦ netsui5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 온존 2단계로 지침 변경\n✦ netsui8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 温存2段階目に変更\n✦ netsui8\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrchina_michinaruunit", name: "미지로 펼쳐지는", name_en: "Unknown Unbound", name_ja: "みちなるひろがる", osusume: "concentration", releasedAt: "2026-01-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.2, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO",
         item: {
