@@ -98,19 +98,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="stylesheet" href="css/base.css?v=1.4.12">
-    <link rel="stylesheet" href="css/idol.css?v=1.4.12">
-    <link rel="stylesheet" href="css/support.css?v=1.4.12">
-    <link rel="stylesheet" href="css/gacha.css?v=1.4.12">
-    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.4.12">
-    <link rel="stylesheet" href="css/gachalog.css?v=1.4.12">
-    <link rel="stylesheet" href="css/gacharates.css?v=1.4.12">
-    <link rel="stylesheet" href="css/gacha_anim.css?v=1.4.12">
-    <link rel="stylesheet" href="css/calc.css?v=1.4.12">
-    <link rel="stylesheet" href="css/stat-detail.css?v=1.4.12">
-    <link rel="stylesheet" href="css/memory.css?v=1.4.12">
-    <link rel="stylesheet" href="css/home.css?v=1.4.12">
-    <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.4.12">
+    <link rel="stylesheet" href="css/base.css?v=1.4.20">
+    <link rel="stylesheet" href="css/idol.css?v=1.4.20">
+    <link rel="stylesheet" href="css/support.css?v=1.4.20">
+    <link rel="stylesheet" href="css/gacha.css?v=1.4.20">
+    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.4.20">
+    <link rel="stylesheet" href="css/gachalog.css?v=1.4.20">
+    <link rel="stylesheet" href="css/gacharates.css?v=1.4.20">
+    <link rel="stylesheet" href="css/gacha_anim.css?v=1.4.20">
+    <link rel="stylesheet" href="css/calc.css?v=1.4.20">
+    <link rel="stylesheet" href="css/stat-detail.css?v=1.4.20">
+    <link rel="stylesheet" href="css/memory.css?v=1.4.20">
+    <link rel="stylesheet" href="css/home.css?v=1.4.20">
+    <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.4.20">
 
     <!-- Character Icon Preload for Performance -->
     <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
@@ -318,7 +318,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=1.4.12"></script>
+    <script type="module" src="main.js?v=1.4.20"></script>
 
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
@@ -485,8 +485,8 @@
             <div class="filter-container">
                 <div class="plan-filter-box">
                     <button id="btn-support-top-right" class="support-top-right-btn" aria-label="Support Document">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="feather feather-file-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -502,7 +502,13 @@
                             <button class="filter-btn" data-val="assist" data-i18n="filter_assist">Assist</button>
                             <div class="support-info-wrapper">
                                 <button class="support-info-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-info">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    </svg>
                                 </button>
                                 <div class="support-info-tooltip">
                                     <p><span data-i18n="support_tooltip_1">• 꽃모양을 클릭해 돌파 단계를 설정할 수 있습니다.</span></p>
@@ -662,7 +668,13 @@
         <div class="pssr-card">
             <div class="pssr-img-wrapper">
                 <button class="pssr-info-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-info">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
                 </button>
                 <img src="" alt="" class="pssr-img">
             </div>
