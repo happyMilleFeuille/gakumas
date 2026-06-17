@@ -237,7 +237,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
             <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
                 <div style="width: 14px; height: ${pct}%; background-color: ${barBgColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative;">
                     <!-- Prevent vertical wrapping of multi-digit values -->
-                    <div class="possession-chart-bar-value" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${val > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none;">${val}</div>
+                    <div class="possession-chart-bar-value" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${val > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none;">${formatRate(val, maxLbVal)}%</div>
                 </div>
             </div>
         `;
