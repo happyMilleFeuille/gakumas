@@ -1,5 +1,6 @@
 /* support.css */
 .support-container {
+    position: relative;
     padding: 2rem 1rem;
     text-align: center;
     background-color: rgba(255, 255, 255, 0.8);
@@ -7,6 +8,54 @@
     border-radius: 15px;
     margin: 10px;
 }
+
+.support-top-right-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
+}
+
+.support-top-right-btn:hover {
+    border-color: #ff4d8d;
+    background-color: #fff9fb;
+}
+
+.support-top-right-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #64748b;
+}
+
+.support-top-right-btn:hover svg {
+    color: #ff4d8d;
+}
+
+@media (max-width: 768px) {
+    .support-top-right-btn {
+        top: 10px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        border-radius: 5px;
+        z-index: 2000;
+    }
+    .support-top-right-btn svg {
+        width: 13px;
+        height: 13px;
+    }
+}
+
 
 .support-grid {
     display: grid;
@@ -1263,6 +1312,12 @@ select.sort-select {
 @media (max-width: 768px) {
     .support-container {
         padding: 1rem 0.5rem;
+    }
+
+    .plan-filter-box {
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
     }
 
     .support-grid {

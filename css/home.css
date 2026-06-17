@@ -282,12 +282,13 @@
     /* transform 효과 제거: 색상만 부드럽게 변화 */
 }
 
-.roadmap-filter-btn svg {
-    transition: transform 0.3s ease;
-}
-
-.roadmap-filter-btn.active svg {
-    transform: rotate(180deg);
+.roadmap-filter-icon {
+    width: 14px;
+    height: 14px;
+    display: block;
+    background-color: currentColor;
+    -webkit-mask: url('../icons/filter.svg') center / contain no-repeat;
+    mask: url('../icons/filter.svg') center / contain no-repeat;
 }
 
 .roadmap-filter-dropdown {
@@ -720,6 +721,7 @@
     }
 
     .roadmap-control-group {
+        margin-right: 8px !important;
         border-width: 1.5px !important;
         border-bottom: none !important;
     }
@@ -750,17 +752,17 @@
     }
 
     .roadmap-filter-btn {
-        padding: 4px 6px !important;
-        /* 패딩을 더 줄임 */
+        min-width: 34px !important;
+        padding: 4px 10px !important;
         font-size: 0.62rem !important;
         background: transparent !important;
         border: none !important;
         border-radius: 0 !important;
     }
 
-    .roadmap-filter-btn svg {
-        width: 9px !important;
-        height: 9px !important;
+    .roadmap-filter-icon {
+        width: 10px !important;
+        height: 10px !important;
     }
 
     .roadmap-filter-dropdown {

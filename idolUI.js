@@ -116,6 +116,15 @@ export function renderIdolList() {
     pssrArea.className = 'pssr-container';
     pssrArea.innerHTML = `
         <div class="pssr-filter-bar">
+            <button id="pssr-mobile-filter-toggle" class="pssr-mobile-filter-toggle" type="button" aria-label="${t('roadmap_filter', {}, '필터')}" aria-expanded="false">
+                <span class="pssr-mobile-filter-icon" aria-hidden="true"></span>
+            </button>
+            <div class="pssr-mobile-sort-wrapper">
+                <button id="pssr-btn-sort-order-mobile" class="pssr-filter-btn pssr-sort-order-btn-capsule pssr-mobile-sort-btn">
+                    <span id="pssr-sort-order-arrow-mobile">↓</span>
+                    <img src="icons/list.svg" alt="Sort Order" class="sort-order-icon">
+                </button>
+            </div>
             <div class="pssr-filter-wrapper-outer">
                 <div class="pssr-filter-wrapper">
                     <div class="pssr-source-filters">
@@ -147,18 +156,14 @@ export function renderIdolList() {
                     <div class="pssr-sub-filter-wrapper hidden">
                         <div class="pssr-sub-filters"></div>
                     </div>
-                    <div class="pssr-mobile-sort-wrapper">
-                        <button id="pssr-btn-sort-order-mobile" class="pssr-filter-btn pssr-sort-order-btn-capsule pssr-mobile-sort-btn">
-                            <span id="pssr-sort-order-arrow-mobile">↓</span>
-                            <img src="icons/list.svg" alt="Sort Order" class="sort-order-icon">
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
         <div class="pssr-grid"></div>
     `;
     const pssrGrid = pssrArea.querySelector('.pssr-grid');
+    const mobileFilterToggle = pssrArea.querySelector('#pssr-mobile-filter-toggle');
+    const filterBar = pssrArea.querySelector('.pssr-filter-bar');
 
     const sortOrderBtn = pssrArea.querySelector('#pssr-btn-sort-order');
     const sortOrderArrow = pssrArea.querySelector('#pssr-sort-order-arrow');
@@ -181,6 +186,13 @@ export function renderIdolList() {
 
     if (sortOrderBtn) sortOrderBtn.addEventListener('click', handleSortClick);
     if (sortOrderBtnMobile) sortOrderBtnMobile.addEventListener('click', handleSortClick);
+    if (mobileFilterToggle && filterBar) {
+        mobileFilterToggle.addEventListener('click', () => {
+            const isOpen = filterBar.classList.toggle('filters-open');
+            mobileFilterToggle.classList.toggle('active', isOpen);
+            mobileFilterToggle.setAttribute('aria-expanded', String(isOpen));
+        });
+    }
 
     // Rarity Filters click handler
     pssrArea.querySelectorAll('.pssr-rarity-filters .pssr-filter-btn').forEach(btn => {

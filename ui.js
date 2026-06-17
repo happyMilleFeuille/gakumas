@@ -930,6 +930,15 @@ export function renderSupport() {
 }
 
 function setupStaticListeners(container) {
+    const topRightBtn = container.querySelector('#btn-support-top-right');
+    if (topRightBtn) {
+        topRightBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const { openSupportMenuModal } = await import('./possessionModal.js');
+            openSupportMenuModal();
+        });
+    }
+
     const filterGroups = ['plan', 'attr', 'source', 'rarity'];
     filterGroups.forEach(type => {
         const group = container.querySelector(`#filter-${type}`);
@@ -1431,3 +1440,5 @@ function showCustomConfirm(message, onConfirmCallback, onResetCallback, confirmL
         if (e.target === modal) history.back();
     });
 }
+
+
