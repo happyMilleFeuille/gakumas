@@ -217,11 +217,11 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
     const isEn = state.currentLang === 'en';
     const ownedLabel = isJa ? '凸' : isEn ? 'LB' : '돌';
 
-    const maxLbVal = sStats.total || 1;
+    const maxLbVal = sStats.owned || 1;
 
     // Exactly three integer Y-axis labels: Max, Mid, 0
-    const gridMax = Math.round(maxLbVal);
-    const gridMid = Math.round(maxLbVal / 2);
+    const gridMax = sStats.owned;
+    const gridMid = Math.round(sStats.owned / 2);
 
     let barsHtml = '';
     let xAxisLabelsHtml = '';
