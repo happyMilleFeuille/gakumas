@@ -1217,8 +1217,9 @@ export function openPossessionModal() {
                         const isWebp = dataUrl.startsWith('data:image/webp');
                         const ext = isWebp ? 'webp' : 'png';
 
+                        const rand = Math.floor(1000 + Math.random() * 9000);
                         const link = document.createElement('a');
-                        link.download = `gakumas-possession-${langKey}.${ext}`;
+                        link.download = `gakumasnote_possession_support_${rand}.${ext}`;
                         link.href = dataUrl;
                         link.click();
 

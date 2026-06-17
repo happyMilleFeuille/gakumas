@@ -1343,8 +1343,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     const isWebp = dataUrl.startsWith('data:image/webp');
                     const ext = isWebp ? 'webp' : 'png';
 
+                    const rand = Math.floor(1000 + Math.random() * 9000);
                     const link = document.createElement('a');
-                    link.download = `gakumas-idol-possession-${lang}.${ext}`;
+                    link.download = `gakumasnote_possession_idol_${rand}.${ext}`;
                     link.href = dataUrl;
                     link.click();
 
