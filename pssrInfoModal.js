@@ -700,7 +700,7 @@ export function showProduceCardInfoModal(card, personalColor) {
     const rawDesc1 = itemData ? itemData.desc : getDefaultDescText();
     const desc1 = formatDescLines(replaceDescIcons(rawDesc1), personalColor);
 
-    const name2 = itemPlusData ? itemPlusData.name : (itemData ? itemData.name + '+' : getDefaultItemName(true));
+    const name2 = (itemPlusData ? itemPlusData.name : '') || (name1 ? name1 + '+' : getDefaultItemName(true));
     const desc2Raw = itemPlusData ? itemPlusData.desc : (itemData ? itemData.desc : getDefaultDescText());
     const desc2 = formatDescLines(replaceDescIcons(diffStrings(rawDesc1, desc2Raw)), personalColor);
 
