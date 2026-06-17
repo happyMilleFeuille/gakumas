@@ -1439,7 +1439,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_yukidokenidist", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "enthusiasm", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "dist", youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
+        id: "ssrtemari_yukidokenidist", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "enthusiasm", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
             name: "勝利の1枚",
             desc: "턴 개시 시 지침이 강기인 경우\n✦ genki6\n✦ inlesson2",
@@ -1457,7 +1457,7 @@ export const produceList = [
         cardplus: {
             desc: "startingcard\n✦ 이후 5턴 간 턴 개시시, 지침이 강기가 아닌 경우 강기로 지침 변경\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ 以降の5ターンの間、ターンの開始時、非強気の場合、強気に変更\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        },
+        }
     },
     {
         id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "goodimpression", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
