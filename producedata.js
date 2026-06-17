@@ -14,6 +14,7 @@ export const produceList = [
     {
         id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4,
         item: {
+            name: "これでばっちり",
             desc: "체력 회복 효과의 스킬카드 사용 후\n✦ 원기의 50%만큼 호인상을 증가시키고 원기를 전부 소모\n✦ 호인상의 200%만큼 파라미터 상승\n✦ hpreduce5\n✦ inlesson1",
             desc_ja: "体力回復効果のスキルカード使用後、\n✦ 元気の50%分好印象増加させ、元気を0にする\n✦ 好印象の200%分パラメータ上昇\n✦ hpreduce5\n✦ inlesson1",
         },
@@ -76,6 +77,7 @@ export const produceList = [
     {
         id: "ssrsaki_2nd", name: "Boom Boom Pow", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2024-06-19", plan: "logic", source: "normal", jumpTime2: 9.3,
         item: {
+            name: "勝へのこだわり",
             desc: "직접효과로 체력이 감소했을 경우\n✦ goodimpression2\n✦ inlesson4",
             desc_ja: "直接効果で体力が減少した時、\n✦ goodimpression2\n✦ inlesson4",
         },
@@ -121,6 +123,7 @@ export const produceList = [
     {
         id: "ssrchina_1st", name: "Wonder scale", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 8.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
         item: {
+            name: "ひみつ特訓カーデ",
             desc: "직접효과로 의욕 증가 후\n✦ motivation3\n✦ inlesson2",
             desc_ja: "直接効果でやる気が増加後、\n✦ motivation3\n✦ inlesson2",
         },
@@ -266,6 +269,7 @@ export const produceList = [
     {
         id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2,
         item: {
+            name: "スタイリッシュモード",
             desc: "턴 개시 시 의욕이 3이상인 경우 \n✦ goodimpression3\n✦ 의욕 감소 1\n✦ inlesson3",
             desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ goodimpression3\n✦ やる気減少1\n✦ inlesson3",
         },
@@ -313,6 +317,7 @@ export const produceList = [
     {
         id: "ssrkotone_1st", name: "세계에서 제일 귀여운 나", name_en: "Sekaiichi kawaii watashi", osusume: "goodimpression", name_ja: "世界一可愛い私", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 5.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/cHaEJgn4HYc?si=b6kiMK7AwkQuMJB1",
         item: {
+            name: "ピッグドリーム貯金箱",
             desc: "스킬카드 사용 후 호인상이 6이상일 경우\n✦ goodimpression3\n✦ use1\n✦ inlesson1",
             desc_ja: "スキルカード使用後、好印象が6以上の場合、\n✦ goodimpression3\n✦ use1\n✦ inlesson1",
         },
@@ -393,6 +398,7 @@ export const produceList = [
     {
         id: "ssrtemari_2nd", name: "아이비", name_en: "IVY", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3,
         item: {
+            name: "これが、私",
             desc: "턴 종료 시\n✦ 호인상의 100%만큼 파라미터 상승\n✦ genki3\n✦ inlesson2",
             desc_ja: "ターン終了時、好印象が10以上の場合、\n✦ 好印象の100%分パラメータ上昇\n✦ genki3\n✦ inlesson2",
         },
@@ -442,6 +448,7 @@ export const produceList = [
     {
         id: "ssrlilja_1st", name: "백선", name_en: "Hakusen", name_ja: "白線", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 6.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/m4VahiqP9vA?si=SUBYu3W6gLIyRf9M",
         item: {
+            name: "夢へのライフログ",
             desc: "턴 종료 시 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 호인상의 30%만큼 파라미터 상승\n✦ inlesson1",
             desc_ja: "ターン終了時、元気が7以上の場合、\n✦ 好印象1.5倍\n✦ 好印象の30%分パラメータ上昇\n✦ inlesson1",
         },
@@ -538,6 +545,7 @@ export const produceList = [
     {
         id: "ssrhiro_1st", name: "광경", name_en: "Koukei", name_ja: "光景", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/VJk2etK8I1w?si=OA8K2zri7qLpp5l2",
         item: {
+            name: "みちくさ研究ノート",
             desc: "남은 턴이 2턴 이내일 때 턴 개시 시\n✦ 원기의 50%만큼 파라미터 상승\n✦ hpreduce1",
             desc_ja: "残り2ターン以内のターン開始時、\n✦ 元気の50%分パラメータ上昇\n✦ hpreduce1",
         },
@@ -740,6 +748,7 @@ export const produceList = [
     {
         id: "ssrume_1st", name: "The Rolling Riceball", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 9.4, releasedAt: "2024-06-01", youtube_url: "https://youtu.be/FL-NhmFGQYw?si=NR38ucVx1cmxrs-C",
         item: {
+            name: "転がり続ける元気の源",
             desc: "멘탈카드 사용 후 의욕이 5이상인 경우\n✦ motivation3\n✦ use1\n✦ inlesson1",
             desc_ja: "メンタルスキルカード使用後、やる気が5以上の場合、\n✦ motivation3\n✦ use1\n✦ inlesson1",
         },
@@ -916,6 +925,7 @@ export const produceList = [
     {
         id: "ssrrinami_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", osusume: "motivation", rarity: "PSSR", releasedAt: "2024-09-01", plan: "logic", source: "normal", jumpTime2: 12.3,
         item: {
+            name: "ぱたぱたうちわ",
             desc: "스킬카드를 3회 사용할 때마다\n✦ genki1\n✦ motivation3\n✦ inlesson2",
             desc_ja: "スキルカードを3回使用するごとに、\n✦ genki1\n✦ motivation3\n✦ inlesson2",
         },
@@ -963,6 +973,7 @@ export const produceList = [
     {
         id: "ssrchina_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09", jumpTime2: 8.4,
         item: {
+            name: "描いた夢へのあゆみ",
             desc: "ゆるふわおしゃべり사용 시 \n✦ 턴 추가+1\n✦ 원기 1.5배\n✦ hpreduce2\n✦ inlesson1",
             desc_ja: "ゆるふわおしゃべり使用時、\n✦ ターン追加+1\n✦ 元気1.5倍\n✦ hpreduce2\n✦ inlesson1",
             referimage: ["logic-r2"]
@@ -1033,6 +1044,7 @@ export const produceList = [
     {
         id: "ssrkotone_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
         item: {
+            name: "あたしだけの一番星",
             desc: "思い出し笑い 사용 후\n✦ goodimpression2\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
             desc_ja: "思い出し笑い使用後、\n✦ goodimpression2\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
             referimage: ["logic-r9"]
@@ -1079,6 +1091,7 @@ export const produceList = [
     {
         id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-16",
         item: {
+            name: "翼",
             desc: "リスタート사용 후 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 다음 턴, 제외에 있는 また、飛べる를 손패로 이동\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "リスタート使用時、元気が7以上の場合、\n✦ 好印象1.5倍\n✦ 次のターン、除外にあるまた、飛べるを手札に移動\n✦ hpreduce2\n✦ inlesson2",
             referimage: ["logic-r6"]
@@ -1101,6 +1114,7 @@ export const produceList = [
     {
         id: "ssrhiro_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-09",
         item: {
+            name: "選びとった熱",
             desc: "えいえいおー사용 시、현재 체력이 50%이상인 경우、\n✦ motivation2\n✦ use1\n✦ 최대체력의 15%만큼 체력 소비\n✦ inlesson5",
             desc_ja: "えいえいおー使用時、体力が50%以上の場合、\n✦ motivation2\n✦ use1\n✦ 最大体力の15%分体力消費\n✦ inlesson5",
             referimage: ["logic-r7"]
@@ -1268,6 +1282,7 @@ export const produceList = [
     {
         id: "ssrsumika_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "motivation", releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
         item: {
+            name: "カエル印の扇風機",
             desc: "액티브카드 사용 후 의욕이 12이상인 경우 \n✦ 의욕의 270%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson4",
             desc_ja: "アクティブスキルカード使用後、やる気が12以上の場合、\n✦ やる気の270%分パラメータ上昇\n✦ hpreduce2\n✦ inlesson4",
         },
@@ -1311,6 +1326,7 @@ export const produceList = [
     {
         id: "ssrkotone_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "motivation", releasedAt: "2024-08-11", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
         item: {
+            name: "ぱちぱち線香花火",
             desc: "3턴마다 호인상이 6이상인 경우 \n✦ 호인상의 100%만큼 원기 증가\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
             desc_ja: "3ターンごとに、好印象が6以上の場合、\n✦ 好印象の100%分元気増加\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
         },
@@ -1333,6 +1349,7 @@ export const produceList = [
     {
         id: "ssrtemari_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "motivation", releasedAt: "2024-09-30", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
         item: {
+            name: "ぶきっちょコウモリ",
             desc: "3턴마다 호인상이 3이상인 경우\n✦ 원기의 90%만큼 파라미터 상승\n✦ 의욕의 160%만큼 파라미터 상승\n✦ 호인상 감소2\n✦ inlesson3",
             desc_ja: "3ターンごとに、好印象が3以上の場合、\n✦ 元気の90%分パラメータ上昇\n✦ やる気の160%分パラメータ上昇\n✦ 好印象減少2\n✦ inlesson3",
         },
@@ -1355,6 +1372,7 @@ export const produceList = [
     {
         id: "ssrkotone_christmasdist", name: "White Night! White Wish!", osusume: "motivation", rarity: "PSSR", plan: "logic", releasedAt: "2024-11-28", source: "dist", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
         item: {
+            name: "費用0円愛情MAX",
             desc: "턴 개시 시 의욕이 5이상인 경우\n✦ genki4\n✦ inlesson2",
             desc_ja: "ターン開始時、やる気が5以上の場合、\n✦ genki4\n✦ inlesson2",
         },
@@ -1376,6 +1394,7 @@ export const produceList = [
     {
         id: "ssrlilja_christmaslimited", name: "White Night! White Wish!", osusume: "motivation", jumpTime2: 10.7, rarity: "PSSR", releasedAt: "2024-12-09", plan: "logic", source: "limited", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
         item: {
+            name: "海の向こうまで",
             desc: "턴 개시 후 의욕이 5이상인 경우\n✦ 의욕 1.3배\n✦ draw1\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "ターン開始後、やる気が5以上の場合、\n✦ やる気1.3倍\n✦ draw1\n✦ hpreduce1\n✦ inlesson3",
         },
@@ -1438,6 +1457,7 @@ export const produceList = [
     {
         id: "ssrsena_valentinelimited", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "motivation", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.8, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
         item: {
+            name: "相手への深い愛",
             desc: "액티브카드 사용 시 의욕이 8이상인 경우\n✦ genki2 (의욕효과 2.2배 적용)\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用時、やる気が8以上の場合、\n✦ genki2（やる気効果を2.2倍適用）\n✦ hpreduce2\n✦ inlesson2",
         },
@@ -1479,6 +1499,7 @@ export const produceList = [
     {
         id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "goodimpression", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
+            name: "春のおとずれ",
             desc: "스킬카드 코스트로 강화상태를 소비했을 때 호인상이 3이상인 경우,\n✦ goodimpression2\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
             desc_ja: "スキルカードコストで強化状態を消費した時、好印象が3以上の場合、\n✦ goodimpression2\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
         },
