@@ -1680,6 +1680,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         };
 
         const showSaveOptionsModal = (onSelect) => {
+            history.pushState({ modalOpen: 'saveOptions' }, "");
+
             let optionsModal = document.createElement('div');
             optionsModal.className = 'modal';
             optionsModal.style.zIndex = '36000';
@@ -1719,31 +1721,38 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
             document.body.appendChild(optionsModal);
 
-            const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
-            closeBtn.onclick = () => {
+            optionsModal.onClose = () => {
                 optionsModal.remove();
                 onSelect(null);
             };
-            optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
+
+            const closeOptionsModal = (result) => {
                 optionsModal.remove();
-                onSelect('all');
+                if (history.state && history.state.modalOpen === 'saveOptions') {
+                    history.back();
+                }
+                onSelect(result);
+            };
+
+            const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
+            closeBtn.onclick = () => {
+                closeOptionsModal(null);
+            };
+            optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
+                closeOptionsModal('all');
             };
             optionsModal.querySelector('#btn-save-opt-plan-all').onclick = () => {
-                optionsModal.remove();
-                onSelect('plan-all');
+                closeOptionsModal('plan-all');
             };
             optionsModal.querySelector('#btn-save-opt-source-all').onclick = () => {
-                optionsModal.remove();
-                onSelect('source-all');
+                closeOptionsModal('source-all');
             };
             optionsModal.querySelector('#btn-save-opt-char-all').onclick = () => {
-                optionsModal.remove();
-                onSelect('char-all');
+                closeOptionsModal('char-all');
             };
             optionsModal.onclick = (e) => {
                 if (e.target === optionsModal) {
-                    optionsModal.remove();
-                    onSelect(null);
+                    closeOptionsModal(null);
                 }
             };
         };

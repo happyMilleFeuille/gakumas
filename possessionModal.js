@@ -351,7 +351,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
 
         const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
         unownedCardsHtml = `
-            <div class="possession-unowned-section" style="margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box;">
+            <div class="possession-unowned-section" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px; width: 100%; background: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); padding: 8px; border-radius: 8px; box-sizing: border-box;">
                 <div class="possession-unowned-title" style="font-size: 0.72rem; font-weight: 800; color: #999; text-align: left; padding-left: 8px; user-select: none;">
                     ${unownedLabel} (${unownedCards.length})
                 </div>
@@ -1017,6 +1017,8 @@ export function openPossessionModal() {
     });
 
     const showSaveOptionsModal = (onSelect) => {
+        history.pushState({ modalOpen: 'saveOptions' }, "");
+
         let optionsModal = document.createElement('div');
         optionsModal.className = 'modal';
         optionsModal.style.zIndex = '36000';
@@ -1046,23 +1048,32 @@ export function openPossessionModal() {
 
         document.body.appendChild(optionsModal);
 
-        const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
-        closeBtn.onclick = () => {
+        optionsModal.onClose = () => {
             optionsModal.remove();
             onSelect(null);
         };
-        optionsModal.querySelector('#btn-save-opt-overall').onclick = () => {
+
+        const closeOptionsModal = (result) => {
             optionsModal.remove();
-            onSelect('overall');
+            if (history.state && history.state.modalOpen === 'saveOptions') {
+                history.back();
+            }
+            onSelect(result);
+        };
+
+        const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
+        closeBtn.onclick = () => {
+            closeOptionsModal(null);
+        };
+        optionsModal.querySelector('#btn-save-opt-overall').onclick = () => {
+            closeOptionsModal('overall');
         };
         optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
-            optionsModal.remove();
-            onSelect('all');
+            closeOptionsModal('all');
         };
         optionsModal.onclick = (e) => {
             if (e.target === optionsModal) {
-                optionsModal.remove();
-                onSelect(null);
+                closeOptionsModal(null);
             }
         };
     };

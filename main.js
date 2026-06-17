@@ -396,6 +396,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 브라우저 뒤로가기 버튼 처리
     window.addEventListener('popstate', (event) => {
+        // 저장방식 선택 모달이 열려있는 경우, 저장방식 선택 모달만 닫음
+        const saveOptionsModal = document.querySelector('.possession-save-options-content')?.closest('.modal');
+        if (saveOptionsModal && saveOptionsModal.style.display !== 'none' && !saveOptionsModal.classList.contains('hidden')) {
+            if (typeof saveOptionsModal.onClose === 'function') {
+                saveOptionsModal.onClose();
+            } else {
+                saveOptionsModal.remove();
+            }
+            return;
+        }
+
         const cardModal = document.getElementById('card-modal');
         const videoModal = document.getElementById('video-modal');
         const recommendModal = document.getElementById('calc-recommend-modal');
