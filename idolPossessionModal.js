@@ -16,9 +16,9 @@ window.getGrayscaleDataUrl = function (imgEl) {
         for (let i = 0; i < data.length; i += 4) {
             // Modern BT.709 coefficients for accurate digital luma conversion
             const gray = Math.round(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
-            data[i] = Math.round(data[i] * 0.2 + gray * 0.8);
-            data[i + 1] = Math.round(data[i + 1] * 0.2 + gray * 0.8);
-            data[i + 2] = Math.round(data[i + 2] * 0.2 + gray * 0.8);
+            data[i] = Math.round(data[i] * 0.1 + gray * 0.9);
+            data[i + 1] = Math.round(data[i + 1] * 0.1 + gray * 0.9);
+            data[i + 2] = Math.round(data[i + 2] * 0.1 + gray * 0.9);
         }
         ctx.putImageData(imgData, 0, 0);
         return canvas.toDataURL('image/png');
@@ -604,7 +604,7 @@ export function openIdolPossessionModal() {
 
                 const imgStyle = isOwned
                     ? `border: 2px solid ${charColor}; filter: none; opacity: 1;`
-                    : 'border: 1px solid #ccc; filter: grayscale(80%); opacity: 0.9;';
+                    : 'border: 1px solid #ccc; filter: grayscale(90%); opacity: 0.8;';
 
                 const suffix = c.another ? '1.webp' : '2.webp';
 
@@ -643,8 +643,8 @@ export function openIdolPossessionModal() {
                         }
                     } else {
                         thumb.style.border = '1px solid #ccc';
-                        thumb.style.filter = 'grayscale(80%)';
-                        thumb.style.opacity = '0.9';
+                        thumb.style.filter = 'grayscale(90%)';
+                        thumb.style.opacity = '0.8';
                         const badge = cardBox.querySelector('.pssr-check-badge');
                         if (badge) badge.remove();
                     }
@@ -774,15 +774,15 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             if (plan === 'anomaly') planColor = '#ffb300';
 
             planRowsHtml += `
-                <div class="idol-stats-plan-col" style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 4px;">
-                    <div class="idol-stats-plan-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; color: #555;">
+                <div class="idol-stats-plan-col" data-plan="${plan}" style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 4px;">
+                    <div class="idol-stats-plan-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; color: #555; pointer-events: none;">
                         <span style="display: flex; align-items: center; gap: 4px;">
                             <img src="icons/${plan}.webp" style="width: 14px; height: 14px;">
                             <span class="idol-plan-text">${planLabel}</span>
                         </span>
-                        <span><span style="color: ${planColor};">${rate}%</span> (${s.owned}/${s.total})</span>
+                        <span><span style="color: ${planColor};">${rate}%</span> <span class="idol-stats-plan-fraction">(${s.owned}/${s.total})</span></span>
                     </div>
-                    <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden;">
+                    <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden; pointer-events: none;">
                         <div style="width: ${rate}%; height: 100%; background: ${planColor}; border-radius: 0;"></div>
                     </div>
                 </div>
@@ -844,16 +844,71 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
                 : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
 
+            // Determine dominant character for this source (category)
+            const ownedSrcCards = activeCards.filter(c => {
+                const cardSrc = c.another ? 'another' : (c.source || 'normal');
+                return cardSrc === src && !!ownedMap[c.id];
+            });
+
+            const charCounts = {};
+            CHARACTER_ORDER.forEach(charId => {
+                charCounts[charId] = 0;
+            });
+            ownedSrcCards.forEach(c => {
+                const charId = getCharacterId(c.id);
+                if (charCounts[charId] !== undefined) {
+                    charCounts[charId]++;
+                }
+            });
+
+            let maxCount = 0;
+            CHARACTER_ORDER.forEach(charId => {
+                if (charCounts[charId] > maxCount) {
+                    maxCount = charCounts[charId];
+                }
+            });
+
+            let chosenCharId = null;
+            if (maxCount > 0) {
+                const tiedChars = CHARACTER_ORDER.filter(charId => charCounts[charId] === maxCount);
+                if (firstPlaceChar && tiedChars.includes(firstPlaceChar)) {
+                    chosenCharId = firstPlaceChar;
+                } else if (state.favoriteIdol && tiedChars.includes(state.favoriteIdol)) {
+                    chosenCharId = state.favoriteIdol;
+                } else {
+                    chosenCharId = tiedChars[0];
+                }
+            }
+
+            const sourceColor = chosenCharId ? (idolColors[chosenCharId] || '#ff4d8d') : '#cbd5e1';
+
             sourceRowsHtml += `
-                <div class="idol-stats-source-row" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: bold; color: #333; gap: 10px;">
-                    <span class="idol-stats-source-label" style="width: 50px; font-weight: 800; color: #555; text-align: center; flex-shrink: 0;">${srcLabel}</span>
-                    <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden; position: relative;">
-                        <div style="width: ${rate}%; height: 100%; background: ${firstPlaceCharColor}; border-radius: 0;"></div>
+                <div class="source-stat-card" data-source="${src}">
+                    <div class="source-stat-main" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: bold; color: #333; gap: 10px; cursor: pointer; user-select: none; padding: 4px 6px; border-radius: 8px; transition: background-color 0.15s ease;">
+                        <span class="idol-stats-source-label" style="display: flex; align-items: center; justify-content: center; width: 50px; font-weight: 800; color: #555; text-align: center; flex-shrink: 0; pointer-events: none;">${srcLabel}</span>
+                        <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden; position: relative; pointer-events: none;">
+                            <div style="width: ${rate}%; height: 100%; background: ${sourceColor}; border-radius: 0;"></div>
+                        </div>
+                        <span class="idol-stats-source-val-wrap" style="display: flex; align-items: center; width: 110px; text-align: left; white-space: nowrap; flex-shrink: 0; pointer-events: none;">
+                            <span class="idol-stats-source-pct" style="font-weight: 800; color: ${sourceColor};">${rate}%</span>
+                            <span class="idol-stats-source-fraction" style="font-weight: bold; color: #777; font-size: 0.75rem; margin-left: 8px;">(${s.owned}/${s.total})</span>
+                        </span>
+                        <div class="source-chevron-btn" style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; pointer-events: none; transition: transform 0.15s ease;">
+                            <svg class="source-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: transform 0.15s ease !important;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
                     </div>
-                    <span class="idol-stats-source-val-wrap" style="width: 95px; text-align: left; white-space: nowrap; flex-shrink: 0;">
-                        <span style="font-weight: 800; color: ${firstPlaceCharColor};">${rate}%</span>
-                        <span class="idol-stats-source-fraction" style="font-weight: bold; color: #777; font-size: 0.75rem; margin-left: 4px;">(${s.owned}/${s.total})</span>
-                    </span>
+                    <div class="source-stat-details" style="display: none; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 4px; border-radius: 8px; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box; margin-top: 4px;">
+                        <!-- Owned Cards Group -->
+                        <div class="source-stat-owned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                            <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;"></div>
+                            <div class="source-stat-owned-container pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
+                        </div>
+                        <!-- Unowned Cards Group -->
+                        <div class="source-stat-unowned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                            <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;"></div>
+                            <div class="source-stat-unowned-container pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
+                        </div>
+                    </div>
                 </div>
             `;
         });
@@ -905,7 +960,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 const imgStyle = isOwned
                     ? `display: block; opacity: 1;`
-                    : `display: block; filter: grayscale(80%); -webkit-filter: grayscale(80%); opacity: 0.9;`;
+                    : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
 
                 const onloadAttr = '';
 
@@ -1025,11 +1080,41 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     border-color: #cbd5e1 !important;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
                 }
-                .char-stat-main:hover .char-chevron-btn {
-                    background: #f1f5f9;
+                .source-stat-card {
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+                    padding-top: 6px !important;
+                    padding-bottom: 6px !important;
+                    margin-bottom: 0 !important;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
                 }
-                .char-chevron-btn:hover {
-                    background: #e2e8f0 !important;
+                .source-stat-card:last-child {
+                    border-bottom: none !important;
+                }
+                .source-stat-main:hover {
+                    background-color: rgba(0, 0, 0, 0.03) !important;
+                }
+
+                .idol-stats-plan-col {
+                    padding: 8px 10px !important;
+                    border-radius: 8px !important;
+                    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+                    border: 1px solid transparent !important;
+                    cursor: pointer;
+                    user-select: none;
+                }
+                .idol-stats-plan-col:hover {
+                    background-color: rgba(0, 0, 0, 0.03) !important;
+                    border-color: rgba(0, 0, 0, 0.05) !important;
+                }
+                .idol-stats-plan-col.active {
+                    background-color: rgba(0, 0, 0, 0.06) !important;
+                    border-color: rgba(0, 0, 0, 0.1) !important;
+                }
+                #plan-stat-details .pssr-stat-icon-wrap {
+                    width: 86px !important;
+                    height: 86px !important;
                 }
                 .idol-stats-section-title {
                     margin-bottom: -10px !important;
@@ -1087,6 +1172,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         font-size: 0.5rem !important;
                         gap: 1px !important;
                     }
+                    .idol-stats-plan-fraction {
+                        font-size: 0.4rem !important;
+                    }
                     .idol-stats-plan-row span.idol-plan-text {
                         display: none !important;
                     }
@@ -1104,13 +1192,18 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         font-size: 0.5rem !important;
                     }
                     .idol-stats-source-fraction {
-                        font-size: 0.5rem !important;
+                        font-size: 0.48rem !important;
+                        margin-left: 4px !important;
                     }
                     .idol-stats-source-label {
-                        width: 30px !important;
+                        width: 35px !important;
+                        font-size: 0.6rem !important;
+                    }
+                    .idol-stats-source-pct {
+                        font-size: 0.6rem !important;
                     }
                     .idol-stats-source-val-wrap {
-                        width: 60px !important;
+                        width: 50px !important;
                     }
                     .idol-stats-bar-val {
                         font-size: 0.48rem !important;
@@ -1148,19 +1241,32 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         font-size: 0.78rem !important;
                         margin-bottom: -10px !important;
                     }
-                    .idol-stats-plan-card {
+                    .idol-stats-plan-row-container {
                         flex-wrap: nowrap !important;
                         gap: 12px !important;
-                        padding: 6px 4px !important;
                         justify-content: center !important;
+                    }
+                    .idol-stats-plan-card {
+                        padding: 6px 4px !important;
                     }
                     .idol-stats-plan-col {
                         min-width: 0 !important;
                         flex: 1 !important;
                         max-width: 80px !important;
+                        padding: 4px 6px !important;
                     }
                     .idol-stats-plan-col > div:last-child {
                         height: 8px !important;
+                    }
+                    #plan-stat-details .pssr-stat-icon-wrap {
+                        width: 39px !important;
+                        height: 39px !important;
+                    }
+                    #plan-stat-details {
+                        padding: 8px 2px !important;
+                    }
+                    #plan-stat-details .pssr-stat-icons-container {
+                        padding: 0 !important;
                     }
                 }
             </style>
@@ -1188,15 +1294,29 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     <img src="icons/${highestPlan}.webp" style="width: 15px; height: 15px; object-fit: contain; flex-shrink: 0;">
                     <span>${text.plan_stats}</span>
                 </div>
-                <div class="possession-section-card idol-stats-plan-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 16px 18px; display: flex; gap: 16px; flex-wrap: wrap;">
-                    ${planRowsHtml}
+                <div class="possession-section-card idol-stats-plan-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px;">
+                    <div class="idol-stats-plan-row-container" style="display: flex; gap: 16px; flex-wrap: wrap; width: 100%;">
+                        ${planRowsHtml}
+                    </div>
+                    <div id="plan-stat-details" style="display: none; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 4px; border-radius: 8px; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
+                        <!-- Owned Cards Group -->
+                        <div id="plan-stat-owned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                            <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;"></div>
+                            <div id="plan-stat-owned-container" class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
+                        </div>
+                        <!-- Unowned Cards Group -->
+                        <div id="plan-stat-unowned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                            <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;"></div>
+                            <div id="plan-stat-unowned-container" class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="pssr-source-stats-label" class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
                     <img src="icons/train.webp" style="width: 15px; height: 15px; object-fit: contain; flex-shrink: 0;">
                     <span>${text.source_stats}</span>
                 </div>
-                <div class="possession-section-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+                <div class="possession-section-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 10px 18px; display: flex; flex-direction: column; gap: 0;">
                     ${sourceRowsHtml}
                 </div>
 
@@ -1221,8 +1341,208 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         }
     }
 
-    // Register character list click delegator for collapsible details
+    // Register click delegator for collapsible details (character cards & plan cards)
     scrollArea.addEventListener('click', (e) => {
+        const sourceCard = e.target.closest('.source-stat-card');
+        if (sourceCard) {
+            const mainRow = e.target.closest('.source-stat-main');
+            if (mainRow) {
+                const detailsDiv = sourceCard.querySelector('.source-stat-details');
+                const chevron = sourceCard.querySelector('.source-chevron');
+                if (detailsDiv) {
+                    const isHidden = detailsDiv.style.display === 'none';
+                    if (isHidden) {
+                        const src = sourceCard.dataset.source;
+                        const includeAnother = scrollArea.querySelector('#chk-include-another')?.checked || false;
+                        const activeCards = includeAnother ? pssrCards : pssrCards.filter(c => !c.another);
+
+                        const sourceCards = activeCards.filter(c => {
+                            const cardSrc = c.another ? 'another' : (c.source || 'normal');
+                            return cardSrc === src;
+                        });
+
+                        const ownedCards = sourceCards.filter(c => !!ownedMap[c.id]);
+                        const unownedCards = sourceCards.filter(c => !ownedMap[c.id]);
+
+                        const sortFn = (a, b) => {
+                            const charA = getCharacterId(a.id);
+                            const charB = getCharacterId(b.id);
+                            const idxA = CHARACTER_ORDER.indexOf(charA);
+                            const idxB = CHARACTER_ORDER.indexOf(charB);
+                            if (idxA !== idxB) return idxA - idxB;
+                            const dateA = a.releasedAt || '1970-01-01';
+                            const dateB = b.releasedAt || '1970-01-01';
+                            if (dateA !== dateB) {
+                                return dateA.localeCompare(dateB);
+                            }
+                            return a.id.localeCompare(b.id);
+                        };
+                        ownedCards.sort(sortFn);
+                        unownedCards.sort(sortFn);
+
+                        const buildIconsHtml = (cardsList, isOwnedList) => {
+                            let html = '';
+                            cardsList.forEach(c => {
+                                const suffix = c.another ? '1.webp' : '2.webp';
+                                const cardName = getLocalizedCardName(c, lang);
+                                const charId = getCharacterId(c.id);
+                                const charColor = idolColors[charId] || '#cbd5e1';
+
+                                const containerStyle = isOwnedList
+                                    ? `border: 1.5px solid ${charColor};`
+                                    : `border: 1px solid #ccc;`;
+
+                                const imgStyle = isOwnedList
+                                    ? `display: block; opacity: 1;`
+                                    : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+
+                                html += `
+                                    <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                    </div>
+                                `;
+                            });
+                            return html;
+                        };
+
+                        const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
+                        const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
+                        const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
+                        const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
+
+                        const isJa = lang === 'ja';
+                        const isEn = lang === 'en';
+                        const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
+                        const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+
+                        if (ownedCards.length > 0) {
+                            ownedGroup.style.display = 'flex';
+                            ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
+                            ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+                        } else {
+                            ownedGroup.style.display = 'none';
+                        }
+
+                        if (unownedCards.length > 0) {
+                            unownedGroup.style.display = 'flex';
+                            unownedGroup.style.borderTop = ownedCards.length > 0 ? '1px solid #e2e8f0' : 'none';
+                            unownedGroup.style.paddingTop = ownedCards.length > 0 ? '12px' : '0';
+                            unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
+                            unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+                        } else {
+                            unownedGroup.style.display = 'none';
+                        }
+                    }
+
+                    detailsDiv.style.display = isHidden ? 'flex' : 'none';
+                    if (chevron) {
+                        chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+                    }
+                }
+            }
+            return;
+        }
+
+        const planCol = e.target.closest('.idol-stats-plan-col');
+        if (planCol) {
+            const plan = planCol.dataset.plan;
+            const detailsDiv = scrollArea.querySelector('#plan-stat-details');
+            if (detailsDiv) {
+                const currentPlan = detailsDiv.dataset.activePlan;
+                const isCurrentlyActive = currentPlan === plan && detailsDiv.style.display !== 'none';
+
+                scrollArea.querySelectorAll('.idol-stats-plan-col').forEach(col => {
+                    col.classList.remove('active');
+                });
+
+                if (isCurrentlyActive) {
+                    detailsDiv.style.display = 'none';
+                    detailsDiv.dataset.activePlan = '';
+                } else {
+                    const includeAnother = scrollArea.querySelector('#chk-include-another')?.checked || false;
+                    const activeCards = includeAnother ? pssrCards : pssrCards.filter(c => !c.another);
+
+                    const planCards = activeCards.filter(c => (c.plan || 'sense') === plan);
+                    const ownedCards = planCards.filter(c => !!ownedMap[c.id]);
+                    const unownedCards = planCards.filter(c => !ownedMap[c.id]);
+
+                    const sortFn = (a, b) => {
+                        const charA = getCharacterId(a.id);
+                        const charB = getCharacterId(b.id);
+                        const idxA = CHARACTER_ORDER.indexOf(charA);
+                        const idxB = CHARACTER_ORDER.indexOf(charB);
+                        if (idxA !== idxB) return idxA - idxB;
+                        const dateA = a.releasedAt || '1970-01-01';
+                        const dateB = b.releasedAt || '1970-01-01';
+                        if (dateA !== dateB) {
+                            return dateA.localeCompare(dateB);
+                        }
+                        return a.id.localeCompare(b.id);
+                    };
+                    ownedCards.sort(sortFn);
+                    unownedCards.sort(sortFn);
+
+                    const buildIconsHtml = (cardsList, isOwnedList) => {
+                        let html = '';
+                        cardsList.forEach(c => {
+                            const suffix = c.another ? '1.webp' : '2.webp';
+                            const cardName = getLocalizedCardName(c, lang);
+                            const charId = getCharacterId(c.id);
+                            const charColor = idolColors[charId] || '#cbd5e1';
+
+                            const containerStyle = isOwnedList
+                                ? `border: 1.5px solid ${charColor};`
+                                : `border: 1px solid #ccc;`;
+
+                            const imgStyle = isOwnedList
+                                ? `display: block; opacity: 1;`
+                                : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+
+                            html += `
+                                <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                                    <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                </div>
+                            `;
+                        });
+                        return html;
+                    };
+
+                    const ownedContainer = detailsDiv.querySelector('#plan-stat-owned-container');
+                    const unownedContainer = detailsDiv.querySelector('#plan-stat-unowned-container');
+                    const ownedGroup = detailsDiv.querySelector('#plan-stat-owned-group');
+                    const unownedGroup = detailsDiv.querySelector('#plan-stat-unowned-group');
+
+                    const isJa = lang === 'ja';
+                    const isEn = lang === 'en';
+                    const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
+                    const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+
+                    if (ownedCards.length > 0) {
+                        ownedGroup.style.display = 'flex';
+                        ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
+                        ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+                    } else {
+                        ownedGroup.style.display = 'none';
+                    }
+
+                    if (unownedCards.length > 0) {
+                        unownedGroup.style.display = 'flex';
+                        unownedGroup.style.borderTop = ownedCards.length > 0 ? '1px solid #e2e8f0' : 'none';
+                        unownedGroup.style.paddingTop = ownedCards.length > 0 ? '12px' : '0';
+                        unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
+                        unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+                    } else {
+                        unownedGroup.style.display = 'none';
+                    }
+
+                    detailsDiv.style.display = 'flex';
+                    detailsDiv.dataset.activePlan = plan;
+                    planCol.classList.add('active');
+                }
+            }
+            return;
+        }
+
         const charCard = e.target.closest('.char-stat-card');
         if (charCard) {
             const mainRow = e.target.closest('.char-stat-main');
@@ -1276,7 +1596,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
             const origImgSrcs = [];
             statImgs.forEach(img => {
-                const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
+                const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
                 if (isUnowned) {
                     origImgSrcs.push({ img: img, src: img.src });
                     if (window.getGrayscaleDataUrl) {

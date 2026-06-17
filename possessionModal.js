@@ -304,7 +304,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         cards.forEach(c => {
             const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
             const imgStyle = c.isDeactivated
-                ? 'filter: grayscale(80%); opacity: 0.9; border: 1px dashed #ccc;'
+                ? 'filter: grayscale(90%); opacity: 0.8; border: 1px dashed #ccc;'
                 : '';
 
             cardImgsHtml += `
@@ -344,7 +344,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
                      style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 6px; overflow: hidden; background: #f0f0f0; border: 1px solid #ddd; box-sizing: border-box;">
                     <img src="${imgSrc}" 
                          onerror="this.src='icons/card.png';" 
-                         style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(80%); opacity: 0.9;">
+                         style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(90%); opacity: 0.8;">
                 </div>
             `;
         });
