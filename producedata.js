@@ -201,7 +201,28 @@ export const produceList = [
     { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
-    { id: "ssrsumika_2nd", name: "숨겼던 나", name_en: "Two Sides Of The Same Me", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2 },
+    {
+        id: "ssrsumika_2nd", name: "숨겼던 나", name_en: "Two Sides Of The Same Me", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2,
+        item: {
+            name: "敗れ知らずのポイ",
+            desc: "턴 개시 시 레슨 중 얻은 누계 전력치가 5이상일 경우\n✦ fullpower5\n✦ 踏切の先に를 보류로 이동\n✦ inlesson1",
+            desc_ja: "ターン開始時、このレッスン中の累計全力値が5以上の場合、\n✦ fullpower5\n✦ 踏切の先にを保留に移動\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 시 레슨 중 얻은 누계 전력치가 5이상일 경우\n✦ fullpower8\n✦ 踏切の先に를 보류로 이동\n✦ inlesson1",
+            desc_ja: "ターン開始時、このレッスン中の累計全力値が5以上の場合、\n✦ fullpower8\n✦ 踏切の先にを保留に移動\n✦ inlesson1",
+        },
+        card: {
+            name: "踏切の先に",
+            desc: "지침이 전력일 경우 사용 가능\n✦ param10 (3회) \n✦ 다음 턴, 온존 2단계로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "全力の場合、使用可\n✦ param10（3回） \n✦ 次のターン、温存2段階目に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+
+        },
+        cardplus: {
+            desc: "지침이 전력일 경우 사용 가능\n✦ param16 (3회) \n✦ 다음 턴, 온존 2단계로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "全力の場合、使用可\n✦ param16（3回） \n✦ 次のターン、温存2段階目に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
     {
         id: "ssrsumika_3rd", name: "Love & Joy", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-06-19", jumpTime2: 8.6, youtube_url: "https://youtu.be/YzBr_c61TsU?si=tVarpAMm8HEV5kU1",
         item: {
@@ -610,7 +631,46 @@ export const produceList = [
 
 
     // --- 세나 SSR (PSSR) ---
-    { id: "ssrsena_1st", name: "작은 야망", name_en: "Tiny Ambition", name_ja: "ちいさな野望", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.4, releasedAt: "2024-11-16", youtube_url: "https://youtu.be/UwA_4TafA_g?si=XjElH7VzQHnl7TGi" },
+    {
+        id: "ssrsena_1st", name: "작은 야망", name_en: "Tiny Ambition", name_ja: "ちいさな野望", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.4, releasedAt: "2024-11-16", youtube_url: "https://youtu.be/UwA_4TafA_g?si=XjElH7VzQHnl7TGi",
+        item: {
+            name: "新しい、私",
+            desc: "액티브 스킬카드 사용 후 \n✦ param8\n✦ 체력회복 4\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用後、\n✦ param8\n✦ 体力回復4\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "액티브 스킬카드 사용 후 \n✦ param12\n✦ 체력회복 6\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用後、\n✦ param12\n✦ 体力回復6\n✦ inlesson1",
+        },
+        card: {
+            name: "一番高い星",
+            desc: "✦ 강기로 지침 변경\n✦ param3 (2회) \n✦ 성장 : 강기효과의 스킬카드 사용 후 자신의 파라미터치 증가+10・코스트 수치 증가+1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param3（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+10・コスト値増加+1（2回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+
+        },
+        cardplus: {
+            desc: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기효과의 스킬카드 사용 후 자신의 파라미터치 증가+15・코스트 수치 증가+1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param6（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+15・コスト値増加+1（2回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardcustom: {
+            custom1: {
+                name: { ko: "성장 변경", ja: "成長変更" },
+                cost: "100",
+                desc: {
+                    ko: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기효과의 스킬카드 사용 후 자신의 파라미터치 증가+15・코스트 수치 증가+1・plusattack1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "✦ 強気に変更\n✦ param6（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+15・コスト値増加+1・plusattack1（2回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            },
+            custom2: {
+                name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+                cost: "100",
+                desc: {
+                    ko: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기효과의 스킬카드 사용 후 자신의 파라미터치 증가+15・코스트 수치 증가+1 (최대 2회)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "✦ 強気に変更\n✦ param6（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+15・コスト値増加+1（2回まで）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                }
+            }
+        },
+    },
     { id: "ssrsena_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.0, releasedAt: "2025-02-28", another: true },
     { id: "ssrsena_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 8.2, releasedAt: "2025-04-11", another: true },
     { id: "ssrsena_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", jumpTime2: 6.3, rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-09", another: true },
@@ -1500,7 +1560,27 @@ export const produceList = [
             desc_ja: "hpreduce4\n✦ fullpower10\n✦ 山札か捨札にあるスキルカードを2枚選択し、保留に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
-    { id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz" },
+    {
+        id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
+        item: {
+            name: "世界を救ったマイク",
+            desc: "집중효과의 스킬카드 사용 후\n✦ 소비 체력 감소 2턴\n✦ inlesson2",
+            desc_ja: "集中効果のスキルカード使用後、\n✦ 消費体力減少2ターン\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "집중효과의 스킬카드 사용 후\n✦ 소비 체력 감소 2턴\n✦ inlesson3",
+            desc_ja: "集中効果のスキルカード使用後、\n✦ 消費体力減少2ターン\n✦ inlesson3",
+        },
+        card: {
+            name: "希望が届くまで",
+            desc: "✦ param7 (집중효과 2배 적용)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param7（集中効果を2倍適用）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param17 (집중효과 2배 적용)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param17（集中効果を2倍適用）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
@@ -1767,7 +1847,27 @@ export const produceList = [
             desc_ja: "✦ genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+8）\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
-    { id: "ssrmisuzu_starmineunit", name: "Star-mine", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 11.0, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ" },
+    {
+        id: "ssrmisuzu_starmineunit", name: "Star-mine", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 11.0, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
+        item: {
+            name: "夜闇の星",
+            desc: "4번째 턴 개시 시 \n✦ 호조 증가량 증가+50% (4턴)\n✦ inlesson1",
+            desc_ja: "4ターン目開始時、\n✦ 好調増加量増加+50%（4ターン）\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "4번째 턴 개시 시 \n✦ 호조 증가량 증가+50% (5턴)\n✦ inlesson1",
+            desc_ja: "4ターン目開始時、\n✦ 好調増加量増加+50%（5ターン）\n✦ inlesson1",
+        },
+        card: {
+            name: "朝が満たすまで",
+            desc: "✦ 호조소비 2턴\n✦ concentration3\n✦ 3턴 후, 호조 5턴\n✦ 4턴 후, use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 好調消費2ターン\n✦ concentration3\n✦ 3ターン後、好調5ターン\n✦ 4ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 호조소비 2턴\n✦ concentration5\n✦ 3턴 후, 호조 7턴\n✦ 4턴 후, use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 好調消費2ターン\n✦ concentration5\n✦ 3ターン後、好調7ターン\n✦ 4ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrsaki_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "motivation", rarity: "PSSR", releasedAt: "2025-05-01", plan: "logic", source: "limited_u", jumpTime2: 10.1, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
         item: {
@@ -1788,7 +1888,27 @@ export const produceList = [
             desc_ja: "✦ やる気1.5倍\n✦ 低下状態回復2\n✦ 次のターン、genki8\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
-    { id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", jumpTime2: 10.2, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu" },
+    {
+        id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", jumpTime2: 10.2, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
+        item: {
+            name: "雨上がりの女神",
+            desc: "턴 개시 시\n✦ use1\n✦ genki5\n✦ 졸음 카드를 덱의 맨 위에 생성\n✦ inlesson5",
+            desc_ja: "ターン開始時、\n✦ use1\n✦ genki5\n✦ 眠きを山札の1番上に生成\n✦ inlesson5",
+        },
+        itemplus: {
+            desc: "턴 개시 시\n✦ use1\n✦ genki6\n✦ 졸음 카드를 덱의 맨 위에 생성\n✦ inlesson5",
+            desc_ja: "ターン開始時、\n✦ use1\n✦ genki6\n✦ 眠きを山札の1番上に生成\n✦ inlesson5",
+        },
+        card: {
+            name: "希望が届くまで",
+            desc: "✦ 以降、スキルカードが除外に移動した時、goodcondition2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 以降、スキルカードが除外に移動した時、goodcondition2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 以降、スキルカードが除外に移動した時、goodcondition2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 以降、スキルカードが除外に移動した時、goodcondition2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     {
         id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-01", plan: "anomaly", source: "limited_u", jumpTime2: 9.4, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
         item: {
