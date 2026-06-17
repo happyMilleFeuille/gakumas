@@ -172,6 +172,7 @@ export const produceList = [
     {
         id: "ssrchina_3rd", name: "하늘과 약속", name_en: "A Tiny Brave Promise", osusume: "goodcondition", name_ja: "空と約束", rarity: "PSSR", plan: "sense", releasedAt: "2025-10-21", source: "normal", jumpTime2: 9.0, youtube_url: "https://youtu.be/WxFmsuy4nrM?si=AD1GxXNrDtL2AG29",
         item: {
+            name: "届けたい想い",
             desc: "남은 턴이 3턴 이내일 때 턴 개시 시 \n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드 (SSR)를 손패로 이동\n✦ 호조의 20%만큼 집중 증가\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "残り3ターン以内のターン開始時、\n✦ ランダムな山札か捨札にあるスキルカード（SSR）を手札に移動\n✦ 好調の20%分集中増加\n✦ hpreduce1\n✦ inlesson3",
         },
@@ -231,6 +232,7 @@ export const produceList = [
     {
         id: "ssrsumika_3rd", name: "Love & Joy", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-06-19", jumpTime2: 8.6, youtube_url: "https://youtu.be/YzBr_c61TsU?si=tVarpAMm8HEV5kU1",
         item: {
+            name: "あの日の約束",
             desc: "액티브카드를 2회 사용할 때마다\n✦ 집중 증가량 증가+25% (5턴)\n✦ inlesson2",
             desc_ja: "アクティブスキルカードを2回使用するごとに、\n✦ 集中増加量増加+25%（5ターン）\n✦ inlesson2",
         },
@@ -290,6 +292,7 @@ export const produceList = [
     {
         id: "ssrmao_3rd", name: "봐줘", name_en: "Face Me", name_ja: "見て", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2025-10-31", jumpTime2: 11.2, youtube_url: "https://youtu.be/nKO8cTM9jrI?si=5zmdnmkquuK_IEQg",
         item: {
+            name: "水も滴る王子様",
             desc: "액티브 카드 사용 시 \n✦ 집중의 50%만큼 호조 증가\n✦ concentration1\n✦ inlesson1",
             desc_ja: "アクティブスキルカード使用時、\n✦ 集中の50%好調増加\n✦ concentration1\n✦ inlesson1",
         },
@@ -366,6 +369,7 @@ export const produceList = [
     {
         id: "ssrkotone_3rd", name: "자기긍정감 떡상↑↑ 슈키슈키송", name_en: "Self-affirmation Explosion! Love Love Song", osusume: "concentration", name_ja: "自己肯定感爆上げ↑↑しゅきしゅきソング", releasedAt: "2025-08-12", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 8.1, youtube_url: "https://youtu.be/WCDLyXJgbIo?si=sUASzokNaAkg68Ho",
         item: {
+            name: "しゅきしゅきはーと",
             desc: "멘탈카드 사용 후 집중이 13이상일 경우, \n✦ genki2\n✦ 다음에 사용하는 멘탈카드의 효과를 1번 더 발동 (1회・1턴)\n✦ draw1\n✦ use1\n✦ inlesson1",
             desc_ja: "メンタルスキルカード使用後、集中が13以上の場合、\n✦ genki2\n✦ 次に使用するメンタルスキルカードの効果をもう1回発動（1回・1ターン）\n✦ draw1\n✦ use1\n✦ inlesson1",
         },
@@ -996,6 +1000,7 @@ export const produceList = [
     {
         id: "ssrtsubame_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.5, releasedAt: "2025-12-26",
         item: {
+            name: "あの頃憧れたヒーロー",
             desc: "出演計画 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
             desc_ja: "出演計画使用時、\n✦ use1\n✦ 除外にあるダークヒーローの誕生を手札に移動\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
             referimage: ["sense-sr11"]
@@ -1015,7 +1020,29 @@ export const produceList = [
             desc_ja: "startingcard\n✦ パラメータ上昇量増加10%\n✦ 最終ターンのターン終了時、param50（好調効果を2倍適用） \n<span style = 'color:#8B8FD8'>nooverlab limit1",
         }
     },
-    { id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2025-01-02" },
+    {
+        id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2025-01-02",
+        item: {
+            name: "いつかの小さな星",
+            desc: "ファンサ 사용 후\n✦ 턴 추가+1\n✦ goodconditionz2\n✦ hpreduce3\n✦ inlesson2",
+            desc_ja: "ファンサ使用後、\n✦ ターン追加+1\n✦ goodconditionz2\n✦ hpreduce3\n✦ inlesson2",
+            referimage: ["sense-r4"]
+        },
+        itemplus: {
+            desc: "ファンサ 사용 후\n✦ 턴 추가+1\n✦ goodconditionz3\n✦ hpreduce2\n✦ inlesson2",
+            desc_ja: "ファンサ使用後、\n✦ ターン追加+1\n✦ goodconditionz3\n✦ hpreduce2\n✦ inlesson2",
+            referimage: ["sense-r4"]
+        },
+        card: {
+            name: "夢はまだ続く",
+            desc: "호조상태일 경우 사용 가능 \n✦ 호조의 100%만큼 파라미터 상승\n✦ goodcondition1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "好調状態の場合、使用可 \n✦ 好調の100%分パラメータ上昇\n✦ goodcondition1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        cardplus: {
+            desc: "호조상태일 경우 사용 가능 \n✦ 호조의 150%만큼 파라미터 상승\n✦ goodcondition3\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "好調状態の場合、使用可 \n✦ 好調の150%分パラメータ上昇\n✦ goodcondition3\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
+        },
+    },
     {
         id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-06-30",
         item: {
@@ -1039,8 +1066,52 @@ export const produceList = [
             desc_ja: "hpreduce2\n✦ motivation3\n✦ 次のターン、genki3\n✦ 以降、直接効果で元気が30以上増加後、元気の30%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
-    { id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2024-12-26" },
-    { id: "ssrtemari_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26" },
+    {
+        id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2024-12-26",
+        item: {
+            name: "向き合う覚悟",
+            desc: "軽い足取り사용 후\n✦ goodcondition1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "軽い足取り使用後、\n✦ goodcondition1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            referimage: ["sense-r1"]
+        },
+        itemplus: {
+            desc: "軽い足取り사용 후\n✦ goodcondition2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "軽い足取り使用後、\n✦ goodcondition2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            referimage: ["sense-r1"]
+        },
+        card: {
+            name: "これまでもこれからも",
+            desc: "호조가 4턴 이상일 경우 사용 가능\n✦ param40 (호조효과 2.5배 적용)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "好調が4ターン以上の場合、使用可\n✦ param40（好調効果を2.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        cardplus: {
+            desc: "호조가 4턴 이상일 경우 사용 가능\n✦ param55 (호조효과 3배 적용)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "好調が4ターン以上の場合、使用可\n✦ param55（好調効果を3倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+        },
+    },
+    {
+        id: "ssrtemari_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
+        item: {
+            name: "いつかの小さな星",
+            desc: "勢い任せ 사용 후\n✦ concentration1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "勢い任せ使用後、\n✦ concentration1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            referimage: ["sense-r5"]
+        },
+        itemplus: {
+            desc: "勢い任せ 사용 후\n✦ concentration2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "勢い任せ使用後、\n✦ concentration2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            referimage: ["sense-r5"]
+        },
+        card: {
+            name: "嫌いな自分にバイバイ",
+            desc: "✦ concentration5\n✦ 마지막 턴 종료 시 param15 (집중효과 2.5배 적용)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ concentration5\n✦ 最終ターンのターン終了時、param15（集中効果を2.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        cardplus: {
+            desc: "✦ concentration7\n✦ 마지막 턴 종료 시 param15 (집중효과 2.5배 적용)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ concentration7\n✦ 最終ターンのターン終了時、param15（集中効果を2.5倍適用）\n <span style='color:#8B8FD8'>nooverlab",
+        },
+    },
     {
         id: "ssrkotone_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
         item: {
@@ -1087,7 +1158,29 @@ export const produceList = [
             desc_ja: "✦ 温存2段階目に変更\n✦ スターライトのplusattack1 \n✦ 山札か捨札にあるスターライト+1枚を手札に移動\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
-    { id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 9.1, releasedAt: "2025-01-16" },
+    {
+        id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 9.1, releasedAt: "2025-01-16",
+        item: {
+            name: "いつか見た夢",
+            desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce3\n✦ 이후 3턴 동안 턴 개시 시 concentration3\n✦ inlesson2",
+            desc_ja: "準備運動使用後、\n✦ concentration1\n✦ hpreduce3\n✦ 以降の3ターンの間、ターン開始時、concentration3\n✦ inlesson2",
+            referimage: ["sense-r3"]
+        },
+        itemplus: {
+            desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce1\n✦ 이후 3턴 동안 턴 개시 시 concentration3\n✦ inlesson2",
+            desc_ja: "準備運動使用後、\n✦ concentration1\n✦ hpreduce1\n✦ 以降の3ターンの間、ターン開始時、concentration3\n✦ inlesson2",
+            referimage: ["sense-r3"]
+        },
+        card: {
+            name: "いつか見た景色",
+            desc: "집중이 6이상일 경우 사용 가능 \n✦ 집중 1.3배\n✦ 다음 턴, param9 (3회・집중효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "集中が6以上の場合、使用可 \n✦ 集中1.3倍\n✦ 次のターン、param9（3回・集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "집중이 6이상일 경우 사용 가능 \n✦ 집중 1.5배\n✦ 다음 턴, param9 (3회・집중효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "集中が6以上の場合、使用可 \n✦ 集中1.5倍\n✦ 次のターン、param9（3回・集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
     {
         id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-16",
         item: {
@@ -1190,6 +1283,7 @@ export const produceList = [
     {
         id: "ssrrinami_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "goodcondition", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.6, plan: "sense", source: "limited_f", releasedAt: "2026-05-16",
         item: {
+            name: "憧れ続けた輝き",
             desc: "호조가 8턴 이상인 경우 호조 카드를 4회 사용할 때마다\n✦ goodconditionz1\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson5",
             desc_ja: "好調が8ターン以上の場合、好調効果のスキルカードを4回使用するごとに、\n✦ goodconditionz1\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson5",
         },
@@ -1219,6 +1313,7 @@ export const produceList = [
     {
         id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
         item: {
+            name: "すべてを賭けた輝き",
             desc: "아이돌 고유 스킬카드 사용 후 현재 체력이 80% 이상인 경우\n✦ 소비체력 절감 1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
             desc_ja: "アイドル固有スキルカード使用後、体力が80%以上の場合、\n✦ 消費体力削減1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
         },
@@ -1562,6 +1657,7 @@ export const produceList = [
     {
         id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
+            name: "Pっち",
             desc: "집중이 8이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
             desc_ja: "集中が8以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
         },
@@ -1754,6 +1850,7 @@ export const produceList = [
     {
         id: "ssrkotone_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodcondition", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
+            name: "フレフレあたし！",
             desc: "액티브 카드 사용 후 절호조 상태일 경우, \n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、絶好調状態の場合、\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson2",
         },
@@ -1816,6 +1913,7 @@ export const produceList = [
     {
         id: "ssrume_endlesslimited", name: "ENDLESS DANCE", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
+            name: "知らない世界へ",
             desc: "집중효과의 스킬카드를 3회 사용할 때마다\n✦ 제외패에 있는 스킬카드 2장 당 concentration1",
             desc_ja: "集中効果のスキルカードを3回使用するごとに、\n✦ 除外にあるスキルカード2枚につきconcentration1",
         },
@@ -1986,6 +2084,7 @@ export const produceList = [
     {
         id: "ssrchina_michinaruunit", name: "미지로 펼쳐지는", name_en: "Unknown Unbound", name_ja: "みちなるひろがる", osusume: "concentration", releasedAt: "2026-01-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.2, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO",
         item: {
+            name: "ひろがる未来へ",
             desc: "스킬카드 코스트로 강화상태를 소비했을 때 호조가 3턴 이상인 경우\n✦ concentration2\n✦ 다음 턴, draw1\n✦ 호조소비 1",
             desc_ja: "スキルカードコストで強化状態を消費した時、好調が3ターン以上の場合、\n✦ concentration2\n✦ 次のターン、draw1\n✦ 好調消費1",
         },
@@ -2027,6 +2126,7 @@ export const produceList = [
     {
         id: "ssrlilja_dokimekiunit", name: "두근두근 이모션", name_en: "Tokimeki Emotion", name_ja: "どきめきエモーション", osusume: "goodcondition", releasedAt: "2026-04-01", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-",
         item: {
+            name: "わたしたちの約束",
             desc: "직접효과로 호조가 7이상 증가했을 시 집중이 13이상인 경우,\n✦ 집중의 75%만큼 호조를 증가시키고 집중을 절반으로 감소\n✦ goodconditionz1\n✦ genki2",
             desc_ja: "直接効果で好調が7以上増加後、集中が13以上の場合、\n✦ 集中の75%分好調増加させ、集中を半分にする\n✦ goodconditionz1\n✦ genki2",
         },
