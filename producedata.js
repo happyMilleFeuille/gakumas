@@ -2622,6 +2622,7 @@ export const produceList = [
     {
         id: "srrinami_1sr", name: "『나다움』의 시작", name_en: "The Beginning of \"Being Myself\"", name_ja: "『私らしさ』のはじまり", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "君への差し入れ",
             desc: "턴 개시 시 집중이 5이상일 경우 \n✦ 체력 회복 2\n✦ inlesson3",
             desc_ja: "ターン開始時、集中が5以上の場合、\n✦ 体力回復2\n✦ inlesson3",
         },
@@ -2642,6 +2643,7 @@ export const produceList = [
     {
         id: "srchina_1sr", name: "가슴을 펴고 한걸음씩", name_en: "Chest Out, One Step at a Time", name_ja: "胸を張って一歩ずつ", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "しょげないハンカチ",
             desc: "액티브 스킬 사용 후 \n✦ 원기의 60%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、\n✦ 元気の60%分パラメータ上昇\n✦ hpreduce2\n✦ inlesson2",
         },
@@ -2662,6 +2664,7 @@ export const produceList = [
     {
         id: "srtsubame_1sr", name: "초지관철", name_en: "Stay True to My First Resolve", name_ja: "初志貫徹", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2025-11-16",
         item: {
+            name: "一筆入魂",
             desc: "직접효과로 의욕이 증가 후 호인상이 6이상일 경우 \n✦ 프라이드 (2턴)\n✦ motivation4\n✦ inlesson1",
             desc_ja: "直接効果でやる気が増加後、好印象が6以上の場合、\n✦ プライド（2ターン）\n✦ motivation4\n✦ inlesson1",
         },
@@ -2682,6 +2685,7 @@ export const produceList = [
     {
         id: "srsena_1sr", name: "첫 번째 별", name_en: "First Star", name_ja: "一番星", osusume: "fullpower", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2024-11-16",
         item: {
+            name: "みんなの憧れ",
             desc: "스킬카드 사용 시 지침이 전력일 경우\n✦ param9\n✦ genki9\n✦ inlesson1",
             desc_ja: "スキルカード使用時、全力の場合、\n✦ param9\n✦ genki9\n✦ inlesson1",
         },
@@ -2702,6 +2706,7 @@ export const produceList = [
     {
         id: "srume_1sr", name: "아이돌 시작!", name_en: "Starting Out as an Idol!", name_ja: "アイドル、はじめっ!", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "柴犬ポシェット",
             desc: "2턴마다 \n✦ genki5\n✦ inlesson2",
             desc_ja: "2ターンごとに、\n✦ genki5\n✦ inlesson2",
         },
@@ -2722,6 +2727,7 @@ export const produceList = [
     {
         id: "srmisuzu_1sr", name: "느긋하게, 한 걸음씩", name_en: "Slowly, One Step at a Time", name_ja: "ゆっくり、一歩ずつ", osusume: "preservation", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16",
         item: {
+            name: "そよ風に揺れる髪飾り",
             desc: " 액티브카드 사용 후 \n✦ 온존으로 지침 변경\n✦ 강기효과의 스킬카드의 파라미터 수치 증가+3\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、\n✦ 温存に変更\n✦ 強気効果のスキルカードのパラメータ値増加+3\n✦ hpreduce2\n✦ inlesson2",
         },
@@ -2742,6 +2748,7 @@ export const produceList = [
     {
         id: "srhiro_1sr", name: "가장 적성에 안맞는 일", name_en: "The Thing I'm Least Suited For", name_ja: "一番向いてないこと", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "だれでもわかる入門書",
             desc: "턴 개시 시 원기가 7이상인 경우\n✦ motivation5\n✦ inlesson1",
             desc_ja: "ターン開始時、元気が7以上の場合、\n✦ motivation5\n✦ inlesson1",
         },
@@ -2762,6 +2769,7 @@ export const produceList = [
     {
         id: "srlilja_1sr", name: "한 발 내딛은 앞에는", name_en: "Beyond That First Step", name_ja: "一つ踏み出した先に", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "思い出ロボ",
             desc: "턴 개시 시 체력이 50% 이상인 경우\n✦ goodimpression3\n✦ inlesson1",
             desc_ja: "ターン開始時、体力が50%以上の場合、\n✦ goodimpression3\n✦ inlesson1",
         },
@@ -2782,6 +2790,7 @@ export const produceList = [
     {
         id: "srmao_1sr", name: "시작은 멋있게", name_en: "A Cool Start", name_ja: "はじまりはカッコよく", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "Dearリトルプリンス",
             desc: "직접효과로 호조 증가 후 \n✦ goodcondition3\n✦ inlesson1",
             desc_ja: "直接効果で好調が増加後、\n✦ goodcondition3\n✦ inlesson1",
         },
@@ -2802,6 +2811,7 @@ export const produceList = [
     {
         id: "srkotone_1sr", name: "귀여움♡시작했어요", name_en: "Started Being Cute♡", name_ja: "カワイイ♡はじめました", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "お気にのスニーカー",
             desc: "턴 종료 시 원기가 7이상인 경우\n✦ goodimpression4\n✦ inlesson1",
             desc_ja: "ターン終了時、元気が7以上の場合、\n✦ goodimpression4\n✦ inlesson1",
         },
@@ -2822,6 +2832,7 @@ export const produceList = [
     {
         id: "srsumika_1sr", name: "꿈을 향한 리스타트", name_en: "Restart Towards Her Dreams", name_ja: "夢へのリスタート", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "放課後のらくがき",
             desc: "직접효과로 집중 증가 후 체력이 50%이상인 경우 \n✦ concentration2\n✦ inlesson2",
             desc_ja: "直接効果で集中が増加後、体力が50%以上の場合、\n✦ concentration2\n✦ inlesson2",
         },
@@ -2842,6 +2853,7 @@ export const produceList = [
     {
         id: "srtemari_1sr", name: "한마리의 늑대", name_en: "A Lone Wolf", name_ja: "一匹狼", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "私の「初」の楽譜",
             desc: "턴 개시 시 원기가 0일 경우\n✦ hpreduce1\n✦ concentration3\n✦ inlesson2",
             desc_ja: "ターン開始時、元気が0の場合、\n✦ hpreduce1\n✦ concentration3\n✦ inlesson2",
         },
@@ -2862,6 +2874,7 @@ export const produceList = [
     {
         id: "srsaki_1sr", name: "내가 1번!", name_en: "I'm Number One!", name_ja: "わたしが一番!", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
+            name: "咲季の完全食レシピ",
             desc: "턴 개시 시 호조상태일 경우\n✦ genki9\n✦ inlesson1",
             desc_ja: "ターン開始時、好調状態の場合、\n✦ genki9\n✦ inlesson1",
         },
