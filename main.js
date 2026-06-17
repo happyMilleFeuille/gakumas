@@ -447,12 +447,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const possessionModal = document.getElementById('possession-modal');
         if (possessionModal && possessionModal.style.display !== 'none' && !possessionModal.classList.contains('hidden')) {
+            if (possessionModal.dataset.preventPopstate === 'true') {
+                possessionModal.removeAttribute('data-prevent-popstate');
+                return;
+            }
             possessionModal.remove();
             return;
         }
 
         const idolPossessionModal = document.getElementById('idol-possession-modal');
         if (idolPossessionModal && idolPossessionModal.style.display !== 'none' && !idolPossessionModal.classList.contains('hidden')) {
+            if (idolPossessionModal.dataset.preventPopstate === 'true') {
+                idolPossessionModal.removeAttribute('data-prevent-popstate');
+                return;
+            }
             idolPossessionModal.remove();
             return;
         }

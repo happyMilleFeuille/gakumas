@@ -1727,9 +1727,17 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             };
 
             const closeOptionsModal = (result) => {
+                const parentModal = document.getElementById('idol-possession-modal');
+                if (parentModal) {
+                    parentModal.setAttribute('data-prevent-popstate', 'true');
+                }
                 optionsModal.remove();
                 if (history.state && history.state.modalOpen === 'saveOptions') {
                     history.back();
+                } else {
+                    if (parentModal) {
+                        parentModal.removeAttribute('data-prevent-popstate');
+                    }
                 }
                 onSelect(result);
             };
