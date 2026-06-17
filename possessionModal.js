@@ -304,7 +304,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         cards.forEach(c => {
             const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
             const imgStyle = c.isDeactivated
-                ? 'filter: grayscale(100%) opacity(30%); border: 1px dashed #ccc;'
+                ? 'filter: grayscale(80%); opacity: 0.9; border: 1px dashed #ccc;'
                 : '';
 
             cardImgsHtml += `
@@ -337,7 +337,6 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         let unownedCardImgsHtml = '';
         unownedCards.forEach(c => {
             const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
-            const imgStyle = 'filter: grayscale(100%) opacity(30%); border: 1px dashed #ccc;';
 
             unownedCardImgsHtml += `
                 <div class="possession-detail-card" 
@@ -345,7 +344,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
                      style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 6px; overflow: hidden; background: #f0f0f0; border: 1px solid #ddd; box-sizing: border-box;">
                     <img src="${imgSrc}" 
                          onerror="this.src='icons/card.png';" 
-                         style="width: 100%; height: 100%; object-fit: cover; display: block; ${imgStyle}">
+                         style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(80%); opacity: 0.9;">
                 </div>
             `;
         });
@@ -1197,6 +1196,16 @@ export function openPossessionModal() {
                     hdr.style.position = 'static';
                 });
 
+                // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
+                const unownedImgs = modalContent.querySelectorAll('.possession-unowned-grid img');
+                const origImgSrcs = [];
+                unownedImgs.forEach(img => {
+                    origImgSrcs.push({ img: img, src: img.src });
+                    if (window.getGrayscaleDataUrl) {
+                        img.src = window.getGrayscaleDataUrl(img);
+                    }
+                });
+
                 setTimeout(() => {
                     window.html2canvas(modalContent, {
                         backgroundColor: '#ffffff',
@@ -1212,6 +1221,11 @@ export function openPossessionModal() {
                         link.download = `gakumas-possession-${langKey}.${ext}`;
                         link.href = dataUrl;
                         link.click();
+
+                        // Restore original image sources after capture
+                        origImgSrcs.forEach(item => {
+                            item.img.src = item.src;
+                        });
 
                         // Restore original styles
                         btn.style.display = 'flex';
@@ -1257,6 +1271,11 @@ export function openPossessionModal() {
                     }).catch(err => {
                         console.error('html2canvas error:', err);
                         alert(alertFailImage);
+
+                        // Restore original image sources after capture failure
+                        origImgSrcs.forEach(item => {
+                            item.img.src = item.src;
+                        });
 
                         // Restore original styles
                         btn.style.display = 'flex';

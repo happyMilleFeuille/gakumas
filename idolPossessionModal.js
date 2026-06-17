@@ -16,9 +16,9 @@ window.getGrayscaleDataUrl = function (imgEl) {
         for (let i = 0; i < data.length; i += 4) {
             // Modern BT.709 coefficients for accurate digital luma conversion
             const gray = Math.round(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
-            data[i] = gray;
-            data[i + 1] = gray;
-            data[i + 2] = gray;
+            data[i] = Math.round(data[i] * 0.2 + gray * 0.8);
+            data[i + 1] = Math.round(data[i + 1] * 0.2 + gray * 0.8);
+            data[i + 2] = Math.round(data[i + 2] * 0.2 + gray * 0.8);
         }
         ctx.putImageData(imgData, 0, 0);
         return canvas.toDataURL('image/png');
@@ -604,7 +604,7 @@ export function openIdolPossessionModal() {
 
                 const imgStyle = isOwned
                     ? `border: 2px solid ${charColor}; filter: none; opacity: 1;`
-                    : 'border: 1px solid #ccc; filter: grayscale(90%); opacity: 0.85;';
+                    : 'border: 1px solid #ccc; filter: grayscale(80%); opacity: 0.9;';
 
                 const suffix = c.another ? '1.webp' : '2.webp';
 
@@ -643,8 +643,8 @@ export function openIdolPossessionModal() {
                         }
                     } else {
                         thumb.style.border = '1px solid #ccc';
-                        thumb.style.filter = 'grayscale(90%)';
-                        thumb.style.opacity = '0.85';
+                        thumb.style.filter = 'grayscale(80%)';
+                        thumb.style.opacity = '0.9';
                         const badge = cardBox.querySelector('.pssr-check-badge');
                         if (badge) badge.remove();
                     }
@@ -905,7 +905,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 const imgStyle = isOwned
                     ? `display: block; opacity: 1;`
-                    : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.85;`;
+                    : `display: block; filter: grayscale(80%); -webkit-filter: grayscale(80%); opacity: 0.9;`;
 
                 const onloadAttr = '';
 
@@ -1276,7 +1276,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
             const origImgSrcs = [];
             statImgs.forEach(img => {
-                const isUnowned = img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
+                const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
                 if (isUnowned) {
                     origImgSrcs.push({ img: img, src: img.src });
                     if (window.getGrayscaleDataUrl) {
