@@ -321,7 +321,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         const borderRightStyle = i === 4 ? '' : 'border-right: 1px solid #f0f0f0;';
         detailColsHtml += `
             <div class="possession-detail-col" style="flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 0 8px 6px 8px; ${borderRightStyle} box-sizing: border-box; position: relative;">
-                <div class="possession-col-header" style="font-size: 0.72rem; font-weight: 800; color: #555; text-align: center; padding-top: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; user-select: none; flex-shrink: 0; position: sticky; top: 0; background: #ffffff; z-index: 10; margin-bottom: 8px;">
+                <div class="possession-col-header" style="font-size: 0.72rem; font-weight: 800; color: #555; text-align: center; padding-top: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; user-select: none; flex-shrink: 0; background: transparent; z-index: 10; margin-bottom: 8px;">
                     ${i}${ownedLabel} (${cards.length})
                 </div>
                 <div class="possession-detail-card-list" style="display: flex; flex-direction: column; gap: 4px; padding-bottom: 2px;">
@@ -343,8 +343,8 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
 
-    const ownedBg = hexToRgba(themeColor, 0.08);
-    const ownedBorder = hexToRgba(themeColor, 0.12);
+    const ownedBg = 'rgba(0, 0, 0, 0.025)';
+    const ownedBorder = 'rgba(0, 0, 0, 0.06)';
 
     let ownedStyle = '';
     let unownedSectionStyle = '';
