@@ -226,6 +226,7 @@ export function openIdolPossessionModal() {
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
                 overflow: hidden;
                 background-color: #ffffff;
+                --pssr-group-gap: 3px;
             }
             .idol-possession-title-wrap {
                 display: flex;
@@ -416,6 +417,7 @@ export function openIdolPossessionModal() {
                     padding: 14px 16px 12px 16px !important;
                     gap: 12px !important;
                     border-radius: 14px !important;
+                    --pssr-group-gap: 2px;
                 }
                 .idol-possession-title-wrap {
                     font-size: 1.05rem !important;
@@ -1156,7 +1158,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     border-color: rgba(0, 0, 0, 0.05) !important;
                 }
                 .idol-stats-plan-col.active {
-                    background-color: rgba(0, 0, 0, 0.06) !important;
+                    background-color: rgba(0, 0, 0, 0.008) !important;
                     border-color: rgba(0, 0, 0, 0.1) !important;
                 }
                 #plan-stat-details .pssr-stat-icon-wrap {
@@ -1482,7 +1484,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
                             ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
 
-                            if (hasUnowned) {
+                            if (hasOwned) {
                                 ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`;
                             } else {
                                 ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
@@ -1497,14 +1499,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
 
                             if (hasOwned) {
-                                unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: 3px;`;
+                                unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
                             } else {
                                 unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
                             }
                         } else {
                             unownedGroup.style.display = 'none';
                         }
-                        detailsDiv.style.gap = (hasOwned && hasUnowned) ? '3px' : '12px';
+                        detailsDiv.style.gap = (hasOwned && hasUnowned) ? 'var(--pssr-group-gap)' : '12px';
                     }
 
                     detailsDiv.style.display = isHidden ? 'flex' : 'none';
@@ -1630,14 +1632,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
 
                         if (hasOwned) {
-                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: 3px;`;
+                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
                         } else {
                             unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
                         }
                     } else {
                         unownedGroup.style.display = 'none';
                     }
-                    detailsDiv.style.gap = (hasOwned && hasUnowned) ? '3px' : '12px';
+                    detailsDiv.style.gap = (hasOwned && hasUnowned) ? 'var(--pssr-group-gap)' : '12px';
 
                     detailsDiv.style.display = 'flex';
                     detailsDiv.dataset.activePlan = plan;
@@ -2020,7 +2022,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                         if (unownedCards.length > 0) {
                             const groupStyle = ownedCards.length > 0
-                                ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: 3px;`
+                                ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`
                                 : `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
 
                             allPlansHtml += `
@@ -2153,7 +2155,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                 unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
 
                                 if (ownedCards.length > 0) {
-                                    unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: 3px;`;
+                                    unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
                                 } else {
                                     unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
                                 }
@@ -2162,7 +2164,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             }
 
                             detailsDiv.style.display = 'flex';
-                            detailsDiv.style.gap = (ownedCards.length > 0 && unownedCards.length > 0) ? '3px' : '12px';
+                            detailsDiv.style.gap = (ownedCards.length > 0 && unownedCards.length > 0) ? 'var(--pssr-group-gap)' : '12px';
                             if (chevron) chevron.style.transform = 'rotate(180deg)';
                         }
                     });
