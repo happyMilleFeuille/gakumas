@@ -105,7 +105,8 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
                 total: 0,
                 owned: 0,
                 lb: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 },
-                cardsByLb: { 0: [], 1: [], 2: [], 3: [], 4: [] }
+                cardsByLb: { 0: [], 1: [], 2: [], 3: [], 4: [] },
+                unownedCards: []
             };
         }
         byRarity[rarity].total++;
@@ -115,7 +116,8 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
                 total: 0,
                 owned: 0,
                 lb: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 },
-                cardsByLb: { 0: [], 1: [], 2: [], 3: [], 4: [] }
+                cardsByLb: { 0: [], 1: [], 2: [], 3: [], 4: [] },
+                unownedCards: []
             };
         }
         bySource[source].total++;
@@ -130,6 +132,10 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
             bySource[source].lb[lb] = (bySource[source].lb[lb] || 0) + 1;
             byRarity[rarity].cardsByLb[lb].push(cardEntry);
             bySource[source].cardsByLb[lb].push(cardEntry);
+        } else {
+            const cardEntry = { ...card, isDeactivated, lb: 0 };
+            byRarity[rarity].unownedCards.push(cardEntry);
+            bySource[source].unownedCards.push(cardEntry);
         }
     });
 
@@ -145,6 +151,14 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
                 return b.id.localeCompare(a.id);
             });
         }
+        byRarity[rarity].unownedCards.sort((a, b) => {
+            const dateA = a.releasedAt || '1970-01-01';
+            const dateB = b.releasedAt || '1970-01-01';
+            if (dateA !== dateB) {
+                return dateB.localeCompare(dateA);
+            }
+            return b.id.localeCompare(a.id);
+        });
     });
 
     // Sort source card lists by releasedAt descending (newest first)
@@ -159,6 +173,14 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
                 return b.id.localeCompare(a.id);
             });
         }
+        bySource[source].unownedCards.sort((a, b) => {
+            const dateA = a.releasedAt || '1970-01-01';
+            const dateB = b.releasedAt || '1970-01-01';
+            if (dateA !== dateB) {
+                return dateB.localeCompare(dateA);
+            }
+            return b.id.localeCompare(a.id);
+        });
     });
 
     return { byRarity, bySource };
@@ -217,25 +239,44 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
     const isEn = state.currentLang === 'en';
     const ownedLabel = isJa ? '凸' : isEn ? 'LB' : '돌';
 
-    const maxLbVal = sStats.owned || 1;
+    const maxLbVal = sStats.total || 1;
 
     // Exactly three integer Y-axis labels: Max, Mid, 0
-    const gridMax = sStats.owned;
-    const gridMid = Math.round(sStats.owned / 2);
+    const gridMax = sStats.total;
+    const gridMid = Math.round(sStats.total / 2);
 
-    let barsHtml = '';
-    let xAxisLabelsHtml = '';
+    const unownedCount = sStats.total - sStats.owned;
+    const unownedPct = ((unownedCount / maxLbVal) * 100).toFixed(1);
+    const unownedLabelText = isJa ? '未所持' : isEn ? 'Unowned' : '미소지';
+
+    let barsHtml = `
+        <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
+            <div style="width: 14px; height: ${unownedPct}%; background-color: #cbd5e1; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative; border: 1px solid #94a3b8; border-bottom: none; box-sizing: border-box;">
+                <!-- Prevent vertical wrapping of multi-digit values -->
+                <div class="possession-chart-bar-value" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${unownedCount > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none;">${formatRate(unownedCount, maxLbVal)}%</div>
+            </div>
+        </div>
+    `;
+
+    let xAxisLabelsHtml = `
+        <div class="possession-chart-xaxis-label" style="flex: 1; font-size: 0.75rem; font-weight: bold; color: #777; text-align: center;">${unownedLabelText}</div>
+    `;
+
     for (let i = 0; i <= 4; i++) {
         const val = sStats.lb[i] || 0;
         const pct = ((val / maxLbVal) * 100).toFixed(1);
         const isMax = i === 4;
 
-        // Colors from Gakumas theme or gold/yellow for 4돌
-        const barBgColor = isMax ? '#ffb300' : themeColor;
+        // Colors: 명함~3돌(i < 4)은 금색(#ffb300), 4돌(isMax)은 무지개 그라데이션
+        const barBgColor = isMax 
+            ? 'linear-gradient(180deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)' 
+            : '#ffb300';
+        const labelColor = isMax ? '#ff4d8d' : '#e68a00';
+        const barBorderColor = isMax ? '#ff7fa5' : '#d97706';
 
         barsHtml += `
             <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
-                <div style="width: 14px; height: ${pct}%; background-color: ${barBgColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative;">
+                <div style="width: 14px; height: ${pct}%; background: ${barBgColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative; border: 1px solid ${barBorderColor}; border-bottom: none; box-sizing: border-box;">
                     <!-- Prevent vertical wrapping of multi-digit values -->
                     <div class="possession-chart-bar-value" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${val > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none;">${formatRate(val, maxLbVal)}%</div>
                 </div>
@@ -243,7 +284,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         `;
 
         xAxisLabelsHtml += `
-            <div class="possession-chart-xaxis-label" style="flex: 1; font-size: 0.75rem; font-weight: bold; color: ${isMax ? '#e68a00' : '#777'}; text-align: center;">${i}${ownedLabel}</div>
+            <div class="possession-chart-xaxis-label" style="flex: 1; font-size: 0.75rem; font-weight: bold; color: ${labelColor}; text-align: center;">${i}${ownedLabel}</div>
         `;
     }
 
@@ -290,12 +331,45 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         `;
     }
 
+    const unownedCards = sStats.unownedCards || [];
+    let unownedCardsHtml = '';
+    if (unownedCards.length > 0) {
+        let unownedCardImgsHtml = '';
+        unownedCards.forEach(c => {
+            const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
+            const imgStyle = 'filter: grayscale(100%) opacity(30%); border: 1px dashed #ccc;';
+
+            unownedCardImgsHtml += `
+                <div class="possession-detail-card" 
+                     data-card-id="${c.id}" 
+                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 6px; overflow: hidden; background: #f0f0f0; border: 1px solid #ddd; box-sizing: border-box;">
+                    <img src="${imgSrc}" 
+                         onerror="this.src='icons/card.png';" 
+                         style="width: 100%; height: 100%; object-fit: cover; display: block; ${imgStyle}">
+                </div>
+            `;
+        });
+
+        const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+        unownedCardsHtml = `
+            <div class="possession-unowned-section" style="margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box;">
+                <div class="possession-unowned-title" style="font-size: 0.72rem; font-weight: 800; color: #999; text-align: left; padding-left: 8px; user-select: none;">
+                    ${unownedLabel} (${unownedCards.length})
+                </div>
+                <div class="possession-unowned-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 8px;">
+                    ${unownedCardImgsHtml}
+                </div>
+            </div>
+        `;
+    }
+
     const detailContainerHtml = `
         <div class="possession-detail-container" style="display: none; margin-top: 12px;">
             <div class="possession-detail-scroll-wrapper" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 8px; max-height: ${isOverall ? '520px' : '420px'}; overflow-y: auto; padding: 0 8px 8px 8px; box-sizing: border-box;">
                 <div style="display: flex; gap: 0; justify-content: space-between; align-items: stretch;">
                     ${detailColsHtml}
                 </div>
+                ${unownedCardsHtml}
             </div>
         </div>
     `;
@@ -365,7 +439,8 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
         total: 0,
         owned: 0,
         lb: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 },
-        cardsByLb: { 0: [], 1: [], 2: [], 3: [], 4: [] }
+        cardsByLb: { 0: [], 1: [], 2: [], 3: [], 4: [] },
+        unownedCards: []
     };
     activeRarities.forEach(rarity => {
         const rStats = stats.byRarity[rarity];
@@ -377,6 +452,9 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
             if (rStats.cardsByLb && rStats.cardsByLb[i]) {
                 mergedRarityStats.cardsByLb[i].push(...rStats.cardsByLb[i]);
             }
+        }
+        if (rStats.unownedCards) {
+            mergedRarityStats.unownedCards.push(...rStats.unownedCards);
         }
     });
 
@@ -391,6 +469,14 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
             return b.id.localeCompare(a.id);
         });
     }
+    mergedRarityStats.unownedCards.sort((a, b) => {
+        const dateA = a.releasedAt || '1970-01-01';
+        const dateB = b.releasedAt || '1970-01-01';
+        if (dateA !== dateB) {
+            return dateB.localeCompare(dateA);
+        }
+        return b.id.localeCompare(a.id);
+    });
 
     totalAll = mergedRarityStats.total;
     ownedAll = mergedRarityStats.owned;
@@ -486,6 +572,30 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                 .possession-chart-area-wrapper {
                     width: 100% !important;
                     max-width: 630px !important;
+                }
+                .possession-unowned-grid {
+                    display: grid;
+                    grid-template-columns: repeat(5, 1fr);
+                    gap: 8px;
+                    padding: 0 8px;
+                }
+                .possession-unowned-title {
+                    font-size: 0.72rem;
+                    font-weight: 800;
+                    color: #999;
+                    text-align: left;
+                    padding-left: 8px;
+                    user-select: none;
+                }
+                @media (max-width: 768px) {
+                    .possession-unowned-grid {
+                        gap: 4px !important;
+                        padding: 0 4px !important;
+                    }
+                    .possession-unowned-title {
+                        font-size: 0.55rem !important;
+                        padding-left: 4px !important;
+                    }
                 }
             </style>
             <div id="possession-overall-label" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
