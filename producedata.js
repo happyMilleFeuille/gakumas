@@ -34,6 +34,7 @@ export const produceList = [
     {
         id: "ssrrinami_3rd", name: "36℃ U.B.U", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2025-09-17", source: "normal", jumpTime2: 8.7, youtube_url: "https://youtu.be/szxn42peP3M?si=0Fa3iBImUAHj4Rsm",
         item: {
+            name: "アイドルになりたい",
             desc: "어느 한 쪽의 지침인 경우 강기 스킬카드 사용 후 3회마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3\n✦ inlesson3",
             desc_ja: "いずれかの指針の場合、強気効果のスキルカード使用後3回ごとに、\n✦ のんびりに変更\n✦ 熱意増加+40%（1ターン）\n✦ genki3\n✦ inlesson5",
         },
@@ -96,6 +97,7 @@ export const produceList = [
     {
         id: "ssrsaki_3rd", name: "Wildest Flower", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2026-03-19", plan: "logic", source: "normal", jumpTime2: 7.2, youtube_url: "https://youtu.be/iiiLtE4w2pE?si=1LC4wWMxbAt-huak",
         item: {
+            name: "すべてのこえた先へ",
             desc: "lessonstart\n✦ 파라미터 상승량 감소(4턴)\n✦ 3턴 후 motivation2・use1\n✦ 6턴 후 goodimpression4\n✦ inlesson1",
             desc_ja: "lessonstart\n✦ パラメータ上昇量減少（4ターン）\n✦ 3ターン後、motivation2・use1\n✦ 6ターン後、goodimpression4\n✦ inlesson1",
         },
@@ -412,6 +414,7 @@ export const produceList = [
     {
         id: "ssrtemari_3rd", name: "대체 언제부터", name_en: "Ittai itsukara", osusume: "fullpower", name_ja: "一体いつから", rarity: "PSSR", releasedAt: "2026-01-16", plan: "anomaly", jumpTime2: 9.3, source: "normal", youtube_url: "https://youtu.be/PE_iyDsY5xM?si=8v9OKPXlkxqQwl4r",
         item: {
+            name: "憧れのはじまり",
             desc: "지침이 전력일 때\n✦ 다음으로 사용하는 액티브 카드의 소비체력을 0으로 줄임 (최대 1회)\n✦ 멘탈카드의 원기 수치 증가+4\n✦ inlesson2",
             desc_ja: "全力になった時、\n✦ 次に使用したアクティブスキルカードの消費体力を0にする（1回）\n✦ メンタルスキルカードの元気値増加+4\n✦ inlesson2",
         },
@@ -485,6 +488,7 @@ export const produceList = [
     {
         id: "ssrlilja_2nd", name: "극광", name_en: "Kyokkoo", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6,
         item: {
+            name: "ちいさな銀河",
             desc: "멘탈카드 사용 시 지침이 강기 2단계인 경우\n✦ 멘탈카드의 원기 수치 증가+4\n✦ hpreduce2\n✦ inlesson3",
             desc_ja: "メンタルスキルカード使用時、強気2段階目の場合、\n✦ メンタルスキルカードの元気値増加+4\n✦ hpreduce2\n✦ inlesson3",
         },
@@ -505,6 +509,7 @@ export const produceList = [
     {
         id: "ssrlilja_3rd", name: "Atmosphere", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", releasedAt: "2025-12-08", jumpTime2: 9.5, youtube_url: "https://youtu.be/R9PEnLmv6zI?si=CG6jPxmYp4dGctXo",
         item: {
+            name: "交わした約束",
             desc: "턴 종료 시 전력치가 10이상인 경우 あふれ出る思い를 보류로 이동\n✦ genki5\n✦ 다음 턴, 전력치 증가량 증가+50% (1턴)\n✦ inlesson2",
             desc_ja: "ターン終了時、全力値が10以上の場合、あふれ出る思いを保留に移動\n✦ genki5\n✦ 次のターン、全力値増加量増加+50%（1ターン）\n✦ inlesson2",
         },
@@ -581,6 +586,7 @@ export const produceList = [
     {
         id: "ssrhiro_3rd", name: "SUNFADED", name_en: "SUNFADED", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J",
         item: {
+            name: "原点へのチケット",
             desc: "스킬카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+40%\n✦ inlesson3",
             desc_ja: "スキルカードコストで体力減少時、\n✦ 熱意増加+40%\n✦ inlesson3",
         },
@@ -608,6 +614,7 @@ export const produceList = [
     {
         id: "ssrtsubame_1st", name: "이론무장하고", name_en: "RIRONBUSO SITE", name_ja: "理論武装して", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.8, releasedAt: "2025-11-16", youtube_url: "https://youtu.be/0ZWUdwVQOJA?si=4OJ6d8ZxH0k0LmvB",
         item: {
+            name: "ふさわしい、私",
             desc: "직접효과로 의욕이 증가한 경우 원기가 7이상일 때 \n✦ motivation4\n✦ genki1\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "直接効果でやる気が増加後、元気が7以上の場合、\n✦ motivation4\n✦ genki1\n✦ hpreduce2\n✦ inlesson2",
         },
@@ -684,6 +691,7 @@ export const produceList = [
     {
         id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22",
         item: {
+            name: "一番星の挑戦状",
             desc: "스킬카드 사용 후 호인상이 6이상인 경우\n✦ goodimpression2\n✦ motivation2\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "スキルカード使用後、好印象が6以上の場合、\n✦ goodimpression2\n✦ motivation2\n✦ hpreduce1\n✦ inlesson3",
         },
@@ -704,6 +712,7 @@ export const produceList = [
     {
         id: "ssrsena_3rd", name: "적나라", name_en: "SEKIRARA", name_ja: "赤裸々", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.6, releasedAt: "2026-02-09", youtube_url: "https://youtu.be/afh9Sq0Dtq4?si=vfvCdWpuf85lfBk5",
         item: {
+            name: "最初の鳥",
             desc: "2턴마다 원기가 30이상인 경우\n✦ 체력 회복 1\n✦ 제외패에 있는 私を超えて（翔）1장 당 원기의 20%만큼 파라미터 상승",
             desc_ja: "2ターンごとに、元気が30以上の場合、\n✦ 体力回復1\n✦ 除外にある私を超えて（翔）1枚につき、元気の20%分パラメータ上昇量",
         },
@@ -779,6 +788,7 @@ export const produceList = [
     {
         id: "ssrume_2nd", name: "구-스-피-", name_en: "Gu-Su-Pi", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.2, releasedAt: "2025-11-28",
         item: {
+            name: "地球とランデブー！",
             desc: "턴 개시 시 지침을 변경한 횟수가 4회 이상인 경우\n✦ 덱 혹은 버림패에 있는 랜덤한 온존효과의 스킬카드를 손패로 이동\n✦ グーチョキパーデポン의 plusattack1・파라미터 증가량+10・코스트 수치 증가+4\n✦ inlesson2",
             desc_ja: "ターン開始時、指針を変更した回数が4回以上の場合、\n✦ ランダムな山札か捨札の温存効果のスキルカードを手札に移動\n✦ グーチョキパーデポンのplusattack1・パラメータ値増加+10・コスト値増加+4\n✦ inlesson2",
         },
@@ -799,6 +809,7 @@ export const produceList = [
     {
         id: "ssrume_3rd", name: "새하얀 페이지와 수채의 주인공", name_en: "A Blank White Page and a Watercolor Hero", name_ja: "真っ白いページと水彩の主人公", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-04-10", jumpTime2: 7.6, youtube_url: "https://youtu.be/zpDB6GzOXq0?si=lrT8tCS6sSxg6QB1",
         item: {
+            name: "夢を創るステッキ",
             desc: "3턴마다 턴 종료 시,\n✦ 원기의 110%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦다음 턴에 draw1\n✦ inlesson3",
             desc_ja: "3ターンごとのターン終了時、\n✦ 元気の110%分パラメータ上昇させ、元気を0にする\n✦ 次のターン、draw1\n✦ inlesson3",
         },
@@ -823,6 +834,7 @@ export const produceList = [
     {
         id: "ssrmisuzu_1st", name: "달거북이", name_en: "Moon Turtle", name_ja: "ツキノカメ", osusume: "preservation", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf",
         item: {
+            name: "いつもの持ち物",
             desc: "온존효과의 스킬카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승\n✦ hpreduce1",
             desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の140%分パラメータ上昇\n✦ hpreduce1",
         },
@@ -853,6 +865,7 @@ export const produceList = [
     {
         id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05",
         item: {
+            name: "だから、おいで",
             desc: "턴 개시 시 호인상이 6이상인 경우\n✦ goodimpression10\n✦ 파라미터 상승량 감소 60% (2턴)\n✦ 이후 5회까지 멘탈카드 사용 시 motivation1\n✦ inlesson1",
             desc_ja: "ターン開始時、好印象が6以上の場合、\n✦ goodimpression10\n✦ パラメータ上昇量減少60%（2ターン）\n✦ 以降5回まで、メンタルスキルカード使用時、motivation1\n✦ inlesson1",
         },
@@ -873,6 +886,7 @@ export const produceList = [
     {
         id: "ssrmisuzu_3rd", name: "VEIL", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.2, releasedAt: "2026-04-29", youtube_url: "https://youtu.be/AbxzlgJTM-I?si=u1JejBnCmOJ1RGgX",
         item: {
+            name: "夜空を従える花",
             desc: "어느 한 쪽의 지침인 경우 강기 스킬카드 사용 후 3회마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3\n✦ inlesson3",
             desc_ja: "いずれかの指針の場合、強気効果のスキルカード使用後3回ごとに、\n✦ のんびりに変更\n✦ 熱意増加+40%（1ターン）\n✦ genki3\n✦ inlesson5",
         },
@@ -994,6 +1008,7 @@ export const produceList = [
     {
         id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-06-30",
         item: {
+            name: "太陽を追い越す歌声",
             desc: "ひなたぼっこ사용 시\n✦ motivation15\n✦ 파라미터 상승량 감소 75% (2턴)\n✦ 3턴 후, 파라미터 상승량 증가 50% (4턴)\n✦ inlesson1",
             desc_ja: "ひなたぼっこ使用時、\n✦ motivation15\n✦ パラメータ上昇量減少75%（2ターン）\n✦ 3ターン後、パラメータ上昇量増加50%（4ターン）\n✦ inlesson1",
             referimage: ["logic-sr12"]
@@ -1131,6 +1146,7 @@ export const produceList = [
     {
         id: "ssrtemari_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.5, plan: "logic", source: "limited_f", releasedAt: "2026-05-16",
         item: {
+            name: "太陽を超える輝き",
             desc: "마지막 턴 개시 시\n✦ 레슨 중 소비한 원기의 75%만큼 원기 증가\n✦ draw2\n✦ hpreduce3\n✦ inlesson1",
             desc_ja: "最終ターンのターン開始時、\n✦ レッスン中に消費した元気の75%分元気増加\n✦ draw2\n✦ hpreduce3\n✦ inlesson1",
         },
@@ -1218,6 +1234,7 @@ export const produceList = [
     {
         id: "ssrlilja_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-06-05",
         item: {
+            name: "強い意志の輝き",
             desc: "직접효과로 의욕이 5회 증가 시\n✦ genki10 (의욕효과 2배 적용)\n✦ hpreduce1\n✦ inlesson2",
             desc_ja: "直接効果でやる気が5回増加時、\n✦ genki10（やる気効果を2倍適用）\n✦ hpreduce1\n✦ inlesson2",
         },
@@ -1482,6 +1499,7 @@ export const produceList = [
     {
         id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
+            name: "まあるい春色",
             desc: "전력으로 지침이 변경되었을 때 강기로 지침 변경된 횟수가 1회 이상인 경우\n✦ 전력효과 액티브카드의 파라미터치 증가+11\n✦ 다음 턴, 온존 2단계로 지침 변경\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "全力になった時、強気になった回数が1回以上の場合、\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+11\n✦ 次のターン、温存2段階目に変更\n✦ hpreduce2\n✦ inlesson2",
         },
@@ -1502,6 +1520,7 @@ export const produceList = [
     {
         id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
+            name: "積み重ねた努力",
             desc: "턴 개시 시 레슨 중 누계 전력치가 5이상인 경우\n✦ genki6\n✦ inlesson2",
             desc_ja: "ターン開始時、このレッスン中累計全力値が5以上の場合、\n✦ genki6\n✦ inlesson2",
         },
@@ -1543,6 +1562,7 @@ export const produceList = [
     {
         id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
+            name: "運命の出逢い",
             desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 스킬카드의 파라미터치 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ hpreduce3\n✦ inlesson1",
             desc_ja: "ターン開始後、全力の場合、\n✦ genki10\n✦ fullpower3\n✦ 手札のパラメータ値増加+10\n✦ 次のターン、温存に変更\n✦ hpreduce3\n✦ inlesson1",
         },
@@ -1584,6 +1604,7 @@ export const produceList = [
     {
         id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
+            name: "伝説のidol装備",
             desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 440% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "直接効果で強気になった時、元気が50以上の場合、\n✦ 元気の440%分パラメータ上昇させ、元気を0にする\n✦ hpreduce2\n✦ inlesson2",
         },
@@ -1604,6 +1625,7 @@ export const produceList = [
     {
         id: "ssrlilja_howlinglimited", name: "Howling over the World", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2025-06-09", plan: "logic", source: "limited", jumpTime2: 7.3, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
+            name: "シルベスター出撃！",
             desc: "2턴마다 턴 종료 시 제외에 있는 스킬카드가 8장 이하일 경우, \n✦ 호인상 강화+70% (3턴)\n✦ hpreduce1",
             desc_ja: "2ターンごとのターン終了時、除外にあるスキルカードが8枚以下の場合、\n✦ 好印象強化+70%（3ターン）\n✦ hpreduce1",
         },
@@ -1625,6 +1647,7 @@ export const produceList = [
     {
         id: "ssrsumika_miracledist", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "goodimpression", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
+            name: "シェアハピ缶バッジ",
             desc: "2턴 마다\n✦ 체력 회복 3\n✦ goodimpression1\n✦ inlesson2",
             desc_ja: "2ターンごとに、\n✦ 体力回復3\n✦ goodimpression1\n✦ inlesson2",
         },
@@ -1646,6 +1669,7 @@ export const produceList = [
     {
         id: "ssrmao_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "motivation", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.2, youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
+            name: "ミラクルヘッド",
             desc: "턴 개시 시\n✦ 의욕증가량 증가+50%\n✦ 다음 턴, genki2\n✦ hpreduce2\n✦ inlesson1",
             desc_ja: "ターン開始時、\n✦ やる気増加量増加+50%\n✦ 次のターン、genki2\n✦ hpreduce2\n✦ inlesson1",
         },
@@ -1667,6 +1691,7 @@ export const produceList = [
     {
         id: "ssrhiro_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "fullpower", rarity: "PSSR", releasedAt: "2025-09-08", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
+            name: "たこやきテクノドッグ",
             desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1매 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터치 증가+5・체력소비 코스트 수치 증가+2\n✦ inlesson3",
             desc_ja: "全力を解除後、除外にあるでこれーとまじっくが1枚以上の場合、\n✦ でこれーとまじっくを保留に移動\n✦ でこれーとまじっくの全力値増加+2・パラメータ値増加+5・体力消費コスト値増加+2\n✦ inlesson3",
         },
@@ -1687,6 +1712,7 @@ export const produceList = [
     {
         id: "ssrsaki_gamusyaradist", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "enthusiasm", releasedAt: "2025-09-29", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
+            name: "ごちゃまぜパッション",
             desc: "턴 개시 시 지침이 강기일 경우 \n✦ 온존으로 지침 변경\n✦ genki6\n✦ inlesson1",
             desc_ja: "ターン開始時、強気の場合、\n✦ 温存に変更\n✦ genki6\n✦ inlesson1",
         },
@@ -1727,6 +1753,7 @@ export const produceList = [
     {
         id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodimpression", releasedAt: "2025-10-10", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
+            name: "高くジャンプ！",
             desc: "한 턴 내에 스킬카드를 2회 사용할 때마다\n✦ genki5\n✦ 호인상 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ inlesson2",
             desc_ja: "ターン内にスキルカードを2回使用するごとに、\n✦ genki5\n✦ 好印象増加量増加+50%（1ターン）\n✦ hpreduce1\n✦ inlesson2",
         },
@@ -1747,6 +1774,7 @@ export const produceList = [
     {
         id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "dist", releasedAt: "2026-02-27", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
+            name: "箱庭のバラ",
             desc: "멘탈카드 사용 후 호인상이 6이상인 경우\n✦ genki1\n✦ goodimpression1\n✦ inlesson2",
             desc_ja: "メンタルスキルカード使用後、好印象が6以上の場合、\n✦ genki1\n✦ goodimpression1\n✦ inlesson2",
         },
@@ -1787,6 +1815,7 @@ export const produceList = [
     {
         id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
+            name: "ユートピアへの誘い",
             desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki4\n✦ 액티브 스킬카드의 파라미터치 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
             desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
         },
@@ -1810,6 +1839,7 @@ export const produceList = [
     {
         id: "ssrsena_starmineunit", name: "Star-mine", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
         item: {
+            name: "夢見る星",
             desc: "지침이 전력일 경우, 한 턴 내 스킬카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ 다음 턴, 온존 2단계로 지침 변경",
             desc_ja: "全力の場合、ターン内にスキルカードを3回使用するごとに、\n✦ 全力値増加量増加+50%（1ターン）\n✦ hpreduce1\n✦ 次のターン、温存2段階目に変更",
         },
@@ -1830,6 +1860,7 @@ export const produceList = [
     {
         id: "ssrume_starmineunit", name: "Star-mine", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 10.4, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
         item: {
+            name: "咲き誇る星",
             desc: "멘탈카드 사용 후 원기가 30이상일 경우 \n✦ 원기의 50%만큼 호인상 증가\n✦ goodimpression2\n✦ inlesson1",
             desc_ja: "メンタルスキルカード使用後、元気が30以上の場合、\n✦ 元気の50%分好印象増加\n✦ goodimpression2\n✦ inlesson1",
         },
@@ -1871,6 +1902,7 @@ export const produceList = [
     {
         id: "ssrsaki_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "motivation", rarity: "PSSR", releasedAt: "2025-05-01", plan: "logic", source: "limited_u", jumpTime2: 10.1, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
         item: {
+            name: "雨上がりの花",
             desc: "턴 개시 시 \n✦ motivation9\n✦ hpreduce4\n✦ 3턴 후 불안 5턴\n✦ inlesson1",
             desc_ja: "ターン開始時、\n✦ motivation9\n✦ hpreduce4\n✦ 3ターン後、不安5ターン\n✦ inlesson1",
         },
@@ -1912,6 +1944,7 @@ export const produceList = [
     {
         id: "ssrkotone_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-01", plan: "anomaly", source: "limited_u", jumpTime2: 9.4, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
         item: {
+            name: "雨上がりの虹",
             desc: "멘탈카드 사용 후 지침이 온존 2단계인 경우\n✦ hpreduce1\n✦ netsui4\n✦ inlesson4",
             desc_ja: "メンタルスキルカード使用後、温存2段階目の場合、\n✦ hpreduce1\n✦ netsui4\n✦ inlesson4",
         },
@@ -1952,6 +1985,7 @@ export const produceList = [
     {
         id: "ssrhiro_michinaruunit", name: "미지로 펼쳐지는", name_en: "Unknown Unbound", name_ja: "みちなるひろがる", osusume: "goodimpression", releasedAt: "2026-01-27", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO",
         item: {
+            name: "みちなるシグナル",
             desc: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 최대체력의 80%만큼 체력 소비 \n✦ 이후 스킬카드 코스트로 강화상태를 소비한 경우 최대체력의 20%만큼 체력 회복・호인상 강화+10%\n✦ inlesson1",
             desc_ja: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 最大体力の80%分体力消費 \n✦ 以降、スキルカードコストで強化状態を消費した時、最大体力の20%分体力回復・好印象強化+10%\n✦ inlesson1",
         },
@@ -1992,6 +2026,7 @@ export const produceList = [
     {
         id: "ssrsumika_dokimekiunit", name: "두근두근 이모션", name_en: "Tokimeki Emotion", name_ja: "どきめきエモーション", osusume: "enthusiasm", releasedAt: "2026-04-01", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-",
         item: {
+            name: "あたしたちの約束",
             desc: "턴 종료 시 레슨 중 누계 전력치가 13이상인 경우\n✦ いつもあなたの隣で의 plusattack1\n✦ hpreduce1\n✦ 다음 턴, いつもあなたの隣で를 손패로 이동\n✦ inlesson2",
             desc_ja: "ターン終了時、このレッスン中累計全力値が13以上の場合、\n✦ いつもあなたの隣でのplusattack1\n✦ hpreduce1\n✦ 次のターン、いつもあなたの隣でを手札に移動\n✦ inlesson2",
         },
@@ -2012,6 +2047,7 @@ export const produceList = [
     {
         id: "ssrmao_sugarunit", name: "SUGAR FLAVOR", osusume: "goodcondition", releasedAt: "2026-06-15", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 9.1, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N",
         item: {
+            name: "溢れ出る想い",
             desc: "호조가 5턴 이상인 경우 멘탈 스킬 사용 시 3회마다 \n✦ goodcondition3\n✦ goodconditionz1\n✦ inlesson3",
             desc_ja: "好調が5ターン以上の場合、メンタルスキルカード使用後3回ごとに、\n✦ goodcondition3\n✦ goodconditionz1\n✦ inlesson3",
         },
@@ -2032,6 +2068,7 @@ export const produceList = [
     {
         id: "ssrrinami_sugarunit", name: "SUGAR FLAVOR", osusume: "enthusiasm", releasedAt: "2026-06-15", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 9.1, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N",
         item: {
+            name: "揺れ動く想い",
             desc: "액티브 사용 시 강기로 변경된 횟수가 4회 이상일 경우, \n✦ 강기로 지침 변경\n✦ 열의 추가+3 (1턴)",
             desc_ja: "アクティブスキルカード使用時、強気になった回数が4回以上の場合、\n✦ 強気に変更\n✦ 熱意追加+3（1ターン）",
         },

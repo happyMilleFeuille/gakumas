@@ -243,6 +243,11 @@ export const videoList = {
     ],
     sena: [
         {
+            title: "Choo Choo Choo",
+            url: "https://youtu.be/ZhIlyzx9pK8?si=NQD-LRL97vy_XTPQ",
+            date: "2026.06.17."
+        },
+        {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             title_en: "Birthday MiniLive 2025",
