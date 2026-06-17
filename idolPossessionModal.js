@@ -930,7 +930,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             const sourceColor = chosenCharId ? (idolColors[chosenCharId] || '#ff4d8d') : '#cbd5e1';
 
             sourceRowsHtml += `
-                <div class="source-stat-card" data-source="${src}">
+                <div class="source-stat-card" data-source="${src}" data-color="${sourceColor}">
                     <div class="source-stat-main" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: bold; color: #333; gap: 10px; cursor: pointer; user-select: none; padding: 4px 6px; border-radius: 8px; transition: background-color 0.15s ease;">
                         <span class="idol-stats-source-label" style="display: flex; align-items: center; justify-content: center; width: 50px; font-weight: 800; color: #555; text-align: center; flex-shrink: 0; pointer-events: none;">${srcLabel}</span>
                         <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden; position: relative; pointer-events: none;">
@@ -1462,23 +1462,49 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
                         const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
 
-                        if (ownedCards.length > 0) {
+                        const hasOwned = ownedCards.length > 0;
+                        const hasUnowned = unownedCards.length > 0;
+
+                        const hexToRgba = (hex, alpha) => {
+                            if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
+                            const r = parseInt(hex.slice(1, 3), 16);
+                            const g = parseInt(hex.slice(3, 5), 16);
+                            const b = parseInt(hex.slice(5, 7), 16);
+                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        };
+
+                        const sourceColor = sourceCard.dataset.color || '#ff4d8d';
+                        const ownedBg = hexToRgba(sourceColor, 0.08);
+                        const ownedBorder = hexToRgba(sourceColor, 0.12);
+
+                        if (hasOwned) {
                             ownedGroup.style.display = 'flex';
                             ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
                             ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+
+                            if (hasUnowned) {
+                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0; border-bottom: none;`;
+                            } else {
+                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+                            }
                         } else {
                             ownedGroup.style.display = 'none';
                         }
 
-                        if (unownedCards.length > 0) {
+                        if (hasUnowned) {
                             unownedGroup.style.display = 'flex';
-                            unownedGroup.style.borderTop = ownedCards.length > 0 ? '1px solid #e2e8f0' : 'none';
-                            unownedGroup.style.paddingTop = ownedCards.length > 0 ? '12px' : '0';
                             unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
                             unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+
+                            if (hasOwned) {
+                                unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; border-top: none; margin-top: -1px;`;
+                            } else {
+                                unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
+                            }
                         } else {
                             unownedGroup.style.display = 'none';
                         }
+                        detailsDiv.style.gap = (hasOwned && hasUnowned) ? '0' : '12px';
                     }
 
                     detailsDiv.style.display = isHidden ? 'flex' : 'none';
@@ -1564,23 +1590,54 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
                     const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
 
-                    if (ownedCards.length > 0) {
+                    const hasOwned = ownedCards.length > 0;
+                    const hasUnowned = unownedCards.length > 0;
+
+                    const hexToRgba = (hex, alpha) => {
+                        if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
+                        const r = parseInt(hex.slice(1, 3), 16);
+                        const g = parseInt(hex.slice(3, 5), 16);
+                        const b = parseInt(hex.slice(5, 7), 16);
+                        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    };
+
+                    const planColors = {
+                        sense: '#ff4d8d',
+                        logic: '#46a4f3',
+                        anomaly: '#ffb300'
+                    };
+                    const planColor = planColors[plan] || '#ff4d8d';
+                    const ownedBg = hexToRgba(planColor, 0.08);
+                    const ownedBorder = hexToRgba(planColor, 0.12);
+
+                    if (hasOwned) {
                         ownedGroup.style.display = 'flex';
                         ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
                         ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+
+                        if (hasUnowned) {
+                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0; border-bottom: none;`;
+                        } else {
+                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+                        }
                     } else {
                         ownedGroup.style.display = 'none';
                     }
 
-                    if (unownedCards.length > 0) {
+                    if (hasUnowned) {
                         unownedGroup.style.display = 'flex';
-                        unownedGroup.style.borderTop = ownedCards.length > 0 ? '1px solid #e2e8f0' : 'none';
-                        unownedGroup.style.paddingTop = ownedCards.length > 0 ? '12px' : '0';
                         unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
                         unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+
+                        if (hasOwned) {
+                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; border-top: none; margin-top: -1px;`;
+                        } else {
+                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
+                        }
                     } else {
                         unownedGroup.style.display = 'none';
                     }
+                    detailsDiv.style.gap = (hasOwned && hasUnowned) ? '0' : '12px';
 
                     detailsDiv.style.display = 'flex';
                     detailsDiv.dataset.activePlan = plan;
@@ -1634,7 +1691,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 font-family: inherit;
                 gap: 16px;
             `;
-            
+
             const spinner = document.createElement('div');
             spinner.style.cssText = `
                 width: 46px;
@@ -1647,7 +1704,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 will-change: transform;
                 transform: translateZ(0);
             `;
-            
+
             if (!document.getElementById('possession-spin-style')) {
                 const style = document.createElement('style');
                 style.id = 'possession-spin-style';
@@ -1909,13 +1966,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         return html;
                     };
 
+                    const hexToRgba = (hex, alpha) => {
+                        if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
+                        const r = parseInt(hex.slice(1, 3), 16);
+                        const g = parseInt(hex.slice(3, 5), 16);
+                        const b = parseInt(hex.slice(5, 7), 16);
+                        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    };
+
                     const isJa = lang === 'ja';
                     const isEn = lang === 'en';
                     const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
                     const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
 
                     let allPlansHtml = '<div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">';
-                    
+
                     const plans = ['sense', 'logic', 'anomaly'];
                     plans.forEach((p, pIdx) => {
                         const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
@@ -1929,6 +1994,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                         const borderStyle = pIdx < plans.length - 1 ? 'border-bottom: 1px dashed rgba(0, 0, 0, 0.08); padding-bottom: 16px;' : '';
 
+                        const ownedBg = hexToRgba(planColor, 0.08);
+                        const ownedBorder = hexToRgba(planColor, 0.12);
+
                         allPlansHtml += `
                             <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${borderStyle}">
                                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
@@ -1938,8 +2006,12 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         `;
 
                         if (ownedCards.length > 0) {
+                            const groupStyle = unownedCards.length > 0
+                                ? `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0; border-bottom: none;`
+                                : `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+
                             allPlansHtml += `
-                                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;">${ownedLabel} (${ownedCards.length})</div>
                                     <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;">${buildIconsHtml(ownedCards, true)}</div>
                                 </div>
@@ -1947,9 +2019,12 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
 
                         if (unownedCards.length > 0) {
-                            const borderTopStyle = ownedCards.length > 0 ? 'border-top: 1px solid #e2e8f0; padding-top: 12px;' : '';
+                            const groupStyle = ownedCards.length > 0
+                                ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; border-top: none; margin-top: -1px;`
+                                : `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
+
                             allPlansHtml += `
-                                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${borderTopStyle}">
+                                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;">${unownedLabel} (${unownedCards.length})</div>
                                     <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;">${buildIconsHtml(unownedCards, false)}</div>
                                 </div>
@@ -2046,20 +2121,42 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
                             const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
 
+                            const hexToRgba = (hex, alpha) => {
+                                if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
+                                const r = parseInt(hex.slice(1, 3), 16);
+                                const g = parseInt(hex.slice(3, 5), 16);
+                                const b = parseInt(hex.slice(5, 7), 16);
+                                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                            };
+
+                            const sourceColor = sourceCard.dataset.color || '#ff4d8d';
+                            const ownedBg = hexToRgba(sourceColor, 0.08);
+                            const ownedBorder = hexToRgba(sourceColor, 0.12);
+
                             if (ownedCards.length > 0) {
                                 ownedGroup.style.display = 'flex';
                                 ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
                                 ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+
+                                if (unownedCards.length > 0) {
+                                    ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0; border-bottom: none;`;
+                                } else {
+                                    ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+                                }
                             } else {
                                 ownedGroup.style.display = 'none';
                             }
 
                             if (unownedCards.length > 0) {
                                 unownedGroup.style.display = 'flex';
-                                unownedGroup.style.borderTop = ownedCards.length > 0 ? '1px solid #e2e8f0' : 'none';
-                                unownedGroup.style.paddingTop = ownedCards.length > 0 ? '12px' : '0';
                                 unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
                                 unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+
+                                if (ownedCards.length > 0) {
+                                    unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; border-top: none; margin-top: -1px;`;
+                                } else {
+                                    unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
+                                }
                             } else {
                                 unownedGroup.style.display = 'none';
                             }

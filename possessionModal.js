@@ -332,8 +332,34 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
     }
 
     const unownedCards = sStats.unownedCards || [];
+    const hasOwned = sStats.owned > 0;
+    const hasUnowned = unownedCards.length > 0;
+
+    const hexToRgba = (hex, alpha) => {
+        if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    const ownedBg = hexToRgba(themeColor, 0.08);
+    const ownedBorder = hexToRgba(themeColor, 0.12);
+
+    let ownedStyle = '';
+    let unownedSectionStyle = '';
+
+    if (hasOwned && hasUnowned) {
+        ownedStyle = `background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0; border-bottom: none;`;
+        unownedSectionStyle = `margin-top: -1px; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px;`;
+    } else if (hasOwned) {
+        ownedStyle = `background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+    } else if (hasUnowned) {
+        unownedSectionStyle = `margin-top: 12px; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
+    }
+
     let unownedCardsHtml = '';
-    if (unownedCards.length > 0) {
+    if (hasUnowned) {
         let unownedCardImgsHtml = '';
         unownedCards.forEach(c => {
             const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
@@ -351,7 +377,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
 
         const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
         unownedCardsHtml = `
-            <div class="possession-unowned-section" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px; width: 100%; background: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); padding: 8px; border-radius: 8px; box-sizing: border-box;">
+            <div class="possession-unowned-section" style="display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; ${unownedSectionStyle}">
                 <div class="possession-unowned-title" style="font-size: 0.72rem; font-weight: 800; color: #999; text-align: left; padding-left: 8px; user-select: none;">
                     ${unownedLabel} (${unownedCards.length})
                 </div>
@@ -362,12 +388,19 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         `;
     }
 
+    let ownedContainerHtml = '';
+    if (hasOwned) {
+        ownedContainerHtml = `
+            <div class="possession-owned-container" style="display: flex; gap: 0; justify-content: space-between; align-items: stretch; width: 100%; box-sizing: border-box; ${ownedStyle}">
+                ${detailColsHtml}
+            </div>
+        `;
+    }
+
     const detailContainerHtml = `
         <div class="possession-detail-container" style="display: none; margin-top: 12px;">
-            <div class="possession-detail-scroll-wrapper" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 8px; max-height: ${isOverall ? '520px' : '420px'}; overflow-y: auto; padding: 0 8px 8px 8px; box-sizing: border-box;">
-                <div style="display: flex; gap: 0; justify-content: space-between; align-items: stretch;">
-                    ${detailColsHtml}
-                </div>
+            <div class="possession-detail-scroll-wrapper" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 8px; max-height: ${isOverall ? '520px' : '420px'}; overflow-y: auto; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column;">
+                ${ownedContainerHtml}
                 ${unownedCardsHtml}
             </div>
         </div>
