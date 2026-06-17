@@ -394,6 +394,19 @@ export function openIdolPossessionModal() {
                 top: -15px;
                 display: block;
             }
+            .possession-save-options-content {
+                width: 380px;
+                padding: 24px;
+                border-radius: 16px;
+                background: #fff;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                display: flex;
+                flex-direction: column;
+                gap: 13px;
+                box-sizing: border-box;
+                text-align: center;
+                position: relative;
+            }
 
             @media (max-width: 768px) {
                 .idol-possession-content {
@@ -491,6 +504,39 @@ export function openIdolPossessionModal() {
                     padding: 0 8px !important;
                     font-size: 0.68rem !important;
                     border-radius: 5px !important;
+                }
+                .possession-save-options-content {
+                    width: 270px !important;
+                    padding: 16px !important;
+                    gap: 8px !important;
+                    border-radius: 12px !important;
+                }
+                .possession-save-options-content .save-opt-title {
+                    font-size: 0.85rem !important;
+                    margin-top: 2px !important;
+                    margin-bottom: 2px !important;
+                }
+                .possession-save-options-content button.calc-btn {
+                    padding: 11px 8px !important;
+                    font-size: 0.65rem !important;
+                    border-radius: 6px !important;
+                    width: 90% !important;
+                }
+                .possession-save-options-content #btn-save-opt-close {
+                    font-size: 1rem !important;
+                    top: 4px !important;
+                    right: 4px !important;
+                }
+                .possession-save-options-content .save-opt-plan-btn {
+                    padding: 8px 2px !important;
+                    gap: 2px !important;
+                }
+                .possession-save-options-content .save-opt-plan-btn span {
+                    font-size: 0.48rem !important;
+                }
+                .possession-save-options-content .save-opt-plan-btn img {
+                    width: 9px !important;
+                    height: 9px !important;
                 }
             }
         </style>
@@ -669,6 +715,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     const scrollArea = modal.querySelector('#idol-possession-scroll-area');
     const bottomArea = modal.querySelector('#idol-possession-bottom-area');
     const headerArea = modal.querySelector('#idol-possession-header-area');
+    let firstPlaceCharColor = '#ff4d8d';
 
     modalContent.style.position = 'relative';
     headerArea.style.position = 'relative';
@@ -807,7 +854,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         });
 
         const firstPlaceChar = charList[0]?.charId;
-        const firstPlaceCharColor = (firstPlaceChar && idolColors[firstPlaceChar]) || '#ff4d8d';
+        firstPlaceCharColor = (firstPlaceChar && idolColors[firstPlaceChar]) || '#ff4d8d';
 
         // Update header save button and indicator colors dynamically to match 1st place character color
         const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
@@ -1290,7 +1337,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 </div>
 
                 <!-- Row for Plan Stats -->
-                <div class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
+                <div id="pssr-plan-stats-label" class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
                     <img src="icons/${highestPlan}.webp" style="width: 15px; height: 15px; object-fit: contain; flex-shrink: 0;">
                     <span>${text.plan_stats}</span>
                 </div>
@@ -1316,16 +1363,16 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     <img src="icons/train.webp" style="width: 15px; height: 15px; object-fit: contain; flex-shrink: 0;">
                     <span>${text.source_stats}</span>
                 </div>
-                <div class="possession-section-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 10px 18px; display: flex; flex-direction: column; gap: 0;">
+                <div class="possession-section-card idol-stats-source-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 10px 18px; display: flex; flex-direction: column; gap: 0;">
                     ${sourceRowsHtml}
                 </div>
 
                 <!-- Row for Character Stats -->
-                <div class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
+                <div id="pssr-char-stats-label" class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
                     <img src="icons/idolicons/${firstPlaceChar}_c.png" style="width: 22px; height: 22px; object-fit: contain; flex-shrink: 0;">
                     <span>${text.char_stats}</span>
                 </div>
-                <div class="possession-section-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+                <div class="possession-section-card idol-stats-char-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
                     ${charListHtml}
                 </div>
             </div>
@@ -1567,169 +1614,644 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
     saveBtn.onclick = () => {
         const originalText = saveBtn.innerHTML;
-        saveBtn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${text.alert_generating}</span>`;
-        saveBtn.disabled = true;
 
-        const startCapture = () => {
-            const executeCapture = () => capture();
+        const showSpinnerOverlay = () => {
+            let overlay = document.getElementById('possession-save-spinner-overlay');
+            if (overlay) overlay.remove();
 
-            if (window.html2canvas) {
-                executeCapture();
-            } else {
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-                script.onload = () => executeCapture();
-                script.onerror = () => {
-                    alert(text.alert_fail);
-                    saveBtn.innerHTML = originalText;
-                    saveBtn.disabled = false;
-                };
-                document.head.appendChild(script);
+            overlay = document.createElement('div');
+            overlay.id = 'possession-save-spinner-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.45);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 100000;
+                color: #fff;
+                font-family: inherit;
+                gap: 16px;
+            `;
+            
+            const spinner = document.createElement('div');
+            spinner.style.cssText = `
+                width: 46px;
+                height: 46px;
+                border: 4.5px solid rgba(255, 255, 255, 0.25);
+                border-top: 4.5px solid ${firstPlaceCharColor};
+                border-radius: 50%;
+                animation: possession-spin 0.85s linear infinite;
+                box-sizing: border-box;
+                will-change: transform;
+                transform: translateZ(0);
+            `;
+            
+            if (!document.getElementById('possession-spin-style')) {
+                const style = document.createElement('style');
+                style.id = 'possession-spin-style';
+                style.textContent = `
+                    @keyframes possession-spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
             }
+
+            const label = document.createElement('div');
+            label.style.cssText = `
+                font-size: 0.95rem;
+                font-weight: 800;
+                text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+                letter-spacing: 0.5px;
+            `;
+            label.textContent = text.alert_generating;
+
+            overlay.appendChild(spinner);
+            overlay.appendChild(label);
+            document.body.appendChild(overlay);
         };
 
-        const capture = () => {
-            // Hide button during screenshot
-            saveBtn.style.display = 'none';
-
-            // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
-            const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
-            const origImgSrcs = [];
-            statImgs.forEach(img => {
-                const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
-                if (isUnowned) {
-                    origImgSrcs.push({ img: img, src: img.src });
-                    if (window.getGrayscaleDataUrl) {
-                        img.src = window.getGrayscaleDataUrl(img);
-                    }
-                }
-            });
-
-            // Expand 1st place character drawer, collapse others during capture
-            const charCards = modalContent.querySelectorAll('.char-stat-card');
-            const origCharCardStyles = [];
-            charCards.forEach((card, idx) => {
-                const details = card.querySelector('.char-stat-details');
-                const chevron = card.querySelector('.char-chevron');
-                origCharCardStyles.push({
-                    details: details,
-                    chevron: chevron,
-                    display: details ? details.style.display : 'none',
-                    transform: chevron ? chevron.style.transform : ''
-                });
-
-                if (details) {
-                    if (idx < 3) {
-                        details.style.display = 'flex';
-                        if (chevron) chevron.style.transform = 'rotate(180deg)';
-                    } else {
-                        details.style.display = 'none';
-                        if (chevron) chevron.style.transform = 'rotate(0deg)';
-                    }
-                }
-            });
-
-            // Set scroll to top and adjust styles for flat render
-            const origScrollMaxHeight = scrollArea.style.maxHeight;
-            const origScrollFlex = scrollArea.style.flex;
-            const origScrollMinHeight = scrollArea.style.minHeight;
-            const origScrollOverflow = scrollArea.style.overflowY;
-            const origScrollPadding = scrollArea.style.paddingRight;
-            const origScrollTop = scrollArea.scrollTop;
-
-            const origModalMaxHeight = modalContent.style.maxHeight;
-            const origModalOverflow = modalContent.style.overflow;
-
-            scrollArea.scrollTop = 0;
-            scrollArea.offsetHeight;
-
-            scrollArea.style.maxHeight = 'none';
-            scrollArea.style.flex = 'none';
-            scrollArea.style.minHeight = 'auto';
-            scrollArea.style.overflowY = 'visible';
-            scrollArea.style.paddingRight = '0';
-
-            modalContent.style.maxHeight = 'none';
-            modalContent.style.overflow = 'visible';
-
-            setTimeout(() => {
-                window.html2canvas(modalContent, {
-                    backgroundColor: '#ffffff',
-                    scale: 2,
-                    useCORS: true,
-                    logging: false
-                }).then(canvas => {
-                    const dataUrl = canvas.toDataURL('image/webp', 0.85);
-                    const isWebp = dataUrl.startsWith('data:image/webp');
-                    const ext = isWebp ? 'webp' : 'png';
-
-                    const rand = Math.floor(1000 + Math.random() * 9000);
-                    const link = document.createElement('a');
-                    link.download = `gakumasnote_possession_idol_${rand}.${ext}`;
-                    link.href = dataUrl;
-                    link.click();
-
-                    // Restore original image sources after capture
-                    origImgSrcs.forEach(item => {
-                        item.img.src = item.src;
-                    });
-
-                    // Restore original char-stat-card details states
-                    origCharCardStyles.forEach(item => {
-                        if (item.details) item.details.style.display = item.display;
-                        if (item.chevron) item.chevron.style.transform = item.transform;
-                    });
-
-                    // Restore original styles
-                    saveBtn.style.display = 'block';
-
-                    scrollArea.style.maxHeight = origScrollMaxHeight;
-                    scrollArea.style.flex = origScrollFlex;
-                    scrollArea.style.minHeight = origScrollMinHeight;
-                    scrollArea.style.overflowY = origScrollOverflow;
-                    scrollArea.style.paddingRight = origScrollPadding;
-                    scrollArea.scrollTop = origScrollTop;
-
-                    modalContent.style.maxHeight = origModalMaxHeight;
-                    modalContent.style.overflow = origModalOverflow;
-
-                    saveBtn.innerHTML = originalText;
-                    saveBtn.disabled = false;
-                    showIdolToast(text.alert_success);
-                }).catch(err => {
-                    console.error('html2canvas error:', err);
-                    alert(text.alert_fail);
-
-                    // Restore original image sources after capture failure
-                    origImgSrcs.forEach(item => {
-                        item.img.src = item.src;
-                    });
-
-                    // Restore original char-stat-card details states
-                    origCharCardStyles.forEach(item => {
-                        if (item.details) item.details.style.display = item.display;
-                        if (item.chevron) item.chevron.style.transform = item.transform;
-                    });
-
-                    // Restore original styles
-                    saveBtn.style.display = 'block';
-
-                    scrollArea.style.maxHeight = origScrollMaxHeight;
-                    scrollArea.style.flex = origScrollFlex;
-                    scrollArea.style.minHeight = origScrollMinHeight;
-                    scrollArea.style.overflowY = origScrollOverflow;
-                    scrollArea.style.paddingRight = origScrollPadding;
-                    scrollArea.scrollTop = origScrollTop;
-
-                    modalContent.style.maxHeight = origModalMaxHeight;
-                    modalContent.style.overflow = origModalOverflow;
-
-                    saveBtn.innerHTML = originalText;
-                    saveBtn.disabled = false;
-                });
-            }, 100);
+        const hideSpinnerOverlay = () => {
+            const overlay = document.getElementById('possession-save-spinner-overlay');
+            if (overlay) overlay.remove();
         };
 
-        startCapture();
+        const showSaveOptionsModal = (onSelect) => {
+            let optionsModal = document.createElement('div');
+            optionsModal.className = 'modal';
+            optionsModal.style.zIndex = '36000';
+            optionsModal.style.display = 'flex';
+            optionsModal.style.alignItems = 'center';
+            optionsModal.style.justifyContent = 'center';
+            optionsModal.style.position = 'fixed';
+            optionsModal.style.inset = '0';
+            optionsModal.style.background = 'rgba(0, 0, 0, 0.7)';
+
+            const isJa = lang === 'ja';
+            const isEn = lang === 'en';
+            const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
+            const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
+            const optPlanAllText = isJa ? 'プラン別保存' : isEn ? 'Save by Plan' : '플랜별 저장';
+            const optSourceAllText = isJa ? '分類別保存' : isEn ? 'Save by Category' : '분류별 저장';
+            const optCharAllText = isJa ? 'キャラクター別保存' : isEn ? 'Save by Character' : '캐릭터별 저장';
+
+            optionsModal.innerHTML = `
+                <div class="modal-content possession-save-options-content">
+                    <button id="btn-save-opt-close" style="position: absolute; right: 6px; top: 6px; background: none; border: none; font-size: 1.25rem; font-weight: bold; color: #888; cursor: pointer; padding: 2px; line-height: 1; transition: none !important;">&times;</button>
+                    <div class="save-opt-title" style="font-weight: 800; font-size: 1.1rem; color: #333; margin-bottom: 4px; margin-top: 8px;">${titleText}</div>
+                    <button id="btn-save-opt-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: ${firstPlaceCharColor}; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
+                        ${optAllText}
+                    </button>
+                    <button id="btn-save-opt-plan-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: #64748b; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
+                        ${optPlanAllText}
+                    </button>
+                    <button id="btn-save-opt-source-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: #475569; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
+                        ${optSourceAllText}
+                    </button>
+                    <button id="btn-save-opt-char-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: #334155; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
+                        ${optCharAllText}
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(optionsModal);
+
+            const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
+            closeBtn.onclick = () => {
+                optionsModal.remove();
+                onSelect(null);
+            };
+            optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
+                optionsModal.remove();
+                onSelect('all');
+            };
+            optionsModal.querySelector('#btn-save-opt-plan-all').onclick = () => {
+                optionsModal.remove();
+                onSelect('plan-all');
+            };
+            optionsModal.querySelector('#btn-save-opt-source-all').onclick = () => {
+                optionsModal.remove();
+                onSelect('source-all');
+            };
+            optionsModal.querySelector('#btn-save-opt-char-all').onclick = () => {
+                optionsModal.remove();
+                onSelect('char-all');
+            };
+            optionsModal.onclick = (e) => {
+                if (e.target === optionsModal) {
+                    optionsModal.remove();
+                    onSelect(null);
+                }
+            };
+        };
+
+        showSaveOptionsModal((saveType) => {
+            if (!saveType) return;
+
+            showSpinnerOverlay();
+
+            saveBtn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${text.alert_generating}</span>`;
+            saveBtn.disabled = true;
+
+            const startCapture = () => {
+                const executeCapture = () => capture();
+
+                if (window.html2canvas) {
+                    setTimeout(executeCapture, 50);
+                } else {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    script.onload = () => executeCapture();
+                    script.onerror = () => {
+                        alert(text.alert_fail);
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        hideSpinnerOverlay();
+                    };
+                    document.head.appendChild(script);
+                }
+            };
+
+            const capture = () => {
+                // Hide button during screenshot
+                saveBtn.style.display = 'none';
+
+                const isPlanAll = saveType === 'plan-all';
+                const isSourceAll = saveType === 'source-all';
+                const isCharAll = saveType === 'char-all';
+
+                // Hide other sections/elements if plan-only or source-only or char-only mode
+                const elementsToHide = [];
+                if (isPlanAll || isSourceAll || isCharAll) {
+                    // Hide overall card
+                    const overallCard = modalContent.querySelector('.possession-section-card[data-is-overall="true"]');
+                    if (overallCard) elementsToHide.push(overallCard);
+
+                    // Hide background image
+                    const bgImg = modalContent.querySelector('.modal-bg-image');
+                    if (bgImg) elementsToHide.push(bgImg);
+
+                    if (isPlanAll) {
+                        // Hide source label/cards
+                        const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
+                        if (sourceLbl) elementsToHide.push(sourceLbl);
+                        const sourceCard = modalContent.querySelector('.idol-stats-source-card');
+                        if (sourceCard) elementsToHide.push(sourceCard);
+
+                        // Hide char label/cards
+                        const charLbl = modalContent.querySelector('#pssr-char-stats-label');
+                        if (charLbl) elementsToHide.push(charLbl);
+                        const charCard = modalContent.querySelector('.idol-stats-char-card');
+                        if (charCard) elementsToHide.push(charCard);
+                    } else if (isSourceAll) {
+                        // Hide plan label/cards
+                        const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
+                        if (planLbl) elementsToHide.push(planLbl);
+                        const planCard = modalContent.querySelector('.idol-stats-plan-card');
+                        if (planCard) elementsToHide.push(planCard);
+
+                        // Hide char label/cards
+                        const charLbl = modalContent.querySelector('#pssr-char-stats-label');
+                        if (charLbl) elementsToHide.push(charLbl);
+                        const charCard = modalContent.querySelector('.idol-stats-char-card');
+                        if (charCard) elementsToHide.push(charCard);
+                    } else if (isCharAll) {
+                        // Hide plan label/cards
+                        const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
+                        if (planLbl) elementsToHide.push(planLbl);
+                        const planCard = modalContent.querySelector('.idol-stats-plan-card');
+                        if (planCard) elementsToHide.push(planCard);
+
+                        // Hide source label/cards
+                        const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
+                        if (sourceLbl) elementsToHide.push(sourceLbl);
+                        const sourceCard = modalContent.querySelector('.idol-stats-source-card');
+                        if (sourceCard) elementsToHide.push(sourceCard);
+                    }
+                }
+
+                const origDisplays = [];
+                elementsToHide.forEach(el => {
+                    origDisplays.push({ el, display: el.style.display });
+                    el.style.display = 'none';
+                });
+
+                // Programmatically set up the plan drawer contents
+                const detailsDiv = scrollArea.querySelector('#plan-stat-details');
+                const origPlanDetailsHtml = detailsDiv ? detailsDiv.innerHTML : '';
+                const origPlanDetailsDisplay = detailsDiv ? detailsDiv.style.display : '';
+                const origPlanDetailsActive = detailsDiv ? detailsDiv.dataset.activePlan : '';
+                const origPlanColsActive = [];
+                scrollArea.querySelectorAll('.idol-stats-plan-col').forEach(col => {
+                    origPlanColsActive.push({ col, active: col.classList.contains('active') });
+                });
+
+                if (isPlanAll && detailsDiv) {
+                    const planCols = scrollArea.querySelectorAll('.idol-stats-plan-col');
+                    planCols.forEach(col => col.classList.add('active'));
+
+                    const activeCards = includeAnother ? pssrCards : pssrCards.filter(c => !c.another);
+
+                    const sortFn = (a, b) => {
+                        const charA = getCharacterId(a.id);
+                        const charB = getCharacterId(b.id);
+                        const idxA = CHARACTER_ORDER.indexOf(charA);
+                        const idxB = CHARACTER_ORDER.indexOf(charB);
+                        if (idxA !== idxB) return idxA - idxB;
+                        const dateA = a.releasedAt || '1970-01-01';
+                        const dateB = b.releasedAt || '1970-01-01';
+                        if (dateA !== dateB) return dateA.localeCompare(dateB);
+                        return a.id.localeCompare(b.id);
+                    };
+
+                    const buildIconsHtml = (cardsList, isOwnedList) => {
+                        let html = '';
+                        cardsList.forEach(c => {
+                            const suffix = c.another ? '1.webp' : '2.webp';
+                            const cardName = getLocalizedCardName(c, lang);
+                            const charId = getCharacterId(c.id);
+                            const charColor = idolColors[charId] || '#cbd5e1';
+
+                            const containerStyle = isOwnedList
+                                ? `border: 1.5px solid ${charColor};`
+                                : `border: 1px solid #ccc;`;
+
+                            const imgStyle = isOwnedList
+                                ? `display: block; opacity: 1;`
+                                : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+
+                            html += `
+                                <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                                    <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                </div>
+                            `;
+                        });
+                        return html;
+                    };
+
+                    const isJa = lang === 'ja';
+                    const isEn = lang === 'en';
+                    const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
+                    const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+
+                    let allPlansHtml = '<div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">';
+                    
+                    const plans = ['sense', 'logic', 'anomaly'];
+                    plans.forEach((p, pIdx) => {
+                        const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
+                        const ownedCards = planCards.filter(c => !!ownedMap[c.id]);
+                        const unownedCards = planCards.filter(c => !ownedMap[c.id]);
+                        ownedCards.sort(sortFn);
+                        unownedCards.sort(sortFn);
+
+                        const planColor = p === 'sense' ? '#ff4d8d' : p === 'logic' ? '#46a4f3' : '#ffb300';
+                        const planTitle = p.toUpperCase();
+
+                        const borderStyle = pIdx < plans.length - 1 ? 'border-bottom: 1px dashed rgba(0, 0, 0, 0.08); padding-bottom: 16px;' : '';
+
+                        allPlansHtml += `
+                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${borderStyle}">
+                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                    <img src="icons/${p}.webp" style="width: 15px; height: 15px; object-fit: contain;">
+                                    <span style="font-weight: 800; font-size: 0.85rem; color: ${planColor};">${planTitle}</span>
+                                </div>
+                        `;
+
+                        if (ownedCards.length > 0) {
+                            allPlansHtml += `
+                                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                    <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;">${ownedLabel} (${ownedCards.length})</div>
+                                    <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;">${buildIconsHtml(ownedCards, true)}</div>
+                                </div>
+                            `;
+                        }
+
+                        if (unownedCards.length > 0) {
+                            const borderTopStyle = ownedCards.length > 0 ? 'border-top: 1px solid #e2e8f0; padding-top: 12px;' : '';
+                            allPlansHtml += `
+                                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${borderTopStyle}">
+                                    <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;">${unownedLabel} (${unownedCards.length})</div>
+                                    <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;">${buildIconsHtml(unownedCards, false)}</div>
+                                </div>
+                            `;
+                        }
+
+                        allPlansHtml += `</div>`;
+                    });
+
+                    allPlansHtml += '</div>';
+                    detailsDiv.innerHTML = allPlansHtml;
+                    detailsDiv.style.display = 'flex';
+                    detailsDiv.dataset.activePlan = 'all';
+                }
+
+                // Temporarily expand all classification/source cards during capture
+                const sourceCardsList = scrollArea.querySelectorAll('.source-stat-card');
+                const origSourceCardsState = [];
+
+                if (isSourceAll) {
+                    sourceCardsList.forEach(sourceCard => {
+                        const detailsDiv = sourceCard.querySelector('.source-stat-details');
+                        const chevron = sourceCard.querySelector('.source-chevron');
+
+                        if (detailsDiv) {
+                            // Save original state
+                            origSourceCardsState.push({
+                                detailsDiv,
+                                chevron,
+                                display: detailsDiv.style.display,
+                                innerHTML: detailsDiv.innerHTML,
+                                transform: chevron ? chevron.style.transform : ''
+                            });
+
+                            // Populate details drawer
+                            const src = sourceCard.dataset.source;
+                            const includeAnother = scrollArea.querySelector('#chk-include-another')?.checked || false;
+                            const activeCards = includeAnother ? pssrCards : pssrCards.filter(c => !c.another);
+
+                            const sourceCards = activeCards.filter(c => {
+                                const cardSrc = c.another ? 'another' : (c.source || 'normal');
+                                return cardSrc === src;
+                            });
+
+                            const ownedCards = sourceCards.filter(c => !!ownedMap[c.id]);
+                            const unownedCards = sourceCards.filter(c => !ownedMap[c.id]);
+
+                            const sortFn = (a, b) => {
+                                const charA = getCharacterId(a.id);
+                                const charB = getCharacterId(b.id);
+                                const idxA = CHARACTER_ORDER.indexOf(charA);
+                                const idxB = CHARACTER_ORDER.indexOf(charB);
+                                if (idxA !== idxB) return idxA - idxB;
+                                const dateA = a.releasedAt || '1970-01-01';
+                                const dateB = b.releasedAt || '1970-01-01';
+                                if (dateA !== dateB) return dateA.localeCompare(dateB);
+                                return a.id.localeCompare(b.id);
+                            };
+                            ownedCards.sort(sortFn);
+                            unownedCards.sort(sortFn);
+
+                            const buildIconsHtml = (cardsList, isOwnedList) => {
+                                let html = '';
+                                cardsList.forEach(c => {
+                                    const suffix = c.another ? '1.webp' : '2.webp';
+                                    const cardName = getLocalizedCardName(c, lang);
+                                    const charId = getCharacterId(c.id);
+                                    const charColor = idolColors[charId] || '#cbd5e1';
+
+                                    const containerStyle = isOwnedList
+                                        ? `border: 1.5px solid ${charColor};`
+                                        : `border: 1px solid #ccc;`;
+
+                                    const imgStyle = isOwnedList
+                                        ? `display: block; opacity: 1;`
+                                        : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+
+                                    html += `
+                                        <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                                            <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                        </div>
+                                    `;
+                                });
+                                return html;
+                            };
+
+                            const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
+                            const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
+                            const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
+                            const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
+
+                            const isJa = lang === 'ja';
+                            const isEn = lang === 'en';
+                            const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
+                            const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+
+                            if (ownedCards.length > 0) {
+                                ownedGroup.style.display = 'flex';
+                                ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
+                                ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+                            } else {
+                                ownedGroup.style.display = 'none';
+                            }
+
+                            if (unownedCards.length > 0) {
+                                unownedGroup.style.display = 'flex';
+                                unownedGroup.style.borderTop = ownedCards.length > 0 ? '1px solid #e2e8f0' : 'none';
+                                unownedGroup.style.paddingTop = ownedCards.length > 0 ? '12px' : '0';
+                                unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
+                                unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+                            } else {
+                                unownedGroup.style.display = 'none';
+                            }
+
+                            detailsDiv.style.display = 'flex';
+                            if (chevron) chevron.style.transform = 'rotate(180deg)';
+                        }
+                    });
+                }
+
+                // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
+                const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
+                const origImgSrcs = [];
+                statImgs.forEach(img => {
+                    const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
+                    if (isUnowned) {
+                        origImgSrcs.push({ img: img, src: img.src });
+                        if (window.getGrayscaleDataUrl) {
+                            img.src = window.getGrayscaleDataUrl(img);
+                        }
+                    }
+                });
+
+                // Expand 1st place character drawer, collapse others during capture
+                const charCards = modalContent.querySelectorAll('.char-stat-card');
+                const origCharCardStyles = [];
+                charCards.forEach((card, idx) => {
+                    const details = card.querySelector('.char-stat-details');
+                    const chevron = card.querySelector('.char-chevron');
+                    origCharCardStyles.push({
+                        details: details,
+                        chevron: chevron,
+                        display: details ? details.style.display : 'none',
+                        transform: chevron ? chevron.style.transform : ''
+                    });
+
+                    if (details) {
+                        if (isCharAll) {
+                            details.style.display = 'flex';
+                            if (chevron) chevron.style.transform = 'rotate(180deg)';
+                        } else if (!isPlanAll && !isSourceAll) {
+                            if (idx < 3) {
+                                details.style.display = 'flex';
+                                if (chevron) chevron.style.transform = 'rotate(180deg)';
+                            } else {
+                                details.style.display = 'none';
+                                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                            }
+                        }
+                    }
+                });
+
+                // Set scroll to top and adjust styles for flat render
+                const origScrollMaxHeight = scrollArea.style.maxHeight;
+                const origScrollFlex = scrollArea.style.flex;
+                const origScrollMinHeight = scrollArea.style.minHeight;
+                const origScrollOverflow = scrollArea.style.overflowY;
+                const origScrollPadding = scrollArea.style.paddingRight;
+                const origScrollTop = scrollArea.scrollTop;
+
+                const origModalMaxHeight = modalContent.style.maxHeight;
+                const origModalOverflow = modalContent.style.overflow;
+
+                scrollArea.scrollTop = 0;
+                scrollArea.offsetHeight;
+
+                scrollArea.style.maxHeight = 'none';
+                scrollArea.style.flex = 'none';
+                scrollArea.style.minHeight = 'auto';
+                scrollArea.style.overflowY = 'visible';
+                scrollArea.style.paddingRight = '0';
+
+                modalContent.style.maxHeight = 'none';
+                modalContent.style.overflow = 'visible';
+
+                setTimeout(() => {
+                    window.html2canvas(modalContent, {
+                        backgroundColor: '#ffffff',
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    }).then(canvas => {
+                        const dataUrl = canvas.toDataURL('image/webp', 0.85);
+                        const isWebp = dataUrl.startsWith('data:image/webp');
+                        const ext = isWebp ? 'webp' : 'png';
+
+                        const rand = Math.floor(1000 + Math.random() * 9000);
+                        const nameSuffix = isPlanAll ? '_plan_all' : (isSourceAll ? '_source_all' : (isCharAll ? '_char_all' : ''));
+                        const link = document.createElement('a');
+                        link.download = `gakumasnote_possession_idol${nameSuffix}_${rand}.${ext}`;
+                        link.href = dataUrl;
+                        link.click();
+
+                        // Restore original image sources after capture
+                        origImgSrcs.forEach(item => {
+                            item.img.src = item.src;
+                        });
+
+                        // Restore original hidden elements
+                        origDisplays.forEach(item => {
+                            item.el.style.display = item.display;
+                        });
+
+                        // Restore original plan stats details states
+                        if (detailsDiv) {
+                            detailsDiv.innerHTML = origPlanDetailsHtml;
+                            detailsDiv.style.display = origPlanDetailsDisplay;
+                            detailsDiv.dataset.activePlan = origPlanDetailsActive;
+                        }
+                        origPlanColsActive.forEach(item => {
+                            if (item.active) {
+                                item.col.classList.add('active');
+                            } else {
+                                item.col.classList.remove('active');
+                            }
+                        });
+
+                        // Restore original source stats cards states
+                        origSourceCardsState.forEach(item => {
+                            item.detailsDiv.innerHTML = item.innerHTML;
+                            item.detailsDiv.style.display = item.display;
+                            if (item.chevron) item.chevron.style.transform = item.transform;
+                        });
+
+                        // Restore original char-stat-card details states
+                        origCharCardStyles.forEach(item => {
+                            if (item.details) item.details.style.display = item.display;
+                            if (item.chevron) item.chevron.style.transform = item.transform;
+                        });
+
+                        // Restore original styles
+                        saveBtn.style.display = 'block';
+
+                        scrollArea.style.maxHeight = origScrollMaxHeight;
+                        scrollArea.style.flex = origScrollFlex;
+                        scrollArea.style.minHeight = origScrollMinHeight;
+                        scrollArea.style.overflowY = origScrollOverflow;
+                        scrollArea.style.paddingRight = origScrollPadding;
+                        scrollArea.scrollTop = origScrollTop;
+
+                        modalContent.style.maxHeight = origModalMaxHeight;
+                        modalContent.style.overflow = origModalOverflow;
+
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        hideSpinnerOverlay();
+                        showIdolToast(text.alert_success);
+                    }).catch(err => {
+                        console.error('html2canvas error:', err);
+                        alert(text.alert_fail);
+
+                        // Restore original image sources after capture failure
+                        origImgSrcs.forEach(item => {
+                            item.img.src = item.src;
+                        });
+
+                        // Restore original hidden elements
+                        origDisplays.forEach(item => {
+                            item.el.style.display = item.display;
+                        });
+
+                        // Restore original plan stats details states
+                        if (detailsDiv) {
+                            detailsDiv.innerHTML = origPlanDetailsHtml;
+                            detailsDiv.style.display = origPlanDetailsDisplay;
+                            detailsDiv.dataset.activePlan = origPlanDetailsActive;
+                        }
+                        origPlanColsActive.forEach(item => {
+                            if (item.active) {
+                                item.col.classList.add('active');
+                            } else {
+                                item.col.classList.remove('active');
+                            }
+                        });
+
+                        // Restore original source stats cards states
+                        origSourceCardsState.forEach(item => {
+                            item.detailsDiv.innerHTML = item.innerHTML;
+                            item.detailsDiv.style.display = item.display;
+                            if (item.chevron) item.chevron.style.transform = item.transform;
+                        });
+
+                        // Restore original char-stat-card details states
+                        origCharCardStyles.forEach(item => {
+                            if (item.details) item.details.style.display = item.display;
+                            if (item.chevron) item.chevron.style.transform = item.transform;
+                        });
+
+                        // Restore original styles
+                        saveBtn.style.display = 'block';
+
+                        scrollArea.style.maxHeight = origScrollMaxHeight;
+                        scrollArea.style.flex = origScrollFlex;
+                        scrollArea.style.minHeight = origScrollMinHeight;
+                        scrollArea.style.overflowY = origScrollOverflow;
+                        scrollArea.style.paddingRight = origScrollPadding;
+                        scrollArea.scrollTop = origScrollTop;
+
+                        modalContent.style.maxHeight = origModalMaxHeight;
+                        modalContent.style.overflow = origModalOverflow;
+
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        hideSpinnerOverlay();
+                    });
+                }, 350);
+            };
+
+            startCapture();
+        });
     };
 }

@@ -841,7 +841,7 @@ export function openPossessionModal() {
                 .possession-save-options-content {
                     width: 270px !important;
                     padding: 16px !important;
-                    gap: 10px !important;
+                    gap: 8px !important;
                     border-radius: 12px !important;
                 }
                 .possession-save-options-content .save-opt-title {
@@ -1032,7 +1032,7 @@ export function openPossessionModal() {
         const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
 
         optionsModal.innerHTML = `
-            <div class="modal-content possession-save-options-content" style="width: 380px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; text-align: center; position: relative;">
+            <div class="modal-content possession-save-options-content" style="width: 380px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 13px; box-sizing: border-box; text-align: center; position: relative;">
                 <button id="btn-save-opt-close" style="position: absolute; right: 6px; top: 6px; background: none; border: none; font-size: 1.25rem; font-weight: bold; color: #888; cursor: pointer; padding: 2px; line-height: 1; transition: none !important;">&times;</button>
                 <div class="save-opt-title" style="font-weight: 800; font-size: 1.1rem; color: #333; margin-bottom: 4px; margin-top: 8px;">${titleText}</div>
                 <button id="btn-save-opt-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: ${themeColor}; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
@@ -1071,8 +1071,74 @@ export function openPossessionModal() {
         const btn = modal.querySelector('#btn-possession-save-image');
         const originalText = btn.innerHTML;
 
+        const showSpinnerOverlay = () => {
+            let overlay = document.getElementById('possession-save-spinner-overlay');
+            if (overlay) overlay.remove();
+
+            overlay = document.createElement('div');
+            overlay.id = 'possession-save-spinner-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.45);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 100000;
+                color: #fff;
+                font-family: inherit;
+                gap: 16px;
+            `;
+            
+            const spinner = document.createElement('div');
+            spinner.style.cssText = `
+                width: 46px;
+                height: 46px;
+                border: 4.5px solid rgba(255, 255, 255, 0.25);
+                border-top: 4.5px solid ${themeColor};
+                border-radius: 50%;
+                animation: possession-spin 0.85s linear infinite;
+                box-sizing: border-box;
+                will-change: transform;
+                transform: translateZ(0);
+            `;
+            
+            if (!document.getElementById('possession-spin-style')) {
+                const style = document.createElement('style');
+                style.id = 'possession-spin-style';
+                style.textContent = `
+                    @keyframes possession-spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            const label = document.createElement('div');
+            label.style.cssText = `
+                font-size: 0.95rem;
+                font-weight: 800;
+                text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+                letter-spacing: 0.5px;
+            `;
+            label.textContent = alertGeneratingImage;
+
+            overlay.appendChild(spinner);
+            overlay.appendChild(label);
+            document.body.appendChild(overlay);
+        };
+
+        const hideSpinnerOverlay = () => {
+            const overlay = document.getElementById('possession-save-spinner-overlay');
+            if (overlay) overlay.remove();
+        };
+
         showSaveOptionsModal((saveType) => {
             if (!saveType) return;
+
+            showSpinnerOverlay();
 
             btn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${alertGeneratingImage}</span>`;
             btn.disabled = true;
@@ -1081,7 +1147,7 @@ export function openPossessionModal() {
                 const executeCapture = () => capture();
 
                 if (window.html2canvas) {
-                    executeCapture();
+                    setTimeout(executeCapture, 50);
                 } else {
                     const script = document.createElement('script');
                     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
@@ -1090,6 +1156,7 @@ export function openPossessionModal() {
                         alert(alertFailImage);
                         btn.innerHTML = originalText;
                         btn.disabled = false;
+                        hideSpinnerOverlay();
                     };
                     document.head.appendChild(script);
                 }
@@ -1268,6 +1335,7 @@ export function openPossessionModal() {
 
                         btn.innerHTML = originalText;
                         btn.disabled = false;
+                        hideSpinnerOverlay();
                         showSupportToast(alertSuccessImage);
                     }).catch(err => {
                         console.error('html2canvas error:', err);
@@ -1318,8 +1386,9 @@ export function openPossessionModal() {
 
                         btn.innerHTML = originalText;
                         btn.disabled = false;
+                        hideSpinnerOverlay();
                     });
-                }, 100);
+                }, 350);
             };
 
             startCapture();
