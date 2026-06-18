@@ -260,7 +260,9 @@ export function openIdolPossessionModal() {
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
                 overflow: hidden;
                 background-color: #ffffff;
-                --pssr-group-gap: 3px;
+                --pssr-group-gap: 6px;
+                --pssr-title-gap: 4px;
+                --pssr-box-padding: 10px;
             }
             .idol-possession-title-wrap {
                 display: flex;
@@ -430,10 +432,21 @@ export function openIdolPossessionModal() {
                 display: block;
             }
             .plan-subgroup-col-left {
-                padding: 4px 6px 4px 4px;
+                padding: 0px 6px 4px 4px;
             }
             .plan-subgroup-col-right {
-                padding: 4px 4px 4px 6px;
+                padding: 0px 4px 4px 6px;
+            }
+            .pssr-stat-rate-pct {
+                font-size: 0.65rem;
+                font-weight: 800;
+                opacity: 0.9;
+            }
+            .pssr-stat-rate-fraction {
+                font-size: 0.58rem;
+                font-weight: normal;
+                color: #777;
+                margin-left: 2px;
             }
             .possession-save-options-content {
                 width: 380px;
@@ -458,6 +471,8 @@ export function openIdolPossessionModal() {
                     gap: 12px !important;
                     border-radius: 14px !important;
                     --pssr-group-gap: 2px;
+                    --pssr-title-gap: 2px;
+                    --pssr-box-padding: 4px;
                 }
                 .idol-possession-title-wrap {
                     font-size: 1.05rem !important;
@@ -1165,9 +1180,18 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
         scrollArea.innerHTML = `
             <style>
-                .char-stat-card:hover {
-                    border-color: #cbd5e1 !important;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+                @media (hover: hover) {
+                    .char-stat-card:hover {
+                        border-color: #cbd5e1 !important;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+                    }
+                    .source-stat-main:hover {
+                        background-color: rgba(0, 0, 0, 0.03) !important;
+                    }
+                    .idol-stats-plan-col:hover {
+                        background-color: rgba(0, 0, 0, 0.03) !important;
+                        border-color: rgba(0, 0, 0, 0.05) !important;
+                    }
                 }
                 .source-stat-card {
                     border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
@@ -1181,9 +1205,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 .source-stat-card:last-child {
                     border-bottom: none !important;
                 }
-                .source-stat-main:hover {
-                    background-color: rgba(0, 0, 0, 0.03) !important;
-                }
 
                 .idol-stats-plan-col {
                     padding: 8px 10px !important;
@@ -1192,10 +1213,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     border: 1px solid transparent !important;
                     cursor: pointer;
                     user-select: none;
-                }
-                .idol-stats-plan-col:hover {
-                    background-color: rgba(0, 0, 0, 0.03) !important;
-                    border-color: rgba(0, 0, 0, 0.05) !important;
                 }
                 .idol-stats-plan-col.active {
                     background-color: rgba(0, 0, 0, 0.008) !important;
@@ -1358,13 +1375,31 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         padding: 0 !important;
                     }
                     .plan-subgroup-col-left {
-                        padding: 4px 4px 4px 4px !important;
+                        padding: 2px 4px !important;
+                        gap: 3px !important;
                     }
                     .plan-subgroup-col-right {
-                        padding: 4px 4px 4px 4px !important;
+                        padding: 2px 4px !important;
+                        gap: 3px !important;
+                    }
+                    #plan-stat-details .pssr-stat-icons-container + div[style*="width: 1px"] {
+                        margin: 4px 0 !important;
+                    }
+                    .plan-subgroup-col-left > div:first-child, .plan-subgroup-col-right > div:first-child {
+                        margin-bottom: 2px !important;
                     }
                     #plan-stat-owned-group, #plan-stat-unowned-group {
-                        padding: 8px 4px !important;
+                        padding: 4px 4px !important;
+                        gap: 2px !important;
+                    }
+                    .plan-group-title {
+                        font-size: 0.6rem !important;
+                    }
+                    .pssr-stat-rate-pct {
+                        font-size: 0.55rem !important;
+                    }
+                    .pssr-stat-rate-fraction {
+                        font-size: 0.52rem !important;
                     }
                 }
             </style>
@@ -1398,12 +1433,12 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     </div>
                     <div id="plan-stat-details" style="display: none; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 4px; border-radius: 8px; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
                         <!-- Owned Cards Group -->
-                        <div id="plan-stat-owned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                        <div id="plan-stat-owned-group" style="display: flex; flex-direction: column; gap: 0; width: 100%;">
                             <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;"></div>
                             <div id="plan-stat-owned-container" style="padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
                         </div>
                         <!-- Unowned Cards Group -->
-                        <div id="plan-stat-unowned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                        <div id="plan-stat-unowned-group" style="display: flex; flex-direction: column; gap: 0; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 12px;">
                             <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;"></div>
                             <div id="plan-stat-unowned-container" style="padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
                         </div>
@@ -1493,8 +1528,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 <div class="plan-subgroup-col-left" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
                         <img src="${leftIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${leftLabel}">
-                        <span style="font-size: 0.65rem; font-weight: 800; color: ${pColor}; opacity: 0.9;">
-                            ${leftRate}% <span style="font-size: 0.58rem; font-weight: normal; color: #777; margin-left: 2px;">(${isOwned ? leftOwnedCount : (leftTotalCards.length - leftOwnedCount)}/${leftTotalCards.length})</span>
+                        <span style="color: ${pColor};" class="pssr-stat-rate-pct">
+                            ${isOwned ? leftRate : (100 - leftRate)}% <span class="pssr-stat-rate-fraction">(${isOwned ? leftOwnedCount : (leftTotalCards.length - leftOwnedCount)}/${leftTotalCards.length})</span>
                         </span>
                     </div>
                     <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">${leftHtml}</div>
@@ -1503,8 +1538,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 <div class="plan-subgroup-col-right" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
                         <img src="${rightIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${rightLabel}">
-                        <span style="font-size: 0.65rem; font-weight: 800; color: ${pColor}; opacity: 0.9;">
-                            ${rightRate}% <span style="font-size: 0.58rem; font-weight: normal; color: #777; margin-left: 2px;">(${isOwned ? rightOwnedCount : (rightTotalCards.length - rightOwnedCount)}/${rightTotalCards.length})</span>
+                        <span style="color: ${pColor};" class="pssr-stat-rate-pct">
+                            ${isOwned ? rightRate : (100 - rightRate)}% <span class="pssr-stat-rate-fraction">(${isOwned ? rightOwnedCount : (rightTotalCards.length - rightOwnedCount)}/${rightTotalCards.length})</span>
                         </span>
                     </div>
                     <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">${rightHtml}</div>
@@ -1607,11 +1642,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
                             ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
 
-                            if (hasOwned) {
-                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`;
-                            } else {
-                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
-                            }
+                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; padding: var(--pssr-box-padding); box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: ${hasUnowned ? '8px 8px 0 0' : '8px'};`;
                         } else {
                             ownedGroup.style.display = 'none';
                         }
@@ -1621,15 +1652,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
                             unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
 
-                            if (hasOwned) {
-                                unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
-                            } else {
-                                unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
-                            }
+                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; padding: var(--pssr-box-padding); box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: ${hasOwned ? '0 0 8px 8px' : '8px'};`;
                         } else {
                             unownedGroup.style.display = 'none';
                         }
-                        detailsDiv.style.gap = (hasOwned && hasUnowned) ? 'var(--pssr-group-gap)' : '12px';
+                        detailsDiv.style.gap = (hasOwned && hasUnowned) ? '1px' : '12px';
                     }
 
                     detailsDiv.style.display = isHidden ? 'flex' : 'none';
@@ -1740,11 +1767,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
                         ownedContainer.innerHTML = renderPlanSubGroupsHtml(ownedCards, true, plan, lang, buildIconsHtml, planCards);
 
-                        if (hasUnowned) {
-                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`;
-                        } else {
-                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
-                        }
+                        ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; padding: var(--pssr-box-padding); box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: ${hasUnowned ? '8px 8px 0 0' : '8px'};`;
                     } else {
                         ownedGroup.style.display = 'none';
                     }
@@ -1754,15 +1777,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
                         unownedContainer.innerHTML = renderPlanSubGroupsHtml(unownedCards, false, plan, lang, buildIconsHtml, planCards);
 
-                        if (hasOwned) {
-                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
-                        } else {
-                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
-                        }
+                        unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; padding: var(--pssr-box-padding); box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: ${hasOwned ? '0 0 8px 8px' : '8px'};`;
                     } else {
                         unownedGroup.style.display = 'none';
                     }
-                    detailsDiv.style.gap = (hasOwned && hasUnowned) ? 'var(--pssr-group-gap)' : '12px';
+                    detailsDiv.style.gap = (hasOwned && hasUnowned) ? '1px' : '12px';
 
                     detailsDiv.style.display = 'flex';
                     detailsDiv.dataset.activePlan = plan;
