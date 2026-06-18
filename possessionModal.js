@@ -1330,7 +1330,9 @@ export function openPossessionModal() {
                         backgroundColor: '#ffffff',
                         scale: 2,
                         useCORS: true,
-                        logging: false
+                        logging: false,
+                        windowWidth: 1024,
+                        width: 740
                     }).then(canvas => {
                         const dataUrl = canvas.toDataURL('image/webp', 0.85);
                         const isWebp = dataUrl.startsWith('data:image/webp');
