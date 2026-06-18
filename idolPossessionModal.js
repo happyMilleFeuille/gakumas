@@ -416,20 +416,55 @@ export function openIdolPossessionModal() {
             }
             .pssr-stat-icon-wrap {
                 position: relative;
-                width: 80px;
-                height: 80px;
+                width: 86px;
+                height: 86px;
                 border-radius: 12px;
-                overflow: hidden;
                 background: #eee;
                 flex-shrink: 0;
             }
-            .pssr-stat-icon-wrap img {
+            .pssr-stat-icon-box {
+                position: absolute;
+                inset: 0;
+                border-radius: 12px;
+                overflow: hidden;
+                z-index: 1;
+                box-sizing: border-box;
+            }
+            .pssr-stat-icon-box img {
                 position: absolute;
                 width: 150%;
                 height: auto;
                 left: -25%;
                 top: -15px;
                 display: block;
+            }
+            .pssr-char-badge {
+                position: absolute;
+                top: -1px;
+                left: -1px;
+                width: 22px;
+                height: 22px;
+                border-radius: 0 4px 4px 4px;
+                border: none !important;
+                z-index: 5;
+                pointer-events: none;
+                user-select: none;
+                object-fit: cover;
+            }
+            .pssr-plan-badge {
+                position: absolute;
+                bottom: -1px;
+                right: -1px;
+                width: 22px;
+                height: 22px;
+                border-radius: 4px;
+                border: none !important;
+                z-index: 5;
+                pointer-events: none;
+                user-select: none;
+                object-fit: contain;
+                padding: 3px;
+                box-sizing: border-box;
             }
             .plan-subgroup-col-left {
                 padding: 0px 6px 4px 4px;
@@ -545,11 +580,11 @@ export function openIdolPossessionModal() {
                     border-radius: 8px !important;
                 }
                 .pssr-stat-icon-wrap {
-                    width: 32px !important;
-                    height: 32px !important;
+                    width: 35px !important;
+                    height: 35px !important;
                     border-radius: 5px !important;
                 }
-                .pssr-stat-icon-wrap img {
+                .pssr-stat-icon-box img {
                     top: -6px !important;
                 }
                 .pssr-stat-icons-container {
@@ -1070,7 +1105,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 charIconsHtml += `
                     <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                        <img src="idols/thumb/${c.id}${suffix}" ${onloadAttr} onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                        <div class="pssr-stat-icon-box">
+                            <img src="idols/thumb/${c.id}${suffix}" ${onloadAttr} onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                        </div>
+                        <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
+                        <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
                     </div>
                 `;
             });
@@ -1368,6 +1407,23 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         width: 35px !important;
                         height: 35px !important;
                     }
+                    .pssr-char-badge {
+                        width: 10px !important;
+                        height: 10px !important;
+                        border: none !important;
+                        top: -1px !important;
+                        left: -1px !important;
+                        border-radius: 0 2px 2px 2px !important;
+                    }
+                    .pssr-plan-badge {
+                        width: 10px !important;
+                        height: 10px !important;
+                        border: none !important;
+                        bottom: -1px !important;
+                        right: -1px !important;
+                        border-radius: 2px 2px 0 2px !important;
+                        padding: 1.5px !important;
+                    }
                     #plan-stat-details {
                         padding: 8px 2px !important;
                     }
@@ -1605,7 +1661,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                                 html += `
                                     <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                        <div class="pssr-stat-icon-box">
+                                            <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                        </div>
+                                        <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
+                                        <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
                                     </div>
                                 `;
                             });
@@ -1725,7 +1785,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                             html += `
                                 <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                    <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                    <div class="pssr-stat-icon-box">
+                                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                    </div>
+                                    <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
+                                    <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
                                 </div>
                             `;
                         });
@@ -2103,7 +2167,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                             html += `
                                 <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                    <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                    <div class="pssr-stat-icon-box">
+                                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                    </div>
+                                    <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
+                                    <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
                                 </div>
                             `;
                         });
@@ -2248,7 +2316,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                                     html += `
                                         <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                            <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                            <div class="pssr-stat-icon-box">
+                                                <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                                            </div>
+                                            <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
                                         </div>
                                     `;
                                 });
