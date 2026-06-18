@@ -245,7 +245,7 @@ export const videoList = {
         {
             title: "Choo Choo Choo",
             url: "https://youtu.be/ZhIlyzx9pK8?si=NQD-LRL97vy_XTPQ",
-            date: "2026.06.18123."
+            date: "2026.06.18."
         },
         {
             title: "生誕ミニライブ2025",
