@@ -429,6 +429,12 @@ export function openIdolPossessionModal() {
                 top: -15px;
                 display: block;
             }
+            .plan-subgroup-col-left {
+                padding: 4px 6px 4px 4px;
+            }
+            .plan-subgroup-col-right {
+                padding: 4px 4px 4px 6px;
+            }
             .possession-save-options-content {
                 width: 380px;
                 padding: 24px;
@@ -1342,14 +1348,23 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         height: 8px !important;
                     }
                     #plan-stat-details .pssr-stat-icon-wrap {
-                        width: 39px !important;
-                        height: 39px !important;
+                        width: 35px !important;
+                        height: 35px !important;
                     }
                     #plan-stat-details {
                         padding: 8px 2px !important;
                     }
                     #plan-stat-details .pssr-stat-icons-container {
                         padding: 0 !important;
+                    }
+                    .plan-subgroup-col-left {
+                        padding: 4px 4px 4px 4px !important;
+                    }
+                    .plan-subgroup-col-right {
+                        padding: 4px 4px 4px 4px !important;
+                    }
+                    #plan-stat-owned-group, #plan-stat-unowned-group {
+                        padding: 8px 4px !important;
                     }
                 }
             </style>
@@ -1433,8 +1448,16 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     const renderPlanSubGroupsHtml = (cards, isOwned, plan, lang, buildIconsHtml, allPlanCards) => {
         const specs = PLAN_SPECS[plan] || [];
         const leftCards = cards.filter(c => getOsusume(c, pssrCards) === specs[0]);
-        const rightCards = cards.filter(c => getOsusume(c, pssrCards) === specs[1]);
-        const otherCards = cards.filter(c => !specs.includes(getOsusume(c, pssrCards)));
+        const rightCards = cards.filter(c => {
+            const os = getOsusume(c, pssrCards);
+            if (plan === 'anomaly' && os === 'preservation') return true;
+            return os === specs[1];
+        });
+        const otherCards = cards.filter(c => {
+            const os = getOsusume(c, pssrCards);
+            if (plan === 'anomaly' && os === 'preservation') return false;
+            return !specs.includes(os);
+        });
 
         const leftHtml = buildIconsHtml(leftCards.concat(otherCards), isOwned);
         const rightHtml = buildIconsHtml(rightCards, isOwned);
@@ -1448,9 +1471,13 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         // Calculate rates based on allPlanCards
         const leftTotalCards = allPlanCards.filter(c => {
             const os = getOsusume(c, pssrCards);
-            return os === specs[0] || !specs.includes(os);
+            return os === specs[0] || (!specs.includes(os) && !(plan === 'anomaly' && os === 'preservation'));
         });
-        const rightTotalCards = allPlanCards.filter(c => getOsusume(c, pssrCards) === specs[1]);
+        const rightTotalCards = allPlanCards.filter(c => {
+            const os = getOsusume(c, pssrCards);
+            if (plan === 'anomaly' && os === 'preservation') return true;
+            return os === specs[1];
+        });
 
         const leftOwnedCount = leftTotalCards.filter(c => !!ownedMap[c.id]).length;
         const rightOwnedCount = rightTotalCards.filter(c => !!ownedMap[c.id]).length;
@@ -1463,7 +1490,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
         return `
             <div style="display: flex; width: 100%; gap: 0; position: relative;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 4px 6px 4px 4px;">
+                <div class="plan-subgroup-col-left" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
                         <img src="${leftIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${leftLabel}">
                         <span style="font-size: 0.65rem; font-weight: 800; color: ${pColor}; opacity: 0.9;">
@@ -1473,7 +1500,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">${leftHtml}</div>
                 </div>
                 <div style="width: 1px; background: rgba(0,0,0,0.08); align-self: stretch; margin: 8px 0;"></div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 4px 4px 4px 6px;">
+                <div class="plan-subgroup-col-right" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
                         <img src="${rightIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${rightLabel}">
                         <span style="font-size: 0.65rem; font-weight: 800; color: ${pColor}; opacity: 0.9;">
