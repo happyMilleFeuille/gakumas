@@ -33,6 +33,40 @@ const CHARACTER_ORDER = [
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
 ];
 
+const SUB_TYPE_LABELS = {
+    ko: {
+        goodcondition: '상태 이상',
+        concentration: '집중',
+        goodimpression: '호인상',
+        motivation: '의욕',
+        enthusiasm: '강기',
+        fullpower: '풀파워'
+    },
+    ja: {
+        goodcondition: '好調',
+        concentration: '集中',
+        goodimpression: '好印象',
+        motivation: 'やる気',
+        enthusiasm: '熱意',
+        fullpower: 'フルパワー'
+    },
+    en: {
+        goodcondition: 'Condition',
+        concentration: 'Concentration',
+        goodimpression: 'Impression',
+        motivation: 'Motivation',
+        enthusiasm: 'Enthusiasm',
+        fullpower: 'Full Power'
+    }
+};
+
+const getOsusume = (card, allPssrCards) => {
+    if (card.osusume) return card.osusume;
+    const baseId = card.id.replace(/[0-9]+another$/, '');
+    const baseCard = allPssrCards.find(c => c.osusume && c.id.startsWith(baseId));
+    return baseCard ? baseCard.osusume : '';
+};
+
 
 const TRANSLATIONS = {
     ko: {
@@ -1351,12 +1385,12 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         <!-- Owned Cards Group -->
                         <div id="plan-stat-owned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
                             <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;"></div>
-                            <div id="plan-stat-owned-container" class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
+                            <div id="plan-stat-owned-container" style="padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
                         </div>
                         <!-- Unowned Cards Group -->
                         <div id="plan-stat-unowned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 12px;">
                             <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;"></div>
-                            <div id="plan-stat-unowned-container" class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
+                            <div id="plan-stat-unowned-container" style="padding: 0 2px; box-sizing: border-box; width: 100%;"></div>
                         </div>
                     </div>
                 </div>
@@ -1389,6 +1423,68 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             });
         }
     }
+
+    const PLAN_SPECS = {
+        sense: ['goodcondition', 'concentration'],
+        logic: ['goodimpression', 'motivation'],
+        anomaly: ['enthusiasm', 'fullpower']
+    };
+
+    const renderPlanSubGroupsHtml = (cards, isOwned, plan, lang, buildIconsHtml, allPlanCards) => {
+        const specs = PLAN_SPECS[plan] || [];
+        const leftCards = cards.filter(c => getOsusume(c, pssrCards) === specs[0]);
+        const rightCards = cards.filter(c => getOsusume(c, pssrCards) === specs[1]);
+        const otherCards = cards.filter(c => !specs.includes(getOsusume(c, pssrCards)));
+
+        const leftHtml = buildIconsHtml(leftCards.concat(otherCards), isOwned);
+        const rightHtml = buildIconsHtml(rightCards, isOwned);
+
+        const leftLabel = SUB_TYPE_LABELS[lang]?.[specs[0]] || specs[0];
+        const rightLabel = SUB_TYPE_LABELS[lang]?.[specs[1]] || specs[1];
+
+        const leftIconSrc = specs[0] ? `icons/${specs[0]}.webp` : '';
+        const rightIconSrc = specs[1] ? `icons/${specs[1]}.webp` : '';
+
+        // Calculate rates based on allPlanCards
+        const leftTotalCards = allPlanCards.filter(c => {
+            const os = getOsusume(c, pssrCards);
+            return os === specs[0] || !specs.includes(os);
+        });
+        const rightTotalCards = allPlanCards.filter(c => getOsusume(c, pssrCards) === specs[1]);
+
+        const leftOwnedCount = leftTotalCards.filter(c => !!ownedMap[c.id]).length;
+        const rightOwnedCount = rightTotalCards.filter(c => !!ownedMap[c.id]).length;
+
+        const leftRate = leftTotalCards.length > 0 ? Math.round((leftOwnedCount / leftTotalCards.length) * 100) : 0;
+        const rightRate = rightTotalCards.length > 0 ? Math.round((rightOwnedCount / rightTotalCards.length) * 100) : 0;
+
+        const planColors = { sense: '#ff4d8d', logic: '#46a4f3', anomaly: '#ffb300' };
+        const pColor = planColors[plan] || '#ff4d8d';
+
+        return `
+            <div style="display: flex; width: 100%; gap: 0; position: relative;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 4px 6px 4px 4px;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
+                        <img src="${leftIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${leftLabel}">
+                        <span style="font-size: 0.65rem; font-weight: 800; color: ${pColor}; opacity: 0.9;">
+                            ${leftRate}% <span style="font-size: 0.58rem; font-weight: normal; color: #777; margin-left: 2px;">(${isOwned ? leftOwnedCount : (leftTotalCards.length - leftOwnedCount)}/${leftTotalCards.length})</span>
+                        </span>
+                    </div>
+                    <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">${leftHtml}</div>
+                </div>
+                <div style="width: 1px; background: rgba(0,0,0,0.08); align-self: stretch; margin: 8px 0;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 4px 4px 4px 6px;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
+                        <img src="${rightIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${rightLabel}">
+                        <span style="font-size: 0.65rem; font-weight: 800; color: ${pColor}; opacity: 0.9;">
+                            ${rightRate}% <span style="font-size: 0.58rem; font-weight: normal; color: #777; margin-left: 2px;">(${isOwned ? rightOwnedCount : (rightTotalCards.length - rightOwnedCount)}/${rightTotalCards.length})</span>
+                        </span>
+                    </div>
+                    <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">${rightHtml}</div>
+                </div>
+            </div>
+        `;
+    };
 
     // Register click delegator for collapsible details (character cards & plan cards)
     scrollArea.addEventListener('click', (e) => {
@@ -1615,7 +1711,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     if (hasOwned) {
                         ownedGroup.style.display = 'flex';
                         ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
-                        ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+                        ownedContainer.innerHTML = renderPlanSubGroupsHtml(ownedCards, true, plan, lang, buildIconsHtml, planCards);
 
                         if (hasUnowned) {
                             ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`;
@@ -1629,7 +1725,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     if (hasUnowned) {
                         unownedGroup.style.display = 'flex';
                         unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
-                        unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
+                        unownedContainer.innerHTML = renderPlanSubGroupsHtml(unownedCards, false, plan, lang, buildIconsHtml, planCards);
 
                         if (hasOwned) {
                             unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
@@ -2015,7 +2111,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             allPlansHtml += `
                                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;">${ownedLabel} (${ownedCards.length})</div>
-                                    <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;">${buildIconsHtml(ownedCards, true)}</div>
+                                    ${renderPlanSubGroupsHtml(ownedCards, true, p, lang, buildIconsHtml, planCards)}
                                 </div>
                             `;
                         }
@@ -2028,7 +2124,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             allPlansHtml += `
                                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;">${unownedLabel} (${unownedCards.length})</div>
-                                    <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 0 2px; box-sizing: border-box; width: 100%;">${buildIconsHtml(unownedCards, false)}</div>
+                                    ${renderPlanSubGroupsHtml(unownedCards, false, p, lang, buildIconsHtml, planCards)}
                                 </div>
                             `;
                         }
