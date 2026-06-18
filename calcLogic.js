@@ -741,7 +741,7 @@ export function calculateTotals(store, detailedCounts) {
                     if (store.type === 'hajime') {
                         let bonusVal = 0;
                         if (wInt === 10) bonusVal = 80;
-                        else if (wInt === 18) bonusVal = 120;
+                        else if (wInt === 18) bonusVal = 160;
                         if (bonusVal > 0) {
                             examFlatTotal.vocal += bonusVal;
                             examFlatTotal.dance += bonusVal;
