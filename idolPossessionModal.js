@@ -1527,7 +1527,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             <div style="display: flex; width: 100%; gap: 0; position: relative;">
                 <div class="plan-subgroup-col-left" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
-                        <img src="${leftIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${leftLabel}">
+                        <img src="${leftIconSrc}" style="width: 18px; height: 18px; object-fit: contain;">
                         <span style="color: ${pColor};" class="pssr-stat-rate-pct">
                             ${isOwned ? leftRate : (100 - leftRate)}% <span class="pssr-stat-rate-fraction">(${isOwned ? leftOwnedCount : (leftTotalCards.length - leftOwnedCount)}/${leftTotalCards.length})</span>
                         </span>
@@ -1537,7 +1537,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 <div style="width: 1px; background: rgba(0,0,0,0.08); align-self: stretch; margin: 8px 0;"></div>
                 <div class="plan-subgroup-col-right" style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px; user-select: none;">
-                        <img src="${rightIconSrc}" style="width: 18px; height: 18px; object-fit: contain;" title="${rightLabel}">
+                        <img src="${rightIconSrc}" style="width: 18px; height: 18px; object-fit: contain;">
                         <span style="color: ${pColor};" class="pssr-stat-rate-pct">
                             ${isOwned ? rightRate : (100 - rightRate)}% <span class="pssr-stat-rate-fraction">(${isOwned ? rightOwnedCount : (rightTotalCards.length - rightOwnedCount)}/${rightTotalCards.length})</span>
                         </span>
