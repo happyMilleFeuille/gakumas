@@ -383,7 +383,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 28, 2: 38 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 13, 2: 26 }
         },
         trigger: ["gift_hajime", "gift_nia", "gift_hif"], max: 2,
     },
@@ -411,7 +411,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 28, 2: 38 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 13, 2: 26 }
         },
         trigger: ["goout_hajime", "goout_nia", "goout_hif"], max: 2,
     },
@@ -442,7 +442,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 28, 2: 38 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 13, 2: 26 }
         },
         trigger: ["advice"], max: 2,
     },
