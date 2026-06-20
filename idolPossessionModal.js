@@ -223,6 +223,12 @@ export function openIdolPossessionModal() {
     const lang = state.currentLang || 'ko';
     const text = TRANSLATIONS[lang] || TRANSLATIONS.ko;
 
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `(${yyyy}. ${mm}. ${dd}.)`;
+
     // Filter PSSRs (including another cards)
     const pssrCards = produceList.filter(c => c.rarity === 'PSSR');
 
@@ -451,6 +457,24 @@ export function openIdolPossessionModal() {
                 user-select: none;
                 object-fit: cover;
             }
+
+            .pssr-char-icons-container {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 10px;
+                padding: 0 10px;
+                box-sizing: border-box;
+                width: 100%;
+            }
+            .pssr-stat-icons-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
             .pssr-plan-badge {
                 position: absolute;
                 bottom: -1px;
@@ -512,6 +536,9 @@ export function openIdolPossessionModal() {
                 .idol-possession-title-wrap {
                     font-size: 1.05rem !important;
                     gap: 6px !important;
+                }
+                .possession-title-date {
+                    display: none !important;
                 }
                 .idol-possession-title-indicator {
                     height: 16px !important;
@@ -587,7 +614,7 @@ export function openIdolPossessionModal() {
                 .pssr-stat-icon-box img {
                     top: -6px !important;
                 }
-                .pssr-stat-icons-container {
+                .pssr-stat-icons-container, .pssr-char-icons-container {
                     gap: 4px !important;
                     padding: 0 2px !important;
                 }
@@ -809,6 +836,12 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     const headerArea = modal.querySelector('#idol-possession-header-area');
     let firstPlaceCharColor = '#ff4d8d';
 
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `(${yyyy}. ${mm}. ${dd}.)`;
+
     modalContent.style.position = 'relative';
     headerArea.style.position = 'relative';
     headerArea.style.zIndex = '1';
@@ -825,6 +858,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         <div class="idol-possession-title-wrap">
             <div id="idol-possession-title-indicator" class="idol-possession-title-indicator" style="background-color: #ff4d8d; transition: none !important;"></div>
             <span id="idol-possession-title">${text.title_stats}</span>
+            <span class="possession-title-date" style="font-size: 0.7em; font-weight: 500; color: #666; margin-left: 4px;">${formattedDate}</span>
         </div>
         <button id="btn-idol-possession-save" class="calc-btn" style="height: 34px; padding: 0 14px; background-color: #ff4d8d; color: #fff; font-weight: bold; font-size: 0.85rem; border: none; border-radius: 8px; cursor: pointer; box-shadow: none; transition: none !important;">
             ${text.btn_save_image}
@@ -1104,33 +1138,40 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
             });
 
-            // Generate owned/unowned PSSR icons for this character
-            let charIconsHtml = '';
-            charCards.forEach(c => {
-                const isOwned = !!ownedMap[c.id];
-                const suffix = c.another ? '1.webp' : '2.webp';
-                const cardName = getLocalizedCardName(c, lang);
+            // Generate owned/unowned PSSR icons for this character (separated into normal and another cards)
+            const buildCardIconsHtml = (cards) => {
+                let html = '';
+                cards.forEach(c => {
+                    const isOwned = !!ownedMap[c.id];
+                    const suffix = c.another ? '1.webp' : '2.webp';
+                    const cardName = getLocalizedCardName(c, lang);
 
-                const containerStyle = isOwned
-                    ? `border: 1.5px solid ${charColor};`
-                    : `border: 1px solid #ccc;`;
+                    const containerStyle = isOwned
+                        ? `border: 1.5px solid ${charColor};`
+                        : `border: 1px solid #ccc;`;
 
-                const imgStyle = isOwned
-                    ? `display: block; opacity: 1;`
-                    : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+                    const imgStyle = isOwned
+                        ? `display: block; opacity: 1;`
+                        : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
 
-                const onloadAttr = '';
-
-                charIconsHtml += `
-                    <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                        <div class="pssr-stat-icon-box">
-                            <img src="idols/thumb/${c.id}${suffix}" ${onloadAttr} onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                    html += `
+                        <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                            <div class="pssr-stat-icon-box">
+                                <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                            </div>
+                            <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
+                            <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
                         </div>
-                        <img class="pssr-char-badge" src="icons/idolicons/${charId}_c.png" style="background-color: ${charColor};">
-                        <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
-                    </div>
-                `;
-            });
+                    `;
+                });
+                return html;
+            };
+
+            const normalCards = charCards.filter(c => !c.another);
+            const anotherCards = charCards.filter(c => c.another);
+
+            const normalIconsHtml = buildCardIconsHtml(normalCards);
+            const anotherIconsHtml = buildCardIconsHtml(anotherCards);
 
             let barsHtml = '';
             let xAxisLabelsHtml = '';
@@ -1211,9 +1252,17 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                     </div>
                                 </div>
                             </div>
-                            ${charIconsHtml ? `
-                            <div class="pssr-stat-icons-container" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; padding: 0 10px; box-sizing: border-box; width: 100%;">
-                                ${charIconsHtml}
+                            ${(normalIconsHtml || anotherIconsHtml) ? `
+                            <div class="pssr-char-icons-container">
+                                <div class="pssr-stat-icons-row">
+                                    ${normalIconsHtml}
+                                </div>
+                                ${anotherIconsHtml ? `
+                                <div style="width: 100%; border-top: 1px dashed rgba(0, 0, 0, 0.12); margin: 6px 0;"></div>
+                                <div class="pssr-stat-icons-row">
+                                    ${anotherIconsHtml}
+                                </div>
+                                ` : ''}
                             </div>
                             ` : ''}
                         </div>
@@ -1288,6 +1337,16 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     width: 100% !important;
                 }
                  @media (max-width: 768px) {
+                    .pssr-stat-icons-container, .pssr-char-icons-container {
+                        gap: 4px !important;
+                        padding: 0 2px !important;
+                    }
+                    .pssr-stat-icons-row {
+                        gap: 4px !important;
+                    }
+                    .possession-title-date {
+                        display: none !important;
+                    }
                     .possession-section-card {
                         padding: 6px 8px !important;
                         border-radius: 6px !important;
@@ -1302,7 +1361,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         border-radius: 5px !important;
                         padding: 10px 6px 6px 6px !important;
                     }
-                    .pssr-stat-icons-container {
+                    .pssr-stat-icons-container, .pssr-char-icons-container {
                         padding: 0 4px !important;
                         margin-top: 2px !important;
                     }
@@ -1438,6 +1497,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         left: -1px !important;
                         border-radius: 0 0 2px 0 !important;
                     }
+
                     .pssr-plan-badge {
                         width: 10px !important;
                         height: 10px !important;
@@ -2448,6 +2508,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     }
                 });
 
+                const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const captureScale = isMobileDevice ? 1.5 : 2;
+                const captureDelay = isMobileDevice ? 500 : 350;
+
                 // Set scroll to top and adjust styles for flat render
                 const origScrollMaxHeight = scrollArea.style.maxHeight;
                 const origScrollFlex = scrollArea.style.flex;
@@ -2480,7 +2544,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 setTimeout(() => {
                     window.html2canvas(modalContent, {
                         backgroundColor: '#ffffff',
-                        scale: 2,
+                        scale: captureScale,
                         useCORS: true,
                         logging: false,
                         windowWidth: 1024,
@@ -2615,7 +2679,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         saveBtn.disabled = false;
                         hideSpinnerOverlay();
                     });
-                }, 350);
+                }, captureDelay);
             };
 
             startCapture();

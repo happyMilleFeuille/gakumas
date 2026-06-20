@@ -857,6 +857,12 @@ export function openPossessionModal() {
     const isEn = state.currentLang === 'en';
     const langKey = isJa ? 'ja' : isEn ? 'en' : 'ko';
 
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `(${yyyy}. ${mm}. ${dd}.)`;
+
     const title = isJa ? 'サポカ所持状況' : isEn ? 'Support Card Stats' : '서포트 카드 통계';
     const desc = isJa ? '💡 <b>カード目録で長押しして非活性化</b>したカードは未所持カードに分類されます。' : isEn ? '💡 Cards <b>deactivated by long-press</b> are classified as not owned.' : '💡 <b>카드 목록에서 길게 눌러 비활성화</b>한 카드는 미소지 카드로 분류됩니다.';
     const saveImageBtn = isJa ? '이미지 저장' : isEn ? 'Save Image' : '이미지 저장';
@@ -950,6 +956,9 @@ export function openPossessionModal() {
                 .possession-title-wrap {
                     font-size: 1.05rem !important;
                     gap: 6px !important;
+                }
+                .possession-title-date {
+                    display: none !important;
                 }
                 .possession-title-indicator {
                     height: 16px !important;
@@ -1103,6 +1112,7 @@ export function openPossessionModal() {
                 <div class="possession-title-wrap" style="display: flex; align-items: center; gap: 8px; font-size: 1.3rem; font-weight: 800; color: #333;">
                     <div class="possession-title-indicator" style="width: 4px; height: 20px; background-color: ${themeColor}; border-radius: 2px;"></div>
                     <span>${title}</span>
+                    <span class="possession-title-date" style="font-size: 0.7em; font-weight: 500; color: #666; margin-left: 4px;">${formattedDate}</span>
                 </div>
                 <button id="btn-possession-save-image" class="calc-btn" style="height: 34px; padding: 0 14px; background-color: ${themeColor}; color: #fff; font-weight: bold; font-size: 0.85rem; border: none; border-radius: 8px; cursor: pointer; transition: none !important; display: flex; align-items: center; gap: 4px;">
                     ${saveImageBtn}
