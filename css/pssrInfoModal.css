@@ -220,16 +220,48 @@
     margin-right: 2px;
 }
 
+.pssr-info-modal-meta-container {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 8px;
+    margin: 6px auto 16px auto;
+    width: fit-content;
+}
+
 .pssr-info-modal-meta-row {
     display: flex;
-    width: fit-content;
-    margin: 6px auto 16px auto;
+    margin: 0;
     align-items: center;
     gap: 10px;
     background-color: #f3f4f6;
     border: 1px solid #e5e7eb;
     padding: 4px 12px;
     border-radius: 8px;
+}
+
+.pssr-info-modal-download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0 10px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.pssr-info-modal-download-btn:hover {
+    background-color: #e5e7eb;
+}
+
+.pssr-info-modal-download-btn img {
+    height: 16px;
+    width: 16px;
+    object-fit: contain;
+    display: block;
 }
 
 .pssr-info-modal-meta-divider-line {
@@ -460,10 +492,25 @@
         max-width: 90%;
     }
     
-    .pssr-info-modal-meta-row {
+    .pssr-info-modal-meta-container {
         margin: 4px auto 10px auto;
+        gap: 6px;
+    }
+
+    .pssr-info-modal-meta-row {
+        margin: 0;
         padding: 2.5px 8px;
         gap: 6px;
+    }
+
+    .pssr-info-modal-download-btn {
+        padding: 0 8px;
+        border-radius: 6px;
+    }
+
+    .pssr-info-modal-download-btn img {
+        height: 12px;
+        width: 12px;
     }
     
     .pssr-info-modal-meta-divider-line {
@@ -724,5 +771,129 @@
     
     .pssr-info-modal-detail-row.pssr-info-modal-custom-row-container {
         gap: 10px;
+    }
+}
+
+/* High-Res Image Download Modal Styles */
+.verygood-download-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.verygood-download-content {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 3px solid var(--personal-color, #ff4d8d);
+    width: 90%;
+    max-width: 500px;
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.verygood-download-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #888888;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.verygood-download-close-btn:hover {
+    color: #333333;
+}
+
+.verygood-download-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #222222;
+    margin: 0;
+    text-align: center;
+}
+
+.verygood-download-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.verygood-download-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.verygood-download-preview {
+    width: 100%;
+    aspect-ratio: 1 / 1.8;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 12px;
+    border: 1.5px solid #eeeeee;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.verygood-download-action-btn {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: var(--personal-color, #ff4d8d);
+    color: #ffffff;
+    font-weight: 800;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: transform 0.1s ease, filter 0.2s ease;
+    text-align: center;
+}
+
+.verygood-download-action-btn:hover {
+    filter: brightness(0.9);
+}
+
+.verygood-download-action-btn:active {
+    transform: scale(0.97);
+}
+
+@media (max-width: 768px) {
+    .verygood-download-content {
+        padding: 16px;
+        border-radius: 16px;
+        max-width: 95%;
+        gap: 14px;
+    }
+    
+    .verygood-download-title {
+        font-size: 1.05rem;
+    }
+    
+    .verygood-download-grid {
+        gap: 12px;
+    }
+    
+    .verygood-download-action-btn {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        border-radius: 8px;
     }
 }

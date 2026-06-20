@@ -407,6 +407,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const verygoodModal = document.getElementById('verygood-download-modal');
+        if (verygoodModal) {
+            if (typeof window.closeVeryGoodDownloadModal === 'function') window.closeVeryGoodDownloadModal(true);
+            else verygoodModal.remove();
+            return;
+        }
+
         const cardModal = document.getElementById('card-modal');
         const videoModal = document.getElementById('video-modal');
         const recommendModal = document.getElementById('calc-recommend-modal');

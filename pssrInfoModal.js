@@ -965,7 +965,12 @@ export function showProduceCardInfoModal(card, personalColor) {
     }
 
     const metaHtml = metaItems.length > 0
-        ? `<div class="pssr-info-modal-meta-row">${metaItems.join(' <span class="pssr-info-modal-meta-divider"></span> ')}</div>`
+        ? `<div class="pssr-info-modal-meta-container">
+            <div class="pssr-info-modal-meta-row">${metaItems.join(' <span class="pssr-info-modal-meta-divider"></span> ')}</div>
+            <button class="pssr-info-modal-download-btn" id="pssr-info-modal-download-btn" style="display: none;">
+                <img src="icons/download.svg" alt="Download">
+            </button>
+           </div>`
         : '';
     const metaDividerHtml = (metaHtml && finalDateHtml)
         ? `<div class="pssr-info-modal-meta-divider-line"></div>`
@@ -1232,6 +1237,173 @@ export function showProduceCardInfoModal(card, personalColor) {
     `;
 
     document.body.appendChild(modal);
+
+    // idols/verygood에 이미지 뒤에 1과 2가 모두 존재하는지 체크하여 버튼 노출
+    (() => {
+        const id = card.id;
+        let suffix1 = '1';
+        let suffix2 = '2';
+        
+        // R 및 SR 등급에 따른 파일명 접미사 매핑 규칙 (r1/r2, sr1/sr2)
+        if (id.startsWith('r') && !id.startsWith('sr') && !id.startsWith('ssr')) {
+            suffix1 = 'r1';
+            suffix2 = 'r2';
+        } else if (id.startsWith('sr') && !id.startsWith('ssr')) {
+            suffix1 = 'sr1';
+            suffix2 = 'sr2';
+        }
+        
+        const img1Src = `idols/verygood/${id}${suffix1}.webp`;
+        const img2Src = `idols/verygood/${id}${suffix2}.webp`;
+
+        // 어나더 카드들 필터링
+        const anotherCards = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
+        
+        // 검사 대상 이미지 리스트 구성
+        const targets = [
+            { id: 'normal1', src: img1Src, labelPrefix: '특훈 전', defaultLabel: '특훈 전', suffix: suffix1, isAnother: false },
+            { id: 'normal2', src: img2Src, labelPrefix: '특훈 후', defaultLabel: '특훈 후', suffix: suffix2, isAnother: false }
+        ];
+
+        anotherCards.forEach((ac) => {
+            const labelName = getLocalizedCardName(ac);
+            targets.push({
+                id: ac.id,
+                src: `idols/verygood/${ac.id}1.webp`,
+                labelPrefix: labelName,
+                defaultLabel: labelName,
+                suffix: '1',
+                isAnother: true
+            });
+        });
+
+        let loadedCount = 0;
+        const results = {}; // targetId -> { success: boolean, width: number, height: number }
+        
+        const checkComplete = () => {
+            loadedCount++;
+            if (loadedCount === targets.length) {
+                // 기본 특훈 전/후 이미지가 모두 존재할 때 다운로드 버튼 표시
+                if (results['normal1']?.success && results['normal2']?.success) {
+                    const btn = document.getElementById('pssr-info-modal-download-btn');
+                    if (btn) {
+                        btn.style.display = 'flex';
+                        
+                        btn.onclick = (e) => {
+                            e.stopPropagation(); // 모달 닫힘 방지
+                            
+                            // 고화질 이미지 다운로드 모달 띄우기
+                            const downloadModal = document.createElement('div');
+                            downloadModal.id = 'verygood-download-modal';
+                            downloadModal.className = 'verygood-download-modal';
+                            downloadModal.style.setProperty('--personal-color', personalColor);
+                            
+                            const titleText = {
+                                ko: '고화질 이미지 다운로드 (.webp)',
+                                ja: '高画質画像ダウンロード (.webp)',
+                                en: 'High-Res Image Download (.webp)'
+                            }[state.currentLang] || '고화질 이미지 다운로드 (.webp)';
+                            
+                            const buttonHtmls = [];
+                            
+                            targets.forEach((t) => {
+                                const res = results[t.id];
+                                if (!res || !res.success) return; // 로드 실패한 이미지는 제외
+                                
+                                let displayLabel = '';
+                                if (!t.isAnother) {
+                                    displayLabel = {
+                                        ko: t.labelPrefix,
+                                        ja: t.labelPrefix === '특훈 전' ? '特訓前' : '特訓後',
+                                        en: t.labelPrefix === '특훈 전' ? 'Before Bloom' : 'After Bloom'
+                                    }[state.currentLang] || t.defaultLabel;
+                                } else {
+                                    displayLabel = t.defaultLabel;
+                                }
+                                
+                                if (res.width && res.height) {
+                                    displayLabel += ` (${res.width}x${res.height})`;
+                                }
+                                
+                                buttonHtmls.push(`<button class="verygood-download-action-btn" data-target-id="${t.id}">${displayLabel}</button>`);
+                            });
+                            
+                            downloadModal.innerHTML = `
+                                <div class="verygood-download-content">
+                                    <button class="verygood-download-close-btn">&times;</button>
+                                    <h3 class="verygood-download-title">${titleText}</h3>
+                                    <div class="verygood-download-grid">
+                                        ${buttonHtmls.join('')}
+                                    </div>
+                                </div>
+                            `;
+                            
+                            document.body.appendChild(downloadModal);
+                            
+                            // 개별 다운로드 실행 함수
+                            const downloadFile = (src, filename) => {
+                                const a = document.createElement('a');
+                                a.href = src;
+                                a.download = filename;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            };
+
+                            targets.forEach((t) => {
+                                const res = results[t.id];
+                                if (!res || !res.success) return;
+                                
+                                const btnEl = downloadModal.querySelector(`[data-target-id="${t.id}"]`);
+                                if (btnEl) {
+                                    btnEl.onclick = () => {
+                                        if (!t.isAnother) {
+                                            downloadFile(t.src, `${id}${t.suffix}.webp`);
+                                        } else {
+                                            downloadFile(t.src, `${t.id}1.webp`);
+                                        }
+                                    };
+                                }
+                            });
+
+                            window.closeVeryGoodDownloadModal = (isPopstate = false) => {
+                                if (isPopstate) {
+                                    downloadModal.remove();
+                                } else {
+                                    history.back();
+                                }
+                            };
+
+                            downloadModal.querySelector('.verygood-download-close-btn').onclick = () => {
+                                window.closeVeryGoodDownloadModal();
+                            };
+                            
+                            downloadModal.onclick = (event) => {
+                                if (event.target === downloadModal) {
+                                    window.closeVeryGoodDownloadModal();
+                                }
+                            };
+                            
+                            history.pushState({ modalOpen: 'verygood-download' }, "");
+                        };
+                    }
+                }
+            }
+        };
+        
+        targets.forEach((t) => {
+            const img = new Image();
+            img.onload = () => {
+                results[t.id] = { success: true, width: img.naturalWidth, height: img.naturalHeight };
+                checkComplete();
+            };
+            img.onerror = () => {
+                results[t.id] = { success: false };
+                checkComplete();
+            };
+            img.src = t.src;
+        });
+    })();
 
     // 이미지 잔상 방지 처리 (로드 완료 시 노출)
     const modalImgs = modal.querySelectorAll('.pssr-info-modal-img');
