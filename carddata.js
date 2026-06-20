@@ -1580,6 +1580,11 @@ export const cardList = [
         type: "dance",
         plan: "anomaly",
         have: "item",
+        item_effects: [{
+            type: "inexam",
+            kr: "[dance]직접효과로 강기로 지침 변경할 시 원기가 0인 경우\n✦ 소비체력 감소 1턴",
+            jp: "[dance]直接効果で強気になった時、元気が0の場合、\n✦ 消費体力減少1ターン",
+        }],
         releasedAt: "2026-04-01",
         source: "dist",
         rarity: "SSR",
