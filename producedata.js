@@ -74,12 +74,12 @@ export const produceList = [
         id: "ssrrinami_3rd", name: "36℃ U.B.U", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2025-09-17", source: "normal", jumpTime2: 8.7, youtube_url: "https://youtu.be/szxn42peP3M?si=0Fa3iBImUAHj4Rsm",
         item: {
             name: "アイドルになりたい",
-            desc: "어느 한 쪽의 지침인 경우 강기 스킬카드 사용 후 3회마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3\n✦ inlesson3",
-            desc_ja: "いずれかの指針の場合、強気効果のスキルカード使用後3回ごとに、\n✦ のんびりに変更\n✦ 熱意増加+40%（1ターン）\n✦ genki3\n✦ inlesson5",
+            desc: "직접효과로 호인상이 7이상 증가 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hp3\n✦ inlesson2",
+            desc_ja: "直接効果で好印象が7以上増加後、元気が30以上の場合、\n✦ 好印象の250%分パラメータ上昇\n✦ hp3\n✦ inlesson2",
         },
         itemplus: {
-            desc: "어느 한 쪽의 지침인 경우 강기 스킬카드 사용 후 3회마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3",
-            desc_ja: "いずれかの指針の場合、強気効果のスキルカード使用後3回ごとに、\n✦ のんびりに変更\n✦ 熱意増加+40%（1ターン）\n✦ genki3",
+            desc: "직접효과로 호인상이 7이상 증가 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hp3\n✦ inlesson3",
+            desc_ja: "直接効果で好印象が7以上増加後、元気が30以上の場合、\n✦ 好印象の250%分パラメータ上昇\n✦ hp3\n✦ inlesson3",
         },
         card: {
             name: "微熱ノスタルジー",
