@@ -1245,12 +1245,12 @@ export const produceList = [
         id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
         item: {
             name: "きみが見つけた私",
-            desc: "嬉しい誤算사용 후\n✦ 파라미터 상승량 증가 60% (2턴)\n✦ fullpower10\n✦ hpreduce1\n✦ inlesson1",
+            desc: "嬉しい誤算 사용 후\n✦ 파라미터 상승량 증가 60% (2턴)\n✦ fullpower10\n✦ hpreduce1\n✦ inlesson1",
             desc_ja: "嬉しい誤算使用後、\n✦ パラメータ上昇量増加60%（2ターン）\n✦ fullpower10\n✦ hpreduce1\n✦ inlesson1",
             referimage: ["anomaly-r8"]
         },
         itemplus: {
-            desc: "嬉しい誤算사용 후\n✦ 파라미터 상승량 증가 60% (2턴)\n✦ fullpower15\n✦ hpreduce1\n✦ inlesson1",
+            desc: "嬉しい誤算 사용 후\n✦ 파라미터 상승량 증가 60% (2턴)\n✦ fullpower15\n✦ hpreduce1\n✦ inlesson1",
             desc_ja: "嬉しい誤算使用後、\n✦ パラメータ上昇量増加60%（2ターン）\n✦ fullpower15\n✦ hpreduce1\n✦ inlesson1",
             referimage: ["anomaly-r8"]
         },
@@ -1360,12 +1360,12 @@ export const produceList = [
         id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2024-12-26",
         item: {
             name: "向き合う覚悟",
-            desc: "軽い足取り사용 후\n✦ goodcondition1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc: "軽い足取り 사용 후\n✦ goodcondition1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "軽い足取り使用後、\n✦ goodcondition1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
             referimage: ["sense-r1"]
         },
         itemplus: {
-            desc: "軽い足取り사용 후\n✦ goodcondition2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc: "軽い足取り 사용 후\n✦ goodcondition2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "軽い足取り使用後、\n✦ goodcondition2\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
             referimage: ["sense-r1"]
         },
@@ -1475,12 +1475,12 @@ export const produceList = [
         id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-16",
         item: {
             name: "翼",
-            desc: "リスタート사용 후 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 다음 턴, 제외에 있는 また、飛べる를 손패로 이동\n✦ hpreduce2\n✦ inlesson2",
+            desc: "リスタート 사용 후 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 다음 턴, 제외에 있는 また、飛べる를 손패로 이동\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "リスタート使用時、元気が7以上の場合、\n✦ 好印象1.5倍\n✦ 次のターン、除外にあるまた、飛べるを手札に移動\n✦ hpreduce2\n✦ inlesson2",
             referimage: ["logic-r6"]
         },
         itemplus: {
-            desc: "リスタート사용 후 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 다음 턴, 제외에 있는 また、飛べる를 손패로 이동\n✦ inlesson2",
+            desc: "リスタート 사용 후 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 다음 턴, 제외에 있는 また、飛べる를 손패로 이동\n✦ inlesson2",
             desc_ja: "リスタート使用時、元気が7以上の場合、\n✦ 好印象1.5倍\n✦ 次のターン、除外にあるまた、飛べるを手札に移動\n✦ inlesson2",
             referimage: ["logic-r6"]
         },
@@ -1521,12 +1521,12 @@ export const produceList = [
         id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09",
         item: {
             name: "叶える覚悟",
-            desc: "ジャストアピール사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존으로 지침 변경\n✦ fullpower2\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+2\n✦ inlesson1",
+            desc: "ジャストアピール 사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존으로 지침 변경\n✦ fullpower2\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+2\n✦ inlesson1",
             desc_ja: "ジャストアピール使用後、保留にあるスキルカードが1枚以上の場合、\n✦ 温存に変更\n✦ fullpower2\n✦ 保留にあるスキルカードのplusattack1・コスト値増加+2\n✦ inlesson1",
             referimage: ["anomaly-r1"]
         },
         itemplus: {
-            desc: "ジャストアピール사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존 2단계로 지침 변경\n✦ fullpower4\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+1\n✦ inlesson1",
+            desc: "ジャストアピール 사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존 2단계로 지침 변경\n✦ fullpower4\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+1\n✦ inlesson1",
             desc_ja: "ジャストアピール使用後、保留にあるスキルカードが1枚以上の場合、\n✦ 温存2段階目に変更\n✦ fullpower4\n✦ 保留にあるスキルカードのplusattack1・コスト値増加+1\n✦ inlesson1",
             referimage: ["anomaly-r1"]
         },
