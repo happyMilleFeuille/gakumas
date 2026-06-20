@@ -7,6 +7,7 @@ import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
 import { showMemorySelectModal } from './calcModals.js';
 import { pItemDescriptions } from './pItemData.js';
+import { replaceDescIcons } from './pssrInfoModal.js';
 
 /**
  * 아이돌별 표시 색상 반환 (릴리야 보정 포함)
@@ -171,12 +172,19 @@ export function getParsedItemEffectsText(itemEffects) {
                         return t(`support_effect_condition_percent_${dir}`, { num });
                     }
 
-                    const match = tt.match(/^(vocal|dance|visual|hp)(\d+)(up|down)?$/i);
+                    const match = tt.match(/^(vocal|dance|visual|hp|ppoint)(\d+)(up|down)?$/i);
                     if (match) {
                         const attrKey = match[1].toLowerCase();
                         const num = match[2];
                         const dir = match[3] ? match[3].toLowerCase() : 'up';
-                        const attrName = attrKey === 'hp' ? 'HP' : t(`attr_${attrKey}`);
+                        let attrName = '';
+                        if (attrKey === 'hp') {
+                            attrName = 'HP';
+                        } else if (attrKey === 'ppoint') {
+                            attrName = state.currentLang === 'en' ? 'P-Points' : (state.currentLang === 'ja' ? 'Pポイント' : 'P포인트');
+                        } else {
+                            attrName = t(`attr_${attrKey}`);
+                        }
                         return t(`support_effect_condition_${dir}`, { attr: attrName, num: num });
                     }
                     return tt + (state.currentLang === 'ja' ? '、' : ', ');
@@ -189,6 +197,16 @@ export function getParsedItemEffectsText(itemEffects) {
             const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
             const target = targets.map(t => labels[t] || t).join(', ');
             return `${target} +${eff.value}${maxSuffix}`;
+        } else if (eff.type === 'inexam') {
+            let customText = "";
+            if (state.currentLang === 'ko') {
+                customText = eff.kr || eff.ko || eff.jp || eff.ja || eff.en || "";
+            } else if (state.currentLang === 'ja') {
+                customText = eff.jp || eff.ja || eff.kr || eff.ko || eff.en || "";
+            } else {
+                customText = eff.en || eff.jp || eff.ja || eff.kr || eff.ko || "";
+            }
+            return replaceDescIcons(customText).replace(/\n/g, '<br>');
         }
         return '';
     }).filter(t => t).join('<br>');
@@ -558,7 +576,7 @@ export function updateSelectedCardsUI(store) {
 
             // 3. Counter
             let counterContainer = slotEl.querySelector('.card-item-counter');
-            if (cardData?.item_effects?.some(e => e.type === 'action' || e.type === 'add_count')) {
+            if (cardData?.item_effects?.some(e => e.stats || e.target || e.targets)) {
                 if (!counterContainer) {
                     slotEl.insertAdjacentHTML('beforeend', `
                         <div class="card-item-counter">

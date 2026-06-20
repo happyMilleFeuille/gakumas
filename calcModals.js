@@ -791,7 +791,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
                 }
 
                 let counterHtml = '';
-                if (cardData?.item_effects?.some(e => e.type === 'action' || e.type === 'add_count')) {
+                if (cardData?.item_effects?.some(e => e.stats || e.target || e.targets)) {
                     counterHtml = `
                         <div class="card-item-counter" style="margin-top: 1px;">
                             <button class="card-counter-btn minus" data-id="${cardId}">

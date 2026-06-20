@@ -987,6 +987,52 @@ function setupStaticListeners(container) {
             abilityDropdown.appendChild(btn);
         }
 
+        // Add P-Item separator and buttons
+        const pDivider = document.createElement('div');
+        pDivider.className = 'ability-dropdown-divider';
+        pDivider.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; text-align: center; margin: 8px 0;';
+        
+        const pLine1 = document.createElement('span');
+        pLine1.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
+        
+        const pTextSpan = document.createElement('span');
+        const pSepText = {
+            ko: 'P 아이템',
+            ja: 'Pアイテム',
+            en: 'P-Item'
+        };
+        pTextSpan.textContent = pSepText[state.currentLang] || pSepText.en;
+        pTextSpan.style.cssText = 'padding: 0 10px; font-size: 0.72rem; color: #999; font-weight: bold; white-space: nowrap; pointer-events: none; user-select: none;';
+        
+        const pLine2 = document.createElement('span');
+        pLine2.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
+        
+        pDivider.appendChild(pLine1);
+        pDivider.appendChild(pTextSpan);
+        pDivider.appendChild(pLine2);
+        abilityDropdown.appendChild(pDivider);
+
+        const pItemFilters = [
+            { key: 'pitem_get', abilityKey: 'get' },
+            { key: 'pitem_copy', name: { ko: '카드 복제', ja: 'カードコピー', en: 'Card Copy' } },
+            { key: 'pitem_get_drink', abilityKey: 'get_drink' },
+            { key: 'pitem_enhance', abilityKey: 'enhance' },
+            { key: 'pitem_delete', abilityKey: 'delete' },
+            { key: 'pitem_delete_t', abilityKey: 'delete_trouble3' },
+            { key: 'pitem_change', abilityKey: 'change3' },
+            { key: 'pitem_stats', name: { ko: '스텟', ja: 'パラメーター獲得', en: 'Stat Gain' } },
+            { key: 'pitem_ppoint', name: { ko: 'P포인트', ja: 'Pポイント', en: 'P-Points' } },
+            { key: 'pitem_hp', name: { ko: '체력 회복', ja: '体力回復', en: 'HP Recovery' } }
+        ];
+
+        for (const entry of pItemFilters) {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn ability-sub-btn';
+            btn.dataset.val = entry.key;
+            btn.textContent = entry.abilityKey ? abilityData[entry.abilityKey].name[state.currentLang] : (entry.name[state.currentLang] || entry.name.en);
+            abilityDropdown.appendChild(btn);
+        }
+
         // Add Support Unique Card separator and buttons
         const divider = document.createElement('div');
         divider.className = 'ability-dropdown-divider';
@@ -1027,50 +1073,6 @@ function setupStaticListeners(container) {
             abilityDropdown.appendChild(btn);
         }
 
-        // Add P-Item separator and buttons
-        const pDivider = document.createElement('div');
-        pDivider.className = 'ability-dropdown-divider';
-        pDivider.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; text-align: center; margin: 8px 0;';
-        
-        const pLine1 = document.createElement('span');
-        pLine1.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
-        
-        const pTextSpan = document.createElement('span');
-        const pSepText = {
-            ko: 'P 아이템',
-            ja: 'Pアイテム',
-            en: 'P-Item'
-        };
-        pTextSpan.textContent = pSepText[state.currentLang] || pSepText.en;
-        pTextSpan.style.cssText = 'padding: 0 10px; font-size: 0.72rem; color: #999; font-weight: bold; white-space: nowrap; pointer-events: none; user-select: none;';
-        
-        const pLine2 = document.createElement('span');
-        pLine2.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
-        
-        pDivider.appendChild(pLine1);
-        pDivider.appendChild(pTextSpan);
-        pDivider.appendChild(pLine2);
-        abilityDropdown.appendChild(pDivider);
-
-        const pItemFilters = [
-            { key: 'pitem_get', abilityKey: 'get' },
-            { key: 'pitem_get_drink', abilityKey: 'get_drink' },
-            { key: 'pitem_enhance', abilityKey: 'enhance' },
-            { key: 'pitem_delete', abilityKey: 'delete' },
-            { key: 'pitem_delete_t', abilityKey: 'delete_trouble3' },
-            { key: 'pitem_change', abilityKey: 'change3' },
-            { key: 'pitem_copy', name: { ko: '카드 복제', ja: 'カードコピー', en: 'Card Copy' } },
-            { key: 'pitem_stats', name: { ko: '스텟 획득', ja: 'パラメーター獲得', en: 'Stat Gain' } }
-        ];
-
-        for (const entry of pItemFilters) {
-            const btn = document.createElement('button');
-            btn.className = 'filter-btn ability-sub-btn';
-            btn.dataset.val = entry.key;
-            btn.textContent = entry.abilityKey ? abilityData[entry.abilityKey].name[state.currentLang] : (entry.name[state.currentLang] || entry.name.en);
-            abilityDropdown.appendChild(btn);
-        }
-
 
         abilityDropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1094,7 +1096,7 @@ function setupStaticListeners(container) {
             // Support Unique Card category: only 1 selection allowed
             const supportCardKeys = ['card_m', 'card_a'];
             // P-Item category: only 1 selection allowed
-            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats'];
+            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp'];
 
             if (supportCardKeys.includes(val)) {
                 // Remove other support card filters + all p-item filters
@@ -1391,6 +1393,20 @@ function updateSupportGrid(container) {
             }
             if (ab === 'pitem_stats') {
                 return card.item_effects && card.item_effects.some(eff => eff.stats);
+            }
+            if (ab === 'pitem_ppoint') {
+                return card.item_effects && card.item_effects.some(eff => {
+                    if (!eff.targettext) return false;
+                    const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
+                    return targets.some(t => typeof t === 'string' && t.includes('ppoint'));
+                });
+            }
+            if (ab === 'pitem_hp') {
+                return card.item_effects && card.item_effects.some(eff => {
+                    if (!eff.targettext) return false;
+                    const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
+                    return targets.some(t => typeof t === 'string' && t.includes('hp'));
+                });
             }
             if (!card.abilities) return false;
             if (ab === 'sp_lessonup') {

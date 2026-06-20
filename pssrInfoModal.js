@@ -10,10 +10,32 @@ const getLocalizedCardName = (card) => {
     return card.name || '';
 };
 
-const replaceDescIcons = (text) => {
+export const replaceDescIcons = (text) => {
     if (!text) return '';
 
     let result = text;
+
+    // Attribute restriction tags mapping (e.g. [visual] -> 【비주얼 레슨・비주얼 턴 전용】)
+    result = result.replace(/\[(visual|vocal|dance)\]/gi, (match, attr) => {
+        const key = attr.toLowerCase();
+        if (state.currentLang === 'ko') {
+            const koMap = {
+                vocal: '【보컬 레슨・보컬 턴 전용】',
+                dance: '【댄스 레슨・댄스 턴 전용】',
+                visual: '【비주얼 레슨・비주얼 턴 전용】'
+            };
+            return koMap[key] || match;
+        } else if (state.currentLang === 'ja') {
+            const jaMap = {
+                vocal: '【ボーカルレッスン・ボーカルターンのみ】',
+                dance: '【ダンスレッスン・ダンスターンのみ】',
+                visual: '【ビジュアルレッスン・ビジュアルターンのみ】'
+            };
+            return jaMap[key] || match;
+        } else {
+            return match;
+        }
+    });
 
     // --- 1. Normalization Phase (Run first to shield terms from keyword matches) ---
     result = result.replace(/(원기|元気)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `genki${spanOpen || ''}${num}${spanClose || ''}`);
@@ -32,9 +54,34 @@ const replaceDescIcons = (text) => {
     result = result.replace(/(파라미터|パラメータ)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `param${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(열의\s*추가|熱意追加)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `netsui${spanOpen || ''}${num}${spanClose || ''}`);
 
+    result = result.replace(/(현재\s*체력이\s*(\d+)%\s*이하인\s*경우|현재\s*체력이\s*(\d+)%\s*이하일\s*경우|체력이\s*(\d+)%\s*이하인\s*경우|체력이\s*(\d+)%\s*이하일\s*경우|체력이\s*(\d+)%이하일\s*경우)/gi, (match, term, p1, p2, p3, p4, p5) => {
+        const num = p1 || p2 || p3 || p4 || p5;
+        return `lesshp${num}`;
+    });
+    result = result.replace(/体力が(\d+)%以下の場合、?/g, (match, num) => `lesshp${num}`);
+
+    result = result.replace(/(현재\s*체력이\s*(\d+)%\s*이상인\s*경우|현재\s*체력이\s*(\d+)%\s*이상일\s*경우|체력이\s*(\d+)%\s*이상인\s*경우|체력이\s*(\d+)%\s*이상일\s*경우|체력이\s*(\d+)%이상일\s*경우)/gi, (match, term, p1, p2, p3, p4, p5) => {
+        const num = p1 || p2 || p3 || p4 || p5;
+        return `morehp${num}`;
+    });
+    result = result.replace(/体力が(\d+)%以上の場合、?/g, (match, num) => `morehp${num}`);
+
+    result = result.replace(/(체력\s*회복|체력회복)\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `hp${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/体力回復\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `hp${spanOpen || ''}${num}${spanClose || ''}`);
+
     // 1. 체력 소비 / 体力消費
-    result = result.replace(/(체력\s*소비|소비\s*체력|体力\s*消費|消費\s*体力)/g, (match) => {
+    result = result.replace(/(체력\s*소비|体力\s*消費)/g, (match) => {
         return `<img src="icons/hpreduce.webp" alt="HP Reduce" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
+    // 1-2. 소비체력 절감 / 消費体力削減
+    result = result.replace(/(소비체력\s*절감|消費体力削減)/g, (match) => {
+        return `<img src="icons/cuthp.webp" alt="Cut HP" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
+    // 1-3. 소비체력 감소 / 消費体力減少
+    result = result.replace(/(소비체력\s*감소|消費体力減少)/g, (match) => {
+        return `<img src="icons/hpper.webp" alt="HP Percentage" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
     // 2. 호조 / 好調 (절호조 / 絶好調 제외)
@@ -120,6 +167,7 @@ const replaceDescIcons = (text) => {
     result = result.replace(/スキルカードを\s*引く/gi, 'draw1');
 
     // --- 2. Codified Tag Replacements (Run last to avoid double-matching) ---
+
     // hpreduce[num] (optional span tags wrapping the number are preserved)
     result = result.replace(/hpreduce\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         let label = '';
@@ -183,6 +231,74 @@ const replaceDescIcons = (text) => {
             label = 'Once per lesson';
         }
         return label;
+    });
+
+    // lesshp[num] (optional span tags wrapping the number are preserved)
+    result = result.replace(/lesshp\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        if (state.currentLang === 'ko') {
+            return `현재 체력이 ${spanOpen || ''}${num}${spanClose || ''}% 이하일 경우, `;
+        } else if (state.currentLang === 'ja') {
+            return `体力が${spanOpen || ''}${num}${spanClose || ''}%以下の場合、`;
+        } else {
+            return `If HP is ${spanOpen || ''}${num}${spanClose || ''}% or lower, `;
+        }
+    });
+
+    // morehp[num] (optional span tags wrapping the number are preserved)
+    result = result.replace(/morehp\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        if (state.currentLang === 'ko') {
+            return `현재 체력이 ${spanOpen || ''}${num}${spanClose || ''}% 이상인 경우, `;
+        } else if (state.currentLang === 'ja') {
+            return `体力が${spanOpen || ''}${num}${spanClose || ''}%以上の場合、`;
+        } else {
+            return `If HP is ${spanOpen || ''}${num}${spanClose || ''}% or higher, `;
+        }
+    });
+
+    // more[buff][num] and less[buff][num] (optional span tags wrapping the number are preserved)
+    result = result.replace(/(more|less)(goodcondition|concentration|motivation|goodimpression|genki|fullpower)\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, dir, status, spanOpen, num, spanClose) => {
+        const d = dir.toLowerCase();
+        const s = status.toLowerCase();
+        const open = spanOpen || '';
+        const close = spanClose || '';
+
+        const statusNames = {
+            ko: { goodcondition: '호조', concentration: '집중', motivation: '의욕', goodimpression: '호인상', genki: '원기', fullpower: '전력치' },
+            ja: { goodcondition: '好調', concentration: '集中', motivation: 'やる気', goodimpression: '好印象', genki: '元気', fullpower: '全力値' },
+            en: { goodcondition: 'Good Condition', concentration: 'Concentration', motivation: 'Motivation', goodimpression: 'Good Impression', genki: 'Genki', fullpower: 'Full Power' }
+        };
+
+        const lang = state.currentLang;
+        const sName = statusNames[lang]?.[s] || statusNames.ko[s];
+        const iconHtml = `<img src="icons/${s}.webp" alt="${sName}" class="pssr-info-modal-desc-inline-icon">`;
+
+        if (lang === 'ko') {
+            const josa = { goodcondition: '가', concentration: '이', motivation: '이', goodimpression: '이', genki: '가', fullpower: '가' }[s] || '이';
+            const suffix = s === 'goodcondition' ? '턴' : '';
+            const dirStr = d === 'more' ? '이상일 경우, ' : '이하일 경우, ';
+            return `${iconHtml}${sName}${josa} ${open}${num}${close}${suffix} ${dirStr}`;
+        } else if (lang === 'ja') {
+            const suffix = s === 'goodcondition' ? 'ターン' : '';
+            const dirStr = d === 'more' ? '以上の場合、' : '以下の場合、';
+            return `${iconHtml}${sName}が${open}${num}${close}${suffix}${dirStr}`;
+        } else {
+            const suffix = s === 'goodcondition' ? ' turn(s)' : '';
+            const dirStr = d === 'more' ? 'or higher, ' : 'or lower, ';
+            return `${iconHtml}If ${sName} is ${open}${num}${close}${suffix} ${dirStr}`;
+        }
+    });
+
+    // hp[num] (optional span tags wrapping the number are preserved)
+    result = result.replace(/hp\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        let label = '';
+        if (state.currentLang === 'ko') {
+            label = `체력회복 ${spanOpen || ''}${num}${spanClose || ''}`;
+        } else if (state.currentLang === 'ja') {
+            label = `体力回復${spanOpen || ''}${num}${spanClose || ''}`;
+        } else {
+            label = `Recover ${spanOpen || ''}${num}${spanClose || ''} HP`;
+        }
+        return `<img src="icons/hpreduce.webp" alt="HP" class="pssr-info-modal-desc-inline-icon">${label}`;
     });
 
     // inlesson[num] (optional span tags wrapping the number are preserved)
