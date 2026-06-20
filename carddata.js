@@ -3636,7 +3636,7 @@ export const cardList = [
         type: "visual",
         plan: "anomaly",
         have: "item",
-        item_effects: [{ type: "action", triggertext: ["visual700"], trigger: ["get_preservation"], target: "enhance", max: 2 }],
+        item_effects: [{ type: "action", triggertext: ["visual700"], trigger: ["enhance"], triggerdisplay: { ko: "온존 카드 강화", ja: "温存効果のスキルカード強化", en: "enhancing a Preserve skill card" }, target: "enhance", max: 2 }],
         releasedAt: "2025-05-16",
         rarity: "SR",
         extra1: "param",

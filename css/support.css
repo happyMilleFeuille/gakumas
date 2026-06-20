@@ -1708,6 +1708,7 @@ select.sort-select {
 @media (max-width: 768px) {
     .ability-dropdown {
         width: 75vw;
+        max-height: 45vh;
     }
     #filter-ability .ability-dropdown .ability-sub-btn {
         height: 1.5rem !important;

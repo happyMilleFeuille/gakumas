@@ -63,8 +63,17 @@ export function getParsedItemEffectsText(itemEffects) {
 
     return itemEffects.map(eff => {
         // 트리거 처리 (배열인 경우 모든 요소를 매핑하여 합침)
-        const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-        const trigger = triggers.map(t => labels[t] || t).join(', ');
+        let trigger = "";
+        if (eff.triggerdisplay) {
+            if (typeof eff.triggerdisplay === 'object') {
+                trigger = eff.triggerdisplay[state.currentLang] || eff.triggerdisplay.ja || eff.triggerdisplay.ko || '';
+            } else {
+                trigger = eff.triggerdisplay;
+            }
+        } else {
+            const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
+            trigger = triggers.map(t => labels[t] || t).join(', ');
+        }
         const maxSuffix = (eff.max && eff.max < 9) ? t('support_effect_max_suffix', { count: eff.max }) : '';
 
         if (eff.type === 'action') {

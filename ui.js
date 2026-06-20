@@ -957,6 +957,14 @@ function setupStaticListeners(container) {
     if (abilityDropdownBtn && abilityDropdown) {
         // Dynamically populate dropdown from abilityData (entries with name:)
         abilityDropdown.innerHTML = '';
+
+        // Add Reset button first
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'filter-btn ability-sub-btn ability-reset-btn';
+        resetBtn.dataset.i18n = 'filter_ability_reset';
+        resetBtn.textContent = translate('filter_ability_reset') || 'Reset';
+        abilityDropdown.appendChild(resetBtn);
+
         // Add sp_lessonup and percentparam first (these don't have name: in abilityData)
         const specialEntries = [
             { key: 'sp_lessonup', name: { ko: 'SP% ↑', ja: 'SP% ↑', en: 'SP% ↑' } },
@@ -1063,12 +1071,6 @@ function setupStaticListeners(container) {
             abilityDropdown.appendChild(btn);
         }
 
-        // Add Reset button
-        const resetBtn = document.createElement('button');
-        resetBtn.className = 'filter-btn ability-sub-btn ability-reset-btn';
-        resetBtn.dataset.i18n = 'filter_ability_reset';
-        resetBtn.textContent = translate('filter_ability_reset') || 'Reset';
-        abilityDropdown.appendChild(resetBtn);
 
         abilityDropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
