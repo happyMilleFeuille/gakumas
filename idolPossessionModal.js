@@ -247,9 +247,9 @@ export function openIdolPossessionModal() {
     modal.innerHTML = `
         <style>
             .idol-possession-content {
-                width: 740px;
+                width: 1000px;
                 max-width: 90%;
-                min-width: min(560px, 90%);
+                min-width: min(740px, 90%);
                 max-height: 85dvh;
                 padding: 20px 28px 18px 28px;
                 display: flex;
@@ -1171,7 +1171,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     </div>
                     <div class="char-stat-details" style="display: none; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 10px; flex-direction: column; gap: 6px;">
                         <div style="display: flex; flex-direction: column; gap: 5px; background: rgba(255, 255, 255, 0.55); padding: 14px 12px 6px; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.06); box-sizing: border-box; width: 100%;">
-                            <div class="idol-stats-chart-area-wrapper" style="display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 556px;">
+                            <div class="idol-stats-chart-area-wrapper" style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
                                 <div style="display: flex; align-items: flex-end;">
                                     <div class="idol-stats-yaxis-label" style="position: relative; width: 30px; height: 60px; font-size: 0.65rem; color: #888; font-weight: bold; margin-right: 6px; user-select: none;">
                                         <span style="position: absolute; right: 4px; top: 0%; transform: translateY(-50%); white-space: nowrap;">100%</span>
@@ -1267,7 +1267,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
                 .idol-stats-chart-area-wrapper {
                     width: 100% !important;
-                    max-width: 556px !important;
                 }
                  @media (max-width: 768px) {
                     .possession-section-card {
@@ -2435,6 +2434,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 const origModalMaxHeight = modalContent.style.maxHeight;
                 const origModalOverflow = modalContent.style.overflow;
+                const origModalWidth = modalContent.style.width;
+                const origModalMaxWidth = modalContent.style.maxWidth;
+                const origModalMinWidth = modalContent.style.minWidth;
 
                 scrollArea.scrollTop = 0;
                 scrollArea.offsetHeight;
@@ -2447,6 +2449,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 modalContent.style.maxHeight = 'none';
                 modalContent.style.overflow = 'visible';
+                modalContent.style.width = '740px';
+                modalContent.style.maxWidth = '740px';
+                modalContent.style.minWidth = '740px';
 
                 setTimeout(() => {
                     window.html2canvas(modalContent, {
@@ -2517,6 +2522,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                         modalContent.style.maxHeight = origModalMaxHeight;
                         modalContent.style.overflow = origModalOverflow;
+                        modalContent.style.width = origModalWidth;
+                        modalContent.style.maxWidth = origModalMaxWidth;
+                        modalContent.style.minWidth = origModalMinWidth;
 
                         saveBtn.innerHTML = originalText;
                         saveBtn.disabled = false;
@@ -2575,6 +2583,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                         modalContent.style.maxHeight = origModalMaxHeight;
                         modalContent.style.overflow = origModalOverflow;
+                        modalContent.style.width = origModalWidth;
+                        modalContent.style.maxWidth = origModalMaxWidth;
+                        modalContent.style.minWidth = origModalMinWidth;
 
                         saveBtn.innerHTML = originalText;
                         saveBtn.disabled = false;

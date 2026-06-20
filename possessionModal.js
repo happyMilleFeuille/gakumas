@@ -47,6 +47,12 @@ const formatRate = (owned, total) => {
 const TYPE_ORDER = ['vocal', 'dance', 'visual', 'assist'];
 const PLAN_ORDER = ['free', 'sense', 'logic', 'anomaly'];
 
+const RARITY_GRADIENTS = {
+    'SSR': 'linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)',
+    'SR': 'linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)',
+    'R': '#cbd5e1'
+};
+
 const getTypeLabel = (type) => {
     const key = `attr_${type.toLowerCase()}`;
     const currentLang = state.currentLang || 'ko';
@@ -139,10 +145,25 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
         }
     });
 
-    // Sort rarity card lists by releasedAt descending (newest first)
+    // Sort rarity card lists by rarity first (SSR -> SR) then releasedAt descending (newest first)
     Object.keys(byRarity).forEach(rarity => {
         for (let i = 0; i <= 4; i++) {
             byRarity[rarity].cardsByLb[i].sort((a, b) => {
+                const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+                const rA = rOrder[a.rarity] || 99;
+                const rB = rOrder[b.rarity] || 99;
+                if (rA !== rB) return rA - rB;
+
+                const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+                const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+                const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+                if (tA !== tB) return tA - tB;
+
+                const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+                const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+                const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+                if (pA !== pB) return pA - pB;
+
                 const dateA = a.releasedAt || '1970-01-01';
                 const dateB = b.releasedAt || '1970-01-01';
                 if (dateA !== dateB) {
@@ -152,6 +173,21 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
             });
         }
         byRarity[rarity].unownedCards.sort((a, b) => {
+            const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+            const rA = rOrder[a.rarity] || 99;
+            const rB = rOrder[b.rarity] || 99;
+            if (rA !== rB) return rA - rB;
+
+            const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+            const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+            const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+            if (tA !== tB) return tA - tB;
+
+            const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+            const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+            const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+            if (pA !== pB) return pA - pB;
+
             const dateA = a.releasedAt || '1970-01-01';
             const dateB = b.releasedAt || '1970-01-01';
             if (dateA !== dateB) {
@@ -161,10 +197,25 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
         });
     });
 
-    // Sort source card lists by releasedAt descending (newest first)
+    // Sort source card lists by rarity first (SSR -> SR) then releasedAt descending (newest first)
     Object.keys(bySource).forEach(source => {
         for (let i = 0; i <= 4; i++) {
             bySource[source].cardsByLb[i].sort((a, b) => {
+                const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+                const rA = rOrder[a.rarity] || 99;
+                const rB = rOrder[b.rarity] || 99;
+                if (rA !== rB) return rA - rB;
+
+                const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+                const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+                const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+                if (tA !== tB) return tA - tB;
+
+                const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+                const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+                const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+                if (pA !== pB) return pA - pB;
+
                 const dateA = a.releasedAt || '1970-01-01';
                 const dateB = b.releasedAt || '1970-01-01';
                 if (dateA !== dateB) {
@@ -174,6 +225,21 @@ function calculatePossessionStats(rarityFilter, sourceFilter, typeFilter, planFi
             });
         }
         bySource[source].unownedCards.sort((a, b) => {
+            const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+            const rA = rOrder[a.rarity] || 99;
+            const rB = rOrder[b.rarity] || 99;
+            if (rA !== rB) return rA - rB;
+
+            const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+            const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+            const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+            if (tA !== tB) return tA - tB;
+
+            const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+            const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+            const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+            if (pA !== pB) return pA - pB;
+
             const dateA = a.releasedAt || '1970-01-01';
             const dateB = b.releasedAt || '1970-01-01';
             if (dateA !== dateB) {
@@ -237,6 +303,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
 
     const isJa = state.currentLang === 'ja';
     const isEn = state.currentLang === 'en';
+    const currentLang = state.currentLang || 'ko';
     const ownedLabel = isJa ? '凸' : isEn ? 'LB' : '돌';
 
     const maxLbVal = sStats.total || 1;
@@ -268,8 +335,8 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         const isMax = i === 4;
 
         // Colors: 명함~3돌(i < 4)은 금색(#ffb300), 4돌(isMax)은 무지개 그라데이션
-        const barBgColor = isMax 
-            ? 'linear-gradient(180deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)' 
+        const barBgColor = isMax
+            ? 'linear-gradient(180deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)'
             : '#ffb300';
         const labelColor = isMax ? '#ff4d8d' : '#e68a00';
         const barBorderColor = isMax ? '#ff7fa5' : '#d97706';
@@ -296,7 +363,8 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         barColor = 'linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)';
     }
 
-    let detailColsHtml = '';
+    let headersHtml = '';
+    let listsHtml = '';
     for (let i = 0; i <= 4; i++) {
         const cards = sStats.cardsByLb?.[i] || [];
 
@@ -304,29 +372,32 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
         cards.forEach(c => {
             const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
             const imgStyle = c.isDeactivated
-                ? 'filter: grayscale(90%); opacity: 0.8; border: 1px dashed #ccc;'
+                ? 'filter: grayscale(90%); border: 1px dashed #ccc;'
                 : '';
 
             cardImgsHtml += `
                 <div class="possession-detail-card" 
                      data-card-id="${c.id}" 
-                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 6px; overflow: hidden; background: #f0f0f0; border: 1px solid #ddd; box-sizing: border-box; margin-bottom: 4px; flex-shrink: 0;">
+                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; border: 1px solid #ddd; box-sizing: border-box; padding-bottom: 5px; display: flex; flex-direction: column; margin-bottom: 4px; flex-shrink: 0;">
                     <img src="${imgSrc}" 
                          onerror="this.src='icons/card.png';" 
                          style="width: 100%; height: 100%; object-fit: cover; display: block; ${imgStyle}">
+                    <img class="support-type-badge" src="icons/${(c.type || 'vocal').toLowerCase()}.webp">
+                    <img class="support-plan-badge" src="icons/${(c.plan || 'free').toLowerCase()}.webp">
                 </div>
             `;
         });
 
+        headersHtml += `
+            <div class="possession-col-header${i === 0 ? ' active' : ''}" data-lb="${i}" style="font-size: 0.72rem; font-weight: 800; color: #555; text-align: center; padding-top: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; user-select: none; flex-shrink: 0; background: transparent; z-index: 10; margin-bottom: 8px;">
+                ${i}${ownedLabel} (${cards.length})
+            </div>
+        `;
+
         const borderRightStyle = i === 4 ? '' : 'border-right: 1px solid #f0f0f0;';
-        detailColsHtml += `
-            <div class="possession-detail-col" style="flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 0 8px 6px 8px; ${borderRightStyle} box-sizing: border-box; position: relative;">
-                <div class="possession-col-header" style="font-size: 0.72rem; font-weight: 800; color: #555; text-align: center; padding-top: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; user-select: none; flex-shrink: 0; background: transparent; z-index: 10; margin-bottom: 8px;">
-                    ${i}${ownedLabel} (${cards.length})
-                </div>
-                <div class="possession-detail-card-list" style="display: flex; flex-direction: column; gap: 4px; padding-bottom: 2px;">
-                    ${cardImgsHtml || `<div style="font-size: 0.65rem; color: #bbb; text-align: center; margin-top: 10px; user-select: none;">-</div>`}
-                </div>
+        listsHtml += `
+            <div class="possession-detail-card-list" data-lb="${i}" style="display: flex; flex-direction: column; gap: 4px; padding: 0 8px 6px 8px; ${borderRightStyle} box-sizing: border-box; position: relative;">
+                ${cardImgsHtml || `<div style="font-size: 0.65rem; color: #bbb; text-align: center; margin-top: 10px; user-select: none;">-</div>`}
             </div>
         `;
     }
@@ -367,10 +438,12 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
             unownedCardImgsHtml += `
                 <div class="possession-detail-card" 
                      data-card-id="${c.id}" 
-                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 6px; overflow: hidden; background: #f0f0f0; border: 1px solid #ddd; box-sizing: border-box;">
+                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; border: 1px solid #ddd; box-sizing: border-box; padding-bottom: 5px; display: flex; flex-direction: column;">
                     <img src="${imgSrc}" 
                          onerror="this.src='icons/card.png';" 
-                         style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(90%); opacity: 0.8;">
+                         style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(90%);">
+                    <img class="support-type-badge" src="icons/${(c.type || 'vocal').toLowerCase()}.webp">
+                    <img class="support-plan-badge" src="icons/${(c.plan || 'free').toLowerCase()}.webp">
                 </div>
             `;
         });
@@ -391,15 +464,16 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
     let ownedContainerHtml = '';
     if (hasOwned) {
         ownedContainerHtml = `
-            <div class="possession-owned-container" style="display: flex; gap: 0; justify-content: space-between; align-items: stretch; width: 100%; box-sizing: border-box; ${ownedStyle}">
-                ${detailColsHtml}
+            <div class="possession-owned-container" data-active-lb="0" style="display: grid; grid-template-columns: repeat(5, 1fr); width: 100%; box-sizing: border-box; ${ownedStyle}">
+                ${headersHtml}
+                ${listsHtml}
             </div>
         `;
     }
 
     const detailContainerHtml = `
         <div class="possession-detail-container" style="display: none; margin-top: 12px;">
-            <div class="possession-detail-scroll-wrapper" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 8px; max-height: ${isOverall ? '520px' : '420px'}; overflow-y: auto; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column;">
+            <div class="possession-detail-scroll-wrapper" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column;">
                 ${ownedContainerHtml}
                 ${unownedCardsHtml}
             </div>
@@ -425,7 +499,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 5px; background: #ffffff; padding: 14px 12px 6px; border-radius: 8px; border: 1px solid #f0f0f0;">
-                <div class="possession-chart-area-wrapper" style="display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 630px;">
+                <div class="possession-chart-area-wrapper" style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
                     <!-- Chart Area (Y axis + Bars with grid) -->
                     <div style="display: flex; align-items: flex-end;">
                         <!-- Y Axis labels (Max, Mid, 0) -->
@@ -490,9 +564,24 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
         }
     });
 
-    // Sort globally by releasedAt descending (newest first) across all merged rarities
+    // Sort globally by rarity first (SSR -> SR) then releasedAt descending (newest first) across all merged rarities
     for (let i = 0; i <= 4; i++) {
         mergedRarityStats.cardsByLb[i].sort((a, b) => {
+            const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+            const rA = rOrder[a.rarity] || 99;
+            const rB = rOrder[b.rarity] || 99;
+            if (rA !== rB) return rA - rB;
+
+            const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+            const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+            const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+            if (tA !== tB) return tA - tB;
+
+            const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+            const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+            const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+            if (pA !== pB) return pA - pB;
+
             const dateA = a.releasedAt || '1970-01-01';
             const dateB = b.releasedAt || '1970-01-01';
             if (dateA !== dateB) {
@@ -502,6 +591,21 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
         });
     }
     mergedRarityStats.unownedCards.sort((a, b) => {
+        const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+        const rA = rOrder[a.rarity] || 99;
+        const rB = rOrder[b.rarity] || 99;
+        if (rA !== rB) return rA - rB;
+
+        const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+        const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+        const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+        if (tA !== tB) return tA - tB;
+
+        const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+        const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+        const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+        if (pA !== pB) return pA - pB;
+
         const dateA = a.releasedAt || '1970-01-01';
         const dateB = b.releasedAt || '1970-01-01';
         if (dateA !== dateB) {
@@ -603,7 +707,6 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                 }
                 .possession-chart-area-wrapper {
                     width: 100% !important;
-                    max-width: 630px !important;
                 }
                 .possession-unowned-grid {
                     display: grid;
@@ -619,14 +722,109 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     padding-left: 8px;
                     user-select: none;
                 }
+                .support-type-badge {
+                    position: absolute;
+                    bottom: 8px;
+                    right: 3px;
+                    width: 18px;
+                    height: 18px;
+                    z-index: 5;
+                    pointer-events: none;
+                    user-select: none;
+                    object-fit: contain;
+                    box-sizing: border-box;
+                }
+                .support-plan-badge {
+                    position: absolute;
+                    top: 3px;
+                    left: 3px;
+                    width: 18px;
+                    height: 18px;
+                    z-index: 5;
+                    pointer-events: none;
+                    user-select: none;
+                    object-fit: contain;
+                    box-sizing: border-box;
+                }
                 @media (max-width: 768px) {
+                    .possession-owned-container {
+                        display: grid !important;
+                        grid-template-columns: repeat(5, 1fr) !important;
+                        gap: 0 !important;
+                    }
+                    .possession-col-header {
+                        cursor: pointer !important;
+                        padding: 6px 2px !important;
+                        border-right: 1px solid #f0f0f0 !important;
+                        border-radius: 0 !important;
+                        background: transparent !important;
+                        text-align: center !important;
+                        font-size: 0.45rem !important;
+                        margin-bottom: 6px !important;
+                        padding-top: 6px !important;
+                        padding-bottom: 6px !important;
+                        transition: all 0.15s ease !important;
+                    }
+                    .possession-col-header[data-lb="4"] {
+                        border-right: none !important;
+                    }
+                    .possession-col-header:hover {
+                        color: #ff4d8d !important;
+                    }
+                    .possession-col-header.active {
+                        color: #ff4d8d !important;
+                        font-weight: 900 !important;
+                    }
+                    .possession-detail-card-list {
+                        grid-column: 1 / span 5 !important;
+                        display: none !important;
+                        grid-template-columns: repeat(3, 1fr) !important;
+                        gap: 8px !important;
+                        padding: 0 4px 3px 4px !important;
+                        border-right: none !important;
+                    }
+                    
+                    /* CSS Filter Logic for Mobile Tabs */
+                    .possession-owned-container[data-active-lb="0"] .possession-detail-card-list[data-lb="0"] {
+                        display: grid !important;
+                    }
+                    .possession-owned-container[data-active-lb="1"] .possession-detail-card-list[data-lb="1"] {
+                        display: grid !important;
+                    }
+                    .possession-owned-container[data-active-lb="2"] .possession-detail-card-list[data-lb="2"] {
+                        display: grid !important;
+                    }
+                    .possession-owned-container[data-active-lb="3"] .possession-detail-card-list[data-lb="3"] {
+                        display: grid !important;
+                    }
+                    .possession-owned-container[data-active-lb="4"] .possession-detail-card-list[data-lb="4"] {
+                        display: grid !important;
+                    }
+
+                    .possession-detail-card {
+                        padding-bottom: 3px !important;
+                    }
                     .possession-unowned-grid {
-                        gap: 4px !important;
+                        display: grid !important;
+                        grid-template-columns: repeat(3, 1fr) !important;
+                        gap: 8px !important;
                         padding: 0 4px !important;
                     }
                     .possession-unowned-title {
                         font-size: 0.55rem !important;
                         padding-left: 4px !important;
+                    }
+                    .support-type-badge {
+                        width: 12px !important;
+                        height: 12px !important;
+                        bottom: 6px !important;
+                        right: 3px !important;
+                    }
+                    .support-plan-badge {
+                        width: 12px !important;
+                        height: 12px !important;
+                        top: 3px !important;
+                        left: 3px !important;
                     }
                 }
             </style>
@@ -846,13 +1044,13 @@ export function openPossessionModal() {
                 }
                 .possession-detail-scroll-wrapper {
                     border-radius: 5px !important;
-                    padding: 0 6px 8px 6px !important;
+                    padding: 3px 6px 8px 6px !important;
                 }
                 .possession-detail-card-list {
                     gap: 2px !important;
                 }
                 .possession-detail-card {
-                    border-radius: 3px !important;
+                    border-radius: 2px 12px 2px 2px !important;
                     margin-bottom: 2px !important;
                 }
                 .possession-chart-area-wrapper {
@@ -882,6 +1080,10 @@ export function openPossessionModal() {
                     margin-top: 2px !important;
                     margin-bottom: 2px !important;
                 }
+                .possession-save-options-content .save-opt-warning {
+                    font-size: 0.4rem !important;
+                    margin-top: 2px !important;
+                }
                 .possession-save-options-content button.calc-btn {
                     padding: 11px 8px !important;
                     font-size: 0.65rem !important;
@@ -895,7 +1097,7 @@ export function openPossessionModal() {
                 }
             }
         </style>
-        <div class="modal-content possession-modal-content" style="width: 740px; max-width: 90%; min-width: min(560px, 90%); max-height: 85dvh; padding: 20px 28px 18px 28px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); overflow: hidden; background-color: #ffffff;">
+        <div class="modal-content possession-modal-content" style="width: 1000px; max-width: 90%; min-width: min(740px, 90%); max-height: 85dvh; padding: 20px 28px 18px 28px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); overflow: hidden; background-color: #ffffff;">
             <!-- Header section containing the Title and Save Image button on the top-right -->
             <div id="possession-header-area" style="display: flex; justify-content: space-between; align-items: center; user-select: none; width: 100%;">
                 <div class="possession-title-wrap" style="display: flex; align-items: center; gap: 8px; font-size: 1.3rem; font-weight: 800; color: #333;">
@@ -1047,6 +1249,32 @@ export function openPossessionModal() {
                 }
             }
         }
+
+        // Tab click handler for mobile layout
+        const colHeader = e.target.closest('.possession-col-header');
+        if (colHeader) {
+            if (window.innerWidth <= 768) {
+                const container = colHeader.closest('.possession-owned-container');
+                if (container) {
+                    const lbVal = colHeader.getAttribute('data-lb');
+                    const currentActive = container.getAttribute('data-active-lb');
+
+                    if (currentActive === lbVal) {
+                        // Already active -> keep active and do nothing
+                        colHeader.classList.add('active');
+                        return;
+                    }
+
+                    // Deactivate all headers in this container
+                    const headers = container.querySelectorAll('.possession-col-header');
+                    headers.forEach(h => h.classList.remove('active'));
+
+                    // Activate clicked tab
+                    container.setAttribute('data-active-lb', lbVal);
+                    colHeader.classList.add('active');
+                }
+            }
+        }
     });
 
     const showSaveOptionsModal = (onSelect) => {
@@ -1065,6 +1293,21 @@ export function openPossessionModal() {
         const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
         const optOverallText = isJa ? '全体所持率のみ保存 (詳細情報を含む)' : isEn ? 'Save Overall Rate Only (Include Details)' : '전체 소지율만 저장(상세정보 포함)';
         const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
+        const warningText = isJa
+            ? '※ 全体所持率の保存時、モバイルはSSR+SRをサポートしていません。'
+            : isEn
+                ? '* When saving overall rate, mobile does not support SSR+SR.'
+                : '※ 전체 소지율 저장 시 모바일은 SSR+SR을 지원하지 않습니다.';
+
+        const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isDoubleFilter = (ssrActive && srActive) || (!ssrActive && !srActive);
+        const overallDisabled = isMobileDevice && isDoubleFilter;
+
+        const disabledStyle = overallDisabled
+            ? 'background: #cbd5e1; color: #94a3b8; cursor: not-allowed; opacity: 0.75;'
+            : 'background: #555; color: #fff; cursor: pointer;';
+        const disabledAttr = overallDisabled ? 'disabled' : '';
+        const warningDisplay = overallDisabled ? 'display: block;' : 'display: none;';
 
         optionsModal.innerHTML = `
             <div class="modal-content possession-save-options-content" style="width: 380px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 13px; box-sizing: border-box; text-align: center; position: relative;">
@@ -1073,9 +1316,12 @@ export function openPossessionModal() {
                 <button id="btn-save-opt-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: ${themeColor}; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
                     ${optAllText}
                 </button>
-                <button id="btn-save-opt-overall" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: #555; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
+                <button id="btn-save-opt-overall" class="calc-btn" ${disabledAttr} style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; ${disabledStyle} border: none; border-radius: 8px; transition: none !important;">
                     ${optOverallText}
                 </button>
+                <div class="save-opt-warning" style="font-size: 0.72rem; color: #dc2626; font-weight: bold; margin-top: 4px; word-break: keep-all; line-height: 1.35; user-select: none; ${warningDisplay}">
+                    ${warningText}
+                </div>
             </div>
         `;
 
@@ -1142,7 +1388,7 @@ export function openPossessionModal() {
                 font-family: inherit;
                 gap: 16px;
             `;
-            
+
             const spinner = document.createElement('div');
             spinner.style.cssText = `
                 width: 46px;
@@ -1155,7 +1401,7 @@ export function openPossessionModal() {
                 will-change: transform;
                 transform: translateZ(0);
             `;
-            
+
             if (!document.getElementById('possession-spin-style')) {
                 const style = document.createElement('style');
                 style.id = 'possession-spin-style';
@@ -1233,6 +1479,9 @@ export function openPossessionModal() {
 
                 const origModalMaxHeight = modalContent.style.maxHeight;
                 const origModalOverflow = modalContent.style.overflow;
+                const origModalWidth = modalContent.style.width;
+                const origModalMaxWidth = modalContent.style.maxWidth;
+                const origModalMinWidth = modalContent.style.minWidth;
 
                 // Elements to hide temporarily to make the image clean showing ONLY overall rate card
                 const filterRarityArea = modalContent.querySelector('#possession-filter-rarity-area');
@@ -1301,6 +1550,9 @@ export function openPossessionModal() {
                 }
                 modalContent.style.maxHeight = 'none';
                 modalContent.style.overflow = 'visible';
+                modalContent.style.width = '740px';
+                modalContent.style.maxWidth = '740px';
+                modalContent.style.minWidth = '740px';
 
                 scrollWrappers.forEach(wrapper => {
                     wrapper.style.maxHeight = 'none';
@@ -1316,7 +1568,7 @@ export function openPossessionModal() {
                 });
 
                 // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
-                const unownedImgs = modalContent.querySelectorAll('.possession-unowned-grid img');
+                const unownedImgs = modalContent.querySelectorAll('.possession-unowned-grid img:not(.support-type-badge):not(.support-plan-badge)');
                 const origImgSrcs = [];
                 unownedImgs.forEach(img => {
                     origImgSrcs.push({ img: img, src: img.src });
@@ -1325,10 +1577,14 @@ export function openPossessionModal() {
                     }
                 });
 
+                const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const captureScale = isMobileDevice ? 1.5 : 2;
+                const captureDelay = isMobileDevice ? 500 : 350;
+
                 setTimeout(() => {
                     window.html2canvas(modalContent, {
                         backgroundColor: '#ffffff',
-                        scale: 2,
+                        scale: captureScale,
                         useCORS: true,
                         logging: false,
                         windowWidth: 1024,
@@ -1370,6 +1626,9 @@ export function openPossessionModal() {
                         }
                         modalContent.style.maxHeight = origModalMaxHeight;
                         modalContent.style.overflow = origModalOverflow;
+                        modalContent.style.width = origModalWidth;
+                        modalContent.style.maxWidth = origModalMaxWidth;
+                        modalContent.style.minWidth = origModalMinWidth;
 
                         origSourceCardDisplays.forEach(item => {
                             item.el.style.display = item.display;
@@ -1421,6 +1680,9 @@ export function openPossessionModal() {
                         }
                         modalContent.style.maxHeight = origModalMaxHeight;
                         modalContent.style.overflow = origModalOverflow;
+                        modalContent.style.width = origModalWidth;
+                        modalContent.style.maxWidth = origModalMaxWidth;
+                        modalContent.style.minWidth = origModalMinWidth;
 
                         origSourceCardDisplays.forEach(item => {
                             item.el.style.display = item.display;
@@ -1442,7 +1704,7 @@ export function openPossessionModal() {
                         btn.disabled = false;
                         hideSpinnerOverlay();
                     });
-                }, 350);
+                }, captureDelay);
             };
 
             startCapture();
