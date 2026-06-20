@@ -418,14 +418,14 @@ export function openIdolPossessionModal() {
                 position: relative;
                 width: 86px;
                 height: 86px;
-                border-radius: 12px;
+                border-radius: 0 18px 0 0;
                 background: #eee;
                 flex-shrink: 0;
             }
             .pssr-stat-icon-box {
                 position: absolute;
                 inset: 0;
-                border-radius: 12px;
+                border-radius: 0 18px 0 0;
                 overflow: hidden;
                 z-index: 1;
                 box-sizing: border-box;
@@ -444,7 +444,7 @@ export function openIdolPossessionModal() {
                 left: -1px;
                 width: 22px;
                 height: 22px;
-                border-radius: 0 4px 4px 4px;
+                border-radius: 0 0 4px 0;
                 border: none !important;
                 z-index: 5;
                 pointer-events: none;
@@ -1057,18 +1057,19 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         charList.forEach((item, rankIndex) => {
             const charId = item.charId;
             const isMobile = window.innerWidth <= 768;
-            const badgeSize = isMobile ? '20px' : '24px';
+            const rankWidth = isMobile ? '24px' : '30px';
+            const idolIconSize = isMobile ? '28px' : '34px';
             let rankBadgeHtml = '';
             if (rankIndex === 0) {
-                rankBadgeHtml = `<img src="icons/1st.webp" style="width: ${badgeSize}; height: ${badgeSize}; object-fit: contain; flex-shrink: 0; user-select: none;">`;
+                rankBadgeHtml = `<div style="width: ${rankWidth}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="icons/1st.webp" style="width: 100%; height: auto; object-fit: contain; user-select: none;"></div>`;
             } else if (rankIndex === 1) {
-                rankBadgeHtml = `<img src="icons/2nd.webp" style="width: ${badgeSize}; height: ${badgeSize}; object-fit: contain; flex-shrink: 0; user-select: none;">`;
+                rankBadgeHtml = `<div style="width: ${rankWidth}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="icons/2nd.webp" style="width: 100%; height: auto; object-fit: contain; user-select: none;"></div>`;
             } else if (rankIndex === 2) {
-                rankBadgeHtml = `<img src="icons/3rd.webp" style="width: ${badgeSize}; height: ${badgeSize}; object-fit: contain; flex-shrink: 0; user-select: none;">`;
+                rankBadgeHtml = `<div style="width: ${rankWidth}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="icons/3rd.webp" style="width: 100%; height: auto; object-fit: contain; user-select: none;"></div>`;
             } else {
                 const crownSize = isMobile ? '8px' : '10px';
                 const fontSize = isMobile ? '0.52rem' : '0.62rem';
-                rankBadgeHtml = `<div style="width: ${badgeSize}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; flex-shrink: 0; user-select: none;">
+                rankBadgeHtml = `<div style="width: ${rankWidth}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; flex-shrink: 0; user-select: none;">
                     <img src="icons/crown.webp" style="width: ${crownSize}; height: ${crownSize}; object-fit: contain; opacity: 0.55; filter: grayscale(100%);">
                     <span style="font-size: ${fontSize}; font-weight: 800; color: #94a3b8; line-height: 1.0;">${rankIndex + 1}</span>
                 </div>`;
@@ -1168,7 +1169,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 <div class="char-stat-card" data-rank="${rankIndex + 1}" style="display: flex; flex-direction: column; background: ${rankBg}; border: 1px solid ${rankBorder}; border-radius: 12px; overflow: hidden; box-sizing: border-box; transition: none !important; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                     <div class="char-stat-main" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; cursor: pointer; user-select: none;">
                         ${rankBadgeHtml}
-                        <img src="icons/idolicons/${iconName}_c.png" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid ${charColor}; flex-shrink: 0;">
+                        <img src="icons/idolicons/${iconName}_c.png" style="width: ${idolIconSize}; height: ${idolIconSize}; border-radius: 6px; border: 1px solid ${charColor}; background-color: ${charColor}33; flex-shrink: 0;">
                         <div style="flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0;">
                             <div class="idol-stats-char-name-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-weight: 800; color: #333;">
                                 <span style="display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; white-space: nowrap;">
@@ -1420,9 +1421,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     .idol-stats-plan-col > div:last-child {
                         height: 8px !important;
                     }
-                    #plan-stat-details .pssr-stat-icon-wrap {
+                    #plan-stat-details .pssr-stat-icon-wrap,
+                    .pssr-stat-icon-wrap {
                         width: 35px !important;
                         height: 35px !important;
+                        border-radius: 0 9px 0 0 !important;
+                    }
+                    .pssr-stat-icon-box {
+                        border-radius: 0 9px 0 0 !important;
                     }
                     .pssr-char-badge {
                         width: 10px !important;
@@ -1430,7 +1436,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         border: none !important;
                         top: -1px !important;
                         left: -1px !important;
-                        border-radius: 0 2px 2px 2px !important;
+                        border-radius: 0 0 2px 0 !important;
                     }
                     .pssr-plan-badge {
                         width: 10px !important;
