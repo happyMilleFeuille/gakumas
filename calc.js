@@ -2488,7 +2488,7 @@ function openCalcShareModal(slotId, container) {
             
 
             importedPreset.slotId = parseInt(slotId);
-            importedPreset.timestamp = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+            importedPreset.timestamp = importedPreset.timestamp || new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
 
             localStorage.setItem(slotKey, JSON.stringify(importedPreset));
 
