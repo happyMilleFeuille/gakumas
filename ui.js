@@ -979,6 +979,90 @@ function setupStaticListeners(container) {
             abilityDropdown.appendChild(btn);
         }
 
+        // Add Support Unique Card separator and buttons
+        const divider = document.createElement('div');
+        divider.className = 'ability-dropdown-divider';
+        divider.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; text-align: center; margin: 8px 0;';
+        
+        const line1 = document.createElement('span');
+        line1.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
+        
+        const textSpan = document.createElement('span');
+        const sepText = {
+            ko: '서포트 고유 카드',
+            ja: 'サポート固有カード',
+            en: 'Support Unique Cards'
+        };
+        textSpan.textContent = sepText[state.currentLang] || sepText.en;
+        textSpan.style.cssText = 'padding: 0 10px; font-size: 0.72rem; color: #999; font-weight: bold; white-space: nowrap; pointer-events: none; user-select: none;';
+        
+        const line2 = document.createElement('span');
+        line2.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
+        
+        divider.appendChild(line1);
+        divider.appendChild(textSpan);
+        divider.appendChild(line2);
+        abilityDropdown.appendChild(divider);
+
+        const cardFilters = [
+            { key: 'card_m', labelKey: 'calc_label_mental' },
+            { key: 'card_a', labelKey: 'calc_label_active' }
+        ];
+
+        for (const entry of cardFilters) {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn ability-sub-btn';
+            btn.dataset.val = entry.key;
+            const getLabel = translate('support_effect_get') || 'Get Card';
+            const typeLabel = translate(entry.labelKey) || (entry.labelKey === 'calc_label_mental' ? 'Mental' : 'Active');
+            btn.textContent = `${getLabel}(${typeLabel})`;
+            abilityDropdown.appendChild(btn);
+        }
+
+        // Add P-Item separator and buttons
+        const pDivider = document.createElement('div');
+        pDivider.className = 'ability-dropdown-divider';
+        pDivider.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; text-align: center; margin: 8px 0;';
+        
+        const pLine1 = document.createElement('span');
+        pLine1.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
+        
+        const pTextSpan = document.createElement('span');
+        const pSepText = {
+            ko: 'P 아이템',
+            ja: 'Pアイテム',
+            en: 'P-Item'
+        };
+        pTextSpan.textContent = pSepText[state.currentLang] || pSepText.en;
+        pTextSpan.style.cssText = 'padding: 0 10px; font-size: 0.72rem; color: #999; font-weight: bold; white-space: nowrap; pointer-events: none; user-select: none;';
+        
+        const pLine2 = document.createElement('span');
+        pLine2.style.cssText = 'flex-grow: 1; border-bottom: 1px solid #eee;';
+        
+        pDivider.appendChild(pLine1);
+        pDivider.appendChild(pTextSpan);
+        pDivider.appendChild(pLine2);
+        abilityDropdown.appendChild(pDivider);
+
+        const pItemFilters = [
+            { key: 'pitem_get', abilityKey: 'get' },
+            { key: 'pitem_get_drink', abilityKey: 'get_drink' },
+            { key: 'pitem_enhance', abilityKey: 'enhance' },
+            { key: 'pitem_delete', abilityKey: 'delete' },
+            { key: 'pitem_delete_t', abilityKey: 'delete_trouble3' },
+            { key: 'pitem_change', abilityKey: 'change3' },
+            { key: 'pitem_copy', name: { ko: '카드 복제', ja: 'カードコピー', en: 'Card Copy' } },
+            { key: 'pitem_stats', name: { ko: '스텟 획득', ja: 'パラメーター獲得', en: 'Stat Gain' } }
+        ];
+
+        for (const entry of pItemFilters) {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn ability-sub-btn';
+            btn.dataset.val = entry.key;
+            btn.textContent = entry.abilityKey ? abilityData[entry.abilityKey].name[state.currentLang] : (entry.name[state.currentLang] || entry.name.en);
+            abilityDropdown.appendChild(btn);
+        }
+
         // Add Reset button
         const resetBtn = document.createElement('button');
         resetBtn.className = 'filter-btn ability-sub-btn ability-reset-btn';
@@ -1003,7 +1087,28 @@ function setupStaticListeners(container) {
 
             const btn = e.target.closest('.ability-sub-btn');
             if (!btn) return;
-            setFilter('ability', btn.dataset.val);
+            const val = btn.dataset.val;
+
+            // Support Unique Card category: only 1 selection allowed
+            const supportCardKeys = ['card_m', 'card_a'];
+            // P-Item category: only 1 selection allowed
+            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats'];
+
+            if (supportCardKeys.includes(val)) {
+                // Remove other support card filters + all p-item filters
+                [...supportCardKeys.filter(k => k !== val), ...pItemKeys].forEach(k => {
+                    const idx = state.filters.ability.indexOf(k);
+                    if (idx > -1) state.filters.ability.splice(idx, 1);
+                });
+            } else if (pItemKeys.includes(val)) {
+                // Remove other p-item filters + all support card filters
+                [...pItemKeys.filter(k => k !== val), ...supportCardKeys].forEach(k => {
+                    const idx = state.filters.ability.indexOf(k);
+                    if (idx > -1) state.filters.ability.splice(idx, 1);
+                });
+            }
+
+            setFilter('ability', val);
             syncFilterUI(container);
             updateSupportGrid(container);
         });
@@ -1255,6 +1360,36 @@ function updateSupportGrid(container) {
 
         // ability filter uses AND logic (must have all selected abilities)
         const abilityMatch = (state.filters.ability.length === 0) || state.filters.ability.every(ab => {
+            if (ab === 'card_m') {
+                return card.have === 'card_m';
+            }
+            if (ab === 'card_a') {
+                return card.have === 'card_a';
+            }
+            if (ab === 'pitem_get') {
+                return card.item_effects && card.item_effects.some(eff => !eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
+            }
+            if (ab === 'pitem_get_drink') {
+                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('get_drink') : eff.target === 'get_drink');
+            }
+            if (ab === 'pitem_enhance') {
+                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('enhance') : eff.target === 'enhance');
+            }
+            if (ab === 'pitem_delete') {
+                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete') : eff.target === 'delete');
+            }
+            if (ab === 'pitem_delete_t') {
+                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete_t') : eff.target === 'delete_t');
+            }
+            if (ab === 'pitem_change') {
+                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('change') : eff.target === 'change');
+            }
+            if (ab === 'pitem_copy') {
+                return card.item_effects && card.item_effects.some(eff => eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
+            }
+            if (ab === 'pitem_stats') {
+                return card.item_effects && card.item_effects.some(eff => eff.stats);
+            }
             if (!card.abilities) return false;
             if (ab === 'sp_lessonup') {
                 return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');

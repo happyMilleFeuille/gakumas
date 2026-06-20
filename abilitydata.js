@@ -509,6 +509,17 @@ export const abilityData = {
         trigger: ["delete_a"], max: 3,
 
     },
+    "delete_trouble3": {
+        name: { ko: "삭제(트러블)", ja: "削除(トラブル)", en: "Delete(Trouble)" },
+        format: { ko: "트러블카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "トラブルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When deleting an Trouble card, {type} Up +{val} (3 times during Produce)" },
+        levels: {
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["delete_t"], max: 3,
+
+    },
     "change3": {
         name: { ko: "체인지", ja: "チェンジ", en: "Change" },
         format: { ko: "카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When changing a card, {type} Up +{val} (3 times during Produce)" },

@@ -1642,6 +1642,8 @@ select.sort-select {
     transform: translateX(-50%);
     width: max-content;
     max-width: 90vw;
+    max-height: 60vh;
+    overflow-y: auto;
     background: #fff;
     border: 1.5px solid #fdc361;
     border-radius: 8px;
@@ -1651,6 +1653,29 @@ select.sort-select {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 4px;
+}
+
+.ability-dropdown::-webkit-scrollbar {
+    width: 5px;
+}
+
+.ability-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px 0;
+}
+
+.ability-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(253, 195, 97, 0.4);
+    border-radius: 10px;
+}
+
+.ability-dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(253, 195, 97, 0.7);
+}
+
+.ability-dropdown {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(253, 195, 97, 0.4) transparent;
 }
 
 .ability-dropdown.hidden {
