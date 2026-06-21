@@ -695,6 +695,9 @@ export function openIdolPossessionModal() {
                     width: 9px !important;
                     height: 9px !important;
                 }
+                .source-stat-circle-view svg circle {
+                    stroke-width: 3.5 !important;
+                }
             }
         </style>
         <div class="modal-content idol-possession-content">
@@ -1348,9 +1351,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     <div class="source-stat-circle-view">
                         <div style="position: relative; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center;">
                             <svg width="84" height="84" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="15.915" fill="none" stroke="#e2e8f0" stroke-width="3.5"></circle>
-                                <circle cx="18" cy="18" r="15.915" fill="none" stroke="${sourceColor}" stroke-width="3.5"
-                                        stroke-dasharray="${rate} ${100 - rate}" stroke-dashoffset="25" stroke-linecap="round"></circle>
+                                <circle cx="18" cy="18" r="15.915" fill="none" stroke="#e2e8f0" stroke-width="4.0"></circle>
+                                <circle cx="18" cy="18" r="15.915" fill="none" stroke="${sourceColor}" stroke-width="4.0"
+                                        stroke-dasharray="${rate} ${100 - rate}" stroke-dashoffset="25" stroke-linecap="butt"></circle>
                             </svg>
                             <div style="position: absolute; font-size: 0.88rem; font-weight: 800; color: #333; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; box-sizing: border-box;">${srcLabel}</div>
                         </div>
@@ -1456,7 +1459,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
 
                     html += `
-                        <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                        <div class="pssr-stat-icon-wrap" data-source="${c.another ? 'another' : (c.source || 'normal')}" style="${containerStyle}" title="${cardName}">
                             <div class="pssr-stat-icon-box">
                                 <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
                             </div>
@@ -1478,27 +1481,46 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             let barsHtml = '';
             let xAxisLabelsHtml = '';
             const sourceOrder = ['normal', 'limited', 'limited_f', 'limited_u', 'dist', 'another'];
-            const activeSources = includeAnother ? sourceOrder : sourceOrder.filter(s => s !== 'another');
+            let activeSources = sourceOrder;
+            if (!includeAnother) {
+                activeSources = activeSources.filter(s => s !== 'another');
+            }
+            if (!includeDist) {
+                activeSources = activeSources.filter(s => s !== 'dist');
+            }
             activeSources.forEach(src => {
                 const s = charSourceStats[src];
                 const srcLabel = src === 'another'
                     ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
                     : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
-                const srcRate = s.total > 0 ? ((s.owned / s.total) * 100).toFixed(0) : '0';
-                const labelText = s.total > 0 ? `${s.owned}/${s.total}` : '';
+                const isSelectable = s.total > 0;
+                const srcRate = isSelectable ? ((s.owned / s.total) * 100).toFixed(0) : '0';
+                const labelText = isSelectable ? `${s.owned}/${s.total}` : '';
+
+                const outerStyle = isSelectable 
+                    ? 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; position: relative; z-index: 5;'
+                    : 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: default; position: relative; z-index: 5; pointer-events: none; opacity: 0.25;';
+
+                const labelStyle = isSelectable
+                    ? 'font-size: 0.72rem; font-weight: bold; color: #777; text-align: center; cursor: pointer; user-select: none; padding: 2px 6px;'
+                    : 'font-size: 0.72rem; font-weight: bold; color: #bbb; text-align: center; cursor: default; user-select: none; padding: 2px 6px; pointer-events: none; opacity: 0.45;';
 
                 barsHtml += `
                     <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
-                        <div style="width: 14px; height: ${srcRate}%; background-color: ${charColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative;">
-                            <div class="idol-stats-bar-val" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${s.owned > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none;">
-                                ${labelText}
+                        <div class="idol-stats-bar-outer" data-source="${src}" style="${outerStyle}">
+                            <div class="idol-stats-bar" style="width: 14px; height: ${srcRate}%; background-color: ${charColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative; transition: all 0.15s ease; box-sizing: border-box; pointer-events: none;">
+                                <div class="idol-stats-bar-val" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${s.owned > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none; pointer-events: none;">
+                                    ${labelText}
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
 
                 xAxisLabelsHtml += `
-                    <div class="idol-stats-xaxis-label" style="flex: 1; font-size: 0.72rem; font-weight: bold; color: #777; text-align: center;">${srcLabel}</div>
+                    <div style="flex: 1; display: flex; justify-content: center;">
+                        <div class="idol-stats-xaxis-label" data-source="${src}" style="${labelStyle}">${srcLabel}</div>
+                    </div>
                 `;
             });
 
@@ -1742,6 +1764,29 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
                 .idol-stats-chart-area-wrapper {
                     width: 100% !important;
+                }
+                .idol-stats-bar-outer {
+                    transition: opacity 0.15s ease;
+                }
+                .idol-stats-chart-wrapper.has-active .idol-stats-bar-outer {
+                    opacity: 0.5;
+                }
+                .idol-stats-chart-wrapper.has-active .idol-stats-bar-outer.active {
+                    opacity: 1;
+                }
+                .idol-stats-bar-outer.active .idol-stats-bar {
+                    filter: brightness(0.9) saturate(1.3);
+                }
+                .idol-stats-xaxis-label {
+                    transition: opacity 0.15s ease, color 0.15s ease;
+                }
+                .idol-stats-xaxis-container.has-active .idol-stats-xaxis-label {
+                    opacity: 0.5;
+                }
+                .idol-stats-xaxis-container.has-active .idol-stats-xaxis-label.active {
+                    opacity: 1;
+                    color: #1e293b !important;
+                    font-weight: 800 !important;
                 }
                 .idol-stats-radar-divider {
                     width: 1px;
@@ -2713,6 +2758,63 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             return;
         }
 
+        const clickedFilterItem = e.target.closest('.idol-stats-bar-outer') || e.target.closest('.idol-stats-xaxis-label');
+        if (clickedFilterItem) {
+            e.stopPropagation();
+            const src = clickedFilterItem.dataset.source;
+            const charCard = clickedFilterItem.closest('.char-stat-card');
+            if (charCard) {
+                const barOuter = charCard.querySelector(`.idol-stats-bar-outer[data-source="${src}"]`);
+                const label = charCard.querySelector(`.idol-stats-xaxis-label[data-source="${src}"]`);
+
+                if (barOuter) {
+                    const isActive = barOuter.classList.contains('active');
+
+                    charCard.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
+                    charCard.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
+
+                    const iconWrappers = charCard.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap');
+                    const separators = charCard.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]');
+
+                    if (isActive) {
+                        iconWrappers.forEach(w => {
+                            w.style.display = '';
+                        });
+                        separators.forEach(sep => {
+                            sep.style.display = '';
+                        });
+
+                        const chartWrapper = barOuter.closest('.idol-stats-chart-wrapper');
+                        if (chartWrapper) chartWrapper.classList.remove('has-active');
+
+                        const xaxisContainer = charCard.querySelector('.idol-stats-xaxis-container');
+                        if (xaxisContainer) xaxisContainer.classList.remove('has-active');
+                    } else {
+                        barOuter.classList.add('active');
+                        if (label) label.classList.add('active');
+
+                        const chartWrapper = barOuter.closest('.idol-stats-chart-wrapper');
+                        if (chartWrapper) chartWrapper.classList.add('has-active');
+
+                        const xaxisContainer = charCard.querySelector('.idol-stats-xaxis-container');
+                        if (xaxisContainer) xaxisContainer.classList.add('has-active');
+
+                        iconWrappers.forEach(w => {
+                            if (w.dataset.source === src) {
+                                w.style.display = '';
+                            } else {
+                                w.style.display = 'none';
+                            }
+                        });
+                        separators.forEach(sep => {
+                            sep.style.display = 'none';
+                        });
+                    }
+                }
+            }
+            return;
+        }
+
         const charCard = e.target.closest('.char-stat-card');
         if (charCard) {
             const mainRow = e.target.closest('.char-stat-main');
@@ -2726,6 +2828,22 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         charCard.classList.add('expanded');
                     } else {
                         charCard.classList.remove('expanded');
+                        // Reset filters when collapsing
+                        charCard.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
+                        charCard.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
+
+                        const chartWrapper = charCard.querySelector('.idol-stats-chart-wrapper');
+                        if (chartWrapper) chartWrapper.classList.remove('has-active');
+
+                        const xaxisContainer = charCard.querySelector('.idol-stats-xaxis-container');
+                        if (xaxisContainer) xaxisContainer.classList.remove('has-active');
+
+                        charCard.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap').forEach(w => {
+                            w.style.display = '';
+                        });
+                        charCard.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]').forEach(sep => {
+                            sep.style.display = '';
+                        });
                     }
                     if (chevron) {
                         chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
@@ -2741,6 +2859,18 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     // Save Image button listener
     const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
     saveBtn.onclick = () => {
+        // Reset all active bar filters inside the modal when saving image
+        modal.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
+        modal.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
+        modal.querySelectorAll('.idol-stats-chart-wrapper').forEach(w => w.classList.remove('has-active'));
+        modal.querySelectorAll('.idol-stats-xaxis-container').forEach(c => c.classList.remove('has-active'));
+        modal.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap').forEach(w => {
+            w.style.display = '';
+        });
+        modal.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]').forEach(sep => {
+            sep.style.display = '';
+        });
+
         const originalText = saveBtn.innerHTML;
 
         const showSpinnerOverlay = () => {
@@ -2826,7 +2956,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
             const optPlanAllText = isJa ? 'プラン別保存' : isEn ? 'Save by Plan' : '플랜별 저장';
             const optSourceAllText = isJa ? '分類別保存' : isEn ? 'Save by Category' : '분류별 저장';
-            const optCharAllText = isJa ? 'キャラクター別保存' : isEn ? 'Save by Character' : '캐릭터별 저장';
+            const optCharAllText = isJa ? 'アイドル別保存' : isEn ? 'Save by Idol' : '아이돌별 저장';
 
             optionsModal.innerHTML = `
                 <div class="modal-content possession-save-options-content">
@@ -2993,10 +3123,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 const origDisplays = [];
                 elementsToHide.forEach(el => {
-                    origDisplays.push({ 
-                        el, 
-                        display: el.style.display, 
-                        displayPriority: el.style.getPropertyPriority('display') 
+                    origDisplays.push({
+                        el,
+                        display: el.style.display,
+                        displayPriority: el.style.getPropertyPriority('display')
                     });
                     el.style.setProperty('display', 'none', 'important');
                 });
