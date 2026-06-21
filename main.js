@@ -156,7 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         const quickBtn = e.target.closest('.home-quick-btn');
         if (quickBtn) {
-            handleNavigation(quickBtn.dataset.target);
+            const target = quickBtn.dataset.target;
+            if (target === 'idol-stats') {
+                import('./idolPossessionModal.js').then(m => m.openIdolPossessionModal());
+            } else {
+                handleNavigation(target);
+            }
         }
     });
 

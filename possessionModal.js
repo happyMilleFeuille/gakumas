@@ -300,6 +300,14 @@ function getPossessionTextSummary(stats) {
 
 function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
     const rate = formatRate(sStats.owned, sStats.total);
+    const numRate = parseFloat(rate);
+    let rankImgHtml = '';
+    if (isOverall) {
+        let rankImg = 'r.png';
+        if (numRate >= 95) rankImg = 'ssr.png';
+        else if (numRate >= 50) rankImg = 'sr.png';
+        rankImgHtml = `<img class="possession-overall-rank-icon" src="icons/${rankImg}" style="height: 18px; object-fit: contain; flex-shrink: 0; margin-right: 2px; vertical-align: middle;">`;
+    }
 
     const isJa = state.currentLang === 'ja';
     const isEn = state.currentLang === 'en';
@@ -356,7 +364,6 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
     }
 
     let barColor = 'linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)';
-    const numRate = parseFloat(rate);
     if (numRate < 50) {
         barColor = '#eef8ff';
     } else if (numRate < 95) {
@@ -486,6 +493,7 @@ function buildSectionInnerHtml(label, sStats, themeColor, isOverall = false) {
                 <span class="possession-section-title-label" style="font-weight: 800; color: #333;">${label}</span>
                 <div style="display: flex; align-items: center; gap: 8px; margin-right: 4px;">
                     <div style="display: flex; align-items: center; gap: 4px;">
+                        ${rankImgHtml}
                         <span class="possession-section-title-rate" style="font-weight: 800; color: ${themeColor};">${rate}%</span>
                         <span class="possession-section-title-count" style="font-weight: 800; color: #333;">(${sStats.owned}/${sStats.total})</span>
                     </div>
@@ -747,12 +755,12 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     box-sizing: border-box;
                 }
                 @media (max-width: 768px) {
-                    .possession-owned-container {
+                    body:not(.is-capturing) .possession-owned-container {
                         display: grid !important;
                         grid-template-columns: repeat(5, 1fr) !important;
                         gap: 0 !important;
                     }
-                    .possession-col-header {
+                    body:not(.is-capturing) .possession-col-header {
                         cursor: pointer !important;
                         padding: 6px 2px !important;
                         border-right: 1px solid #f0f0f0 !important;
@@ -765,17 +773,17 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         padding-bottom: 6px !important;
                         transition: all 0.15s ease !important;
                     }
-                    .possession-col-header[data-lb="4"] {
+                    body:not(.is-capturing) .possession-col-header[data-lb="4"] {
                         border-right: none !important;
                     }
-                    .possession-col-header:hover {
+                    body:not(.is-capturing) .possession-col-header:hover {
                         color: #ff4d8d !important;
                     }
-                    .possession-col-header.active {
+                    body:not(.is-capturing) .possession-col-header.active {
                         color: #ff4d8d !important;
                         font-weight: 900 !important;
                     }
-                    .possession-detail-card-list {
+                    body:not(.is-capturing) .possession-detail-card-list {
                         grid-column: 1 / span 5 !important;
                         display: none !important;
                         grid-template-columns: repeat(3, 1fr) !important;
@@ -785,42 +793,42 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     }
                     
                     /* CSS Filter Logic for Mobile Tabs */
-                    .possession-owned-container[data-active-lb="0"] .possession-detail-card-list[data-lb="0"] {
+                    body:not(.is-capturing) .possession-owned-container[data-active-lb="0"] .possession-detail-card-list[data-lb="0"] {
                         display: grid !important;
                     }
-                    .possession-owned-container[data-active-lb="1"] .possession-detail-card-list[data-lb="1"] {
+                    body:not(.is-capturing) .possession-owned-container[data-active-lb="1"] .possession-detail-card-list[data-lb="1"] {
                         display: grid !important;
                     }
-                    .possession-owned-container[data-active-lb="2"] .possession-detail-card-list[data-lb="2"] {
+                    body:not(.is-capturing) .possession-owned-container[data-active-lb="2"] .possession-detail-card-list[data-lb="2"] {
                         display: grid !important;
                     }
-                    .possession-owned-container[data-active-lb="3"] .possession-detail-card-list[data-lb="3"] {
+                    body:not(.is-capturing) .possession-owned-container[data-active-lb="3"] .possession-detail-card-list[data-lb="3"] {
                         display: grid !important;
                     }
-                    .possession-owned-container[data-active-lb="4"] .possession-detail-card-list[data-lb="4"] {
+                    body:not(.is-capturing) .possession-owned-container[data-active-lb="4"] .possession-detail-card-list[data-lb="4"] {
                         display: grid !important;
                     }
 
-                    .possession-detail-card {
+                    body:not(.is-capturing) .possession-detail-card {
                         padding-bottom: 3px !important;
                     }
-                    .possession-unowned-grid {
+                    body:not(.is-capturing) .possession-unowned-grid {
                         display: grid !important;
                         grid-template-columns: repeat(3, 1fr) !important;
                         gap: 8px !important;
                         padding: 0 4px !important;
                     }
-                    .possession-unowned-title {
+                    body:not(.is-capturing) .possession-unowned-title {
                         font-size: 0.55rem !important;
                         padding-left: 4px !important;
                     }
-                    .support-type-badge {
+                    body:not(.is-capturing) .support-type-badge {
                         width: 12px !important;
                         height: 12px !important;
                         bottom: 6px !important;
                         right: 3px !important;
                     }
-                    .support-plan-badge {
+                    body:not(.is-capturing) .support-plan-badge {
                         width: 12px !important;
                         height: 12px !important;
                         top: 3px !important;
@@ -945,176 +953,199 @@ export function openPossessionModal() {
             }
 
             @media (max-width: 768px) {
-                .possession-modal-content {
+                body:not(.is-capturing) .possession-modal-content {
                     width: 100% !important;
                     max-width: 95% !important;
                     min-width: 0 !important;
-                    padding: 14px 16px 6px 16px !important;
+                    padding: 14px 8px 3px 8px !important;
                     gap: 8px !important;
                     border-radius: 14px !important;
                 }
-                .possession-title-wrap {
+
+                body:not(.is-capturing) .possession-title-wrap {
                     font-size: 1.05rem !important;
                     gap: 6px !important;
                 }
-                .possession-title-date {
+                body:not(.is-capturing) .possession-title-icon {
+                    width: 30px !important;
+                    height: 30px !important;
+                    margin-bottom: -1px !important;
+                    margin-right: 6px !important;
+                }
+                body:not(.is-capturing) .possession-title-date {
                     display: none !important;
                 }
-                .possession-title-indicator {
+                body:not(.is-capturing) #possession-header-line {
+                    margin-left: 15px !important;
+                    width: calc(100% - 15px) !important;
+                }
+                body:not(.is-capturing) .possession-title-indicator {
                     height: 16px !important;
                 }
-                #btn-possession-save-image {
-                    height: 24px !important;
-                    padding: 0 8px !important;
-                    font-size: 0.68rem !important;
-                    border-radius: 5px !important;
+                body:not(.is-capturing) #btn-possession-save-image {
+                    height: 28px !important;
+                    padding: 0 12px !important;
+                    font-size: 0.72rem !important;
+                    border-radius: 0 6px 6px 0 !important;
+                    font-weight: bold !important;
                 }
-                #possession-filter-rarity-area {
+                body:not(.is-capturing) #possession-filter-rarity-area {
                     border-radius: 6px !important;
                 }
-                #possession-filter-rarity-area button {
+                body:not(.is-capturing) #possession-filter-rarity-area button {
                     padding: 4px 0 !important;
                 }
-                #possession-filter-rarity-area img {
+                body:not(.is-capturing) #possession-filter-rarity-area img {
                     height: 16px !important;
                 }
-                #possession-filter-source-area {
+                body:not(.is-capturing) #possession-filter-source-area {
                     border-radius: 6px !important;
                 }
-                #possession-filter-source-area button {
+                body:not(.is-capturing) #possession-filter-source-area button {
                     padding: 4px 0 !important;
                     font-size: 0.7rem !important;
                     min-width: 36px !important;
                 }
-                #possession-scroll-area {
+                body:not(.is-capturing) #possession-scroll-area {
                     padding-left: 12px !important;
                     padding-right: 12px !important;
                     gap: 4px !important;
                 }
-                .possession-section-card {
+                body:not(.is-capturing) .possession-section-card {
                     border-radius: 6px !important;
                 }
-                #possession-stats-area {
+                body:not(.is-capturing) .possession-overall-rank-icon {
+                    height: 14px !important;
+                }
+                body:not(.is-capturing) #possession-stats-area {
                     gap: 8px !important;
                 }
-                #possession-overall-label {
+                body:not(.is-capturing) #possession-overall-label {
                     margin-top: 10px !important;
                 }
-                #possession-overall-label,
-                #possession-source-label {
+                body:not(.is-capturing) #possession-overall-label,
+                body:not(.is-capturing) #possession-source-label {
                     font-size: 0.85rem !important;
                     margin-bottom: -3px !important;
                 }
                 /* Overall Section (Main) - Mobile */
-                .possession-section-card[data-is-overall="true"] .possession-section-title-label {
+                body:not(.is-capturing) .possession-section-card[data-is-overall="true"] .possession-section-title-label {
                     font-size: 0.85rem !important;
                 }
-                .possession-section-card[data-is-overall="true"] .possession-section-title-rate {
+                body:not(.is-capturing) .possession-section-card[data-is-overall="true"] .possession-section-title-rate {
                     font-size: 0.82rem !important;
                 }
-                .possession-section-card[data-is-overall="true"] .possession-section-title-count {
+                body:not(.is-capturing) .possession-section-card[data-is-overall="true"] .possession-section-title-count {
                     font-size: 0.6rem !important;
                 }
 
                 /* Sub Section (Source/Classification) - Mobile */
-                .possession-section-card:not([data-is-overall="true"]) .possession-section-title-label {
+                body:not(.is-capturing) .possession-section-card:not([data-is-overall="true"]) .possession-section-title-label {
                     font-size: 0.72rem !important;
                 }
-                .possession-section-card:not([data-is-overall="true"]) .possession-section-title-rate {
+                body:not(.is-capturing) .possession-section-card:not([data-is-overall="true"]) .possession-section-title-rate {
                     font-size: 0.7rem !important;
                 }
-                .possession-section-card:not([data-is-overall="true"]) .possession-section-title-count {
+                body:not(.is-capturing) .possession-section-card:not([data-is-overall="true"]) .possession-section-title-count {
                     font-size: 0.52rem !important;
                 }
-                .possession-chart-xaxis-label {
+                body:not(.is-capturing) .possession-chart-xaxis-label {
                     font-size: 0.48rem !important;
                 }
-                .possession-chart-bar-value {
+                body:not(.is-capturing) .possession-chart-bar-value {
                     font-size: 0.48rem !important;
                     top: -10px !important;
                 }
-                .possession-col-header {
+                body:not(.is-capturing) .possession-col-header {
                     font-size: 0.4rem !important;
                 }
-                .possession-detail-col {
+                body:not(.is-capturing) .possession-detail-col {
                     padding: 0 4px 6px 4px !important;
                 }
-                .possession-category-header:hover {
+                body:not(.is-capturing) .possession-category-header:hover {
                     background: transparent !important;
                     border-color: transparent !important;
                 }
-                #possession-desc {
+                body:not(.is-capturing) #possession-desc {
                     font-size: 0.58rem !important;
                     line-height: 1.35 !important;
                     margin: 0 !important;
                 }
-                .possession-category-item > div:last-child {
+                body:not(.is-capturing) .possession-category-item > div:last-child {
                     border-radius: 5px !important;
                 }
-                .possession-detail-scroll-wrapper {
+                body:not(.is-capturing) .possession-detail-scroll-wrapper {
                     border-radius: 5px !important;
                     padding: 3px 6px 8px 6px !important;
                 }
-                .possession-detail-card-list {
+                body:not(.is-capturing) .possession-detail-card-list {
                     gap: 2px !important;
                 }
-                .possession-detail-card {
+                body:not(.is-capturing) .possession-detail-card {
                     border-radius: 2px 12px 2px 2px !important;
                     margin-bottom: 2px !important;
                 }
-                .possession-chart-area-wrapper {
+                body:not(.is-capturing) .possession-chart-area-wrapper {
                     max-width: 270px !important;
                     margin: 0 auto !important;
                 }
-                .possession-chart-yaxis {
+                body:not(.is-capturing) .possession-chart-yaxis {
                     font-size: 0.45rem !important;
                     height: 45px !important;
                     width: 12px !important;
                     margin-right: 1px !important;
                 }
-                .possession-chart-bars {
+                body:not(.is-capturing) .possession-chart-bars {
                     height: 45px !important;
                 }
-                .possession-chart-xaxis-container {
+                body:not(.is-capturing) .possession-chart-xaxis-container {
                     padding-left: 18px !important;
                 }
-                .possession-save-options-content {
+                body:not(.is-capturing) .possession-save-options-content {
                     width: 270px !important;
                     padding: 16px !important;
                     gap: 8px !important;
                     border-radius: 12px !important;
                 }
-                .possession-save-options-content .save-opt-title {
+                body:not(.is-capturing) .possession-save-options-content .save-opt-title {
                     font-size: 0.85rem !important;
                     margin-top: 2px !important;
                     margin-bottom: 2px !important;
                 }
-                .possession-save-options-content .save-opt-warning {
+                body:not(.is-capturing) .possession-save-options-content .save-opt-warning {
                     font-size: 0.4rem !important;
                     margin-top: 2px !important;
                 }
-                .possession-save-options-content button.calc-btn {
+                body:not(.is-capturing) .possession-save-options-content button.calc-btn {
                     padding: 11px 8px !important;
                     font-size: 0.65rem !important;
                     border-radius: 6px !important;
                     width: 90% !important;
                 }
-                .possession-save-options-content #btn-save-opt-close {
+                body:not(.is-capturing) .possession-save-options-content #btn-save-opt-close {
                     font-size: 1rem !important;
                     top: 4px !important;
                     right: 4px !important;
                 }
             }
         </style>
-        <div class="modal-content possession-modal-content" style="width: 1000px; max-width: 90%; min-width: min(740px, 90%); max-height: 85dvh; padding: 20px 28px 18px 28px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); overflow: hidden; background-color: #ffffff;">
+        <div class="modal-content possession-modal-content" style="width: 1000px; max-width: 90%; min-width: min(740px, 90%); max-height: 85dvh; padding: 20px 20px 9px 20px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); overflow: hidden; background-color: #ffffff;">
             <!-- Header section containing the Title and Save Image button on the top-right -->
-            <div id="possession-header-area" style="display: flex; justify-content: space-between; align-items: center; user-select: none; width: 100%;">
-                <div class="possession-title-wrap" style="display: flex; align-items: center; gap: 8px; font-size: 1.3rem; font-weight: 800; color: #333;">
-                    <div class="possession-title-indicator" style="width: 4px; height: 20px; background-color: ${themeColor}; border-radius: 2px;"></div>
-                    <span>${title}</span>
-                    <span class="possession-title-date" style="font-size: 0.7em; font-weight: 500; color: #666; margin-left: 4px;">${formattedDate}</span>
+            <div id="possession-header-area" style="display: flex; align-items: flex-end; user-select: none; width: 100%; padding-bottom: 8px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; align-items: flex-start; flex: 1; gap: 0; margin-right: 5px;">
+                    <div class="possession-title-wrap" style="display: flex; align-items: flex-end; gap: 8px; font-size: 1.3rem; font-weight: 800; color: #333; width: 100%;">
+                        <svg class="possession-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${themeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; flex-shrink: 0; margin-bottom: -1px;">
+                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                        </svg>
+                        <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 2px;">
+                            <span>${title}</span>
+                            <span class="possession-title-date" style="font-size: 0.7em; font-weight: 500; color: #666; margin-left: 4px;">${formattedDate}</span>
+                        </div>
+                    </div>
+                    <div id="possession-header-line" style="width: calc(100% - 20px); height: 3px; background-color: ${themeColor}; margin-top: -3px; margin-left: 20px; z-index: 5;"></div>
                 </div>
-                <button id="btn-possession-save-image" class="calc-btn" style="height: 34px; padding: 0 14px; background-color: ${themeColor}; color: #fff; font-weight: bold; font-size: 0.85rem; border: none; border-radius: 8px; cursor: pointer; transition: none !important; display: flex; align-items: center; gap: 4px;">
+                <button id="btn-possession-save-image" class="calc-btn" style="height: 34px; padding: 0 16px; background-color: ${themeColor}; color: #fff; font-weight: bold; font-size: 0.85rem; border: none; border-radius: 0 8px 8px 0; cursor: pointer; transition: none !important; display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
                     ${saveImageBtn}
                 </button>
             </div>
@@ -1448,9 +1479,6 @@ export function openPossessionModal() {
 
             showSpinnerOverlay();
 
-            btn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${alertGeneratingImage}</span>`;
-            btn.disabled = true;
-
             const startCapture = () => {
                 const executeCapture = () => capture();
 
@@ -1471,6 +1499,7 @@ export function openPossessionModal() {
             };
 
             const capture = () => {
+                document.body.classList.add('is-capturing');
                 const modalContent = modal.querySelector('.modal-content');
                 const statsArea = modal.querySelector('#possession-stats-area');
                 const scrollArea = modal.querySelector('#possession-scroll-area');
@@ -1502,7 +1531,7 @@ export function openPossessionModal() {
                 const origFilterSourceDisplay = filterSourceArea ? filterSourceArea.style.display : '';
                 const origSourceLabelDisplay = sourceLabelEl ? sourceLabelEl.style.display : '';
 
-                btn.style.display = 'none';
+                btn.innerHTML = 'GAKUMAS NOTE';
                 if (descArea) descArea.style.display = 'none';
                 if (filterRarityArea) filterRarityArea.style.display = 'none';
                 // Keep filterSourceArea visible in screenshots
@@ -1616,7 +1645,6 @@ export function openPossessionModal() {
                         });
 
                         // Restore original styles
-                        btn.style.display = 'flex';
                         if (descArea) descArea.style.display = '';
                         if (filterRarityArea) filterRarityArea.style.display = origFilterRarityDisplay;
                         if (filterSourceArea) filterSourceArea.style.display = origFilterSourceDisplay;
@@ -1657,8 +1685,8 @@ export function openPossessionModal() {
                         });
 
                         btn.innerHTML = originalText;
-                        btn.disabled = false;
                         hideSpinnerOverlay();
+                        document.body.classList.remove('is-capturing');
                         showSupportToast(alertSuccessImage);
                     }).catch(err => {
                         console.error('html2canvas error:', err);
@@ -1670,7 +1698,6 @@ export function openPossessionModal() {
                         });
 
                         // Restore original styles
-                        btn.style.display = 'flex';
                         if (descArea) descArea.style.display = '';
                         if (filterRarityArea) filterRarityArea.style.display = origFilterRarityDisplay;
                         if (filterSourceArea) filterSourceArea.style.display = origFilterSourceDisplay;
@@ -1711,8 +1738,8 @@ export function openPossessionModal() {
                         });
 
                         btn.innerHTML = originalText;
-                        btn.disabled = false;
                         hideSpinnerOverlay();
+                        document.body.classList.remove('is-capturing');
                     });
                 }, captureDelay);
             };
