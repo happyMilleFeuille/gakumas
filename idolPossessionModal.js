@@ -629,6 +629,7 @@ export function openIdolPossessionModal() {
                     height: auto !important;
                     line-height: 1.2 !important;
                     width: 100% !important;
+                    word-break: break-all !important;
                 }
                 .pssr-check-badge {
                     top: -3px !important;
