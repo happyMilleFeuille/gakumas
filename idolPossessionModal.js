@@ -948,7 +948,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         let rankImg = 'r.png';
         if (numRate >= 95) rankImg = 'ssr.png';
         else if (numRate >= 50) rankImg = 'sr.png';
-        const rankImgHtml = `<img class="idol-stats-overall-rank-icon" src="icons/${rankImg}" style="height: 38px; object-fit: contain; flex-shrink: 0; vertical-align: middle;">`;
+        const rankImgHtml = `<img class="idol-stats-overall-rank-icon" src="icons/${rankImg}" style="height: 46px; object-fit: contain; flex-shrink: 0; vertical-align: middle;">`;
 
         // Calculate by plan
         const statsByPlan = {
@@ -1598,16 +1598,16 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         });
 
         let barColor = 'linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)';
-        let cardBg = 'linear-gradient(135deg, rgba(255, 235, 122, 0.05) 0%, rgba(255, 139, 173, 0.05) 35%, rgba(194, 147, 255, 0.05) 70%, rgba(115, 232, 255, 0.05) 100%)';
-        let cardBorder = '1px solid rgba(255, 139, 173, 0.2)';
+        let cardBg = 'linear-gradient(135deg, rgba(255, 235, 122, 0.12) 0%, rgba(255, 139, 173, 0.10) 35%, rgba(194, 147, 255, 0.10) 70%, rgba(115, 232, 255, 0.10) 100%)';
+        let cardBorder = '1px solid rgba(255, 139, 173, 0.3)';
         if (numRate < 50) {
             barColor = '#eef8ff';
             cardBg = 'linear-gradient(135deg, rgba(70, 164, 243, 0.04), rgba(70, 164, 243, 0.08))';
             cardBorder = '1px solid rgba(70, 164, 243, 0.15)';
         } else if (numRate < 95) {
             barColor = 'linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)';
-            cardBg = 'linear-gradient(135deg, rgba(255, 204, 0, 0.04), rgba(255, 204, 0, 0.08))';
-            cardBorder = '1px solid rgba(255, 204, 0, 0.15)';
+            cardBg = 'linear-gradient(135deg, rgba(255, 204, 0, 0.08), rgba(255, 204, 0, 0.14))';
+            cardBorder = '1px solid rgba(255, 204, 0, 0.25)';
         }
 
         scrollArea.innerHTML = `
@@ -1982,6 +1982,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         width: 12px !important;
                         height: 12px !important;
                     }
+                    body:not(.is-capturing) .idol-stats-overall-rank-icon {
+                        height: 38px !important;
+                    }
                     .idol-stats-overall-lbl {
                         font-size: 0.68rem !important;
                         white-space: nowrap !important;
@@ -2282,6 +2285,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             </div>
                         </span>
                     </div>
+                    <div class="idol-stats-overall-val" style="color: ${firstPlaceCharColor}; font-size: 1.15rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-weight: 800; margin-top: 4px; margin-bottom: 4px;">
+                        ${rankImgHtml}
+                        <span>${overallRate}% (${ownedCount}/${totalCount})</span>
+                    </div>
                     <div class="possession-overall-bar-container" style="width: 100%; height: 36px; background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; box-sizing: border-box; position: relative; cursor: pointer;">
                         <!-- 평소에 보이는 그라데이션/단색 바 -->
                         <div class="overall-bar-gradient" style="width: ${overallRate}%; height: 100%; background: ${barColor};"></div>
@@ -2289,10 +2296,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         <div class="overall-bar-chars" style="width: ${overallRate}%; height: 100%;">
                             ${charSegmentsHtml}
                         </div>
-                    </div>
-                    <div class="idol-stats-overall-val" style="color: ${firstPlaceCharColor}; font-size: 1.15rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-weight: 800; margin-top: 4px;">
-                        ${rankImgHtml}
-                        <span>${overallRate}% (${ownedCount}/${totalCount})</span>
                     </div>
                 </div>
 
