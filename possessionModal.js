@@ -66,7 +66,7 @@ const SOURCE_COLORS = {
     limited: '#c084fc', // Pastel Purple
     limited_f: '#f87171', // Soft Red
     limited_u: '#fcd34d', // Pastel Yellow
-    dist: '#a3e635' // Pastel Lime
+    dist: '#8FDDBA' // Pastel Mint
 };
 
 const getTypeLabel = (type) => {
@@ -683,20 +683,13 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
 
     let sourceSegmentsHtml = '';
     if (ownedAll > 0) {
-        const sourceColors = {
-            normal: '#93c5fd', // Pastel Blue
-            limited: '#c084fc', // Pastel Purple
-            limited_f: '#f87171', // Soft Red (more vivid pastel)
-            limited_u: '#fcd34d', // Pastel Yellow
-            dist: '#a3e635' // Pastel Lime / Light Green
-        };
         const ownedUnit = isJa ? '枚' : isEn ? ' owned' : '장 소지';
         SOURCE_ORDER.forEach(src => {
             const sStats = stats.bySource[src];
             if (!sStats || sStats.owned === 0) return;
             const label = getSourceLabel(src);
             const pct = (sStats.owned / ownedAll) * 100;
-            const color = sourceColors[src] || '#cbd5e1';
+            const color = SOURCE_COLORS[src] || '#cbd5e1';
             sourceSegmentsHtml += `<div style="width: ${pct}%; height: 100%; background-color: ${color};" title="${label}: ${sStats.owned}${ownedUnit} (${pct.toFixed(1)}%)"></div>`;
         });
     }
