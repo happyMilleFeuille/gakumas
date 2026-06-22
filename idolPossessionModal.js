@@ -1783,16 +1783,22 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         sourceList.forEach(src => {
             const srcLabel = getSourceShortLabel(src, lang);
 
-            // Calculate max owned count in this specific column
+            // Calculate max owned and total counts in this specific column
             let maxOwnedVal = 0;
+            let maxTotalVal = 0;
             CHARACTER_ORDER.forEach(charId => {
                 const stat = heatmapData[charId][src];
-                if (stat && stat.owned > maxOwnedVal) {
-                    maxOwnedVal = stat.owned;
+                if (stat) {
+                    if (stat.owned > maxOwnedVal) {
+                        maxOwnedVal = stat.owned;
+                    }
+                    if (stat.total > maxTotalVal) {
+                        maxTotalVal = stat.total;
+                    }
                 }
             });
 
-            const maxOwned = maxOwnedVal > 0 ? maxOwnedVal : 1;
+            const maxTotal = maxTotalVal > 0 ? maxTotalVal : 1;
 
             // Determine dynamic column color based on the dominant idol in this category (resolving ties)
             let columnColor = firstPlaceCharColor;
@@ -1826,7 +1832,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     bgStyle = 'background-color: transparent;';
                 } else {
                     const rate = (owned / total) * 100;
-                    const alpha = owned > 0 ? (0.15 + (owned / maxOwned) * 0.75) : 0.15;
+                    const alpha = owned > 0 ? (0.15 + (owned / maxTotal) * 0.85) : 0;
 
                     let textColor = '#0f172a';
                     if (owned > 0 && columnColor && columnColor.startsWith('#')) {
