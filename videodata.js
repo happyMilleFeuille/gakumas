@@ -194,6 +194,11 @@ export const videoList = {
     ],
     sumika: [
         {
+            title: "Kira Kira",
+            url: "https://youtu.be/IwWo55RUPCc?si=njh5556sAuoT4tT4",
+            date: "2026.06.23."
+        },
+        {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             title_en: "Birthday MiniLive 2025",
