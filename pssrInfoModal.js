@@ -1340,6 +1340,46 @@ export function showProduceCardInfoModal(card, personalColor) {
                             
                             document.body.appendChild(downloadModal);
                             
+                            // 다운로드 완료 토스트 메시지 표시 함수
+                            const showDownloadToast = (message, duration = 2000) => {
+                                const existing = document.querySelector('.pssr-download-toast');
+                                if (existing) existing.remove();
+
+                                const toast = document.createElement('div');
+                                toast.className = 'pssr-download-toast';
+                                toast.textContent = message;
+                                toast.style.cssText = `
+                                    position: fixed;
+                                    bottom: 60px;
+                                    left: 50%;
+                                    transform: translateX(-50%) translateY(20px);
+                                    background: rgba(0, 0, 0, 0.78);
+                                    color: #fff;
+                                    padding: 10px 24px;
+                                    border-radius: 24px;
+                                    font-size: 0.85rem;
+                                    font-weight: 600;
+                                    z-index: 150000;
+                                    pointer-events: none;
+                                    opacity: 0;
+                                    transition: opacity 0.3s ease, transform 0.3s ease;
+                                    white-space: nowrap;
+                                    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+                                `;
+                                document.body.appendChild(toast);
+
+                                requestAnimationFrame(() => {
+                                    toast.style.opacity = '1';
+                                    toast.style.transform = 'translateX(-50%) translateY(0)';
+                                });
+
+                                setTimeout(() => {
+                                    toast.style.opacity = '0';
+                                    toast.style.transform = 'translateX(-50%) translateY(20px)';
+                                    setTimeout(() => toast.remove(), 350);
+                                }, duration);
+                            };
+
                             // 개별 다운로드 실행 함수
                             const downloadFile = (src, filename) => {
                                 const a = document.createElement('a');
@@ -1348,6 +1388,13 @@ export function showProduceCardInfoModal(card, personalColor) {
                                 document.body.appendChild(a);
                                 a.click();
                                 document.body.removeChild(a);
+
+                                const toastMsg = {
+                                    ko: '다운로드가 완료되었습니다.',
+                                    ja: 'ダウンロードが完了しました。',
+                                    en: 'Download completed.'
+                                }[state.currentLang] || '다운로드가 완료되었습니다.';
+                                showDownloadToast(toastMsg);
                             };
 
                             targets.forEach((t) => {
