@@ -2068,8 +2068,8 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]턴 개시 후\n✦ goodimpresion3\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드(SSR)를 손패로 이동\n✦ inlesson1",
-            jp: "[visual]ターン開始後、\n✦ goodimpresion3\n✦ ランダムな山札か捨札にあるスキルカード（SSR）を手札に移動\n✦ inlesson1",
+            kr: "[visual]턴 개시 후\n✦ goodimpression3\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드(SSR)를 손패로 이동\n✦ inlesson1",
+            jp: "[visual]ターン開始後、\n✦ goodimpression3\n✦ ランダムな山札か捨札にあるスキルカード（SSR）を手札に移動\n✦ inlesson1",
         }],
         releasedAt: "2025-09-17",
         rarity: "SSR",
