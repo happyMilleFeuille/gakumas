@@ -907,20 +907,20 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
 
             columnsHtml += `
                 <div class="possession-heatmap-col" data-plan="${plan}" style="flex: 1; display: flex; flex-direction: column; gap: 2px; cursor: pointer; border-radius: 6px; transition: all 0.15s ease; box-sizing: border-box;">
-                    <!-- 셀들 -->
-                    ${cellsHtml}
-                    <!-- 열 헤더 (하단) -->
+                    <!-- 열 헤더 (상단) -->
                     <div class="possession-heatmap-col-header" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; pointer-events: none; box-sizing: border-box; user-select: none; border-radius: 0;">
-                        <div style="width: 50%; height: 6px; background: #e2e8f0; border-radius: 0; overflow: hidden;">
-                            <div style="width: ${planPossessionRate}%; height: 100%; background-color: ${planColors[plan] || '#cbd5e1'};"></div>
-                        </div>
                         <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
                             <img src="icons/${plan.toLowerCase()}.webp" onerror="this.src='icons/card.png';" style="width: 18px; height: 18px; object-fit: contain;">
                             <span class="possession-heatmap-header-txt" style="font-size: 0.72rem; font-weight: 800; color: #475569; white-space: nowrap;">
                                 ${planPossessionRate}% <span class="possession-heatmap-header-subtxt" style="font-size: 0.6rem; color: #94a3b8; font-weight: 600;">(${tStats.owned}/${tStats.total})</span>
                             </span>
                         </div>
+                        <div style="width: 50%; height: 6px; background: #e2e8f0; border-radius: 0; overflow: hidden;">
+                            <div style="width: ${planPossessionRate}%; height: 100%; background-color: ${planColors[plan] || '#cbd5e1'};"></div>
+                        </div>
                     </div>
+                    <!-- 셀들 -->
+                    ${cellsHtml}
                 </div>
             `;
         });
@@ -928,7 +928,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
         const heatmapGridHtml = `
                 <div class="possession-heatmap-container" style="display: flex; gap: 5px; width: 100%; box-sizing: border-box;">
                     <!-- 왼쪽 행 라벨 열 -->
-                    <div class="possession-heatmap-row-labels" style="display: flex; flex-direction: column; gap: 2px; width: 52px; flex-shrink: 0; padding-bottom: 56px; box-sizing: border-box;">
+                    <div class="possession-heatmap-row-labels" style="display: flex; flex-direction: column; gap: 2px; width: 52px; flex-shrink: 0; padding-top: 58px; box-sizing: border-box;">
                         ${rowLabelsHtml}
                     </div>
                     <!-- 플랜별 열들 -->
@@ -949,7 +949,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
             planDetailsHtml += `
                 <div class="possession-plan-detail-wrapper" data-plan="${plan}" style="display: none; margin-top: 10px; width: 100%;">
                     <div class="possession-category-item" style="display: flex; flex-direction: column;">
-                        <div class="possession-category-header" style="display: flex; justify-content: space-between; align-items: center; user-select: none; cursor: pointer; padding: 6px 8px; border-radius: 6px; background: rgba(0,0,0,0.022); border: 1px solid rgba(0,0,0,0.04);">
+                        <div class="possession-category-header" style="display: flex; justify-content: space-between; align-items: center; user-select: none; cursor: pointer;">
                             <div style="display: flex; align-items: center; gap: 6px; pointer-events: none;">
                                 <img src="icons/${plan.toLowerCase()}.webp" onerror="this.src='icons/card.png';" style="width: 16px; height: 16px; object-fit: contain;">
                                 <span class="possession-section-title-label" style="font-weight: 800; color: #333;">${label}</span>
@@ -964,6 +964,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                                 </div>
                             </div>
                         </div>
+                        ${parts.overallBarHtml}
                         ${parts.detailContainerHtml}
                     </div>
                 </div>
@@ -971,7 +972,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
         });
 
         planSectionsHtml = `
-            <div class="possession-stats-plan-card" style="margin-bottom: 15px; display: flex; flex-direction: column; width: 100%; background: rgba(255, 255, 255, 0.45); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 12px; padding: 14px 12px 8px 12px; box-sizing: border-box;">
+            <div class="possession-stats-plan-card" style="margin-bottom: 15px; display: flex; flex-direction: column; width: 100%; background: rgba(255, 255, 255, 0.45); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 12px; padding: 14px 12px 14px 12px; box-sizing: border-box;">
                 <div class="possession-plan-heatmap-card" style="display: flex; flex-direction: column; gap: 8px; box-sizing: border-box;">
                     ${heatmapGridHtml}
                     ${planDetailsHtml}
@@ -1235,12 +1236,12 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                 }
                 .possession-heatmap-container.col-active-mode .possession-heatmap-col.active-highlight .possession-heatmap-col-header {
                     background-color: rgba(0, 0, 0, 0.04) !important;
-                    border-radius: 0 0 4px 4px;
+                    border-radius: 4px 4px 0 0;
                 }
                 @media (hover: hover) {
                     .possession-heatmap-col:hover .possession-heatmap-col-header {
                         background-color: rgba(0, 0, 0, 0.04) !important;
-                        border-radius: 0 0 4px 4px;
+                        border-radius: 4px 4px 0 0;
                     }
                 }
 
@@ -1254,7 +1255,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         gap: 8px !important;
                     }
                     body:not(.is-capturing) .possession-stats-plan-card {
-                        padding: 8px 8px 4px 8px !important;
+                        padding: 8px 8px 8px 8px !important;
                         margin-bottom: 4px !important;
                     }
                     body:not(.is-capturing) .possession-heatmap-container {
@@ -1262,7 +1263,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     }
                     body:not(.is-capturing) .possession-heatmap-row-labels {
                         gap: 2px !important;
-                        padding-bottom: 28px !important;
+                        padding-top: 30px !important;
                         width: 42px !important;
                     }
                     body:not(.is-capturing) .possession-heatmap-col {
@@ -1280,10 +1281,11 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         width: 10px !important;
                         height: 10px !important;
                     }
-                    body:not(.is-capturing) .possession-heatmap-col-header > div:first-child {
+                    body:not(.is-capturing) .possession-heatmap-col-header > div:last-child {
                         width: 50% !important;
                         height: 3px !important;
                     }
+
                     body:not(.is-capturing) .possession-heatmap-header-txt {
                         font-size: 0.45rem !important;
                     }
