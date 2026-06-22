@@ -1772,12 +1772,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             }
 
             rowLabelsHtml += `
-                <div class="possession-heatmap-row-label" style="height: 38px; display: flex; align-items: center; background: #f8fafc; border-radius: 4px 0 0 4px; box-sizing: border-box; user-select: none; border-left: 3px solid ${charColor}; border-bottom: 1px solid #f1f5f9;">
+                <div class="possession-heatmap-row-label" style="height: 38px; display: flex; align-items: center; background: #F9F7F3; border-radius: 4px 0 0 4px; box-sizing: border-box; user-select: none; border-left: 3px solid ${charColor}; border-bottom: 1px solid #f1f5f9;">
                     <img src="icons/idolicons/${charId}_c.png" onerror="this.src='icons/idol.png';" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
                     ${sumLabelHtml}
                 </div>
             `;
         });
+
+        const catColors = {
+            normal: '#93c5fd',   // Pastel Blue
+            limited: '#c084fc',  // Pastel Purple
+            limited_f: '#f87171', // Soft Red
+            limited_u: '#fcd34d', // Pastel Yellow
+            dist: '#8FDDBA',      // Pastel Mint
+            another: '#fda4af'    // Pastel Pink/Rose
+        };
 
         let columnsHtml = '';
         sourceList.forEach(src => {
@@ -1828,14 +1837,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 let bgStyle = '';
                 let cellText = '';
 
-                if (total === 0) {
-                    bgStyle = 'background-color: transparent;';
+                if (total === 0 || owned === 0) {
+                    bgStyle = 'background: #F9F7F3;';
                 } else {
                     const rate = (owned / total) * 100;
-                    const alpha = owned > 0 ? (0.15 + (owned / maxTotal) * 0.85) : 0;
+                    const alpha = 0.15 + (owned / maxTotal) * 0.85;
 
                     let textColor = '#0f172a';
-                    if (owned > 0 && columnColor && columnColor.startsWith('#')) {
+                    if (columnColor && columnColor.startsWith('#')) {
                         const r = parseInt(columnColor.slice(1, 3), 16);
                         const g = parseInt(columnColor.slice(3, 5), 16);
                         const b = parseInt(columnColor.slice(5, 7), 16);
@@ -1848,8 +1857,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     }
 
-                    bgStyle = `background-color: ${hexToRgba(columnColor, alpha)}; color: ${textColor};`;
-                    if (owned > 0 && showHeatmapNumbers) {
+                    bgStyle = `background: linear-gradient(${hexToRgba(columnColor, alpha)}, ${hexToRgba(columnColor, alpha)}), #ffffff; color: ${textColor};`;
+                    if (showHeatmapNumbers) {
                         cellText = owned;
                     }
                 }
@@ -1862,9 +1871,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             });
 
             columnsHtml += `
-                <div class="possession-heatmap-col" style="flex: 1; display: flex; flex-direction: column; gap: 2px; border-radius: 0; box-sizing: border-box;">
+                <div class="possession-heatmap-col" style="flex: 1; display: flex; flex-direction: column; gap: 0; border-radius: 0; box-sizing: border-box;">
                     <!-- 열 헤더 (상단) -->
-                    <div class="possession-heatmap-col-header" style="height: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; box-sizing: border-box; user-select: none; border-radius: 0;">
+                    <div class="possession-heatmap-col-header" style="height: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; box-sizing: border-box; user-select: none; border-radius: 4px 4px 0 0; background: #F9F7F3; border-top: 3px solid ${catColors[src] || '#cbd5e1'}; border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
                         <span class="possession-heatmap-header-txt" style="font-size: 0.75rem; font-weight: 800; color: #475569; white-space: nowrap; text-align: center;">
                             ${srcLabel}
                         </span>
@@ -1878,9 +1887,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         const heatmapTitle = lang === 'ja' ? 'キャラクター・分類別所持率' : lang === 'en' ? 'Rate by Character & Source' : '아이돌・분류별 소지 통계';
         const heatmapGridHtml = `
             <div class="possession-heatmap-container ${showHeatmapNumbers ? 'show-numbers' : ''}" style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; margin-top: 12px; cursor: pointer; user-select: none;">
-                <div style="display: flex; gap: 4px; width: 100%; box-sizing: border-box;">
+                <div style="display: flex; gap: 0; width: 100%; box-sizing: border-box;">
                     <!-- 왼쪽 행 라벨 열 -->
-                    <div class="possession-heatmap-row-labels" style="display: flex; flex-direction: column; gap: 2px; width: 60px; flex-shrink: 0; padding-top: 32px; box-sizing: border-box;">
+                    <div class="possession-heatmap-row-labels" style="display: flex; flex-direction: column; gap: 0; width: 70px; flex-shrink: 0; padding-top: 32px; box-sizing: border-box;">
                         ${rowLabelsHtml}
                     </div>
                     <!-- 오스스메별 열들 -->
@@ -1897,8 +1906,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 .possession-heatmap-row-labels {
                     display: flex;
                     flex-direction: column;
-                    gap: 2px;
-                    width: 60px;
+                    gap: 0;
+                    width: 70px;
                     flex-shrink: 0;
                     padding-top: 32px;
                     box-sizing: border-box;
@@ -1908,7 +1917,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: #f8fafc;
+                    background: #F9F7F3;
                     border-radius: 4px 0 0 4px;
                     box-sizing: border-box;
                     user-select: none;
@@ -1929,6 +1938,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     pointer-events: none;
                     box-sizing: border-box;
                     border-bottom: 1px solid rgba(0,0,0,0.03);
+                    border-right: 1px solid rgba(0,0,0,0.03);
                     user-select: none;
                 }
                 .possession-heatmap-col-header {
@@ -1937,11 +1947,13 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     flex-direction: column;
                     align-items: center;
                     justify-content: center;
-                    gap: 2px;
                     pointer-events: none;
                     box-sizing: border-box;
                     user-select: none;
-                    border-radius: 0;
+                    border-radius: 4px 4px 0 0;
+                    background: #F9F7F3;
+                    border-bottom: 1px solid #f1f5f9;
+                    border-right: 1px solid #f1f5f9;
                 }
                 @media (hover: hover) {
                     .char-stat-card:hover {
@@ -2324,7 +2336,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     body:not(.is-capturing) .possession-heatmap-row-labels {
                         padding-top: 20px !important;
                         width: 50px !important;
-                        gap: 2px !important;
+                        gap: 0 !important;
                     }
                     body:not(.is-capturing) .possession-heatmap-row-label {
                         height: 22px !important;
