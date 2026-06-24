@@ -1760,7 +1760,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     xAxisLabelsHtml += `
                         <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
                             <div class="idol-stats-xaxis-label" data-subtype="${sub}" style="${labelStyle}">
-                                <img src="icons/${sub}.webp" style="width: 14px; height: 14px; object-fit: contain;">
+                                <img src="icons/${sub}.webp" style="width: 18px; height: 18px; object-fit: contain;">
                             </div>
                         </div>
                     `;
@@ -2585,6 +2585,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     body:not(.is-capturing) .idol-stats-xaxis-label img {
                         width: 11px !important;
                         height: 11px !important;
+                    }
+                    body:not(.is-capturing) .idol-stats-char-toggle-group {
+                        height: 20px !important;
+                        border-radius: 4px !important;
+                    }
+                    body:not(.is-capturing) .idol-stats-char-toggle-btn {
+                        font-size: 0.58rem !important;
+                        padding: 1px 6px !important;
                     }
                     body:not(.is-capturing) .possession-heatmap-row-labels {
                         padding-top: 0 !important;
