@@ -3858,7 +3858,31 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         if (sourceLbl) elementsToHide.push(sourceLbl);
                         const sourceCard = modalContent.querySelector('.idol-stats-source-card');
                         if (sourceCard) elementsToHide.push(sourceCard);
+
+                        // Hide 4th place and below characters' card icons list, keeping only the chart
+                        const charCardsList = modalContent.querySelectorAll('.char-stat-card');
+                        charCardsList.forEach((card, idx) => {
+                            if (idx >= 3) {
+                                const iconsContainer = card.querySelector('.pssr-char-icons-container');
+                                if (iconsContainer) {
+                                    elementsToHide.push(iconsContainer);
+                                }
+                            }
+                        });
                     }
+                }
+
+                // Hide 2nd and 3rd place characters' card icons list during overall save to prevent huge height
+                if (!isPlanAll && !isSourceAll && !isCharAll) {
+                    const charCardsList = modalContent.querySelectorAll('.char-stat-card');
+                    charCardsList.forEach((card, idx) => {
+                        if (idx === 1 || idx === 2) {
+                            const iconsContainer = card.querySelector('.pssr-char-icons-container');
+                            if (iconsContainer) {
+                                elementsToHide.push(iconsContainer);
+                            }
+                        }
+                    });
                 }
 
                 const origDisplays = [];
@@ -4164,8 +4188,13 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                     await Promise.all(radarSvgs.map(svg => new Promise(resolve => {
                         try {
-                            const width = Math.ceil(svg.getBoundingClientRect().width || Number(svg.getAttribute('width')) || 170);
-                            const height = Math.ceil(svg.getBoundingClientRect().height || Number(svg.getAttribute('height')) || 205);
+                            const rect = svg.getBoundingClientRect();
+                            if (rect.width === 0 || rect.height === 0) {
+                                resolve();
+                                return;
+                            }
+                            const width = Math.ceil(rect.width || Number(svg.getAttribute('width')) || 170);
+                            const height = Math.ceil(rect.height || Number(svg.getAttribute('height')) || 205);
                             const clone = svg.cloneNode(true);
                             clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                             clone.setAttribute('width', String(width));
@@ -4292,7 +4321,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 const captureScale = isMobileDevice ? 1.5 : 2;
-                const captureDelay = isMobileDevice ? 500 : 350;
+                let captureDelay = isMobileDevice ? 500 : 350;
+                if (isCharAll) {
+                    captureDelay = isMobileDevice ? 800 : 500;
+                }
 
                 // Set scroll to top and adjust styles for flat render
                 const origScrollMaxHeight = scrollArea.style.maxHeight;
@@ -4302,6 +4334,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 const origScrollPadding = scrollArea.style.paddingRight;
                 const origScrollTop = scrollArea.scrollTop;
 
+                const origModalHeight = modalContent.style.height;
                 const origModalMaxHeight = modalContent.style.maxHeight;
                 const origModalOverflow = modalContent.style.overflow;
                 const origModalWidth = modalContent.style.width;
@@ -4318,6 +4351,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 scrollArea.style.overflowY = 'visible';
                 scrollArea.style.paddingRight = '0';
 
+                modalContent.style.height = 'auto';
                 modalContent.style.maxHeight = 'none';
                 modalContent.style.overflow = 'visible';
                 modalContent.style.width = '740px';
@@ -4340,6 +4374,17 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 modal.style.height = 'auto';
                 modal.style.overflow = 'visible';
 
+                // Temporarily convert all normal <img> srcs to absolute URLs for html2canvas
+                const normalImages = modalContent.querySelectorAll('img');
+                const origImgSrcsAbsolute = [];
+                normalImages.forEach(img => {
+                    const origSrc = img.getAttribute('src');
+                    if (origSrc && !origSrc.startsWith('http') && !origSrc.startsWith('data:')) {
+                        origImgSrcsAbsolute.push({ img, src: origSrc });
+                        img.setAttribute('src', getAbsoluteUrl(origSrc));
+                    }
+                });
+
                 let origRadarSvgs = [];
 
                 setTimeout(async () => {
@@ -4352,13 +4397,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         useCORS: true,
                         logging: false,
                         windowWidth: 1024,
+                        windowHeight: modalContent.scrollHeight || 2000,
                         scrollX: 0,
                         scrollY: 0,
-                        width: 740
+                        width: 740,
+                        height: modalContent.scrollHeight || 2000
                     }).then(canvas => {
-                        const dataUrl = canvas.toDataURL('image/webp', 0.85);
-                        const isWebp = dataUrl.startsWith('data:image/webp');
-                        const ext = isWebp ? 'webp' : 'png';
+                        let dataUrl = canvas.toDataURL('image/webp', 0.85);
+                        let isWebp = dataUrl.startsWith('data:image/webp');
+                        let ext = isWebp ? 'webp' : 'png';
+
+                        // Fallback to PNG if webp encoding returns empty (common for huge canvas on some platforms)
+                        if (!dataUrl || dataUrl === 'data:' || dataUrl === 'data:,') {
+                            dataUrl = canvas.toDataURL('image/png');
+                            ext = 'png';
+                        }
 
                         const rand = Math.floor(1000 + Math.random() * 9000);
                         const nameSuffix = isPlanAll ? '_plan_all' : (isSourceAll ? '_source_all' : (isCharAll ? '_char_all' : ''));
@@ -4370,6 +4423,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         // Restore original image sources after capture
                         origImgSrcs.forEach(item => {
                             item.img.src = item.src;
+                        });
+
+                        // Restore original normal <img> srcs
+                        origImgSrcsAbsolute.forEach(item => {
+                            item.img.setAttribute('src', item.src);
                         });
 
                         // Restore original SVG image hrefs
@@ -4392,9 +4450,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                         origPlanColsActive.forEach(item => {
                             if (item.active) {
-                                item.col.classList.add('active');
+                                  item.col.classList.add('active');
                             } else {
-                                item.col.classList.remove('active');
+                                  item.col.classList.remove('active');
                             }
                         });
 
@@ -4404,9 +4462,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             item.detailsDiv.style.display = item.display;
                             if (item.chevron) item.chevron.style.transform = item.transform;
                             if (item.isExpanded) {
-                                item.sourceCard.classList.add('expanded');
+                                  item.sourceCard.classList.add('expanded');
                             } else {
-                                item.sourceCard.classList.remove('expanded');
+                                  item.sourceCard.classList.remove('expanded');
                             }
                         });
 
@@ -4415,9 +4473,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             if (item.details) item.details.style.display = item.display;
                             if (item.chevron) item.chevron.style.transform = item.transform;
                             if (item.isExpanded) {
-                                item.card.classList.add('expanded');
+                                  item.card.classList.add('expanded');
                             } else {
-                                item.card.classList.remove('expanded');
+                                  item.card.classList.remove('expanded');
                             }
                         });
 
@@ -4429,6 +4487,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         scrollArea.style.paddingRight = origScrollPadding;
                         scrollArea.scrollTop = origScrollTop;
 
+                        modalContent.style.height = origModalHeight;
                         modalContent.style.maxHeight = origModalMaxHeight;
                         modalContent.style.overflow = origModalOverflow;
                         modalContent.style.width = origModalWidth;
@@ -4460,6 +4519,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             item.img.src = item.src;
                         });
 
+                        // Restore original normal <img> srcs
+                        origImgSrcsAbsolute.forEach(item => {
+                            item.img.setAttribute('src', item.src);
+                        });
+
                         // Restore original SVG image hrefs
                         origSvgHrefs.forEach(item => {
                             item.img.setAttribute('href', item.href);
@@ -4480,9 +4544,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                         origPlanColsActive.forEach(item => {
                             if (item.active) {
-                                item.col.classList.add('active');
+                                  item.col.classList.add('active');
                             } else {
-                                item.col.classList.remove('active');
+                                  item.col.classList.remove('active');
                             }
                         });
 
@@ -4492,9 +4556,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             item.detailsDiv.style.display = item.display;
                             if (item.chevron) item.chevron.style.transform = item.transform;
                             if (item.isExpanded) {
-                                item.sourceCard.classList.add('expanded');
+                                  item.sourceCard.classList.add('expanded');
                             } else {
-                                item.sourceCard.classList.remove('expanded');
+                                  item.sourceCard.classList.remove('expanded');
                             }
                         });
 
@@ -4503,9 +4567,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             if (item.details) item.details.style.display = item.display;
                             if (item.chevron) item.chevron.style.transform = item.transform;
                             if (item.isExpanded) {
-                                item.card.classList.add('expanded');
+                                  item.card.classList.add('expanded');
                             } else {
-                                item.card.classList.remove('expanded');
+                                  item.card.classList.remove('expanded');
                             }
                         });
 
@@ -4517,6 +4581,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         scrollArea.style.paddingRight = origScrollPadding;
                         scrollArea.scrollTop = origScrollTop;
 
+                        modalContent.style.height = origModalHeight;
                         modalContent.style.maxHeight = origModalMaxHeight;
                         modalContent.style.overflow = origModalOverflow;
                         modalContent.style.width = origModalWidth;
