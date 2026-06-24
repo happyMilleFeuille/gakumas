@@ -33,6 +33,11 @@ const CHARACTER_ORDER = [
     'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
 ];
 
+const HEATMAP_CHARACTER_ORDER = [
+    'saki', 'temari', 'kotone', 'mao', 'lilja', 'china',
+    'sumika', 'hiro', 'rinami', 'ume', 'sena', 'misuzu', 'tsubame'
+];
+
 const SUB_TYPE_LABELS = {
     ko: {
         goodcondition: '호조',
@@ -1044,6 +1049,16 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         const cx = 85;
         const cy = 118;
         const R = 58;
+
+        const PLAN_COLORS = {
+            sense: '#ff4d8d',
+            logic: '#46a4f3',
+            anomaly: '#ffb300'
+        };
+        const highestPlanColor = PLAN_COLORS[highestPlan] || '#ff4d8d';
+        const radarIconSize = 22;
+        const radarIconHalf = radarIconSize / 2;
+
         const pSense = statsByPlan.sense.total > 0 ? (statsByPlan.sense.owned / statsByPlan.sense.total) * 100 : 0;
         const pLogic = statsByPlan.logic.total > 0 ? (statsByPlan.logic.owned / statsByPlan.logic.total) * 100 : 0;
         const pAnomaly = statsByPlan.anomaly.total > 0 ? (statsByPlan.anomaly.owned / statsByPlan.anomaly.total) * 100 : 0;
@@ -1051,6 +1066,17 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         const rS = R * (pSense / 100);
         const rL = R * (pLogic / 100);
         const rA = R * (pAnomaly / 100);
+
+        // Find the highest plan percentage to make its vertex dot larger
+        const maxPlanPct = Math.max(pSense, pLogic, pAnomaly);
+        const rDotS = (maxPlanPct > 0 && pSense === maxPlanPct) ? 4.3 : 3.5;
+        const rDotL = (maxPlanPct > 0 && pLogic === maxPlanPct) ? 4.3 : 3.5;
+        const rDotA = (maxPlanPct > 0 && pAnomaly === maxPlanPct) ? 4.3 : 3.5;
+
+        // Custom text colors for percentage labels (highlight highest)
+        const colorSenseText = (maxPlanPct > 0 && pSense === maxPlanPct) ? PLAN_COLORS.sense : '#555';
+        const colorLogicText = (maxPlanPct > 0 && pLogic === maxPlanPct) ? PLAN_COLORS.logic : '#555';
+        const colorAnomalyText = (maxPlanPct > 0 && pAnomaly === maxPlanPct) ? PLAN_COLORS.anomaly : '#555';
 
         // Concentric grid triangles for 25%, 50%, 75%, 100%
         let gridHtml = '';
@@ -1062,17 +1088,19 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             gridHtml += `<polygon points="${pt1} ${pt2} ${pt3}" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="1" />`;
         });
 
-        const PLAN_COLORS = {
-            sense: '#ff4d8d',
-            logic: '#46a4f3',
-            anomaly: '#ffb300'
-        };
-        const highestPlanColor = PLAN_COLORS[highestPlan] || '#ff4d8d';
-        const radarIconSize = 22;
-        const radarIconHalf = radarIconSize / 2;
-
         const planRadarChartHtml = `
             <svg viewBox="0 0 170 205" width="170" height="205" style="overflow: visible; display: block; margin: auto;">
+                <defs>
+                    <filter id="glow-plan-sense" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ff4d8d" flood-opacity="0.85" />
+                    </filter>
+                    <filter id="glow-plan-logic" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#46a4f3" flood-opacity="0.85" />
+                    </filter>
+                    <filter id="glow-plan-anomaly" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ffb300" flood-opacity="0.85" />
+                    </filter>
+                </defs>
                 <!-- Grid Triangles -->
                 ${gridHtml}
                 <!-- Axis lines -->
@@ -1081,14 +1109,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 <line x1="${cx}" y1="${cy}" x2="${cx - 0.866 * R}" y2="${cy + 0.5 * R}" stroke="rgba(0,0,0,0.08)" stroke-width="1" stroke-dasharray="2,2" />
                 
                 <!-- Axis Icon Labels -->
-                <image href="icons/sense.webp" x="${cx - radarIconHalf}" y="${cy - R - 38}" width="${radarIconSize}" height="${radarIconSize}" />
-                <image href="icons/anomaly.webp" x="${cx + 0.866 * R + 10}" y="${cy + 0.5 * R - radarIconHalf + 4}" width="${radarIconSize}" height="${radarIconSize}" />
-                <image href="icons/logic.webp" x="${cx - 0.866 * R - radarIconSize - 10}" y="${cy + 0.5 * R - radarIconHalf + 4}" width="${radarIconSize}" height="${radarIconSize}" />
+                <image href="icons/sense.webp" x="${cx - radarIconHalf}" y="${cy - R - 38}" width="${radarIconSize}" height="${radarIconSize}" ${maxPlanPct > 0 && pSense === maxPlanPct ? 'filter="url(#glow-plan-sense)"' : ''} />
+                <image href="icons/anomaly.webp" x="${cx + 0.866 * R + 10}" y="${cy + 0.5 * R - radarIconHalf + 4}" width="${radarIconSize}" height="${radarIconSize}" ${maxPlanPct > 0 && pAnomaly === maxPlanPct ? 'filter="url(#glow-plan-anomaly)"' : ''} />
+                <image href="icons/logic.webp" x="${cx - 0.866 * R - radarIconSize - 10}" y="${cy + 0.5 * R - radarIconHalf + 4}" width="${radarIconSize}" height="${radarIconSize}" ${maxPlanPct > 0 && pLogic === maxPlanPct ? 'filter="url(#glow-plan-logic)"' : ''} />
                 
                 <!-- Axis Percent texts -->
-                <text x="${cx}" y="${cy - R - 6}" text-anchor="middle" font-size="9" font-weight="800" fill="#555">${Math.round(pSense)}%</text>
-                <text x="${cx + 0.866 * R + 20}" y="${cy + 0.5 * R + 26}" text-anchor="middle" font-size="9" font-weight="800" fill="#555">${Math.round(pAnomaly)}%</text>
-                <text x="${cx - 0.866 * R - 20}" y="${cy + 0.5 * R + 26}" text-anchor="middle" font-size="9" font-weight="800" fill="#555">${Math.round(pLogic)}%</text>
+                <text x="${cx}" y="${cy - R - 6}" text-anchor="middle" font-size="9" font-weight="800" fill="${colorSenseText}">${Math.round(pSense)}%</text>
+                <text x="${cx + 0.866 * R + 20}" y="${cy + 0.5 * R + 26}" text-anchor="middle" font-size="9" font-weight="800" fill="${colorAnomalyText}">${Math.round(pAnomaly)}%</text>
+                <text x="${cx - 0.866 * R - 20}" y="${cy + 0.5 * R + 26}" text-anchor="middle" font-size="9" font-weight="800" fill="${colorLogicText}">${Math.round(pLogic)}%</text>
                 
                 <!-- Possession Polygon -->
                 <polygon points="${cx},${cy - rS} ${cx + 0.866 * rA},${cy + 0.5 * rA} ${cx - 0.866 * rL},${cy + 0.5 * rL}" 
@@ -1097,9 +1125,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                          stroke-width="2" 
                          stroke-linejoin="round" />
                 <!-- Vertex Dots -->
-                <circle class="radar-vertex-dot" cx="${cx}" cy="${cy - rS}" r="3.5" fill="${PLAN_COLORS.sense}" stroke="#fff" stroke-width="1.5" />
-                <circle class="radar-vertex-dot" cx="${cx + 0.866 * rA}" cy="${cy + 0.5 * rA}" r="3.5" fill="${PLAN_COLORS.anomaly}" stroke="#fff" stroke-width="1.5" />
-                <circle class="radar-vertex-dot" cx="${cx - 0.866 * rL}" cy="${cy + 0.5 * rL}" r="3.5" fill="${PLAN_COLORS.logic}" stroke="#fff" stroke-width="1.5" />
+                <circle class="radar-vertex-dot" cx="${cx}" cy="${cy - rS}" r="${rDotS}" fill="${PLAN_COLORS.sense}" stroke="#fff" stroke-width="1.5" />
+                <circle class="radar-vertex-dot" cx="${cx + 0.866 * rA}" cy="${cy + 0.5 * rA}" r="${rDotA}" fill="${PLAN_COLORS.anomaly}" stroke="#fff" stroke-width="1.5" />
+                <circle class="radar-vertex-dot" cx="${cx - 0.866 * rL}" cy="${cy + 0.5 * rL}" r="${rDotL}" fill="${PLAN_COLORS.logic}" stroke="#fff" stroke-width="1.5" />
             </svg>
         `;
 
@@ -1182,14 +1210,30 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 yText -= 6; // Raise fullpower, enthusiasm (강기), and motivation texts by 6px
             }
 
+            const isHighest = (highestSubRate > 0 && pSub[key] === highestSubRate);
+            const planOfSubtype = SUBTYPE_TO_PLAN[key];
+            const filterAttr = isHighest ? `filter="url(#glow-sub-${planOfSubtype})"` : '';
+            const textColor = isHighest ? PLAN_COLORS[planOfSubtype] : '#555';
+
             subtypeIconsAndTextsHtml += `
-                <image href="icons/${key}.webp" x="${xIcon}" y="${yIcon}" width="${radarIconSize}" height="${radarIconSize}" />
-                <text x="${xText}" y="${yText}" text-anchor="middle" font-size="9" font-weight="800" fill="#555">${Math.round(pSub[key])}%</text>
+                <image href="icons/${key}.webp" x="${xIcon}" y="${yIcon}" width="${radarIconSize}" height="${radarIconSize}" ${filterAttr} />
+                <text x="${xText}" y="${yText}" text-anchor="middle" font-size="9" font-weight="800" fill="${textColor}">${Math.round(pSub[key])}%</text>
             `;
         }
 
         const subtypeRadarChartHtml = `
             <svg viewBox="0 0 170 205" width="170" height="205" style="overflow: visible; display: block; margin: auto;">
+                <defs>
+                    <filter id="glow-sub-sense" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ff4d8d" flood-opacity="0.85" />
+                    </filter>
+                    <filter id="glow-sub-logic" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#46a4f3" flood-opacity="0.85" />
+                    </filter>
+                    <filter id="glow-sub-anomaly" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ffb300" flood-opacity="0.85" />
+                    </filter>
+                </defs>
                 <!-- Grid Hexagons -->
                 ${gridHexHtml}
                 <!-- Axis lines -->
@@ -1217,8 +1261,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 return rSub.map((r, i) => {
                     const x = hexCx + r * Math.cos(angles[i]);
                     const y = hexCy + r * Math.sin(angles[i]);
-                    const dotColor = SUBTYPE_PLAN_COLORS[SUBTYPE_KEYS[i]] || firstPlaceCharColor;
-                    return `<circle class="radar-vertex-dot" cx="${x}" cy="${y}" r="3.5" fill="${dotColor}" stroke="#fff" stroke-width="1.5" />`;
+                    const key = SUBTYPE_KEYS[i];
+                    const dotColor = SUBTYPE_PLAN_COLORS[key] || firstPlaceCharColor;
+                    const dotRadius = (highestSubRate > 0 && pSub[key] === highestSubRate) ? 4.3 : 3.5;
+                    return `<circle class="radar-vertex-dot" cx="${x}" cy="${y}" r="${dotRadius}" fill="${dotColor}" stroke="#fff" stroke-width="1.5" />`;
                 }).join('\n                ');
             })()}
             </svg>
@@ -1703,7 +1749,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             sourceList.push('another');
         }
         const heatmapData = {};
-        CHARACTER_ORDER.forEach(charId => {
+        HEATMAP_CHARACTER_ORDER.forEach(charId => {
             heatmapData[charId] = {};
             sourceList.forEach(src => {
                 heatmapData[charId][src] = { total: 0, owned: 0 };
@@ -1755,7 +1801,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         };
 
         let rowLabelsHtml = '';
-        CHARACTER_ORDER.forEach(charId => {
+        HEATMAP_CHARACTER_ORDER.forEach(charId => {
             const charColor = idolColors[charId] || '#cbd5e1';
 
             let rowOwnedSum = 0;
@@ -1767,7 +1813,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             });
 
             let sumLabelHtml = '';
-            if (showHeatmapNumbers && rowOwnedSum > 0) {
+            if (rowOwnedSum > 0) {
                 sumLabelHtml = `<span class="possession-heatmap-row-sum-val" style="font-size: 0.72rem; font-weight: 800; color: #475569; margin-left: 5px;">${rowOwnedSum}</span>`;
             }
 
@@ -1795,7 +1841,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             // Calculate max owned and total counts in this specific column
             let maxOwnedVal = 0;
             let maxTotalVal = 0;
-            CHARACTER_ORDER.forEach(charId => {
+            HEATMAP_CHARACTER_ORDER.forEach(charId => {
                 const stat = heatmapData[charId][src];
                 if (stat) {
                     if (stat.owned > maxOwnedVal) {
@@ -1812,7 +1858,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             // Determine dynamic column color based on the dominant idol in this category (resolving ties)
             let columnColor = firstPlaceCharColor;
             if (maxOwnedVal > 0) {
-                const tiedChars = CHARACTER_ORDER.filter(charId => {
+                const tiedChars = HEATMAP_CHARACTER_ORDER.filter(charId => {
                     const stat = heatmapData[charId][src];
                     return stat && stat.owned === maxOwnedVal;
                 });
@@ -1829,7 +1875,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             }
 
             let cellsHtml = '';
-            CHARACTER_ORDER.forEach(charId => {
+            HEATMAP_CHARACTER_ORDER.forEach(charId => {
                 const stat = heatmapData[charId][src];
                 const total = stat.total;
                 const owned = stat.owned;
@@ -1858,9 +1904,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     }
 
                     bgStyle = `background: linear-gradient(${hexToRgba(columnColor, alpha)}, ${hexToRgba(columnColor, alpha)}), #ffffff; color: ${textColor};`;
-                    if (showHeatmapNumbers) {
-                        cellText = owned;
-                    }
+                    cellText = `<span class="heatmap-cell-number">${owned}</span>`;
                 }
 
                 cellsHtml += `
@@ -2247,6 +2291,28 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
                 .plan-subgroup-header-btn span {
                     pointer-events: none;
+                }
+                .heatmap-cell-number {
+                    display: none;
+                    pointer-events: none;
+                }
+                .possession-heatmap-row-sum-val {
+                    display: none;
+                    pointer-events: none;
+                }
+                .possession-heatmap-container.show-numbers .heatmap-cell-number {
+                    display: inline-block !important;
+                }
+                .possession-heatmap-container.show-numbers .possession-heatmap-row-sum-val {
+                    display: inline-block !important;
+                }
+                @media (min-width: 769px) {
+                    .possession-heatmap-container:hover .heatmap-cell-number {
+                        display: inline-block !important;
+                    }
+                    .possession-heatmap-container:hover .possession-heatmap-row-sum-val {
+                        display: inline-block !important;
+                    }
                 }
             </style>
             <style id="idol-possession-mobile-styles">
