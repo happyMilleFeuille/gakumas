@@ -949,6 +949,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     let show100PercentOnly = loadShow100PercentOnly();
     let showHeatmapNumbers = false;
     let showOverallDetail = false;
+    let heatmapViewMode = 'source'; // 'source' or 'subtype'
+    let charStatsViewMode = 'plan'; // 'plan' (osusume/subtype) or 'source' (standard category)
+    let expandedCharIds = new Set();
     const isCardOwned = (cardId) => show100PercentOnly || !!ownedMap[cardId];
 
     function updateStatsUI() {
@@ -1605,12 +1608,28 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 another: { total: 0, owned: 0 }
             };
 
+            const charSubtypeStats = {
+                goodcondition: { total: 0, owned: 0 },
+                concentration: { total: 0, owned: 0 },
+                goodimpression: { total: 0, owned: 0 },
+                motivation: { total: 0, owned: 0 },
+                enthusiasm: { total: 0, owned: 0 },
+                fullpower: { total: 0, owned: 0 }
+            };
+
             charCards.forEach(c => {
                 const src = c.another ? 'another' : (c.source || 'normal');
                 const isOwned = isCardOwned(c.id);
                 if (charSourceStats[src] !== undefined) {
                     charSourceStats[src].total++;
                     if (isOwned) charSourceStats[src].owned++;
+                }
+
+                let os = getOsusume(c, pssrCards);
+                if (os === 'preservation') os = 'fullpower';
+                if (charSubtypeStats[os] !== undefined) {
+                    charSubtypeStats[os].total++;
+                    if (isOwned) charSubtypeStats[os].owned++;
                 }
             });
 
@@ -1630,8 +1649,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         ? `display: block; opacity: 1;`
                         : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
 
+                    let os = getOsusume(c, pssrCards);
+                    if (os === 'preservation') os = 'fullpower';
+
                     html += `
-                        <div class="pssr-stat-icon-wrap" data-source="${c.another ? 'another' : (c.source || 'normal')}" style="${containerStyle}" title="${cardName}">
+                        <div class="pssr-stat-icon-wrap" data-source="${c.another ? 'another' : (c.source || 'normal')}" data-subtype="${os}" style="${containerStyle}" title="${cardName}">
                             <div class="pssr-stat-icon-box">
                                 <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
                             </div>
@@ -1652,49 +1674,98 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
             let barsHtml = '';
             let xAxisLabelsHtml = '';
-            const sourceOrder = ['normal', 'limited', 'limited_f', 'limited_u', 'dist', 'another'];
-            let activeSources = sourceOrder;
-            if (!includeAnother) {
-                activeSources = activeSources.filter(s => s !== 'another');
-            }
-            if (!includeDist) {
-                activeSources = activeSources.filter(s => s !== 'dist');
-            }
-            activeSources.forEach(src => {
-                const s = charSourceStats[src];
-                const srcLabel = src === 'another'
-                    ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
-                    : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
-                const isSelectable = s.total > 0;
-                const srcRate = isSelectable ? ((s.owned / s.total) * 100).toFixed(0) : '0';
-                const labelText = isSelectable ? `${s.owned}/${s.total}` : '';
 
-                const outerStyle = isSelectable
-                    ? 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; position: relative; z-index: 5;'
-                    : 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: default; position: relative; z-index: 5; pointer-events: none; opacity: 0.25;';
+            if (charStatsViewMode === 'source') {
+                const sourceOrder = ['normal', 'limited', 'limited_f', 'limited_u', 'dist', 'another'];
+                let activeSources = sourceOrder;
+                if (!includeAnother) {
+                    activeSources = activeSources.filter(s => s !== 'another');
+                }
+                if (!includeDist) {
+                    activeSources = activeSources.filter(s => s !== 'dist');
+                }
+                activeSources.forEach(src => {
+                    const s = charSourceStats[src];
+                    const srcLabel = src === 'another'
+                        ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
+                        : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
+                    const isSelectable = s.total > 0;
+                    const srcRate = isSelectable ? ((s.owned / s.total) * 100).toFixed(0) : '0';
+                    const labelText = isSelectable ? `${s.owned}/${s.total}` : '';
 
-                const labelStyle = isSelectable
-                    ? 'font-size: 0.72rem; font-weight: bold; color: #777; text-align: center; cursor: pointer; user-select: none; padding: 2px 6px;'
-                    : 'font-size: 0.72rem; font-weight: bold; color: #bbb; text-align: center; cursor: default; user-select: none; padding: 2px 6px; pointer-events: none; opacity: 0.45;';
+                    const outerStyle = isSelectable
+                        ? 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; position: relative; z-index: 5;'
+                        : 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: default; position: relative; z-index: 5; pointer-events: none; opacity: 0.25;';
 
-                barsHtml += `
-                    <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
-                        <div class="idol-stats-bar-outer" data-source="${src}" style="${outerStyle}">
-                            <div class="idol-stats-bar" style="width: 14px; height: ${srcRate}%; background-color: ${charColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative; transition: all 0.15s ease; box-sizing: border-box; pointer-events: none;">
-                                <div class="idol-stats-bar-val" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${s.owned > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none; pointer-events: none;">
-                                    ${labelText}
+                    const labelStyle = isSelectable
+                        ? 'font-size: 0.72rem; font-weight: bold; color: #777; text-align: center; cursor: pointer; user-select: none; padding: 2px 6px;'
+                        : 'font-size: 0.72rem; font-weight: bold; color: #bbb; text-align: center; cursor: default; user-select: none; padding: 2px 6px; pointer-events: none; opacity: 0.45;';
+
+                    barsHtml += `
+                        <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
+                            <div class="idol-stats-bar-outer" data-source="${src}" style="${outerStyle}">
+                                <div class="idol-stats-bar" style="width: 14px; height: ${srcRate}%; background-color: ${charColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative; transition: all 0.15s ease; box-sizing: border-box; pointer-events: none;">
+                                    <div class="idol-stats-bar-val" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${s.owned > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none; pointer-events: none;">
+                                        ${labelText}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                xAxisLabelsHtml += `
-                    <div style="flex: 1; display: flex; justify-content: center;">
-                        <div class="idol-stats-xaxis-label" data-source="${src}" style="${labelStyle}">${srcLabel}</div>
-                    </div>
-                `;
-            });
+                    xAxisLabelsHtml += `
+                        <div style="flex: 1; display: flex; justify-content: center;">
+                            <div class="idol-stats-xaxis-label" data-source="${src}" style="${labelStyle}">${srcLabel}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                const subtypeOrder = ['goodcondition', 'concentration', 'goodimpression', 'motivation', 'enthusiasm', 'fullpower'];
+                const subtypeColors = {
+                    goodcondition: '#ff4d8d',   // Sense pink
+                    concentration: '#ff4d8d',
+                    goodimpression: '#46a4f3',  // Logic blue
+                    motivation: '#46a4f3',
+                    enthusiasm: '#ffb300',      // Anomaly yellow
+                    fullpower: '#ffb300'
+                };
+
+                subtypeOrder.forEach(sub => {
+                    const s = charSubtypeStats[sub];
+                    const isSelectable = s.total > 0;
+                    const srcRate = isSelectable ? ((s.owned / s.total) * 100).toFixed(0) : '0';
+                    const labelText = isSelectable ? `${s.owned}/${s.total}` : '';
+                    const barColor = subtypeColors[sub] || charColor;
+
+                    const outerStyle = isSelectable
+                        ? 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; position: relative; z-index: 5;'
+                        : 'width: 24px; height: 100%; display: flex; justify-content: center; align-items: flex-end; cursor: default; position: relative; z-index: 5; pointer-events: none; opacity: 0.25;';
+
+                    const labelStyle = isSelectable
+                        ? 'display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; padding: 2px 6px;'
+                        : 'display: flex; align-items: center; justify-content: center; cursor: default; user-select: none; padding: 2px 6px; pointer-events: none; opacity: 0.45;';
+
+                    barsHtml += `
+                        <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
+                            <div class="idol-stats-bar-outer" data-subtype="${sub}" style="${outerStyle}">
+                                <div class="idol-stats-bar" style="width: 14px; height: ${srcRate}%; background-color: ${barColor}; border-top-left-radius: 2px; border-top-right-radius: 2px; position: relative; transition: all 0.15s ease; box-sizing: border-box; pointer-events: none;">
+                                    <div class="idol-stats-bar-val" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 800; color: ${s.owned > 0 ? '#333' : '#bbb'}; white-space: nowrap; user-select: none; pointer-events: none;">
+                                        ${labelText}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    xAxisLabelsHtml += `
+                        <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                            <div class="idol-stats-xaxis-label" data-subtype="${sub}" style="${labelStyle}">
+                                <img src="icons/${sub}.webp" style="width: 14px; height: 14px; object-fit: contain;">
+                            </div>
+                        </div>
+                    `;
+                });
+            }
 
             let rankBg = 'rgba(255, 255, 255, 0.45)';
             let rankBorder = 'rgba(0, 0, 0, 0.06)';
@@ -1702,8 +1773,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             else if (rankIndex === 1) { rankBg = 'linear-gradient(135deg, rgba(255, 204, 0, 0.13), rgba(255, 204, 0, 0.19))'; rankBorder = 'rgba(255, 204, 0, 0.4)'; }
             else if (rankIndex === 2) { rankBg = 'linear-gradient(135deg, rgba(70, 164, 243, 0.11), rgba(70, 164, 243, 0.15))'; rankBorder = 'rgba(70, 164, 243, 0.35)'; }
 
+            const isExpanded = expandedCharIds.has(charId);
+            const chevronRotateStyle = isExpanded ? 'transform: rotate(180deg);' : '';
+
             charListHtml += `
-                <div class="char-stat-card" data-rank="${rankIndex + 1}" style="display: flex; flex-direction: column; background: ${rankBg}; border: 1px solid ${rankBorder}; border-radius: 12px; overflow: hidden; box-sizing: border-box; transition: none !important; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                <div class="char-stat-card ${isExpanded ? 'expanded' : ''}" data-char-id="${charId}" data-rank="${rankIndex + 1}" style="display: flex; flex-direction: column; background: ${rankBg}; border: 1px solid ${rankBorder}; border-radius: 12px; overflow: hidden; box-sizing: border-box; transition: none !important; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                     <div class="char-stat-main" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; cursor: pointer; user-select: none;">
                         ${rankBadgeHtml}
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0;">
@@ -1724,10 +1798,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             </div>
                         </div>
                         <div class="char-chevron-btn" style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; transition: none !important;">
-                            <svg class="char-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: none !important;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <svg class="char-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: none !important; ${chevronRotateStyle}"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                     </div>
-                    <div class="char-stat-details" style="display: none; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 10px; flex-direction: column; gap: 6px;">
+                    <div class="char-stat-details" style="display: ${isExpanded ? 'flex' : 'none'}; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 10px; flex-direction: column; gap: 6px;">
                         <div style="display: flex; flex-direction: column; gap: 5px; background: rgba(255, 255, 255, 0.55); padding: 14px 12px 6px; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.06); box-sizing: border-box; width: 100%;">
                             <div class="idol-stats-chart-area-wrapper" style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
                                 <div style="display: flex; align-items: flex-end;">
@@ -1782,19 +1856,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             cardBorder = '1px solid rgba(255, 204, 0, 0.25)';
         }
 
-        // 2D Heatmap Grid calculation (Idol by Source)
-        const sourceList = ['normal', 'limited', 'limited_f', 'limited_u'];
-        if (includeDist) {
-            sourceList.push('dist');
+        // 2D Heatmap Grid calculation
+        const viewList = [];
+        if (heatmapViewMode === 'source') {
+            viewList.push('normal', 'limited', 'limited_f', 'limited_u');
+            if (includeDist) viewList.push('dist');
+            if (includeAnother) viewList.push('another');
+        } else {
+            viewList.push('goodcondition', 'concentration', 'goodimpression', 'motivation', 'enthusiasm', 'fullpower');
         }
-        if (includeAnother) {
-            sourceList.push('another');
-        }
+
         const heatmapData = {};
         HEATMAP_CHARACTER_ORDER.forEach(charId => {
             heatmapData[charId] = {};
-            sourceList.forEach(src => {
-                heatmapData[charId][src] = { total: 0, owned: 0 };
+            viewList.forEach(key => {
+                heatmapData[charId][key] = { total: 0, owned: 0 };
             });
         });
 
@@ -1802,12 +1878,18 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             const charId = getCharacterId(c.id);
             if (heatmapData[charId] === undefined) return;
 
-            const src = c.another ? 'another' : (c.source || 'normal');
+            let key = '';
+            if (heatmapViewMode === 'source') {
+                key = c.another ? 'another' : (c.source || 'normal');
+            } else {
+                key = getOsusume(c, pssrCards);
+                if (key === 'preservation') key = 'fullpower';
+            }
 
-            if (heatmapData[charId][src] !== undefined) {
-                heatmapData[charId][src].total++;
+            if (heatmapData[charId][key] !== undefined) {
+                heatmapData[charId][key].total++;
                 if (isCardOwned(c.id)) {
-                    heatmapData[charId][src].owned++;
+                    heatmapData[charId][key].owned++;
                 }
             }
         });
@@ -1842,13 +1924,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             return map[lang]?.[src] || map.ko[src] || src;
         };
 
+        const getColLabel = (key, lang) => {
+            if (heatmapViewMode === 'source') {
+                return getSourceShortLabel(key, lang);
+            } else {
+                return SUB_TYPE_LABELS[lang]?.[key] || SUB_TYPE_LABELS.ko[key] || key;
+            }
+        };
+
         let rowLabelsHtml = '';
         HEATMAP_CHARACTER_ORDER.forEach(charId => {
             const charColor = idolColors[charId] || '#cbd5e1';
 
             let rowOwnedSum = 0;
-            sourceList.forEach(src => {
-                const stat = heatmapData[charId][src];
+            viewList.forEach(key => {
+                const stat = heatmapData[charId][key];
                 if (stat && stat.owned > 0) {
                     rowOwnedSum += stat.owned;
                 }
@@ -1860,7 +1950,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             }
 
             rowLabelsHtml += `
-                <div class="possession-heatmap-row-label" style="height: 38px; display: flex; align-items: center; background: #F9F7F3; border-radius: 4px 0 0 4px; box-sizing: border-box; user-select: none; border-left: 3px solid ${charColor}; border-bottom: 1px solid #f1f5f9;">
+                <div class="possession-heatmap-row-label" style="height: 38px; display: flex; align-items: center; background: #ffffff; border-radius: 4px 0 0 4px; box-sizing: border-box; user-select: none; border-left: 3px solid ${charColor}; border-bottom: 1px solid #f1f5f9;">
                     <img src="icons/idolicons/${charId}_c.png" onerror="this.src='icons/idol.png';" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
                     ${sumLabelHtml}
                 </div>
@@ -1876,15 +1966,24 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             another: '#fda4af'    // Pastel Pink/Rose
         };
 
+        const subtypeColors = {
+            goodcondition: '#ff4d8d',   // Sense pink
+            concentration: '#ff4d8d',   // Sense pink
+            goodimpression: '#46a4f3',  // Logic blue
+            motivation: '#46a4f3',      // Logic blue
+            enthusiasm: '#ffb300',      // Anomaly yellow
+            fullpower: '#ffb300'        // Anomaly yellow
+        };
+
         let columnsHtml = '';
-        sourceList.forEach(src => {
-            const srcLabel = getSourceShortLabel(src, lang);
+        viewList.forEach(key => {
+            const srcLabel = getColLabel(key, lang);
 
             // Calculate max owned and total counts in this specific column
             let maxOwnedVal = 0;
             let maxTotalVal = 0;
             HEATMAP_CHARACTER_ORDER.forEach(charId => {
-                const stat = heatmapData[charId][src];
+                const stat = heatmapData[charId][key];
                 if (stat) {
                     if (stat.owned > maxOwnedVal) {
                         maxOwnedVal = stat.owned;
@@ -1901,7 +2000,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             let columnColor = firstPlaceCharColor;
             if (maxOwnedVal > 0) {
                 const tiedChars = HEATMAP_CHARACTER_ORDER.filter(charId => {
-                    const stat = heatmapData[charId][src];
+                    const stat = heatmapData[charId][key];
                     return stat && stat.owned === maxOwnedVal;
                 });
 
@@ -1918,7 +2017,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
             let cellsHtml = '';
             HEATMAP_CHARACTER_ORDER.forEach(charId => {
-                const stat = heatmapData[charId][src];
+                const stat = heatmapData[charId][key];
                 const total = stat.total;
                 const owned = stat.owned;
 
@@ -1926,7 +2025,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 let cellText = '';
 
                 if (total === 0 || owned === 0) {
-                    bgStyle = 'background: #F9F7F3;';
+                    bgStyle = 'background: #ffffff;';
                 } else {
                     const rate = (owned / total) * 100;
                     const alpha = 0.15 + (owned / maxTotal) * 0.85;
@@ -1956,12 +2055,35 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 `;
             });
 
+            const borderTopColor = heatmapViewMode === 'source'
+                ? (catColors[key] || '#cbd5e1')
+                : (subtypeColors[key] || '#cbd5e1');
+
+            let headerImgHtml = '';
+            if (heatmapViewMode === 'subtype') {
+                headerImgHtml = `<img src="icons/${key}.webp" style="width: 22px; height: 22px; margin-bottom: 0; object-fit: contain;">`;
+            }
+
+            // Calculate column total and owned sum
+            let columnOwnedSum = 0;
+            let columnTotalSum = 0;
+            HEATMAP_CHARACTER_ORDER.forEach(charId => {
+                const stat = heatmapData[charId][key];
+                if (stat) {
+                    columnOwnedSum += stat.owned;
+                    columnTotalSum += stat.total;
+                }
+            });
+
+            const countLabelHtml = `<span class="heatmap-col-count-lbl" style="font-size: 0.58rem; font-weight: bold; color: #64748b; display: inline-block;">(${columnOwnedSum})</span>`;
+
             columnsHtml += `
                 <div class="possession-heatmap-col" style="flex: 1; display: flex; flex-direction: column; gap: 0; border-radius: 0; box-sizing: border-box;">
                     <!-- 열 헤더 (상단) -->
-                    <div class="possession-heatmap-col-header" style="height: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; box-sizing: border-box; user-select: none; border-radius: 4px 4px 0 0; background: #F9F7F3; border-top: 3px solid ${catColors[src] || '#cbd5e1'}; border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
-                        <span class="possession-heatmap-header-txt" style="font-size: 0.75rem; font-weight: 800; color: #475569; white-space: nowrap; text-align: center;">
-                            ${srcLabel}
+                    <div class="possession-heatmap-col-header" style="height: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; box-sizing: border-box; user-select: none; border-radius: 4px 4px 0 0; background: #ffffff; border-top: 3px solid ${borderTopColor}; border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9;">
+                        <span class="possession-heatmap-header-txt" style="font-size: 0.75rem; font-weight: 800; color: #475569; white-space: nowrap; text-align: center; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 3px; line-height: 1.0;">
+                            ${heatmapViewMode === 'subtype' ? headerImgHtml : srcLabel}
+                            ${countLabelHtml}
                         </span>
                     </div>
                     <!-- 셀들 -->
@@ -1975,7 +2097,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             <div class="possession-heatmap-container ${showHeatmapNumbers ? 'show-numbers' : ''}" style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; margin-top: 12px; cursor: pointer; user-select: none;">
                 <div style="display: flex; gap: 0; width: 100%; box-sizing: border-box;">
                     <!-- 왼쪽 행 라벨 열 -->
-                    <div class="possession-heatmap-row-labels" style="display: flex; flex-direction: column; gap: 0; width: 70px; flex-shrink: 0; padding-top: 32px; box-sizing: border-box;">
+                    <div class="possession-heatmap-row-labels" style="display: flex; flex-direction: column; gap: 0; width: 70px; flex-shrink: 0; box-sizing: border-box;">
+                        <div class="possession-heatmap-row-header-spacer" style="height: 30px; box-sizing: border-box;"></div>
                         ${rowLabelsHtml}
                     </div>
                     <!-- 오스스메별 열들 -->
@@ -1995,30 +2118,26 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     gap: 0;
                     width: 70px;
                     flex-shrink: 0;
-                    padding-top: 32px;
                     box-sizing: border-box;
                 }
                 .possession-heatmap-row-label {
                     height: 38px;
                     display: flex;
                     align-items: center;
-                    justify-content: center;
-                    background: #F9F7F3;
+                    justify-content: flex-start;
+                    padding-left: 8px;
+                    background: #ffffff;
                     border-radius: 4px 0 0 4px;
                     box-sizing: border-box;
                     user-select: none;
                     border-bottom: 1px solid #f1f5f9;
-                }
-                .possession-heatmap-container.show-numbers .possession-heatmap-row-label {
-                    justify-content: flex-start;
-                    padding-left: 8px;
                 }
                 .possession-heatmap-cell {
                     height: 38px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 0.75rem;
+                    font-size: 0.65rem;
                     font-weight: 800;
                     border-radius: 0 !important;
                     pointer-events: none;
@@ -2037,7 +2156,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     box-sizing: border-box;
                     user-select: none;
                     border-radius: 4px 4px 0 0;
-                    background: #F9F7F3;
+                    background: #ffffff;
                     border-bottom: 1px solid #f1f5f9;
                     border-right: 1px solid #f1f5f9;
                 }
@@ -2335,27 +2454,49 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     pointer-events: none;
                 }
                 .heatmap-cell-number {
-                    display: none;
+                    display: inline-block;
                     pointer-events: none;
                 }
                 .possession-heatmap-row-sum-val {
-                    display: none;
+                    display: inline-block;
                     pointer-events: none;
                 }
-                .possession-heatmap-container.show-numbers .heatmap-cell-number {
-                    display: inline-block !important;
+                .idol-stats-char-toggle-group {
+                    display: inline-flex;
+                    align-items: center;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 6px;
+                    padding: 0;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    height: 24px;
+                    vertical-align: middle;
                 }
-                .possession-heatmap-container.show-numbers .possession-heatmap-row-sum-val {
-                    display: inline-block !important;
+                .idol-stats-char-toggle-btn {
+                    font-size: 0.72rem;
+                    font-weight: 800;
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #777;
+                    padding: 2px 10px;
+                    margin: 0;
+                    height: 100%;
+                    box-sizing: border-box;
+                    background: transparent;
+                    user-select: none;
+                    transition: background-color 0.15s, color 0.15s;
                 }
-                @media (min-width: 769px) {
-                    .possession-heatmap-container:hover .heatmap-cell-number {
-                        display: inline-block !important;
-                    }
-                    .possession-heatmap-container:hover .possession-heatmap-row-sum-val {
-                        display: inline-block !important;
-                    }
+                .idol-stats-char-toggle-btn:first-child {
+                    border-right: 1px solid #e2e8f0;
                 }
+                .idol-stats-char-toggle-btn.active {
+                    color: #1e293b !important;
+                    background: #f1f5f9 !important;
+                }
+
             </style>
             <style id="idol-possession-mobile-styles">
                 @media (max-width: 768px) {
@@ -2441,18 +2582,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     .char-stat-card {
                         border-radius: 6px !important;
                     }
+                    body:not(.is-capturing) .idol-stats-xaxis-label img {
+                        width: 11px !important;
+                        height: 11px !important;
+                    }
                     body:not(.is-capturing) .possession-heatmap-row-labels {
-                        padding-top: 20px !important;
+                        padding-top: 0 !important;
                         width: 50px !important;
                         gap: 0 !important;
+                    }
+                    body:not(.is-capturing) .possession-heatmap-row-header-spacer {
+                        height: 18px !important;
                     }
                     body:not(.is-capturing) .possession-heatmap-row-label {
                         height: 22px !important;
                         border-left-width: 2px !important;
-                        justify-content: center !important;
-                        padding-left: 0 !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-container.show-numbers .possession-heatmap-row-label {
                         justify-content: flex-start !important;
                         padding-left: 6px !important;
                     }
@@ -2470,21 +2614,22 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     body:not(.is-capturing) .possession-heatmap-header-txt {
                         font-size: 0.52rem !important;
                     }
+                    body:not(.is-capturing) .heatmap-col-count-lbl {
+                        font-size: 0.44rem !important;
+                    }
                     body:not(.is-capturing) .possession-heatmap-col-header img {
-                        width: 12px !important;
-                        height: 12px !important;
+                        width: 14px !important;
+                        height: 14px !important;
                     }
 
                     body:not(.is-capturing) .possession-heatmap-cell {
                         height: 22px !important;
-                        font-size: 0.45rem !important;
+                        font-size: 0.38rem !important;
                     }
                     body:not(.is-capturing) .possession-heatmap-cell div {
                         transform: scale(0.85);
                     }
-                    body:not(.is-capturing) .possession-heatmap-cell span:last-child {
-                        display: none !important;
-                    }
+
                     .char-stat-details {
                         padding: 8px 4px !important;
                     }
@@ -2873,10 +3018,20 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     ${sourceRowsHtml}
                 </div>
 
-                <!-- Row for Character Stats -->
-                <div id="pssr-char-stats-label" class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; gap: 6px;">
-                    <img src="icons/idolicons/${firstPlaceChar}_c.png" style="width: 22px; height: 22px; object-fit: contain; flex-shrink: 0;">
-                    <span>${text.char_stats}</span>
+                <div id="pssr-char-stats-label" class="idol-stats-section-title" style="font-weight: 800; font-size: 0.95rem; color: #555; margin-bottom: -6px; padding-left: 2px; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box;">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                        <img src="icons/idolicons/${firstPlaceChar}_c.png" style="width: 22px; height: 22px; object-fit: contain; flex-shrink: 0;">
+                        <span>${text.char_stats}</span>
+                    </span>
+                    <!-- 플랜별/분류별 토글박스 -->
+                    <div class="idol-stats-char-toggle-group">
+                        <label class="idol-stats-char-toggle-btn ${charStatsViewMode === 'plan' ? 'active' : ''}" data-mode="plan">
+                            <span>플랜별</span>
+                        </label>
+                        <label class="idol-stats-char-toggle-btn ${charStatsViewMode === 'source' ? 'active' : ''}" data-mode="source">
+                            <span>분류별</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="possession-section-card idol-stats-char-card" style="background: transparent; border: 1px solid #f0f0f0; border-radius: 12px; padding: 16px 18px;">
                     ${charListHtml}
@@ -2911,7 +3066,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         const heatmapContainer = scrollArea.querySelector('.possession-heatmap-container');
         if (heatmapContainer) {
             heatmapContainer.addEventListener('click', () => {
-                showHeatmapNumbers = !showHeatmapNumbers;
+                heatmapViewMode = heatmapViewMode === 'source' ? 'subtype' : 'source';
                 updateStatsUI();
             });
         }
@@ -3027,6 +3182,17 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
     // Register click delegator for collapsible details (character cards & plan cards)
     scrollArea.addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.idol-stats-char-toggle-btn');
+        if (toggleBtn) {
+            e.stopPropagation();
+            const mode = toggleBtn.dataset.mode;
+            if (mode && charStatsViewMode !== mode) {
+                charStatsViewMode = mode;
+                updateStatsUI();
+            }
+            return;
+        }
+
         const subgroupBtn = e.target.closest('.plan-subgroup-header-btn');
         if (subgroupBtn) {
             e.stopPropagation();
@@ -3320,11 +3486,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         const clickedFilterItem = e.target.closest('.idol-stats-bar-outer') || e.target.closest('.idol-stats-xaxis-label');
         if (clickedFilterItem) {
             e.stopPropagation();
-            const src = clickedFilterItem.dataset.source;
             const charCard = clickedFilterItem.closest('.char-stat-card');
             if (charCard) {
-                const barOuter = charCard.querySelector(`.idol-stats-bar-outer[data-source="${src}"]`);
-                const label = charCard.querySelector(`.idol-stats-xaxis-label[data-source="${src}"]`);
+                const isPlanMode = charStatsViewMode === 'plan';
+                const filterKey = isPlanMode ? clickedFilterItem.dataset.subtype : clickedFilterItem.dataset.source;
+                const selectorAttr = isPlanMode ? 'data-subtype' : 'data-source';
+
+                const barOuter = charCard.querySelector(`.idol-stats-bar-outer[${selectorAttr}="${filterKey}"]`);
+                const label = charCard.querySelector(`.idol-stats-xaxis-label[${selectorAttr}="${filterKey}"]`);
 
                 if (barOuter) {
                     const isActive = barOuter.classList.contains('active');
@@ -3359,7 +3528,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         if (xaxisContainer) xaxisContainer.classList.add('has-active');
 
                         iconWrappers.forEach(w => {
-                            if (w.dataset.source === src) {
+                            const itemVal = isPlanMode ? w.dataset.subtype : w.dataset.source;
+                            if (itemVal === filterKey) {
                                 w.style.display = '';
                             } else {
                                 w.style.display = 'none';
@@ -3378,6 +3548,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         if (charCard) {
             const mainRow = e.target.closest('.char-stat-main');
             if (mainRow) {
+                const charId = charCard.dataset.charId;
                 const details = charCard.querySelector('.char-stat-details');
                 const chevron = charCard.querySelector('.char-chevron');
                 if (details) {
@@ -3385,8 +3556,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     details.style.display = isHidden ? 'flex' : 'none';
                     if (isHidden) {
                         charCard.classList.add('expanded');
+                        if (charId) expandedCharIds.add(charId);
                     } else {
                         charCard.classList.remove('expanded');
+                        if (charId) expandedCharIds.delete(charId);
                         // Reset filters when collapsing
                         charCard.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
                         charCard.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
