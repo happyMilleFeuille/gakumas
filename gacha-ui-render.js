@@ -400,7 +400,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
     } else if (type === 'limited') {
         currentCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -410,7 +410,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
     } else if (type === 'unit') {
         currentCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -420,7 +420,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
     } else if (type === 'fes') {
         currentCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -430,7 +430,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
     }
     return { currentCfg, favColor, displayName, bannerImg, bgImg };
 }
