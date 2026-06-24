@@ -580,6 +580,594 @@ export function openIdolPossessionModal() {
             }
 
         </style>
+        <style id="idol-possession-mobile-styles">
+            @media (max-width: 768px) {
+                body:not(.is-capturing) .idol-possession-content {
+                    width: 100% !important;
+                    max-width: 95% !important;
+                    min-width: 0 !important;
+                    padding: 14px 5px 12px 5px !important;
+                    gap: 12px !important;
+                    border-radius: 14px !important;
+                    --pssr-group-gap: 2px;
+                    --pssr-title-gap: 2px;
+                    --pssr-box-padding: 4px;
+                }
+                .idol-possession-title-wrap {
+                    font-size: 1.05rem !important;
+                    gap: 6px !important;
+                }
+                .possession-title-date {
+                    display: none !important;
+                }
+                .idol-possession-title-indicator {
+                    height: 16px !important;
+                }
+                .idol-possession-reset-btn {
+                    height: 28px !important;
+                    padding: 0 8px !important;
+                    font-size: 0.75rem !important;
+                    border-radius: 6px !important;
+                }
+                .idol-possession-scroll {
+                    gap: 14px !important;
+                    padding-left: 12px !important;
+                    padding-right: 12px !important;
+                }
+                .idol-possession-desc-banner {
+                    font-size: 0.75rem !important;
+                    line-height: 1.35 !important;
+                }
+                .char-section {
+                    gap: 3px !important;
+                }
+                .char-section-card {
+                    padding: 3px !important;
+                    border-radius: 5px !important;
+                    gap: 8px !important;
+                }
+                .char-section-title {
+                    font-size: 0.85rem !important;
+                    gap: 6px !important;
+                }
+                .char-section-icon {
+                    width: 18px !important;
+                    height: 18px !important;
+                }
+                .char-section-indicator {
+                    height: 12px !important;
+                }
+                .pssr-selection-grid {
+                    grid-template-columns: repeat(5, 1fr) !important;
+                    gap: 4px !important;
+                }
+                .pssr-card-thumb {
+                    width: 100% !important;
+                    height: 100px !important;
+                    border-radius: 4px !important;
+                }
+                .pssr-card-name {
+                    font-size: 0.35rem !important;
+                    margin-top: 1px !important;
+                    height: auto !important;
+                    line-height: 1.2 !important;
+                    width: 100% !important;
+                    word-break: break-all !important;
+                }
+                .pssr-check-badge {
+                    top: -3px !important;
+                    right: -3px !important;
+                    width: 14px !important;
+                    height: 14px !important;
+                    font-size: 0.5rem !important;
+                    border-width: 1px !important;
+                }
+                .idol-possession-confirm-btn {
+                    height: 36px !important;
+                    font-size: 0.85rem !important;
+                    border-radius: 8px !important;
+                }
+                .pssr-stat-icon-wrap {
+                    width: 35px !important;
+                    height: 52.5px !important;
+                    border-radius: 5px !important;
+                }
+                .pssr-stat-icon-box img {
+                    top: -6px !important;
+                }
+                .pssr-stat-icons-container, .pssr-char-icons-container {
+                    gap: 4px !important;
+                    padding: 0 2px !important;
+                }
+                #btn-idol-possession-save {
+                    height: 24px !important;
+                    padding: 0 8px !important;
+                    font-size: 0.68rem !important;
+                    border-radius: 0 5px 5px 0 !important;
+                }
+                .possession-save-options-content {
+                    width: 270px !important;
+                    padding: 16px !important;
+                    gap: 8px !important;
+                    border-radius: 12px !important;
+                }
+                .possession-save-options-content .save-opt-title {
+                    font-size: 0.85rem !important;
+                    margin-top: 2px !important;
+                    margin-bottom: 2px !important;
+                }
+                .possession-save-options-content button.calc-btn {
+                    padding: 11px 8px !important;
+                    font-size: 0.65rem !important;
+                    border-radius: 6px !important;
+                    width: 90% !important;
+                }
+                .possession-save-options-content #btn-save-opt-close {
+                    font-size: 1rem !important;
+                    top: 4px !important;
+                    right: 4px !important;
+                }
+                .possession-save-options-content .save-opt-plan-btn {
+                    padding: 8px 2px !important;
+                    gap: 2px !important;
+                }
+                .possession-save-options-content .save-opt-plan-btn span {
+                    font-size: 0.48rem !important;
+                }
+                .possession-save-options-content .save-opt-plan-btn img {
+                    width: 9px !important;
+                    height: 9px !important;
+                }
+                .source-stat-circle-view svg circle {
+                    stroke-width: 3.5 !important;
+                }
+
+                .source-stacked-bar-segment {
+                    font-size: 0.45rem !important;
+                }
+                .source-stat-circle-label {
+                    font-size: 0.7rem !important;
+                }
+                .source-stat-circle-subtext {
+                    font-size: 0.6rem !important;
+                }
+                .source-stat-circle-subtext span:last-child {
+                    font-size: 0.52rem !important;
+                }
+                .source-stat-circle-wrapper {
+                    width: 62px !important;
+                    height: 62px !important;
+                }
+                body:not(.is-capturing) .radar-vertex-dot {
+                    display: none !important;
+                }
+                body:not(.is-capturing) .idol-stats-plan-radars-wrapper {
+                    flex-direction: row !important;
+                    gap: 10px !important;
+                    flex-wrap: nowrap !important;
+                }
+                body:not(.is-capturing) .idol-stats-plan-radar-container {
+                    height: 170px !important;
+                }
+                body:not(.is-capturing) .idol-stats-plan-radar-container svg {
+                    width: 140px !important;
+                    height: 170px !important;
+                }
+                body:not(.is-capturing) .idol-stats-plan-radar-container:first-child svg {
+                    margin-right: 0 !important;
+                }
+                body:not(.is-capturing) .idol-stats-plan-radar-container:last-child svg {
+                    margin-left: 0 !important;
+                }
+                body:not(.is-capturing) .idol-stats-radar-divider {
+                    width: 1px !important;
+                    min-width: 1px !important;
+                    flex: 0 0 1px !important;
+                    height: 130px !important;
+                    background-color: #f0f0f0 !important;
+                }
+                .pssr-stat-icons-container, .pssr-char-icons-container {
+                    gap: 4px !important;
+                    padding: 0 2px !important;
+                }
+                .pssr-stat-icons-row {
+                    gap: 4px !important;
+                }
+                .possession-title-date {
+                    display: none !important;
+                }
+                .possession-title-wrap {
+                    font-size: 1.05rem !important;
+                    gap: 6px !important;
+                }
+                .possession-title-icon {
+                    width: 30px !important;
+                    height: 30px !important;
+                    margin-bottom: -1px !important;
+                    margin-right: 6px !important;
+                }
+                #possession-header-line {
+                    margin-left: 15px !important;
+                    width: calc(100% - 15px) !important;
+                }
+                #btn-idol-possession-save {
+                    height: 28px !important;
+                    padding: 0 12px !important;
+                    font-size: 0.72rem !important;
+                    border-radius: 0 6px 6px 0 !important;
+                    font-weight: bold !important;
+                }
+                .possession-section-card {
+                    padding: 6px 8px !important;
+                    border-radius: 6px !important;
+                }
+                .char-stat-card {
+                    border-radius: 6px !important;
+                }
+                body:not(.is-capturing) .idol-stats-xaxis-label img {
+                    width: 11px !important;
+                    height: 11px !important;
+                }
+                body:not(.is-capturing) .idol-stats-char-toggle-group {
+                    height: 20px !important;
+                    border-radius: 4px !important;
+                }
+                body:not(.is-capturing) .idol-stats-char-toggle-btn {
+                    font-size: 0.58rem !important;
+                    padding: 1px 6px !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-row-labels {
+                    padding-top: 0 !important;
+                    width: 50px !important;
+                    gap: 0 !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-row-header-spacer {
+                    height: 18px !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-row-label {
+                    height: 22px !important;
+                    border-left-width: 2px !important;
+                    justify-content: flex-start !important;
+                    padding-left: 6px !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-row-label img {
+                    width: 18px !important;
+                    height: 18px !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-row-sum-val {
+                    font-size: 0.58rem !important;
+                    margin-left: 3px !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-col-header {
+                    height: 18px !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-header-txt {
+                    font-size: 0.52rem !important;
+                }
+                body:not(.is-capturing) .heatmap-col-count-lbl {
+                    font-size: 0.44rem !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-col-header img {
+                    width: 14px !important;
+                    height: 14px !important;
+                }
+
+                body:not(.is-capturing) .possession-heatmap-cell {
+                    height: 22px !important;
+                    font-size: 0.38rem !important;
+                }
+                body:not(.is-capturing) .possession-heatmap-cell div {
+                    transform: scale(0.85);
+                }
+
+                .char-stat-details {
+                    padding: 8px 4px !important;
+                }
+                .char-stat-details > div {
+                    border-radius: 5px !important;
+                    padding: 10px 6px 6px 6px !important;
+                }
+                .pssr-stat-icons-container, .pssr-char-icons-container {
+                    padding: 0 4px !important;
+                    margin-top: 2px !important;
+                }
+                .idol-stats-overall-left-wrap {
+                    gap: 3px !important;
+                }
+                .idol-stats-overall-icon {
+                    width: 12px !important;
+                    height: 12px !important;
+                }
+                body:not(.is-capturing) .idol-stats-overall-rank-icon {
+                    height: 38px !important;
+                }
+                .idol-stats-overall-lbl {
+                    font-size: 0.68rem !important;
+                    white-space: nowrap !important;
+                }
+                .idol-stats-overall-chk {
+                    font-size: 0.52rem !important;
+                    margin-left: 2px !important;
+                    padding: 0px 6px !important;
+                    border-radius: 3px !important;
+                    height: 20px !important;
+                }
+                .idol-stats-overall-chk-group {
+                    border-radius: 3px !important;
+                    height: 20px !important;
+                }
+                .idol-stats-overall-chk input {
+                    width: 9px !important;
+                    height: 9px !important;
+                }
+                .idol-stats-overall-val {
+                    font-size: 0.76rem !important;
+                    white-space: nowrap !important;
+                    margin-top: 10px !important;
+                }
+                .idol-stats-plan-row {
+                    font-size: 0.5rem !important;
+                    gap: 1px !important;
+                }
+                .idol-stats-plan-fraction {
+                    font-size: 0.4rem !important;
+                }
+                .idol-stats-plan-row span.idol-plan-text {
+                    display: none !important;
+                }
+                .idol-stats-plan-row > span {
+                    white-space: nowrap !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    gap: 1px !important;
+                }
+                .idol-stats-plan-row img {
+                    width: 12px !important;
+                    height: 12px !important;
+                }
+                .idol-stats-source-row {
+                    font-size: 0.5rem !important;
+                }
+                .idol-stats-source-fraction {
+                    font-size: 0.48rem !important;
+                    margin-left: 4px !important;
+                }
+                .idol-stats-source-label {
+                    width: 35px !important;
+                    font-size: 0.6rem !important;
+                }
+                .idol-stats-source-pct {
+                    font-size: 0.6rem !important;
+                }
+                .idol-stats-source-val-wrap {
+                    width: 50px !important;
+                }
+                .idol-stats-bar-val {
+                    font-size: 0.48rem !important;
+                    top: -10px !important;
+                }
+                .idol-stats-xaxis-label {
+                    font-size: 0.4rem !important;
+                }
+                .idol-stats-char-name-row {
+                    font-size: 0.65rem !important;
+                }
+                .idol-stats-char-fraction {
+                    font-size: 0.58rem !important;
+                }
+                .idol-stats-char-pct {
+                    font-size: 0.58rem !important;
+                    margin-left: auto !important;
+                }
+                /* Hide name + fraction by default for 4th rank and below on mobile when collapsed */
+                .char-stat-card:not(.expanded):not([data-rank="1"]):not([data-rank="2"]):not([data-rank="3"]) .idol-stats-char-name-wrap {
+                    display: none !important;
+                }
+                .idol-stats-yaxis-label {
+                    font-size: 0.35rem !important;
+                    height: 40px !important;
+                    width: 10px !important;
+                    margin-right: 1px !important;
+                }
+                .idol-stats-chart-wrapper {
+                    height: 40px !important;
+                }
+                .idol-stats-xaxis-container {
+                    padding-left: 11px !important;
+                }
+                .idol-stats-chart-area-wrapper {
+                    max-width: 230px !important;
+                    margin: 0 auto !important;
+                }
+                .idol-stats-section-title {
+                    font-size: 0.78rem !important;
+                    margin-bottom: -10px !important;
+                }
+                .idol-stats-char-card {
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 10px !important;
+                }
+                .char-stat-card {
+                    grid-column: span 1 !important;
+                }
+                .char-stat-card[data-rank="1"],
+                .char-stat-card[data-rank="2"],
+                .char-stat-card[data-rank="3"] {
+                    grid-column: span 2 !important;
+                }
+                .char-stat-card.expanded {
+                    grid-column: span 2 !important;
+                }
+                .idol-stats-plan-row-container {
+                    flex-wrap: nowrap !important;
+                    gap: 12px !important;
+                    justify-content: center !important;
+                }
+                .idol-stats-plan-card {
+                    padding: 6px 4px !important;
+                }
+                .idol-stats-plan-col {
+                    min-width: 0 !important;
+                    flex: 1 !important;
+                    max-width: 80px !important;
+                    padding: 4px 6px !important;
+                }
+                .idol-stats-plan-col > div:last-child {
+                    height: 8px !important;
+                }
+                #plan-stat-details .pssr-stat-icon-wrap,
+                .pssr-stat-icon-wrap {
+                    width: 46px !important;
+                    height: 70px !important;
+                    border-radius: 0 9px 0 0 !important;
+                }
+                .pssr-stat-icon-box {
+                    border-radius: 0 9px 0 0 !important;
+                }
+                .pssr-char-badge {
+                    height: 12px !important;
+                    padding: 0 4px !important;
+                    font-size: 6px !important;
+                    font-weight: 700 !important;
+                    border: none !important;
+                    bottom: -1px !important;
+                    left: -1px !important;
+                    border-radius: 0 2px 0 0 !important;
+                }
+
+                .pssr-plan-badge {
+                    width: 16px !important;
+                    height: 16px !important;
+                    border: none !important;
+                    bottom: -1px !important;
+                    right: -1px !important;
+                    border-radius: 2px 2px 0 2px !important;
+                    padding: 1.5px !important;
+                }
+                #plan-stat-details {
+                    padding: 8px 2px !important;
+                }
+                #plan-stat-details .pssr-stat-icons-container {
+                    padding: 0 !important;
+                }
+                .plan-subgroup-col-left {
+                    padding: 2px 4px !important;
+                    gap: 3px !important;
+                }
+                .plan-subgroup-col-right {
+                    padding: 2px 4px !important;
+                    gap: 3px !important;
+                }
+                #plan-stat-details .pssr-stat-icons-container + div[style*="width: 1px"] {
+                    margin: 4px 0 !important;
+                }
+                .plan-subgroup-col-left > div:first-child, .plan-subgroup-col-right > div:first-child {
+                    margin-bottom: 2px !important;
+                }
+                #plan-stat-owned-group, #plan-stat-unowned-group {
+                    padding: 4px 4px !important;
+                    gap: 2px !important;
+                }
+                .plan-group-title {
+                    font-size: 0.6rem !important;
+                }
+                .pssr-stat-rate-pct {
+                    font-size: 0.55rem !important;
+                }
+                .pssr-stat-rate-fraction {
+                    font-size: 0.52rem !important;
+                }
+                body.is-capturing .pssr-stat-icon-wrap,
+                body.is-capturing #plan-stat-details .pssr-stat-icon-wrap {
+                    width: 86px !important;
+                    height: 129px !important;
+                    border-radius: 0 18px 0 0 !important;
+                }
+                body.is-capturing .pssr-stat-icon-box {
+                    border-radius: 0 18px 0 0 !important;
+                }
+                body.is-capturing .pssr-stat-icon-box img {
+                    top: -15px !important;
+                }
+                body.is-capturing .pssr-char-badge {
+                    height: 22px !important;
+                    padding: 0 6px !important;
+                    font-size: 9px !important;
+                    font-weight: bold !important;
+                    border-radius: 0 4px 0 0 !important;
+                }
+                body.is-capturing .pssr-plan-badge {
+                    width: 26px !important;
+                    height: 26px !important;
+                    border-radius: 4px !important;
+                    padding: 3px !important;
+                }
+                body.is-capturing .pssr-stat-icons-container,
+                body.is-capturing .pssr-char-icons-container {
+                    gap: 8px !important;
+                    margin-top: 10px !important;
+                    padding: 0 10px !important;
+                }
+                body.is-capturing .pssr-stat-icons-row {
+                    gap: 8px !important;
+                }
+                body.is-capturing .plan-subgroup-col-left {
+                    padding: 0px 6px 4px 4px !important;
+                }
+                body.is-capturing .plan-subgroup-col-right {
+                    padding: 0px 4px 4px 6px !important;
+                }
+                body.is-capturing .plan-group-title {
+                    font-size: 0.75rem !important;
+                }
+                body.is-capturing .pssr-stat-rate-pct {
+                    font-size: 0.65rem !important;
+                }
+                body.is-capturing .pssr-stat-rate-fraction {
+                    font-size: 0.58rem !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-headers {
+                    display: flex !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-divider {
+                    display: none !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-title-row {
+                    display: none !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-columns-row {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                    justify-content: center !important;
+                    gap: 4px !important;
+                    width: 100% !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-col-left,
+                body:not(.is-capturing) .plan-subgroup-col-right,
+                body:not(.is-capturing) .plan-subgroup-col-left .pssr-stat-icons-container,
+                body:not(.is-capturing) .plan-subgroup-col-right .pssr-stat-icons-container {
+                    display: contents !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-wrapper[data-active-subgroup="left"] .plan-subgroup-col-right {
+                    display: none !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-wrapper[data-active-subgroup="right"] .plan-subgroup-col-left {
+                    display: none !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-wrapper[data-plan="sense"] .plan-subgroup-header-btn.active {
+                    background-color: rgba(255, 77, 141, 0.2) !important;
+                    color: #ff4d8d !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-wrapper[data-plan="logic"] .plan-subgroup-header-btn.active {
+                    background-color: rgba(70, 164, 243, 0.2) !important;
+                    color: #46a4f3 !important;
+                }
+                body:not(.is-capturing) .plan-subgroup-wrapper[data-plan="anomaly"] .plan-subgroup-header-btn.active {
+                    background-color: rgba(255, 179, 0, 0.2) !important;
+                    color: #ffb300 !important;
+                }
+            }
+        </style>
         <div class="modal-content idol-possession-content">
             <!-- Selection View Header -->
             <div id="idol-possession-header-area" style="display: flex; justify-content: space-between; align-items: center; user-select: none; width: 100%;">
@@ -2357,594 +2945,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
 
             </style>
-            <style id="idol-possession-mobile-styles">
-                @media (max-width: 768px) {
-                    body:not(.is-capturing) .idol-possession-content {
-                        width: 100% !important;
-                        max-width: 95% !important;
-                        min-width: 0 !important;
-                        padding: 14px 5px 12px 5px !important;
-                        gap: 12px !important;
-                        border-radius: 14px !important;
-                        --pssr-group-gap: 2px;
-                        --pssr-title-gap: 2px;
-                        --pssr-box-padding: 4px;
-                    }
-                    .idol-possession-title-wrap {
-                        font-size: 1.05rem !important;
-                        gap: 6px !important;
-                    }
-                    .possession-title-date {
-                        display: none !important;
-                    }
-                    .idol-possession-title-indicator {
-                        height: 16px !important;
-                    }
-                    .idol-possession-reset-btn {
-                        height: 28px !important;
-                        padding: 0 8px !important;
-                        font-size: 0.75rem !important;
-                        border-radius: 6px !important;
-                    }
-                    .idol-possession-scroll {
-                        gap: 14px !important;
-                        padding-left: 12px !important;
-                        padding-right: 12px !important;
-                    }
-                    .idol-possession-desc-banner {
-                        font-size: 0.75rem !important;
-                        line-height: 1.35 !important;
-                    }
-                    .char-section {
-                        gap: 3px !important;
-                    }
-                    .char-section-card {
-                        padding: 3px !important;
-                        border-radius: 5px !important;
-                        gap: 8px !important;
-                    }
-                    .char-section-title {
-                        font-size: 0.85rem !important;
-                        gap: 6px !important;
-                    }
-                    .char-section-icon {
-                        width: 18px !important;
-                        height: 18px !important;
-                    }
-                    .char-section-indicator {
-                        height: 12px !important;
-                    }
-                    .pssr-selection-grid {
-                        grid-template-columns: repeat(5, 1fr) !important;
-                        gap: 4px !important;
-                    }
-                    .pssr-card-thumb {
-                        width: 100% !important;
-                        height: 100px !important;
-                        border-radius: 4px !important;
-                    }
-                    .pssr-card-name {
-                        font-size: 0.35rem !important;
-                        margin-top: 1px !important;
-                        height: auto !important;
-                        line-height: 1.2 !important;
-                        width: 100% !important;
-                        word-break: break-all !important;
-                    }
-                    .pssr-check-badge {
-                        top: -3px !important;
-                        right: -3px !important;
-                        width: 14px !important;
-                        height: 14px !important;
-                        font-size: 0.5rem !important;
-                        border-width: 1px !important;
-                    }
-                    .idol-possession-confirm-btn {
-                        height: 36px !important;
-                        font-size: 0.85rem !important;
-                        border-radius: 8px !important;
-                    }
-                    .pssr-stat-icon-wrap {
-                        width: 35px !important;
-                        height: 52.5px !important;
-                        border-radius: 5px !important;
-                    }
-                    .pssr-stat-icon-box img {
-                        top: -6px !important;
-                    }
-                    .pssr-stat-icons-container, .pssr-char-icons-container {
-                        gap: 4px !important;
-                        padding: 0 2px !important;
-                    }
-                    #btn-idol-possession-save {
-                        height: 24px !important;
-                        padding: 0 8px !important;
-                        font-size: 0.68rem !important;
-                        border-radius: 0 5px 5px 0 !important;
-                    }
-                    .possession-save-options-content {
-                        width: 270px !important;
-                        padding: 16px !important;
-                        gap: 8px !important;
-                        border-radius: 12px !important;
-                    }
-                    .possession-save-options-content .save-opt-title {
-                        font-size: 0.85rem !important;
-                        margin-top: 2px !important;
-                        margin-bottom: 2px !important;
-                    }
-                    .possession-save-options-content button.calc-btn {
-                        padding: 11px 8px !important;
-                        font-size: 0.65rem !important;
-                        border-radius: 6px !important;
-                        width: 90% !important;
-                    }
-                    .possession-save-options-content #btn-save-opt-close {
-                        font-size: 1rem !important;
-                        top: 4px !important;
-                        right: 4px !important;
-                    }
-                    .possession-save-options-content .save-opt-plan-btn {
-                        padding: 8px 2px !important;
-                        gap: 2px !important;
-                    }
-                    .possession-save-options-content .save-opt-plan-btn span {
-                        font-size: 0.48rem !important;
-                    }
-                    .possession-save-options-content .save-opt-plan-btn img {
-                        width: 9px !important;
-                        height: 9px !important;
-                    }
-                    .source-stat-circle-view svg circle {
-                        stroke-width: 3.5 !important;
-                    }
 
-                    .source-stacked-bar-segment {
-                        font-size: 0.45rem !important;
-                    }
-                    .source-stat-circle-label {
-                        font-size: 0.7rem !important;
-                    }
-                    .source-stat-circle-subtext {
-                        font-size: 0.6rem !important;
-                    }
-                    .source-stat-circle-subtext span:last-child {
-                        font-size: 0.52rem !important;
-                    }
-                    .source-stat-circle-wrapper {
-                        width: 62px !important;
-                        height: 62px !important;
-                    }
-                    body:not(.is-capturing) .radar-vertex-dot {
-                        display: none !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-plan-radars-wrapper {
-                        flex-direction: row !important;
-                        gap: 10px !important;
-                        flex-wrap: nowrap !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-plan-radar-container {
-                        height: 170px !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-plan-radar-container svg {
-                        width: 140px !important;
-                        height: 170px !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-plan-radar-container:first-child svg {
-                        margin-right: 0 !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-plan-radar-container:last-child svg {
-                        margin-left: 0 !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-radar-divider {
-                        width: 1px !important;
-                        min-width: 1px !important;
-                        flex: 0 0 1px !important;
-                        height: 130px !important;
-                        background-color: #f0f0f0 !important;
-                    }
-                    .pssr-stat-icons-container, .pssr-char-icons-container {
-                        gap: 4px !important;
-                        padding: 0 2px !important;
-                    }
-                    .pssr-stat-icons-row {
-                        gap: 4px !important;
-                    }
-                    .possession-title-date {
-                        display: none !important;
-                    }
-                    .possession-title-wrap {
-                        font-size: 1.05rem !important;
-                        gap: 6px !important;
-                    }
-                    .possession-title-icon {
-                        width: 30px !important;
-                        height: 30px !important;
-                        margin-bottom: -1px !important;
-                        margin-right: 6px !important;
-                    }
-                    #possession-header-line {
-                        margin-left: 15px !important;
-                        width: calc(100% - 15px) !important;
-                    }
-                    #btn-idol-possession-save {
-                        height: 28px !important;
-                        padding: 0 12px !important;
-                        font-size: 0.72rem !important;
-                        border-radius: 0 6px 6px 0 !important;
-                        font-weight: bold !important;
-                    }
-                    .possession-section-card {
-                        padding: 6px 8px !important;
-                        border-radius: 6px !important;
-                    }
-                    .char-stat-card {
-                        border-radius: 6px !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-xaxis-label img {
-                        width: 11px !important;
-                        height: 11px !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-char-toggle-group {
-                        height: 20px !important;
-                        border-radius: 4px !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-char-toggle-btn {
-                        font-size: 0.58rem !important;
-                        padding: 1px 6px !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-row-labels {
-                        padding-top: 0 !important;
-                        width: 50px !important;
-                        gap: 0 !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-row-header-spacer {
-                        height: 18px !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-row-label {
-                        height: 22px !important;
-                        border-left-width: 2px !important;
-                        justify-content: flex-start !important;
-                        padding-left: 6px !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-row-label img {
-                        width: 18px !important;
-                        height: 18px !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-row-sum-val {
-                        font-size: 0.58rem !important;
-                        margin-left: 3px !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-col-header {
-                        height: 18px !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-header-txt {
-                        font-size: 0.52rem !important;
-                    }
-                    body:not(.is-capturing) .heatmap-col-count-lbl {
-                        font-size: 0.44rem !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-col-header img {
-                        width: 14px !important;
-                        height: 14px !important;
-                    }
-
-                    body:not(.is-capturing) .possession-heatmap-cell {
-                        height: 22px !important;
-                        font-size: 0.38rem !important;
-                    }
-                    body:not(.is-capturing) .possession-heatmap-cell div {
-                        transform: scale(0.85);
-                    }
-
-                    .char-stat-details {
-                        padding: 8px 4px !important;
-                    }
-                    .char-stat-details > div {
-                        border-radius: 5px !important;
-                        padding: 10px 6px 6px 6px !important;
-                    }
-                    .pssr-stat-icons-container, .pssr-char-icons-container {
-                        padding: 0 4px !important;
-                        margin-top: 2px !important;
-                    }
-                    .idol-stats-overall-left-wrap {
-                        gap: 3px !important;
-                    }
-                    .idol-stats-overall-icon {
-                        width: 12px !important;
-                        height: 12px !important;
-                    }
-                    body:not(.is-capturing) .idol-stats-overall-rank-icon {
-                        height: 38px !important;
-                    }
-                    .idol-stats-overall-lbl {
-                        font-size: 0.68rem !important;
-                        white-space: nowrap !important;
-                    }
-                    .idol-stats-overall-chk {
-                        font-size: 0.52rem !important;
-                        margin-left: 2px !important;
-                        padding: 0px 6px !important;
-                        border-radius: 3px !important;
-                        height: 20px !important;
-                    }
-                    .idol-stats-overall-chk-group {
-                        border-radius: 3px !important;
-                        height: 20px !important;
-                    }
-                    .idol-stats-overall-chk input {
-                        width: 9px !important;
-                        height: 9px !important;
-                    }
-                    .idol-stats-overall-val {
-                        font-size: 0.76rem !important;
-                        white-space: nowrap !important;
-                        margin-top: 10px !important;
-                    }
-                    .idol-stats-plan-row {
-                        font-size: 0.5rem !important;
-                        gap: 1px !important;
-                    }
-                    .idol-stats-plan-fraction {
-                        font-size: 0.4rem !important;
-                    }
-                    .idol-stats-plan-row span.idol-plan-text {
-                        display: none !important;
-                    }
-                    .idol-stats-plan-row > span {
-                        white-space: nowrap !important;
-                        display: flex !important;
-                        align-items: center !important;
-                        gap: 1px !important;
-                    }
-                    .idol-stats-plan-row img {
-                        width: 12px !important;
-                        height: 12px !important;
-                    }
-                    .idol-stats-source-row {
-                        font-size: 0.5rem !important;
-                    }
-                    .idol-stats-source-fraction {
-                        font-size: 0.48rem !important;
-                        margin-left: 4px !important;
-                    }
-                    .idol-stats-source-label {
-                        width: 35px !important;
-                        font-size: 0.6rem !important;
-                    }
-                    .idol-stats-source-pct {
-                        font-size: 0.6rem !important;
-                    }
-                    .idol-stats-source-val-wrap {
-                        width: 50px !important;
-                    }
-                    .idol-stats-bar-val {
-                        font-size: 0.48rem !important;
-                        top: -10px !important;
-                    }
-                    .idol-stats-xaxis-label {
-                        font-size: 0.4rem !important;
-                    }
-                    .idol-stats-char-name-row {
-                        font-size: 0.65rem !important;
-                    }
-                    .idol-stats-char-fraction {
-                        font-size: 0.58rem !important;
-                    }
-                    .idol-stats-char-pct {
-                        font-size: 0.58rem !important;
-                        margin-left: auto !important;
-                    }
-                    /* Hide name + fraction by default for 4th rank and below on mobile when collapsed */
-                    .char-stat-card:not(.expanded):not([data-rank="1"]):not([data-rank="2"]):not([data-rank="3"]) .idol-stats-char-name-wrap {
-                        display: none !important;
-                    }
-                    .idol-stats-yaxis-label {
-                        font-size: 0.35rem !important;
-                        height: 40px !important;
-                        width: 10px !important;
-                        margin-right: 1px !important;
-                    }
-                    .idol-stats-chart-wrapper {
-                        height: 40px !important;
-                    }
-                    .idol-stats-xaxis-container {
-                        padding-left: 11px !important;
-                    }
-                    .idol-stats-chart-area-wrapper {
-                        max-width: 230px !important;
-                        margin: 0 auto !important;
-                    }
-                    .idol-stats-section-title {
-                        font-size: 0.78rem !important;
-                        margin-bottom: -10px !important;
-                    }
-                    .idol-stats-char-card {
-                        grid-template-columns: repeat(2, 1fr) !important;
-                        gap: 10px !important;
-                    }
-                    .char-stat-card {
-                        grid-column: span 1 !important;
-                    }
-                    .char-stat-card[data-rank="1"],
-                    .char-stat-card[data-rank="2"],
-                    .char-stat-card[data-rank="3"] {
-                        grid-column: span 2 !important;
-                    }
-                    .char-stat-card.expanded {
-                        grid-column: span 2 !important;
-                    }
-                    .idol-stats-plan-row-container {
-                        flex-wrap: nowrap !important;
-                        gap: 12px !important;
-                        justify-content: center !important;
-                    }
-                    .idol-stats-plan-card {
-                        padding: 6px 4px !important;
-                    }
-                    .idol-stats-plan-col {
-                        min-width: 0 !important;
-                        flex: 1 !important;
-                        max-width: 80px !important;
-                        padding: 4px 6px !important;
-                    }
-                    .idol-stats-plan-col > div:last-child {
-                        height: 8px !important;
-                    }
-                    #plan-stat-details .pssr-stat-icon-wrap,
-                    .pssr-stat-icon-wrap {
-                        width: 46px !important;
-                        height: 70px !important;
-                        border-radius: 0 9px 0 0 !important;
-                    }
-                    .pssr-stat-icon-box {
-                        border-radius: 0 9px 0 0 !important;
-                    }
-                    .pssr-char-badge {
-                        height: 12px !important;
-                        padding: 0 4px !important;
-                        font-size: 6px !important;
-                        font-weight: 700 !important;
-                        border: none !important;
-                        bottom: -1px !important;
-                        left: -1px !important;
-                        border-radius: 0 2px 0 0 !important;
-                    }
-
-                    .pssr-plan-badge {
-                        width: 16px !important;
-                        height: 16px !important;
-                        border: none !important;
-                        bottom: -1px !important;
-                        right: -1px !important;
-                        border-radius: 2px 2px 0 2px !important;
-                        padding: 1.5px !important;
-                    }
-                    #plan-stat-details {
-                        padding: 8px 2px !important;
-                    }
-                    #plan-stat-details .pssr-stat-icons-container {
-                        padding: 0 !important;
-                    }
-                    .plan-subgroup-col-left {
-                        padding: 2px 4px !important;
-                        gap: 3px !important;
-                    }
-                    .plan-subgroup-col-right {
-                        padding: 2px 4px !important;
-                        gap: 3px !important;
-                    }
-                    #plan-stat-details .pssr-stat-icons-container + div[style*="width: 1px"] {
-                        margin: 4px 0 !important;
-                    }
-                    .plan-subgroup-col-left > div:first-child, .plan-subgroup-col-right > div:first-child {
-                        margin-bottom: 2px !important;
-                    }
-                    #plan-stat-owned-group, #plan-stat-unowned-group {
-                        padding: 4px 4px !important;
-                        gap: 2px !important;
-                    }
-                    .plan-group-title {
-                        font-size: 0.6rem !important;
-                    }
-                    .pssr-stat-rate-pct {
-                        font-size: 0.55rem !important;
-                    }
-                    .pssr-stat-rate-fraction {
-                        font-size: 0.52rem !important;
-                    }
-                    body.is-capturing .pssr-stat-icon-wrap,
-                    body.is-capturing #plan-stat-details .pssr-stat-icon-wrap {
-                        width: 86px !important;
-                        height: 129px !important;
-                        border-radius: 0 18px 0 0 !important;
-                    }
-                    body.is-capturing .pssr-stat-icon-box {
-                        border-radius: 0 18px 0 0 !important;
-                    }
-                    body.is-capturing .pssr-stat-icon-box img {
-                        top: -15px !important;
-                    }
-                    body.is-capturing .pssr-char-badge {
-                        height: 22px !important;
-                        padding: 0 6px !important;
-                        font-size: 9px !important;
-                        font-weight: bold !important;
-                        border-radius: 0 4px 0 0 !important;
-                    }
-                    body.is-capturing .pssr-plan-badge {
-                        width: 26px !important;
-                        height: 26px !important;
-                        border-radius: 4px !important;
-                        padding: 3px !important;
-                    }
-                    body.is-capturing .pssr-stat-icons-container,
-                    body.is-capturing .pssr-char-icons-container {
-                        gap: 8px !important;
-                        margin-top: 10px !important;
-                        padding: 0 10px !important;
-                    }
-                    body.is-capturing .pssr-stat-icons-row {
-                        gap: 8px !important;
-                    }
-                    body.is-capturing .plan-subgroup-col-left {
-                        padding: 0px 6px 4px 4px !important;
-                    }
-                    body.is-capturing .plan-subgroup-col-right {
-                        padding: 0px 4px 4px 6px !important;
-                    }
-                    body.is-capturing .plan-group-title {
-                        font-size: 0.75rem !important;
-                    }
-                    body.is-capturing .pssr-stat-rate-pct {
-                        font-size: 0.65rem !important;
-                    }
-                    body.is-capturing .pssr-stat-rate-fraction {
-                        font-size: 0.58rem !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-headers {
-                        display: flex !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-divider {
-                        display: none !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-title-row {
-                        display: none !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-columns-row {
-                        display: flex !important;
-                        flex-wrap: wrap !important;
-                        justify-content: center !important;
-                        gap: 4px !important;
-                        width: 100% !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-col-left,
-                    body:not(.is-capturing) .plan-subgroup-col-right,
-                    body:not(.is-capturing) .plan-subgroup-col-left .pssr-stat-icons-container,
-                    body:not(.is-capturing) .plan-subgroup-col-right .pssr-stat-icons-container {
-                        display: contents !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-wrapper[data-active-subgroup="left"] .plan-subgroup-col-right {
-                        display: none !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-wrapper[data-active-subgroup="right"] .plan-subgroup-col-left {
-                        display: none !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-wrapper[data-plan="sense"] .plan-subgroup-header-btn.active {
-                        background-color: rgba(255, 77, 141, 0.2) !important;
-                        color: #ff4d8d !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-wrapper[data-plan="logic"] .plan-subgroup-header-btn.active {
-                        background-color: rgba(70, 164, 243, 0.2) !important;
-                        color: #46a4f3 !important;
-                    }
-                    body:not(.is-capturing) .plan-subgroup-wrapper[data-plan="anomaly"] .plan-subgroup-header-btn.active {
-                        background-color: rgba(255, 179, 0, 0.2) !important;
-                        color: #ffb300 !important;
-                    }
-                }
-            </style>
             <div id="idol-possession-stats-wrapper" style="display: flex; flex-direction: column; gap: 14px;">
                 <!-- Overall Stats Card -->
                 <div class="possession-section-card ${showOverallDetail ? 'show-detail' : ''}" data-is-overall="true" style="background: ${cardBg}; border: ${cardBorder}; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
