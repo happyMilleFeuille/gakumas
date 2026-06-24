@@ -1092,13 +1092,34 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             <svg viewBox="0 0 170 205" width="170" height="205" style="overflow: visible; display: block; margin: auto;">
                 <defs>
                     <filter id="glow-plan-sense" x="-30%" y="-30%" width="160%" height="160%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ff4d8d" flood-opacity="0.85" />
+                        <feMorphology operator="dilate" radius="0.8" in="SourceAlpha" result="expanded" />
+                        <feGaussianBlur stdDeviation="1.4" in="expanded" result="blurred" />
+                        <feFlood flood-color="#ff4d8d" flood-opacity="1" result="color" />
+                        <feComposite in="color" in2="blurred" operator="in" result="shadow" />
+                        <feMerge>
+                            <feMergeNode in="shadow" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
                     </filter>
                     <filter id="glow-plan-logic" x="-30%" y="-30%" width="160%" height="160%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#46a4f3" flood-opacity="0.85" />
+                        <feMorphology operator="dilate" radius="0.8" in="SourceAlpha" result="expanded" />
+                        <feGaussianBlur stdDeviation="1.4" in="expanded" result="blurred" />
+                        <feFlood flood-color="#46a4f3" flood-opacity="1" result="color" />
+                        <feComposite in="color" in2="blurred" operator="in" result="shadow" />
+                        <feMerge>
+                            <feMergeNode in="shadow" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
                     </filter>
                     <filter id="glow-plan-anomaly" x="-30%" y="-30%" width="160%" height="160%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ffb300" flood-opacity="0.85" />
+                        <feMorphology operator="dilate" radius="0.8" in="SourceAlpha" result="expanded" />
+                        <feGaussianBlur stdDeviation="1.4" in="expanded" result="blurred" />
+                        <feFlood flood-color="#ffb300" flood-opacity="1" result="color" />
+                        <feComposite in="color" in2="blurred" operator="in" result="shadow" />
+                        <feMerge>
+                            <feMergeNode in="shadow" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
                     </filter>
                 </defs>
                 <!-- Grid Triangles -->
@@ -1225,13 +1246,34 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             <svg viewBox="0 0 170 205" width="170" height="205" style="overflow: visible; display: block; margin: auto;">
                 <defs>
                     <filter id="glow-sub-sense" x="-30%" y="-30%" width="160%" height="160%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ff4d8d" flood-opacity="0.85" />
+                        <feMorphology operator="dilate" radius="1.2" in="SourceAlpha" result="expanded" />
+                        <feGaussianBlur stdDeviation="1.4" in="expanded" result="blurred" />
+                        <feFlood flood-color="#ff4d8d" flood-opacity="1" result="color" />
+                        <feComposite in="color" in2="blurred" operator="in" result="shadow" />
+                        <feMerge>
+                            <feMergeNode in="shadow" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
                     </filter>
                     <filter id="glow-sub-logic" x="-30%" y="-30%" width="160%" height="160%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#46a4f3" flood-opacity="0.85" />
+                        <feMorphology operator="dilate" radius="1.2" in="SourceAlpha" result="expanded" />
+                        <feGaussianBlur stdDeviation="1.4" in="expanded" result="blurred" />
+                        <feFlood flood-color="#46a4f3" flood-opacity="1" result="color" />
+                        <feComposite in="color" in2="blurred" operator="in" result="shadow" />
+                        <feMerge>
+                            <feMergeNode in="shadow" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
                     </filter>
                     <filter id="glow-sub-anomaly" x="-30%" y="-30%" width="160%" height="160%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#ffb300" flood-opacity="0.85" />
+                        <feMorphology operator="dilate" radius="1.2" in="SourceAlpha" result="expanded" />
+                        <feGaussianBlur stdDeviation="1.4" in="expanded" result="blurred" />
+                        <feFlood flood-color="#ffb300" flood-opacity="1" result="color" />
+                        <feComposite in="color" in2="blurred" operator="in" result="shadow" />
+                        <feMerge>
+                            <feMergeNode in="shadow" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
                     </filter>
                 </defs>
                 <!-- Grid Hexagons -->
