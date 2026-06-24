@@ -579,147 +579,6 @@ export function openIdolPossessionModal() {
                 position: relative;
             }
 
-            @media (max-width: 768px) {
-                body:not(.is-capturing) .idol-possession-content {
-                    width: 100% !important;
-                    max-width: 95% !important;
-                    min-width: 0 !important;
-                    padding: 14px 5px 12px 5px !important;
-                    gap: 12px !important;
-                    border-radius: 14px !important;
-                    --pssr-group-gap: 2px;
-                    --pssr-title-gap: 2px;
-                    --pssr-box-padding: 4px;
-                }
-                .idol-possession-title-wrap {
-                    font-size: 1.05rem !important;
-                    gap: 6px !important;
-                }
-                .possession-title-date {
-                    display: none !important;
-                }
-                .idol-possession-title-indicator {
-                    height: 16px !important;
-                }
-                .idol-possession-reset-btn {
-                    height: 28px !important;
-                    padding: 0 8px !important;
-                    font-size: 0.75rem !important;
-                    border-radius: 6px !important;
-                }
-                .idol-possession-scroll {
-                    gap: 14px !important;
-                    padding-left: 12px !important;
-                    padding-right: 12px !important;
-                }
-                .idol-possession-desc-banner {
-                    font-size: 0.75rem !important;
-                    line-height: 1.35 !important;
-                }
-                .char-section {
-                    gap: 3px !important;
-                }
-                .char-section-card {
-                    padding: 3px !important;
-                    border-radius: 5px !important;
-                    gap: 8px !important;
-                }
-                .char-section-title {
-                    font-size: 0.85rem !important;
-                    gap: 6px !important;
-                }
-                .char-section-icon {
-                    width: 18px !important;
-                    height: 18px !important;
-                }
-                .char-section-indicator {
-                    height: 12px !important;
-                }
-                .pssr-selection-grid {
-                    grid-template-columns: repeat(5, 1fr) !important;
-                    gap: 4px !important;
-                }
-                .pssr-card-thumb {
-                    width: 100% !important;
-                    height: 100px !important;
-                    border-radius: 4px !important;
-                }
-                .pssr-card-name {
-                    font-size: 0.35rem !important;
-                    margin-top: 1px !important;
-                    height: auto !important;
-                    line-height: 1.2 !important;
-                    width: 100% !important;
-                    word-break: break-all !important;
-                }
-                .pssr-check-badge {
-                    top: -3px !important;
-                    right: -3px !important;
-                    width: 14px !important;
-                    height: 14px !important;
-                    font-size: 0.5rem !important;
-                    border-width: 1px !important;
-                }
-                .idol-possession-confirm-btn {
-                    height: 36px !important;
-                    font-size: 0.85rem !important;
-                    border-radius: 8px !important;
-                }
-                .pssr-stat-icon-wrap {
-                    width: 35px !important;
-                    height: 52.5px !important;
-                    border-radius: 5px !important;
-                }
-                .pssr-stat-icon-box img {
-                    top: -6px !important;
-                }
-                .pssr-stat-icons-container, .pssr-char-icons-container {
-                    gap: 4px !important;
-                    padding: 0 2px !important;
-                }
-                #btn-idol-possession-save {
-                    height: 24px !important;
-                    padding: 0 8px !important;
-                    font-size: 0.68rem !important;
-                    border-radius: 0 5px 5px 0 !important;
-                }
-                .possession-save-options-content {
-                    width: 270px !important;
-                    padding: 16px !important;
-                    gap: 8px !important;
-                    border-radius: 12px !important;
-                }
-                .possession-save-options-content .save-opt-title {
-                    font-size: 0.85rem !important;
-                    margin-top: 2px !important;
-                    margin-bottom: 2px !important;
-                }
-                .possession-save-options-content button.calc-btn {
-                    padding: 11px 8px !important;
-                    font-size: 0.65rem !important;
-                    border-radius: 6px !important;
-                    width: 90% !important;
-                }
-                .possession-save-options-content #btn-save-opt-close {
-                    font-size: 1rem !important;
-                    top: 4px !important;
-                    right: 4px !important;
-                }
-                .possession-save-options-content .save-opt-plan-btn {
-                    padding: 8px 2px !important;
-                    gap: 2px !important;
-                }
-                .possession-save-options-content .save-opt-plan-btn span {
-                    font-size: 0.48rem !important;
-                }
-                .possession-save-options-content .save-opt-plan-btn img {
-                    width: 9px !important;
-                    height: 9px !important;
-                }
-                .source-stat-circle-view svg circle {
-                    stroke-width: 3.5 !important;
-                }
-            }
         </style>
         <div class="modal-content idol-possession-content">
             <!-- Selection View Header -->
@@ -2500,6 +2359,146 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             </style>
             <style id="idol-possession-mobile-styles">
                 @media (max-width: 768px) {
+                    body:not(.is-capturing) .idol-possession-content {
+                        width: 100% !important;
+                        max-width: 95% !important;
+                        min-width: 0 !important;
+                        padding: 14px 5px 12px 5px !important;
+                        gap: 12px !important;
+                        border-radius: 14px !important;
+                        --pssr-group-gap: 2px;
+                        --pssr-title-gap: 2px;
+                        --pssr-box-padding: 4px;
+                    }
+                    .idol-possession-title-wrap {
+                        font-size: 1.05rem !important;
+                        gap: 6px !important;
+                    }
+                    .possession-title-date {
+                        display: none !important;
+                    }
+                    .idol-possession-title-indicator {
+                        height: 16px !important;
+                    }
+                    .idol-possession-reset-btn {
+                        height: 28px !important;
+                        padding: 0 8px !important;
+                        font-size: 0.75rem !important;
+                        border-radius: 6px !important;
+                    }
+                    .idol-possession-scroll {
+                        gap: 14px !important;
+                        padding-left: 12px !important;
+                        padding-right: 12px !important;
+                    }
+                    .idol-possession-desc-banner {
+                        font-size: 0.75rem !important;
+                        line-height: 1.35 !important;
+                    }
+                    .char-section {
+                        gap: 3px !important;
+                    }
+                    .char-section-card {
+                        padding: 3px !important;
+                        border-radius: 5px !important;
+                        gap: 8px !important;
+                    }
+                    .char-section-title {
+                        font-size: 0.85rem !important;
+                        gap: 6px !important;
+                    }
+                    .char-section-icon {
+                        width: 18px !important;
+                        height: 18px !important;
+                    }
+                    .char-section-indicator {
+                        height: 12px !important;
+                    }
+                    .pssr-selection-grid {
+                        grid-template-columns: repeat(5, 1fr) !important;
+                        gap: 4px !important;
+                    }
+                    .pssr-card-thumb {
+                        width: 100% !important;
+                        height: 100px !important;
+                        border-radius: 4px !important;
+                    }
+                    .pssr-card-name {
+                        font-size: 0.35rem !important;
+                        margin-top: 1px !important;
+                        height: auto !important;
+                        line-height: 1.2 !important;
+                        width: 100% !important;
+                        word-break: break-all !important;
+                    }
+                    .pssr-check-badge {
+                        top: -3px !important;
+                        right: -3px !important;
+                        width: 14px !important;
+                        height: 14px !important;
+                        font-size: 0.5rem !important;
+                        border-width: 1px !important;
+                    }
+                    .idol-possession-confirm-btn {
+                        height: 36px !important;
+                        font-size: 0.85rem !important;
+                        border-radius: 8px !important;
+                    }
+                    .pssr-stat-icon-wrap {
+                        width: 35px !important;
+                        height: 52.5px !important;
+                        border-radius: 5px !important;
+                    }
+                    .pssr-stat-icon-box img {
+                        top: -6px !important;
+                    }
+                    .pssr-stat-icons-container, .pssr-char-icons-container {
+                        gap: 4px !important;
+                        padding: 0 2px !important;
+                    }
+                    #btn-idol-possession-save {
+                        height: 24px !important;
+                        padding: 0 8px !important;
+                        font-size: 0.68rem !important;
+                        border-radius: 0 5px 5px 0 !important;
+                    }
+                    .possession-save-options-content {
+                        width: 270px !important;
+                        padding: 16px !important;
+                        gap: 8px !important;
+                        border-radius: 12px !important;
+                    }
+                    .possession-save-options-content .save-opt-title {
+                        font-size: 0.85rem !important;
+                        margin-top: 2px !important;
+                        margin-bottom: 2px !important;
+                    }
+                    .possession-save-options-content button.calc-btn {
+                        padding: 11px 8px !important;
+                        font-size: 0.65rem !important;
+                        border-radius: 6px !important;
+                        width: 90% !important;
+                    }
+                    .possession-save-options-content #btn-save-opt-close {
+                        font-size: 1rem !important;
+                        top: 4px !important;
+                        right: 4px !important;
+                    }
+                    .possession-save-options-content .save-opt-plan-btn {
+                        padding: 8px 2px !important;
+                        gap: 2px !important;
+                    }
+                    .possession-save-options-content .save-opt-plan-btn span {
+                        font-size: 0.48rem !important;
+                    }
+                    .possession-save-options-content .save-opt-plan-btn img {
+                        width: 9px !important;
+                        height: 9px !important;
+                    }
+                    .source-stat-circle-view svg circle {
+                        stroke-width: 3.5 !important;
+                    }
+
                     .source-stacked-bar-segment {
                         font-size: 0.45rem !important;
                     }
