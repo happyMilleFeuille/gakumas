@@ -473,6 +473,16 @@ export const NORMAL_CONFIG = [
 // 한정 가챠 상세 설정
 export const LIMITED_CONFIG = [
     {
+        id: 'ssrkotone_gomywaylimited',
+        date: '2026-06-26',
+        bannerImg: 'idols/ssrkotone_gomywaylimited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrkotone_gomywaylimited', char: 'kotone' }],
+            sssr: ['visual_limitedanomaly5'],
+            sr_card: ['visual_srlimitedanomaly4']
+        }
+    },
+    {
         id: 'ssrsena_endlesslimited',
         date: '2026-03-09',
         bannerImg: 'idols/ssrsena_endlesslimited1.webp',

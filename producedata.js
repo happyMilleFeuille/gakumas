@@ -2342,6 +2342,27 @@ export const produceList = [
         }
     },
     {
+        id: "ssrkotone_gomywaylimited", name: "GO MY WAY!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.4, releasedAt: "2026-06-26",
+        item: {
+            name: "あこがれチャージャー",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
+        },
+        itemplus: {
+            desc: "지침이 전력일 경우\n✦ 전력 강화+35%\n✦ inlesson4",
+            desc_ja: "全力になった時、\n✦ 全力強化+35%\n✦ inlesson4",
+        },
+        card: {
+            name: "弱気じゃいられない！",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
+        },
+        cardplus: {
+            desc: "✦ use1\n✦ 이후 2회까지 전력 상태 해제 후 지침이 전력이 아닐 경우, fullpower10\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ use1\n✦ 以降2回まで、全力を解除後、非全力状態の場合、fullpower10\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
         id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "ユートピアへの誘い",

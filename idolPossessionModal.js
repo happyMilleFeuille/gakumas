@@ -984,6 +984,7 @@ export function openIdolPossessionModal() {
                     margin-bottom: -10px !important;
                 }
                 .idol-stats-char-card {
+                    display: grid !important;
                     grid-template-columns: repeat(2, 1fr) !important;
                     gap: 10px !important;
                 }
@@ -2744,23 +2745,44 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     width: 86px !important;
                     height: 129px !important;
                 }
-                .idol-stats-char-card {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 10px;
+                @media (min-width: 769px) {
+                    .idol-stats-char-card {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 10px;
+                    }
+                    .char-stat-card {
+                        grid-column: span 1;
+                    }
+                    .char-stat-card[data-rank="1"],
+                    .char-stat-card[data-rank="2"],
+                    .char-stat-card[data-rank="3"] {
+                        grid-column: span 3;
+                    }
+                    .char-stat-card.expanded {
+                        grid-column: span 3 !important;
+                    }
+                    .char-stat-card:not(.expanded):not([data-rank="1"]):not([data-rank="2"]):not([data-rank="3"]) .idol-stats-char-name-wrap > span:first-child {
+                        display: none !important;
+                    }
                 }
-                .char-stat-card {
-                    grid-column: span 1;
+                body.is-capturing .idol-stats-char-card {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 1fr) !important;
+                    gap: 10px !important;
                 }
-                .char-stat-card[data-rank="1"],
-                .char-stat-card[data-rank="2"],
-                .char-stat-card[data-rank="3"] {
-                    grid-column: span 3;
+                body.is-capturing .char-stat-card {
+                    grid-column: span 1 !important;
                 }
-                .char-stat-card.expanded {
+                body.is-capturing .char-stat-card[data-rank="1"],
+                body.is-capturing .char-stat-card[data-rank="2"],
+                body.is-capturing .char-stat-card[data-rank="3"] {
                     grid-column: span 3 !important;
                 }
-                .char-stat-card:not(.expanded):not([data-rank="1"]):not([data-rank="2"]):not([data-rank="3"]) .idol-stats-char-name-wrap > span:first-child {
+                body.is-capturing .char-stat-card.expanded {
+                    grid-column: span 3 !important;
+                }
+                body.is-capturing .char-stat-card:not(.expanded):not([data-rank="1"]):not([data-rank="2"]):not([data-rank="3"]) .idol-stats-char-name-wrap > span:first-child {
                     display: none !important;
                 }
                 .idol-stats-section-title {

@@ -43,6 +43,17 @@ export function renderPickupSelector(ui) {
             ui.gachaBgLayer.innerHTML = `
                 <div class="selector-bg-item ${isMulti ? 'unit-bg' : 'single-bg'}" style="background-image: url('${bgImg}');"></div>
             `;
+            if (bgImg.includes('idols/verygood/')) {
+                const img = new Image();
+                img.onerror = () => {
+                    const bgItem = ui.gachaBgLayer.querySelector('.selector-bg-item');
+                    if (bgItem) {
+                        const fallbackImg = bgImg.replace('idols/verygood/', 'idols/');
+                        bgItem.style.backgroundImage = `url('${fallbackImg}')`;
+                    }
+                };
+                img.src = bgImg;
+            }
         }
 
         ui.pickupSelector.innerHTML = `
@@ -400,7 +411,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
     } else if (type === 'limited') {
         currentCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -410,7 +421,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
     } else if (type === 'unit') {
         currentCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -420,7 +431,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
     } else if (type === 'fes') {
         currentCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -430,7 +441,7 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `${window.innerWidth > 768 ? 'idols/verygood' : 'idols'}/${pid}1.webp` : bannerImg;
+        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
     }
     return { currentCfg, favColor, displayName, bannerImg, bgImg };
 }

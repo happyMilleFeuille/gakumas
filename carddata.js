@@ -2335,6 +2335,28 @@ export const cardList = [
             ]
     },
     {
+        id: "visual_limitedanomaly5",
+        name: "오뎅, 지나갑니다~앗!",
+        name_ja: "おでん、通りま～すッ！",
+        type: "visual",
+        releasedAt: "2026-06-26",
+        plan: "anomaly",
+        have: "card_a",
+        attrs: ["fullpower"],
+        rarity: "SSR",
+        source: "limited",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "hpmax",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "visual_unitanomaly1",
         name: "어-떻게 되는 거야?",
         name_ja: "どーなちゃうの~?",
@@ -3987,6 +4009,28 @@ export const cardList = [
                 "supportrateup",
                 "class",
                 "test",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_srlimitedanomaly4",
+        name: "나른 하품 얼굴",
+        name_ja: "ゆるるんあくび顔",
+        type: "visual",
+        plan: "anomaly",
+        source: "limited",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["visual400"], stats: { visual: 10 }, target: "get", max: 2 }],
+        releasedAt: "2026-06-26",
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
