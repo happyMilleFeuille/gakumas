@@ -2349,8 +2349,8 @@ export const cardList = [
         abilities:
             [
                 "fixedparam",
-                "sp_lessonup",
                 "hpmax",
+                "supportrateup",
                 "hpmax",
                 "hpmax",
                 "event_paraup"
