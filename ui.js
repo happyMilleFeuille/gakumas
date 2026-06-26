@@ -1362,58 +1362,79 @@ function updateSupportGrid(container) {
         const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
         const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
 
-        // ability filter uses AND logic (must have all selected abilities)
-        const abilityMatch = (state.filters.ability.length === 0) || state.filters.ability.every(ab => {
-            if (ab === 'card_m') {
-                return card.have === 'card_m';
-            }
-            if (ab === 'card_a') {
-                return card.have === 'card_a';
-            }
-            if (ab === 'pitem_get') {
-                return card.item_effects && card.item_effects.some(eff => !eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
-            }
-            if (ab === 'pitem_get_drink') {
-                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('get_drink') : eff.target === 'get_drink');
-            }
-            if (ab === 'pitem_enhance') {
-                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('enhance') : eff.target === 'enhance');
-            }
-            if (ab === 'pitem_delete') {
-                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete') : eff.target === 'delete');
-            }
-            if (ab === 'pitem_delete_t') {
-                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete_t') : eff.target === 'delete_t');
-            }
-            if (ab === 'pitem_change') {
-                return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('change') : eff.target === 'change');
-            }
-            if (ab === 'pitem_copy') {
-                return card.item_effects && card.item_effects.some(eff => eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
-            }
-            if (ab === 'pitem_stats') {
-                return card.item_effects && card.item_effects.some(eff => eff.stats);
-            }
-            if (ab === 'pitem_ppoint') {
-                return card.item_effects && card.item_effects.some(eff => {
-                    if (!eff.targettext) return false;
-                    const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
-                    return targets.some(t => typeof t === 'string' && t.includes('ppoint'));
-                });
-            }
-            if (ab === 'pitem_hp') {
-                return card.item_effects && card.item_effects.some(eff => {
-                    if (!eff.targettext) return false;
-                    const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
-                    return targets.some(t => typeof t === 'string' && t.includes('hp'));
-                });
-            }
-            if (!card.abilities) return false;
-            if (ab === 'sp_lessonup') {
-                return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
-            }
-            return card.abilities.includes(ab);
-        });
+        // ability filter: Group A (main abilities) uses OR logic, while Group B/C (below the dividers) are left as is (AND logic with the rest)
+        const abilityMatch = (state.filters.ability.length === 0) || (() => {
+            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp'];
+            const supportCardKeys = ['card_m', 'card_a'];
+
+            const groupA = [];
+            const groupBC = [];
+
+            state.filters.ability.forEach(ab => {
+                if (pItemKeys.includes(ab) || supportCardKeys.includes(ab)) {
+                    groupBC.push(ab);
+                } else {
+                    groupA.push(ab);
+                }
+            });
+
+            const checkAbility = (ab) => {
+                if (ab === 'card_m') {
+                    return card.have === 'card_m';
+                }
+                if (ab === 'card_a') {
+                    return card.have === 'card_a';
+                }
+                if (ab === 'pitem_get') {
+                    return card.item_effects && card.item_effects.some(eff => !eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
+                }
+                if (ab === 'pitem_get_drink') {
+                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('get_drink') : eff.target === 'get_drink');
+                }
+                if (ab === 'pitem_enhance') {
+                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('enhance') : eff.target === 'enhance');
+                }
+                if (ab === 'pitem_delete') {
+                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete') : eff.target === 'delete');
+                }
+                if (ab === 'pitem_delete_t') {
+                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete_t') : eff.target === 'delete_t');
+                }
+                if (ab === 'pitem_change') {
+                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('change') : eff.target === 'change');
+                }
+                if (ab === 'pitem_copy') {
+                    return card.item_effects && card.item_effects.some(eff => eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
+                }
+                if (ab === 'pitem_stats') {
+                    return card.item_effects && card.item_effects.some(eff => eff.stats);
+                }
+                if (ab === 'pitem_ppoint') {
+                    return card.item_effects && card.item_effects.some(eff => {
+                        if (!eff.targettext) return false;
+                        const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
+                        return targets.some(t => typeof t === 'string' && t.includes('ppoint'));
+                    });
+                }
+                if (ab === 'pitem_hp') {
+                    return card.item_effects && card.item_effects.some(eff => {
+                        if (!eff.targettext) return false;
+                        const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
+                        return targets.some(t => typeof t === 'string' && t.includes('hp'));
+                    });
+                }
+                if (!card.abilities) return false;
+                if (ab === 'sp_lessonup') {
+                    return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
+                }
+                return card.abilities.includes(ab);
+            };
+
+            const matchA = groupA.length === 0 || groupA.some(ab => checkAbility(ab));
+            const matchBC = groupBC.length === 0 || groupBC.every(ab => checkAbility(ab));
+
+            return matchA && matchBC;
+        })();
 
         return planMatch && attrMatch && sourceMatch && rarityMatch && abilityMatch;
     });
