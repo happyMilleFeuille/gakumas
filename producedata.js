@@ -245,7 +245,7 @@ export const produceList = [
     { id: "ssrchina_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", releasedAt: "2025-08-29", source: "limited", another: true },
     { id: "ssrchina_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.3, releasedAt: "2026-02-27", another: true },
-    { id: "ssrchina_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrchina_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrchina_2nd", name: "매일, 발견적 스텝!", name_en: "Every steps are for discovery!", name_ja: "日々、発見的ステップ!", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4,
         item: {
@@ -443,7 +443,7 @@ export const produceList = [
     { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true, jumpTime2: 7.3 },
     { id: "ssrmao_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrmao_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrmao_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2,
         item: {
@@ -731,7 +731,7 @@ export const produceList = [
     { id: "ssrlilja_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrlilja_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrlilja_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.4, another: true },
-    { id: "ssrlilja_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrlilja_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrlilja_2nd", name: "극광", name_en: "Kyokkoo", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6,
         item: {
