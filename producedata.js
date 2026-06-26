@@ -245,7 +245,7 @@ export const produceList = [
     { id: "ssrchina_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", releasedAt: "2025-08-29", source: "limited", another: true },
     { id: "ssrchina_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.3, releasedAt: "2026-02-27", another: true },
-    { id: "ssrchina_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
+    { id: "ssrchina_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrchina_2nd", name: "매일, 발견적 스텝!", name_en: "Every steps are for discovery!", name_ja: "日々、発見的ステップ!", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4,
         item: {
@@ -343,7 +343,7 @@ export const produceList = [
     { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", source: "limited", another: true },
     { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
-    { id: "ssrsumika_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrsumika_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrsumika_2nd", name: "숨겼던 나", name_en: "Two Sides Of The Same Me", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2,
         item: {
@@ -830,7 +830,7 @@ export const produceList = [
     { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", source: "limited", another: true },
     { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
-    { id: "ssrhiro_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrhiro_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrhiro_2nd", name: "콘트라스트", name_en: "Contrast", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3,
         item: {
@@ -958,7 +958,7 @@ export const produceList = [
     { id: "ssrsena_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrsena_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-11-07", another: true },
     { id: "ssrsena_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2025-12-18", another: true },
-    { id: "ssrsena_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrsena_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22",
         item: {
