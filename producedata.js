@@ -46,7 +46,7 @@ export const produceList = [
     { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
     { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", jumpTime2: 7.1, source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
+    { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", jumpTime2: 7.7, source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
     { id: "ssrrinami_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true },
@@ -633,7 +633,7 @@ export const produceList = [
     { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", releasedAt: "2025-05-29", source: "limited", another: true, jumpTime2: 6.4 },
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
-    { id: "ssrtemari_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrtemari_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.6, another: true },
     {
         id: "ssrtemari_2nd", name: "아이비", name_en: "IVY", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3,
         item: {
@@ -904,7 +904,7 @@ export const produceList = [
     { id: "ssrtsubame_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
     { id: "ssrtsubame_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
     { id: "ssrtsubame_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.5, releasedAt: "2026-04-21", another: true },
-    { id: "ssrtsubame_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrtsubame_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.3, another: true },
 
 
     // --- 세나 SSR (PSSR) ---
