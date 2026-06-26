@@ -49,7 +49,7 @@ export const produceList = [
     { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", jumpTime2: 7.7, source: "limited", another: true },
     { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrrinami_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrrinami_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4,
         item: {
@@ -1134,7 +1134,7 @@ export const produceList = [
     { id: "ssrmisuzu_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-02-14", another: true },
     { id: "ssrmisuzu_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
     { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
-    { id: "ssrmisuzu_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-06-26", another: true },
+    { id: "ssrmisuzu_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.5 },
     {
         id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05",
         item: {
