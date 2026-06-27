@@ -154,6 +154,7 @@ export const guidePresets = {
                     ['{firstAttr}28p', '{secondAttr}28p', '{thirdAttr}20'],
                     ['{firstAttr}28p', '{secondAttr}28p', '{thirdAttr}20']
                 ],
+                manualDelete: { m: 5, a: 3, t: 0 },
                 weeks: {
                     '1': { value: '{firstAttrLesson}', opts: { sp: 'true' } },
                     '2': { value: 'class_nia', opts: { get_enhancedcard: 'true', selectedAttr: '{thirdAttr}' } },
