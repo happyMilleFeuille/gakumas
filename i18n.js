@@ -486,7 +486,7 @@ const translations = {
         calc_label_rental: "RENTAL",
         calc_label_bulk_reset: "一括初期化",
         calc_title_card_get: "カード獲得",
-        calc_title_support_recommend: "サポカ自動おすすめ",
+        calc_title_support_recommend: "サポカおすすめ",
         calc_title_sp_support_count: "SP発生率増加サポカ (件数)",
         calc_notice: "注意事項",
         calc_lock_current_cards: "装着中のカードを固定",

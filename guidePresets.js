@@ -3,8 +3,8 @@ import { state } from './state.js';
 import { idolData } from './calcData.js';
 
 const DEFAULT_DESCRIPTIONS = {
-    ko: '각 아이돌과 플랜에 맞는 스케줄을 제공합니다.\n서포트 카드 추천 기능과 함께 사용하시는 것을 권장합니다.\n※ 최고의 효율성을 보장하지 않습니다.',
-    ja: '各アイドルとプランに合わせたスケジュールを提供します。\nサポートカードおすすめ機能との併用を推奨します。\n※ 最高の効率を保証するものではありません。',
+    ko: '각 아이돌과 플랜에 맞는 스케줄을 제공합니다.\n서포트 카드 자동 추천과 함께 사용하는 것을 권장합니다.\n※ 최고의 효율성을 보장하지 않습니다.',
+    ja: '各アイドルとプランに合わせたスケジュールを提供します。\nサポートカードおすすめとの併用を推奨します。\n※ 最高の効率を保証するものではありません。',
     en: 'Provides a schedule suitable for each idol and plan.\nIt is recommended to use alongside the support card recommendation feature.\n* Maximum efficiency is not guaranteed.'
 };
 
