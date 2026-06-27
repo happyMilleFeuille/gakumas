@@ -7,6 +7,7 @@ import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
+import { getGuidePreset } from './guidePresets.js';
 import { pItemDescriptions, pItemSlots } from './pItemData.js';
 import { getTriggerCounts, calculateTotals, getNiaLessonStat, getHajimeLessonStat, getSupportPercentBonusForCard } from './calcLogic.js';
 import { calculateCardBonus } from './simulator-engine.js';
@@ -339,6 +340,7 @@ function bindIdolSelector(grid, refreshAll) {
 }
 
 function startWeeklyPlan(type) {
+    window._activePresetSlot = null; // 시나리오 전환 시 활성 프리셋 슬롯 선택 상태 초기화
     calcStore.init(type);
 
     const visibleIdolList = getVisibleIdolList(type);
@@ -1506,6 +1508,13 @@ function closePresetPanel() {
     if (previewEl) previewEl.style.display = 'none';
 }
 
+function getGuidePresetData(slotId = 'guide') {
+    const mode = calcStore.type;
+    const idol = calcStore.selectedIdol || 'saki';
+    const planType = calcStore.planType || 'sense';
+    return getGuidePreset(mode, idol, planType, slotId);
+}
+
 function renderPresetPreview(el) {
     if (window._activePresetSlot === undefined) window._activePresetSlot = null;
     const activeSlot = window._activePresetSlot;
@@ -1520,6 +1529,32 @@ function renderPresetPreview(el) {
     const fontSize = isMobile ? '0.55rem' : '0.65rem';
     const badgeFontSize = isMobile ? '0.4rem' : '0.5rem';
     const badgeOffset = isMobile ? '-3px' : '-2px';
+
+    // Guide Presets
+    {
+        const isGuideActive = activeSlot === 'guide';
+        const guideStyle = isGuideActive 
+            ? `border: 2px solid #8FDDBA;` 
+            : 'border: none;';
+        const guidePlan = calcStore.planType || 'sense';
+        const logicShift = guidePlan === 'logic' ? 'transform: translateX(-1px);' : '';
+        iconsHtml += `<div class="preset-circle-slot guide" data-slot="guide" style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; width: ${size}; height: ${size}; border-radius: 50%; box-sizing: border-box; ${guideStyle}" title="가이드 프리셋">
+            <img src="icons/${guidePlan}.webp" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%; ${logicShift}">
+            <span style="position: absolute; bottom: ${badgeOffset}; right: ${badgeOffset}; font-size: ${badgeFontSize}; background: #8FDDBA; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">G</span>
+        </div>`;
+
+        // HIF 전용 두 번째 가이드 프리셋 슬롯 추가
+        if (mode === 'hif') {
+            const isGuide2Active = activeSlot === 'guide2';
+            const guide2Style = isGuide2Active 
+                ? `border: 2px solid #8FDDBA;` 
+                : 'border: none;';
+            iconsHtml += `<div class="preset-circle-slot guide" data-slot="guide2" style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; width: ${size}; height: ${size}; border-radius: 50%; box-sizing: border-box; ${guide2Style}" title="가이드 프리셋 (댄스+드링크)">
+                <img src="icons/${guidePlan}.webp" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%; ${logicShift}">
+                <span style="position: absolute; bottom: ${badgeOffset}; right: ${badgeOffset}; font-size: ${badgeFontSize}; background: #8FDDBA; color: white; border-radius: 3px; padding: 0 2px; font-weight: bold; line-height: 1.2;">G2</span>
+            </div>`;
+        }
+    }
 
     for (let i = 1; i <= 15; i++) {
         const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${i}`);
@@ -1555,8 +1590,10 @@ function renderPresetPreview(el) {
     el.querySelectorAll('.preset-circle-slot').forEach(circle => {
         circle.onclick = (e) => {
             e.stopPropagation();
-            const slotId = parseInt(circle.dataset.slot);
+            const rawSlot = circle.dataset.slot;
+            const slotId = (rawSlot === 'guide' || rawSlot === 'guide2') ? rawSlot : parseInt(rawSlot);
             const container = document.getElementById('calc-preset-slots-container');
+
             if (window._activePresetSlot === slotId && container && container.style.display === 'flex') {
                 container.style.display = 'none';
                 window._activePresetSlot = null;
@@ -1580,10 +1617,14 @@ function renderCalcPresetSlots(container) {
     const idol = calcStore.selectedIdol || 'saki';
     let html = '';
 
-    const slotKey = `calc_preset_slot_${mode}_${idol}_${i}`;
-    const raw = localStorage.getItem(slotKey);
     let data = null;
-    try { if (raw) data = JSON.parse(raw); } catch (e) { }
+    if (i === 'guide' || i === 'guide2') {
+        data = getGuidePresetData(i);
+    } else {
+        const slotKey = `calc_preset_slot_${mode}_${idol}_${i}`;
+        const raw = localStorage.getItem(slotKey);
+        try { if (raw) data = JSON.parse(raw); } catch (e) { }
+    }
 
     const isMobile = window.innerWidth <= 768;
     const slotPad = isMobile ? '5px 7px' : '10px 12px';
@@ -1601,13 +1642,17 @@ function renderCalcPresetSlots(container) {
     if (data && data.calcState) {
         const idolIcon = `icons/idolicons/${data.calcState.selectedIdol || 'saki'}_c.png`;
         let customName = data.customName || `Slot ${i}`;
-        // Remove brackets prefix e.g., [SENSE]
-        customName = customName.replace(/^\[(SENSE|LOGIC|ANOMALY)\]\s*/i, '');
-        // Remove general prefix like SAKI-SENSE or SENSE or SAKI-SENSE 1
-        customName = customName.replace(/^(?:(?:SAKI|TEMARI|KOTONE|TSUBAME|MAO|LILJA|CHINA|SUMIKA|HIRO|SENA|MISUZU|UME|RINAMI)-(?:SENSE|LOGIC|ANOMALY)|(?:SENSE|LOGIC|ANOMALY))\s*/i, '');
-        // If the resulting name is empty or matches the slot index, make it a clean slot name
-        if (!customName.trim() || customName.trim() === String(i)) {
-            customName = `Slot ${i}`;
+        if (i === 'guide' || i === 'guide2') {
+            customName = data.customName;
+        } else {
+            // Remove brackets prefix e.g., [SENSE]
+            customName = customName.replace(/^\[(SENSE|LOGIC|ANOMALY)\]\s*/i, '');
+            // Remove general prefix like SAKI-SENSE or SENSE or SAKI-SENSE 1
+            customName = customName.replace(/^(?:(?:SAKI|TEMARI|KOTONE|TSUBAME|MAO|LILJA|CHINA|SUMIKA|HIRO|SENA|MISUZU|UME|RINAMI)-(?:SENSE|LOGIC|ANOMALY)|(?:SENSE|LOGIC|ANOMALY))\s*/i, '');
+            // If the resulting name is empty or matches the slot index, make it a clean slot name
+            if (!customName.trim() || customName.trim() === String(i)) {
+                customName = `Slot ${i}`;
+            }
         }
         const time = data.timestamp || '';
         const plan = data.calcState?.planType || 'sense';
@@ -1642,7 +1687,25 @@ function renderCalcPresetSlots(container) {
         }
 
         let statsHtml = '';
-        if (finalStats) {
+        if (i === 'guide' || i === 'guide2') {
+            const guideTextSize = isMobile ? '0.55rem' : '0.7rem';
+            const descText = data.description || '각 아이돌과 플랜에 맞는 일반적인 스케줄을 제공합니다.';
+            const lines = descText.split('\n');
+            let descHtml = '';
+            lines.forEach((line, idx) => {
+                const isLast = idx === lines.length - 1;
+                // 마지막 줄(경고문구)의 폰트 크기 축소 및 불투명도 조절
+                const style = isLast 
+                    ? `font-size: calc(${guideTextSize} - 1.5px); color: #94a3b8; margin-top: 3px; font-weight: 400;` 
+                    : `font-size: ${guideTextSize}; font-weight: 500; color: #64748b;`;
+                descHtml += `<span style="display: block; ${style} text-align: center; line-height: 1.35; letter-spacing: -0.2px; white-space: pre-wrap;">${line}</span>`;
+            });
+            statsHtml = `
+                <div style="border-top: 1px dashed #e2e8f0; margin-top: 6px; padding-top: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;">
+                    ${descHtml}
+                </div>
+            `;
+        } else if (finalStats) {
             const vo = Number(finalStats.vocal ?? 0);
             const da = Number(finalStats.dance ?? 0);
             const vi = Number(finalStats.visual ?? 0);
@@ -1730,18 +1793,24 @@ function renderCalcPresetSlots(container) {
                         </div>
                     </div>
                     <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
-                        <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
-                            <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
-                        </button>
-                        <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
-                            <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
-                        </button>
-                        <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
-                            <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
-                        </button>
-                        <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
-                            <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
-                        </button>
+                        ${(i === 'guide' || i === 'guide2') ? `
+                            <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
+                                <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
+                            </button>
+                        ` : `
+                            <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
+                                <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
+                            </button>
+                            <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
+                                <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
+                            </button>
+                            <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
+                                <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                            </button>
+                            <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
+                                <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
+                            </button>
+                        `}
                     </div>
                 </div>
                 ${statsHtml}
@@ -1979,13 +2048,21 @@ function saveCalcPreset(slotId, customName, container) {
 }
 
 function loadCalcPreset(slotId) {
-    if (!confirm(t('calc_preset_load_confirm', { slotId }))) return;
+    const isGuide = slotId === 'guide' || slotId === 'guide2';
+    const confirmSlotName = isGuide ? (state.currentLang === 'ko' ? '가이드' : 'Guide') : slotId;
+    if (!confirm(t('calc_preset_load_confirm', { slotId: confirmSlotName }))) return;
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
-    const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${slotId}`);
-    if (!raw) return;
+
     try {
-        const data = JSON.parse(raw);
+        let data = null;
+        if (isGuide) {
+            data = getGuidePresetData(slotId);
+        } else {
+            const raw = localStorage.getItem(`calc_preset_slot_${mode}_${idol}_${slotId}`);
+            if (!raw) return;
+            data = JSON.parse(raw);
+        }
         if (data && data.calcState) {
             const targetType = data.type || data.calcState.type || mode;
             // Merge preset state with current state to preserve other plans' skill & card selections
@@ -2029,6 +2106,53 @@ function loadCalcPreset(slotId) {
                         
                         data.calcState.planSkills = mergedSkills;
                         data.calcState.planCards = mergedCards;
+
+                        // Filter support cards checked status by their plan type to prevent overwriting other plans' support cards
+                        const presetCardChecked = data.calcState.cardChecked || {};
+                        const presetCardExtraChecked = data.calcState.cardExtraChecked || {};
+                        const presetCardEventChecked = data.calcState.cardEventChecked || {};
+
+                        const currentCardChecked = currentState.cardChecked || {};
+                        const currentCardExtraChecked = currentState.cardExtraChecked || {};
+                        const currentCardEventChecked = currentState.cardEventChecked || {};
+
+                        const mergedCardChecked = { ...presetCardChecked };
+                        const mergedCardExtraChecked = { ...presetCardExtraChecked };
+                        const mergedCardEventChecked = { ...presetCardEventChecked };
+
+                        const cardPlanMap = {};
+                        cardList.forEach(card => {
+                            if (card && card.id) {
+                                cardPlanMap[card.id] = card.plan;
+                            }
+                        });
+
+                        Object.keys(cardPlanMap).forEach(cardId => {
+                            const cardPlan = cardPlanMap[cardId];
+                            if (cardPlan && cardPlan !== 'free' && cardPlan !== targetPlan) {
+                                if (currentCardChecked[cardId] !== undefined) {
+                                    mergedCardChecked[cardId] = currentCardChecked[cardId];
+                                } else {
+                                    delete mergedCardChecked[cardId];
+                                }
+
+                                if (currentCardExtraChecked[cardId] !== undefined) {
+                                    mergedCardExtraChecked[cardId] = currentCardExtraChecked[cardId];
+                                } else {
+                                    delete mergedCardExtraChecked[cardId];
+                                }
+
+                                if (currentCardEventChecked[cardId] !== undefined) {
+                                    mergedCardEventChecked[cardId] = currentCardEventChecked[cardId];
+                                } else {
+                                    delete mergedCardEventChecked[cardId];
+                                }
+                            }
+                        });
+
+                        data.calcState.cardChecked = mergedCardChecked;
+                        data.calcState.cardExtraChecked = mergedCardExtraChecked;
+                        data.calcState.cardEventChecked = mergedCardEventChecked;
                     }
                 } catch (err) {
                     console.warn('Failed to merge current state with preset:', err);

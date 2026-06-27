@@ -495,7 +495,7 @@ const translations = {
         calc_notice_recommend_2: "(％)系サポートカードを2枚以上組み合わせた場合、ゲーム内と同様に獲得値ごとに切り捨ててから合算するため、リストに表示される該当サポートカードの数値に誤差が生じます。",
         calc_toast_recommend_require_schedule: "すべての週のスケジュールを選択してから実行してください。",
         calc_toast_recommend_applied: "おすすめの組み合わせが適用されました。",
-        calc_toast_reset_weeks: "週間スケジュールを初期화しました。",
+        calc_toast_reset_weeks: "週間スケジュールを初期化しました。",
         calc_confirm_reset_weeks: "本当に週間スケジュールを初期化しますか？",
         calc_reset_title: "リセット",
         calc_reset_desc: "リセットする項目を選択してください。",
