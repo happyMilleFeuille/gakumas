@@ -1564,10 +1564,10 @@ select.sort-select {
     padding: 10px 14px;
     border-radius: 8px;
     border: 2px solid var(--idol-theme-color, #ff4d8d);
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     white-space: normal;
     /* Allow wrapping */
-    min-width: 325px;
+    min-width: 400px;
     /* Wider for PC */
     z-index: 100010;
     opacity: 0;
