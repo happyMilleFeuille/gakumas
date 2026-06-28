@@ -759,6 +759,11 @@ export const cardList = [
         type: "vocal",
         plan: "anomaly",
         have: "item",
+        item_effects: [{
+            type: "inexam",
+            jp: "[vocal]ターン開始時、指針を変更した回数が4回以上の場合、\n✦ パラメータ上昇量増加25%（1ターン）\n✦ genki8\n✦ inlesson2",
+            kr: "[vocal]턴 개시 시 지침을 변경한 횟수가 4회 이상일 경우 \n✦ 파라미터 상승량 증가 25% (1턴)\n✦genki8\n✦ inlesson2"
+        }],
         releasedAt: "2025-09-08",
         rarity: "SSR",
         source: "limited",
@@ -2298,7 +2303,7 @@ export const cardList = [
         type: "visual",
         releasedAt: "2025-04-11",
         plan: "anomaly",
-        have: "item",
+        have: "card_m",
         rarity: "SSR",
         source: "limited",
         extra1: "param", extra2: "ranenhance",
