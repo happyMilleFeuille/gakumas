@@ -351,7 +351,7 @@ const translations = {
         calc_hif_eval_result: "계산 결과",
         calc_hif_eval_close: "닫기",
         btn_login_card: "구글 로그인",
-        desc_login_card: "구글 계정에 로그인합니다. 계정에는 서포카 데이터 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.",
+        desc_login_card: "구글 계정에 로그인합니다. 계정에는 서포카 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.",
         ui_logout_confirm: "로그아웃 하시겠습니까?"
     },
     ja: {
