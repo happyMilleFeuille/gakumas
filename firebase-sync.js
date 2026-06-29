@@ -65,7 +65,7 @@ window.addEventListener('syncStorageUpdated', () => {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         // 이미 동기화가 완료되어 리프레시된 세션이면 중복 작업 방지
-        if (sessionStorage.getItem('sync_loaded') === user.uid) {
+        if (localStorage.getItem('sync_loaded') === user.uid) {
             return;
         }
 
@@ -89,7 +89,7 @@ onAuthStateChanged(auth, async (user) => {
             }
 
             // 로드 완료 표시 후 화면 새로고침하여 분리된 세션 데이터로 UI 재적용
-            sessionStorage.setItem('sync_loaded', user.uid);
+            localStorage.setItem('sync_loaded', user.uid);
             window.location.reload();
         } catch (error) {
             console.error("클라우드 데이터 로드 실패:", error);
@@ -98,8 +98,8 @@ onAuthStateChanged(auth, async (user) => {
         }
     } else {
         // 로그아웃 시 온라인 세션 정보 제거 및 화면 리프레시를 통해 오프라인 기기 데이터로 원상 복구
-        if (sessionStorage.getItem('sync_loaded')) {
-            sessionStorage.removeItem('sync_loaded');
+        if (localStorage.getItem('sync_loaded')) {
+            localStorage.removeItem('sync_loaded');
             window.location.reload();
         }
     }

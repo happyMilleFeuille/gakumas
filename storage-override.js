@@ -10,10 +10,10 @@ const EXCLUDED_KEYS = [
 ];
 
 /**
- * 로그인 여부(세션 정보)에 따라 가상의 맵핑된 키 이름 반환 (네임스페이스 격리)
+ * 로그인 여부(영구 보관소 정보)에 따라 가상의 맵핑된 키 이름 반환 (네임스페이스 격리)
  */
 function getMappedKey(key) {
-    const sessionUid = sessionStorage.getItem('sync_loaded');
+    const sessionUid = localStorage.getItem('sync_loaded');
     if (sessionUid && !EXCLUDED_KEYS.some(ex => key.startsWith(ex))) {
         return `online_${sessionUid}_${key}`;
     }
@@ -33,7 +33,7 @@ localStorage.setItem = function(key, value) {
     originalSetItem.call(localStorage, mappedKey, value);
 
     // 쓰기가 발생했을 때 동기화 감지기(firebase-sync.js)에 이벤트를 전달
-    if (sessionStorage.getItem('sync_loaded') && !EXCLUDED_KEYS.some(ex => key.startsWith(ex))) {
+    if (localStorage.getItem('sync_loaded') && !EXCLUDED_KEYS.some(ex => key.startsWith(ex))) {
         window.dispatchEvent(new CustomEvent('syncStorageUpdated'));
     }
 };
@@ -44,7 +44,7 @@ localStorage.removeItem = function(key) {
     originalRemoveItem.call(localStorage, mappedKey);
 
     // 삭제가 발생했을 때 동기화 감지기에 이벤트를 전달
-    if (sessionStorage.getItem('sync_loaded') && !EXCLUDED_KEYS.some(ex => key.startsWith(ex))) {
+    if (localStorage.getItem('sync_loaded') && !EXCLUDED_KEYS.some(ex => key.startsWith(ex))) {
         window.dispatchEvent(new CustomEvent('syncStorageUpdated'));
     }
 };
