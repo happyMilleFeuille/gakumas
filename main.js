@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (user) {
                 if (titleEl) titleEl.textContent = user.displayName || '유저';
                 if (iconWrapEl) {
-                    iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover;" alt="Avatar">`;
+                    iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover; border: 1px solid var(--idol-theme-color);" alt="Avatar">`;
                 }
                 if (descEl) {
                     if (state.currentLang === 'ja') {
