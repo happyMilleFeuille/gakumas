@@ -33,6 +33,11 @@ localStorage.getItem = function(key) {
 };
 
 localStorage.setItem = function(key, value) {
+    // 로그인/로그아웃 전환 리프레시 중 발생하는 강제 데이터 저장을 무시 (데이터 오염 방지)
+    if (sessionStorage.getItem('is_syncing_reload') === 'true') {
+        return;
+    }
+
     const mappedKey = getMappedKey(key);
     originalSetItem.call(localStorage, mappedKey, value);
 
@@ -43,6 +48,11 @@ localStorage.setItem = function(key, value) {
 };
 
 localStorage.removeItem = function(key) {
+    // 로그인/로그아웃 전환 리프레시 중 발생하는 강제 데이터 저장을 무시
+    if (sessionStorage.getItem('is_syncing_reload') === 'true') {
+        return;
+    }
+
     const mappedKey = getMappedKey(key);
     originalRemoveItem.call(localStorage, mappedKey);
 

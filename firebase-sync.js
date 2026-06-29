@@ -63,6 +63,9 @@ window.addEventListener('syncStorageUpdated', () => {
 
 // 로그인 상태 변경 시 처리
 onAuthStateChanged(auth, async (user) => {
+    // 페이지 로드가 끝났으므로 새로고침 데이터 오염 방지 락 해제
+    sessionStorage.removeItem('is_syncing_reload');
+
     if (user) {
         // 이미 동기화가 완료되어 리프레시된 세션이면 중복 작업 방지
         if (localStorage.getItem('sync_loaded') === user.uid) {
@@ -88,7 +91,8 @@ onAuthStateChanged(auth, async (user) => {
                 console.log("구글 계정 영역이 비어 있습니다. 0부터 새로운 세션을 시작합니다.");
             }
 
-            // 로드 완료 표시 후 화면 새로고침하여 분리된 세션 데이터로 UI 재적용
+            // 새로고침 직전 데이터 오염 방지 락을 걸고 새로고침 수행
+            sessionStorage.setItem('is_syncing_reload', 'true');
             localStorage.setItem('sync_loaded', user.uid);
             window.location.reload();
         } catch (error) {
@@ -99,6 +103,7 @@ onAuthStateChanged(auth, async (user) => {
     } else {
         // 로그아웃 시 온라인 세션 정보 제거 및 화면 리프레시를 통해 오프라인 기기 데이터로 원상 복구
         if (localStorage.getItem('sync_loaded')) {
+            sessionStorage.setItem('is_syncing_reload', 'true');
             localStorage.removeItem('sync_loaded');
             window.location.reload();
         }
