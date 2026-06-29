@@ -352,7 +352,9 @@ const translations = {
         calc_hif_eval_close: "닫기",
         btn_login_card: "구글 로그인",
         desc_login_card: "구글 계정에 로그인합니다. 계정에는 서포카 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.",
-        ui_logout_confirm: "로그아웃 하시겠습니까?"
+        ui_logout_confirm: "로그아웃 하시겠습니까?",
+        desc_logout_card: "클릭하여 로그아웃합니다.",
+        ui_user_default: "유저"
     },
     ja: {
         btn_empty: "アイドル",
@@ -706,7 +708,9 @@ const translations = {
         calc_hif_eval_close: "閉じる",
         btn_login_card: "Google ログイン",
         desc_login_card: "Googleアカウントにログインします。アカウントにはサポカ設定や計算機プリセットなどのデータが保存されます。",
-        ui_logout_confirm: "ログアウトしますか？"
+        ui_logout_confirm: "ログアウトしますか？",
+        desc_logout_card: "クリックするとログアウトします。",
+        ui_user_default: "ユーザー"
     },
     en: {
         btn_empty: "Idols",
@@ -1057,7 +1061,9 @@ const translations = {
         calc_hif_eval_close: "Close",
         btn_login_card: "Google Sign-In",
         desc_login_card: "Log in to your Google account. Data such as support card settings and calculator presets will be saved to your account.",
-        ui_logout_confirm: "Are you sure you want to log out?"
+        ui_logout_confirm: "Are you sure you want to log out?",
+        desc_logout_card: "Click to log out.",
+        ui_user_default: "User"
     }
 };
 

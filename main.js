@@ -32,40 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const descEl = document.getElementById('home-auth-desc');
 
             if (user) {
-                if (titleEl) titleEl.textContent = user.displayName || '유저';
+                if (titleEl) titleEl.textContent = user.displayName || translate('ui_user_default', {}, '유저');
                 if (iconWrapEl) {
                     iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover; border: 1px solid var(--idol-theme-color);" alt="Avatar">`;
                 }
                 if (descEl) {
-                    if (state.currentLang === 'ja') {
-                        descEl.textContent = "クリックするとログアウトします。";
-                    } else if (state.currentLang === 'en') {
-                        descEl.textContent = "Click to log out.";
-                    } else {
-                        descEl.textContent = "클릭하여 로그아웃합니다.";
-                    }
+                    descEl.textContent = translate('desc_logout_card', {}, '클릭하여 로그아웃합니다.');
                 }
             } else {
                 if (titleEl) {
-                    if (state.currentLang === 'ja') {
-                        titleEl.textContent = "Google ログイン";
-                    } else if (state.currentLang === 'en') {
-                        titleEl.textContent = "Google Sign-In";
-                    } else {
-                        titleEl.textContent = "구글 로그인";
-                    }
+                    titleEl.textContent = translate('btn_login_card', {}, '구글 로그인');
                 }
                 if (iconWrapEl) {
                     iconWrapEl.innerHTML = `<img src="icons/user.svg" alt="User" class="quick-btn-icon">`;
                 }
                 if (descEl) {
-                    if (state.currentLang === 'ja') {
-                        descEl.textContent = "Googleアカウントにログインします。アカウントにはサポカ設定や計算機プリセットなどのデータが保存されます。";
-                    } else if (state.currentLang === 'en') {
-                        descEl.textContent = "Log in to your Google account. Data such as support card settings and calculator presets will be saved to your account.";
-                    } else {
-                        descEl.textContent = "구글 계정에 로그인합니다. 계정에는 서포카 데이터 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.";
-                    }
+                    descEl.textContent = translate('desc_login_card', {}, '구글 계정에 로그인합니다. 계정에는 서포카 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.');
                 }
             }
         }

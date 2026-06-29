@@ -16,7 +16,7 @@
     <meta name="robots" content="index,follow">
     <script>
         // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
-        const APP_VERSION = '1.5.7';
+        const APP_VERSION = '1.5.9';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
@@ -99,19 +99,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="stylesheet" href="css/base.css?v=1.5.7">
-    <link rel="stylesheet" href="css/idol.css?v=1.5.7">
-    <link rel="stylesheet" href="css/support.css?v=1.5.7">
-    <link rel="stylesheet" href="css/gacha.css?v=1.5.7">
-    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.5.7">
-    <link rel="stylesheet" href="css/gachalog.css?v=1.5.7">
-    <link rel="stylesheet" href="css/gacharates.css?v=1.5.7">
-    <link rel="stylesheet" href="css/gacha_anim.css?v=1.5.7">
-    <link rel="stylesheet" href="css/calc.css?v=1.5.7">
-    <link rel="stylesheet" href="css/stat-detail.css?v=1.5.7">
-    <link rel="stylesheet" href="css/memory.css?v=1.5.7">
-    <link rel="stylesheet" href="css/home.css?v=1.5.7">
-    <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.5.7">
+    <link rel="stylesheet" href="css/base.css?v=1.5.9">
+    <link rel="stylesheet" href="css/idol.css?v=1.5.9">
+    <link rel="stylesheet" href="css/support.css?v=1.5.9">
+    <link rel="stylesheet" href="css/gacha.css?v=1.5.9">
+    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.5.9">
+    <link rel="stylesheet" href="css/gachalog.css?v=1.5.9">
+    <link rel="stylesheet" href="css/gacharates.css?v=1.5.9">
+    <link rel="stylesheet" href="css/gacha_anim.css?v=1.5.9">
+    <link rel="stylesheet" href="css/calc.css?v=1.5.9">
+    <link rel="stylesheet" href="css/stat-detail.css?v=1.5.9">
+    <link rel="stylesheet" href="css/memory.css?v=1.5.9">
+    <link rel="stylesheet" href="css/home.css?v=1.5.9">
+    <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.5.9">
 
     <!-- Character Icon Preload for Performance -->
     <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
@@ -321,7 +321,7 @@
     </div>
 
 
-    <script type="module" src="main.js?v=1.5.7"></script>
+    <script type="module" src="main.js?v=1.5.9"></script>
 
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
@@ -416,7 +416,8 @@
                         <img src="icons/user.svg" alt="" class="quick-btn-icon" id="home-auth-icon">
                     </div>
                     <div class="quick-btn-text-wrap">
-                        <div class="quick-btn-desc" id="home-auth-desc" data-i18n="desc_login_card">구글 계정에 로그인합니다. 계정에는 서포카 데이터 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.</div>
+                        <div class="quick-btn-desc" id="home-auth-desc" data-i18n="desc_login_card">구글 계정에 로그인합니다. 계정에는
+                            서포카 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.</div>
                     </div>
                 </div>
             </button>
