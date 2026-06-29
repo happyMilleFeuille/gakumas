@@ -47,13 +47,13 @@ export function triggerCloudSave() {
             await setDoc(userDocRef, {
                 data: onlineData,
                 updatedAt: new Date().toISOString()
-            }, { merge: true });
+            }, { mergeFields: ["data", "updatedAt"] });
             
             console.log("구글 계정 클라우드 동기화 완료");
         } catch (error) {
             console.error("클라우드 저장 에러:", error);
         }
-    }, 10000); // 10초 대기 후 전송 (트래픽 최적화)
+    }, 3000); // 3초 대기 후 전송 (트래픽 최적화)
 }
 
 // storage-override.js에서 디스패치된 이벤트를 수신하여 자동 백업 실행
