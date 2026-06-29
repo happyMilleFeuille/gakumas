@@ -576,6 +576,293 @@ function startWeeklyPlan(type) {
                     refreshAll();
                 };
 
+                const openHifTestTooltip = (wrapper, weekNum) => {
+                    const val = 'test';
+                    // 기존에 열려있는 HIF 테스트 툴팁이 있다면 제거
+                    document.querySelectorAll('.hif-test-tooltip').forEach(t => t.remove());
+
+                    const isMobile = window.innerWidth <= 768;
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'hif-test-tooltip';
+                    tooltip.dataset.weekNum = weekNum; // 주차 정보 저장
+                    tooltip.style.backgroundColor = 'white';
+                    tooltip.style.padding = '12px';
+                    tooltip.style.borderRadius = '10px';
+                    tooltip.onclick = (te) => te.stopPropagation();
+
+                    const idolId = calcStore.selectedIdol;
+                    const idolColor = idolColors[idolId] || "#ff4d8d";
+                    tooltip.style.border = `1px solid ${idolColor}`;
+                    tooltip.style.cursor = 'default'; // 툴팁 내부에선 일반 커서 사용
+
+                    // 툴팁이 열려있는 동안은 아이콘이 커지지 않게 설정
+                    const originalTransform = wrapper.style.transform;
+                    const originalTransition = wrapper.style.transition;
+                    wrapper.style.transition = 'none'; // 즉시 크기가 돌아가도록 애니메이션 끄기
+                    wrapper.onmouseenter = () => { wrapper.style.transform = 'none'; };
+                    wrapper.onmouseleave = () => { wrapper.style.transform = 'none'; };
+                    wrapper.style.transform = 'none';
+
+                    const savedOpts = calcStore.weeks[weekNum].opts || {};
+                    const fields = [
+                        { key: 'hif_test_vocal', icon: 'vocal', color: '#ff4d8d', label: 'Vo' },
+                        { key: 'hif_test_dance', icon: 'dance', color: '#46a4f3', label: 'Da' },
+                        { key: 'hif_test_visual', icon: 'visual', color: '#fcc75e', label: 'Vi' }
+                    ];
+
+                    const maxTotals = { '7': 140, '13': 440, '20': 520 };
+                    const minTotals = { '7': 20, '13': 80, '20': 100 };
+                    const maxTotalVal = maxTotals[weekNum] || 0;
+                    const minVal = minTotals[weekNum] || 0;
+                    const isInitiallyPerc = savedOpts.hif_test_use_perc === 'true';
+
+                    // 최저치 깔아두기 적용 (% 제외 모드이고 최저치 설정이 있는 경우)
+                    if (!isInitiallyPerc && minVal > 0) {
+                        fields.forEach(field => {
+                            const curVal = savedOpts[field.key];
+                            if (curVal === undefined || curVal === null || (parseInt(curVal) || 0) < minVal) {
+                                savedOpts[field.key] = String(minVal);
+                                calcStore.updateWeekOpt(weekNum, field.key, minVal);
+                                wrapper.dataset[`opt${field.key}`] = String(minVal);
+                            }
+                        });
+                        updateMainLabel(wrapper);
+                    }
+
+                    const maxTotalText = maxTotalVal ? `<div class="hif-test-max-total" style="display: ${isInitiallyPerc ? 'none' : 'block'}; font-size:${isMobile ? '0.65rem' : '0.72rem'}; font-weight:bold; color:${idolColor}; text-align:center; margin-bottom: 2px;">${t('hif_test_max_total', { maxTotal: maxTotalVal })}</div>` : '';
+
+                    tooltip.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:${isMobile ? '6px' : '10px'}; min-width:${isMobile ? '160px' : '190px'};">
+                            ${maxTotalText}
+                            <div class="hif-test-desc" style="font-size:${isMobile ? '0.56rem' : '0.62rem'}; line-height:1.3; color:#666; text-align:center; max-width:${isMobile ? '180px' : '220px'};">
+                                ${t(savedOpts.hif_test_use_perc === 'true' ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc')}
+                            </div>
+                            <div style="display:grid; grid-template-columns:repeat(3, minmax(${isMobile ? '48px' : '58px'}, 1fr)); gap:${isMobile ? '6px' : '10px'}; align-items:start;">
+                            ${fields.map(field => `
+                                <label style="display:flex; flex-direction:column; align-items:center; gap:${isMobile ? '4px' : '6px'};">
+                                    <img src="icons/${field.icon}.webp" alt="${field.label}" style="width:${isMobile ? '15px' : '18px'}; height:${isMobile ? '15px' : '18px'};">
+                                    <input
+                                        type="number"
+                                        inputmode="numeric"
+                                        max="999"
+                                        class="hif-test-stat-input"
+                                        data-id="${field.key}"
+                                        value="${savedOpts[field.key] ?? minVal}"
+                                        placeholder="${minVal}"
+                                        style="width:${isMobile ? '48px' : '58px'}; border:1px solid ${field.color}55; border-radius:6px; padding:${isMobile ? '4px 5px' : '5px 6px'}; font-size:${isMobile ? '0.72rem' : '0.8rem'}; outline:none; text-align:center;"
+                                    >
+                                </label>
+                            `).join('')}
+                            </div>
+                            <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; width:100%;">
+                                <button class="hif-test-perc-btn" style="width:${isMobile ? '26px' : '30px'}; height:${isMobile ? '26px' : '30px'}; background:${savedOpts.hif_test_use_perc === 'true' ? idolColor : 'white'}; color:${savedOpts.hif_test_use_perc === 'true' ? 'white' : idolColor}; border:1px solid ${idolColor}; border-radius:50%; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">%</button>
+                                <button class="hif-test-complete-btn" style="flex:1; height:${isMobile ? '26px' : '30px'}; background:${idolColor}; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center;">${t('hif_test_complete')}</button>
+                            </div>
+                        </div>
+                    `;
+
+                    // 아이콘(wrapper)에 직접 추가하여 스크롤 시 완벽하게 따라가도록 설정
+                    const originalZ = wrapper.style.zIndex;
+                    const originalFilter = wrapper.style.filter; // 기존 필터 저장
+
+                    wrapper.style.zIndex = '50002'; // 다른 주차보다 위에 표시되도록
+                    wrapper.style.setProperty('filter', 'none', 'important'); // CSS의 drop-shadow 끄기
+                    wrapper.appendChild(tooltip);
+
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.left = '50%';
+                    tooltip.style.top = '50%';
+                    tooltip.style.transform = 'translate(-50%, -50%)';
+                    tooltip.style.width = 'max-content';
+                    tooltip.style.zIndex = '50001';
+
+                    // 완료 버튼 클릭 시에만 닫기
+                    tooltip.querySelector('.hif-test-complete-btn').onclick = (e) => {
+                        e.stopPropagation();
+
+                        const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                        if (!isPerc && minVal > 0) {
+                            // 완료 누를 때 최저치 미만인 값들을 최저치로 강제 보정
+                            tooltip.querySelectorAll('.hif-test-stat-input').forEach(inp => {
+                                let curVal = parseInt(inp.value) || 0;
+                                if (curVal < minVal) {
+                                    curVal = minVal;
+                                    inp.value = String(curVal);
+                                    calcStore.updateWeekOpt(weekNum, inp.dataset.id, curVal);
+                                    wrapper.dataset[`opt${inp.dataset.id}`] = String(curVal);
+                                }
+                            });
+                        }
+
+                        // 모든 입력값이 0인지 확인
+                        const inputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
+                        const allZero = inputs.every(input => (parseInt(input.value) || 0) === 0);
+
+                        if (allZero) {
+                            // 값이 없으면 선택 해제
+                            calcStore.setWeekAction(weekNum, 'none', {});
+                            wrapper.classList.remove('active');
+                            wrapper.style.filter = '';
+                            wrapper.style.borderColor = '';
+                            wrapper.style.boxShadow = '';
+                            wrapper.querySelectorAll('.sp-badge, .main-label-text, .class-attr-badge').forEach(el => el.remove());
+                            updateSPBadge(wrapper, calcStore.selectedIdol);
+                            updateMainLabel(wrapper);
+                        }
+
+                        tooltip.remove();
+                        wrapper.style.zIndex = originalZ;
+                        wrapper.style.filter = originalFilter;
+                        wrapper.style.transition = originalTransition;
+                        wrapper.style.transform = originalTransform;
+                        wrapper.onmouseenter = null;
+                        wrapper.onmouseleave = null;
+
+                        refreshAll();
+                    };
+
+                     // % 버튼 클릭 토글 로직 추가
+                    const percBtn = tooltip.querySelector('.hif-test-perc-btn');
+                    percBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        const isCurrentlyPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                        const nextState = !isCurrentlyPerc;
+
+                        calcStore.updateWeekOpt(weekNum, 'hif_test_use_perc', String(nextState));
+                        percBtn.style.background = nextState ? idolColor : 'white';
+                        percBtn.style.color = nextState ? 'white' : idolColor;
+
+                        // 설명 텍스트 업데이트
+                        const descEl = tooltip.querySelector('.hif-test-desc');
+                        if (descEl) {
+                            descEl.innerHTML = t(nextState ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc');
+                        }
+
+                        // 최대 총합 가리기/보여주기 토글
+                        const maxTotalEl = tooltip.querySelector('.hif-test-max-total');
+                        if (maxTotalEl) {
+                            maxTotalEl.style.display = nextState ? 'none' : 'block';
+                        }
+
+                        if (!nextState && maxTotalVal > 0) {
+                            // % 모드가 꺼질 때(제외 모드로 전환 시) 세 수치 합이 maxTotalVal을 넘지 않도록 조정
+                            const allInputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
+                            const order = ['hif_test_vocal', 'hif_test_dance', 'hif_test_visual'];
+                            
+                            // 1단계: 모든 수치를 일단 최소 minVal로 설정
+                            order.forEach(id => {
+                                const inp = allInputs.find(i => i.dataset.id === id);
+                                const curVal = parseInt(inp ? inp.value : 0) || 0;
+                                if (curVal < minVal) {
+                                    if (inp) inp.value = String(minVal);
+                                    calcStore.updateWeekOpt(weekNum, id, minVal);
+                                    wrapper.dataset[`opt${id}`] = String(minVal);
+                                }
+                            });
+
+                            // 2단계: 합이 maxTotalVal을 넘지 않도록 조절 (우선순위: Vocal -> Dance -> Visual)
+                            let budget = maxTotalVal;
+                            order.forEach((id, idx) => {
+                                const inp = allInputs.find(i => i.dataset.id === id);
+                                const curVal = parseInt(inp ? inp.value : 0) || 0;
+                                
+                                const remainingCount = order.length - 1 - idx;
+                                const reservedBudget = remainingCount * minVal;
+                                const maxAllowed = budget - reservedBudget;
+
+                                const newVal = Math.max(minVal, Math.min(curVal, maxAllowed));
+                                budget -= newVal;
+
+                                if (inp) {
+                                    inp.value = String(newVal);
+                                }
+                                calcStore.updateWeekOpt(weekNum, id, newVal);
+                                wrapper.dataset[`opt${id}`] = String(newVal);
+                            });
+                            updateMainLabel(wrapper);
+                        }
+
+                        refreshAll();
+                    };
+
+                    tooltip.querySelectorAll('input[type="number"]').forEach(input => {
+                        const syncValue = () => {
+                            const raw = input.value.trim();
+                            const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+
+                            if (raw === '') {
+                                calcStore.updateWeekOpt(weekNum, input.dataset.id, null);
+                                delete wrapper.dataset[`opt${input.dataset.id}`];
+                            } else {
+                                let num = Math.max(0, parseInt(raw) || 0);
+
+                                if (!isPerc && maxTotalVal > 0) {
+                                    // 단일 능력치 최대값 = 총합 - (나머지 두 속성 최저치의 합)
+                                    const maxAllowedForSingle = maxTotalVal - 2 * minVal;
+                                    num = Math.min(maxAllowedForSingle, num);
+                                    input.value = String(num);
+
+                                    // 다른 인풋들 자동 조절
+                                    const allInputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
+                                    const currentId = input.dataset.id;
+                                    const order = ['hif_test_vocal', 'hif_test_dance', 'hif_test_visual'];
+                                    const curIdx = order.indexOf(currentId);
+                                    const otherIds = [
+                                        order[(curIdx + 1) % 3], // next
+                                        order[(curIdx + 2) % 3]  // prev
+                                    ];
+
+                                    let budget = maxTotalVal - num;
+                                    otherIds.forEach((otherId, idx) => {
+                                        const otherInput = allInputs.find(inp => inp.dataset.id === otherId);
+                                        const otherVal = parseInt(otherInput ? otherInput.value : 0) || 0;
+                                        
+                                        const remainingCount = otherIds.length - 1 - idx;
+                                        const reservedBudget = remainingCount * minVal;
+                                        const maxAllowed = budget - reservedBudget;
+
+                                        const newOtherVal = Math.max(minVal, Math.min(otherVal, maxAllowed));
+                                        budget -= newOtherVal;
+
+                                        if (otherInput) {
+                                            otherInput.value = String(newOtherVal);
+                                        }
+                                        calcStore.updateWeekOpt(weekNum, otherId, newOtherVal);
+                                        wrapper.dataset[`opt${otherId}`] = String(newOtherVal);
+                                    });
+                                } else {
+                                    num = Math.min(999, num);
+                                    input.value = String(num);
+                                }
+
+                                calcStore.updateWeekOpt(weekNum, input.dataset.id, num);
+                                wrapper.dataset[`opt${input.dataset.id}`] = String(num);
+                            }
+                            updateMainLabel(wrapper);
+                            refreshAll();
+                        };
+
+                        input.addEventListener('input', syncValue);
+                        input.addEventListener('change', syncValue);
+
+                        // 포커스 아웃(blur) 시 최저치 미만인 경우 최저치로 강제 보정하는 로직
+                        input.addEventListener('blur', () => {
+                            const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                            if (!isPerc && minVal > 0) {
+                                let curVal = parseInt(input.value) || 0;
+                                if (curVal < minVal) {
+                                    curVal = minVal;
+                                    input.value = String(curVal);
+                                    calcStore.updateWeekOpt(weekNum, input.dataset.id, curVal);
+                                    wrapper.dataset[`opt${input.dataset.id}`] = String(curVal);
+                                    updateMainLabel(wrapper);
+                                    refreshAll();
+                                }
+                            }
+                        });
+                    });
+                };
+
                 board.onclick = (e) => {
                     const wrapper = e.target.closest('.plan-icon-wrapper');
                     if (!wrapper || e.target.closest('.calc-tooltip, .calc-sub-tooltip, .dist-btn')) return;
@@ -588,7 +875,7 @@ function startWeeklyPlan(type) {
                     calcStore.activeWeek = weekNum;
 
                     if (wrapper.classList.contains('active')) {
-                        calcStore.setWeekAction(weekNum, '', {});
+                        calcStore.setWeekAction(weekNum, '', calcStore.weeks[weekNum].opts);
                         wrapper.classList.remove('active');
                         Object.keys(wrapper.dataset).forEach(k => { if (k.startsWith('opt')) delete wrapper.dataset[k]; });
                         // [수정] 필터와 모든 스타일 초기화
@@ -606,8 +893,24 @@ function startWeeklyPlan(type) {
                             Object.keys(w.dataset).forEach(k => { if (k.startsWith('opt')) delete w.dataset[k]; });
                             w.querySelectorAll('.sp-badge, .main-label-text, .class-attr-badge').forEach(el => el.remove());
                         });
-                        calcStore.setWeekAction(weekNum, val, {});
+                        const savedOpts = calcStore.weeks[weekNum].opts || {};
+                        const cleanedOpts = {};
+                        if (val === 'test') {
+                            for (const k in savedOpts) {
+                                if (k.startsWith('hif_test_')) {
+                                    cleanedOpts[k] = savedOpts[k];
+                                }
+                            }
+                        } else if (val.startsWith('class_') || hifClassActionIds.includes(val)) {
+                            if (savedOpts.selectedAttr) cleanedOpts.selectedAttr = savedOpts.selectedAttr;
+                        } else if (val.startsWith('lesson')) {
+                            if (savedOpts.selectedSubAttr) cleanedOpts.selectedSubAttr = savedOpts.selectedSubAttr;
+                        }
+                        calcStore.setWeekAction(weekNum, val, cleanedOpts);
                         wrapper.classList.add('active');
+                        Object.keys(cleanedOpts).forEach(k => {
+                            wrapper.dataset[`opt${k}`] = cleanedOpts[k];
+                        });
 
                         if (wrapper.classList.contains('large-icon')) {
                             const idolColor = idolColors[calcStore.selectedIdol] || "#ff4d8d";
@@ -622,290 +925,7 @@ function startWeeklyPlan(type) {
 
                         const opts = activityOptions[val];
                         if (calcStore.type === 'hif' && val === 'test') {
-                            // 기존에 열려있는 HIF 테스트 툴팁이 있다면 제거
-                            document.querySelectorAll('.hif-test-tooltip').forEach(t => t.remove());
-
-                            const isMobile = window.innerWidth <= 768;
-                            const tooltip = document.createElement('div');
-                            tooltip.className = 'hif-test-tooltip';
-                            tooltip.dataset.weekNum = weekNum; // 주차 정보 저장
-                            tooltip.style.backgroundColor = 'white';
-                            tooltip.style.padding = '12px';
-                            tooltip.style.borderRadius = '10px';
-                            tooltip.onclick = (te) => te.stopPropagation();
-
-                            const idolId = calcStore.selectedIdol;
-                            const idolColor = idolColors[idolId] || "#ff4d8d";
-                            tooltip.style.border = `1px solid ${idolColor}`;
-                            tooltip.style.cursor = 'default'; // 툴팁 내부에선 일반 커서 사용
-
-                            // 툴팁이 열려있는 동안은 아이콘이 커지지 않게 설정
-                            const originalTransform = wrapper.style.transform;
-                            const originalTransition = wrapper.style.transition;
-                            wrapper.style.transition = 'none'; // 즉시 크기가 돌아가도록 애니메이션 끄기
-                            wrapper.onmouseenter = () => { wrapper.style.transform = 'none'; };
-                            wrapper.onmouseleave = () => { wrapper.style.transform = 'none'; };
-                            wrapper.style.transform = 'none';
-
-
-                            const savedOpts = calcStore.weeks[weekNum].opts || {};
-                            const fields = [
-                                { key: 'hif_test_vocal', icon: 'vocal', color: '#ff4d8d', label: 'Vo' },
-                                { key: 'hif_test_dance', icon: 'dance', color: '#46a4f3', label: 'Da' },
-                                { key: 'hif_test_visual', icon: 'visual', color: '#fcc75e', label: 'Vi' }
-                            ];
-
-                            const maxTotals = { '7': 140, '13': 440, '20': 520 };
-                            const minTotals = { '7': 20, '13': 80, '20': 100 };
-                            const maxTotalVal = maxTotals[weekNum] || 0;
-                            const minVal = minTotals[weekNum] || 0;
-                            const isInitiallyPerc = savedOpts.hif_test_use_perc === 'true';
-
-                            // 최저치 깔아두기 적용 (% 제외 모드이고 최저치 설정이 있는 경우)
-                            if (!isInitiallyPerc && minVal > 0) {
-                                fields.forEach(field => {
-                                    const curVal = savedOpts[field.key];
-                                    if (curVal === undefined || curVal === null || (parseInt(curVal) || 0) < minVal) {
-                                        savedOpts[field.key] = String(minVal);
-                                        calcStore.updateWeekOpt(weekNum, field.key, minVal);
-                                        wrapper.dataset[`opt${field.key}`] = String(minVal);
-                                    }
-                                });
-                                updateMainLabel(wrapper);
-                            }
-
-                            const maxTotalText = maxTotalVal ? `<div class="hif-test-max-total" style="display: ${isInitiallyPerc ? 'none' : 'block'}; font-size:${isMobile ? '0.65rem' : '0.72rem'}; font-weight:bold; color:${idolColor}; text-align:center; margin-bottom: 2px;">${t('hif_test_max_total', { maxTotal: maxTotalVal })}</div>` : '';
-
-                            tooltip.innerHTML = `
-                                <div style="display:flex; flex-direction:column; gap:${isMobile ? '6px' : '10px'}; min-width:${isMobile ? '160px' : '190px'};">
-                                    ${maxTotalText}
-                                    <div class="hif-test-desc" style="font-size:${isMobile ? '0.56rem' : '0.62rem'}; line-height:1.3; color:#666; text-align:center; max-width:${isMobile ? '180px' : '220px'};">
-                                        ${t(savedOpts.hif_test_use_perc === 'true' ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc')}
-                                    </div>
-                                    <div style="display:grid; grid-template-columns:repeat(3, minmax(${isMobile ? '48px' : '58px'}, 1fr)); gap:${isMobile ? '6px' : '10px'}; align-items:start;">
-                                    ${fields.map(field => `
-                                        <label style="display:flex; flex-direction:column; align-items:center; gap:${isMobile ? '4px' : '6px'};">
-                                            <img src="icons/${field.icon}.webp" alt="${field.label}" style="width:${isMobile ? '15px' : '18px'}; height:${isMobile ? '15px' : '18px'};">
-                                            <input
-                                                type="number"
-                                                inputmode="numeric"
-                                                max="999"
-                                                class="hif-test-stat-input"
-                                                data-id="${field.key}"
-                                                value="${savedOpts[field.key] ?? minVal}"
-                                                placeholder="${minVal}"
-                                                style="width:${isMobile ? '48px' : '58px'}; border:1px solid ${field.color}55; border-radius:6px; padding:${isMobile ? '4px 5px' : '5px 6px'}; font-size:${isMobile ? '0.72rem' : '0.8rem'}; outline:none; text-align:center;"
-                                            >
-                                        </label>
-                                    `).join('')}
-                                    </div>
-                                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; width:100%;">
-                                        <button class="hif-test-perc-btn" style="width:${isMobile ? '26px' : '30px'}; height:${isMobile ? '26px' : '30px'}; background:${savedOpts.hif_test_use_perc === 'true' ? idolColor : 'white'}; color:${savedOpts.hif_test_use_perc === 'true' ? 'white' : idolColor}; border:1px solid ${idolColor}; border-radius:50%; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">%</button>
-                                        <button class="hif-test-complete-btn" style="flex:1; height:${isMobile ? '26px' : '30px'}; background:${idolColor}; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center;">${t('hif_test_complete')}</button>
-                                    </div>
-                                </div>
-                            `;
-
-                            // 아이콘(wrapper)에 직접 추가하여 스크롤 시 완벽하게 따라가도록 설정
-                            const originalZ = wrapper.style.zIndex;
-                            const originalFilter = wrapper.style.filter; // 기존 필터 저장
-
-                            wrapper.style.zIndex = '50002'; // 다른 주차보다 위에 표시되도록
-                            wrapper.style.setProperty('filter', 'none', 'important'); // CSS의 drop-shadow 끄기
-                            wrapper.appendChild(tooltip);
-
-                            tooltip.style.position = 'absolute';
-                            tooltip.style.left = '50%';
-                            tooltip.style.top = '50%';
-                            tooltip.style.transform = 'translate(-50%, -50%)';
-                            tooltip.style.width = 'max-content';
-                            tooltip.style.zIndex = '50001';
-
-                            // 완료 버튼 클릭 시에만 닫기
-                            tooltip.querySelector('.hif-test-complete-btn').onclick = (e) => {
-                                e.stopPropagation();
-
-                                const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
-                                if (!isPerc && minVal > 0) {
-                                    // 완료 누를 때 최저치 미만인 값들을 최저치로 강제 보정
-                                    tooltip.querySelectorAll('.hif-test-stat-input').forEach(inp => {
-                                        let curVal = parseInt(inp.value) || 0;
-                                        if (curVal < minVal) {
-                                            curVal = minVal;
-                                            inp.value = String(curVal);
-                                            calcStore.updateWeekOpt(weekNum, inp.dataset.id, curVal);
-                                            wrapper.dataset[`opt${inp.dataset.id}`] = String(curVal);
-                                        }
-                                    });
-                                }
-
-                                // 모든 입력값이 0인지 확인
-                                const inputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
-                                const allZero = inputs.every(input => (parseInt(input.value) || 0) === 0);
-
-                                if (allZero) {
-                                    // 값이 없으면 선택 해제
-                                    calcStore.setWeekAction(weekNum, 'none', {});
-                                    wrapper.classList.remove('active');
-                                    wrapper.style.filter = '';
-                                    wrapper.style.borderColor = '';
-                                    wrapper.style.boxShadow = '';
-                                    wrapper.querySelectorAll('.sp-badge, .main-label-text, .class-attr-badge').forEach(el => el.remove());
-                                    updateSPBadge(wrapper, calcStore.selectedIdol);
-                                    updateMainLabel(wrapper);
-                                }
-
-                                tooltip.remove();
-                                wrapper.style.zIndex = originalZ;
-                                wrapper.style.filter = originalFilter;
-                                wrapper.style.transition = originalTransition;
-                                wrapper.style.transform = originalTransform;
-                                wrapper.onmouseenter = null;
-                                wrapper.onmouseleave = null;
-
-                                refreshAll();
-                            };
-
-                             // % 버튼 클릭 토글 로직 추가
-                            const percBtn = tooltip.querySelector('.hif-test-perc-btn');
-                            percBtn.onclick = (e) => {
-                                e.stopPropagation();
-                                const isCurrentlyPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
-                                const nextState = !isCurrentlyPerc;
-
-                                calcStore.updateWeekOpt(weekNum, 'hif_test_use_perc', String(nextState));
-                                percBtn.style.background = nextState ? idolColor : 'white';
-                                percBtn.style.color = nextState ? 'white' : idolColor;
-
-                                // 설명 텍스트 업데이트
-                                const descEl = tooltip.querySelector('.hif-test-desc');
-                                if (descEl) {
-                                    descEl.innerHTML = t(nextState ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc');
-                                }
-
-                                // 최대 총합 가리기/보여주기 토글
-                                const maxTotalEl = tooltip.querySelector('.hif-test-max-total');
-                                if (maxTotalEl) {
-                                    maxTotalEl.style.display = nextState ? 'none' : 'block';
-                                }
-
-                                if (!nextState && maxTotalVal > 0) {
-                                    // % 모드가 꺼질 때(제외 모드로 전환 시) 세 수치 합이 maxTotalVal을 넘지 않도록 조정
-                                    const allInputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
-                                    const order = ['hif_test_vocal', 'hif_test_dance', 'hif_test_visual'];
-                                    
-                                    // 1단계: 모든 수치를 일단 최소 minVal로 설정
-                                    order.forEach(id => {
-                                        const inp = allInputs.find(i => i.dataset.id === id);
-                                        const curVal = parseInt(inp ? inp.value : 0) || 0;
-                                        if (curVal < minVal) {
-                                            if (inp) inp.value = String(minVal);
-                                            calcStore.updateWeekOpt(weekNum, id, minVal);
-                                            wrapper.dataset[`opt${id}`] = String(minVal);
-                                        }
-                                    });
-
-                                    // 2단계: 합이 maxTotalVal을 넘지 않도록 조절 (우선순위: Vocal -> Dance -> Visual)
-                                    let budget = maxTotalVal;
-                                    order.forEach((id, idx) => {
-                                        const inp = allInputs.find(i => i.dataset.id === id);
-                                        const curVal = parseInt(inp ? inp.value : 0) || 0;
-                                        
-                                        const remainingCount = order.length - 1 - idx;
-                                        const reservedBudget = remainingCount * minVal;
-                                        const maxAllowed = budget - reservedBudget;
-
-                                        const newVal = Math.max(minVal, Math.min(curVal, maxAllowed));
-                                        budget -= newVal;
-
-                                        if (inp) {
-                                            inp.value = String(newVal);
-                                        }
-                                        calcStore.updateWeekOpt(weekNum, id, newVal);
-                                        wrapper.dataset[`opt${id}`] = String(newVal);
-                                    });
-                                    updateMainLabel(wrapper);
-                                }
-
-                                refreshAll();
-                            };
-
-                            tooltip.querySelectorAll('input[type="number"]').forEach(input => {
-                                const syncValue = () => {
-                                    const raw = input.value.trim();
-                                    const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
-
-                                    if (raw === '') {
-                                        calcStore.updateWeekOpt(weekNum, input.dataset.id, null);
-                                        delete wrapper.dataset[`opt${input.dataset.id}`];
-                                    } else {
-                                        let num = Math.max(0, parseInt(raw) || 0);
-
-                                        if (!isPerc && maxTotalVal > 0) {
-                                            // 단일 능력치 최대값 = 총합 - (나머지 두 속성 최저치의 합)
-                                            const maxAllowedForSingle = maxTotalVal - 2 * minVal;
-                                            num = Math.min(maxAllowedForSingle, num);
-                                            input.value = String(num);
-
-                                            // 다른 인풋들 자동 조절
-                                            const allInputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
-                                            const currentId = input.dataset.id;
-                                            const order = ['hif_test_vocal', 'hif_test_dance', 'hif_test_visual'];
-                                            const curIdx = order.indexOf(currentId);
-                                            const otherIds = [
-                                                order[(curIdx + 1) % 3], // next
-                                                order[(curIdx + 2) % 3]  // prev
-                                            ];
-
-                                            let budget = maxTotalVal - num;
-                                            otherIds.forEach((otherId, idx) => {
-                                                const otherInput = allInputs.find(inp => inp.dataset.id === otherId);
-                                                const otherVal = parseInt(otherInput ? otherInput.value : 0) || 0;
-                                                
-                                                const remainingCount = otherIds.length - 1 - idx;
-                                                const reservedBudget = remainingCount * minVal;
-                                                const maxAllowed = budget - reservedBudget;
-
-                                                const newOtherVal = Math.max(minVal, Math.min(otherVal, maxAllowed));
-                                                budget -= newOtherVal;
-
-                                                if (otherInput) {
-                                                    otherInput.value = String(newOtherVal);
-                                                }
-                                                calcStore.updateWeekOpt(weekNum, otherId, newOtherVal);
-                                                wrapper.dataset[`opt${otherId}`] = String(newOtherVal);
-                                            });
-                                        } else {
-                                            num = Math.min(999, num);
-                                            input.value = String(num);
-                                        }
-
-                                        calcStore.updateWeekOpt(weekNum, input.dataset.id, num);
-                                        wrapper.dataset[`opt${input.dataset.id}`] = String(num);
-                                    }
-                                    updateMainLabel(wrapper);
-                                    refreshAll();
-                                };
-
-                                input.addEventListener('input', syncValue);
-                                input.addEventListener('change', syncValue);
-
-                                // 포커스 아웃(blur) 시 최저치 미만인 경우 최저치로 강제 보정하는 로직
-                                input.addEventListener('blur', () => {
-                                    const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
-                                    if (!isPerc && minVal > 0) {
-                                        let curVal = parseInt(input.value) || 0;
-                                        if (curVal < minVal) {
-                                            curVal = minVal;
-                                            input.value = String(curVal);
-                                            calcStore.updateWeekOpt(weekNum, input.dataset.id, curVal);
-                                            wrapper.dataset[`opt${input.dataset.id}`] = String(curVal);
-                                            updateMainLabel(wrapper);
-                                            refreshAll();
-                                        }
-                                    }
-                                });
-                            });
+                            openHifTestTooltip(wrapper, weekNum);
                         } else if (opts?.length > 0) {
                             const tooltip = document.createElement('div');
                             const isClass = val === 'class_hajime' || val === 'class_nia' || hifClassActionIds.includes(val);

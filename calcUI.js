@@ -991,6 +991,10 @@ export function updateMainLabel(w) {
 
     const weekNum = w.closest('.week-row')?.dataset.week;
     const week = weekNum ? calcStore.weeks[weekNum] : null;
+    if (!week || week.value !== w.dataset.value) {
+        return;
+    }
+
     const savedOpts = week ? week.opts : {};
 
     if (calcStore.type === 'hif' && w.dataset.value === 'test') {
