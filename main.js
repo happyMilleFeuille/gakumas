@@ -1,9 +1,12 @@
 // main.js
+import './storage-override.js';
 import { state, setLanguage } from './state.js';
 import { updatePageTranslations, initMobileHeightFix } from './utils.js';
 import { handleNavigation } from './router.js';
 import { renderSupport, updateGlobalBackgroundColor, preloadSupportImages, preloadCalcImages } from './ui.js';
 import { renderGacha } from './gacha.js';
+import { loginWithGoogle, logout, auth, onAuthStateChanged } from './firebase-auth.js';
+import './firebase-sync.js';
 
 // Idol Grid Drag-to-Scroll Implementation (글로벌 스코프로 이동하여 에러 방지)
 let isDown = false;
@@ -11,6 +14,93 @@ let startX;
 let scrollLeft;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // [구글 로그인 예외 처리 핸들러]
+    const handleLoginError = (err) => {
+        if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+            return; // 사용자가 창을 닫은 경우 조용히 처리
+        }
+        alert("로그인 실패: " + err.message);
+    };
+
+    // [구글 로그인 UI 동기화 및 이벤트 바인딩]
+    const updateAuthUI = (user) => {
+        // 1. 홈 카드형 버튼 업데이트
+        const homeAuthBtn = document.getElementById('home-auth-btn');
+        if (homeAuthBtn) {
+            const titleEl = document.getElementById('home-auth-title');
+            const iconWrapEl = document.getElementById('home-auth-icon-wrap');
+            const descEl = document.getElementById('home-auth-desc');
+
+            if (user) {
+                if (titleEl) titleEl.textContent = user.displayName || '유저';
+                if (iconWrapEl) {
+                    iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover;" alt="Avatar">`;
+                }
+                if (descEl) {
+                    if (state.currentLang === 'ja') {
+                        descEl.textContent = "クリックするとログアウトします。";
+                    } else if (state.currentLang === 'en') {
+                        descEl.textContent = "Click to log out.";
+                    } else {
+                        descEl.textContent = "클릭하면 로그아웃합니다.";
+                    }
+                }
+            } else {
+                if (titleEl) {
+                    if (state.currentLang === 'ja') {
+                        titleEl.textContent = "Google ログイン";
+                    } else if (state.currentLang === 'en') {
+                        titleEl.textContent = "Google Sign-In";
+                    } else {
+                        titleEl.textContent = "구글 로그인";
+                    }
+                }
+                if (iconWrapEl) {
+                    iconWrapEl.innerHTML = `<img src="icons/user.svg" alt="User" class="quick-btn-icon">`;
+                }
+                if (descEl) {
+                    if (state.currentLang === 'ja') {
+                        descEl.textContent = "Googleログインでサポートカードデータの設定や計算機のプリセットなどを連携します。";
+                    } else if (state.currentLang === 'en') {
+                        descEl.textContent = "Link your support card data settings and calculator presets via Google Login.";
+                    } else {
+                        descEl.textContent = "구글 로그인으로 서포카 데이터 설정 및 계산기 프리셋 등을 연동합니다.";
+                    }
+                }
+            }
+        }
+
+        // 2. PC 전용 하단 네비게이션 바 로그인 버튼 업데이트
+        const navAuthBtn = document.getElementById('nav-auth-btn');
+        if (navAuthBtn) {
+            if (user) {
+                navAuthBtn.classList.add('logged-in');
+                navAuthBtn.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="btn-icon" style="border-radius: 50%; object-fit: cover;" alt="Avatar">`;
+            } else {
+                navAuthBtn.classList.remove('logged-in');
+                navAuthBtn.innerHTML = `<img src="icons/user.svg" alt="User" class="btn-icon">`;
+            }
+        }
+    };
+
+    // PC 전용 하단 네비게이션 바 로그인 버튼 클릭 이벤트 바인딩
+    const navAuthBtn = document.getElementById('nav-auth-btn');
+    if (navAuthBtn) {
+        navAuthBtn.addEventListener('click', () => {
+            if (auth.currentUser) {
+                if (confirm("로그아웃 하시겠습니까?")) {
+                    logout();
+                }
+            } else {
+                loginWithGoogle().catch(handleLoginError);
+            }
+        });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        updateAuthUI(user);
+    });
+
     // 1. 요소 선택
     const langSelect = document.getElementById('lang-select');
     const langOptions = document.getElementById('lang-options');
@@ -75,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         syncLangControl();
         // 가챠 탭이 아닐 때만 일반 배경 적용 (가챠 탭은 자체 픽업 배경 로직 사용)
         const isGachaView = document.querySelector('.gacha-container');
+        updateAuthUI(auth.currentUser);
     };
 
     // 초기 실행
@@ -129,7 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
             closeLangDropdown();
 
             if (document.querySelector('.pssr-roadmap-container')) {
-                import('./ui.js').then(m => m.renderHome());
+                import('./ui.js').then(m => {
+                    m.renderHome();
+                    updateAuthUI(auth.currentUser);
+                });
             }
             if (document.querySelector('.support-grid')) {
                 renderSupport();
@@ -156,6 +250,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         const quickBtn = e.target.closest('.home-quick-btn');
         if (quickBtn) {
+            if (quickBtn.id === 'home-auth-btn') {
+                if (auth.currentUser) {
+                    if (confirm("로그아웃 하시겠습니까?")) {
+                        logout();
+                    }
+                } else {
+                    loginWithGoogle().catch(handleLoginError);
+                }
+                return;
+            }
+
             const target = quickBtn.dataset.target;
             if (target === 'idol-stats') {
                 import('./idolPossessionModal.js').then(m => m.openIdolPossessionModal());

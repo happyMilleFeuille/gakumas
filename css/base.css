@@ -654,3 +654,71 @@ body.gacha-result-active .button-group.horizontal {
     100% { transform: scale(0.95); opacity: 0.9; }
 }
 
+
+
+/* --- PC-only Navigation Login Button --- */
+@media (max-width: 768px) {
+    .pc-only-btn {
+        display: none !important;
+    }
+}
+
+/* --- PC-only Navigation Auth Button Right Align --- */
+@media (min-width: 769px) {
+    #nav-auth-btn.pc-only-btn {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.3); /* 배경색을 한층 더 진한 회색으로 조정 */
+        border: 2px solid transparent;
+        box-shadow: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        z-index: 10010;
+    }
+
+    /* 로그인 전 호버: 배경을 더 진하게 처리 */
+    #nav-auth-btn.pc-only-btn:hover {
+        background: rgba(0, 0, 0, 0.45);
+    }
+
+    /* 로그인 후 상태: 테두리 및 흰색 배경 노출 */
+    #nav-auth-btn.pc-only-btn.logged-in {
+        background: rgba(255, 255, 255, 0.96);
+        border: 2px solid var(--idol-theme-color, var(--primary-color));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 로그인 후 호버: 배경과 테두리를 메인 테마색으로 반전 */
+    #nav-auth-btn.pc-only-btn.logged-in:hover {
+        background: var(--idol-theme-color, var(--primary-color));
+        border-color: var(--idol-theme-color, var(--primary-color));
+        transform: translateY(-50%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    #nav-auth-btn.pc-only-btn .btn-icon {
+        width: 28px;
+        height: 28px;
+        margin: 0;
+        filter: brightness(0) invert(1); /* 아이콘 이미지를 흰색으로 색칠 */
+    }
+
+    /* 로그인 후에만 100% 꽉 차게 프로필 이미지 노출 (필터 제거) */
+    #nav-auth-btn.pc-only-btn.logged-in img.btn-icon {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: none; /* 로그인 후에는 프로필 원본 색상 노출 */
+    }
+}
+

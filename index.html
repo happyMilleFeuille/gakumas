@@ -16,7 +16,7 @@
     <meta name="robots" content="index,follow">
     <script>
         // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
-        const APP_VERSION = '1.5.1';
+        const APP_VERSION = '1.5.4';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
@@ -40,7 +40,8 @@
                 'currency.js', 'gacha-assets.js', 'gacha-drawer.js', 'calcData.js',
                 'calcEvents.js', 'calcLogic.js', 'calcModals.js', 'calcOptions.js',
                 'calcRecommend.js', 'calcUI.js', 'gacha-ui-render.js', 'gacha-utils.js',
-                'pssrInfoModal.js', 'possessionModal.js', 'idolPossessionModal.js'
+                'pssrInfoModal.js', 'possessionModal.js', 'idolPossessionModal.js',
+                'firebase-auth.js', 'firebase-sync.js', 'storage-override.js'
             ];
             const imports = {};
             jsFiles.forEach(file => {
@@ -98,7 +99,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="stylesheet" href="css/base.css?v=1.5.1">
+    <link rel="stylesheet" href="css/base.css?v=1.5.2">
     <link rel="stylesheet" href="css/idol.css?v=1.5.1">
     <link rel="stylesheet" href="css/support.css?v=1.5.1">
     <link rel="stylesheet" href="css/gacha.css?v=1.5.1">
@@ -241,6 +242,7 @@
                 <button class="menu-btn" data-target="gacha">
                     <img src="icons/gasha.svg" alt="" class="btn-icon">
                 </button>
+                <button class="menu-btn pc-only-btn" id="nav-auth-btn"></button>
             </div>
         </section>
     </main>
@@ -318,7 +320,8 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=1.5.1"></script>
+
+    <script type="module" src="main.js?v=1.5.4"></script>
 
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
@@ -401,6 +404,19 @@
                     <div class="quick-btn-text-wrap">
                         <div class="quick-btn-desc" data-i18n="desc_idol_stats">실장된 PSSR 카드의 소지 현황 통계를 확인하고, 이미지로 저장할 수
                             있습니다.</div>
+                    </div>
+                </div>
+            </button>
+            <button class="home-quick-btn" id="home-auth-btn">
+                <div class="quick-btn-header">
+                    <div class="quick-btn-title font-small" id="home-auth-title" data-i18n="btn_login_card">구글 로그인</div>
+                </div>
+                <div class="quick-btn-body">
+                    <div class="quick-btn-icon-wrap" id="home-auth-icon-wrap">
+                        <img src="icons/user.svg" alt="" class="quick-btn-icon" id="home-auth-icon">
+                    </div>
+                    <div class="quick-btn-text-wrap">
+                        <div class="quick-btn-desc" id="home-auth-desc" data-i18n="desc_login_card">구글 로그인으로 서포카 데이터 설정 및 계산기 프리셋 등을 연동합니다.</div>
                     </div>
                 </div>
             </button>
