@@ -1,7 +1,7 @@
 // main.js
 import './storage-override.js';
 import { state, setLanguage } from './state.js';
-import { updatePageTranslations, initMobileHeightFix } from './utils.js';
+import { updatePageTranslations, initMobileHeightFix, translate } from './utils.js';
 import { handleNavigation } from './router.js';
 import { renderSupport, updateGlobalBackgroundColor, preloadSupportImages, preloadCalcImages } from './ui.js';
 import { renderGacha } from './gacha.js';
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navAuthBtn) {
         navAuthBtn.addEventListener('click', () => {
             if (auth.currentUser) {
-                if (confirm("로그아웃 하시겠습니까?")) {
+                if (confirm(translate('ui_logout_confirm', {}, '로그아웃 하시겠습니까?'))) {
                     logout();
                 }
             } else {
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (quickBtn) {
             if (quickBtn.id === 'home-auth-btn') {
                 if (auth.currentUser) {
-                    if (confirm("로그아웃 하시겠습니까?")) {
+                    if (confirm(translate('ui_logout_confirm', {}, '로그아웃 하시겠습니까?'))) {
                         logout();
                     }
                 } else {

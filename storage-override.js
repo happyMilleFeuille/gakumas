@@ -6,7 +6,17 @@ const EXCLUDED_KEYS = [
     'lang',
     'firebase:authUser',
     'sync_loaded',
-    'online_' // 이미 가상 경로가 적용된 키는 매핑을 건너뜀 (중복 방지)
+    'online_', // 이미 가상 경로가 적용된 키는 매핑을 건너뜀 (중복 방지)
+    'gachaLogObj', // 가챠 로그
+    'totalPullsObj', // 가챠 누적 횟수
+    'gachaType', // 활성화된 가챠 탭 타입
+    'jewels', // 가챠용 보유 쥬얼
+    'selectedPickup', // 선택된 픽업 캐릭터
+    'activeFesId', // 액티브 Fes 가챠 ID
+    'activeUnitId', // 액티브 유닛 가챠 ID
+    'activeSelectionId', // 액티브 셀렉션 가챠 ID
+    'activeNormalId', // 액티브 일반 가챠 ID
+    'activeLimitedId' // 액티브 한정 가챠 ID
 ];
 
 // 로컬스토리지 메소드 원본 보관
