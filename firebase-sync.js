@@ -53,7 +53,7 @@ export function triggerCloudSave() {
         } catch (error) {
             console.error("클라우드 저장 에러:", error);
         }
-    }, 2000);
+    }, 1000); // 1초 대기 후 전송 (기민한 동기화)
 }
 
 // storage-override.js에서 디스패치된 이벤트를 수신하여 자동 백업 실행
