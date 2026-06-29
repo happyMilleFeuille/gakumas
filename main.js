@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else if (state.currentLang === 'en') {
                         descEl.textContent = "Click to log out.";
                     } else {
-                        descEl.textContent = "클릭하면 로그아웃합니다.";
+                        descEl.textContent = "클릭하여 로그아웃합니다.";
                     }
                 }
             } else {
@@ -60,11 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (descEl) {
                     if (state.currentLang === 'ja') {
-                        descEl.textContent = "Googleログインでサポートカードデータの設定や計算機のプリセットなどを連携します。";
+                        descEl.textContent = "Googleアカウントにログインします。アカウントにはサポカ設定や計算機プリセットなどのデータが保存されます。";
                     } else if (state.currentLang === 'en') {
-                        descEl.textContent = "Link your support card data settings and calculator presets via Google Login.";
+                        descEl.textContent = "Log in to your Google account. Data such as support card settings and calculator presets will be saved to your account.";
                     } else {
-                        descEl.textContent = "구글 로그인으로 서포카 데이터 설정 및 계산기 프리셋 등을 연동합니다.";
+                        descEl.textContent = "구글 계정에 로그인합니다. 계정에는 서포카 데이터 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.";
                     }
                 }
             }
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextStage = getLayoutStage(window.innerWidth);
         if (currentStage !== nextStage) {
             currentStage = nextStage;
-            
+
             // 서포트 패널 닫기 (768px 경계를 넘나들 때 UI 깨짐 방지)
             if (typeof window.closeSupportCardPanel === 'function') {
                 window.closeSupportCardPanel();
