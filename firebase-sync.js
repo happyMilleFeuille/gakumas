@@ -89,12 +89,13 @@ window.addEventListener('syncStorageUpdated', () => {
 
 // 로그인 상태 변경 시 처리
 onAuthStateChanged(auth, async (user) => {
-    // 페이지 로드가 끝났으므로 새로고침 데이터 오염 방지 락 해제
+    // 새로고침 직전 데이터 로드로 인한 리프레시인지 확인
+    const isSyncingReload = sessionStorage.getItem('is_syncing_reload') === 'true';
     sessionStorage.removeItem('is_syncing_reload');
 
     if (user) {
-        // 이미 동기화가 완료되어 리프레시된 세션이면 중복 작업 방지
-        if (localStorage.getItem('sync_loaded') === user.uid) {
+        // 방금 클라우드 데이터를 로드하고 새로고침된 직후라면 중복 패치 방지
+        if (isSyncingReload) {
             return;
         }
 
