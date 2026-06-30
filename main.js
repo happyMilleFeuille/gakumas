@@ -14,6 +14,8 @@ let startX;
 let scrollLeft;
 
 document.addEventListener('DOMContentLoaded', () => {
+    let isAuthInitialized = false;
+
     // [구글 로그인 예외 처리 핸들러]
     const handleLoginError = (err) => {
         if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
@@ -43,15 +45,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     descEl.textContent = translate('desc_logout_card', {}, '클릭하여 로그아웃합니다.');
                 }
             } else {
-                if (titleEl) {
-                    titleEl.setAttribute('data-i18n', 'btn_login_card');
-                    titleEl.textContent = translate('btn_login_card', {}, '구글 로그인');
-                }
-                if (iconWrapEl) {
-                    iconWrapEl.innerHTML = `<img src="icons/user.svg" alt="User" class="quick-btn-icon">`;
-                }
-                if (descEl) {
-                    descEl.textContent = translate('desc_login_card', {}, '구글 계정에 로그인합니다. 계정에는 서포카 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.');
+                // 로그인 검증 대기 중이고 기존 세션 기록이 있는 경우 "로그인 중..." 노출
+                if (!isAuthInitialized && localStorage.getItem('sync_loaded')) {
+                    if (titleEl) {
+                        titleEl.setAttribute('data-i18n', 'ui_logging_in');
+                        titleEl.textContent = translate('ui_logging_in', {}, '로그인 중...');
+                    }
+                } else {
+                    if (titleEl) {
+                        titleEl.setAttribute('data-i18n', 'btn_login_card');
+                        titleEl.textContent = translate('btn_login_card', {}, '구글 로그인');
+                    }
+                    if (iconWrapEl) {
+                        iconWrapEl.innerHTML = `<img src="icons/user.svg" alt="User" class="quick-btn-icon">`;
+                    }
+                    if (descEl) {
+                        descEl.textContent = translate('desc_login_card', {}, '구글 계정에 로그인합니다. 계정에는 서포카 설정 및 계산기 프리셋 등의 데이터가 저장됩니다.');
+                    }
                 }
             }
         }
@@ -83,16 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // [초기 로그인 로딩 상태 설정]
-    if (localStorage.getItem('sync_loaded')) {
-        const titleEl = document.getElementById('home-auth-title');
-        if (titleEl) {
-            titleEl.setAttribute('data-i18n', 'ui_logging_in');
-            titleEl.textContent = translate('ui_logging_in', {}, '로그인 중...');
-        }
-    }
-
     onAuthStateChanged(auth, (user) => {
+        isAuthInitialized = true;
         updateAuthUI(user);
     });
 
@@ -163,6 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAuthUI(auth.currentUser);
     };
 
+    // 화면 전환 이벤트 발생 시 동기화 (초기화 및 네비게이션 전에 먼저 등록)
+    window.addEventListener('viewChanged', syncGlobalUI);
+
     // 초기 실행
     syncGlobalUI();
     document.documentElement.lang = state.currentLang;
@@ -176,9 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = window.location.hash.substring(1) || 'home';
         handleNavigation(target, true);
     });
-
-    // 화면 전환 이벤트 발생 시 동기화
-    window.addEventListener('viewChanged', syncGlobalUI);
 
     // 3. 이벤트 바인딩
 
