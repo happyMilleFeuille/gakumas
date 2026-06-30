@@ -221,3 +221,30 @@ onAuthStateChanged(auth, async (user) => {
         }
     }
 });
+
+/**
+ * 디바운스 없이 즉시 클라우드에 저장하는 함수
+ */
+export async function triggerImmediateCloudSave() {
+    const user = auth.currentUser;
+    if (!user || isSyncing) return;
+
+    if (saveTimeout) clearTimeout(saveTimeout);
+
+    try {
+        isSyncing = true;
+        const userDocRef = doc(db, "users", user.uid);
+        const onlineData = getAllOnlineData(user.uid);
+        
+        await setDoc(userDocRef, {
+            data: onlineData,
+            updatedAt: new Date().toISOString()
+        });
+        
+        console.log("구글 계정 즉시 클라우드 동기화 완료");
+    } catch (error) {
+        console.error("즉시 클라우드 저장 에러:", error);
+    } finally {
+        isSyncing = false;
+    }
+}

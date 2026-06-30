@@ -22,6 +22,7 @@ import {
 import { initGlobalDistListener } from './calcEvents.js';
 import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syncSupportPanelUI, showRecommendModal, showOtherTuneModal, showConfirmResetModal } from './calcModals.js';
 import { initRecommendationFeature } from './calcRecommend.js';
+import { triggerImmediateCloudSave } from './firebase-sync.js';
 
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -2067,7 +2068,7 @@ function saveCalcPreset(slotId, customName, container) {
     if (previewEl) renderPresetPreview(previewEl);
 }
 
-function loadCalcPreset(slotId) {
+async function loadCalcPreset(slotId) {
     const isGuide = slotId === 'guide' || slotId === 'guide2';
     const confirmSlotName = isGuide ? (state.currentLang === 'ko' ? '가이드' : 'Guide') : slotId;
     if (!confirm(t('calc_preset_load_confirm', { slotId: confirmSlotName }))) return;
@@ -2194,6 +2195,12 @@ function loadCalcPreset(slotId) {
 
             // Set toast in session storage to display after reload
             sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
+
+            // 즉시 클라우드 동기화 완료 후 리로드 플래그 설정하여 더블 새로고침 방지
+            if (typeof triggerImmediateCloudSave === 'function') {
+                await triggerImmediateCloudSave();
+            }
+            sessionStorage.setItem('is_syncing_reload', 'true');
 
             // Reload the page to guarantee a perfect and pristine UI refresh
             window.location.reload();
@@ -2699,6 +2706,12 @@ function openCalcShareModal(slotId, container) {
 
             // Close the modal
             closeShareModal();
+
+            // 즉시 클라우드 동기화 완료 후 리로드 플래그 설정하여 더블 새로고침 방지
+            if (typeof triggerImmediateCloudSave === 'function') {
+                await triggerImmediateCloudSave();
+            }
+            sessionStorage.setItem('is_syncing_reload', 'true');
 
             // Reload the page to guarantee a perfect and pristine UI refresh
             window.location.reload();
