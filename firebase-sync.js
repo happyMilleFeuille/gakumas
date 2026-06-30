@@ -126,9 +126,16 @@ onAuthStateChanged(auth, async (user) => {
                 const localOnlineData = getAllOnlineData(user.uid);
                 
                 // 로컬 데이터와 서버 데이터가 100% 동일하면 굳이 덮어쓰거나 리로드하지 않고 종료 (더블 새로고침 방지)
+                // 단, 로그아웃 상태에서 새로 로그인한 경우에는 네임스페이스 전환(오프라인 -> 온라인)을 위해 새로고침이 필요합니다.
                 const isIdentical = isDataIdentical(localOnlineData, cloudData);
                 if (isIdentical) {
+                    const wasAlreadyLoaded = localStorage.getItem('sync_loaded') === user.uid;
                     localStorage.setItem('sync_loaded', user.uid); // 로그인 세션 키 복원
+                    if (wasAlreadyLoaded) {
+                        return;
+                    }
+                    sessionStorage.setItem('is_syncing_reload', 'true');
+                    window.location.reload();
                     return;
                 }
 
