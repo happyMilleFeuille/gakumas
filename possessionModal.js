@@ -2805,6 +2805,7 @@ export function openSupportMenuModal() {
     const titleText = isJa ? 'サポートツール' : isEn ? 'Support Tools' : '지원 도구';
     const btnIdolStatsText = isJa ? 'アイドル所持状況' : isEn ? 'Idol Card Stats' : '아이돌 카드 소지 통계';
     const btnStatsText = isJa ? 'サポカ所持状況' : isEn ? 'Support Card Stats' : '서포트 카드 통계';
+    const btnOrderHistoryText = isJa ? '課金履歴レポート' : isEn ? 'Payment Report' : '결제 내역 보고서';
 
     const descIdolStatsText = isJa
         ? 'アイドルカードの所持状況をチェックし、統計を確認します。'
@@ -2817,6 +2818,12 @@ export function openSupportMenuModal() {
         : isEn
             ? 'Check the statistics based on the support card information set in the Support Card tab.'
             : '서포트 카드 탭에 설정된 서포트 카드 정보를 기준으로 한 통계를 확인합니다.';
+
+    const descOrderHistoryText = isJa
+        ? 'Google Playの注文履歴を分析し、課金履歴の要約レポートを確認します。'
+        : isEn
+            ? 'Analyze Google Play order history to view a payment summary report.'
+            : '구글 플레이 결제 내역 파일을 분석하여 총 결제 금액 및 항목별 요약 보고서를 확인합니다.';
 
     const themeColor = '#ff4d8d';
 
@@ -2950,6 +2957,18 @@ export function openSupportMenuModal() {
                         </div>
                     </div>
                 </button>
+                <button id="btn-menu-order-history" class="support-menu-btn">
+                    <div class="menu-btn-title">
+                        ${btnOrderHistoryText}
+                    </div>
+                    <div class="menu-btn-divider" style="width: 100%; height: 1px; background: #cbd5e1; margin: 0;"></div>
+                    <div class="menu-btn-desc-row">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        <div class="menu-btn-desc">
+                            ${descOrderHistoryText}
+                        </div>
+                    </div>
+                </button>
             </div>
         </div>
     `;
@@ -2990,8 +3009,11 @@ export function openSupportMenuModal() {
         btn.ontouchend = setNormalState;
     };
 
+    const orderHistoryBtn = menuModal.querySelector('#btn-menu-order-history');
+
     setupHover(idolStatsBtn);
     setupHover(statsBtn);
+    setupHover(orderHistoryBtn);
 
     const closeBtn = menuModal.querySelector('#btn-support-menu-close');
     const closeMenu = () => {
@@ -3011,6 +3033,11 @@ export function openSupportMenuModal() {
     statsBtn.onclick = () => {
         closeMenu();
         openPossessionModal();
+    };
+
+    orderHistoryBtn.onclick = () => {
+        closeMenu();
+        import('./orderHistoryModal.js').then(m => m.openOrderHistoryModal());
     };
 }
 

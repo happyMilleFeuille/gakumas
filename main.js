@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     titleEl.textContent = user.displayName || translate('ui_user_default', {}, '유저');
                 }
                 if (iconWrapEl) {
-                    iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover; border: 1px solid var(--idol-theme-color);" alt="Avatar">`;
+                    iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover; border: 1px solid var(--idol-theme-color);" alt="Avatar" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='icons/idol.svg';">`;
                 }
                 if (descEl) {
                     descEl.textContent = translate('desc_logout_card', {}, '클릭하여 로그아웃합니다.');
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navAuthBtn) {
             if (user) {
                 navAuthBtn.classList.add('logged-in');
-                navAuthBtn.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="btn-icon" style="border-radius: 50%; object-fit: cover;" alt="Avatar">`;
+                navAuthBtn.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="btn-icon" style="border-radius: 50%; object-fit: cover;" alt="Avatar" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='icons/idol.svg';">`;
             } else {
                 navAuthBtn.classList.remove('logged-in');
                 navAuthBtn.innerHTML = `<img src="icons/user.svg" alt="User" class="btn-icon">`;
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const target = quickBtn.dataset.target;
             if (target === 'idol-stats') {
-                import('./idolPossessionModal.js').then(m => m.openIdolPossessionModal());
+                import('./possessionModal.js').then(m => m.openSupportMenuModal());
             } else {
                 handleNavigation(target);
             }
@@ -556,6 +556,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pssrInfoModal && pssrInfoModal.style.display !== 'none' && !pssrInfoModal.classList.contains('hidden')) {
             if (typeof window.closeProduceCardInfoModal === 'function') window.closeProduceCardInfoModal(true);
             else pssrInfoModal.remove();
+            return;
+        }
+
+        const orderHistoryModal = document.getElementById('order-history-modal');
+        if (orderHistoryModal && orderHistoryModal.style.display !== 'none' && !orderHistoryModal.classList.contains('hidden')) {
+            if (window.state) {
+                delete window.state._ohData;
+                delete window.state._ohRates;
+                delete window.state._ohPhase;
+            }
+            orderHistoryModal.remove();
             return;
         }
 
