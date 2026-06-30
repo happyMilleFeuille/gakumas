@@ -53,6 +53,7 @@ function getAllOnlineData(uid) {
             }
         }
     }
+    return data;
 }
 
 /**
