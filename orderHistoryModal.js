@@ -610,7 +610,7 @@ function renderUploadForm(errorMessage = '') {
                 <ul style="margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 4px;">
                     <li>アップロードされたJSONファイルはサーバーに送信・保存されず、ブラウザ内でローカルに安全に解析されます。</li>
                     <li><a href="https://takeout.google.com/" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: 600;">Google Takeout</a>からエクスポートした <code>Order History.json</code> ファイルのみサポートされています。</li>
-                    <li>全体の履歴から<strong>学園アイドルマスター</strong>関連の課金額および払戻額のみを自動的に抽出して集計します。</li>
+                    <li>全体の履歴から<strong>学園アイドルマスター</strong>関連の課金額のみを自動的に抽出して集計します。</li>
                     <li style="color: #e11d48; font-weight: 600;">本ファイルには決済商品名、日付などの個人情報が含まれているため、第三者へ配布・共有しないようご注意ください。</li>
                 </ul>
             </div>
@@ -622,7 +622,7 @@ function renderUploadForm(errorMessage = '') {
                 <ul style="margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 4px;">
                     <li>Your uploaded JSON file is processed locally in the browser and is never uploaded or saved on any servers.</li>
                     <li>Only the <code>Order History.json</code> file exported from <a href="https://takeout.google.com/" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: 600;">Google Takeout</a> is supported.</li>
-                    <li>Filters and calculates payment/refund data specifically for <strong>Gakuen Idolmaster</strong> items.</li>
+                    <li>Filters and calculates payment data specifically for <strong>Gakuen Idolmaster</strong> items.</li>
                     <li style="color: #e11d48; font-weight: 600;">This file contains personal transaction details, so please be careful not to distribute or share it with others.</li>
                 </ul>
             </div>
@@ -634,7 +634,7 @@ function renderUploadForm(errorMessage = '') {
                 <ul style="margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 4px;">
                     <li>업로드하신 JSON 파일은 서버로 전송되거나 저장되지 않으며, 오직 브라우저 내에서 로컬로만 안전하게 분석됩니다.</li>
                     <li><a href="https://takeout.google.com/" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: 600;">Google 테이크아웃 서비스</a>에서 내보낸 결제 서비스 정보 중 <code>Order History.json</code> 파일만 지원합니다.</li>
-                    <li>구글 플레이 결제 건 중 <strong>학원 아이돌 마스터</strong> 관련 결제 및 환불 내역만 자동으로 감지하여 집계합니다.</li>
+                    <li>구글 플레이 결제 건 중 <strong>학원 아이돌 마스터</strong> 관련 결제 내역만 자동으로 감지하여 집계합니다.</li>
                     <li style="color: #e11d48; font-weight: 600;">해당 파일에는 결제 정보 등 개인정보가 포함되어 있으므로 타인에게 공유하거나 다른 곳에 업로드하지 않도록 주의해 주세요.</li>
                 </ul>
             </div>
@@ -1105,7 +1105,7 @@ function renderDashboard(data) {
     const dateRangeLabel = isJa ? '期間' : isEn ? 'Period' : '분석 기간';
 
     const pad2 = n => String(n).padStart(2, '0');
-    const formatDateText = d => `${d.getFullYear()}.${pad2(d.getMonth()+1)}.${pad2(d.getDate())}`;
+    const formatDateText = d => `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}`;
     const startStr = formatDateText(overallMinDate);
     const endStr = formatDateText(overallMaxDate);
 
