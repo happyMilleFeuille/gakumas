@@ -53,7 +53,19 @@ function getAllOnlineData(uid) {
             }
         }
     }
-    return data;
+}
+
+/**
+ * 두 로컬스토리지 매핑 객체의 키-값을 키 순서와 상관없이 얕은 비교하는 함수
+ */
+function isDataIdentical(obj1, obj2) {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    if (keys1.length !== keys2.length) return false;
+    for (const key of keys1) {
+        if (obj1[key] !== obj2[key]) return false;
+    }
+    return true;
 }
 
 /**
@@ -113,7 +125,7 @@ onAuthStateChanged(auth, async (user) => {
                 const localOnlineData = getAllOnlineData(user.uid);
                 
                 // 로컬 데이터와 서버 데이터가 100% 동일하면 굳이 덮어쓰거나 리로드하지 않고 종료 (더블 새로고침 방지)
-                const isIdentical = JSON.stringify(localOnlineData) === JSON.stringify(cloudData);
+                const isIdentical = isDataIdentical(localOnlineData, cloudData);
                 if (isIdentical) {
                     localStorage.setItem('sync_loaded', user.uid); // 로그인 세션 키 복원
                     return;
