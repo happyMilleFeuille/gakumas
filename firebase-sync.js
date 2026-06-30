@@ -109,6 +109,16 @@ onAuthStateChanged(auth, async (user) => {
             if (docSnap.exists()) {
                 const cloudData = docSnap.data().data || {};
                 
+                // 로컬의 현재 온라인 연동 데이터 상태 수집
+                const localOnlineData = getAllOnlineData(user.uid);
+                
+                // 로컬 데이터와 서버 데이터가 100% 동일하면 굳이 덮어쓰거나 리로드하지 않고 종료 (더블 새로고침 방지)
+                const isIdentical = JSON.stringify(localOnlineData) === JSON.stringify(cloudData);
+                if (isIdentical) {
+                    localStorage.setItem('sync_loaded', user.uid); // 로그인 세션 키 복원
+                    return;
+                }
+
                 // 기존 로컬에 남아있던 이 계정의 온라인 연동 데이터를 먼저 초기화 (삭제 반영 목적)
                 for (let i = localStorage.length - 1; i >= 0; i--) {
                     const key = localStorage.key(i);
