@@ -108,6 +108,15 @@ onAuthStateChanged(auth, async (user) => {
 
             if (docSnap.exists()) {
                 const cloudData = docSnap.data().data || {};
+                
+                // 기존 로컬에 남아있던 이 계정의 온라인 연동 데이터를 먼저 초기화 (삭제 반영 목적)
+                for (let i = localStorage.length - 1; i >= 0; i--) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith(prefix)) {
+                        localStorage.removeItem(key);
+                    }
+                }
+
                 // 클라우드 백업 데이터를 유저용 가상 네임스페이스 영역에 로드
                 Object.keys(cloudData).forEach(key => {
                     localStorage.setItem(`${prefix}${key}`, cloudData[key]);
