@@ -32,7 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const descEl = document.getElementById('home-auth-desc');
 
             if (user) {
-                if (titleEl) titleEl.textContent = user.displayName || translate('ui_user_default', {}, '유저');
+                if (titleEl) {
+                    titleEl.removeAttribute('data-i18n');
+                    titleEl.textContent = user.displayName || translate('ui_user_default', {}, '유저');
+                }
                 if (iconWrapEl) {
                     iconWrapEl.innerHTML = `<img src="${user.photoURL || 'icons/idol.svg'}" class="quick-btn-icon" style="border-radius: 50%; object-fit: cover; border: 1px solid var(--idol-theme-color);" alt="Avatar">`;
                 }
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 if (titleEl) {
+                    titleEl.setAttribute('data-i18n', 'btn_login_card');
                     titleEl.textContent = translate('btn_login_card', {}, '구글 로그인');
                 }
                 if (iconWrapEl) {
@@ -77,6 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginWithGoogle().catch(handleLoginError);
             }
         });
+    }
+
+    // [초기 로그인 로딩 상태 설정]
+    if (localStorage.getItem('sync_loaded')) {
+        const titleEl = document.getElementById('home-auth-title');
+        if (titleEl) {
+            titleEl.setAttribute('data-i18n', 'ui_logging_in');
+            titleEl.textContent = translate('ui_logging_in', {}, '로그인 중...');
+        }
     }
 
     onAuthStateChanged(auth, (user) => {
