@@ -73,7 +73,7 @@ export function triggerCloudSave() {
             await setDoc(userDocRef, {
                 data: onlineData,
                 updatedAt: new Date().toISOString()
-            }, { mergeFields: ["data", "updatedAt"] });
+            });
             
             console.log("구글 계정 클라우드 동기화 완료");
         } catch (error) {
@@ -135,11 +135,11 @@ onAuthStateChanged(auth, async (user) => {
                                     }
                                 }
                                 
-                                // Firestore에 병합된 데이터를 즉시 동기화 저장
+                                // Firestore에 데이터를 즉시 동기화 저장
                                 await setDoc(userDocRef, {
                                     data: onlineData,
                                     updatedAt: new Date().toISOString()
-                                }, { mergeFields: ["data", "updatedAt"] });
+                                });
                                 
                                 console.log("최초 로그인: 로컬 데이터 서버 연동 완료");
                                 
