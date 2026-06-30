@@ -236,6 +236,8 @@ export function openOrderHistoryModal() {
             .oh-chart-tooltip {
                 position: absolute;
                 bottom: 105%;
+                left: 50%;
+                transform: translate(-50%, 4px);
                 background: #0f172a;
                 color: #fff;
                 font-size: 0.6rem;
@@ -244,12 +246,16 @@ export function openOrderHistoryModal() {
                 white-space: nowrap;
                 opacity: 0;
                 pointer-events: none;
-                transition: opacity 0.15s;
+                transition: opacity 0.15s ease, transform 0.15s ease;
                 z-index: 10;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.15);
             }
             .oh-chart-bar:hover .oh-chart-tooltip {
                 opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            .oh-chart-bar:hover .oh-chart-max-value {
+                opacity: 0;
             }
             .oh-chart-label {
                 font-size: 0.52rem;
@@ -1023,9 +1029,17 @@ function renderDashboard(data) {
             const labelStr = `${yShort}/${m.substring(5)}`;
             const tooltipTitle = isJa ? `${m.substring(0, 4)}年 ${mNum}月` : isEn ? m : `${m.substring(0, 4)}년 ${mNum}월`;
 
+            const isMaxBar = amt > 0 && amt === maxMonthAmount;
+            const maxValLabelHtml = isMaxBar ? `
+                <div class="oh-chart-max-value" style="position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%); font-size: 0.55rem; font-weight: 800; color: #333; white-space: nowrap; transition: opacity 0.15s; pointer-events: none;">
+                    ${primaryCurr}${formatNum(amt)}
+                </div>
+            ` : '';
+
             chartHTML += `
                 <div class="oh-chart-bar-container">
                     <div class="oh-chart-bar" style="height: ${pct}%;">
+                        ${maxValLabelHtml}
                         <div class="oh-chart-tooltip">
                             ${tooltipTitle}<br>
                             ${primaryCurr} ${formatNum(amt)}
