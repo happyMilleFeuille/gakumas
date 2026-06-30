@@ -2196,14 +2196,13 @@ async function loadCalcPreset(slotId) {
             // Set toast in session storage to display after reload
             sessionStorage.setItem('preset_loaded_toast', t('calc_preset_load_success', { slotId }));
 
-            // 즉시 클라우드 동기화 완료 후 리로드 플래그 설정하여 더블 새로고침 방지
             if (typeof triggerImmediateCloudSave === 'function') {
                 await triggerImmediateCloudSave();
             }
-            sessionStorage.setItem('is_syncing_reload', 'true');
 
-            // Reload the page to guarantee a perfect and pristine UI refresh
-            window.location.reload();
+            // Instead of a hard browser reload, do a soft SPA re-render
+            const uiModule = await import('./ui.js');
+            uiModule.renderCalc(targetType);
         }
     } catch (e) {
         showToast(t('calc_preset_load_failed'));
@@ -2707,14 +2706,14 @@ function openCalcShareModal(slotId, container) {
             // Close the modal
             closeShareModal();
 
-            // 즉시 클라우드 동기화 완료 후 리로드 플래그 설정하여 더블 새로고침 방지
+            // 즉시 클라우드 동기화 완료 후
             if (typeof triggerImmediateCloudSave === 'function') {
                 await triggerImmediateCloudSave();
             }
-            sessionStorage.setItem('is_syncing_reload', 'true');
 
-            // Reload the page to guarantee a perfect and pristine UI refresh
-            window.location.reload();
+            // Instead of a hard browser reload, do a soft SPA re-render
+            const uiModule = await import('./ui.js');
+            uiModule.renderCalc(mode);
         } catch (error) {
             console.warn('Preset import failed:', error);
             const detail = error?.message ? ` ${error.message}` : '';

@@ -43,6 +43,9 @@ export function logout() {
     return signOut(auth)
         .then(() => {
             console.log("로그아웃 완료");
+            sessionStorage.setItem('is_syncing_reload', 'true');
+            localStorage.removeItem('sync_loaded');
+            window.location.reload();
         })
         .catch((error) => {
             console.error("로그아웃 에러:", error);

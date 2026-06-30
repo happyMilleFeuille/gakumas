@@ -108,7 +108,9 @@ onAuthStateChanged(auth, async (user) => {
     if (user) {
         // 방금 클라우드 데이터를 로드하고 새로고침된 직후라면 중복 패치 방지
         if (isSyncingReload) {
-            sessionStorage.removeItem('is_syncing_reload');
+            setTimeout(() => {
+                sessionStorage.removeItem('is_syncing_reload');
+            }, 1000);
             return;
         }
 
@@ -215,12 +217,6 @@ onAuthStateChanged(auth, async (user) => {
     } else {
         if (isSyncingReload && !localStorage.getItem('sync_loaded')) {
             sessionStorage.removeItem('is_syncing_reload');
-        }
-        // 로그아웃 시 온라인 세션 정보 제거 및 화면 리프레시를 통해 오프라인 기기 데이터로 원상 복구
-        if (localStorage.getItem('sync_loaded')) {
-            sessionStorage.setItem('is_syncing_reload', 'true');
-            localStorage.removeItem('sync_loaded');
-            window.location.reload();
         }
     }
 });

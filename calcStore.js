@@ -76,24 +76,7 @@ export const calcStore = {
         return `calc_state_session_${type}`;
     },
 
-    ensurePersistenceGuards() {
-        if (this._persistenceReady) return;
-        this._persistenceReady = true;
 
-        const flush = () => {
-            if (!this.type) return;
-            if (sessionStorage.getItem('is_loading_preset') === 'true') {
-                return;
-            }
-            this.persistState();
-        };
-
-        window.addEventListener('pagehide', flush);
-        window.addEventListener('beforeunload', flush);
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) flush();
-        });
-    },
 
     serializeState() {
         return {
@@ -121,7 +104,7 @@ export const calcStore = {
             lockCards: this.lockCards,
             hifStats: this.hifStats,
             hifParamLimitLevel: this.hifParamLimitLevel || 0,
-            updatedAt: Date.now()
+            updatedAt: this.updatedAt
         };
     },
 
@@ -213,6 +196,7 @@ export const calcStore = {
         this.hifStats = { vocal: 0, dance: 0, visual: 0, ...(saved.hifStats || {}) };
         this.hifParamLimitLevel = saved.hifParamLimitLevel || 0;
         this.lockCards = saved.lockCards === true || saved.lockCards === 'true';
+        this.updatedAt = saved.updatedAt || Date.now();
     },
 
     /**
@@ -221,7 +205,6 @@ export const calcStore = {
     init(type) {
         this.type = type;
         localStorage.setItem('last_calc_type', type);
-        this.ensurePersistenceGuards();
         const saved = this.loadPersistedState(type);
         this.applySavedState(saved);
 
@@ -261,6 +244,7 @@ export const calcStore = {
     },
 
     save() {
+        this.updatedAt = Date.now();
         this.persistState();
     },
 
