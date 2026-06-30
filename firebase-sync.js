@@ -104,11 +104,11 @@ window.addEventListener('syncStorageUpdated', () => {
 onAuthStateChanged(auth, async (user) => {
     // 새로고침 직전 데이터 로드로 인한 리프레시인지 확인
     const isSyncingReload = sessionStorage.getItem('is_syncing_reload') === 'true';
-    sessionStorage.removeItem('is_syncing_reload');
 
     if (user) {
         // 방금 클라우드 데이터를 로드하고 새로고침된 직후라면 중복 패치 방지
         if (isSyncingReload) {
+            sessionStorage.removeItem('is_syncing_reload');
             return;
         }
 
@@ -213,6 +213,9 @@ onAuthStateChanged(auth, async (user) => {
             isSyncing = false;
         }
     } else {
+        if (isSyncingReload && !localStorage.getItem('sync_loaded')) {
+            sessionStorage.removeItem('is_syncing_reload');
+        }
         // 로그아웃 시 온라인 세션 정보 제거 및 화면 리프레시를 통해 오프라인 기기 데이터로 원상 복구
         if (localStorage.getItem('sync_loaded')) {
             sessionStorage.setItem('is_syncing_reload', 'true');
