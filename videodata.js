@@ -353,6 +353,13 @@ export const videoList = {
     ],
     rinami: [
         {
+            title: "歌声は君いろ",
+            title_ko: "노랫소리는 너의 색",
+            title_en: "The singing voice is your color",
+            url: "https://youtu.be/7i27l7uvTd4?si=tN5S3R7CaKZSrZqc",
+            date: "2026.07.02."
+        },
+        {
             title: "生誕ミニライブ2026",
             title_ko: "생일 미니라이브2026",
             title_en: "Birthday MiniLive 2026",
