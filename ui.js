@@ -8,6 +8,7 @@ import { calcStore } from './calcStore.js';
 import { renderPSSRRoadmap } from './roadmap.js';
 import { showCardModal } from './cardModal.js';
 import { pItemDescriptions } from './pItemData.js';
+import { initDatePicker, syncDatePickerUI, updateDatePickerDots } from './datepicker.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -265,6 +266,36 @@ window.openVideoModal = openVideoModal;
 window.closeVideoModal = closeVideoModal;
 window.hideVideoModal = closeVideoModal;
 
+async function fetchLatestCommitDate() {
+    const cachedDate = sessionStorage.getItem('latestCommitDate');
+    if (cachedDate) {
+        applyLastUpdateText(cachedDate);
+        return;
+    }
+    try {
+        const res = await fetch('https://api.github.com/repos/happyMilleFeuille/gakumas/commits/master');
+        if (res.ok) {
+            const data = await res.json();
+            const rawDate = data?.commit?.committer?.date || data?.commit?.author?.date;
+            if (rawDate) {
+                const formattedDate = rawDate.split('T')[0];
+                sessionStorage.setItem('latestCommitDate', formattedDate);
+                applyLastUpdateText(formattedDate);
+            }
+        }
+    } catch (e) {
+        // API error fallback
+    }
+}
+
+function applyLastUpdateText(dateStr) {
+    const targetDate = dateStr || sessionStorage.getItem('latestCommitDate');
+    if (!targetDate) return;
+    document.querySelectorAll('.last-update').forEach(el => {
+        el.textContent = `・Last Update: ${targetDate}`;
+    });
+}
+
 export function renderHome() {
     if (!contentArea) return;
 
@@ -280,6 +311,8 @@ export function renderHome() {
         // 로드맵 렌더링 (자동 스크롤 제거)
         renderPSSRRoadmap(false);
 
+        fetchLatestCommitDate();
+
         homeCachedContent = contentArea.innerHTML;
         lastRenderedLang = state.currentLang;
         return;
@@ -288,6 +321,9 @@ export function renderHome() {
     // 캐시가 있어도 로드맵 영역은 비우고 다시 그려서 새로운 높이/JS 반영
     contentArea.innerHTML = homeCachedContent;
     updatePageTranslations(contentArea); // 추가: 캐시된 내용에도 최신 번역 적용
+
+    applyLastUpdateText();
+    fetchLatestCommitDate();
 
     const listContainer = document.getElementById('pssr-roadmap-list');
     if (listContainer) listContainer.innerHTML = '';
@@ -795,26 +831,30 @@ function openSlotModal() {
 
         if (loadBtn) {
             const slotId = loadBtn.dataset.slot;
-            if (loadFromSlot(slotId)) {
-                ['sense', 'logic', 'anomaly'].forEach(plan => {
-                    if (calcStore.planCards[plan]) {
-                        calcStore.planCards[plan] = calcStore.planCards[plan].map(id =>
-                            (id && state.disabledCards[id]) ? null : id
-                        );
-                    }
-                });
-                calcStore.save();
-                renderSupport();
-                modal.remove();
-            }
+            const slotInfo = getSlotInfo(slotId);
+            const confirmName = (slotInfo && slotInfo.name) ? slotInfo.name : slotId;
+            showCustomConfirm(t('ui_slot_load_confirm', { slotId: confirmName }), () => {
+                if (loadFromSlot(slotId)) {
+                    ['sense', 'logic', 'anomaly'].forEach(plan => {
+                        if (calcStore.planCards[plan]) {
+                            calcStore.planCards[plan] = calcStore.planCards[plan].map(id =>
+                                (id && state.disabledCards[id]) ? null : id
+                            );
+                        }
+                    });
+                    calcStore.save();
+                    renderSupport();
+                    modal.remove();
+                }
+            });
         }
 
         if (deleteBtn) {
             const slotId = deleteBtn.dataset.slot;
-            if (confirm(t('ui_slot_delete_confirm', { slotId }))) {
+            showCustomConfirm(t('ui_slot_delete_confirm', { slotId }), () => {
                 deleteSlot(slotId);
                 modal.querySelector('.slot-modal-list').innerHTML = renderSlots();
-            }
+            });
         }
     });
 }
@@ -927,6 +967,7 @@ export function renderSupport() {
 
     syncFilterUI(container);
     updateSupportGrid(container);
+    updateDatePickerDots();
 }
 
 function setupStaticListeners(container) {
@@ -1172,7 +1213,7 @@ function setupStaticListeners(container) {
         });
     }
 
-
+    initDatePicker(renderSupport);
 
     const allMaxBtn = container.querySelector('#btn-all-max-lb');
     if (allMaxBtn) {
@@ -1344,100 +1385,92 @@ function syncFilterUI(container) {
     if (sortOrderArrow) {
         sortOrderArrow.textContent = (state.sortOrder === 'asc') ? '↑' : '↓';
     }
+
+    syncDatePickerUI();
+}
+
+export function normalizeDateStr(str) {
+    if (!str) return '';
+    const m = str.match(/(\d{4})[^\d]*(\d{1,2})[^\d]*(\d{1,2})/);
+    if (!m) return str.trim().replace(/[\/\.]/g, '-');
+    return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+}
+
+export function checkCardMatchFilters(card, includeDate = false) {
+    if (card.encyclopedia === false) return false;
+    const cPlan = (card.plan || 'free').toLowerCase();
+    const cType = card.type.toLowerCase();
+    const cSource = (card.source || 'normal').toLowerCase();
+    const cRarity = card.rarity;
+
+    const planMatch = (state.filters.plan.length === 0) || (state.filters.plan.includes(cPlan));
+    const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
+    const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
+    const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
+
+    if (!planMatch || !attrMatch || !sourceMatch || !rarityMatch) return false;
+
+    if (includeDate) {
+        if (state.filters.dateRange && card.releasedAt) {
+            const cardDate = normalizeDateStr(card.releasedAt);
+            const startDate = normalizeDateStr(state.filters.dateRange.start);
+            const endDate = normalizeDateStr(state.filters.dateRange.end);
+
+            if (startDate && cardDate < startDate) return false;
+            if (endDate && cardDate > endDate) return false;
+        }
+    }
+
+    const abilityMatch = (state.filters.ability.length === 0) || (() => {
+        const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp'];
+        const supportCardKeys = ['card_m', 'card_a'];
+
+        const groupA = [];
+        const groupBC = [];
+
+        state.filters.ability.forEach(ab => {
+            if (pItemKeys.includes(ab) || supportCardKeys.includes(ab)) {
+                groupBC.push(ab);
+            } else {
+                groupA.push(ab);
+            }
+        });
+
+        const checkAbility = (ab) => {
+            if (ab === 'card_m') return card.have === 'card_m';
+            if (ab === 'card_a') return card.have === 'card_a';
+            if (ab === 'pitem_get') return card.item_effects && card.item_effects.some(eff => !eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
+            if (ab === 'pitem_get_drink') return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('get_drink') : eff.target === 'get_drink');
+            if (ab === 'pitem_enhance') return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('enhance') : eff.target === 'enhance');
+            if (ab === 'pitem_delete') return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete') : eff.target === 'delete');
+            if (ab === 'pitem_delete_t') return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete_t') : eff.target === 'delete_t');
+            if (ab === 'pitem_change') return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('change') : eff.target === 'change');
+            if (ab === 'pitem_copy') return card.item_effects && card.item_effects.some(eff => eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
+            if (ab === 'pitem_stats') return card.item_effects && card.item_effects.some(eff => eff.stats);
+            if (ab === 'pitem_ppoint') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('ppoint')));
+            if (ab === 'pitem_hp') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('hp')));
+
+            if (!card.abilities) return false;
+            if (ab === 'sp_lessonup') {
+                return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
+            }
+            return card.abilities.includes(ab);
+        };
+
+        const matchA = groupA.length === 0 || groupA.some(ab => checkAbility(ab));
+        const matchBC = groupBC.length === 0 || groupBC.every(ab => checkAbility(ab));
+
+        return matchA && matchBC;
+    })();
+
+    return abilityMatch;
 }
 
 function updateSupportGrid(container) {
     const grid = container.querySelector('.support-grid');
     const itemTpl = document.getElementById('tpl-support-item');
 
-    let filteredList = cardList.filter(card => {
-        if (card.encyclopedia === false) return false;
-        const cPlan = (card.plan || 'free').toLowerCase();
-        const cType = card.type.toLowerCase();
-        const cSource = (card.source || 'normal').toLowerCase();
-        const cRarity = card.rarity;
-
-        const planMatch = (state.filters.plan.length === 0) || (state.filters.plan.includes(cPlan));
-        const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
-        const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
-        const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
-
-        // ability filter: Group A (main abilities) uses OR logic, while Group B/C (below the dividers) are left as is (AND logic with the rest)
-        const abilityMatch = (state.filters.ability.length === 0) || (() => {
-            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp'];
-            const supportCardKeys = ['card_m', 'card_a'];
-
-            const groupA = [];
-            const groupBC = [];
-
-            state.filters.ability.forEach(ab => {
-                if (pItemKeys.includes(ab) || supportCardKeys.includes(ab)) {
-                    groupBC.push(ab);
-                } else {
-                    groupA.push(ab);
-                }
-            });
-
-            const checkAbility = (ab) => {
-                if (ab === 'card_m') {
-                    return card.have === 'card_m';
-                }
-                if (ab === 'card_a') {
-                    return card.have === 'card_a';
-                }
-                if (ab === 'pitem_get') {
-                    return card.item_effects && card.item_effects.some(eff => !eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
-                }
-                if (ab === 'pitem_get_drink') {
-                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('get_drink') : eff.target === 'get_drink');
-                }
-                if (ab === 'pitem_enhance') {
-                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('enhance') : eff.target === 'enhance');
-                }
-                if (ab === 'pitem_delete') {
-                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete') : eff.target === 'delete');
-                }
-                if (ab === 'pitem_delete_t') {
-                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('delete_t') : eff.target === 'delete_t');
-                }
-                if (ab === 'pitem_change') {
-                    return card.item_effects && card.item_effects.some(eff => Array.isArray(eff.target) ? eff.target.includes('change') : eff.target === 'change');
-                }
-                if (ab === 'pitem_copy') {
-                    return card.item_effects && card.item_effects.some(eff => eff.display && (Array.isArray(eff.target) ? eff.target.includes('get') : eff.target === 'get'));
-                }
-                if (ab === 'pitem_stats') {
-                    return card.item_effects && card.item_effects.some(eff => eff.stats);
-                }
-                if (ab === 'pitem_ppoint') {
-                    return card.item_effects && card.item_effects.some(eff => {
-                        if (!eff.targettext) return false;
-                        const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
-                        return targets.some(t => typeof t === 'string' && t.includes('ppoint'));
-                    });
-                }
-                if (ab === 'pitem_hp') {
-                    return card.item_effects && card.item_effects.some(eff => {
-                        if (!eff.targettext) return false;
-                        const targets = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
-                        return targets.some(t => typeof t === 'string' && t.includes('hp'));
-                    });
-                }
-                if (!card.abilities) return false;
-                if (ab === 'sp_lessonup') {
-                    return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
-                }
-                return card.abilities.includes(ab);
-            };
-
-            const matchA = groupA.length === 0 || groupA.some(ab => checkAbility(ab));
-            const matchBC = groupBC.length === 0 || groupBC.every(ab => checkAbility(ab));
-
-            return matchA && matchBC;
-        })();
-
-        return planMatch && attrMatch && sourceMatch && rarityMatch && abilityMatch;
-    });
+    let filteredList = cardList.filter(card => checkCardMatchFilters(card, true));
 
     const getNumericId = (id) => {
         const match = id.match(/\d+/);

@@ -1,5 +1,4 @@
 import { state } from './state.js';
-import { currencyData } from './currency.js';
 import translations from './i18n.js';
 
 const useJaNames = () => state.currentLang !== 'ko';
@@ -113,10 +112,7 @@ function renderStats(container, total, stats, topChar) {
     const t = translations[state.currentLang];
     const totalJewels = total * 250;
     const yenPerJewel = 1.1951;
-    let priceDisplay = isJa ? 
-        `${totalJewels.toLocaleString()} (￥${Math.floor(totalJewels * yenPerJewel).toLocaleString()})` : 
-        `${totalJewels.toLocaleString()} (₩${Math.floor(totalJewels * yenPerJewel * currencyData.rate).toLocaleString()})`;
-
+    let priceDisplay = `${totalJewels.toLocaleString()} (￥${Math.floor(totalJewels * yenPerJewel).toLocaleString()})`;
     const getPerc = (c) => ((c / total) * 100).toFixed(1) + '%';
     const labels = {
         total: t.gacha_log_total_count,

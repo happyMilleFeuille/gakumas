@@ -16,7 +16,7 @@
     <meta name="robots" content="index,follow">
     <script>
         // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
-        const APP_VERSION = '1.6.6';
+        const APP_VERSION = '1.6.7';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
@@ -41,7 +41,8 @@
                 'calcEvents.js', 'calcLogic.js', 'calcModals.js', 'calcOptions.js',
                 'calcRecommend.js', 'calcUI.js', 'gacha-ui-render.js', 'gacha-utils.js',
                 'pssrInfoModal.js', 'possessionModal.js', 'idolPossessionModal.js', 'orderHistoryModal.js',
-                'firebase-auth.js', 'firebase-sync.js', 'storage-override.js', 'firebase-sync-modal.js'
+                'firebase-auth.js', 'firebase-sync.js', 'storage-override.js', 'firebase-sync-modal.js',
+                'datepicker.js'
             ];
             const imports = {};
             jsFiles.forEach(file => {
@@ -99,19 +100,22 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="stylesheet" href="css/base.css?v=1.6.6">
-    <link rel="stylesheet" href="css/idol.css?v=1.6.6">
-    <link rel="stylesheet" href="css/support.css?v=1.6.6">
-    <link rel="stylesheet" href="css/gacha.css?v=1.6.6">
-    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.6.6">
-    <link rel="stylesheet" href="css/gachalog.css?v=1.6.6">
-    <link rel="stylesheet" href="css/gacharates.css?v=1.6.6">
-    <link rel="stylesheet" href="css/gacha_anim.css?v=1.6.6">
-    <link rel="stylesheet" href="css/calc.css?v=1.6.6">
-    <link rel="stylesheet" href="css/stat-detail.css?v=1.6.6">
-    <link rel="stylesheet" href="css/memory.css?v=1.6.6">
-    <link rel="stylesheet" href="css/home.css?v=1.6.6">
-    <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.6.6">
+    <link rel="stylesheet" href="css/base.css?v=1.6.7">
+    <link rel="stylesheet" href="css/idol.css?v=1.6.7">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+    <link rel="stylesheet" href="css/support.css?v=1.6.7">
+    <link rel="stylesheet" href="css/gacha.css?v=1.6.7">
+    <link rel="stylesheet" href="css/gacha-drawer.css?v=1.6.7">
+    <link rel="stylesheet" href="css/gachalog.css?v=1.6.7">
+    <link rel="stylesheet" href="css/gacharates.css?v=1.6.7">
+    <link rel="stylesheet" href="css/gacha_anim.css?v=1.6.7">
+    <link rel="stylesheet" href="css/calc.css?v=1.6.7">
+    <link rel="stylesheet" href="css/stat-detail.css?v=1.6.7">
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="css/memory.css?v=1.6.7">
+    <link rel="stylesheet" href="css/home.css?v=1.6.7">
+    <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.6.7">
 
     <!-- Character Icon Preload for Performance -->
     <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
@@ -321,7 +325,7 @@
     </div>
 
 
-    <script type="module" src="main.js?v=1.6.6"></script>
+    <script type="module" src="main.js?v=1.6.7"></script>
 
     <!-- Templates for Dynamic Content -->
     <template id="tpl-home">
@@ -501,6 +505,7 @@
         </div>
 
         <div class="disclaimer-container">
+            <p class="last-update">・Last Update: 2026-07-04</p>
             <p data-i18n="disclaimer_1">Gakumas Note (gakunote / 학마노트 / 学ノート) provides a gacha simulator and support
                 card calculator.</p>
             <p data-i18n="disclaimer_2">Unofficial fan site for Gakuen Idolmaster.</p>
@@ -591,6 +596,14 @@
                     </button>
                 </div>
                 <div class="sort-group">
+                    <div class="pc-only-date-filter"
+                        style="display: flex; align-items: center; gap: 4px; margin-right: 8px;">
+                        <input type="text" id="date-filter-start" class="sort-select"
+                            style="padding: 2px; width: 96px; text-align: center; cursor: pointer; outline: none;">
+                        <span style="color: #666; font-size: 0.8rem;">~</span>
+                        <input type="text" id="date-filter-end" class="sort-select"
+                            style="padding: 2px; width: 96px; text-align: center; cursor: pointer; outline: none;">
+                    </div>
                     <select id="sort-select" class="sort-select">
                         <option value="id" data-i18n="ui_sort_latest">최신순</option>
                         <option value="lb" data-i18n="ui_sort_lb">돌파순</option>

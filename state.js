@@ -50,7 +50,11 @@ export const state = {
         attr: [],
         source: [],
         rarity: [],
-        ability: []
+        ability: [],
+        dateRange: { 
+            start: '2024-05-16', 
+            end: new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0] 
+        }
     }),
     roadmapFilters: (() => {
         const defaults = {
@@ -89,6 +93,15 @@ export const state = {
     activeUnitId: localStorage.getItem('activeUnitId') || 'michinaruunit',
     activeFesId: localStorage.getItem('activeFesId') || 'ssrtsubame_campusfes'
 };
+
+// 마이그레이션: 기존 세션에 dateRange가 없는 경우 초기화
+if (!state.filters.dateRange) {
+    state.filters.dateRange = { 
+        start: '2024-05-16', 
+        end: new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0] 
+    };
+    sessionStorage.setItem('filters', JSON.stringify(state.filters));
+}
 
 export function setActiveFesId(id) {
     state.activeFesId = id;

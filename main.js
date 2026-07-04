@@ -215,6 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updatePageTranslations();
             syncLangControl();
             closeLangDropdown();
+            
+            import('./datepicker.js').then(m => m.updateDatePickerLanguage());
 
             if (document.querySelector('.pssr-roadmap-container')) {
                 import('./ui.js').then(m => {
@@ -503,6 +505,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 브라우저 뒤로가기 버튼 처리
     window.addEventListener('popstate', (event) => {
+        const customConfirmModal = document.getElementById('custom-confirm-modal');
+        if (customConfirmModal) {
+            customConfirmModal.remove();
+            return;
+        }
+
         // 저장방식 선택 모달이 열려있는 경우, 저장방식 선택 모달만 닫음
         const saveOptionsModal = document.querySelector('.possession-save-options-content')?.closest('.modal');
         if (saveOptionsModal && saveOptionsModal.style.display !== 'none' && !saveOptionsModal.classList.contains('hidden')) {
