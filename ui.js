@@ -292,7 +292,7 @@ function applyLastUpdateText(dateStr) {
     const targetDate = dateStr || sessionStorage.getItem('latestCommitDate');
     if (!targetDate) return;
     document.querySelectorAll('.last-update').forEach(el => {
-        el.textContent = `・Last Update: ${targetDate}`;
+        el.textContent = `・Last Updated: ${targetDate}`;
     });
 }
 
