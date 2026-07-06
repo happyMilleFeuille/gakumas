@@ -1211,11 +1211,11 @@ export const produceList = [
         id: "ssrchina_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-11", source: "normal", jumpTime2: 11.3,
         item: {
             name: "温泉の後のお楽しみ",
-            desc: "스킬카드를 4회 사용할 때마다\n✦ 集中1.3倍\n✦ 固定genki2\n✦ inlesson2",
+            desc: "스킬카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki2\n✦ inlesson2",
             desc_ja: "スキルカードを4回使用するごとに、\n✦ 集中1.3倍\n✦ 固定genki2\n✦ inlesson2",
         },
         itemplus: {
-            desc: "스킬카드를 4회 사용할 때마다\n✦ 集中1.3倍\n✦ 固定genki7\n✦ inlesson2",
+            desc: "스킬카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki7\n✦ inlesson2",
             desc_ja: "スキルカードを4回使用するごとに、\n✦ 集中1.3倍\n✦ 固定genki7\n✦ inlesson2",
         },
         card: {
