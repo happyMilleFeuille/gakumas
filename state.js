@@ -7,6 +7,13 @@ const safeSessionParse = (key, def) => {
     try { return JSON.parse(sessionStorage.getItem(key)) || def; } catch { return def; }
 };
 
+const getTodayStr = () => {
+    // 한국/일본 표준시(UTC+9) 기준으로 오늘 날짜 고정 계산 (미국 등 해외 사용자 오차 방지)
+    const tzOffset = 9 * 60 * 60 * 1000;
+    const jstDate = new Date(Date.now() + tzOffset);
+    return `${jstDate.getUTCFullYear()}-${String(jstDate.getUTCMonth() + 1).padStart(2, '0')}-${String(jstDate.getUTCDate()).padStart(2, '0')}`;
+};
+
 // 초기화 및 마이그레이션 로직
 let storedPulls = safeParse('totalPullsObj', null);
 if (!storedPulls) {
@@ -53,7 +60,7 @@ export const state = {
         ability: [],
         dateRange: { 
             start: '2024-05-16', 
-            end: new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0] 
+            end: getTodayStr() 
         }
     }),
     roadmapFilters: (() => {
@@ -98,7 +105,7 @@ export const state = {
 if (!state.filters.dateRange) {
     state.filters.dateRange = { 
         start: '2024-05-16', 
-        end: new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0] 
+        end: getTodayStr() 
     };
     sessionStorage.setItem('filters', JSON.stringify(state.filters));
 }

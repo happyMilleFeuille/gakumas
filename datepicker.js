@@ -4,6 +4,28 @@ import { checkCardMatchFilters, normalizeDateStr } from './ui.js';
 
 let startPicker = null;
 let endPicker = null;
+let savedRenderCallback = null;
+let lastWidth = window.innerWidth;
+
+const getTodayStr = () => {
+    const tzOffset = 9 * 60 * 60 * 1000;
+    const d = new Date(Date.now() + tzOffset);
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+};
+
+window.addEventListener('resize', () => {
+    const currentWidth = window.innerWidth;
+    const wasMobile = lastWidth <= 768;
+    const isNowMobile = currentWidth <= 768;
+
+    if (wasMobile !== isNowMobile) {
+        if (startPicker) startPicker.destroy();
+        if (endPicker) endPicker.destroy();
+        initDatePicker(savedRenderCallback);
+        syncDateModifiedClass();
+    }
+    lastWidth = currentWidth;
+});
 
 // 현재 선택된 필터 조건에 들어맞는 서포트 카드의 출시일만 추출
 const getCardReleaseDates = () => {
@@ -49,9 +71,10 @@ const markSpecialDates = (fp, specialDates) => {
 };
 
 export function initDatePicker(renderCallback) {
+    const isMobile = window.innerWidth <= 768;
     const dateStartEl = document.querySelector('#date-filter-start');
     const dateEndEl = document.querySelector('#date-filter-end');
-    
+
     if (!dateStartEl || !dateEndEl) return;
 
     const specialDates = getCardReleaseDates();
@@ -70,13 +93,29 @@ export function initDatePicker(renderCallback) {
         }
     };
 
+    const updateUnifiedHeader = (fp) => {
+        const currentMonthContainer = fp.calendarContainer.querySelector('.flatpickr-current-month');
+        if (currentMonthContainer) {
+            let unifiedSpan = currentMonthContainer.querySelector('.flatpickr-unified-header');
+            if (!unifiedSpan) {
+                unifiedSpan = document.createElement('span');
+                unifiedSpan.className = 'flatpickr-unified-header';
+                currentMonthContainer.appendChild(unifiedSpan);
+            }
+            const year = fp.currentYear;
+            const month = String(fp.currentMonth + 1).padStart(2, '0');
+            unifiedSpan.textContent = `${year}. ${month}.`;
+        }
+    };
+
     const commonOptions = {
         locale: customLocale,
+        dateFormat: "Y-m-d",
         minDate: "2024-05-16",
         disableMobile: "true",
         monthSelectorType: "static",
-        static: true,
-        onDayCreate: function(dObj, dStr, fp, dayElem) {
+        static: !isMobile,
+        onDayCreate: function (dObj, dStr, fp, dayElem) {
             const currentDates = getCardReleaseDates();
             const year = dayElem.dateObj.getFullYear();
             const month = String(dayElem.dateObj.getMonth() + 1).padStart(2, '0');
@@ -89,19 +128,52 @@ export function initDatePicker(renderCallback) {
                 dayElem.classList.remove('has-update');
             }
         },
-        onMonthChange: function(selectedDates, dateStr, fp) {
+        onReady: function (selectedDates, dateStr, fp) {
+            updateUnifiedHeader(fp);
+        },
+        onMonthChange: function (selectedDates, dateStr, fp) {
+            updateUnifiedHeader(fp);
             setTimeout(() => updateDatePickerDots(), 10);
         },
-        onYearChange: function(selectedDates, dateStr, fp) {
+        onYearChange: function (selectedDates, dateStr, fp) {
+            updateUnifiedHeader(fp);
             setTimeout(() => updateDatePickerDots(), 10);
         },
-        onOpen: function(selectedDates, dateStr, fp) {
-            const dropdown = document.querySelector('#ability-dropdown');
-            if (dropdown) dropdown.style.setProperty('overflow-y', 'visible', 'important');
+        onPosition: function (selectedDates, dateStr, fp) {
+            if (isMobile) {
+                const input = fp.input;
+                const calendar = fp.calendarContainer;
+                if (input && calendar) {
+                    const rect = input.getBoundingClientRect();
+                    calendar.style.position = 'fixed';
+                    calendar.style.top = (rect.bottom + 4) + 'px';
+                    calendar.style.left = rect.left + 'px';
+                    calendar.style.right = 'auto';
+
+                    const calWidth = calendar.offsetWidth || 230;
+                    if (rect.left + calWidth > window.innerWidth) {
+                        calendar.style.left = (window.innerWidth - calWidth - 10) + 'px';
+                    }
+                }
+            }
         },
-        onClose: function(selectedDates, dateStr, fp) {
-            const dropdown = document.querySelector('#ability-dropdown');
-            if (dropdown) dropdown.style.setProperty('overflow-y', 'auto', 'important');
+        onOpen: function (selectedDates, dateStr, fp) {
+            updateUnifiedHeader(fp);
+            const dropdown = document.querySelector('.ability-dropdown');
+            if (dropdown) {
+                dropdown.classList.add('flatpickr-open');
+                if (!dropdown.dataset.hasScrollListener) {
+                    dropdown.dataset.hasScrollListener = 'true';
+                    dropdown.addEventListener('scroll', () => {
+                        if (startPicker && startPicker.isOpen) startPicker.close();
+                        if (endPicker && endPicker.isOpen) endPicker.close();
+                    }, { passive: true });
+                }
+            }
+        },
+        onClose: function (selectedDates, dateStr, fp) {
+            const dropdown = document.querySelector('.ability-dropdown');
+            if (dropdown) dropdown.classList.remove('flatpickr-open');
         }
     };
 
@@ -113,15 +185,16 @@ export function initDatePicker(renderCallback) {
         btn.title = "날짜 초기화";
         // 달력 상단 좌측에 고정 배치
         btn.style.cssText = "position: absolute; top: 6px; left: 10px; padding: 4px; font-size: 1.1rem; font-weight: bold; z-index: 100; border: none; background: transparent; cursor: pointer; color: #3f4458; opacity: 0.7;";
-        
+
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             fp.setDate(defaultDateStr);
             fp.close();
-            
+
             if (isStart) state.filters.dateRange.start = defaultDateStr;
             else state.filters.dateRange.end = defaultDateStr;
-            
+
+            fp.input.classList.remove('is-modified');
             sessionStorage.setItem('filters', JSON.stringify(state.filters));
             if (renderCallback) renderCallback();
         });
@@ -131,7 +204,8 @@ export function initDatePicker(renderCallback) {
     startPicker = flatpickr(dateStartEl, {
         ...commonOptions,
         defaultDate: state.filters.dateRange.start || "2024-05-16",
-        onReady: function(selectedDates, dateStr, fp) {
+        onReady: function (selectedDates, dateStr, fp) {
+            updateUnifiedHeader(fp);
             createResetButton(fp, "2024-05-16", true);
             updateDatePickerDots();
             fp.calendarContainer.classList.add('picker-align-left');
@@ -140,22 +214,24 @@ export function initDatePicker(renderCallback) {
                 fp.currentYearElement.style.cursor = 'default';
             }
         },
-        onChange: function(selectedDates, dateStr) {
+        onChange: function (selectedDates, dateStr) {
             if (!dateStr) {
                 dateStr = '2024-05-16';
                 startPicker.setDate(dateStr);
             }
             state.filters.dateRange.start = dateStr;
             sessionStorage.setItem('filters', JSON.stringify(state.filters));
+            syncDateModifiedClass();
             if (renderCallback) renderCallback();
         }
     });
 
     endPicker = flatpickr(dateEndEl, {
         ...commonOptions,
-        defaultDate: state.filters.dateRange.end || new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0],
-        onReady: function(selectedDates, dateStr, fp) {
-            createResetButton(fp, new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0], false);
+        defaultDate: state.filters.dateRange.end || getTodayStr(),
+        onReady: function (selectedDates, dateStr, fp) {
+            updateUnifiedHeader(fp);
+            createResetButton(fp, getTodayStr(), false);
             updateDatePickerDots();
             fp.calendarContainer.classList.add('picker-align-right');
             if (fp.currentYearElement) {
@@ -163,16 +239,38 @@ export function initDatePicker(renderCallback) {
                 fp.currentYearElement.style.cursor = 'default';
             }
         },
-        onChange: function(selectedDates, dateStr) {
+        onChange: function (selectedDates, dateStr) {
             if (!dateStr) {
-                dateStr = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                dateStr = getTodayStr();
                 endPicker.setDate(dateStr);
             }
             state.filters.dateRange.end = dateStr;
             sessionStorage.setItem('filters', JSON.stringify(state.filters));
+            syncDateModifiedClass();
             if (renderCallback) renderCallback();
         }
     });
+
+    // picker 초기화 완료 후 is-modified 동기화
+    syncDateModifiedClass();
+}
+
+// 날짜 input의 is-modified 클래스를 현재 state 기준으로 동기화
+// 기본값이면 제거, 아니면 추가. 이것만 하면 됨.
+export function syncDateModifiedClass() {
+    const defaultStart = '2024-05-16';
+    const defaultEnd = getTodayStr();
+    const dateStartEl = document.querySelector('#date-filter-start');
+    const dateEndEl = document.querySelector('#date-filter-end');
+
+    if (dateStartEl) {
+        const val = state.filters.dateRange.start || defaultStart;
+        dateStartEl.classList.toggle('is-modified', val !== defaultStart);
+    }
+    if (dateEndEl) {
+        const val = state.filters.dateRange.end || defaultEnd;
+        dateEndEl.classList.toggle('is-modified', val !== defaultEnd);
+    }
 }
 
 export function syncDatePickerUI() {
@@ -182,6 +280,7 @@ export function syncDatePickerUI() {
     if (endPicker && state.filters.dateRange.end) {
         endPicker.setDate(state.filters.dateRange.end, false);
     }
+    syncDateModifiedClass();
 }
 
 // 달력 밖 영역 클릭/터치 시 닫기

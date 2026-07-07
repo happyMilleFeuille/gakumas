@@ -8,10 +8,11 @@ import { calcStore } from './calcStore.js';
 import { renderPSSRRoadmap } from './roadmap.js';
 import { showCardModal } from './cardModal.js';
 import { pItemDescriptions } from './pItemData.js';
-import { initDatePicker, syncDatePickerUI, updateDatePickerDots } from './datepicker.js';
+import { initDatePicker, syncDatePickerUI, updateDatePickerDots, syncDateModifiedClass } from './datepicker.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
+
 export const PRESET_EXPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSafeNbHyCmIU9YHHXX-mdtKukA8fcEHlWkzOegXxOwQTUnoSp4MKa_EMBkQU_PuiE/exec';
 
 // 계산기 화면 복귀 이벤트 리스너
@@ -1188,7 +1189,8 @@ function setupStaticListeners(container) {
             updateSupportGrid(container);
         });
         document.addEventListener('click', (e) => {
-            if (!abilityDropdownBtn.contains(e.target) && !abilityDropdown.contains(e.target)) {
+            const inFlatpickr = e.target.closest('.flatpickr-calendar');
+            if (!abilityDropdownBtn.contains(e.target) && !abilityDropdown.contains(e.target) && !inFlatpickr) {
                 abilityDropdown.classList.add('hidden');
             }
         });
@@ -1397,32 +1399,12 @@ function syncFilterUI(container) {
     const dropdownBtn = container.querySelector('#btn-ability-dropdown');
     if (dropdownBtn) {
         const isMobile = window.innerWidth <= 768;
-        const defaultStart = '2024-05-16';
-        const defaultEnd = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-        
-        const isDateModified = isMobile && state.filters.dateRange && (
-            (state.filters.dateRange.start && state.filters.dateRange.start !== defaultStart) ||
-            (state.filters.dateRange.end && state.filters.dateRange.end !== defaultEnd)
-        );
+        const isDateModified = isMobile && (document.querySelector('#date-filter-start.is-modified') || document.querySelector('#date-filter-end.is-modified'));
         dropdownBtn.classList.toggle('has-active', state.filters.ability.length > 0 || !!isDateModified);
     }
 
-    // Toggle is-modified class on inputs if they differ from defaults
-    const dateStartEl = container.querySelector('#date-filter-start');
-    const dateEndEl = container.querySelector('#date-filter-end');
-    if (state.filters.dateRange) {
-        const defaultStart = '2024-05-16';
-        const defaultEnd = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-        
-        if (dateStartEl) {
-            const isStartModified = state.filters.dateRange.start && state.filters.dateRange.start !== defaultStart;
-            dateStartEl.classList.toggle('is-modified', isStartModified);
-        }
-        if (dateEndEl) {
-            const isEndModified = state.filters.dateRange.end && state.filters.dateRange.end !== defaultEnd;
-            dateEndEl.classList.toggle('is-modified', isEndModified);
-        }
-    }
+    // 날짜 input의 is-modified 동기화 (datepicker.js의 단일 함수에 위임)
+    syncDateModifiedClass();
 
     const toggleBtn = container.querySelector('#btn-toggle-extra');
     const extraWrapper = container.querySelector('#extra-filters');
