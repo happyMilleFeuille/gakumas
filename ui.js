@@ -970,6 +970,29 @@ export function renderSupport() {
     updateDatePickerDots();
 }
 
+function adjustDateFilterPosition(container) {
+    const wrapper = container.querySelector('.date-filter-wrapper');
+    if (!wrapper) return;
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+        const abilityDropdown = container.querySelector('#ability-dropdown');
+        if (abilityDropdown) {
+            const resetBtn = abilityDropdown.querySelector('.ability-reset-btn');
+            if (resetBtn) {
+                abilityDropdown.insertBefore(wrapper, resetBtn);
+            } else {
+                abilityDropdown.appendChild(wrapper);
+            }
+        }
+    } else {
+        const sortGroup = container.querySelector('.sort-group');
+        const sortSelect = container.querySelector('#sort-select');
+        if (sortGroup && sortSelect) {
+            sortGroup.insertBefore(wrapper, sortSelect);
+        }
+    }
+}
+
 function setupStaticListeners(container) {
     const topRightBtn = container.querySelector('#btn-support-top-right');
     if (topRightBtn) {
@@ -1119,6 +1142,13 @@ function setupStaticListeners(container) {
             e.stopPropagation();
             abilityDropdown.classList.toggle('hidden');
         });
+
+        adjustDateFilterPosition(container);
+        if (window.supportResizeListener) {
+            window.removeEventListener('resize', window.supportResizeListener);
+        }
+        window.supportResizeListener = () => adjustDateFilterPosition(container);
+        window.addEventListener('resize', window.supportResizeListener);
         abilityDropdown.addEventListener('click', (e) => {
             e.stopPropagation();
             const resetBtn = e.target.closest('.ability-reset-btn');
@@ -1363,10 +1393,35 @@ function syncFilterUI(container) {
         btn.classList.toggle('active', state.filters.ability.includes(val));
     });
 
-    // Dropdown trigger button: highlight if any ability filter is active
+    // Dropdown trigger button: highlight if any ability filter is active (and also date filters on mobile)
     const dropdownBtn = container.querySelector('#btn-ability-dropdown');
     if (dropdownBtn) {
-        dropdownBtn.classList.toggle('has-active', state.filters.ability.length > 0);
+        const isMobile = window.innerWidth <= 768;
+        const defaultStart = '2024-05-16';
+        const defaultEnd = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+        
+        const isDateModified = isMobile && state.filters.dateRange && (
+            (state.filters.dateRange.start && state.filters.dateRange.start !== defaultStart) ||
+            (state.filters.dateRange.end && state.filters.dateRange.end !== defaultEnd)
+        );
+        dropdownBtn.classList.toggle('has-active', state.filters.ability.length > 0 || !!isDateModified);
+    }
+
+    // Toggle is-modified class on inputs if they differ from defaults
+    const dateStartEl = container.querySelector('#date-filter-start');
+    const dateEndEl = container.querySelector('#date-filter-end');
+    if (state.filters.dateRange) {
+        const defaultStart = '2024-05-16';
+        const defaultEnd = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+        
+        if (dateStartEl) {
+            const isStartModified = state.filters.dateRange.start && state.filters.dateRange.start !== defaultStart;
+            dateStartEl.classList.toggle('is-modified', isStartModified);
+        }
+        if (dateEndEl) {
+            const isEndModified = state.filters.dateRange.end && state.filters.dateRange.end !== defaultEnd;
+            dateEndEl.classList.toggle('is-modified', isEndModified);
+        }
     }
 
     const toggleBtn = container.querySelector('#btn-toggle-extra');

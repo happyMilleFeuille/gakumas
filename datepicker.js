@@ -75,7 +75,7 @@ export function initDatePicker(renderCallback) {
         minDate: "2024-05-16",
         disableMobile: "true",
         monthSelectorType: "static",
-        static: true,
+        static: window.innerWidth > 768,
         onDayCreate: function(dObj, dStr, fp, dayElem) {
             const currentDates = getCardReleaseDates();
             const year = dayElem.dateObj.getFullYear();

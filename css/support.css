@@ -1729,10 +1729,52 @@ select.sort-select {
 
 /* ====== Flatpickr 커스터마이징 ====== */
 
-/* 모바일에서 기존 date-filter 숨김 */
+/* 모바일에서 기존 date-filter 숨김 및 상세 필터(툴팁) 내부 배치 스타일 */
 @media (max-width: 768px) {
-    .pc-only-date-filter {
+    .sort-group .pc-only-date-filter {
         display: none !important;
+    }
+
+    .ability-dropdown .pc-only-date-filter {
+        grid-column: 1 / -1;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #eee;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .ability-dropdown .pc-only-date-filter input {
+        font-size: 0.6rem !important;
+        height: 1.25rem !important;
+        width: 40% !important; /* 툴팁 전체 너비의 약 40% 크기로 유동적 적용 */
+        min-width: 60px !important;
+        border-radius: 4px !important;
+        border: 1px solid #eee !important;
+        text-align: center !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        background-image: url('../icons/calendar.svg') !important; /* 달력 아이콘 복원 */
+        background-repeat: no-repeat !important;
+        background-position: calc(100% - 4px) center !important;
+        background-size: 10px 10px !important;
+        padding-left: 2px !important;
+        padding-right: 15px !important; /* 아이콘과 텍스트가 겹치지 않도록 패딩 부여 */
+    }
+
+    .ability-dropdown .pc-only-date-filter span {
+        color: #999 !important;
+        font-size: 0.65rem !important;
+    }
+
+    /* 모바일에서 flatpickr 달력 크기 축소 */
+    .flatpickr-calendar {
+        transform: scale(0.8) !important;
+        transform-origin: center top !important;
     }
 }
 
@@ -1744,6 +1786,14 @@ select.sort-select {
     background-size: 13px 13px;
     padding-left: 6px !important;
     padding-right: 22px !important;
+}
+
+#date-filter-start.is-modified,
+#date-filter-end.is-modified {
+    background-color: rgba(255, 77, 141, 0.12) !important;
+    background-color: color-mix(in srgb, var(--idol-theme-color, #ff4d8d) 12%, transparent) !important;
+    border-color: rgba(255, 77, 141, 0.3) !important;
+    border-color: color-mix(in srgb, var(--idol-theme-color, #ff4d8d) 30%, transparent) !important;
 }
 
 .pc-only-date-filter input[type="date"]::selection {
@@ -1905,18 +1955,25 @@ body {
     overflow-x: hidden !important;
 }
 
-/* 시작 날짜(왼쪽) 달력: 우측 정렬 후 픽셀 이동 */
-.flatpickr-calendar.picker-align-left {
-    right: 0 !important;
-    left: auto !important;
-    transform: translateX(-30px) !important;
+/* flatpickr 캘린더가 모바일 상세 필터 툴팁(z-index: 100020)보다 위에 오도록 설정 */
+.flatpickr-calendar {
+    z-index: 100030 !important;
 }
 
-/* 종료 날짜(오른쪽) 달력: 좌측 정렬 후 픽셀 이동 */
-.flatpickr-calendar.picker-align-right {
-    left: 0 !important;
-    right: auto !important;
-    transform: translateX(-30px) !important;
+@media (min-width: 769px) {
+    /* 시작 날짜(왼쪽) 달력: 우측 정렬 후 픽셀 이동 */
+    .flatpickr-calendar.picker-align-left {
+        right: 0 !important;
+        left: auto !important;
+        transform: translateX(-30px) !important;
+    }
+
+    /* 종료 날짜(오른쪽) 달력: 좌측 정렬 후 픽셀 이동 */
+    .flatpickr-calendar.picker-align-right {
+        left: 0 !important;
+        right: auto !important;
+        transform: translateX(-30px) !important;
+    }
 }
 
 /* 오늘 날짜(.today) 셀이 우측 테두리선만 튀어나오지 않도록 border-right 제거하여 일반 셀과 완전히 일치시킴 */
