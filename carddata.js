@@ -3435,7 +3435,7 @@ export const cardList = [
     },
     {
         id: "dance_srlimitedlogic4",
-        name: "묵직한 수박으로 딜리셔스",
+        name: "묵직한 수박 딜리셔스",
         name_ja: "ずっしりスイカでりしゃす",
         type: "dance",
         releasedAt: "2026-07-08",
