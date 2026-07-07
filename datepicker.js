@@ -75,7 +75,7 @@ export function initDatePicker(renderCallback) {
         minDate: "2024-05-16",
         disableMobile: "true",
         monthSelectorType: "static",
-        static: window.innerWidth > 768,
+        static: true,
         onDayCreate: function(dObj, dStr, fp, dayElem) {
             const currentDates = getCardReleaseDates();
             const year = dayElem.dateObj.getFullYear();
@@ -94,6 +94,14 @@ export function initDatePicker(renderCallback) {
         },
         onYearChange: function(selectedDates, dateStr, fp) {
             setTimeout(() => updateDatePickerDots(), 10);
+        },
+        onOpen: function(selectedDates, dateStr, fp) {
+            const dropdown = document.querySelector('#ability-dropdown');
+            if (dropdown) dropdown.style.setProperty('overflow-y', 'visible', 'important');
+        },
+        onClose: function(selectedDates, dateStr, fp) {
+            const dropdown = document.querySelector('#ability-dropdown');
+            if (dropdown) dropdown.style.setProperty('overflow-y', 'auto', 'important');
         }
     };
 

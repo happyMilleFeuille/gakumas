@@ -1748,11 +1748,16 @@ select.sort-select {
         box-sizing: border-box !important;
     }
 
+    .ability-dropdown .pc-only-date-filter .flatpickr-wrapper {
+        width: 40% !important; /* 툴팁 전체 너비의 약 40% 크기로 유동적 적용 */
+        min-width: 60px !important;
+        display: inline-block !important;
+    }
+
     .ability-dropdown .pc-only-date-filter input {
         font-size: 0.6rem !important;
         height: 1.25rem !important;
-        width: 40% !important; /* 툴팁 전체 너비의 약 40% 크기로 유동적 적용 */
-        min-width: 60px !important;
+        width: 100% !important; /* Wrapper 너비를 100% 채움 */
         border-radius: 4px !important;
         border: 1px solid #eee !important;
         text-align: center !important;
