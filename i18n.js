@@ -256,7 +256,7 @@ const translations = {
         extra_del: "스킬카드를 선택해 삭제",
         extra_enhance: "카드를 선택해 강화",
         extra_ranenhance: "랜덤 스킬카드 강화",
-        extra_ranchange: "이름에 「기본」이 포함된 무작위 스킬 카드를 다른 스킬 카드로 체인지",
+        extra_ranchange: "이름에 \"기본\"이 포함된 무작위 스킬 카드를 다른 스킬 카드로 체인지",
         extra_troubledel: "무작위 트러블 카드 삭제",
         extra_param: "{type} 상승+{val}",
         gacha_title: "가챠 시뮬레이션",

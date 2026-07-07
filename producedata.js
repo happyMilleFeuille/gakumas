@@ -2352,6 +2352,27 @@ export const produceList = [
         }
     },
     {
+        id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
+        item: {
+            name: "ユートピアへの誘い",
+            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki4\n✦ 액티브 스킬카드의 파라미터치 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
+            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
+        },
+        itemplus: {
+            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki6\n✦ 액티브 스킬카드의 파라미터치 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
+            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki6\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
+        },
+        card: {
+            name: "踊り狂え！",
+            desc: "✦ 강기로 지침 변경\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터치 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ 強気に変更\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+2・元気値増加+1\n <span style='color:#8B8FD8'>nooverlab",
+        },
+        cardplus: {
+            desc: "✦ 강기로 지침 변경\n✦ param2 (2회)\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터치 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ 強気に変更\n✦ param2（2回）\n✦ genki2\n✦ fullpower2\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+2・元気値増加+1\n <span style='color:#8B8FD8'>nooverlab",
+        }
+    },
+    {
         id: "ssrsaki_gomywaydist", name: "GO MY WAY!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "dist", jumpTime2: 7.4, releasedAt: "2026-06-26",
         item: {
             name: "ふらいとライオン",
@@ -2394,24 +2415,24 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
+        id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.4, releasedAt: "2026-07-08",
         item: {
-            name: "ユートピアへの誘い",
-            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki4\n✦ 액티브 스킬카드의 파라미터치 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
-            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
+            name: "アイドル博士の必需品",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
         },
         itemplus: {
-            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki6\n✦ 액티브 스킬카드의 파라미터치 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
-            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki6\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
+            desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴 draw1\n✦ inlesson3",
+            desc_ja: "好印象が10以上の場合、アクティブスキルカードを2回使用するごとに、\n✦ goodimpression6\n✦ 次のターン、draw1\n✦ inlesson3",
         },
         card: {
-            name: "踊り狂え！",
-            desc: "✦ 강기로 지침 변경\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터치 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
-            desc_ja: "✦ 強気に変更\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+2・元気値増加+1\n <span style='color:#8B8FD8'>nooverlab",
+            name: "これぞアイドル！",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경\n✦ param2 (2회)\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터치 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
-            desc_ja: "✦ 強気に変更\n✦ param2（2回）\n✦ genki2\n✦ fullpower2\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+2・元気値増加+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ goodimpression2\n✦ 호인상이 10이상일 경우, 다음 턴 호인상의 440%만큼 파라미터 상승\n✦ 호인상이 15이상일 경우, 2턴 후 호인상의 550%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression2\n✦ 好印象が10以上の場合、次のターン、好印象の440%分パラメータ上昇\n✦ 好印象が15以上の場合、2ターン後、好印象の550%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
 

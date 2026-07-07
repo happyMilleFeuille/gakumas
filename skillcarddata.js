@@ -197,6 +197,7 @@ export const skillCardList = {
     "logic-ssrume_1st": { type: "mental", attrs: ["genki"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrume_3rd": { type: "mental", attrs: ["genki", "motivation"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrume_starmineunit": { type: "mental", attrs: ["genki", "goodimpression"], rarity: "SSR", isKyoukaOnly: true },
+    "logic-ssrume_gomywaylimited": { type: "active", attrs: ["goodimpression"], rarity: "SSR", isKyoukaOnly: true },
 
     // --- Sense ---
     "sense-legend1": { type: "mental", attrs: ["goodcondition", "concentration"], rarity: "Legend" },

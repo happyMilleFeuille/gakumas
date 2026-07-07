@@ -646,6 +646,32 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_limitedlogic4",
+        name: "다음 곡은~ 그 노래다!!",
+        name_ja: "次の曲は～ッあの曲だ！！",
+        type: "vocal",
+        plan: "logic",
+        have: "item",
+        item_effects: [{
+            type: "inexam",
+            jp: "[vocal]アクティブスキルカード使用時、元気が30以下の場合、\n✦ goodimpression3\n✦ パラメータ上昇量増加10%（5ターン）\n✦ inlesson1",
+            kr: "[vocal]액티브카드 사용 시 원기가 30이하일 경우\n✦ goodimpression3\n✦ 파라미터 상승량 증가 10% (5턴)\n✦ inlesson1",
+        }],
+        releasedAt: "2026-07-08",
+        rarity: "SSR",
+        source: "limited",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "percentparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_unitlogic1",
         name: "추억의 보물상자, 네",
         name_ja: "思い出の宝箱だ、ね",
@@ -3404,6 +3430,28 @@ export const cardList = [
                 "supportrateup",
                 "class",
                 "get_goodimpression",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "dance_srlimitedlogic4",
+        name: "묵직한 수박으로 딜리셔스",
+        name_ja: "ずっしりスイカでりしゃす",
+        type: "dance",
+        releasedAt: "2026-07-08",
+        plan: "logic",
+        source: "limited",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["sp"], triggertext: "dance700", targettext: ["hp2"], stats: { dance: 20 }, max: 3 }],
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
