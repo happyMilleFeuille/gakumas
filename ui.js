@@ -1036,6 +1036,15 @@ function setupStaticListeners(container) {
             { key: 'percentparam', name: { ko: '보너스(%)', ja: 'ボーナス(%)', en: 'Bonus(%)' } },
         ];
         for (const entry of specialEntries) {
+            const hasAbility = cardList.some(card => {
+                if (!card.abilities) return false;
+                if (entry.key === 'sp_lessonup') {
+                    return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
+                }
+                return card.abilities.includes(entry.key);
+            });
+            if (!hasAbility) continue;
+
             const btn = document.createElement('button');
             btn.className = 'filter-btn ability-sub-btn';
             btn.dataset.val = entry.key;
@@ -1045,6 +1054,9 @@ function setupStaticListeners(container) {
         // Add all abilityData entries that have name:
         for (const [key, data] of Object.entries(abilityData)) {
             if (!data.name) continue;
+            const hasAbility = cardList.some(card => card.abilities && card.abilities.includes(key));
+            if (!hasAbility) continue;
+
             const btn = document.createElement('button');
             btn.className = 'filter-btn ability-sub-btn';
             btn.dataset.val = key;
