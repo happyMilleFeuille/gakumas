@@ -3840,10 +3840,14 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
     }
     .detail-card-rental-badge {
         font-size: 0.4rem !important;
-        padding: 0.5px 2px !important;
-        bottom: 1px !important;
-        left: 1px !important;
-        border-radius: 1px !important;
+        padding: 1px 3px !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        border-radius: 0 2px 0 0 !important;
+    }
+    .stat-detail-area.has-selection .stat-detail-column-card:not(.selected) .detail-card-flower {
+        width: 6px !important;
+        height: 6px !important;
     }
 }
 
