@@ -400,7 +400,7 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
 
 
                     const selectedCardObj = cardList.find(c => c.id === cardId);
-                    if (selectedCardObj && selectedCardObj.abilities && selectedCardObj.abilities.includes('sp_param20')) {
+                    if (selectedCardObj && selectedCardObj.abilities && selectedCardObj.abilities.some(a => a === 'sp_param20' || a.match(/^get_8\w+4$/))) {
                         showTemporaryToast(t('calc_toast_sp_card_condition'));
                     }
                 }

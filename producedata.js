@@ -2418,8 +2418,8 @@ export const produceList = [
         id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.4, releasedAt: "2026-07-08",
         item: {
             name: "アイドル博士の必需品",
-            desc: "(미확인)",
-            desc_ja: "(未確認)",
+            desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴 draw1\n✦ inlesson2",
+            desc_ja: "好印象が10以上の場合、アクティブスキルカードを2回使用するごとに、\n✦ goodimpression6\n✦ 次のターン、draw1\n✦ inlesson2",
         },
         itemplus: {
             desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴 draw1\n✦ inlesson3",
@@ -2427,8 +2427,8 @@ export const produceList = [
         },
         card: {
             name: "これぞアイドル！",
-            desc: "(미확인)",
-            desc_ja: "(未確認)",
+            desc: "✦ goodimpression2\n✦ 호인상이 10이상일 경우, 다음 턴 호인상의 300%만큼 파라미터 상승\n✦ 호인상이 15이상일 경우, 2턴 후 호인상의 500%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression2\n✦ 好印象が10以上の場合、次のターン、好印象の300%分パラメータ上昇\n✦ 好印象が15以上の場合、2ターン後、好印象の500%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "✦ goodimpression2\n✦ 호인상이 10이상일 경우, 다음 턴 호인상의 440%만큼 파라미터 상승\n✦ 호인상이 15이상일 경우, 2턴 후 호인상의 550%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",

@@ -74,7 +74,7 @@ export const abilityData = {
     },
     "sp_param20": {
         name: { ko: "SP레슨(20장)", ja: "SPレッスン(20枚)", en: "SP Lesson(20Cards)" },
-        format: { ko: "SP레슨 종료시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロヂュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
+        format: { ko: "SP레슨 종료시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロデュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 15, 2: 21 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -180,7 +180,7 @@ export const abilityData = {
         }
     },
     "test_recovery": {
-        format: { ko: "시험・오디션 종료 시, 체력회복+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、体力回復+{val} (プロヂュース中1回)", en: "Recover HP +{val} after Exam or Audition (once during Produce)" },
+        format: { ko: "시험・오디션 종료 시, 체력회복+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、体力回復+{val} (プロデュース中1回)", en: "Recover HP +{val} after Exam or Audition (once during Produce)" },
         levels: {
             "SSR": { 1: 6, 2: 8 },
             "SSR_DIST": { 1: 4, 2: 6 },
@@ -226,6 +226,76 @@ export const abilityData = {
             "SR": { 1: 1, 2: 2 }
         },
         trigger: ["get"],
+    },
+    "get_8goodcondition4": {
+        name: { ko: "카드 획득(호조 8장)", ja: "カード獲得(好調8枚)", en: "Get card(8 Good Cond.)" },
+        format: { ko: "카드 획득 시 소지하고 있는 호조 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している好調効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Good Condition effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
+    },
+    "get_8concentration4": {
+        name: { ko: "카드 획득(집중 8장)", ja: "カード獲得(集中8枚)", en: "Get card(8 Concentration)" },
+        format: { ko: "카드 획득 시 소지하고 있는 집중 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している集中効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Concentration effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
+    },
+    "get_8motivation4": {
+        name: { ko: "카드 획득(의욕 8장)", ja: "カード獲得(やる気8枚)", en: "Get card(8 Motivation)" },
+        format: { ko: "카드 획득 시 소지하고 있는 의욕 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持しているやる気効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Motivation effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
+    },
+    "get_8goodimpression4": {
+        name: { ko: "카드 획득(호인상 8장)", ja: "カード獲得(好印象8枚)", en: "Get card(8 GoodImp.)" },
+        format: { ko: "카드 획득 시 소지하고 있는 호인상 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している好印象効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Good Impression effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
+    },
+    "get_8enthusiasm4": {
+        name: { ko: "카드 획득(강기 8장)", ja: "カード獲得(強気8枚)", en: "Get card(8 Enthu.)" },
+        format: { ko: "카드 획득 시 소지하고 있는 강기 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している強気効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Enthusiasm effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
+    },
+    "get_8fullpower4": {
+        name: { ko: "카드 획득(전력 8장)", ja: "カード獲得(全力8枚)", en: "Get card(8 FullPower)" },
+        format: { ko: "카드 획득 시 소지하고 있는 전력 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している全力効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Fullpower effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
+    },
+    "get_8preservation4": {
+        name: { ko: "카드 획득(온존 8장)", ja: "カード獲得(温存8枚)", en: "Get card(8 Preservation)" },
+        format: { ko: "카드 획득 시 소지하고 있는 온존 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している温存効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Preservation effect, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 17, 2: 22 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["get"], max: 4,
     },
     "get_mental": {
         name: { ko: "카드 획득(멘탈)", ja: "カード獲得(メンタル)", en: "Get card(Mental)" },
@@ -275,7 +345,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 2, 2: 3 },
             "SR": { 1: 2, 2: 3 }
         },
-        trigger: ["get_goodimpression"],
+        trigger: ["get_motivation"],
     },
     "get_motivation": {
         name: { ko: "카드 획득(의욕)", ja: "カード獲得(やる気)", en: "Get card(Motiv.)" },
@@ -339,7 +409,7 @@ export const abilityData = {
     },
     "get_item6": {
         name: { ko: "P아이템 획득(6회)", ja: "Pアイテム獲得(6回)", en: "Get P Item(6 times)" },
-        format: { ko: "P아이템 획득 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "Pアイテム獲得時、{type}上昇+{val} (プロヂュース中6回)", en: "When getting a P Item, {type} Up +{val} (6 times during Produce)" },
+        format: { ko: "P아이템 획득 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "Pアイテム獲得時、{type}上昇+{val} (プロデュース中6回)", en: "When getting a P Item, {type} Up +{val} (6 times during Produce)" },
         levels: {
             "SSR": { 1: 11, 2: 15 },
             "SSR_DIST": { 1: 8, 2: 11 },
@@ -379,7 +449,7 @@ export const abilityData = {
     },
     "gift2": {
         name: { ko: "활동지급/사시이레(2회)", ja: "活動支給・差し入れ(2回)", en: "Supplies/Gift(2 times)" },
-        format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "活動支給・差し入れ選択時、{type}上昇+{val} (プロヂュース中2回)", en: "When choosing Supplies / Gift, {type} Up +{val} (2 times during Produce)" },
+        format: { ko: "활동지급・사시이레 선택 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "活動支給・差し入れ選択時、{type}上昇+{val} (プロデュース中2回)", en: "When choosing Supplies / Gift, {type} Up +{val} (2 times during Produce)" },
         levels: {
             "SSR": { 1: 28, 2: 38 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -407,7 +477,7 @@ export const abilityData = {
     },
     "goout2": {
         name: { ko: "외출(2회)", ja: "おでかけ(2回)", en: "Go Out(2 times)" },
-        format: { ko: "외출 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "おでかけ終了時、{type}上昇+{val} (プロヂュース中2回)", en: "After Go Out, {type} Up +{val} (2 times during Produce)" },
+        format: { ko: "외출 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "おでかけ終了時、{type}上昇+{val} (プロデュース中2回)", en: "After Go Out, {type} Up +{val} (2 times during Produce)" },
         levels: {
             "SSR": { 1: 28, 2: 38 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -438,7 +508,7 @@ export const abilityData = {
     },
     "advice2": {
         name: { ko: "상담(2회)", ja: "相談(2回)", en: "Consultation(2 times)" },
-        format: { ko: "상담 선택 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "相談選択時、{type}上昇+{val} (プロヂュース中2回)", en: "When choosing consultation, {type} Up +{val} (2 times during Produce)" },
+        format: { ko: "상담 선택 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "相談選択時、{type}上昇+{val} (プロデュース中2回)", en: "When choosing consultation, {type} Up +{val} (2 times during Produce)" },
         levels: {
             "SSR": { 1: 28, 2: 38 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -458,7 +528,7 @@ export const abilityData = {
     },
     "test": {
         name: { ko: "시험/오디션", ja: "試験/オーディション", en: "Exam/Audition" },
-        format: { ko: "시험・오디션 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "試験・オーディション終了時、{type}上昇+{val} (プロヂュース中2回)", en: "After Exam or Audition, {type} Up +{val} (2 times during Produce)" },
+        format: { ko: "시험・오디션 종료 시 {type} 상승+{val} (프로듀스 중 2회)", ja: "試験・オーディション終了時、{type}上昇+{val} (プロデュース中2回)", en: "After Exam or Audition, {type} Up +{val} (2 times during Produce)" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
             "SSR_DIST": { 1: 11, 2: 17 },
@@ -468,7 +538,7 @@ export const abilityData = {
     },
     "spclass": {
         name: { ko: "특별지도", ja: "特別指導", en: "Special Guidance" },
-        format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロヂュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },
+        format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロデュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 18, 2: 25 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -487,9 +557,20 @@ export const abilityData = {
         trigger: ["delete"],
 
     },
+    "delete4": {
+        name: { ko: "삭제(4회)", ja: "削除(4回)", en: "Delete(4 times)" },
+        format: { ko: "카드 삭제 시 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード削除時、{type}上昇+{val} (プロデュース中4回)", en: "When deleting a card, {type} Up +{val} (4 times during Produce)" },
+        levels: {
+            "SSR": { 1: 15, 2: 20 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["delete"], max: 4,
+
+    },
     "delete_mental3": {
         name: { ko: "삭제(멘탈)", ja: "削除(メンタル)", en: "Delete(Mental)" },
-        format: { ko: "멘탈카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "アクティブスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When deleting a Mental card, {type} Up +{val} (3 times during Produce)" },
+        format: { ko: "멘탈카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "アクティブスキルカードチェンジ時、{type}上昇+{val} (プロデュース中3回)", en: "When deleting a Mental card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -500,7 +581,7 @@ export const abilityData = {
     },
     "delete_active3": {
         name: { ko: "삭제(액티브)", ja: "削除(アクティブ)", en: "Delete(Active)" },
-        format: { ko: "액티브카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "メンタルスキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When deleting an Active card, {type} Up +{val} (3 times during Produce)" },
+        format: { ko: "액티브카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "メンタルスキルカードチェンジ時、{type}上昇+{val} (プロデュース中3回)", en: "When deleting an Active card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 17, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -511,7 +592,7 @@ export const abilityData = {
     },
     "delete_trouble3": {
         name: { ko: "삭제(트러블)", ja: "削除(トラブル)", en: "Delete(Trouble)" },
-        format: { ko: "트러블카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "トラブルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When deleting an Trouble card, {type} Up +{val} (3 times during Produce)" },
+        format: { ko: "트러블카드 삭제 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "トラブルカードチェンジ時、{type}上昇+{val} (プロデュース中3回)", en: "When deleting an Trouble card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -522,7 +603,7 @@ export const abilityData = {
     },
     "change3": {
         name: { ko: "체인지", ja: "チェンジ", en: "Change" },
-        format: { ko: "카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードチェンジ時、{type}上昇+{val} (プロヂュース中3回)", en: "When changing a card, {type} Up +{val} (3 times during Produce)" },
+        format: { ko: "카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードチェンジ時、{type}上昇+{val} (プロデュース中3回)", en: "When changing a card, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 21 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -533,7 +614,7 @@ export const abilityData = {
     },
     "customize6": {
         name: { ko: "개조(6회)", ja: "カスタマイズ(6回)", en: "Customize(6 times)" },
-        format: { ko: "카드 개조 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "スキルカードカスタマイズ時、{type}上昇+{val} (プロヂュース中6回)", en: "When customizing a card, {type} Up +{val} (6 times during Produce)" },
+        format: { ko: "카드 개조 시 {type} 상승+{val} (프로듀스 중 6회)", ja: "スキルカードカスタマイズ時、{type}上昇+{val} (プロデュース中6回)", en: "When customizing a card, {type} Up +{val} (6 times during Produce)" },
         levels: {
             "SSR": { 1: 8, 2: 11 },
             "SSR_DIST": { 1: 0, 2: 0 },
