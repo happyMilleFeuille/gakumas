@@ -3821,7 +3821,8 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
         padding: 6px 2px 4px 2px !important;
     }
     .stat-header:has(.stat-detail-area:not(.collapsed)) {
-        overflow-x: hidden !important;
+        overflow-x: clip !important;
+        overflow-y: visible !important;
     }
 }
 
