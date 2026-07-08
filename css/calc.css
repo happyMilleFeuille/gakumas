@@ -1079,14 +1079,14 @@
 
 .detail-card-rental-badge {
     position: absolute;
-    bottom: 2px;
-    left: 2px;
+    bottom: 0;
+    left: 0;
     background: #8FDDBA;
     color: white;
     font-size: 0.55rem;
     font-weight: 800;
     padding: 1px 4px;
-    border-radius: 2px;
+    border-radius: 0 3px 0 0;
     line-height: 1;
     z-index: 10;
 }
