@@ -231,7 +231,7 @@ export const abilityData = {
         name: { ko: "카드 획득(호조 8장)", ja: "カード獲得(好調8枚)", en: "Get card(8 Good Cond.)" },
         format: { ko: "카드 획득 시 소지하고 있는 호조 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している好調効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Good Condition effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
@@ -241,7 +241,7 @@ export const abilityData = {
         name: { ko: "카드 획득(집중 8장)", ja: "カード獲得(集中8枚)", en: "Get card(8 Concentration)" },
         format: { ko: "카드 획득 시 소지하고 있는 집중 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している集中効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Concentration effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
@@ -251,7 +251,7 @@ export const abilityData = {
         name: { ko: "카드 획득(의욕 8장)", ja: "カード獲得(やる気8枚)", en: "Get card(8 Motivation)" },
         format: { ko: "카드 획득 시 소지하고 있는 의욕 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持しているやる気効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Motivation effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
@@ -261,7 +261,7 @@ export const abilityData = {
         name: { ko: "카드 획득(호인상 8장)", ja: "カード獲得(好印象8枚)", en: "Get card(8 GoodImp.)" },
         format: { ko: "카드 획득 시 소지하고 있는 호인상 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している好印象効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Good Impression effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
@@ -271,7 +271,7 @@ export const abilityData = {
         name: { ko: "카드 획득(강기 8장)", ja: "カード獲得(強気8枚)", en: "Get card(8 Enthu.)" },
         format: { ko: "카드 획득 시 소지하고 있는 강기 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している強気効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Enthusiasm effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
@@ -281,7 +281,7 @@ export const abilityData = {
         name: { ko: "카드 획득(전력 8장)", ja: "カード獲得(全力8枚)", en: "Get card(8 FullPower)" },
         format: { ko: "카드 획득 시 소지하고 있는 전력 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している全力効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Fullpower effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
@@ -291,7 +291,7 @@ export const abilityData = {
         name: { ko: "카드 획득(온존 8장)", ja: "カード獲得(温存8枚)", en: "Get card(8 Preservation)" },
         format: { ko: "카드 획득 시 소지하고 있는 온존 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している温存効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Preservation effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 22 },
+            "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
