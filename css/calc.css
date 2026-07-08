@@ -3838,5 +3838,12 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
         overflow-x: clip !important;
         overflow-y: visible !important;
     }
+    .detail-card-rental-badge {
+        font-size: 0.4rem !important;
+        padding: 0.5px 2px !important;
+        bottom: 1px !important;
+        left: 1px !important;
+        border-radius: 1px !important;
+    }
 }
 
