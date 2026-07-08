@@ -10,7 +10,7 @@ if (!document.getElementById('calc-support-receipt-css')) {
     const link = document.createElement('link');
     link.id = 'calc-support-receipt-css';
     link.rel = 'stylesheet';
-    link.href = 'css/calcsupportreceipt.css';
+    link.href = 'css/calcsupportreceipt.css?v=' + Date.now();
     document.head.appendChild(link);
 }
 
@@ -108,7 +108,7 @@ export function getCardReceiptBreakdown(card, attr) {
     }
     const excludedAbilities = [
         'hpmax', 'supportrateup', 'event_paraup',
-        'event_recoveryup', 'alllesson_ppoint', 'ppoint', 'sp_ppoint',
+        'event_recoveryup', 'event_ppointup', 'alllesson_ppoint', 'ppoint', 'sp_ppoint',
         'sp_recovery', 'allsp_recovery', 'test_recovery', 'gift_recovery',
         'sp_lessonup', 'allsp_lessonup'
     ];
@@ -329,7 +329,7 @@ export function showSupportCardReceiptTooltip(textBox, cardId, attr) {
             ${receipt.items.map(item => `
                 <div class="receipt-item">
                     <div style="display: flex; align-items: center; gap: 4px; overflow: hidden; max-width: 80%;">
-                        <span class="receipt-item-name" style="max-width: 100%;">${item.name}</span>
+                        <span class="receipt-item-name" style="max-width: 100%; font-size: 0.65rem;">${item.name}</span>
                         ${item.count !== null && item.count !== undefined ? (
                             item.max !== null && item.max !== undefined
                             ? `<span style="font-size: 0.62rem; color: #888; font-weight: normal; white-space: nowrap; flex-shrink: 0;">(${item.count}/${item.max})</span>`
