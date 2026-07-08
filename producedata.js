@@ -2415,7 +2415,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 7.4, releasedAt: "2026-07-08",
+        id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 8.2, releasedAt: "2026-07-08",
         item: {
             name: "アイドル博士の必需品",
             desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴 draw1\n✦ inlesson2",
