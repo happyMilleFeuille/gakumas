@@ -1292,14 +1292,15 @@ export function updateStatHeaderUI(store, breakdown) {
 
             return `
                 <div class="detail-column-card-row" data-card-id="${c.id}">
-                    <div class="detail-column-card-wrapper${borderClass}">
+                    <div class="detail-column-card-wrapper${borderClass}" ${isSixth ? 'style="border-color: #8FDDBA !important;"' : ''}>
                         <img src="${imgSrc}" onerror="this.src='icons/card.png'; this.onerror=null;" class="detail-column-card-img">
                         ${badgeColor ? `<div class="card-sp-corner-badge" style="background: ${badgeColor};"></div>` : ''}
                         <div class="detail-column-card-flowers">
                             ${flowersHtml}
                         </div>
+                        ${isSixth ? '<div class="detail-card-rental-badge">R</div>' : ''}
                     </div>
-                    <div class="detail-column-card-text-box">
+                    <div class="detail-column-card-text-box" ${isSixth ? 'style="background-color: #e8f8ef !important; border-color: #8FDDBA !important; color: #2e8b57 !important;"' : ''}>
                         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
                             <span class="detail-column-card-text" data-card-id="${c.id}">+0</span>
                             ${spVal > 0 ? `<span class="detail-column-card-sp-text" style="font-size: 0.58rem; opacity: 0.8; font-weight: normal; margin-top: 1px; line-height: 1;">+${spVal}%</span>` : ''}

@@ -127,6 +127,8 @@ export function getCardReceiptBreakdown(card, attr) {
 
         if (sourceId === 'event') {
             val = bonus.breakdowns?.['event']?.[attr] || 0;
+            count = includeEvent ? 1 : 0;
+            max = 1;
         } else if (sourceId === 'item_effect') {
             val = bonus.breakdowns?.['item_effect']?.[attr] || 0;
             if (card.item_effects) {
@@ -233,6 +235,7 @@ export function getCardReceiptBreakdown(card, attr) {
         card,
         lb,
         attr,
+        isSixth,
         items: breakdownItems,
         total: totalSum
     };

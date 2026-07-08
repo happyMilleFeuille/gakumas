@@ -1325,7 +1325,8 @@ function updateSidePanelBonuses(panel, counts, breakdown) {
             vocal: { fill: 'rgba(255, 77, 141, 0.16)', bg: 'rgba(255, 77, 141, 0.04)' },
             dance: { fill: 'rgba(70, 164, 243, 0.15)', bg: 'rgba(70, 164, 243, 0.03)' },
             visual: { fill: 'rgba(252, 199, 94, 0.18)', bg: 'rgba(252, 199, 94, 0.04)' },
-            assist: { fill: 'rgba(114, 218, 73, 0.18)', bg: 'rgba(114, 218, 73, 0.04)' }
+            assist: { fill: 'rgba(114, 218, 73, 0.18)', bg: 'rgba(114, 218, 73, 0.04)' },
+            rental: { fill: 'rgba(143, 221, 186, 0.35)', bg: 'rgba(143, 221, 186, 0.08)' }
         };
 
         // 1. 상단 상세 아코디언 내 카드들 수치 및 정렬 업데이트 (속성별 분산 갱신, 언제나 수행)
@@ -1374,7 +1375,7 @@ function updateSidePanelBonuses(panel, counts, breakdown) {
                 // 텍스트 박스 배경에 게이지 바 채우기
                 const textContainer = row.querySelector('.detail-column-card-text-box');
                 if (textContainer) {
-                    const colorType = card.type === 'assist' ? 'assist' : attr;
+                    const colorType = isSixth ? 'rental' : (card.type === 'assist' ? 'assist' : attr);
                     const theme = colors[colorType];
                     textContainer.style.background = `linear-gradient(to right, ${theme.fill} ${pct}%, ${theme.bg} ${pct}%)`;
                 }
