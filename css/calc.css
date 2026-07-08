@@ -3794,13 +3794,13 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
 /* 모바일 반응형: 서포트 카드 상세 목록 내 카드 썸네일 가로폭 및 텍스트 크기 최적화 */
 @media (max-width: 768px) {
     .detail-column-card-wrapper {
-        width: 74px !important;
+        width: 68px !important;
     }
     .stat-detail-column-card.selected .detail-column-card-wrapper {
-        width: 76px !important;
+        width: 70px !important;
     }
     .stat-detail-area.has-selection .stat-detail-column-card:not(.selected) .detail-column-card-wrapper {
-        width: 54px !important;
+        width: 46px !important;
     }
     .detail-column-card-text-box {
         padding: 0 4px !important; /* 내부 패딩 최소화 */
