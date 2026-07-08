@@ -2566,7 +2566,7 @@ export const cardList = [
         type: "vocal",
         releasedAt: "2025-01-22",
         plan: "free",
-        item_effects: [{ type: "action", trigger: ["sp"], target: "get_drink", value: 1, max: 9 }],
+        item_effects: [{ type: "action", trigger: ["sp"], target: "get_drink", value: 1, max: 2 }],
         have: "item",
         rarity: "SR",
         extra1: "param",
