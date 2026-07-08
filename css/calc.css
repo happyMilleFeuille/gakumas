@@ -3817,5 +3817,11 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
     .stat-detail-area {
         gap: 4px !important;
     }
+    .stat-detail-column-card {
+        padding: 6px 2px 4px 2px !important;
+    }
+    .stat-header:has(.stat-detail-area:not(.collapsed)) {
+        overflow-x: hidden !important;
+    }
 }
 
