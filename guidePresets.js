@@ -280,8 +280,8 @@ export const guidePresets = {
             description: '',
             calcState: {
                 pItems: ['hif3'],
-                pItemSubOpts: ['hif3-2'],
-                pItemSubSubOpts: ['hif3-2-1'],
+                pItemSubOpts: ['hif3-1'],
+                pItemSubSubOpts: ['hif3-1-1'],
                 hifStats: { vocal: 5, dance: 5, visual: 5 },
                 hifParamLimitLevel: 6,
                 manualDelete: { m: 3, a: 2, t: 0 },
@@ -318,7 +318,7 @@ export const guidePresets = {
                     '23': { value: 'gift_hif', opts: {} },
                     '24': { value: 'class_hif1', opts: { selectedAttr: '{secondAttr}', class_hif1: 'true' } },
                     '25': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
-                    '26': { value: 'advice', opts: { purchase_drink: '8', purchase_ssr: '1' } },
+                    '26': { value: 'advice', opts: { purchase_drink: '6', purchase_ssr: '1' } },
                     '27': { value: 'round_hif', opts: {} },
                     '28': { value: 'advice_hif', opts: { purchase_drink: '2', purchase_ssr: '1' } },
                     '29': { value: 'round_hif', opts: {} }

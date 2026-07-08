@@ -1087,7 +1087,8 @@ function setupStaticListeners(container) {
             { key: 'pitem_change', abilityKey: 'change3' },
             { key: 'pitem_stats', name: { ko: '스텟', ja: 'パラメーター獲得', en: 'Stat Gain' } },
             { key: 'pitem_ppoint', name: { ko: 'P포인트', ja: 'Pポイント', en: 'P-Points' } },
-            { key: 'pitem_hp', name: { ko: '체력 회복', ja: '体力回復', en: 'HP Recovery' } }
+            { key: 'pitem_hp', name: { ko: '체력 회복', ja: '体力回復', en: 'HP Recovery' } },
+            { key: 'pitem_inexam', name: { ko: '레슨/시험 내', ja: 'レッスン/試験内', en: 'In Lesson/Exam' } }
         ];
 
         for (const entry of pItemFilters) {
@@ -1168,7 +1169,7 @@ function setupStaticListeners(container) {
             // Support Unique Card category: only 1 selection allowed
             const supportCardKeys = ['card_m', 'card_a'];
             // P-Item category: only 1 selection allowed
-            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp'];
+            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_inexam'];
 
             if (supportCardKeys.includes(val)) {
                 // Remove other support card filters + all p-item filters
@@ -1459,7 +1460,7 @@ export function checkCardMatchFilters(card, includeDate = false) {
     }
 
     const abilityMatch = (state.filters.ability.length === 0) || (() => {
-        const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp'];
+        const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_inexam'];
         const supportCardKeys = ['card_m', 'card_a'];
 
         const groupA = [];
@@ -1486,6 +1487,7 @@ export function checkCardMatchFilters(card, includeDate = false) {
             if (ab === 'pitem_stats') return card.item_effects && card.item_effects.some(eff => eff.stats);
             if (ab === 'pitem_ppoint') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('ppoint')));
             if (ab === 'pitem_hp') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('hp')));
+            if (ab === 'pitem_inexam') return card.item_effects && card.item_effects.some(eff => eff.type === 'inexam');
 
             if (!card.abilities) return false;
             if (ab === 'sp_lessonup') {
