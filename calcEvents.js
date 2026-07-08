@@ -5,6 +5,7 @@ import { showOtherTuneModal, showHifEvalModal } from './calcModals.js';
 import { calcStore } from './calcStore.js';
 import { showSupportItemTooltip } from './calcUI.js';
 import { translate } from './utils.js';
+import { showSupportCardReceiptTooltip } from './calcsupportreceipt.js';
 
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
@@ -218,6 +219,37 @@ export function initGlobalDistListener(refreshAll) {
             // 상태 저장
             calcStore.statDetailsOpen = isActive;
             calcStore.save();
+            return;
+        }
+
+        // 7. 스탯 상세 정보 열 선택 (vocal/dance/visual 각 열 선택기능, 3개 중 1개만 선택 가능)
+        const textBox = e.target.closest('.detail-column-card-text-box');
+        if (textBox) {
+            const row = textBox.closest('.detail-column-card-row');
+            const col = textBox.closest('.stat-detail-column-card');
+            if (row && col) {
+                const cardId = row.dataset.cardId;
+                const attr = col.dataset.statType; // vocal, dance, visual
+                showSupportCardReceiptTooltip(textBox, cardId, attr);
+            }
+            return; // 텍스트 상자 영역 클릭 시 카드 토글 방지
+        }
+        const detailColumnCard = e.target.closest('.stat-detail-column-card');
+        if (detailColumnCard) {
+            const isAlreadySelected = detailColumnCard.classList.contains('selected');
+            const parentArea = detailColumnCard.closest('.stat-detail-area');
+            
+            // 다른 형제 카드들의 선택상태 모두 제거
+            const siblingCards = parentArea.querySelectorAll('.stat-detail-column-card');
+            siblingCards.forEach(card => card.classList.remove('selected'));
+            
+            // 클릭한 카드만 선택 상태 토글 (이미 선택되어 있던 상태가 아니었다면 선택 활성화)
+            if (!isAlreadySelected) {
+                detailColumnCard.classList.add('selected');
+                parentArea.classList.add('has-selection');
+            } else {
+                parentArea.classList.remove('has-selection');
+            }
             return;
         }
     });

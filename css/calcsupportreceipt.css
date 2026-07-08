@@ -1,0 +1,113 @@
+/* 서포트 카드 상세 영수증 툴팁 스타일 */
+.calc-support-receipt-tooltip {
+    position: absolute;
+    bottom: 100%; /* 카드 로우 위에 배치 */
+    margin-bottom: 8px; /* 카드 로우와의 간격 */
+    width: 220px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid #ff4d8d;
+    border-radius: 10px;
+    padding: 12px;
+    z-index: 50000; /* 메인 슬라이드 아코디언 및 다른 팝업보다 앞서서 노출 */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    font-size: 0.72rem;
+    color: #444;
+    pointer-events: auto;
+    cursor: default; /* 부모로부터 상속되는 pointer 커서 제거 */
+    box-sizing: border-box;
+}
+
+/* 보컬 열 (상단 좌측 정렬) */
+.calc-support-receipt-tooltip.pos-top-left {
+    left: 0;
+    transform: scale(1);
+    transform-origin: bottom left;
+    animation: receiptTooltipFadeInTop 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 댄스 열 (상단 중앙 정렬) */
+.calc-support-receipt-tooltip.pos-top-center {
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+    transform-origin: bottom center;
+    animation: receiptTooltipFadeInTopCenter 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 비주얼 열 (상단 우측 정렬) */
+.calc-support-receipt-tooltip.pos-top-right {
+    right: 0;
+    transform: scale(1);
+    transform-origin: bottom right;
+    animation: receiptTooltipFadeInTop 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes receiptTooltipFadeInTop {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes receiptTooltipFadeInTopCenter {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+.receipt-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 8px 0;
+    width: 100%;
+}
+
+.receipt-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.receipt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.receipt-item-name {
+    color: #666;
+    font-size: 0.65rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 75%;
+}
+
+.receipt-item-value {
+    font-size: 0.7rem;
+}
+
+.receipt-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-weight: 800;
+}
+
+.receipt-total-label {
+    color: #222;
+    font-size: 0.66rem;
+}

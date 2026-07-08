@@ -758,6 +758,16 @@
     overflow: hidden;
 }
 
+.stat-header:has(.stat-detail-area:not(.collapsed)) {
+    overflow: visible !important;
+}
+
+/* 펼쳐졌을 때 overflow: visible로 인해 내부 흰색 컨텐츠가 부모의 둥근 모서리(12px)를 뚫고 나와 직각으로 변하는 현상 보정 */
+.stat-header:has(.stat-detail-area:not(.collapsed)) .stat-header-content {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
 .stat-header-top-bar {
     position: relative;
     width: 100%;
@@ -817,6 +827,7 @@
     transform: scale(0.8);
     margin-left: -2px;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
 }
 
 @media (max-width: 768px) {
@@ -844,15 +855,8 @@
     background: #eee;
 }
 
-.toggle-arrow {
-    font-size: 0.6rem;
-    color: #888;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    user-select: none;
-}
-
 .stat-detail-toggle-bar.active .toggle-arrow {
-    transform: rotate(180deg);
+    transform: rotate(180deg) scale(0.8);
 }
 
 .stat-detail-area {
@@ -863,9 +867,227 @@
     overflow: hidden;
     transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
     /* 마진도 함께 부드럽게 트랜지션 */
-    max-height: 100px;
+    max-height: 400px;
     opacity: 1;
     margin-top: -4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    box-sizing: border-box;
+}
+
+.stat-detail-area:not(.collapsed) {
+    overflow: visible !important;
+}
+
+.stat-detail-column-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 6px 8px 6px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    flex: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s, background-color 0.2s, opacity 0.3s;
+    box-sizing: border-box;
+}
+
+.stat-detail-column-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-color: #ddd;
+}
+
+.stat-detail-column-card span {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* 선택된(selected) 스탯 카드 테두리 강조 */
+.stat-detail-column-card.selected.item-vocal {
+    border-color: #ff4d8d;
+    background: rgba(255, 77, 141, 0.02);
+}
+
+.stat-detail-column-card.selected.item-dance {
+    border-color: #46a4f3;
+    background: rgba(70, 164, 243, 0.02);
+}
+
+.stat-detail-column-card.selected.item-visual {
+    border-color: #fcc75e;
+    background: rgba(252, 199, 94, 0.02);
+}
+
+/* 선택 상태에 따른 카드 크기 분배 (선택된 카드 확대, 나머지 축소) */
+.stat-detail-area.has-selection .stat-detail-column-card.selected {
+    flex: 1.5;
+}
+
+.stat-detail-area.has-selection .stat-detail-column-card:not(.selected) {
+    flex: 0.75;
+    opacity: 0.75;
+}
+
+.detail-column-divider {
+    width: 80%;
+    height: 1px;
+    background: #eee;
+    margin: 6px 0 4px 0;
+}
+
+.detail-column-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+}
+
+.detail-column-card-row {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    gap: 0;
+    box-sizing: border-box;
+}
+
+.detail-column-card-wrapper {
+    position: relative;
+    width: 110px;
+    max-width: 90%;
+    aspect-ratio: 16 / 9;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s, border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-shrink: 0;
+}
+
+.stat-detail-column-card.selected .detail-column-card-wrapper {
+    margin-left: 0;
+    transform: translateX(0);
+    border-radius: 3px 0 0 3px !important; /* 펼쳐졌을 때 오른족 경계선은 직각으로 고정 */
+}
+
+/* 선택되지 않은 다른 열들의 카드 너비를 70px로 명시적 축소 */
+.stat-detail-area.has-selection .stat-detail-column-card:not(.selected) .detail-column-card-wrapper {
+    width: 70px;
+}
+
+.detail-column-card-text-box {
+    display: flex;
+    flex: 0;
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 3px 3px 0 !important; /* 왼쪽 경계선은 무조건 직각으로 고정 */
+    border-left-width: 0 !important;
+    padding: 0;
+    font-size: 0.7rem;
+    font-weight: 500;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-detail-column-card.selected .detail-column-card-text-box {
+    flex: 1;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 0 8px;
+}
+
+.detail-column-card-text {
+    width: 100%;
+    text-align: center;
+    font-size: 0.72rem; /* 부모로부터 상속받는 대신 직접 크기 명시 */
+}
+
+/* 속성별 텍스트 박스 색상 지정 (옅은 속성 배경) */
+.stat-detail-column-card.item-vocal .detail-column-card-text-box {
+    background-color: rgba(255, 77, 141, 0.06);
+    border: 1px solid rgba(255, 77, 141, 0.2);
+    color: #e6226c;
+}
+
+.stat-detail-column-card.item-dance .detail-column-card-text-box {
+    background-color: rgba(70, 164, 243, 0.05);
+    border: 1px solid rgba(70, 164, 243, 0.2);
+    color: #2183d6;
+}
+
+.stat-detail-column-card.item-visual .detail-column-card-text-box {
+    background-color: rgba(252, 199, 94, 0.08);
+    border: 1px solid rgba(252, 199, 94, 0.25);
+    color: #cc8e14;
+}
+
+/* 어시스트 서포트 카드 전용 초록색 텍스트 박스 색상 지정 */
+.detail-column-card-wrapper.border-sp-assist + .detail-column-card-text-box {
+    background-color: rgba(114, 218, 73, 0.06) !important;
+    border: 1px solid rgba(114, 218, 73, 0.25) !important;
+    color: #4a9e27 !important;
+}
+
+.detail-column-card-wrapper.border-sp-vocal {
+    border: 1px solid #ff4d8d;
+}
+
+.detail-column-card-wrapper.border-sp-dance {
+    border: 1px solid #46a4f3;
+}
+
+.detail-column-card-wrapper.border-sp-visual {
+    border: 1px solid #fcc75e;
+}
+
+.detail-column-card-wrapper.border-sp-assist {
+    border: 1px solid #72da49;
+}
+
+.detail-column-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-column-card-flowers {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    display: flex;
+    gap: 1px;
+    z-index: 10;
+}
+
+.detail-card-flower {
+    width: 12px;
+    height: 12px;
+    object-fit: contain;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 선택된 카드 외의 미선택 열들의 꽃 크기만 8px로 축소 */
+.stat-detail-area.has-selection .stat-detail-column-card:not(.selected) .detail-card-flower {
+    width: 8px;
+    height: 8px;
 }
 
 .stat-detail-area.collapsed {
@@ -1049,7 +1271,7 @@
     text-align: center;
 }
 
-.stat-item img {
+.stat-item > img {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -1059,25 +1281,25 @@
 }
 
 /* 속성별 색상 정의 */
-.stat-item.item-vocal img {
+.stat-item.item-vocal > img {
     --ring-color: rgb(252, 63, 162);
 }
 
-.stat-item.item-dance img {
+.stat-item.item-dance > img {
     --ring-color: rgb(70, 164, 243);
 }
 
-.stat-item.item-visual img {
+.stat-item.item-visual > img {
     --ring-color: rgb(252, 199, 94);
 }
 
 /* 2순위: 단일 원 */
-.stat-item.rank-2 img {
+.stat-item.rank-2 > img {
     box-shadow: 0 0 0 2px var(--ring-color);
 }
 
 /* 1순위: 이중 원 */
-.stat-item.rank-1 img {
+.stat-item.rank-1 > img {
     box-shadow: 0 0 0 2px var(--ring-color), 0 0 0 4px white, 0 0 0 6px var(--ring-color);
 }
 
@@ -3554,3 +3776,40 @@ body:not(:has(.unified-plan-board)) .floating-skill-btn {
         border-radius: 6px !important;
     }
 }
+
+/* 서포트 카드 이미지용 SP 코너 폴더형 뱃지 (Diagonal Dog-ear Ribbon) */
+.card-sp-corner-badge {
+    position: absolute;
+    top: -2px;
+    left: -10px;
+    width: 26px;
+    height: 9px;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    z-index: 15;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+/* 모바일 반응형: 서포트 카드 상세 목록 내 카드 썸네일 가로폭 및 텍스트 크기 최적화 */
+@media (max-width: 768px) {
+    .detail-column-card-wrapper {
+        width: 72px !important; /* 기본 가로폭을 72px로 소형화하여 컬럼 오버플로우 방지 */
+    }
+    .stat-detail-column-card.selected .detail-column-card-wrapper {
+        width: 75px !important; /* 선택된 열의 썸네일 */
+    }
+    .stat-detail-area.has-selection .stat-detail-column-card:not(.selected) .detail-column-card-wrapper {
+        width: 50px !important; /* 선택되지 않은 열들의 썸네일을 50px로 추가 축소 */
+    }
+    .detail-column-card-text-box {
+        padding: 0 4px !important; /* 내부 패딩 최소화 */
+    }
+    .detail-column-card-text {
+        font-size: 0.62rem !important; /* 수치 텍스트 크기 직접 축소 */
+    }
+    .detail-column-card-sp-text {
+        font-size: 0.52rem !important; /* SP 비율 텍스트 크기 추가 축소 */
+    }
+}
+

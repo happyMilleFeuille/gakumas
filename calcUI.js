@@ -504,7 +504,6 @@ export function updateSelectedCardsUI(store) {
             const optChecked = store.cardExtraChecked[cardId];
             const eventChecked = store.cardEventChecked[cardId];
             const counter = store.itemCounters[cardId] || 0;
-
             // Update slot base attributes
             slotEl.dataset.id = cardId;
             slotEl.classList.remove('empty');
@@ -831,7 +830,7 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                         </div>
 
                         <div class="stat-items-row stat-detail-area ${calcStore.statDetailsOpen ? '' : 'collapsed'}">
-                            <div class="stat-item item-vocal" style="border:none; background:none; box-shadow:none; padding:0;">
+                            <div class="stat-detail-column-card item-vocal" data-stat-type="vocal">
                                 <div class="stat-detail-content" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;">
                                     <div class="bonus-bar-container" style="margin-bottom: 0;">
                                         <div id="bonus-bar-vocal" class="bonus-bar"></div>
@@ -842,8 +841,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                                         <span id="sp-vocal-percent" class="sp-percent-label" style="color: #888; text-align: center;"></span>
                                     </div>
                                 </div>
+                                <div class="detail-column-divider"></div>
+                                <div id="detail-cards-vocal" class="detail-column-cards"></div>
                             </div>
-                            <div class="stat-item item-dance" style="border:none; background:none; box-shadow:none; padding:0;">
+                            <div class="stat-detail-column-card item-dance" data-stat-type="dance">
                                 <div class="stat-detail-content" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;">
                                     <div class="bonus-bar-container" style="margin-bottom: 0;">
                                         <div id="bonus-bar-dance" class="bonus-bar"></div>
@@ -854,8 +855,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                                         <span id="sp-dance-percent" class="sp-percent-label" style="color: #888; text-align: center;"></span>
                                     </div>
                                 </div>
+                                <div class="detail-column-divider"></div>
+                                <div id="detail-cards-dance" class="detail-column-cards"></div>
                             </div>
-                            <div class="stat-item item-visual" style="border:none; background:none; box-shadow:none; padding:0;">
+                            <div class="stat-detail-column-card item-visual" data-stat-type="visual">
                                 <div class="stat-detail-content" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;">
                                     <div class="bonus-bar-container" style="margin-bottom: 0;">
                                         <div id="bonus-bar-visual" class="bonus-bar"></div>
@@ -866,6 +869,8 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                                         <span id="sp-visual-percent" class="sp-percent-label" style="color: #888; text-align: center;"></span>
                                     </div>
                                 </div>
+                                <div class="detail-column-divider"></div>
+                                <div id="detail-cards-visual" class="detail-column-cards"></div>
                             </div>
                         </div>
                     </div>
@@ -1219,6 +1224,99 @@ export function updateStatHeaderUI(store, breakdown) {
             sumValueEl.style.color = '';
         }
     }
+
+    // Update selected support cards in the expanded detail area
+    const { ids: selectedIds } = getNormalizedSelectedCardIds(store);
+    const validCardIds = selectedIds.filter(Boolean);
+
+    const vocalCards = [];
+    const danceCards = [];
+    const visualCards = [];
+
+    validCardIds.forEach(id => {
+        const cardData = cardList.find(c => c.id === id);
+        if (!cardData) return;
+
+        const type = cardData.type;
+        if (type === 'vocal') {
+            vocalCards.push(cardData);
+        } else if (type === 'dance') {
+            danceCards.push(cardData);
+        } else if (type === 'visual') {
+            visualCards.push(cardData);
+        } else if (type === 'assist') {
+            vocalCards.push(cardData);
+            danceCards.push(cardData);
+            visualCards.push(cardData);
+        }
+    });
+
+    const makeCardsHtml = (cards) => {
+        return cards.map(c => {
+            const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
+            let borderClass = '';
+            if (c.abilities?.includes('allsp_lessonup') || c.abilities?.includes('suballsp_lessonup')) {
+                borderClass = ' border-sp-assist';
+            } else if (c.abilities?.includes('sp_lessonup')) {
+                borderClass = ` border-sp-${c.type}`;
+            }
+
+            const isSixth = selectedIds.indexOf(c.id) === 5;
+            const lb = isSixth ? 4 : (state.supportLB[c.id] || 0);
+
+            let badgeColor = '';
+            let spVal = 0;
+            const rarityKey = (c.rarity === 'SSR' && c.source === 'dist' && abilityData['sp_lessonup']?.levels?.['SSR_DIST']) ? 'SSR_DIST' : c.rarity;
+
+            if (c.abilities?.includes('allsp_lessonup') || c.abilities?.includes('suballsp_lessonup')) {
+                badgeColor = '#72da49';
+                const abilityKey = c.abilities.includes('allsp_lessonup') ? 'allsp_lessonup' : 'suballsp_lessonup';
+                const ability = abilityData[abilityKey];
+                if (ability) {
+                    const bonusLevels = ability.levels[rarityKey] || ability.levels[c.rarity] || ability.levels;
+                    spVal = bonusLevels[lb + 1] || bonusLevels[5] || bonusLevels[1] || 0;
+                }
+            } else if (c.abilities?.includes('sp_lessonup')) {
+                badgeColor = c.type === 'vocal' ? '#ff4d8d' : (c.type === 'dance' ? '#46a4f3' : '#fcc75e');
+                const ability = abilityData['sp_lessonup'];
+                if (ability) {
+                    const bonusLevels = ability.levels[rarityKey] || ability.levels[c.rarity] || ability.levels;
+                    spVal = bonusLevels[lb >= 2 ? 2 : 1] || bonusLevels[1] || 0;
+                }
+            }
+
+            const flowersHtml = Array.from({ length: 4 }, (_, i) => {
+                const src = i < lb ? 'icons/flower.webp' : 'icons/flowerback.webp';
+                return `<img src="${src}" class="detail-card-flower">`;
+            }).join('');
+
+            return `
+                <div class="detail-column-card-row" data-card-id="${c.id}">
+                    <div class="detail-column-card-wrapper${borderClass}">
+                        <img src="${imgSrc}" onerror="this.src='icons/card.png'; this.onerror=null;" class="detail-column-card-img">
+                        ${badgeColor ? `<div class="card-sp-corner-badge" style="background: ${badgeColor};"></div>` : ''}
+                        <div class="detail-column-card-flowers">
+                            ${flowersHtml}
+                        </div>
+                    </div>
+                    <div class="detail-column-card-text-box">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+                            <span class="detail-column-card-text" data-card-id="${c.id}">+0</span>
+                            ${spVal > 0 ? `<span class="detail-column-card-sp-text" style="font-size: 0.58rem; opacity: 0.8; font-weight: normal; margin-top: 1px; line-height: 1;">+${spVal}%</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    };
+
+    const voContainer = document.getElementById('detail-cards-vocal');
+    const daContainer = document.getElementById('detail-cards-dance');
+    const viContainer = document.getElementById('detail-cards-visual');
+
+    if (voContainer) voContainer.innerHTML = makeCardsHtml(vocalCards);
+    if (daContainer) daContainer.innerHTML = makeCardsHtml(danceCards);
+    if (viContainer) viContainer.innerHTML = makeCardsHtml(visualCards);
 }
 
 export function updateMemorySlotsUI(store) {

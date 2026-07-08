@@ -1300,11 +1300,9 @@ function refreshAll() {
             };
         }
 
-        // 사이드 패널 업데이트 (에러 격리)
+        // 사이드 패널 및 상단 상세 수치 업데이트 (에러 격리)
         const panel = document.getElementById('calc-side-panel');
-        if (panel && panel.classList.contains('open')) {
-            updateSidePanelBonuses(panel, counts);
-        }
+        updateSidePanelBonuses(panel, counts, breakdown);
 
         setupMemorySelector();
         setupPItemSelector();
@@ -1314,50 +1312,116 @@ function refreshAll() {
 }
 
 /**
- * 사이드 패널 내의 각 카드 보너스 수치 실시간 업데이트
+ * 사이드 패널 및 상단 상세 아코디언 내의 각 카드 보너스 수치 실시간 업데이트
  */
-function updateSidePanelBonuses(panel, counts) {
+function updateSidePanelBonuses(panel, counts, breakdown) {
     try {
-        const { baseTotal, bonusTotal, breakdown } = calculateTotals(calcStore, counts);
         const totalPercs = breakdown?.totalPercs;
-        const bonusItems = panel.querySelectorAll('.side-card-item');
         const planCards = calcStore.planCards[calcStore.planType] || [];
         const filledCount = planCards.filter(id => id !== null).length;
         const isSelectingSixth = filledCount === 5 && planCards[5] === null;
 
-        bonusItems.forEach(item => {
-            const cardId = item.dataset.id;
-            const card = cardList.find(c => c.id === cardId);
-            if (!card) return;
+        const colors = {
+            vocal: { fill: 'rgba(255, 77, 141, 0.16)', bg: 'rgba(255, 77, 141, 0.04)' },
+            dance: { fill: 'rgba(70, 164, 243, 0.15)', bg: 'rgba(70, 164, 243, 0.03)' },
+            visual: { fill: 'rgba(252, 199, 94, 0.18)', bg: 'rgba(252, 199, 94, 0.04)' },
+            assist: { fill: 'rgba(114, 218, 73, 0.18)', bg: 'rgba(114, 218, 73, 0.04)' }
+        };
 
-            const isSixth = planCards.indexOf(cardId) === 5;
-            const isSelectedCard = planCards.includes(cardId);
-            const lb = (isSelectingSixth && !isSelectedCard) || isSixth ? 4 : (state.supportLB[cardId] || 0);
-            const itemCounter = calcStore.cardChecked?.[cardId] ? (calcStore.itemCounters[cardId] || 0) : 0;
-            const includeEvent = !!calcStore.cardEventChecked[cardId];
-            const bonus = calculateCardBonus(card, counts, lb, itemCounter, includeEvent);
+        // 1. 상단 상세 아코디언 내 카드들 수치 및 정렬 업데이트 (속성별 분산 갱신, 언제나 수행)
+        const attrs = ['vocal', 'dance', 'visual'];
+        attrs.forEach(attr => {
+            const container = document.getElementById(`detail-cards-${attr}`);
+            if (!container) return;
 
-            let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
-            if (bonus.percent > 0 && card.type) {
-                totalVal += getSupportPercentBonusForCard(calcStore, bonus.percent, card.type, totalPercs);
-            }
+            const totalBonusValForAttr = (breakdown?.supportFixed?.[attr] || 0) + (breakdown?.supportPercent?.[attr] || 0);
 
-            const bonusEl = item.querySelector('.bonus-val');
-            if (bonusEl) {
-                const displayVal = Math.floor(totalVal);
-                bonusEl.textContent = displayVal > 0 ? `+${displayVal}` : '+0';
+            planCards.forEach(cardId => {
+                if (!cardId) return;
+                const card = cardList.find(c => c.id === cardId);
+                if (!card) return;
 
-                bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual', 'sp-assist');
-                if (card.abilities?.includes('allsp_lessonup') || card.abilities?.includes('suballsp_lessonup')) {
-                    bonusEl.classList.add('sp-assist');
-                } else if (card.abilities?.includes('sp_lessonup')) {
-                    bonusEl.classList.add(`sp-${card.type}`);
+                // 해당 속성 열 컨테이너 안에 이 카드가 렌더링되어 있는지 확인
+                const row = container.querySelector(`.detail-column-card-row[data-card-id="${cardId}"]`);
+                if (!row) return;
+
+                const isSixth = planCards.indexOf(cardId) === 5;
+                const isSelectedCard = planCards.includes(cardId);
+                const lb = (isSelectingSixth && !isSelectedCard) || isSixth ? 4 : (state.supportLB[cardId] || 0);
+                const itemCounter = calcStore.cardChecked?.[cardId] ? (calcStore.itemCounters[cardId] || 0) : 0;
+                const includeEvent = !!calcStore.cardEventChecked[cardId];
+                const bonus = calculateCardBonus(card, counts, lb, itemCounter, includeEvent);
+
+                // 속성별 분산 수치 계산 (해당 열에 속하는 스탯 정보만 추출)
+                let attrVal = bonus[attr] || 0;
+                if (bonus.percent > 0 && (card.type === attr || card.type === 'assist')) {
+                    attrVal += getSupportPercentBonusForCard(calcStore, bonus.percent, attr, totalPercs);
                 }
-            }
-            item.style.order = Math.floor(-totalVal);
+
+                const displayVal = Math.floor(attrVal);
+                const displayStr = displayVal > 0 ? `+${displayVal}` : '+0';
+
+                // 비율 계산 (해당 속성의 전체 기여 수치 대비 이 카드가 차지하는 비율)
+                const ratio = totalBonusValForAttr > 0 ? (attrVal / totalBonusValForAttr) : 0;
+                const pct = Math.min(100, Math.max(0, Math.round(ratio * 100)));
+
+                // 해당 열 내부의 카드 텍스트 업데이트
+                const textEl = row.querySelector('.detail-column-card-text');
+                if (textEl) {
+                    textEl.textContent = displayStr;
+                }
+
+                // 텍스트 박스 배경에 게이지 바 채우기
+                const textContainer = row.querySelector('.detail-column-card-text-box');
+                if (textContainer) {
+                    const colorType = card.type === 'assist' ? 'assist' : attr;
+                    const theme = colors[colorType];
+                    textContainer.style.background = `linear-gradient(to right, ${theme.fill} ${pct}%, ${theme.bg} ${pct}%)`;
+                }
+
+                // 해당 속성치 기준으로 개별 열 내부의 카드 정렬 순서 업데이트
+                row.style.order = Math.floor(-attrVal);
+            });
         });
+
+        // 2. 사이드 패널이 열려 있을 때만 사이드 패널 내의 각 카드 엘리먼트들 업데이트
+        if (panel && panel.classList.contains('open')) {
+            const bonusItems = panel.querySelectorAll('.side-card-item');
+            bonusItems.forEach(item => {
+                const cardId = item.dataset.id;
+                const card = cardList.find(c => c.id === cardId);
+                if (!card) return;
+
+                const isSixth = planCards.indexOf(cardId) === 5;
+                const isSelectedCard = planCards.includes(cardId);
+                const lb = (isSelectingSixth && !isSelectedCard) || isSixth ? 4 : (state.supportLB[cardId] || 0);
+                const itemCounter = calcStore.cardChecked?.[cardId] ? (calcStore.itemCounters[cardId] || 0) : 0;
+                const includeEvent = !!calcStore.cardEventChecked[cardId];
+                const bonus = calculateCardBonus(card, counts, lb, itemCounter, includeEvent);
+
+                let totalVal = (bonus.vocal || 0) + (bonus.dance || 0) + (bonus.visual || 0);
+                if (bonus.percent > 0 && card.type) {
+                    totalVal += getSupportPercentBonusForCard(calcStore, bonus.percent, card.type, totalPercs);
+                }
+
+                const displayVal = Math.floor(totalVal);
+                const displayStr = displayVal > 0 ? `+${displayVal}` : '+0';
+
+                const bonusEl = item.querySelector('.bonus-val');
+                if (bonusEl) {
+                    bonusEl.textContent = displayStr;
+                    bonusEl.classList.remove('sp-vocal', 'sp-dance', 'sp-visual', 'sp-assist');
+                    if (card.abilities?.includes('allsp_lessonup') || card.abilities?.includes('suballsp_lessonup')) {
+                        bonusEl.classList.add('sp-assist');
+                    } else if (card.abilities?.includes('sp_lessonup')) {
+                        bonusEl.classList.add(`sp-${card.type}`);
+                    }
+                }
+                item.style.order = Math.floor(-totalVal);
+            });
+        }
     } catch (err) {
-        console.error("Failed to update side panel bonuses:", err);
+        console.error("Failed to update card bonuses:", err);
     }
 }
 
