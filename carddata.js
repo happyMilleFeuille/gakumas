@@ -3170,7 +3170,7 @@ export const cardList = [
         releasedAt: "2024-06-10",
         plan: "sense",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["get_goodcondition"], stats: { vocal: 6 }, max: 25 }],
+        item_effects: [{ type: "action", trigger: ["get_goodcondition"], stats: { dance: 6 }, max: 25 }],
         rarity: "SR",
         extra1: "param",
         abilities:
