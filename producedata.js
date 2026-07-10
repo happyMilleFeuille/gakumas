@@ -1278,12 +1278,12 @@ export const produceList = [
         id: "ssrchina_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09", jumpTime2: 8.4,
         item: {
             name: "描いた夢へのあゆみ",
-            desc: "ゆるふわおしゃべり사용 시 \n✦ 턴 추가+1\n✦ 원기 1.5배\n✦ hpreduce2\n✦ inlesson1",
+            desc: "ゆるふわおしゃべり 사용 시 \n✦ 턴 추가+1\n✦ 원기 1.5배\n✦ hpreduce2\n✦ inlesson1",
             desc_ja: "ゆるふわおしゃべり使用時、\n✦ ターン追加+1\n✦ 元気1.5倍\n✦ hpreduce2\n✦ inlesson1",
             referimage: ["logic-r2"]
         },
         itemplus: {
-            desc: "ゆるふわおしゃべり사용 시 \n✦ 턴 추가+1\n✦ 원기 1.5배\n✦ inlesson1",
+            desc: "ゆるふわおしゃべり 사용 시 \n✦ 턴 추가+1\n✦ 원기 1.5배\n✦ inlesson1",
             desc_ja: "ゆるふわおしゃべり使用時、\n✦ ターン追加+1\n✦ 元気1.5倍\n✦ inlesson1",
             referimage: ["logic-r2"]
         },
@@ -1347,12 +1347,12 @@ export const produceList = [
         id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-06-30",
         item: {
             name: "太陽を追い越す歌声",
-            desc: "ひなたぼっこ사용 시\n✦ motivation15\n✦ 파라미터 상승량 감소 75% (2턴)\n✦ 3턴 후, 파라미터 상승량 증가 50% (4턴)\n✦ inlesson1",
+            desc: "ひなたぼっこ 사용 시\n✦ motivation15\n✦ 파라미터 상승량 감소 75% (2턴)\n✦ 3턴 후, 파라미터 상승량 증가 50% (4턴)\n✦ inlesson1",
             desc_ja: "ひなたぼっこ使用時、\n✦ motivation15\n✦ パラメータ上昇量減少75%（2ターン）\n✦ 3ターン後、パラメータ上昇量増加50%（4ターン）\n✦ inlesson1",
             referimage: ["logic-sr12"]
         },
         itemplus: {
-            desc: "ひなたぼっこ사용 시\n✦ motivation15\n✦ 파라미터 상승량 감소 50% (2턴)\n✦ 3턴 후, 파라미터 상승량 증가 50% (4턴)\n✦ inlesson1",
+            desc: "ひなたぼっこ 사용 시\n✦ motivation15\n✦ 파라미터 상승량 감소 50% (2턴)\n✦ 3턴 후, 파라미터 상승량 증가 50% (4턴)\n✦ inlesson1",
             desc_ja: "ひなたぼっこ使用時、\n✦ motivation15\n✦ パラメータ上昇量減少50%（2ターン）\n✦ 3ターン後、パラメータ上昇量増加50%（4ターン）\n✦ inlesson1",
             referimage: ["logic-sr12"]
         },
@@ -1439,12 +1439,12 @@ export const produceList = [
         id: "ssrmao_campusfes", name: "Campus mode!!", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
         item: {
             name: "ボクの一部",
-            desc: "スターライト사용 시 온존일 경우\n✦ draw1\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터치 증가+10\n✦ hpreduce1\n✦ inlesson3",
+            desc: "スターライト 사용 시 온존일 경우\n✦ draw1\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터치 증가+10\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "スターライト使用時、温存の場合、\n✦ draw1\n✦ 消費体力減少1ターン\n✦ スターライトのパラメータ値増加+10\n✦ hpreduce1\n✦ inlesson3",
             referimage: ["anomaly-r2"]
         },
         itemplus: {
-            desc: "スターライト사용 시 온존일 경우\n✦ draw2\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터치 증가+10\n✦ hpreduce1\n✦ inlesson3",
+            desc: "スターライト 사용 시 온존일 경우\n✦ draw2\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터치 증가+10\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "スターライト使用時、温存の場合、\n✦ draw2\n✦ 消費体力減少1ターン\n✦ スターライトのパラメータ値増加+10\n✦ hpreduce1\n✦ inlesson3",
             referimage: ["anomaly-r2"]
         },
@@ -1508,12 +1508,12 @@ export const produceList = [
         id: "ssrhiro_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-09",
         item: {
             name: "選びとった熱",
-            desc: "えいえいおー사용 시、morehp50\n✦ motivation2\n✦ use1\n✦ 최대체력의 15%만큼 체력 소비\n✦ inlesson5",
+            desc: "えいえいおー 사용 시、morehp50\n✦ motivation2\n✦ use1\n✦ 최대체력의 15%만큼 체력 소비\n✦ inlesson5",
             desc_ja: "えいえいおー使用時、morehp50\n✦ motivation2\n✦ use1\n✦ 最大体力の15%分体力消費\n✦ inlesson5",
             referimage: ["logic-r7"]
         },
         itemplus: {
-            desc: "えいえいおー사용 시、morehp50\n✦ motivation3\n✦ use1\n✦ 최대체력의 15%만큼 체력 소비\n✦ inlesson5",
+            desc: "えいえいおー 사용 시、morehp50\n✦ motivation3\n✦ use1\n✦ 최대체력의 15%만큼 체력 소비\n✦ inlesson5",
             desc_ja: "えいえいおー使用時、morehp50\n✦ motivation3\n✦ use1\n✦ 最大体力の15%分体力消費\n✦ inlesson5",
             referimage: ["logic-r7"]
         },
