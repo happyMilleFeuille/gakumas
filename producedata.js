@@ -669,12 +669,12 @@ export const produceList = [
         },
         card: {
             name: "置き去りな自分",
-            desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 증가량+50・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "温存に変更\n✦ fullpower2\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+50・コスト値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
-        },
-        cardplus: {
             desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 증가량+40・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存に変更\n✦ fullpower2\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+40・コスト値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 증가량+50・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存に変更\n✦ fullpower2\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+50・コスト値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
             name: "高みへ羽ばたく一番星",
