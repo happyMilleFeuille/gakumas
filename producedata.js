@@ -148,7 +148,7 @@ export const produceList = [
     { id: "ssrsaki_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-12-09", another: true },
     { id: "ssrsaki_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-02-01", another: true, jumpTime2: 7.2 },
     { id: "ssrsaki_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2025-03-10", another: true },
-    { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-05-29", another: true },
+    { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2025-05-29", another: true },
     { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 9.3, releasedAt: "2026-02-27", another: true },
     {
@@ -340,7 +340,7 @@ export const produceList = [
     { id: "ssrsumika_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-14", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrsumika_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 7.3, source: "limited", another: true },
     { id: "ssrsumika_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", jumpTime2: 7.1, rarity: "PSSR", plan: "sense", osusume: "concentration", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 7.3, another: true },
     { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
     { id: "ssrsumika_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
@@ -538,7 +538,7 @@ export const produceList = [
     { id: "ssrkotone_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", jumpTime2: 7.1, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
     { id: "ssrkotone_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "logic", osusume: "goodimpression", source: "limited", jumpTime2: 7.2, another: true },
     { id: "ssrkotone_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
+    { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", osusume: "goodimpression", jumpTime2: 6.3, source: "limited", another: true },
     { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", jumpTime2: 7.7, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
     { id: "ssrkotone_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
     {
