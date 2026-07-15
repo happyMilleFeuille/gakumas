@@ -2141,7 +2141,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
+        id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", jumpTime2: 8.1, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "伝説のidol装備",
             desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 440% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ hpreduce2\n✦ inlesson2",
