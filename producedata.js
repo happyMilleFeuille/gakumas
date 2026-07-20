@@ -1722,7 +1722,7 @@ export const produceList = [
             desc_ja: "（未確認）",
         },
         cardplus: {
-            desc: "온존으로 지침변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존 2단계로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시, 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존 2단계로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시, 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存になった回数が2回以上の場合、使用可\n✦ param1（熱意効果を2倍適用）\n✦ genki1\n✦ 強気の場合、温存2段階目に変更\n✦ 再演：残り3ターン以内のターン終了時、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecond: {
