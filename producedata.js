@@ -192,6 +192,11 @@ export const produceList = [
         cardplus: {
             desc: "startingcard\n✦ 이후 호인상이 6이상인 경우 호인상 효과의 스킬카드를 3회 사용할 때마다 호인상 추가 발동+1 (3턴)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ 以降、好印象が6以上の場合、好印象効果のスキルカードを3回使用するごとに、好印象追加発動+1（3ターン）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        primacard: {
+            name: "皆に愛される一番星",
+            desc: "startingcard\n✦ goodcondition4\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ goodcondition4\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
 
@@ -827,7 +832,7 @@ export const produceList = [
     { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-02-28", another: true, jumpTime2: 8.2 },
     { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", osusume: "motivation", jumpTime2: 7.2, source: "limited", another: true },
     { id: "ssrhiro_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", osusume: "motivation", source: "limited", another: true },
+    { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.3, another: true },
     { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", another: true },
     { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
     { id: "ssrhiro_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
@@ -906,6 +911,34 @@ export const produceList = [
     { id: "ssrtsubame_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.5, releasedAt: "2026-04-21", another: true },
     { id: "ssrtsubame_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.3, another: true },
     { id: "ssrtsubame_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-07-15", jumpTime2: 7.3, another: true },
+    //{ id: "ssrtsubame_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
+    //{ id: "ssrtsubame_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", pplan: "logic", osusume: "motivation", releasedAt: "2026-08-14", source: "limited", another: true, },
+    //{ id: "ssrtsubame_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "motivation", releasedAt: "2026-08-14", source: "limited", another: true },
+    //{ id: "ssrtsubame_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true, },
+    //{ id: "ssrtsubame_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
+    //{ id: "ssrtsubame_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2026-08-14", another: true },
+
+    //{
+    //id: "ssrtsubame_3rd", name: "크라이아이", name_en: "クライアイ", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "",
+    //item: {
+    //    name: "星を散らせ",
+    //    desc: "(미확인)",
+    //    desc_ja: "（未確認）",
+    //},
+    //itemplus: {
+    //    desc: "지침이 전력일 때 전력치가 10이상일 경우, \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터치 증가+3\n inlesson3",
+    //    desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson3",
+    //},
+    //card: {
+    //    name: "花火散るナイトキラー",
+    //    desc: "(미확인)",
+    //    desc_ja: "（未確認）",
+    //},
+    //cardplus: {
+    //    desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+    //    desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+    //},
+    //},
 
 
     // --- 세나 SSR (PSSR) ---
@@ -952,7 +985,7 @@ export const produceList = [
     { id: "ssrsena_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", jumpTime2: 7.0, releasedAt: "2025-02-28", another: true },
     { id: "ssrsena_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", jumpTime2: 8.2, releasedAt: "2025-04-11", another: true },
     { id: "ssrsena_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", jumpTime2: 6.3, rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrsena_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-05-29", another: true },
+    { id: "ssrsena_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-05-29", jumpTime2: 7.4, another: true },
     { id: "ssrsena_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-07-07", another: true },
     { id: "ssrsena_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-08-22", another: true },
     { id: "ssrsena_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-08-29", another: true },
@@ -1052,7 +1085,7 @@ export const produceList = [
     { id: "ssrume_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-08-11", another: true },
     { id: "ssrume_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-09-30", another: true },
     { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2025-05-09", another: true, jumpTime2: 6.3 },
-    { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-05-29", another: true },
+    { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-05-29", jumpTime2: 7.5, another: true },
     { id: "ssrume_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-09-29", another: true },
     { id: "ssrume_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-14", another: true },
@@ -1672,6 +1705,36 @@ export const produceList = [
             desc_ja: "✦ motivation3\n✦ use1\n移動時効果：手札に移動した時、\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
+    {
+        id: "ssrsaki_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-07-21",
+        item: {
+            name: "不屈の輝き",
+            desc: "(미확인)",
+            desc_ja: "（未確認）",
+        },
+        itemplus: {
+            desc: "手を伸ばした先に를 사용 후 온존으로 지침 변경한 횟수가 2회 이상일 경우\n✦ 手を伸ばした先に의 파라미터치+100\n✦ 다음 턴, draw1\n✦ inlesson2",
+            desc_ja: "手を伸ばした先に使用後、温存になった回数が2回以上の場合、\n✦ 手を伸ばした先にのパラメータ値増加+100\n✦ 次のターン、draw1\n✦ inlesson2",
+        },
+        card: {
+            name: "手を伸ばした先に",
+            desc: "(미확인)",
+            desc_ja: "（未確認）",
+        },
+        cardplus: {
+            desc: "온존으로 지침변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존 2단계로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시, 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存になった回数が2回以上の場合、使用可\n✦ param1（熱意効果を2倍適用）\n✦ genki1\n✦ 強気の場合、温存2段階目に変更\n✦ 再演：残り3ターン以内のターン終了時、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardsecond: {
+            name: "わたしの人生を込めて",
+            desc: "(미확인)",
+            desc_ja: "（未確認）",
+        },
+        cardsecondplus: {
+            desc: "✦ 강기로 지침 변경\n✦ 手を伸ばした先に의 원기 수치 증가+5・파라미터 상승 횟수 증가+2\n✦ 다음 턴, 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ 手を伸ばした先にの元気値増加+5・パラメータ上昇回数増加+2\n✦ 次のターン、温存に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
 
     // 한정 (Limited)
     {
@@ -1715,6 +1778,24 @@ export const produceList = [
             desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
+        //cardcustom: {
+        //    custom1: {
+        //        name: { ko: "효과 변경", ja: "効果変更" },
+        //        cost: "100",
+        //        desc: {
+        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //        },
+        //    },
+        //    custom2: {
+        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+        //       cost: "100",
+        //        desc: {
+        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //       }
+        //    }
+        //}        
     },
     {
         id: "ssrsumika_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "motivation", releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
@@ -1737,6 +1818,24 @@ export const produceList = [
             desc: "hpreduce3\n✦ motivation8 \n✦ 의욕이 6이상인 경우 motivation5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce3\n✦ motivation8 \n✦ やる気が6以上の場合、motivation5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
+        //cardcustom: {
+        //    custom1: {
+        //        name: { ko: "효과 변경", ja: "効果変更" },
+        //        cost: "100",
+        //        desc: {
+        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //        },
+        //    },
+        //    custom2: {
+        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+        //       cost: "100",
+        //        desc: {
+        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //       }
+        //    }
+        //}           
     },
     {
         id: "ssrsaki_kanmuridist", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodimpression", releasedAt: "2024-08-01", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
@@ -1780,6 +1879,24 @@ export const produceList = [
             desc: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기효과의 스킬카드 사용 후 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
+        //cardcustom: {
+        //    custom1: {
+        //        name: { ko: "효과 변경", ja: "効果変更" },
+        //        cost: "100",
+        //        desc: {
+        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //        },
+        //    },
+        //    custom2: {
+        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+        //       cost: "100",
+        //        desc: {
+        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //       }
+        //    }
+        //}           
     },
     {
         id: "ssrlilja_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-01", plan: "sense", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
@@ -1801,6 +1918,24 @@ export const produceList = [
             desc: "호조상태일 경우 사용 가능\n✦ param12\n✦ 호조의 300%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "好調状態の場合、使用可\n✦ param12\n✦ 好調の300%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
+        //cardcustom: {
+        //    custom1: {
+        //        name: { ko: "효과 변경", ja: "効果変更" },
+        //        cost: "100",
+        //        desc: {
+        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //        },
+        //    },
+        //    custom2: {
+        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+        //       cost: "100",
+        //        desc: {
+        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        //       }
+        //    }
+        //}           
     },
     {
         id: "ssrchina_halloweendist", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "concentration", releasedAt: "2024-09-30", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",

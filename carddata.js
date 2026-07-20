@@ -2388,6 +2388,32 @@ export const cardList = [
             ]
     },
     {
+        id: "visual_fesanomaly1",
+        name: "인터뷰 부탁드립니다",
+        name_ja: "インタビューお願いします",
+        type: "visual",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{
+            type: "inexam",
+            kr: "[visual]턴 개시 시 온존으로 지침 변경한 횟수가 4회 이상일 경우\n✦ 액티브카드의 파라미터치 증가+22 \n✦ inlesson1",
+            jp: "[visual]ターン開始時、温存になった回数が4回以上の場合、\n✦ アクティブスキルカードのパラメータ値増加+22 \n✦ inlesson1",
+        }],
+        releasedAt: "2026-07-21",
+        rarity: "SSR",
+        source: "limited_f",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "visual_unitanomaly1",
         name: "어-떻게 되는 거야?",
         name_ja: "どーなちゃうの~?",
