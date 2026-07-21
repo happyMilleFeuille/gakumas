@@ -1134,7 +1134,7 @@ export const produceList = [
         },
         primacard: {
             name: "証明し続ける一番星",
-            desc: "startingcard\n✦ use1\n✦ 이후 5턴 간 직접효과로 의욕이 증가한 후, 덱 혹은 버림패에 있는 랜덤한 멘탈카드를 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ use1\n✦ 이후 5턴 간, 직접효과로 의욕이 증가한 후 덱 혹은 버림패에 있는 랜덤한 멘탈카드를 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ use1\n✦ 以降の5ターンの間、直接効果でやる気が増加後、ランダムな山札か捨札にあるメンタルスキルカード1枚を山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
