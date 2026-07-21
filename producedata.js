@@ -1116,11 +1116,11 @@ export const produceList = [
         id: "ssrume_3rd", name: "새하얀 페이지와 수채의 주인공", name_en: "A Blank White Page and a Watercolor Hero", name_ja: "真っ白いページと水彩の主人公", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-04-10", jumpTime2: 7.6, youtube_url: "https://youtu.be/zpDB6GzOXq0?si=lrT8tCS6sSxg6QB1",
         item: {
             name: "夢を創るステッキ",
-            desc: "3턴마다 턴 종료 시,\n✦ 원기의 110%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦다음 턴에 draw1\n✦ inlesson3",
+            desc: "3턴마다 턴 종료 시,\n✦ 원기의 110%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦다음 턴, draw1\n✦ inlesson3",
             desc_ja: "3ターンごとのターン終了時、\n✦ 元気の110%分パラメータ上昇させ、元気を0にする\n✦ 次のターン、draw1\n✦ inlesson3",
         },
         itemplus: {
-            desc: "3턴마다 턴 종료 시,\n✦ 원기의 130%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ 다음 턴에 draw2\n✦ inlesson3",
+            desc: "3턴마다 턴 종료 시,\n✦ 원기의 130%만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ 다음 턴, draw2\n✦ inlesson3",
             desc_ja: "3ターンごとのターン終了時、\n✦ 元気の130%分パラメータ上昇させ、元気を0にする\n✦ 次のターン、draw2\n✦ inlesson3",
         },
         card: {
@@ -2560,11 +2560,11 @@ export const produceList = [
         id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 8.2, releasedAt: "2026-07-08",
         item: {
             name: "アイドル博士の必需品",
-            desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴 draw1\n✦ inlesson2",
+            desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴, draw1\n✦ inlesson2",
             desc_ja: "好印象が10以上の場合、アクティブスキルカードを2回使用するごとに、\n✦ goodimpression6\n✦ 次のターン、draw1\n✦ inlesson2",
         },
         itemplus: {
-            desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴 draw1\n✦ inlesson3",
+            desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴, draw1\n✦ inlesson3",
             desc_ja: "好印象が10以上の場合、アクティブスキルカードを2回使用するごとに、\n✦ goodimpression6\n✦ 次のターン、draw1\n✦ inlesson3",
         },
         card: {
