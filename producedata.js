@@ -1709,8 +1709,8 @@ export const produceList = [
         id: "ssrsaki_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-07-21",
         item: {
             name: "不屈の輝き",
-            desc: "(미확인)",
-            desc_ja: "（未確認）",
+            desc: "手を伸ばした先に를 사용 후 온존으로 지침 변경한 횟수가 2회 이상일 경우\n✦ 手を伸ばした先に의 파라미터치+100\n✦ 다음 턴, draw1\n✦ hpreduce3\n✦ inlesson2",
+            desc_ja: "手を伸ばした先に使用後、温存になった回数が2回以上の場合、\n✦ 手を伸ばした先にのパラメータ値増加+100\n✦ 次のターン、draw1\n✦ hpreduce3\n✦ inlesson2",
         },
         itemplus: {
             desc: "手を伸ばした先に를 사용 후 온존으로 지침 변경한 횟수가 2회 이상일 경우\n✦ 手を伸ばした先に의 파라미터치+100\n✦ 다음 턴, draw1\n✦ inlesson2",
@@ -1718,8 +1718,8 @@ export const produceList = [
         },
         card: {
             name: "手を伸ばした先に",
-            desc: "(미확인)",
-            desc_ja: "（未確認）",
+            desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존으로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시, 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存になった回数が2回以上の場合、使用可\n✦ param1（熱意効果を2倍適用）\n✦ genki1\n✦ 強気の場合、温存に変更\n✦ 再演：残り3ターン以内のターン終了時、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존 2단계로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시, 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -1727,8 +1727,8 @@ export const produceList = [
         },
         cardsecond: {
             name: "わたしの人生を込めて",
-            desc: "(미확인)",
-            desc_ja: "（未確認）",
+            desc: "✦ 강기로 지침 변경\n✦ 手を伸ばした先に의 원기 수치 증가+5・파라미터 상승 횟수 증가+2\n✦ 다음 턴, 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ 手を伸ばした先にの元気値増加+5・パラメータ上昇回数増加+2\n✦ 次のターン、温存に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecondplus: {
             desc: "✦ 강기로 지침 변경\n✦ 手を伸ばした先に의 원기 수치 증가+5・파라미터 상승 횟수 증가+2\n✦ 다음 턴, 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
