@@ -194,9 +194,9 @@ export const produceList = [
             desc_ja: "startingcard\n✦ 以降、好印象が6以上の場合、好印象効果のスキルカードを3回使用するごとに、好印象追加発動+1（3ターン）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
-            name: "皆に愛される一番星",
-            desc: "startingcard\n✦ goodcondition4\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "startingcard\n✦ goodcondition4\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            name: "先陣を切る一番星",
+            desc: "✦ goodcondition4\n✦ 호인상 강화+30%\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression5\n✦ 好印象強化+30%\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
 
@@ -1131,6 +1131,11 @@ export const produceList = [
         cardplus: {
             desc: "✦ genki2\n✦ motivation3\n✦ 이후 3회까지 턴 개시 시 원기가 0인 경우 레슨 중 소비한 원기의 80%만큼 원기 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ genki2\n✦ motivation3\n✦ 以降3回まで、ターン開始時、元気が0の場合、レッスン中に消費した元気の80%分元気増加\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        primacard: {
+            name: "証明し続ける一番星",
+            desc: "startingcard\n✦ use1\n✦ 이후 5턴 간 직접효과로 의욕이 증가 후, 덱 혹은 버림패에 있는 랜덤한 멘탈카드를 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ use1\n✦ 以降の5ターンの間、直接効果でやる気が増加後、ランダムな山札か捨札にあるメンタルスキルカード1枚を山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
 
@@ -1598,11 +1603,11 @@ export const produceList = [
         },
         card: {
             name: "クールすぎるアイドル",
-            desc: "✦ motivation4\n✦ 燃え盛る青い炎를 덱의 맨 처음으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation4\n✦ 燃え盛る青い炎를 덱의 맨 앞으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation4\n✦ 燃え盛る青い炎を山札の上に移動\n消費体力増加1ターン\n✦ 再演 : 燃え盛る青い炎使用後、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>	nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ motivation5\n✦ 燃え盛る青い炎를 덱의 맨 처음으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation5\n✦ 燃え盛る青い炎를 덱의 맨 앞으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation5\n✦ 燃え盛る青い炎を山札の上に移動\n消費体力増加1ターン\n✦ 再演 : 燃え盛る青い炎使用後、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>	nooverlab limit1",
         },
         cardsecond: {
@@ -2663,11 +2668,11 @@ export const produceList = [
         id: "ssrtemari_ameagariunit", name: "비 갠 뒤의 아이리스", name_en: "Ameagari no Iris", name_ja: "雨上がりのアイリス", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2025-05-01", plan: "sense", source: "limited_u", jumpTime2: 10.2, youtube_url: "https://youtu.be/SPXHpau0jJI?si=oODrMuHOaMtcjNzu",
         item: {
             name: "雨上がりの女神",
-            desc: "턴 개시 시\n✦ use1\n✦ genki5\n✦ 졸음 카드를 덱의 맨 위에 생성\n✦ inlesson5",
+            desc: "턴 개시 시\n✦ use1\n✦ genki5\n✦ 졸음 카드를 덱의 맨 앞에 생성\n✦ inlesson5",
             desc_ja: "ターン開始時、\n✦ use1\n✦ genki5\n✦ 眠きを山札の1番上に生成\n✦ inlesson5",
         },
         itemplus: {
-            desc: "턴 개시 시\n✦ use1\n✦ genki6\n✦ 졸음 카드를 덱의 맨 위에 생성\n✦ inlesson5",
+            desc: "턴 개시 시\n✦ use1\n✦ genki6\n✦ 졸음 카드를 덱의 맨 앞에 생성\n✦ inlesson5",
             desc_ja: "ターン開始時、\n✦ use1\n✦ genki6\n✦ 眠きを山札の1番上に生成\n✦ inlesson5",
         },
         card: {
