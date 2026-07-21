@@ -75,11 +75,11 @@ export const produceList = [
         id: "ssrrinami_3rd", name: "36℃ U.B.U", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2025-09-17", source: "normal", jumpTime2: 8.7, youtube_url: "https://youtu.be/szxn42peP3M?si=0Fa3iBImUAHj4Rsm",
         item: {
             name: "アイドルになりたい",
-            desc: "직접효과로 호인상이 7이상 증가 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hp3\n✦ inlesson2",
+            desc: "직접효과로 호인상이 7이상 증가한 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hp3\n✦ inlesson2",
             desc_ja: "直接効果で好印象が7以上増加後、元気が30以上の場合、\n✦ 好印象の250%分パラメータ上昇\n✦ hp3\n✦ inlesson2",
         },
         itemplus: {
-            desc: "직접효과로 호인상이 7이상 증가 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hp3\n✦ inlesson3",
+            desc: "직접효과로 호인상이 7이상 증가한 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hp3\n✦ inlesson3",
             desc_ja: "直接効果で好印象が7以上増加後、元気が30以上の場合、\n✦ 好印象の250%分パラメータ上昇\n✦ hp3\n✦ inlesson3",
         },
         card: {
@@ -206,11 +206,11 @@ export const produceList = [
         id: "ssrchina_1st", name: "Wonder scale", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 8.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
         item: {
             name: "ひみつ特訓カーデ",
-            desc: "직접효과로 의욕 증가 후\n✦ motivation3\n✦ inlesson2",
+            desc: "직접효과로 의욕이 증가한 후\n✦ motivation3\n✦ inlesson2",
             desc_ja: "直接効果でやる気が増加後、\n✦ motivation3\n✦ inlesson2",
         },
         itemplus: {
-            desc: "직접효과로 의욕 증가 후\n✦ motivation3\n✦ inlesson3",
+            desc: "직접효과로 의욕이 증가한 후\n✦ motivation3\n✦ inlesson3",
             desc_ja: "直接効果でやる気が増加後、\n✦ motivation3\n✦ inlesson3",
         },
         card: {
@@ -384,11 +384,11 @@ export const produceList = [
         },
         card: {
             name: "もうためらわない",
-            desc: "hpreduce6\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce6\n✦ 이후 직접효과로 집중이 7이상 증가한 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce6\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce3\n✦ 이후 직접효과로 집중이 7이상 증가 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce3\n✦ 이후 직접효과로 집중이 7이상 증가한 후 param12（집중효과 1.5배 적용）\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce3\n✦ 以降、直接効果で集中が7以上増加後、param12（集中効果を1.5倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
@@ -1134,7 +1134,7 @@ export const produceList = [
         },
         primacard: {
             name: "証明し続ける一番星",
-            desc: "startingcard\n✦ use1\n✦ 이후 5턴 간 직접효과로 의욕이 증가 후, 덱 혹은 버림패에 있는 랜덤한 멘탈카드를 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ use1\n✦ 이후 5턴 간 직접효과로 의욕이 증가한 후, 덱 혹은 버림패에 있는 랜덤한 멘탈카드를 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ use1\n✦ 以降の5ターンの間、直接効果でやる気が増加後、ランダムな山札か捨札にあるメンタルスキルカード1枚を山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -2593,11 +2593,11 @@ export const produceList = [
         },
         card: {
             name: "待ち望んだ瞬間",
-            desc: "✦ 온존 2단계로 지침 변경\n✦ 이후 직접효과로 전력치가 증가 후 온존일 경우 fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존 2단계로 지침 변경\n✦ 이후 직접효과로 전력치가 증가한 후 지침이 온존일 경우 fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存2段階目に変更\n✦ 以降、直接効果で全力値が増加後、温存の場合、fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 온존 2단계로 지침 변경\n✦ 이후 직접효과로 전력치가 증가 후 온존일 경우 fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존 2단계로 지침 변경\n✦ 이후 직접효과로 전력치가 증가한 후 지침이 온존일 경우 fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存2段階目に変更\n✦ 以降、直接効果で全力値が増加後、温存の場合、fullpower1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -2880,11 +2880,11 @@ export const produceList = [
         id: "srtsubame_1sr", name: "초지관철", name_en: "Stay True to My First Resolve", name_ja: "初志貫徹", osusume: "goodimpression", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2025-11-16",
         item: {
             name: "一筆入魂",
-            desc: "직접효과로 의욕이 증가 후 호인상이 6이상일 경우 \n✦ 프라이드 (2턴)\n✦ motivation4\n✦ inlesson1",
+            desc: "직접효과로 의욕이 증가한 후 호인상이 6이상일 경우 \n✦ 프라이드 (2턴)\n✦ motivation4\n✦ inlesson1",
             desc_ja: "直接効果でやる気が増加後、好印象が6以上の場合、\n✦ プライド（2ターン）\n✦ motivation4\n✦ inlesson1",
         },
         itemplus: {
-            desc: "직접효과로 의욕이 증가 후 호인상이 6이상일 경우 \n✦ 프라이드 (3턴)\n✦ motivation5\n✦ inlesson1",
+            desc: "직접효과로 의욕이 증가한 후 호인상이 6이상일 경우 \n✦ 프라이드 (3턴)\n✦ motivation5\n✦ inlesson1",
             desc_ja: "直接効果でやる気が増加後、好印象が6以上の場合、\n✦ プライド（3ターン）\n✦ motivation5\n✦ inlesson1",
         },
         card: {
@@ -3006,11 +3006,11 @@ export const produceList = [
         id: "srmao_1sr", name: "시작은 멋있게", name_en: "A Cool Start", name_ja: "はじまりはカッコよく", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
             name: "Dearリトルプリンス",
-            desc: "직접효과로 호조 증가 후 \n✦ goodcondition3\n✦ inlesson1",
+            desc: "직접효과로 호조가 증가한 후 \n✦ goodcondition3\n✦ inlesson1",
             desc_ja: "直接効果で好調が増加後、\n✦ goodcondition3\n✦ inlesson1",
         },
         itemplus: {
-            desc: "직접효과로 호조 증가 후 \n✦ goodcondition4\n✦ inlesson1",
+            desc: "직접효과로 호조가 증가한 후 \n✦ goodcondition4\n✦ inlesson1",
             desc_ja: "直接効果で好調が増加後、\n✦ goodcondition4\n✦ inlesson1",
         },
         card: {
@@ -3048,11 +3048,11 @@ export const produceList = [
         id: "srsumika_1sr", name: "꿈을 향한 리스타트", name_en: "Restart Towards Her Dreams", name_ja: "夢へのリスタート", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
         item: {
             name: "放課後のらくがき",
-            desc: "직접효과로 집중 증가 후 체력이 50%이상인 경우 \n✦ concentration2\n✦ inlesson2",
+            desc: "직접효과로 집중이 증가한 후 체력이 50%이상인 경우 \n✦ concentration2\n✦ inlesson2",
             desc_ja: "直接効果で集中が増加後、morehp50\n✦ concentration2\n✦ inlesson2",
         },
         itemplus: {
-            desc: "직접효과로 집중 증가 후 \n✦ concentration2\n✦ inlesson2",
+            desc: "직접효과로 집중이 증가한 후 \n✦ concentration2\n✦ inlesson2",
             desc_ja: "直接効果で集中が増加後、\n✦ concentration2\n✦ inlesson2",
         },
         card: {
