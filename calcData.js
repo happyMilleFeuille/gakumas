@@ -187,6 +187,10 @@ export const idolData = {
             20: {
                 base: { vocal: 0, dance: 0, visual: 0 },
                 bonus: { vocal: 1.5, dance: 1.5, visual: 2.5 }
+            },
+            37: {
+                base: { vocal: 20, dance: 25, visual: 30 },
+                bonus: { vocal: 0, dance: 0, visual: 0 }
             }
         },
         // 보너스 % (단계별)
@@ -547,6 +551,10 @@ export const idolData = {
             20: {
                 base: { vocal: 15, dance: 10, visual: 15 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
+            },
+            37: {
+                base: { vocal: 25, dance: 25, visual: 25 },
+                bonus: { vocal: 0, dance: 0, visual: 3.0 }
             }
         },
         // 보너스 % (단계별)
@@ -650,5 +658,5 @@ if (typeof window !== 'undefined') {
 }
 
 // HIF 모드 프리마 스텔라 해금 캐릭터 리스트
-export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari', 'china', 'hiro', 'lilja', 'sumika'];
+export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari', 'china', 'hiro', 'lilja', 'sumika', 'saki', 'ume'];
 
