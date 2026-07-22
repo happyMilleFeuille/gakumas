@@ -1246,11 +1246,15 @@ export function showProduceCardInfoModal(card, personalColor) {
         
         // R 및 SR 등급에 따른 파일명 접미사 매핑 규칙 (r1/r2, sr1/sr2)
         if (id.startsWith('r') && !id.startsWith('sr') && !id.startsWith('ssr')) {
-            suffix1 = 'r1';
-            suffix2 = 'r2';
+            if (!id.endsWith('r')) {
+                suffix1 = 'r1';
+                suffix2 = 'r2';
+            }
         } else if (id.startsWith('sr') && !id.startsWith('ssr')) {
-            suffix1 = 'sr1';
-            suffix2 = 'sr2';
+            if (!id.endsWith('sr')) {
+                suffix1 = 'sr1';
+                suffix2 = 'sr2';
+            }
         }
         
         const img1Src = `idols/verygood/${id}${suffix1}.webp`;

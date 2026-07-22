@@ -921,7 +921,7 @@ export const produceList = [
     //{
     //id: "ssrtsubame_3rd", name: "크라이아이", name_en: "クライアイ", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "",
     //item: {
-    //    name: "星を散らせ",
+    //    name: "花火散るナイトキラー",
     //    desc: "(미확인)",
     //    desc_ja: "（未確認）",
     //},
@@ -930,7 +930,7 @@ export const produceList = [
     //    desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson3",
     //},
     //card: {
-    //    name: "花火散るナイトキラー",
+    //    name: "星を散らせ",
     //    desc: "(미확인)",
     //    desc_ja: "（未確認）",
     //},
