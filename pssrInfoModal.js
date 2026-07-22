@@ -796,6 +796,50 @@ const getPlanIconPath = (card) => {
     };
 };
 
+const preloadedModalCards = new Set();
+
+export function preloadProduceCardInfoModalImages(card) {
+    if (!card || !card.id || preloadedModalCards.has(card.id)) return;
+    preloadedModalCards.add(card.id);
+
+    const isMobile = window.innerWidth <= 768;
+    const urls = [
+        isMobile ? `idols/${card.id}1.webp` : `idols/thumb/${card.id}1.webp`,
+        isMobile ? `idols/${card.id}2.webp` : `idols/thumb/${card.id}2.webp`,
+        `idols/${card.id}1.webp`,
+        `idols/${card.id}2.webp`,
+        `idols/thumb/${card.id}1.webp`,
+        `idols/thumb/${card.id}2.webp`,
+        `idols/item/${card.id}.webp`,
+        'icons/sainou.webp',
+        'icons/itemplus.webp',
+        'icons/download.svg'
+    ];
+
+    const idolMatch = card.id ? card.id.match(/^ssr([a-z]+)_/) : null;
+    const idolName = idolMatch ? idolMatch[1] : '';
+    if (idolName) {
+        urls.push(`icons/idolicons/${idolName}_c.png`);
+    }
+
+    const itemData = getLocalizedItem(card.item);
+    const itemPlusData = getLocalizedItem(card.itemplus);
+    [itemData, itemPlusData].forEach(data => {
+        if (data && Array.isArray(data.referimage)) {
+            data.referimage.forEach(imgName => {
+                const fileName = imgName.endsWith('.webp') ? imgName : `${imgName}.webp`;
+                urls.push(`icons/cal/card/${fileName}`);
+            });
+        }
+    });
+
+    urls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
+}
+window.preloadProduceCardInfoModalImages = preloadProduceCardInfoModalImages;
+
 export function showProduceCardInfoModal(card, personalColor) {
     const existing = document.getElementById('pssr-info-modal');
     if (existing) existing.remove();

@@ -3,7 +3,7 @@ import { translate, updatePageTranslations } from './utils.js';
 import { produceList } from './producedata.js';
 import { videoList } from './videodata.js';
 import { idolList } from './roadmap.js'; 
-import { showProduceCardInfoModal } from './pssrInfoModal.js';
+import { showProduceCardInfoModal, preloadProduceCardInfoModalImages } from './pssrInfoModal.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -652,6 +652,12 @@ export function renderProduceCards(idolName, container) {
                 infoBtn.remove();
             } else {
                 infoBtn.style.color = personalColor;
+                infoBtn.addEventListener('mouseenter', () => {
+                    preloadProduceCardInfoModalImages(card);
+                }, { once: true });
+                infoBtn.addEventListener('touchstart', () => {
+                    preloadProduceCardInfoModalImages(card);
+                }, { once: true, passive: true });
                 infoBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     showProduceCardInfoModal(card, personalColor);
