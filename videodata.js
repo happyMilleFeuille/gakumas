@@ -140,6 +140,13 @@ export const videoList = {
     ],
     lilja: [
         {
+            title: "生誕記念配信2026",
+            title_ko: "생일 라이브방송2026",
+            title_en: "Birthday stream 2026",
+            url: "https://youtu.be/JneM4Ny2VtQ?si=nKg4yIEKpsDTinHu",
+            date: "2026.07.24."
+        },
+        {
             title: "Fragile Heart",
             url: "https://youtu.be/LNFkXBmr44g?si=HGXSr23_SaAFfEXE",
             date: "2026.06.08."
