@@ -1554,7 +1554,8 @@ export function showHifEvalModal() {
     modal.innerHTML = `
         <div class="stat-detail-modal-content" style="max-width: 320px; border-color: ${idolColor};">
             <span class="stat-detail-close">&times;</span>
-            <h3 style="margin-top: 0; margin-bottom: 15px; text-align: center; color: ${idolColor}; font-size: 1.0rem; font-weight: 800; border-bottom: 2px solid ${idolColor}; padding-bottom: 8px;">
+            <h3 style="margin-top: 0; margin-bottom: 15px; text-align: center; color: ${idolColor}; font-size: 1.0rem; font-weight: 800; border-bottom: 2px solid ${idolColor}; padding-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                ${calcStore.isKyouka ? '<img src="icons/kyoukagekkan.webp" alt="" style="width: 20px; height: 20px; object-fit: contain; border-radius: 3px;" />' : ''}
                 ${modalTitle}
             </h3>
             
