@@ -607,19 +607,19 @@ export const idolData = {
 
 export const judgingRatios = {
     hajime: {
-        1: { protruded: { circle: [625, 441, 341] }, balanced: { circle: [560, 419, 370] } },
-        2: { protruded: { circle: [1924, 1281, 1065] }, balanced: { circle: [1834, 1361, 1065] } }
+        1: { protruded: { circle: [587, 418, 341] }, balanced: { circle: [560, 419, 370] } },
+        2: { protruded: { circle: [1914, 1278, 1064] }, balanced: { circle: [1830, 1361, 1063] } }
     },
     nia: {
-        1: { protruded: { circle: [332, 200, 133] }, balanced: { circle: [264, 218, 179] } },
-        2: { protruded: { circle: [738, 443, 296] }, balanced: { circle: [587, 484, 397] } },
-        3: { protruded: { circle: [1389, 834, 556] }, balanced: { circle: [1105, 912, 746] } }
+        1: { protruded: { circle: [349, 217, 134] }, balanced: { circle: [311, 252, 147] } },
+        2: { protruded: { circle: [941, 584, 358] }, balanced: { circle: [826, 657, 395] } },
+        3: { protruded: { circle: [1628, 1010, 619] }, balanced: { circle: [1428, 1136, 682] } }
     },
     hif: {
         1: { protruded: { circle: [312, 208, 174] }, balanced: { circle: [297, 222, 173] } },
         2: { protruded: { circle: [614, 411, 342] }, balanced: { circle: [586, 436, 341] } },
         3: { protruded: { circle: [1036, 691, 576] }, balanced: { circle: [989, 736, 575] } },
-        4: { protruded: { circle: [1961, 1308, 1090] }, balanced: { circle: [1872, 1393, 1089] } }
+        4: { protruded: { circle: [1961, 1308, 1090] }, balanced: { circle: [1872, 1393, 1090] } }
     }
 };
 

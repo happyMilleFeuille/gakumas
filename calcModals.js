@@ -1542,13 +1542,20 @@ export function showHifEvalModal() {
     };
     window.closeHifEvalModal = closeHifEvalModal;
 
+    const isHajime = calcStore.type === 'hajime';
     const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+
+    const modalTitle = isHajime ? t('calc_hajime_eval_title') : t('calc_hif_eval_title');
+    const r1Label = isHajime ? t('calc_hajime_eval_r1') : t('calc_hif_eval_r1');
+    const r2Label = isHajime ? t('calc_hajime_eval_r2') : t('calc_hif_eval_r2');
+    const roundIconSrc = isHajime ? 'icons/cal/test.webp' : 'icons/cal/round_hif.webp';
+    const showKyoukaSparkle = calcStore.isKyouka;
 
     modal.innerHTML = `
         <div class="stat-detail-modal-content" style="max-width: 320px; border-color: ${idolColor};">
             <span class="stat-detail-close">&times;</span>
             <h3 style="margin-top: 0; margin-bottom: 15px; text-align: center; color: ${idolColor}; font-size: 1.0rem; font-weight: 800; border-bottom: 2px solid ${idolColor}; padding-bottom: 8px;">
-                ${t('calc_hif_eval_title')}
+                ${modalTitle}
             </h3>
             
             <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
@@ -1566,26 +1573,37 @@ export function showHifEvalModal() {
 
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                     <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0; display: flex; align-items: center; gap: 5px;">
-                        <img src="icons/cal/round_hif.webp" alt="Round" style="width: 25px; height: 25px; object-fit: contain;" />
-                        ${t('calc_hif_eval_r1')}
+                        <img src="${roundIconSrc}" alt="Round" style="width: 25px; height: 25px; object-fit: contain;" />
+                        ${r1Label}
                     </label>
                     <input type="number" id="hif-eval-in-1" placeholder="0" max="1400000" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                     <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0; display: flex; align-items: center; gap: 5px;">
-                        <img src="icons/cal/round_hif.webp" alt="Round" style="width: 25px; height: 25px; object-fit: contain;" />
-                        ${t('calc_hif_eval_r2')}
+                        <img src="${roundIconSrc}" alt="Round" style="width: 25px; height: 25px; object-fit: contain;" />
+                        ${r2Label}
                     </label>
                     <input type="number" id="hif-eval-in-2" placeholder="0" max="2400000" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
                 </div>
                 
+                ${isHajime ? '' : `
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                     <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0;">
                         ${t('calc_hif_eval_star')}
                     </label>
                     <input type="number" id="hif-eval-in-3" placeholder="0" max="1335" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
                 </div>
+                `}
+
+                ${showKyoukaSparkle ? `
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <label style="font-size: 0.82rem; font-weight: 700; color: #444; margin: 0;">
+                        ${t('calc_hif_eval_sparkle')}
+                    </label>
+                    <input type="number" id="hif-eval-in-4" placeholder="0" max="610" style="width: 130px; box-sizing: border-box; border: 1px solid ${idolColor}44; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem; outline: none; font-family: 'Inter', 'Pretendard', -apple-system, sans-serif !important; font-weight: 400 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; background-color: ${idolColor}0d; transition: all 0.15s ease-in-out;" />
+                </div>
+                ` : ''}
                 
                 <div style="margin-top: 10px; padding: 12px; background: ${idolColor}1a; border: 1px solid ${idolColor}; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
                     <span id="hif-eval-result" style="font-size: 1.5rem; font-weight: 900; color: ${idolColor}; display: flex; align-items: center; justify-content: center; gap: 8px;">0</span>
@@ -1598,11 +1616,19 @@ export function showHifEvalModal() {
     const in1 = modal.querySelector('#hif-eval-in-1');
     const in2 = modal.querySelector('#hif-eval-in-2');
     const in3 = modal.querySelector('#hif-eval-in-3');
+    const in4 = modal.querySelector('#hif-eval-in-4');
     const resultEl = modal.querySelector('#hif-eval-result');
 
-    in1.value = localStorage.getItem('hif_eval_in_1') || "";
-    in2.value = localStorage.getItem('hif_eval_in_2') || "";
-    in3.value = localStorage.getItem('hif_eval_in_3') || "";
+    const calcType = calcStore.type || 'hif';
+
+    in1.value = localStorage.getItem(`${calcType}_eval_in_1`) || "";
+    in2.value = localStorage.getItem(`${calcType}_eval_in_2`) || "";
+    if (in3) {
+        in3.value = localStorage.getItem(`${calcType}_eval_in_3`) || "";
+    }
+    if (in4) {
+        in4.value = localStorage.getItem(`${calcType}_eval_in_4`) || "";
+    }
 
     if (calcStore.finalTotal) {
         const hifParamLimitBonus = calcStore.type === 'hif' ? (hifParameterLimitBonuses[calcStore.hifParamLimitLevel || 0] || 0) : 0;
@@ -1629,54 +1655,119 @@ export function showHifEvalModal() {
             in0.value = 10000;
         }
         let v1 = parseFloat(in1.value) || 0;
-        if (v1 > 1400000) {
-            v1 = 1400000;
-            in1.value = 1400000;
-        }
-        localStorage.setItem('hif_eval_in_1', in1.value);
-
-        // 본선 1Round 점수 -> 평가 포인트 구간제 연산
-        let v1Pts = 0;
-        if (v1 <= 300000) {
-            v1Pts = 0;
-        } else if (v1 <= 700000) {
-            v1Pts = (v1 - 300000) * 0.01;
-        } else if (v1 <= 1000000) {
-            v1Pts = 4000 + (v1 - 700000) * 0.003;
-        } else if (v1 <= 1200000) {
-            v1Pts = 4900 + (v1 - 1000000) * 0.002;
-        } else {
-            v1Pts = 5300 + (v1 - 1200000) * 0.001;
-        }
-
         let v2 = parseFloat(in2.value) || 0;
-        if (v2 > 2400000) {
-            v2 = 2400000;
-            in2.value = 2400000;
-        }
-        localStorage.setItem('hif_eval_in_2', in2.value);
-
-        // 본선 2Round 점수 -> 평가 포인트 구간제 연산
+        let v1Pts = 0;
         let v2Pts = 0;
-        if (v2 <= 600000) {
-            v2Pts = 0;
-        } else if (v2 <= 900000) {
-            v2Pts = (v2 - 600000) * 0.004;
-        } else if (v2 <= 1500000) {
-            v2Pts = 1200 + (v2 - 900000) * 0.008;
-        } else if (v2 <= 2000000) {
-            v2Pts = 6000 + (v2 - 1500000) * 0.002;
+        let sum = 0;
+
+        if (isHajime) {
+            if (v1 > 200000) {
+                v1 = 200000;
+                in1.value = 200000;
+            }
+            if (v2 > 2000000) {
+                v2 = 2000000;
+                in2.value = 2000000;
+            }
+
+            // 하지메(Legend) 중간시험 점수 -> 평가 포인트 연산
+            if (v1 <= 10000) {
+                v1Pts = v1 * 0.11;
+            } else if (v1 <= 20000) {
+                v1Pts = 1100 + (v1 - 10000) * 0.08;
+            } else if (v1 <= 30000) {
+                v1Pts = 1900 + (v1 - 20000) * 0.05;
+            } else if (v1 <= 40000) {
+                v1Pts = 2400 + (v1 - 30000) * 0.008;
+            } else if (v1 <= 50000) {
+                v1Pts = 2480 + (v1 - 40000) * 0.003;
+            } else if (v1 <= 60000) {
+                v1Pts = 2510 + (v1 - 50000) * 0.002;
+            } else {
+                v1Pts = 2530 + (v1 - 60000) * 0.001;
+            }
+
+            // 하지메(Legend) 최종시험 점수 -> 평가 포인트 연산
+            if (v2 <= 300000) {
+                v2Pts = v2 * 0.015;
+            } else if (v2 <= 500000) {
+                v2Pts = 4500 + (v2 - 300000) * 0.01;
+            } else if (v2 <= 600000) {
+                v2Pts = 6500 + (v2 - 500000) * 0.008;
+            } else {
+                v2Pts = 7300 + (v2 - 600000) * 0.001;
+            }
+
+            sum = Math.max(0, Math.floor(1700 + (v0 * 2.1) + v1Pts + v2Pts));
+            if (calcStore.isKyouka && in4) {
+                let v4 = parseFloat(in4.value) || 0;
+                if (v4 > 610) {
+                    v4 = 610;
+                    in4.value = 610;
+                }
+                sum = Math.max(0, Math.floor((sum * 0.72) + (v4 * 11.016)));
+            }
         } else {
-            v2Pts = 7000 + (v2 - 2000000) * 0.001;
+            if (v1 > 1400000) {
+                v1 = 1400000;
+                in1.value = 1400000;
+            }
+            if (v2 > 2400000) {
+                v2 = 2400000;
+                in2.value = 2400000;
+            }
+
+            // 본선 1Round 점수 -> 평가 포인트 연산
+            if (v1 <= 300000) {
+                v1Pts = 0;
+            } else if (v1 <= 700000) {
+                v1Pts = (v1 - 300000) * 0.01;
+            } else if (v1 <= 1000000) {
+                v1Pts = 4000 + (v1 - 700000) * 0.003;
+            } else if (v1 <= 1200000) {
+                v1Pts = 4900 + (v1 - 1000000) * 0.002;
+            } else {
+                v1Pts = 5300 + (v1 - 1200000) * 0.001;
+            }
+
+            // 본선 2Round 점수 -> 평가 포인트 연산
+            if (v2 <= 600000) {
+                v2Pts = 0;
+            } else if (v2 <= 900000) {
+                v2Pts = (v2 - 600000) * 0.004;
+            } else if (v2 <= 1500000) {
+                v2Pts = 1200 + (v2 - 900000) * 0.008;
+            } else if (v2 <= 2000000) {
+                v2Pts = 6000 + (v2 - 1500000) * 0.002;
+            } else {
+                v2Pts = 7000 + (v2 - 2000000) * 0.001;
+            }
+
+            let v3 = 0;
+            if (in3) {
+                v3 = parseFloat(in3.value) || 0;
+                if (v3 > 1335) {
+                    v3 = 1335;
+                    in3.value = 1335;
+                }
+                localStorage.setItem(`${calcType}_eval_in_3`, in3.value);
+            }
+            sum = Math.max(0, Math.floor((v0 * 2) + v1Pts + v2Pts + (v3 * 7.5)) - 2000);
+            if (calcStore.isKyouka && in4) {
+                let v4 = parseFloat(in4.value) || 0;
+                if (v4 > 610) {
+                    v4 = 610;
+                    in4.value = 610;
+                }
+                sum = Math.max(0, Math.floor((sum * 0.72) + (v4 * 8.8888)));
+            }
         }
 
-        let v3 = parseFloat(in3.value) || 0;
-        if (v3 > 1335) {
-            v3 = 1335;
-            in3.value = 1335;
+        localStorage.setItem(`${calcType}_eval_in_1`, in1.value);
+        localStorage.setItem(`${calcType}_eval_in_2`, in2.value);
+        if (in4) {
+            localStorage.setItem(`${calcType}_eval_in_4`, in4.value);
         }
-        localStorage.setItem('hif_eval_in_3', in3.value);
-        const sum = Math.max(0, Math.floor((v0 * 2) + v1Pts + v2Pts + (v3 * 7.5)) - 2000);
 
         const getProduceRank = (score) => {
             if (score >= 35000) return 'S5';
@@ -1713,11 +1804,12 @@ export function showHifEvalModal() {
     in0.addEventListener('input', calculate);
     in1.addEventListener('input', calculate);
     in2.addEventListener('input', calculate);
-    in3.addEventListener('input', calculate);
+    if (in3) in3.addEventListener('input', calculate);
+    if (in4) in4.addEventListener('input', calculate);
 
     calculate();
 
-    [in0, in1, in2, in3].forEach(input => {
+    [in0, in1, in2, in3, in4].filter(Boolean).forEach(input => {
         input.addEventListener('focus', () => {
             input.style.backgroundColor = '#ffffff';
             input.style.borderColor = idolColor;

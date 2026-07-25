@@ -792,8 +792,8 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
                     <div class="stat-header-top-bar" style="background-color: ${idolColor};">
                         ${(store.type === 'hif' || store.type === 'nia') ? `<img src="icons/${store.type}.webp" class="stat-header-icon ${store.type}-icon">` : ''}
                         <span class="stat-header-title">PRODUCE RESULT</span>
-                        ${store.type === 'hif' ? `
-                        <button id="btn-hif-eval" class="hif-eval-btn" style="border-color: color-mix(in srgb, ${idolColor} 95%, #000) !important;${store.isKyouka ? ' display: none;' : ''}">
+                        ${(store.type === 'hif' || store.type === 'hajime') ? `
+                        <button id="btn-hif-eval" class="hif-eval-btn" style="border-color: color-mix(in srgb, ${idolColor} 95%, #000) !important;">
                             ${t('calc_hif_eval_btn')}
                         </button>
                         ` : ''}
@@ -1121,10 +1121,20 @@ export function updateStatHeaderUI(store, breakdown) {
         totalSumContainer.style.backgroundColor = idolColor;
         totalSumContainer.style.boxShadow = `0 2px 6px ${idolColor}33`;
     }
-    const hifEvalBtn = document.getElementById('btn-hif-eval');
+    let hifEvalBtn = document.getElementById('btn-hif-eval');
+    const shouldShowEvalBtn = store.type === 'hif' || store.type === 'hajime';
+    if (!shouldShowEvalBtn && hifEvalBtn) {
+        hifEvalBtn.remove();
+        hifEvalBtn = null;
+    } else if (shouldShowEvalBtn && !hifEvalBtn && headerBar) {
+        hifEvalBtn = document.createElement('button');
+        hifEvalBtn.id = 'btn-hif-eval';
+        hifEvalBtn.className = 'hif-eval-btn';
+        hifEvalBtn.textContent = t('calc_hif_eval_btn');
+        headerBar.appendChild(hifEvalBtn);
+    }
     if (hifEvalBtn) {
         hifEvalBtn.style.setProperty('border-color', `color-mix(in srgb, ${idolColor} 95%, #000)`, 'important');
-        hifEvalBtn.style.display = store.isKyouka ? 'none' : '';
     }
 
     let sum = 0;
