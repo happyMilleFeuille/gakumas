@@ -603,8 +603,8 @@ export const produceList = [
         },
         card: {
             name: "それぞれの道",
-            desc: "✦ param12\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "✦ param12\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ param14\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param14\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "✦ param15\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
