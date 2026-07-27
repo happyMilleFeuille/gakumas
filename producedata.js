@@ -195,7 +195,7 @@ export const produceList = [
         },
         primacard: {
             name: "先陣を切る一番星",
-            desc: "✦ goodcondition4\n✦ 호인상 강화+30%\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodimpression5\n✦ 호인상 강화+30%\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodimpression5\n✦ 好印象強化+30%\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
