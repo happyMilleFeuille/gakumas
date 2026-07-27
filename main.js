@@ -3,7 +3,7 @@ import './storage-override.js';
 import { state, setLanguage } from './state.js';
 import { updatePageTranslations, initMobileHeightFix, translate } from './utils.js';
 import { handleNavigation } from './router.js';
-import { renderSupport, updateGlobalBackgroundColor, preloadSupportImages, preloadCalcImages } from './ui.js';
+import { renderSupport, updateGlobalBackgroundColor, preloadCalcImages } from './ui.js';
 import { renderGacha } from './gacha.js';
 import { loginWithGoogle, logout, auth, onAuthStateChanged } from './firebase-auth.js';
 import './firebase-sync.js';
@@ -269,12 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 서포트 카드 및 계산기 탭/버튼 프리로드 연결 (이벤트 위임)
+    // 계산기 탭/버튼 프리로드 연결 (이벤트 위임)
     ['mouseover', 'touchstart'].forEach(evt => {
         document.addEventListener(evt, (e) => {
-            const supportBtn = e.target.closest('.menu-btn[data-target="support"], .home-quick-btn[data-target="support"]');
-            if (supportBtn) preloadSupportImages();
-
             const calcBtn = e.target.closest('.menu-btn[data-target="calc"], .home-quick-btn[data-target="calc"]');
             if (calcBtn) preloadCalcImages();
         }, evt === 'touchstart' ? { passive: true } : false);
@@ -789,8 +786,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // [추가] 페이지 로드 직후 가벼운 썸네일 및 핵심 아이콘 즉시 프리로드 (사용자 체감 성능 향상)
-    setTimeout(() => {
-        preloadSupportImages();
-    }, 100);
 });

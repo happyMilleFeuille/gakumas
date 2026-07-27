@@ -26,34 +26,44 @@ window.__videoModalOpen = false;
 window.__videoModalHistoryPushed = false;
 window.__videoModalPendingClose = false;
 
-// 서포트 카드 이미지 프리로드 (호버/클릭/스크롤 시)
+// 서포트 카드 이미지 프리로드
 let preloadedSupport = false;
 
-const mainImagePreloadQueue = new Set();
-const preloadedMainImages = new Set();
-let preloadIntervalId = null;
+const preloadedSupportCardAssets = new Set();
 
-const isMobileDevice = () => window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+const preloadSupportCardAssets = (cardId) => {
+    if (!cardId || preloadedSupportCardAssets.has(cardId)) return;
+    preloadedSupportCardAssets.add(cardId);
 
-const preloadMainImage = (cardId) => {
-    return; // Disabled for all devices to prevent bulk download side effects
+    const card = cardList.find(c => c.id === cardId);
+    const urls = [`images/support/${cardId}.webp`];
+
+    if (card) {
+        const baseIconPath = `images/support/${card.id}`;
+        const isCardType = card.have && card.have.startsWith('card');
+        const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
+        const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
+
+        card._extraPath = path1;
+        urls.push(path1, path2);
+
+        const chars = Array.isArray(card.char) ? card.char : [card.char];
+        chars.filter(Boolean).forEach(char => {
+            urls.push(`icons/idolicons/${char}_c.png`);
+        });
+    }
+
+    urls.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
 };
-
-let supportCardObserver = null;
-function initSupportObserver() {
-    return; // Disabled for all devices
-}
-
-function startBackgroundSequentialPreload() {
-    return; // Disabled for all devices
-}
 
 export function preloadSupportImages() {
     if (preloadedSupport) return;
     preloadedSupport = true;
 
     const thumbDir = 'images/support/thumb';
-    const mainDir = 'images/support';
 
     // 0순위: 모달 및 UI에서 공통으로 쓰는 작은 아이콘들 싹 다 미리 메모리에 올리기 (깜빡임 방지)
     const coreUIIcons = [
@@ -77,37 +87,8 @@ export function preloadSupportImages() {
         fragment.appendChild(link);
     });
 
-    // 2순위: 모달용 아이콘 이미지 프리로드 (썸네일 로딩 후 시작하도록 딜레이)
-    setTimeout(() => {
-        const modalFragment = document.createDocumentFragment();
-        cardList.forEach(card => {
-            const baseIconPath = `${mainDir}/${card.id}`;
-            const isCardType = card.have && card.have.startsWith('card');
-            const path1 = isCardType ? `${baseIconPath}_card.webp` : `${baseIconPath}_item.webp`;
-            const path2 = isCardType ? `${baseIconPath}_item.webp` : `${baseIconPath}_card.webp`;
-
-            // 모달 열 때 path1/path2를 쓸 수 있도록 경로만 세팅
-            card._extraPath = path1; // 일단 path1을 기본으로 세팅
-
-            const link1 = document.createElement('link');
-            link1.rel = 'preload';
-            link1.as = 'image';
-            link1.href = path1;
-            modalFragment.appendChild(link1);
-
-            const link2 = document.createElement('link');
-            link2.rel = 'preload';
-            link2.as = 'image';
-            link2.href = path2;
-            modalFragment.appendChild(link2);
-        });
-        document.head.appendChild(modalFragment);
-    }, 600);
-    
     document.head.appendChild(fragment);
 
-    // 3순위: 화면에 보이는 것 우선 및 나머지는 백그라운드에서 순차적으로 프리로드 시작
-    startBackgroundSequentialPreload();
 }
 
 // 계산기 화면 이미지 프리로드 (P-아이템 및 공통 아이콘)
@@ -1298,7 +1279,7 @@ function setupStaticListeners(container) {
 
     grid.addEventListener('mouseover', (e) => {
         const cardEl = e.target.closest('.support-card');
-        if (cardEl) preloadMainImage(cardEl.dataset.id);
+        if (cardEl) preloadSupportCardAssets(cardEl.dataset.id);
     });
 
     grid.addEventListener('mousedown', (e) => {
@@ -1325,7 +1306,7 @@ function setupStaticListeners(container) {
     grid.addEventListener('touchstart', (e) => {
         const cardEl = e.target.closest('.support-card');
         if (!cardEl) return;
-        preloadMainImage(cardEl.dataset.id);
+        preloadSupportCardAssets(cardEl.dataset.id);
         isLongPress = false;
         longPressTimer = setTimeout(() => {
             isLongPress = true;
@@ -1575,13 +1556,6 @@ function updateSupportGrid(container) {
             cardEl.classList.add(`rarity-${card.rarity.toLowerCase()}`);
             if (isDeactivated) cardEl.classList.add('is-disabled');
             
-            cardEl.addEventListener('mouseenter', () => {
-                if (!isMobileDevice()) {
-                    const img = new Image();
-                    img.src = `images/support/${cardId}.webp`;
-                }
-            }, { once: true });
-
             const imgSrc = card.image || `images/support/thumb/${cardId}.webp`;
             item.querySelector('.card-img').src = imgSrc;
             item.querySelectorAll('.card-star').forEach((s, idx) => s.classList.toggle('active', idx < currentLB));
@@ -1594,14 +1568,6 @@ function updateSupportGrid(container) {
         });
         grid.appendChild(fragment);
     }
-
-    // 화면에 나타나는 카드 감지를 위한 Observer 초기화 및 등록
-    initSupportObserver();
-    grid.querySelectorAll('.support-card').forEach(el => {
-        if (supportCardObserver) {
-            supportCardObserver.observe(el);
-        }
-    });
 
     updatePageTranslations(container);
 }
