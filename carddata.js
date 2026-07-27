@@ -700,6 +700,11 @@ export const cardList = [
         type: "vocal",
         plan: "logic",
         have: "item",
+        item_effects: [{
+            type: "inexam",
+            kr: "[vocal]턴 개시 시 원기가 30이상인 경우 \n✦ goodimpression4\n✦ motivation4\n✦ genki2\n✦ inlesson1",
+            jp: "[vocal]ターン開始時、元気が30以上の場合、 \n✦ goodimpression4\n✦ motivation4\n✦ genki2\n✦ inlesson1",
+        }],
         releasedAt: "2025-06-30",
         rarity: "SSR",
         source: "limited_f",
