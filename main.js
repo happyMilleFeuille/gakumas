@@ -5,6 +5,7 @@ import { updatePageTranslations, initMobileHeightFix, translate } from './utils.
 import { handleNavigation } from './router.js';
 import { renderSupport, updateGlobalBackgroundColor, preloadCalcImages } from './ui.js';
 import { renderGacha } from './gacha.js';
+import { produceList } from './producedata.js';
 import { loginWithGoogle, logout, auth, onAuthStateChanged } from './firebase-auth.js';
 import './firebase-sync.js';
 
@@ -12,6 +13,26 @@ import './firebase-sync.js';
 let isDown = false;
 let startX;
 let scrollLeft;
+let preloadedPSSRThumbs = false;
+
+function preloadPSSRThumbsForDesktop() {
+    if (preloadedPSSRThumbs) return;
+    if (window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent)) return;
+    preloadedPSSRThumbs = true;
+
+    const fragment = document.createDocumentFragment();
+    produceList
+        .filter(card => card.rarity === 'PSSR')
+        .forEach(card => {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = `idols/thumb/${card.id}1.webp`;
+            fragment.appendChild(link);
+        });
+
+    document.head.appendChild(fragment);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     let isAuthInitialized = false;
@@ -275,6 +296,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const calcBtn = e.target.closest('.menu-btn[data-target="calc"], .home-quick-btn[data-target="calc"]');
             if (calcBtn) preloadCalcImages();
         }, evt === 'touchstart' ? { passive: true } : false);
+    });
+
+    document.addEventListener('mouseover', (e) => {
+        const roadmapBtn = e.target.closest('#btn-roadmap-expand');
+        if (roadmapBtn) preloadPSSRThumbsForDesktop();
     });
 
     // [반응형 대응] 768px 경계를 넘나들 때 서포트 패널 닫기 및 로드맵 재렌더링
