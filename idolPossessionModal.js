@@ -1,7 +1,6 @@
 // idolPossessionModal.js
-import { state } from './state.js';
+import { state, idolColors } from './state.js';
 import { produceList } from './producedata.js';
-import { idolColors } from './state.js';
 import globalTranslations from './i18n.js';
 
 window.getGrayscaleDataUrl = function (imgEl) {
@@ -77,7 +76,6 @@ const getBadgeText = (c, lang) => {
     const key = `filter_${src}`;
     return globalTranslations[lang]?.[key] || globalTranslations.ko[key] || src;
 };
-
 
 const TRANSLATIONS = {
     ko: {
@@ -258,6 +256,63 @@ const hexToRgba = (hex, alpha) => {
 const getCharacterId = (cardId) => {
     const match = cardId.match(/^(?:ssr|sr|r)([a-z]+)_/);
     return match ? match[1] : '';
+};
+
+const getCardSeriesOrder = (card) => {
+    if (!card || !card.id) return 999;
+    const match = card.id.match(/_(\d+)(?:st|nd|rd|th)/i);
+    return match ? parseInt(match[1], 10) : 999;
+};
+
+const getSeriesBadgeText = (card) => {
+    const num = getCardSeriesOrder(card);
+    if (num === 999) return null;
+    const j = num % 10, k = num % 100;
+    if (j === 1 && k !== 11) return `${num}st`;
+    if (j === 2 && k !== 12) return `${num}nd`;
+    if (j === 3 && k !== 13) return `${num}rd`;
+    return `${num}th`;
+};
+
+const getFesSubCategoryOrder = (card) => {
+    if (!card) return 999;
+    const idLower = (card.id || '').toLowerCase();
+    const nameLower = (card.name || '').toLowerCase();
+    if (idLower.includes('campus') || nameLower.includes('campus')) return 1;
+    if (idLower.includes('hif')) return 2;
+    return 3;
+};
+
+const sortPssrFesCards = (a, b) => {
+    const fesOrderA = getFesSubCategoryOrder(a);
+    const fesOrderB = getFesSubCategoryOrder(b);
+    if (fesOrderA !== fesOrderB) return fesOrderA - fesOrderB;
+
+    const dateA = a.releasedAt || '1970-01-01';
+    const dateB = b.releasedAt || '1970-01-01';
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+    const charA = getCharacterId(a.id);
+    const charB = getCharacterId(b.id);
+    const idxA = CHARACTER_ORDER.indexOf(charA);
+    const idxB = CHARACTER_ORDER.indexOf(charB);
+    if (idxA !== idxB) return idxA - idxB;
+
+    return a.id.localeCompare(b.id);
+};
+
+const sortPssrByCharacterAndRelease = (a, b) => {
+    const dateA = a.releasedAt || '1970-01-01';
+    const dateB = b.releasedAt || '1970-01-01';
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+    const charA = getCharacterId(a.id);
+    const charB = getCharacterId(b.id);
+    const idxA = CHARACTER_ORDER.indexOf(charA);
+    const idxB = CHARACTER_ORDER.indexOf(charB);
+    if (idxA !== idxB) return idxA - idxB;
+
+    return a.id.localeCompare(b.id);
 };
 
 const getLocalizedCardName = (card, lang) => {
@@ -492,6 +547,17 @@ export function openIdolPossessionModal() {
                 overflow: hidden;
                 z-index: 1;
                 box-sizing: border-box;
+            }
+            .pssr-stat-icon-box::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 35%;
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+                pointer-events: none;
+                z-index: 2;
             }
             .pssr-stat-icon-box img {
                 position: absolute;
@@ -1022,7 +1088,6 @@ export function openIdolPossessionModal() {
                 .idol-stats-plan-col > div:last-child {
                     height: 8px !important;
                 }
-                #plan-stat-details .pssr-stat-icon-wrap,
                 .pssr-stat-icon-wrap {
                     width: 46px !important;
                     height: 70px !important;
@@ -1031,6 +1096,9 @@ export function openIdolPossessionModal() {
                 .pssr-stat-icon-box {
                     border-radius: 0 9px 0 0 !important;
                 }
+
+
+
                 .pssr-char-badge {
                     height: 12px !important;
                     padding: 0 4px !important;
@@ -1050,12 +1118,6 @@ export function openIdolPossessionModal() {
                     right: -1px !important;
                     border-radius: 2px 2px 0 2px !important;
                     padding: 1.5px !important;
-                }
-                #plan-stat-details {
-                    padding: 8px 2px !important;
-                }
-                #plan-stat-details .pssr-stat-icons-container {
-                    padding: 0 !important;
                 }
                 .plan-subgroup-col-left {
                     padding: 2px 4px !important;
@@ -1344,8 +1406,67 @@ export function openIdolPossessionModal() {
     };
 }
 
+
+
+
+
+
 function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeModal, onBackToSelection) {
     const getAbsoluteUrl = (relPath) => new URL(relPath, window.location.href).href;
+
+    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useSubCategoryBadgeForFes = false, useOsusumeBadgeForPlan = false } = {}) => {
+        let html = '';
+        cardsList.forEach(c => {
+            const suffix = c.another ? '1.webp' : '2.webp';
+            const cardName = getLocalizedCardName(c, lang);
+            const charId = getCharacterId(c.id);
+            const charColor = idolColors[charId] || '#cbd5e1';
+
+            const containerStyle = isOwnedList
+                ? `border: 1.5px solid ${charColor};`
+                : `border: 1px solid #ccc;`;
+
+            const imgStyle = isOwnedList
+                ? `display: block; opacity: 1;`
+                : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+
+            let badgeText = getBadgeText(c, lang);
+            if (useSeriesBadgeForNormal && (c.source || 'normal') === 'normal' && !c.another) {
+                const seriesBadge = getSeriesBadgeText(c);
+                if (seriesBadge) {
+                    badgeText = seriesBadge;
+                }
+            } else if (useSubCategoryBadgeForFes && c.source === 'limited_f') {
+                const idLower = (c.id || '').toLowerCase();
+                const nameLower = (c.name || '').toLowerCase();
+                if (idLower.includes('campus') || nameLower.includes('campus')) {
+                    badgeText = 'NIA';
+                } else if (idLower.includes('hif')) {
+                    badgeText = 'HIF';
+                }
+            }
+
+            let planBadgeIcon = `icons/${c.plan || 'sense'}.webp`;
+            if (useOsusumeBadgeForPlan) {
+                let os = getOsusume(c, pssrCards);
+                if (os === 'preservation') os = 'fullpower';
+                if (os) {
+                    planBadgeIcon = `icons/${os}.webp`;
+                }
+            }
+
+            html += `
+                <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                    <div class="pssr-stat-icon-box">
+                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
+                    </div>
+                    <span class="pssr-char-badge" style="background-color: ${charColor};">${badgeText}</span>
+                    <img class="pssr-plan-badge" src="${planBadgeIcon}">
+                </div>
+            `;
+        });
+        return html;
+    };
     const modalContent = modal.querySelector('.modal-content');
     const scrollArea = modal.querySelector('#idol-possession-scroll-area');
     const bottomArea = modal.querySelector('#idol-possession-bottom-area');
@@ -3289,50 +3410,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         const ownedCards = sourceCards.filter(c => isCardOwned(c.id));
                         const unownedCards = sourceCards.filter(c => !isCardOwned(c.id));
 
-                        const sortFn = (a, b) => {
-                            const charA = getCharacterId(a.id);
-                            const charB = getCharacterId(b.id);
-                            const idxA = CHARACTER_ORDER.indexOf(charA);
-                            const idxB = CHARACTER_ORDER.indexOf(charB);
-                            if (idxA !== idxB) return idxA - idxB;
-                            const dateA = a.releasedAt || '1970-01-01';
-                            const dateB = b.releasedAt || '1970-01-01';
-                            if (dateA !== dateB) {
-                                return dateA.localeCompare(dateB);
-                            }
-                            return a.id.localeCompare(b.id);
-                        };
+                        const sortFn = src === 'limited_f' ? sortPssrFesCards : sortPssrByCharacterAndRelease;
                         ownedCards.sort(sortFn);
                         unownedCards.sort(sortFn);
 
-                        const buildIconsHtml = (cardsList, isOwnedList) => {
-                            let html = '';
-                            cardsList.forEach(c => {
-                                const suffix = c.another ? '1.webp' : '2.webp';
-                                const cardName = getLocalizedCardName(c, lang);
-                                const charId = getCharacterId(c.id);
-                                const charColor = idolColors[charId] || '#cbd5e1';
-
-                                const containerStyle = isOwnedList
-                                    ? `border: 1.5px solid ${charColor};`
-                                    : `border: 1px solid #ccc;`;
-
-                                const imgStyle = isOwnedList
-                                    ? `display: block; opacity: 1;`
-                                    : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
-
-                                html += `
-                                    <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                        <div class="pssr-stat-icon-box">
-                                            <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
-                                        </div>
-                                        <span class="pssr-char-badge" style="background-color: ${charColor};">${getBadgeText(c, lang)}</span>
-                                        <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
-                                    </div>
-                                `;
-                            });
-                            return html;
-                        };
+                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f' });
 
                         const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                         const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
@@ -3346,14 +3428,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                         const hasOwned = ownedCards.length > 0;
                         const hasUnowned = unownedCards.length > 0;
-
-                        const hexToRgba = (hex, alpha) => {
-                            if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
-                            const r = parseInt(hex.slice(1, 3), 16);
-                            const g = parseInt(hex.slice(3, 5), 16);
-                            const b = parseInt(hex.slice(5, 7), 16);
-                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                        };
 
                         const sourceColor = sourceCard.dataset.color || '#ff4d8d';
                         const ownedBg = hexToRgba(sourceColor, 0.08);
@@ -3415,50 +3489,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     const ownedCards = planCards.filter(c => isCardOwned(c.id));
                     const unownedCards = planCards.filter(c => !isCardOwned(c.id));
 
-                    const sortFn = (a, b) => {
-                        const charA = getCharacterId(a.id);
-                        const charB = getCharacterId(b.id);
-                        const idxA = CHARACTER_ORDER.indexOf(charA);
-                        const idxB = CHARACTER_ORDER.indexOf(charB);
-                        if (idxA !== idxB) return idxA - idxB;
-                        const dateA = a.releasedAt || '1970-01-01';
-                        const dateB = b.releasedAt || '1970-01-01';
-                        if (dateA !== dateB) {
-                            return dateA.localeCompare(dateB);
-                        }
-                        return a.id.localeCompare(b.id);
-                    };
-                    ownedCards.sort(sortFn);
-                    unownedCards.sort(sortFn);
+                    ownedCards.sort(sortPssrByCharacterAndRelease);
+                    unownedCards.sort(sortPssrByCharacterAndRelease);
 
-                    const buildIconsHtml = (cardsList, isOwnedList) => {
-                        let html = '';
-                        cardsList.forEach(c => {
-                            const suffix = c.another ? '1.webp' : '2.webp';
-                            const cardName = getLocalizedCardName(c, lang);
-                            const charId = getCharacterId(c.id);
-                            const charColor = idolColors[charId] || '#cbd5e1';
-
-                            const containerStyle = isOwnedList
-                                ? `border: 1.5px solid ${charColor};`
-                                : `border: 1px solid #ccc;`;
-
-                            const imgStyle = isOwnedList
-                                ? `display: block; opacity: 1;`
-                                : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
-
-                            html += `
-                                <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                    <div class="pssr-stat-icon-box">
-                                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
-                                    </div>
-                                    <span class="pssr-char-badge" style="background-color: ${charColor};">${getBadgeText(c, lang)}</span>
-                                    <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
-                                </div>
-                            `;
-                        });
-                        return html;
-                    };
+                    const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useOsusumeBadgeForPlan: true });
 
                     const ownedContainer = detailsDiv.querySelector('#plan-stat-owned-container');
                     const unownedContainer = detailsDiv.querySelector('#plan-stat-unowned-container');
@@ -3472,14 +3506,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                     const hasOwned = ownedCards.length > 0;
                     const hasUnowned = unownedCards.length > 0;
-
-                    const hexToRgba = (hex, alpha) => {
-                        if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
-                        const r = parseInt(hex.slice(1, 3), 16);
-                        const g = parseInt(hex.slice(3, 5), 16);
-                        const b = parseInt(hex.slice(5, 7), 16);
-                        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                    };
 
                     const planColors = {
                         sense: '#ff4d8d',
@@ -3945,54 +3971,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                     const activeCards = getActiveCaptureCards();
 
-                    const sortFn = (a, b) => {
-                        const charA = getCharacterId(a.id);
-                        const charB = getCharacterId(b.id);
-                        const idxA = CHARACTER_ORDER.indexOf(charA);
-                        const idxB = CHARACTER_ORDER.indexOf(charB);
-                        if (idxA !== idxB) return idxA - idxB;
-                        const dateA = a.releasedAt || '1970-01-01';
-                        const dateB = b.releasedAt || '1970-01-01';
-                        if (dateA !== dateB) return dateA.localeCompare(dateB);
-                        return a.id.localeCompare(b.id);
-                    };
-
-                    const buildIconsHtml = (cardsList, isOwnedList) => {
-                        let html = '';
-                        cardsList.forEach(c => {
-                            const suffix = c.another ? '1.webp' : '2.webp';
-                            const cardName = getLocalizedCardName(c, lang);
-                            const charId = getCharacterId(c.id);
-                            const charColor = idolColors[charId] || '#cbd5e1';
-
-                            const containerStyle = isOwnedList
-                                ? `border: 1.5px solid ${charColor};`
-                                : `border: 1px solid #ccc;`;
-
-                            const imgStyle = isOwnedList
-                                ? `display: block; opacity: 1;`
-                                : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
-
-                            html += `
-                                <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                    <div class="pssr-stat-icon-box">
-                                        <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
-                                    </div>
-                                    <span class="pssr-char-badge" style="background-color: ${charColor};">${getBadgeText(c, lang)}</span>
-                                    <img class="pssr-plan-badge" src="icons/${c.plan || 'sense'}.webp">
-                                </div>
-                            `;
-                        });
-                        return html;
-                    };
-
-                    const hexToRgba = (hex, alpha) => {
-                        if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
-                        const r = parseInt(hex.slice(1, 3), 16);
-                        const g = parseInt(hex.slice(3, 5), 16);
-                        const b = parseInt(hex.slice(5, 7), 16);
-                        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                    };
+                    const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useOsusumeBadgeForPlan: true });
 
                     const isJa = lang === 'ja';
                     const isEn = lang === 'en';
@@ -4006,8 +3985,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
                         const ownedCards = planCards.filter(c => isCardOwned(c.id));
                         const unownedCards = planCards.filter(c => !isCardOwned(c.id));
-                        ownedCards.sort(sortFn);
-                        unownedCards.sort(sortFn);
+                        ownedCards.sort(sortPssrByCharacterAndRelease);
+                        unownedCards.sort(sortPssrByCharacterAndRelease);
 
                         const planColor = p === 'sense' ? '#ff4d8d' : p === 'logic' ? '#46a4f3' : '#ffb300';
                         const planTitle = p.toUpperCase();
@@ -4095,47 +4074,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             const ownedCards = sourceCards.filter(c => isCardOwned(c.id));
                             const unownedCards = sourceCards.filter(c => !isCardOwned(c.id));
 
-                            const sortFn = (a, b) => {
-                                const charA = getCharacterId(a.id);
-                                const charB = getCharacterId(b.id);
-                                const idxA = CHARACTER_ORDER.indexOf(charA);
-                                const idxB = CHARACTER_ORDER.indexOf(charB);
-                                if (idxA !== idxB) return idxA - idxB;
-                                const dateA = a.releasedAt || '1970-01-01';
-                                const dateB = b.releasedAt || '1970-01-01';
-                                if (dateA !== dateB) return dateA.localeCompare(dateB);
-                                return a.id.localeCompare(b.id);
-                            };
+                            const sortFn = src === 'limited_f' ? sortPssrFesCards : sortPssrByCharacterAndRelease;
                             ownedCards.sort(sortFn);
                             unownedCards.sort(sortFn);
 
-                            const buildIconsHtml = (cardsList, isOwnedList) => {
-                                let html = '';
-                                cardsList.forEach(c => {
-                                    const suffix = c.another ? '1.webp' : '2.webp';
-                                    const cardName = getLocalizedCardName(c, lang);
-                                    const charId = getCharacterId(c.id);
-                                    const charColor = idolColors[charId] || '#cbd5e1';
-
-                                    const containerStyle = isOwnedList
-                                        ? `border: 1.5px solid ${charColor};`
-                                        : `border: 1px solid #ccc;`;
-
-                                    const imgStyle = isOwnedList
-                                        ? `display: block; opacity: 1;`
-                                        : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
-
-                                    html += `
-                                        <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
-                                            <div class="pssr-stat-icon-box">
-                                                <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
-                                            </div>
-                                            <span class="pssr-char-badge" style="background-color: ${charColor};">${getBadgeText(c, lang)}</span>
-                                        </div>
-                                    `;
-                                });
-                                return html;
-                            };
+                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f' });
 
                             const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                             const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
@@ -4146,14 +4089,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             const isEn = lang === 'en';
                             const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
                             const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
-
-                            const hexToRgba = (hex, alpha) => {
-                                if (!hex || !hex.startsWith('#')) return `rgba(255, 77, 141, ${alpha})`;
-                                const r = parseInt(hex.slice(1, 3), 16);
-                                const g = parseInt(hex.slice(3, 5), 16);
-                                const b = parseInt(hex.slice(5, 7), 16);
-                                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                            };
 
                             const sourceColor = sourceCard.dataset.color || '#ff4d8d';
                             const ownedBg = hexToRgba(sourceColor, 0.08);
