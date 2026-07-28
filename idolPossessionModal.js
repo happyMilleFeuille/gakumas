@@ -92,6 +92,8 @@ const TRANSLATIONS = {
         plan_stats: '플랜별',
         source_stats: '분류별',
         char_stats: '아이돌별',
+        toggle_plan: '플랜별',
+        toggle_source: '분류별',
         alert_generating: '이미지 생성 중...',
         alert_fail: '이미지 저장에 실패했습니다.',
         alert_success: '이미지가 저장되었습니다.',
@@ -109,7 +111,9 @@ const TRANSLATIONS = {
         show_100percent_only: '100%所持',
         plan_stats: 'プラン別所持率',
         source_stats: '分類別所持率',
-        char_stats: 'キャラクター別所持率',
+        char_stats: 'アイドル別所持率',
+        toggle_plan: 'プラン別',
+        toggle_source: '分類別',
         alert_generating: '画像生成中...',
         alert_fail: '画像の保存に失敗しました。',
         alert_success: '画像を保存しました。',
@@ -128,6 +132,8 @@ const TRANSLATIONS = {
         plan_stats: 'By Plan',
         source_stats: 'By Source',
         char_stats: 'By Character',
+        toggle_plan: 'By Plan',
+        toggle_source: 'By Source',
         alert_generating: 'Generating image...',
         alert_fail: 'Failed to save image.',
         alert_success: 'Image saved successfully.',
@@ -3056,10 +3062,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     <!-- 플랜별/분류별 토글박스 -->
                     <div class="idol-stats-char-toggle-group">
                         <label class="idol-stats-char-toggle-btn ${charStatsViewMode === 'plan' ? 'active' : ''}" data-mode="plan">
-                            <span>플랜별</span>
+                            <span>${text.toggle_plan}</span>
                         </label>
                         <label class="idol-stats-char-toggle-btn ${charStatsViewMode === 'source' ? 'active' : ''}" data-mode="source">
-                            <span>분류별</span>
+                            <span>${text.toggle_source}</span>
                         </label>
                     </div>
                 </div>
