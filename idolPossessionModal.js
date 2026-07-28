@@ -1212,6 +1212,7 @@ export function openIdolPossessionModal() {
                     height: 105px !important;
                     border-radius: 8px 0 0 8px !important;
                     padding: 5px 3px !important;
+                    border-width: 1px !important;
                 }
                 .pssr-waffle-badge {
                     top: 4px !important;
@@ -1317,6 +1318,7 @@ export function openIdolPossessionModal() {
                     border-radius: 12px 0 0 12px !important;
                     padding: 10px 6px !important;
                     box-shadow: none !important;
+                    border-width: 1.5px !important;
                 }
                 body.is-capturing .pssr-waffle-badge {
                     top: 6px !important;
@@ -2440,7 +2442,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             <svg class="source-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: transform 0.15s ease !important;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                     </div>
-                    <div class="source-stat-details" style="display: none; background: rgba(250, 249, 250, 0.45); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 12px 4px; border-radius: 8px; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box; margin-top: 4px;">
+                    <div class="source-stat-details" style="display: none; background: rgba(100, 116, 139, 0.07); border-top: 1px solid rgba(0, 0, 0, 0.08); padding: 12px 4px; border-radius: 8px; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box; margin-top: 4px;">
                         <!-- Owned Cards Group -->
                         <div class="source-stat-owned-group" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
                             <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;"></div>
@@ -3134,8 +3136,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
                 .source-stat-card.expanded {
                     grid-column: span 2 !important;
-                    background: rgba(255, 255, 255, 0.45);
-                    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+                    background: rgba(255, 255, 255, 0.85);
+                    border: 1px solid rgba(0, 0, 0, 0.08) !important;
                     border-radius: 12px;
                     padding: 10px 12px !important;
                 }
