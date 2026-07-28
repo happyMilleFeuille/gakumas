@@ -3709,6 +3709,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             history.pushState({ modalOpen: 'saveOptions' }, "");
 
             let optionsModal = document.createElement('div');
+            let didClose = false;
             optionsModal.className = 'modal';
             optionsModal.style.zIndex = '36000';
             optionsModal.style.display = 'flex';
@@ -3748,11 +3749,15 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             document.body.appendChild(optionsModal);
 
             optionsModal.onClose = () => {
+                if (didClose) return;
+                didClose = true;
                 optionsModal.remove();
                 onSelect(null);
             };
 
             const closeOptionsModal = (result) => {
+                if (didClose) return;
+                didClose = true;
                 const parentModal = document.getElementById('idol-possession-modal');
                 if (parentModal) {
                     parentModal.setAttribute('data-prevent-popstate', 'true');
@@ -3765,6 +3770,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         parentModal.removeAttribute('data-prevent-popstate');
                     }
                 }
+                optionsModal.onClose = null;
                 onSelect(result);
             };
 
@@ -4415,22 +4421,116 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                 let origRadarSvgs = [];
 
-                setTimeout(async () => {
-                    origRadarSvgs = await rasterizeRadarSvgs();
-                    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                const restoreAfterCapture = () => {
+                    // Restore original image sources after capture
+                    origImgSrcs.forEach(item => {
+                        item.img.src = item.src;
+                    });
 
-                    window.html2canvas(modalContent, {
-                        backgroundColor: '#ffffff',
-                        scale: captureScale,
-                        useCORS: true,
-                        logging: false,
-                        windowWidth: 1024,
-                        windowHeight: modalContent.scrollHeight || 2000,
-                        scrollX: 0,
-                        scrollY: 0,
-                        width: 740,
-                        height: modalContent.scrollHeight || 2000
-                    }).then(canvas => {
+                    // Restore original normal <img> srcs
+                    origImgSrcsAbsolute.forEach(item => {
+                        item.img.setAttribute('src', item.src);
+                    });
+
+                    // Restore original SVG image hrefs
+                    origSvgHrefs.forEach(item => {
+                        item.img.setAttribute('href', item.href);
+                    });
+
+                    restoreRadarSvgs(origRadarSvgs);
+
+                    // Restore original hidden elements
+                    origDisplays.forEach(item => {
+                        item.el.style.setProperty('display', item.display, item.displayPriority || '');
+                    });
+
+                    // Restore original plan stats details states
+                    if (detailsDiv) {
+                        detailsDiv.innerHTML = origPlanDetailsHtml;
+                        detailsDiv.style.display = origPlanDetailsDisplay;
+                        detailsDiv.dataset.activePlan = origPlanDetailsActive;
+                    }
+                    origPlanColsActive.forEach(item => {
+                        if (item.active) {
+                            item.col.classList.add('active');
+                        } else {
+                            item.col.classList.remove('active');
+                        }
+                    });
+
+                    // Restore original source stats cards states
+                    origSourceCardsState.forEach(item => {
+                        item.detailsDiv.innerHTML = item.innerHTML;
+                        item.detailsDiv.style.display = item.display;
+                        if (item.chevron) item.chevron.style.transform = item.transform;
+                        if (item.isExpanded) {
+                            item.sourceCard.classList.add('expanded');
+                        } else {
+                            item.sourceCard.classList.remove('expanded');
+                        }
+                    });
+
+                    // Restore original char-stat-card details states
+                    origCharCardStyles.forEach(item => {
+                        if (item.details) item.details.style.display = item.display;
+                        if (item.chevron) item.chevron.style.transform = item.transform;
+                        if (item.isExpanded) {
+                            item.card.classList.add('expanded');
+                        } else {
+                            item.card.classList.remove('expanded');
+                        }
+                    });
+
+                    // Restore original styles
+                    scrollArea.style.maxHeight = origScrollMaxHeight;
+                    scrollArea.style.flex = origScrollFlex;
+                    scrollArea.style.minHeight = origScrollMinHeight;
+                    scrollArea.style.overflowY = origScrollOverflow;
+                    scrollArea.style.paddingRight = origScrollPadding;
+                    scrollArea.scrollTop = origScrollTop;
+
+                    modalContent.style.height = origModalHeight;
+                    modalContent.style.maxHeight = origModalMaxHeight;
+                    modalContent.style.overflow = origModalOverflow;
+                    modalContent.style.width = origModalWidth;
+                    modalContent.style.maxWidth = origModalMaxWidth;
+                    modalContent.style.minWidth = origModalMinWidth;
+                    modalContent.style.flexShrink = origModalFlexShrink;
+
+                    window.scrollTo(origScrollX, origScrollY);
+                    modal.style.position = origParentPosition;
+                    modal.style.alignItems = origParentAlign;
+                    modal.style.height = origParentHeight;
+                    modal.style.overflow = origParentOverflow;
+
+                    const mobileStyles = document.getElementById('idol-possession-mobile-styles');
+                    if (mobileStyles) {
+                        mobileStyles.disabled = false;
+                        mobileStyles.removeAttribute('disabled');
+                    }
+                    saveBtn.innerHTML = originalText;
+                    hideSpinnerOverlay();
+                    document.body.classList.remove('is-capturing');
+                };
+
+                setTimeout(async () => {
+                    try {
+                        origRadarSvgs = await rasterizeRadarSvgs();
+                        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+                        const canvas = await window.html2canvas(modalContent, {
+                            backgroundColor: '#ffffff',
+                            scale: captureScale,
+                            useCORS: true,
+                            logging: false,
+                            windowWidth: 1024,
+                            windowHeight: modalContent.scrollHeight || 2000,
+                            scrollX: 0,
+                            scrollY: 0,
+                            width: 740,
+                            height: modalContent.scrollHeight || 2000
+                        });
+
                         let dataUrl = canvas.toDataURL('image/webp', 0.85);
                         let isWebp = dataUrl.startsWith('data:image/webp');
                         let ext = isWebp ? 'webp' : 'png';
@@ -4447,191 +4547,13 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         link.download = `gakumasnote_possession_idol${nameSuffix}_${rand}.${ext}`;
                         link.href = dataUrl;
                         link.click();
-
-                        // Restore original image sources after capture
-                        origImgSrcs.forEach(item => {
-                            item.img.src = item.src;
-                        });
-
-                        // Restore original normal <img> srcs
-                        origImgSrcsAbsolute.forEach(item => {
-                            item.img.setAttribute('src', item.src);
-                        });
-
-                        // Restore original SVG image hrefs
-                        origSvgHrefs.forEach(item => {
-                            item.img.setAttribute('href', item.href);
-                        });
-
-                        restoreRadarSvgs(origRadarSvgs);
-
-                        // Restore original hidden elements
-                        origDisplays.forEach(item => {
-                            item.el.style.setProperty('display', item.display, item.displayPriority || '');
-                        });
-
-                        // Restore original plan stats details states
-                        if (detailsDiv) {
-                            detailsDiv.innerHTML = origPlanDetailsHtml;
-                            detailsDiv.style.display = origPlanDetailsDisplay;
-                            detailsDiv.dataset.activePlan = origPlanDetailsActive;
-                        }
-                        origPlanColsActive.forEach(item => {
-                            if (item.active) {
-                                  item.col.classList.add('active');
-                            } else {
-                                  item.col.classList.remove('active');
-                            }
-                        });
-
-                        // Restore original source stats cards states
-                        origSourceCardsState.forEach(item => {
-                            item.detailsDiv.innerHTML = item.innerHTML;
-                            item.detailsDiv.style.display = item.display;
-                            if (item.chevron) item.chevron.style.transform = item.transform;
-                            if (item.isExpanded) {
-                                  item.sourceCard.classList.add('expanded');
-                            } else {
-                                  item.sourceCard.classList.remove('expanded');
-                            }
-                        });
-
-                        // Restore original char-stat-card details states
-                        origCharCardStyles.forEach(item => {
-                            if (item.details) item.details.style.display = item.display;
-                            if (item.chevron) item.chevron.style.transform = item.transform;
-                            if (item.isExpanded) {
-                                  item.card.classList.add('expanded');
-                            } else {
-                                  item.card.classList.remove('expanded');
-                            }
-                        });
-
-                        // Restore original styles
-                        scrollArea.style.maxHeight = origScrollMaxHeight;
-                        scrollArea.style.flex = origScrollFlex;
-                        scrollArea.style.minHeight = origScrollMinHeight;
-                        scrollArea.style.overflowY = origScrollOverflow;
-                        scrollArea.style.paddingRight = origScrollPadding;
-                        scrollArea.scrollTop = origScrollTop;
-
-                        modalContent.style.height = origModalHeight;
-                        modalContent.style.maxHeight = origModalMaxHeight;
-                        modalContent.style.overflow = origModalOverflow;
-                        modalContent.style.width = origModalWidth;
-                        modalContent.style.maxWidth = origModalMaxWidth;
-                        modalContent.style.minWidth = origModalMinWidth;
-                        modalContent.style.flexShrink = origModalFlexShrink;
-
-                        window.scrollTo(origScrollX, origScrollY);
-                        modal.style.position = origParentPosition;
-                        modal.style.alignItems = origParentAlign;
-                        modal.style.height = origParentHeight;
-                        modal.style.overflow = origParentOverflow;
-
-                        const mobileStyles = document.getElementById('idol-possession-mobile-styles');
-                        if (mobileStyles) {
-                            mobileStyles.disabled = false;
-                            mobileStyles.removeAttribute('disabled');
-                        }
-                        saveBtn.innerHTML = originalText;
-                        hideSpinnerOverlay();
-                        document.body.classList.remove('is-capturing');
                         showIdolToast(text.alert_success);
-                    }).catch(err => {
+                    } catch (err) {
                         console.error('html2canvas error:', err);
                         alert(text.alert_fail);
-
-                        // Restore original image sources after capture failure
-                        origImgSrcs.forEach(item => {
-                            item.img.src = item.src;
-                        });
-
-                        // Restore original normal <img> srcs
-                        origImgSrcsAbsolute.forEach(item => {
-                            item.img.setAttribute('src', item.src);
-                        });
-
-                        // Restore original SVG image hrefs
-                        origSvgHrefs.forEach(item => {
-                            item.img.setAttribute('href', item.href);
-                        });
-
-                        restoreRadarSvgs(origRadarSvgs);
-
-                        // Restore original hidden elements
-                        origDisplays.forEach(item => {
-                            item.el.style.setProperty('display', item.display, item.displayPriority || '');
-                        });
-
-                        // Restore original plan stats details states
-                        if (detailsDiv) {
-                            detailsDiv.innerHTML = origPlanDetailsHtml;
-                            detailsDiv.style.display = origPlanDetailsDisplay;
-                            detailsDiv.dataset.activePlan = origPlanDetailsActive;
-                        }
-                        origPlanColsActive.forEach(item => {
-                            if (item.active) {
-                                  item.col.classList.add('active');
-                            } else {
-                                  item.col.classList.remove('active');
-                            }
-                        });
-
-                        // Restore original source stats cards states
-                        origSourceCardsState.forEach(item => {
-                            item.detailsDiv.innerHTML = item.innerHTML;
-                            item.detailsDiv.style.display = item.display;
-                            if (item.chevron) item.chevron.style.transform = item.transform;
-                            if (item.isExpanded) {
-                                  item.sourceCard.classList.add('expanded');
-                            } else {
-                                  item.sourceCard.classList.remove('expanded');
-                            }
-                        });
-
-                        // Restore original char-stat-card details states
-                        origCharCardStyles.forEach(item => {
-                            if (item.details) item.details.style.display = item.display;
-                            if (item.chevron) item.chevron.style.transform = item.transform;
-                            if (item.isExpanded) {
-                                  item.card.classList.add('expanded');
-                            } else {
-                                  item.card.classList.remove('expanded');
-                            }
-                        });
-
-                        // Restore original styles
-                        scrollArea.style.maxHeight = origScrollMaxHeight;
-                        scrollArea.style.flex = origScrollFlex;
-                        scrollArea.style.minHeight = origScrollMinHeight;
-                        scrollArea.style.overflowY = origScrollOverflow;
-                        scrollArea.style.paddingRight = origScrollPadding;
-                        scrollArea.scrollTop = origScrollTop;
-
-                        modalContent.style.height = origModalHeight;
-                        modalContent.style.maxHeight = origModalMaxHeight;
-                        modalContent.style.overflow = origModalOverflow;
-                        modalContent.style.width = origModalWidth;
-                        modalContent.style.maxWidth = origModalMaxWidth;
-                        modalContent.style.minWidth = origModalMinWidth;
-                        modalContent.style.flexShrink = origModalFlexShrink;
-
-                        window.scrollTo(origScrollX, origScrollY);
-                        modal.style.position = origParentPosition;
-                        modal.style.alignItems = origParentAlign;
-                        modal.style.height = origParentHeight;
-                        modal.style.overflow = origParentOverflow;
-
-                        const mobileStyles = document.getElementById('idol-possession-mobile-styles');
-                        if (mobileStyles) {
-                            mobileStyles.disabled = false;
-                            mobileStyles.removeAttribute('disabled');
-                        }
-                        saveBtn.innerHTML = originalText;
-                        hideSpinnerOverlay();
-                        document.body.classList.remove('is-capturing');
-                    });
+                    } finally {
+                        restoreAfterCapture();
+                    }
                 }, captureDelay);
             };
 
