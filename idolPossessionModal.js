@@ -72,7 +72,14 @@ const getOsusume = (card, allPssrCards) => {
 };
 
 const getBadgeText = (c, lang) => {
+    if (!c) return '';
     const src = c.source || 'normal';
+    if (src === 'limited_u') {
+        if (lang === 'ja' || lang === 'en') return 'Unit';
+    }
+    if (src === 'limited_f') {
+        if (lang === 'ja' || lang === 'en') return 'Fes';
+    }
     const key = `filter_${src}`;
     return globalTranslations[lang]?.[key] || globalTranslations.ko[key] || src;
 };
@@ -259,19 +266,47 @@ const getCharacterId = (cardId) => {
 };
 
 const getCardSeriesOrder = (card) => {
-    if (!card || !card.id) return 999;
+    if (!card || !card.id) return 0;
     const match = card.id.match(/_(\d+)(?:st|nd|rd|th)/i);
-    return match ? parseInt(match[1], 10) : 999;
+    return match ? parseInt(match[1], 10) : 0;
 };
 
 const getSeriesBadgeText = (card) => {
     const num = getCardSeriesOrder(card);
-    if (num === 999) return null;
+    if (num === 0 || num === 999) return null;
     const j = num % 10, k = num % 100;
     if (j === 1 && k !== 11) return `${num}st`;
     if (j === 2 && k !== 12) return `${num}nd`;
     if (j === 3 && k !== 13) return `${num}rd`;
     return `${num}th`;
+};
+
+const getCardPeriodKey = (c) => {
+    if (!c) return null;
+    const relDate = c.releasedAt || '';
+    if (relDate >= '2024-05-01' && relDate <= '2025-04-30') return 'season';
+    if (relDate >= '2025-05-01' && relDate <= '2026-07-31') return 'live';
+    return null;
+};
+
+const getPeriodBadgeTitle = (periodKey, lang) => {
+    if (periodKey === 'season') return (lang === 'ja' || lang === 'en') ? 'Sea.' : '시즌';
+    if (periodKey === 'live') return (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
+    return null;
+};
+
+const getPeriodWaffleTitle = (periodKey, lang) => {
+    if (periodKey === 'season') {
+        if (lang === 'ja') return 'シーズン';
+        if (lang === 'en') return 'Season';
+        return '시즌';
+    }
+    if (periodKey === 'live') {
+        if (lang === 'ja') return 'ライブツアー';
+        if (lang === 'en') return 'Live Tour';
+        return '라이브 투어';
+    }
+    return null;
 };
 
 const getFesSubCategoryOrder = (card) => {
@@ -283,10 +318,33 @@ const getFesSubCategoryOrder = (card) => {
     return 3;
 };
 
+const getFesSubCategoryTitle = (order) => {
+    if (order === 1) return 'NIA';
+    if (order === 2) return 'HIF';
+    return null;
+};
+
 const sortPssrFesCards = (a, b) => {
     const fesOrderA = getFesSubCategoryOrder(a);
     const fesOrderB = getFesSubCategoryOrder(b);
     if (fesOrderA !== fesOrderB) return fesOrderA - fesOrderB;
+
+    const dateA = a.releasedAt || '1970-01-01';
+    const dateB = b.releasedAt || '1970-01-01';
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+    const charA = getCharacterId(a.id);
+    const charB = getCharacterId(b.id);
+    const idxA = CHARACTER_ORDER.indexOf(charA);
+    const idxB = CHARACTER_ORDER.indexOf(charB);
+    if (idxA !== idxB) return idxA - idxB;
+
+};
+
+const sortPssrNormalCards = (a, b) => {
+    const seriesOrderA = getCardSeriesOrder(a);
+    const seriesOrderB = getCardSeriesOrder(b);
+    if (seriesOrderA !== seriesOrderB) return seriesOrderA - seriesOrderB;
 
     const dateA = a.releasedAt || '1970-01-01';
     const dateB = b.releasedAt || '1970-01-01';
@@ -534,11 +592,72 @@ export function openIdolPossessionModal() {
             }
             .pssr-stat-icon-wrap {
                 position: relative;
-                width: 86px;
-                height: 129px;
+                width: 60px;
+                height: 180px;
                 border-radius: 0 18px 0 0;
                 background: #eee;
                 flex-shrink: 0;
+            }
+            .pssr-stat-waffle-wrap {
+                position: relative;
+                width: 128px;
+                height: 180px;
+                border-radius: 12px 0 0 12px;
+                background: #ffffff;
+                border: 1.5px solid #cbd5e1;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 10px 6px;
+                flex-shrink: 0;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            .pssr-waffle-badge {
+                position: absolute;
+                top: 6px;
+                left: 8px;
+                color: #555;
+                font-size: 0.72rem;
+                font-weight: 800;
+                line-height: 1;
+                z-index: 5;
+            }
+            .pssr-waffle-footer-badge {
+                position: absolute;
+                bottom: 6px;
+                right: 8px;
+                color: #666;
+                font-size: 0.72rem;
+                font-weight: 800;
+                line-height: 1;
+                z-index: 5;
+            }
+            .pssr-waffle-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+                width: 100%;
+                max-width: 90px;
+                justify-items: center;
+                align-items: center;
+                margin: 0 auto;
+            }
+            .pssr-waffle-cell {
+                width: 22px;
+                height: 22px;
+                border-radius: 4px;
+                box-shadow: none;
+                transition: transform 0.15s ease;
+            }
+            .pssr-waffle-footer {
+                font-size: 0.82rem;
+                font-weight: 800;
+                color: #ff4d8d;
+                text-align: center;
+                line-height: 1.1;
             }
             .pssr-stat-icon-box {
                 position: absolute;
@@ -551,29 +670,30 @@ export function openIdolPossessionModal() {
             .pssr-stat-icon-box::after {
                 content: '';
                 position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 35%;
-                background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+                top: 0;
+                bottom: -2px;
+                left: -2px;
+                right: -2px;
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 18%, rgba(0, 0, 0, 0) 30%, transparent 100%);
                 pointer-events: none;
                 z-index: 2;
             }
             .pssr-stat-icon-box img {
                 position: absolute;
-                width: 150%;
-                height: auto;
-                left: -25%;
-                top: -15px;
+                height: 100%;
+                width: auto;
+                left: 50%;
+                transform: translateX(-50%);
+                top: 0;
                 display: block;
             }
             .pssr-char-badge {
                 position: absolute;
-                bottom: -1px;
+                top: -1px;
                 left: -1px;
                 padding: 0 6px;
-                height: 22px;
-                border-radius: 0 4px 0 0;
+                height: 20px;
+                border-radius: 0 0 4px 0;
                 border: none !important;
                 z-index: 5;
                 pointer-events: none;
@@ -658,7 +778,7 @@ export function openIdolPossessionModal() {
                     width: 100% !important;
                     max-width: 95% !important;
                     min-width: 0 !important;
-                    padding: 14px 5px 12px 5px !important;
+                    padding: 14px 2px 12px 2px !important;
                     gap: 12px !important;
                     border-radius: 14px !important;
                     --pssr-group-gap: 2px;
@@ -739,17 +859,10 @@ export function openIdolPossessionModal() {
                     font-size: 0.85rem !important;
                     border-radius: 8px !important;
                 }
-                .pssr-stat-icon-wrap {
-                    width: 35px !important;
-                    height: 52.5px !important;
-                    border-radius: 5px !important;
-                }
-                .pssr-stat-icon-box img {
-                    top: -6px !important;
-                }
+
                 .pssr-stat-icons-container, .pssr-char-icons-container {
-                    gap: 4px !important;
-                    padding: 0 2px !important;
+                    gap: 3px !important;
+                    padding: 0 !important;
                 }
                 #btn-idol-possession-save {
                     height: 24px !important;
@@ -1089,9 +1202,46 @@ export function openIdolPossessionModal() {
                     height: 8px !important;
                 }
                 .pssr-stat-icon-wrap {
-                    width: 46px !important;
-                    height: 70px !important;
-                    border-radius: 0 9px 0 0 !important;
+                    width: 35px !important;
+                    height: 105px !important;
+                    border-radius: 0 5px 0 0 !important;
+                    border-width: 1px !important;
+                }
+                .pssr-stat-waffle-wrap {
+                    width: 73px !important;
+                    height: 105px !important;
+                    border-radius: 8px 0 0 8px !important;
+                    padding: 5px 3px !important;
+                }
+                .pssr-waffle-badge {
+                    top: 4px !important;
+                    left: 5px !important;
+                    right: auto !important;
+                    font-size: 0.48rem !important;
+                    padding: 0 !important;
+                    background: transparent !important;
+                }
+                .pssr-waffle-footer-badge {
+                    bottom: 4px !important;
+                    right: 5px !important;
+                    font-size: 0.48rem !important;
+                    padding: 0 !important;
+                    background: transparent !important;
+                }
+                .pssr-waffle-header {
+                    font-size: 0.58rem !important;
+                }
+                .pssr-waffle-grid {
+                    gap: 2.5px !important;
+                    max-width: 50px !important;
+                }
+                .pssr-waffle-cell {
+                    width: 13px !important;
+                    height: 13px !important;
+                    border-radius: 2.5px !important;
+                }
+                .pssr-waffle-footer {
+                    font-size: 0.52rem !important;
                 }
                 .pssr-stat-icon-box {
                     border-radius: 0 9px 0 0 !important;
@@ -1100,14 +1250,14 @@ export function openIdolPossessionModal() {
 
 
                 .pssr-char-badge {
-                    height: 12px !important;
-                    padding: 0 4px !important;
-                    font-size: 6px !important;
+                    height: 10px !important;
+                    padding: 0 2.5px !important;
+                    font-size: 4.5px !important;
                     font-weight: 700 !important;
                     border: none !important;
-                    bottom: -1px !important;
+                    top: -1px !important;
                     left: -1px !important;
-                    border-radius: 0 2px 0 0 !important;
+                    border-radius: 0 0 2px 0 !important;
                 }
 
                 .pssr-plan-badge {
@@ -1137,6 +1287,15 @@ export function openIdolPossessionModal() {
                     padding: 4px 4px !important;
                     gap: 2px !important;
                 }
+                .source-stat-owned-group {
+                    background-color: transparent !important;
+                    border: none !important;
+                    padding: 0 !important;
+                }
+                .source-stat-details, .source-stat-main, .source-stat-card {
+                    padding-left: 2px !important;
+                    padding-right: 2px !important;
+                }
                 .plan-group-title {
                     font-size: 0.6rem !important;
                 }
@@ -1148,22 +1307,60 @@ export function openIdolPossessionModal() {
                 }
                 body.is-capturing .pssr-stat-icon-wrap,
                 body.is-capturing #plan-stat-details .pssr-stat-icon-wrap {
-                    width: 86px !important;
-                    height: 129px !important;
+                    width: 60px !important;
+                    height: 180px !important;
                     border-radius: 0 18px 0 0 !important;
+                }
+                body.is-capturing .pssr-stat-waffle-wrap {
+                    width: 128px !important;
+                    height: 180px !important;
+                    border-radius: 12px 0 0 12px !important;
+                    padding: 10px 6px !important;
+                    box-shadow: none !important;
+                }
+                body.is-capturing .pssr-waffle-badge {
+                    top: 6px !important;
+                    left: 8px !important;
+                    right: auto !important;
+                    font-size: 0.72rem !important;
+                    padding: 0 !important;
+                    background: transparent !important;
+                }
+                body.is-capturing .pssr-waffle-footer-badge {
+                    bottom: 6px !important;
+                    right: 8px !important;
+                    font-size: 0.72rem !important;
+                    padding: 0 !important;
+                    background: transparent !important;
+                }
+                body.is-capturing .pssr-waffle-header {
+                    font-size: 0.92rem !important;
+                }
+                body.is-capturing .pssr-waffle-grid {
+                    gap: 5px !important;
+                    max-width: 90px !important;
+                }
+                body.is-capturing .pssr-waffle-cell {
+                    width: 22px !important;
+                    height: 22px !important;
+                    border-radius: 4px !important;
+                    box-shadow: none !important;
+                }
+                body.is-capturing .pssr-waffle-footer {
+                    font-size: 0.82rem !important;
                 }
                 body.is-capturing .pssr-stat-icon-box {
                     border-radius: 0 18px 0 0 !important;
                 }
                 body.is-capturing .pssr-stat-icon-box img {
-                    top: -15px !important;
+                    top: 0 !important;
                 }
                 body.is-capturing .pssr-char-badge {
-                    height: 22px !important;
+                    height: 20px !important;
                     padding: 0 6px !important;
                     font-size: 9px !important;
                     font-weight: bold !important;
-                    border-radius: 0 4px 0 0 !important;
+                    border-radius: 0 0 4px 0 !important;
                 }
                 body.is-capturing .pssr-plan-badge {
                     width: 26px !important;
@@ -1414,21 +1611,131 @@ export function openIdolPossessionModal() {
 function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeModal, onBackToSelection) {
     const getAbsoluteUrl = (relPath) => new URL(relPath, window.location.href).href;
 
-    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useSubCategoryBadgeForFes = false, useOsusumeBadgeForPlan = false } = {}) => {
+    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useWaffleChartForNormalSeries = false, useSubCategoryBadgeForFes = false, useWaffleChartForFesSubCategory = false, usePeriodBadgeForLimitedAndDist = false, useWaffleChartForLimitedPeriod = false, useOsusumeBadgeForPlan = false, sourceColor = '#93c5fd' } = {}) => {
         let html = '';
+        const seenSeries = new Set();
+        const seenPeriod = new Set();
+        const seenFes = new Set();
         cardsList.forEach(c => {
+            if (useSubCategoryBadgeForFes && useWaffleChartForFesSubCategory && c.source === 'limited_f') {
+                const fesOrder = getFesSubCategoryOrder(c);
+                if (fesOrder !== 999 && (fesOrder === 1 || fesOrder === 2) && !seenFes.has(fesOrder)) {
+                    seenFes.add(fesOrder);
+                    const fesCards = cardsList.filter(card => card.source === 'limited_f' && getFesSubCategoryOrder(card) === fesOrder);
+                    const totalFes = fesCards.length;
+                    const ownedFes = fesCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
+                    const rateFes = totalFes > 0 ? Math.round((ownedFes / totalFes) * 100) : 0;
+                    const fesTitle = getFesSubCategoryTitle(fesOrder) || (fesOrder === 1 ? 'NIA' : 'HIF');
+
+                    let waffleCellsHtml = '';
+                    fesCards.forEach(card => {
+                        const cardOwned = (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id);
+                        const cardCharId = getCharacterId(card.id);
+                        const cardColor = idolColors[cardCharId] || '#ff4d8d';
+                        const cardName = getLocalizedCardName(card, lang);
+
+                        if (cardOwned) {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell owned" style="background-color: ${cardColor};" title="${cardName}"></div>`;
+                        } else {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell unowned" style="background-color: #e2e8f0;" title="${cardName}"></div>`;
+                        }
+                    });
+
+                    html += `
+                        <div class="pssr-stat-waffle-wrap" title="${fesTitle} (${ownedFes}/${totalFes})">
+                            <span class="pssr-waffle-badge">${fesTitle}</span>
+                            <div class="pssr-waffle-grid">
+                                ${waffleCellsHtml}
+                            </div>
+                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${rateFes}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedFes}/${totalFes})</span></span>
+                        </div>
+                    `;
+                }
+            }
+            if (usePeriodBadgeForLimitedAndDist && useWaffleChartForLimitedPeriod && (c.source === 'limited' || c.source === 'dist')) {
+                const periodKey = getCardPeriodKey(c);
+                if (periodKey && !seenPeriod.has(periodKey)) {
+                    seenPeriod.add(periodKey);
+                    const periodCards = cardsList.filter(card => (card.source === 'limited' || card.source === 'dist') && getCardPeriodKey(card) === periodKey);
+                    const totalPeriod = periodCards.length;
+                    const ownedPeriod = periodCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
+                    const ratePeriod = totalPeriod > 0 ? Math.round((ownedPeriod / totalPeriod) * 100) : 0;
+                    const periodTitle = getPeriodWaffleTitle(periodKey, lang) || periodKey;
+
+                    let waffleCellsHtml = '';
+                    periodCards.forEach(card => {
+                        const cardOwned = (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id);
+                        const cardCharId = getCharacterId(card.id);
+                        const cardColor = idolColors[cardCharId] || '#ff4d8d';
+                        const cardName = getLocalizedCardName(card, lang);
+
+                        if (cardOwned) {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell owned" style="background-color: ${cardColor};" title="${cardName}"></div>`;
+                        } else {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell unowned" style="background-color: #e2e8f0;" title="${cardName}"></div>`;
+                        }
+                    });
+
+                    html += `
+                        <div class="pssr-stat-waffle-wrap" title="${periodTitle} (${ownedPeriod}/${totalPeriod})">
+                            <span class="pssr-waffle-badge">${periodTitle}</span>
+                            <div class="pssr-waffle-grid">
+                                ${waffleCellsHtml}
+                            </div>
+                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${ratePeriod}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedPeriod}/${totalPeriod})</span></span>
+                        </div>
+                    `;
+                }
+            }
+            if (useSeriesBadgeForNormal && useWaffleChartForNormalSeries && (c.source || 'normal') === 'normal' && !c.another) {
+                const seriesNum = getCardSeriesOrder(c);
+                if (seriesNum !== 0 && seriesNum !== 999 && !seenSeries.has(seriesNum)) {
+                    seenSeries.add(seriesNum);
+                    const seriesCards = cardsList.filter(card => (card.source || 'normal') === 'normal' && !card.another && getCardSeriesOrder(card) === seriesNum);
+                    const totalSeries = seriesCards.length;
+                    const ownedSeries = seriesCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
+                    const rateSeries = totalSeries > 0 ? Math.round((ownedSeries / totalSeries) * 100) : 0;
+                    const seriesTitle = getSeriesBadgeText(c) || `${seriesNum}th`;
+
+                    let waffleCellsHtml = '';
+                    seriesCards.forEach(card => {
+                        const cardOwned = (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id);
+                        const cardCharId = getCharacterId(card.id);
+                        const cardColor = idolColors[cardCharId] || '#ff4d8d';
+                        const cardName = getLocalizedCardName(card, lang);
+
+                        if (cardOwned) {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell owned" style="background-color: ${cardColor};" title="${cardName}"></div>`;
+                        } else {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell unowned" style="background-color: #e2e8f0;" title="${cardName}"></div>`;
+                        }
+                    });
+
+                    html += `
+                        <div class="pssr-stat-waffle-wrap" title="${seriesTitle} (${ownedSeries}/${totalSeries})">
+                            <span class="pssr-waffle-badge">${seriesTitle}</span>
+                            <div class="pssr-waffle-grid">
+                                ${waffleCellsHtml}
+                            </div>
+                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${rateSeries}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedSeries}/${totalSeries})</span></span>
+                        </div>
+                    `;
+                }
+            }
             const suffix = c.another ? '1.webp' : '2.webp';
             const cardName = getLocalizedCardName(c, lang);
             const charId = getCharacterId(c.id);
             const charColor = idolColors[charId] || '#cbd5e1';
 
-            const containerStyle = isOwnedList
+            const isOwned = (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(c.id);
+
+            const containerStyle = isOwned
                 ? `border: 1.5px solid ${charColor};`
                 : `border: 1px solid #ccc;`;
 
-            const imgStyle = isOwnedList
+            const imgStyle = isOwned
                 ? `display: block; opacity: 1;`
-                : `display: block; filter: grayscale(90%); -webkit-filter: grayscale(90%); opacity: 0.8;`;
+                : `display: block; filter: grayscale(95%) brightness(0.9); -webkit-filter: grayscale(95%) brightness(0.9); opacity: 0.7;`;
 
             let badgeText = getBadgeText(c, lang);
             if (useSeriesBadgeForNormal && (c.source || 'normal') === 'normal' && !c.another) {
@@ -1443,6 +1750,13 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     badgeText = 'NIA';
                 } else if (idLower.includes('hif')) {
                     badgeText = 'HIF';
+                }
+            } else if (usePeriodBadgeForLimitedAndDist && (c.source === 'limited' || c.source === 'dist')) {
+                const relDate = c.releasedAt || '';
+                if (relDate >= '2024-05-01' && relDate <= '2025-04-30') {
+                    badgeText = (lang === 'ja' || lang === 'en') ? 'Sea.' : '시즌';
+                } else if (relDate >= '2025-05-01' && relDate <= '2026-07-31') {
+                    badgeText = (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
                 }
             }
 
@@ -2046,9 +2360,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             const s = statsBySource[src];
             if (s.total === 0) return; // Hide categories with 0 cards
             const rate = formatRate(s.owned, s.total);
-            const srcLabel = src === 'another'
+            let srcLabel = src === 'another'
                 ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
                 : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
+            if ((lang === 'ja' || lang === 'en') && src === 'limited_f') srcLabel = 'Fes';
+            if ((lang === 'ja' || lang === 'en') && src === 'limited_u') srcLabel = 'Unit';
 
             // Determine dominant character for this source (category)
             const ownedSrcCards = activeCards.filter(c => {
@@ -2261,9 +2577,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
                 activeSources.forEach(src => {
                     const s = charSourceStats[src];
-                    const srcLabel = src === 'another'
+                    let srcLabel = src === 'another'
                         ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
                         : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
+                    if ((lang === 'ja' || lang === 'en') && src === 'limited_f') srcLabel = 'Fes';
+                    if ((lang === 'ja' || lang === 'en') && src === 'limited_u') srcLabel = 'Unit';
                     const isSelectable = s.total > 0;
                     const srcRate = isSelectable ? ((s.owned / s.total) * 100).toFixed(0) : '0';
                     const labelText = isSelectable ? `${s.owned}/${s.total}` : '';
@@ -2868,10 +3186,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     background-color: rgba(0, 0, 0, 0.008) !important;
                     border-color: rgba(0, 0, 0, 0.1) !important;
                 }
-                #plan-stat-details .pssr-stat-icon-wrap {
-                    width: 86px !important;
-                    height: 129px !important;
-                }
+
                 @media (min-width: 769px) {
                     .idol-stats-char-card {
                         display: grid;
@@ -3407,14 +3722,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             return cardSrc === src;
                         });
 
-                        const ownedCards = sourceCards.filter(c => isCardOwned(c.id));
-                        const unownedCards = sourceCards.filter(c => !isCardOwned(c.id));
+                        const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : sortPssrByCharacterAndRelease);
+                        sourceCards.sort(sortFn);
 
-                        const sortFn = src === 'limited_f' ? sortPssrFesCards : sortPssrByCharacterAndRelease;
-                        ownedCards.sort(sortFn);
-                        unownedCards.sort(sortFn);
-
-                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f' });
+                        const sourceColor = sourceCard.dataset.color || '#93c5fd';
+                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist' || src === 'another'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), sourceColor: sourceColor });
 
                         const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                         const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
@@ -3423,36 +3735,21 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
                         const isJa = lang === 'ja';
                         const isEn = lang === 'en';
-                        const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
-                        const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
-
-                        const hasOwned = ownedCards.length > 0;
-                        const hasUnowned = unownedCards.length > 0;
-
-                        const sourceColor = sourceCard.dataset.color || '#ff4d8d';
                         const ownedBg = hexToRgba(sourceColor, 0.08);
                         const ownedBorder = hexToRgba(sourceColor, 0.12);
 
-                        if (hasOwned) {
+                        if (sourceCards.length > 0) {
                             ownedGroup.style.display = 'flex';
-                            ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
-                            ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
+                            const titleEl = ownedGroup.querySelector('.plan-group-title');
+                            if (titleEl) titleEl.style.display = 'none';
+                            ownedContainer.innerHTML = buildIconsHtml(sourceCards, null);
 
-                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; padding: var(--pssr-box-padding); box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: ${hasUnowned ? '8px 8px 0 0' : '8px'};`;
+                            ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; box-sizing: border-box; background-color: transparent; border: none; padding: 0;`;
                         } else {
                             ownedGroup.style.display = 'none';
                         }
-
-                        if (hasUnowned) {
-                            unownedGroup.style.display = 'flex';
-                            unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
-                            unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
-
-                            unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: var(--pssr-title-gap); width: 100%; padding: var(--pssr-box-padding); box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: ${hasOwned ? '0 0 8px 8px' : '8px'};`;
-                        } else {
-                            unownedGroup.style.display = 'none';
-                        }
-                        detailsDiv.style.gap = (hasOwned && hasUnowned) ? '1px' : '12px';
+                        unownedGroup.style.display = 'none';
+                        detailsDiv.style.gap = '0';
                     }
 
                     detailsDiv.style.display = isHidden ? 'flex' : 'none';
@@ -4071,59 +4368,33 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                 return cardSrc === src;
                             });
 
-                            const ownedCards = sourceCards.filter(c => isCardOwned(c.id));
-                            const unownedCards = sourceCards.filter(c => !isCardOwned(c.id));
+                            const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : sortPssrByCharacterAndRelease);
+                            sourceCards.sort(sortFn);
 
-                            const sortFn = src === 'limited_f' ? sortPssrFesCards : sortPssrByCharacterAndRelease;
-                            ownedCards.sort(sortFn);
-                            unownedCards.sort(sortFn);
-
-                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f' });
+                            const sourceColor = sourceCard.dataset.color || '#93c5fd';
+                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist' || src === 'another'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), sourceColor: sourceColor });
 
                             const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                             const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
                             const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
                             const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
 
-                            const isJa = lang === 'ja';
-                            const isEn = lang === 'en';
-                            const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
-                            const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
-
-                            const sourceColor = sourceCard.dataset.color || '#ff4d8d';
                             const ownedBg = hexToRgba(sourceColor, 0.08);
                             const ownedBorder = hexToRgba(sourceColor, 0.12);
 
-                            if (ownedCards.length > 0) {
+                            if (sourceCards.length > 0) {
                                 ownedGroup.style.display = 'flex';
-                                ownedGroup.querySelector('.plan-group-title').textContent = `${ownedLabel} (${ownedCards.length})`;
-                                ownedContainer.innerHTML = buildIconsHtml(ownedCards, true);
-
-                                if (unownedCards.length > 0) {
-                                    ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`;
-                                } else {
-                                    ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
-                                }
+                                const titleEl = ownedGroup.querySelector('.plan-group-title');
+                                if (titleEl) titleEl.style.display = 'none';
+                                ownedContainer.innerHTML = buildIconsHtml(sourceCards, null);
+                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box; background-color: transparent; border: none; padding: 0;`;
                             } else {
                                 ownedGroup.style.display = 'none';
                             }
-
-                            if (unownedCards.length > 0) {
-                                unownedGroup.style.display = 'flex';
-                                unownedGroup.querySelector('.plan-group-title').textContent = `${unownedLabel} (${unownedCards.length})`;
-                                unownedContainer.innerHTML = buildIconsHtml(unownedCards, false);
-
-                                if (ownedCards.length > 0) {
-                                    unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`;
-                                } else {
-                                    unownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px; margin-top: 12px;`;
-                                }
-                            } else {
-                                unownedGroup.style.display = 'none';
-                            }
+                            unownedGroup.style.display = 'none';
 
                             detailsDiv.style.display = 'flex';
-                            detailsDiv.style.gap = (ownedCards.length > 0 && unownedCards.length > 0) ? 'var(--pssr-group-gap)' : '12px';
+                            detailsDiv.style.gap = '0';
                             if (chevron) chevron.style.transform = 'rotate(180deg)';
                             sourceCard.classList.add('expanded');
                         } else {

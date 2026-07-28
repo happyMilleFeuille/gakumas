@@ -635,7 +635,7 @@ export const produceList = [
     { id: "ssrtemari_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 10.2, source: "limited", another: true },
     { id: "ssrtemari_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, jumpTime2: 6.4 },
+    { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, releasedAt: "2025-05-29", jumpTime2: 6.4 },
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
     { id: "ssrtemari_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.6, another: true },
