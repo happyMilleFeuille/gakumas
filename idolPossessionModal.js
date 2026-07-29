@@ -1652,6 +1652,13 @@ export function openIdolPossessionModal() {
 
 function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeModal, onBackToSelection) {
     const getAbsoluteUrl = (relPath) => new URL(relPath, window.location.href).href;
+    const hexToRgba = (hex, alpha = 1) => {
+        if (!hex) return `rgba(0,0,0,${alpha})`;
+        let c = hex.replace('#', '');
+        if (c.length === 3) c = c.split('').map(x => x + x).join('');
+        const num = parseInt(c, 16);
+        return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
+    };
 
     const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useWaffleChartForNormalSeries = false, useSubCategoryBadgeForFes = false, useWaffleChartForFesSubCategory = false, usePeriodBadgeForLimitedAndDist = false, useWaffleChartForLimitedPeriod = false, useSeriesBadgeForAnother = false, useWaffleChartForAnotherSeries = false, useOsusumeBadgeForPlan = false, sourceColor = '#93c5fd' } = {}) => {
         let html = '';
@@ -1684,7 +1691,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
-                    const fillBgAnother = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${rateAnother}%, #ffffff ${rateAnother}%, #ffffff 100%);`;
+                    const fillBgAnother = `background: linear-gradient(to top, ${hexToRgba(sourceColor, 0.15)} 0%, ${hexToRgba(sourceColor, 0.15)} ${rateAnother}%, #ffffff ${rateAnother}%, #ffffff 100%);`;
 
                     html += `
                         <div class="pssr-stat-waffle-wrap" style="${fillBgAnother}" title="${anotherTitle} (${ownedAnother}/${totalAnother})">
@@ -1721,7 +1728,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
-                    const fillBgFes = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${rateFes}%, #ffffff ${rateFes}%, #ffffff 100%);`;
+                    const fillBgFes = `background: linear-gradient(to top, ${hexToRgba(sourceColor, 0.15)} 0%, ${hexToRgba(sourceColor, 0.15)} ${rateFes}%, #ffffff ${rateFes}%, #ffffff 100%);`;
 
                     html += `
                         <div class="pssr-stat-waffle-wrap" style="${fillBgFes}" title="${fesTitle} (${ownedFes}/${totalFes})">
@@ -1758,7 +1765,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
-                    const fillBgPeriod = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${ratePeriod}%, #ffffff ${ratePeriod}%, #ffffff 100%);`;
+                    const fillBgPeriod = `background: linear-gradient(to top, ${hexToRgba(sourceColor, 0.15)} 0%, ${hexToRgba(sourceColor, 0.15)} ${ratePeriod}%, #ffffff ${ratePeriod}%, #ffffff 100%);`;
 
                     html += `
                         <div class="pssr-stat-waffle-wrap" style="${fillBgPeriod}" title="${periodTitle} (${ownedPeriod}/${totalPeriod})">
@@ -1795,7 +1802,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
-                    const fillBgSeries = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${rateSeries}%, #ffffff ${rateSeries}%, #ffffff 100%);`;
+                    const fillBgSeries = `background: linear-gradient(to top, ${hexToRgba(sourceColor, 0.15)} 0%, ${hexToRgba(sourceColor, 0.15)} ${rateSeries}%, #ffffff ${rateSeries}%, #ffffff 100%);`;
 
                     html += `
                         <div class="pssr-stat-waffle-wrap" style="${fillBgSeries}" title="${seriesTitle} (${ownedSeries}/${totalSeries})">
