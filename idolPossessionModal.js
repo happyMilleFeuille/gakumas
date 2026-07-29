@@ -1257,8 +1257,8 @@ export function openIdolPossessionModal() {
                 .pssr-waffle-badge {
                     top: 4px !important;
                     left: 5px !important;
-                    right: auto !important;
-                    font-size: 0.48rem !important;
+                    right: 5px !important;
+                    font-size: 0.36rem !important;
                     padding: 0 !important;
                     background: transparent !important;
                 }
