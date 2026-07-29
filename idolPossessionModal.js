@@ -1643,8 +1643,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
+                    const fillBgFes = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${rateFes}%, #ffffff ${rateFes}%, #ffffff 100%);`;
+
                     html += `
-                        <div class="pssr-stat-waffle-wrap" title="${fesTitle} (${ownedFes}/${totalFes})">
+                        <div class="pssr-stat-waffle-wrap" style="${fillBgFes}" title="${fesTitle} (${ownedFes}/${totalFes})">
                             <span class="pssr-waffle-badge">${fesTitle}</span>
                             <div class="pssr-waffle-grid">
                                 ${waffleCellsHtml}
@@ -1678,8 +1680,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
+                    const fillBgPeriod = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${ratePeriod}%, #ffffff ${ratePeriod}%, #ffffff 100%);`;
+
                     html += `
-                        <div class="pssr-stat-waffle-wrap" title="${periodTitle} (${ownedPeriod}/${totalPeriod})">
+                        <div class="pssr-stat-waffle-wrap" style="${fillBgPeriod}" title="${periodTitle} (${ownedPeriod}/${totalPeriod})">
                             <span class="pssr-waffle-badge">${periodTitle}</span>
                             <div class="pssr-waffle-grid">
                                 ${waffleCellsHtml}
@@ -1713,8 +1717,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         }
                     });
 
+                    const fillBgSeries = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${rateSeries}%, #ffffff ${rateSeries}%, #ffffff 100%);`;
+
                     html += `
-                        <div class="pssr-stat-waffle-wrap" title="${seriesTitle} (${ownedSeries}/${totalSeries})">
+                        <div class="pssr-stat-waffle-wrap" style="${fillBgSeries}" title="${seriesTitle} (${ownedSeries}/${totalSeries})">
                             <span class="pssr-waffle-badge">${seriesTitle}</span>
                             <div class="pssr-waffle-grid">
                                 ${waffleCellsHtml}
