@@ -1129,6 +1129,13 @@ function renderDashboard(data) {
     const dashTitleHistory = isJa ? '詳細履歴' : isEn ? 'Detailed History' : '상세 결제 내역';
     const dateRangeLabel = isJa ? '期間' : isEn ? 'Period' : '분석 기간';
 
+    const noChartMsg = isJa ? 'チャートデータがありません。' : isEn ? 'No chart data available.' : '차트 데이터가 없습니다.';
+    const noStatsMsg = isJa ? '統計データがありません。' : isEn ? 'No statistics available.' : '통계 데이터가 없습니다.';
+    const noHistoryMsg = isJa ? '詳細履歴がありません。' : isEn ? 'No detailed history.' : '상세 내역이 없습니다.';
+    const thDate = isJa ? '日付' : isEn ? 'Date' : '날짜';
+    const thItem = isJa ? '商品名' : isEn ? 'Item Name' : '상품명';
+    const thPrice = isJa ? '決済額' : isEn ? 'Amount' : '결제 금액';
+
     const pad2 = n => String(n).padStart(2, '0');
     const formatDateText = d => (d && typeof d.getFullYear === 'function' && !isNaN(d.getTime())) ? `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}` : '-';
     const startStr = formatDateText(overallMinDate);
@@ -1157,7 +1164,7 @@ function renderDashboard(data) {
                 </div>
             </h3>
             <div class="oh-chart-wrapper">
-                ${chartHTML || '<div style="color: #94a3b8; font-size: 0.8rem; margin: auto;">차트 데이터가 없습니다.</div>'}
+                ${chartHTML || `<div style="color: #94a3b8; font-size: 0.8rem; margin: auto;">${noChartMsg}</div>`}
             </div>
         </div>
 
@@ -1167,7 +1174,7 @@ function renderDashboard(data) {
                 ${dashTitleBreakdown}
             </h3>
             <div class="oh-breakdown-list">
-                ${breakdownHTML || '<div style="color: #94a3b8; font-size: 0.8rem;">통계 데이터가 없습니다.</div>'}
+                ${breakdownHTML || `<div style="color: #94a3b8; font-size: 0.8rem;">${noStatsMsg}</div>`}
             </div>
         </div>
 
@@ -1180,13 +1187,13 @@ function renderDashboard(data) {
                 <table class="oh-table">
                     <thead>
                         <tr>
-                            <th style="width: 100px;">날짜</th>
-                            <th>상품명</th>
-                            <th style="text-align: right; width: 100px;">결제 금액</th>
+                            <th style="width: 100px;">${thDate}</th>
+                            <th>${thItem}</th>
+                            <th style="text-align: right; width: 100px;">${thPrice}</th>
                         </tr>
                     </thead>
                     <tbody id="oh-table-body">
-                        ${tableRowsHTML}
+                        ${tableRowsHTML || `<tr><td colspan="3" style="text-align: center; color: #94a3b8; padding: 16px;">${noHistoryMsg}</td></tr>`}
                     </tbody>
                 </table>
             </div>
