@@ -281,17 +281,91 @@ const getSeriesBadgeText = (card) => {
     return `${num}th`;
 };
 
-const getCardPeriodKey = (c) => {
+const IGNORED_CARD_TYPES = new Set(['vocal', 'dance', 'visual', 'sense', 'logic', 'anomaly', 'free', 'produce', 'support']);
+
+const TYPE_TITLES = {
+    location: { ko: '로케이션', ja: 'ロケーション', en: 'Location' },
+    collabo: { ko: '콜라보', ja: 'コラボ', en: 'Collab' },
+    season: { ko: '시즌', ja: 'シーズン', en: 'Season' },
+    live: { ko: '라이브 투어', ja: 'ライブツアー', en: 'Live Tour' },
+    nia: { ko: 'NIA', ja: 'NIA', en: 'NIA' },
+    campus: { ko: 'NIA', ja: 'NIA', en: 'NIA' },
+    hif: { ko: 'HIF', ja: 'HIF', en: 'HIF' }
+};
+
+const getTypeTitle = (type, lang) => {
+    if (!type) return '';
+    if (TYPE_TITLES[type]) {
+        return TYPE_TITLES[type][lang] || TYPE_TITLES[type]['ko'] || type;
+    }
+    return type.charAt(0).toUpperCase() + type.slice(1);
+};
+
+const getNormalCardGroupKey = (c) => {
     if (!c) return null;
-    if (c.another) {
-        const order = getCardAnotherOrder(c);
-        if (order >= 1 && order <= 7) return 'season';
-        if (order >= 9 && order <= 13) return 'live';
+    const num = getCardSeriesOrder(c);
+    if (num !== 0 && num !== 999) {
+        return `series-${num}`;
+    }
+    if (c.type && !IGNORED_CARD_TYPES.has(c.type.toLowerCase())) {
+        return c.type;
+    }
+    return null;
+};
+
+const getNormalCardGroupTitle = (c, lang) => {
+    if (!c) return null;
+    const num = getCardSeriesOrder(c);
+    if (num !== 0 && num !== 999) {
+        return getSeriesBadgeText(c) || `${num}th`;
+    }
+    if (c.type && !IGNORED_CARD_TYPES.has(c.type.toLowerCase())) {
+        return getTypeTitle(c.type, lang);
+    }
+    return getSeriesBadgeText(c) || `${num}th`;
+};
+
+const getNormalCardBadgeText = (c, lang) => {
+    if (!c) return null;
+    const num = getCardSeriesOrder(c);
+    if (num !== 0 && num !== 999) {
+        return getSeriesBadgeText(c);
+    }
+    if (c.type && !IGNORED_CARD_TYPES.has(c.type.toLowerCase())) {
         return null;
     }
-    const relDate = c.releasedAt || '';
-    if (relDate >= '2024-05-01' && relDate <= '2025-04-30') return 'season';
-    if (relDate >= '2025-05-01' && relDate <= '2026-07-31') return 'live';
+    return getSeriesBadgeText(c);
+};
+
+const TYPE_SORT_ORDERS = {
+    location: 50,
+    collabo: 60
+};
+
+const getNormalGroupSortOrder = (card) => {
+    if (!card) return 999;
+    const num = getCardSeriesOrder(card);
+    if (num !== 0 && num !== 999) {
+        return num;
+    }
+    if (card.type && !IGNORED_CARD_TYPES.has(card.type.toLowerCase())) {
+        return TYPE_SORT_ORDERS[card.type] || 500;
+    }
+    return 900;
+};
+
+const getWaffleGridStyle = (totalCards) => {
+    if (totalCards <= 2) {
+        return ` style="justify-content: center; grid-template-columns: repeat(${totalCards}, auto);"`;
+    }
+    return '';
+};
+
+const getCardPeriodKey = (c) => {
+    if (!c || !c.type) return null;
+    if (c.type === 'season' || c.type === 'live') {
+        return c.type;
+    }
     return null;
 };
 
@@ -316,12 +390,10 @@ const getPeriodWaffleTitle = (periodKey, lang) => {
 };
 
 const getFesSubCategoryOrder = (card) => {
-    if (!card) return 999;
-    const idLower = (card.id || '').toLowerCase();
-    const nameLower = (card.name || '').toLowerCase();
-    if (idLower.includes('campus') || nameLower.includes('campus')) return 1;
-    if (idLower.includes('hif')) return 2;
-    return 3;
+    if (!card || !card.type) return 999;
+    if (card.type === 'nia' || card.type === 'campus') return 1;
+    if (card.type === 'hif') return 2;
+    return 999;
 };
 
 const getFesSubCategoryTitle = (order) => {
@@ -348,10 +420,28 @@ const sortPssrFesCards = (a, b) => {
     return a.id.localeCompare(b.id);
 };
 
+const sortPssrUnitCards = (a, b) => {
+    const dateA = a.releasedAt || '1970-01-01';
+    const dateB = b.releasedAt || '1970-01-01';
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+    const nameA = (a.name || '').trim();
+    const nameB = (b.name || '').trim();
+    if (nameA !== nameB) return nameA.localeCompare(nameB);
+
+    const charA = getCharacterId(a.id);
+    const charB = getCharacterId(b.id);
+    const idxA = CHARACTER_ORDER.indexOf(charA);
+    const idxB = CHARACTER_ORDER.indexOf(charB);
+    if (idxA !== idxB) return idxA - idxB;
+
+    return a.id.localeCompare(b.id);
+};
+
 const sortPssrNormalCards = (a, b) => {
-    const seriesOrderA = getCardSeriesOrder(a);
-    const seriesOrderB = getCardSeriesOrder(b);
-    if (seriesOrderA !== seriesOrderB) return seriesOrderA - seriesOrderB;
+    const orderA = getNormalGroupSortOrder(a);
+    const orderB = getNormalGroupSortOrder(b);
+    if (orderA !== orderB) return orderA - orderB;
 
     const dateA = a.releasedAt || '1970-01-01';
     const dateB = b.releasedAt || '1970-01-01';
@@ -366,21 +456,47 @@ const sortPssrNormalCards = (a, b) => {
     return a.id.localeCompare(b.id);
 };
 
-const getCardAnotherOrder = (card) => {
-    if (!card || !card.id) return 999;
-    const match = card.id.match(/1st(\d+)another/i) || card.id.match(/(\d+)another/i);
-    return match ? parseInt(match[1], 10) : 999;
+const getCardAnotherInfo = (card) => {
+    if (!card || !card.id || !card.another) return null;
+    const match = card.id.match(/(\d+)(?:st|nd|rd|th)(\d+)another/i) || card.id.match(/(\d+)another/i);
+    if (!match) return null;
+    if (match[2] !== undefined) {
+        const seriesNum = parseInt(match[1], 10);
+        const subNum = parseInt(match[2], 10);
+        const suffix = seriesNum === 1 ? '1st' : seriesNum === 2 ? '2nd' : seriesNum === 3 ? '3rd' : `${seriesNum}th`;
+        return {
+            key: `${suffix}${subNum}`,
+            sortOrder: seriesNum * 1000 + subNum,
+            badgeText: `${suffix}${subNum}`
+        };
+    } else {
+        const subNum = parseInt(match[1], 10);
+        return {
+            key: `1st${subNum}`,
+            sortOrder: 1000 + subNum,
+            badgeText: `1st${subNum}`
+        };
+    }
+};
+
+const getCardAnotherKey = (card) => {
+    const info = getCardAnotherInfo(card);
+    return info ? info.key : null;
 };
 
 const getAnotherBadgeText = (card) => {
-    const num = getCardAnotherOrder(card);
-    if (num === 0 || num === 999) return null;
-    return `1st${num}`;
+    const info = getCardAnotherInfo(card);
+    return info ? info.badgeText : null;
+};
+
+const getAnotherSortOrder = (card) => {
+    const info = getCardAnotherInfo(card);
+    return info ? info.sortOrder : 999999;
 };
 
 const sortPssrAnotherCards = (a, b) => {
-    const orderA = getCardAnotherOrder(a);
-    const orderB = getCardAnotherOrder(b);
+    const orderA = getAnotherSortOrder(a);
+    const orderB = getAnotherSortOrder(b);
     if (orderA !== orderB) return orderA - orderB;
 
     const dateA = a.releasedAt || '1970-01-01';
@@ -659,6 +775,11 @@ export function openIdolPossessionModal() {
                 padding: 10px 6px;
                 flex-shrink: 0;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                cursor: pointer;
+                user-select: none;
+            }
+            .pssr-stat-waffle-wrap.collapsed {
+                border-radius: 12px;
             }
             .pssr-waffle-badge {
                 position: absolute;
@@ -706,6 +827,15 @@ export function openIdolPossessionModal() {
                 color: #ff4d8d;
                 text-align: center;
                 line-height: 1.1;
+            }
+            .pssr-waffle-primastella {
+                position: absolute;
+                bottom: 4px;
+                left: 4px;
+                width: 18px;
+                height: 18px;
+                z-index: 10;
+                pointer-events: none;
             }
             .pssr-stat-icon-box {
                 position: absolute;
@@ -1265,6 +1395,9 @@ export function openIdolPossessionModal() {
                     padding: 5px 3px !important;
                     border-width: 1px !important;
                 }
+                .pssr-stat-waffle-wrap.collapsed {
+                    border-radius: 8px !important;
+                }
                 .pssr-waffle-badge {
                     top: 4px !important;
                     left: 5px !important;
@@ -1274,11 +1407,15 @@ export function openIdolPossessionModal() {
                     background: transparent !important;
                 }
                 .pssr-waffle-footer-badge {
-                    bottom: 4px !important;
-                    right: 5px !important;
-                    font-size: 0.48rem !important;
+                    bottom: 3px !important;
+                    right: 4px !important;
+                    font-size: 0.42rem !important;
                     padding: 0 !important;
                     background: transparent !important;
+                }
+                .pssr-waffle-footer-badge img {
+                    width: 9px !important;
+                    height: 9px !important;
                 }
                 .pssr-waffle-header {
                     font-size: 0.58rem !important;
@@ -1294,6 +1431,12 @@ export function openIdolPossessionModal() {
                 }
                 .pssr-waffle-footer {
                     font-size: 0.52rem !important;
+                }
+                .pssr-waffle-primastella {
+                    width: 10px !important;
+                    height: 10px !important;
+                    bottom: 2px !important;
+                    left: 2px !important;
                 }
                 .pssr-stat-icon-box {
                     border-radius: 0 9px 0 0 !important;
@@ -1401,6 +1544,12 @@ export function openIdolPossessionModal() {
                 }
                 body.is-capturing .pssr-waffle-footer {
                     font-size: 0.82rem !important;
+                }
+                body.is-capturing .pssr-waffle-primastella {
+                    bottom: 4px !important;
+                    left: 4px !important;
+                    width: 18px !important;
+                    height: 18px !important;
                 }
                 body.is-capturing .pssr-stat-icon-box {
                     border-radius: 0 18px 0 0 !important;
@@ -1674,22 +1823,51 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
         return `rgb(${r}, ${g}, ${b})`;
     };
 
-    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useWaffleChartForNormalSeries = false, useSubCategoryBadgeForFes = false, useWaffleChartForFesSubCategory = false, usePeriodBadgeForLimitedAndDist = false, useWaffleChartForLimitedPeriod = false, useSeriesBadgeForAnother = false, useWaffleChartForAnotherSeries = false, useOsusumeBadgeForPlan = false, sourceColor = '#93c5fd' } = {}) => {
+    const _primastellaCache = {};
+    const _primastellaImg = new Image();
+    _primastellaImg.crossOrigin = 'anonymous';
+    _primastellaImg.src = getAbsoluteUrl('icons/primastella.webp');
+    const getTintedPrimastella = (color) => {
+        if (_primastellaCache[color]) return _primastellaCache[color];
+        if (!_primastellaImg.complete || !_primastellaImg.naturalWidth) return getAbsoluteUrl('icons/primastella.webp');
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = _primastellaImg.naturalWidth;
+            canvas.height = _primastellaImg.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(_primastellaImg, 0, 0);
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/png');
+            _primastellaCache[color] = dataUrl;
+            return dataUrl;
+        } catch (e) {
+            return getAbsoluteUrl('icons/primastella.webp');
+        }
+    };
+
+    // Track collapsed state per waffle group across re-renders (undefined = use default)
+    const waffleGroupState = {};
+
+    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useWaffleChartForNormalSeries = false, useSubCategoryBadgeForFes = false, useWaffleChartForFesSubCategory = false, usePeriodBadgeForLimitedAndDist = false, useWaffleChartForLimitedPeriod = false, useSeriesBadgeForAnother = false, useWaffleChartForAnotherSeries = false, useWaffleChartForUnitName = false, useOsusumeBadgeForPlan = false, sourceColor = '#93c5fd' } = {}) => {
         let html = '';
+        let hasVisibleCard = false;
         const seenSeries = new Set();
         const seenPeriod = new Set();
         const seenFes = new Set();
         const seenAnother = new Set();
+        const seenUnit = new Set();
         cardsList.forEach(c => {
             if (useSeriesBadgeForAnother && useWaffleChartForAnotherSeries && c.another) {
-                const anotherNum = getCardAnotherOrder(c);
-                if (anotherNum !== 0 && anotherNum !== 999 && !seenAnother.has(anotherNum)) {
-                    seenAnother.add(anotherNum);
-                    const anotherCards = cardsList.filter(card => card.another && getCardAnotherOrder(card) === anotherNum);
+                const ak = getCardAnotherKey(c);
+                if (ak && !seenAnother.has(ak)) {
+                    seenAnother.add(ak);
+                    const anotherCards = cardsList.filter(card => card.another && getCardAnotherKey(card) === ak);
                     const totalAnother = anotherCards.length;
                     const ownedAnother = anotherCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
                     const rateAnother = totalAnother > 0 ? Math.round((ownedAnother / totalAnother) * 100) : 0;
-                    const anotherTitle = getLocalizedCardName(c, lang) || getAnotherBadgeText(c) || `1st${anotherNum}`;
+                    const anotherTitle = getLocalizedCardName(c, lang) || getAnotherBadgeText(c) || ak;
 
                     let waffleCellsHtml = '';
                     anotherCards.forEach(card => {
@@ -1706,14 +1884,19 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     });
 
                     const fillBgAnother = `background: linear-gradient(to top, ${mixWithWhite(sourceColor, 0.15)} 0%, ${mixWithWhite(sourceColor, 0.15)} ${rateAnother}%, #ffffff ${rateAnother}%, #ffffff 100%);`;
+                    const borderAnother = rateAnother === 100 ? `border-color: ${sourceColor};` : '';
 
+                    const anotherGroupKey = `another-${ak}`;
+                    const isCollapsed = waffleGroupState[anotherGroupKey] !== undefined ? waffleGroupState[anotherGroupKey] : true;
+                    if (waffleGroupState[anotherGroupKey] === undefined) waffleGroupState[anotherGroupKey] = true;
+                    const rateDisplayAnother = rateAnother === 100 ? `<img src="${getTintedPrimastella(sourceColor)}" style="width: 16px; height: 16px; vertical-align: middle;">` : `<span style="color: ${sourceColor};">${rateAnother}%</span>`;
                     html += `
-                        <div class="pssr-stat-waffle-wrap" style="${fillBgAnother}" title="${anotherTitle} (${ownedAnother}/${totalAnother})">
+                        <div class="pssr-stat-waffle-wrap${isCollapsed ? ' collapsed' : ''}" data-waffle-group="${anotherGroupKey}" style="${fillBgAnother} ${borderAnother}" title="${anotherTitle} (${ownedAnother}/${totalAnother})">
                             <span class="pssr-waffle-badge">${anotherTitle}</span>
-                            <div class="pssr-waffle-grid">
+                            <div class="pssr-waffle-grid"${getWaffleGridStyle(totalAnother)}>
                                 ${waffleCellsHtml}
                             </div>
-                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${rateAnother}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedAnother}/${totalAnother})</span></span>
+                            <span class="pssr-waffle-footer-badge">${rateDisplayAnother} <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedAnother}/${totalAnother})</span></span>
                         </div>
                     `;
                 }
@@ -1743,14 +1926,18 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     });
 
                     const fillBgFes = `background: linear-gradient(to top, ${mixWithWhite(sourceColor, 0.15)} 0%, ${mixWithWhite(sourceColor, 0.15)} ${rateFes}%, #ffffff ${rateFes}%, #ffffff 100%);`;
+                    const borderFes = rateFes === 100 ? `border-color: ${sourceColor};` : '';
 
+                    const fesGroupKey = `fes-${fesOrder}`;
+                    const isCollapsedFes = waffleGroupState[fesGroupKey] !== undefined ? waffleGroupState[fesGroupKey] : false;
+                    const rateDisplayFes = rateFes === 100 ? `<img src="${getTintedPrimastella(sourceColor)}" style="width: 16px; height: 16px; vertical-align: middle;">` : `<span style="color: ${sourceColor};">${rateFes}%</span>`;
                     html += `
-                        <div class="pssr-stat-waffle-wrap" style="${fillBgFes}" title="${fesTitle} (${ownedFes}/${totalFes})">
+                        <div class="pssr-stat-waffle-wrap${isCollapsedFes ? ' collapsed' : ''}" data-waffle-group="${fesGroupKey}" style="${fillBgFes} ${borderFes}" title="${fesTitle} (${ownedFes}/${totalFes})">
                             <span class="pssr-waffle-badge">${fesTitle}</span>
-                            <div class="pssr-waffle-grid">
+                            <div class="pssr-waffle-grid"${getWaffleGridStyle(totalFes)}>
                                 ${waffleCellsHtml}
                             </div>
-                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${rateFes}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedFes}/${totalFes})</span></span>
+                            <span class="pssr-waffle-footer-badge">${rateDisplayFes} <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedFes}/${totalFes})</span></span>
                         </div>
                     `;
                 }
@@ -1780,27 +1967,72 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     });
 
                     const fillBgPeriod = `background: linear-gradient(to top, ${mixWithWhite(sourceColor, 0.15)} 0%, ${mixWithWhite(sourceColor, 0.15)} ${ratePeriod}%, #ffffff ${ratePeriod}%, #ffffff 100%);`;
+                    const borderPeriod = ratePeriod === 100 ? `border-color: ${sourceColor};` : '';
 
+                    const periodGroupKey = `period-${periodKey}`;
+                    const isCollapsedPeriod = waffleGroupState[periodGroupKey] !== undefined ? waffleGroupState[periodGroupKey] : false;
+                    const rateDisplayPeriod = ratePeriod === 100 ? `<img src="${getTintedPrimastella(sourceColor)}" style="width: 16px; height: 16px; vertical-align: middle;">` : `<span style="color: ${sourceColor};">${ratePeriod}%</span>`;
                     html += `
-                        <div class="pssr-stat-waffle-wrap" style="${fillBgPeriod}" title="${periodTitle} (${ownedPeriod}/${totalPeriod})">
+                        <div class="pssr-stat-waffle-wrap${isCollapsedPeriod ? ' collapsed' : ''}" data-waffle-group="${periodGroupKey}" style="${fillBgPeriod} ${borderPeriod}" title="${periodTitle} (${ownedPeriod}/${totalPeriod})">
                             <span class="pssr-waffle-badge">${periodTitle}</span>
-                            <div class="pssr-waffle-grid">
+                            <div class="pssr-waffle-grid"${getWaffleGridStyle(totalPeriod)}>
                                 ${waffleCellsHtml}
                             </div>
-                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${ratePeriod}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedPeriod}/${totalPeriod})</span></span>
+                            <span class="pssr-waffle-footer-badge">${rateDisplayPeriod} <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedPeriod}/${totalPeriod})</span></span>
+                        </div>
+                    `;
+                }
+            }
+            if (useWaffleChartForUnitName && c.source === 'limited_u') {
+                const unitKey = (c.name || '').trim();
+                if (unitKey && !seenUnit.has(unitKey)) {
+                    seenUnit.add(unitKey);
+                    const unitCards = cardsList.filter(card => card.source === 'limited_u' && (card.name || '').trim() === unitKey);
+                    const totalUnit = unitCards.length;
+                    const ownedUnit = unitCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
+                    const rateUnit = totalUnit > 0 ? Math.round((ownedUnit / totalUnit) * 100) : 0;
+                    const unitTitle = getLocalizedCardName(c, lang);
+
+                    let waffleCellsHtml = '';
+                    unitCards.forEach(card => {
+                        const cardOwned = (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id);
+                        const cardCharId = getCharacterId(card.id);
+                        const cardColor = idolColors[cardCharId] || '#ff4d8d';
+                        const cardName = getLocalizedCardName(card, lang);
+
+                        if (cardOwned) {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell owned" style="background-color: ${cardColor};" title="${cardName}"></div>`;
+                        } else {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell unowned" style="background-color: #e2e8f0;" title="${cardName}"></div>`;
+                        }
+                    });
+
+                    const fillBgUnit = `background: linear-gradient(to top, ${mixWithWhite(sourceColor, 0.15)} 0%, ${mixWithWhite(sourceColor, 0.15)} ${rateUnit}%, #ffffff ${rateUnit}%, #ffffff 100%);`;
+                    const borderUnit = rateUnit === 100 ? `border-color: ${sourceColor};` : '';
+
+                    const unitGroupKey = `unit-${unitKey}`;
+                    const isCollapsedUnit = waffleGroupState[unitGroupKey] !== undefined ? waffleGroupState[unitGroupKey] : false;
+                    const rateDisplayUnit = rateUnit === 100 ? `<img src="${getTintedPrimastella(sourceColor)}" style="width: 16px; height: 16px; vertical-align: middle;">` : `<span style="color: ${sourceColor};">${rateUnit}%</span>`;
+                    html += `
+                        <div class="pssr-stat-waffle-wrap${isCollapsedUnit ? ' collapsed' : ''}" data-waffle-group="${unitGroupKey}" style="${fillBgUnit} ${borderUnit}" title="${unitTitle} (${ownedUnit}/${totalUnit})">
+                            <span class="pssr-waffle-badge">${unitTitle}</span>
+                            <div class="pssr-waffle-grid"${getWaffleGridStyle(totalUnit)}>
+                                ${waffleCellsHtml}
+                            </div>
+                            <span class="pssr-waffle-footer-badge">${rateDisplayUnit} <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedUnit}/${totalUnit})</span></span>
                         </div>
                     `;
                 }
             }
             if (useSeriesBadgeForNormal && useWaffleChartForNormalSeries && (c.source || 'normal') === 'normal' && !c.another) {
-                const seriesNum = getCardSeriesOrder(c);
-                if (seriesNum !== 0 && seriesNum !== 999 && !seenSeries.has(seriesNum)) {
-                    seenSeries.add(seriesNum);
-                    const seriesCards = cardsList.filter(card => (card.source || 'normal') === 'normal' && !card.another && getCardSeriesOrder(card) === seriesNum);
+                const groupKey = getNormalCardGroupKey(c);
+                if (groupKey && !seenSeries.has(groupKey)) {
+                    seenSeries.add(groupKey);
+                    const seriesCards = cardsList.filter(card => (card.source || 'normal') === 'normal' && !card.another && getNormalCardGroupKey(card) === groupKey);
                     const totalSeries = seriesCards.length;
                     const ownedSeries = seriesCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
                     const rateSeries = totalSeries > 0 ? Math.round((ownedSeries / totalSeries) * 100) : 0;
-                    const seriesTitle = getSeriesBadgeText(c) || `${seriesNum}th`;
+                    const seriesTitle = getNormalCardGroupTitle(c, lang);
 
                     let waffleCellsHtml = '';
                     seriesCards.forEach(card => {
@@ -1817,14 +2049,18 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     });
 
                     const fillBgSeries = `background: linear-gradient(to top, ${mixWithWhite(sourceColor, 0.15)} 0%, ${mixWithWhite(sourceColor, 0.15)} ${rateSeries}%, #ffffff ${rateSeries}%, #ffffff 100%);`;
+                    const borderSeries = rateSeries === 100 ? `border-color: ${sourceColor};` : '';
 
+                    const seriesGroupKey = `normal-${groupKey}`;
+                    const isCollapsedSeries = waffleGroupState[seriesGroupKey] !== undefined ? waffleGroupState[seriesGroupKey] : false;
+                    const rateDisplaySeries = rateSeries === 100 ? `<img src="${getTintedPrimastella(sourceColor)}" style="width: 16px; height: 16px; vertical-align: middle;">` : `<span style="color: ${sourceColor};">${rateSeries}%</span>`;
                     html += `
-                        <div class="pssr-stat-waffle-wrap" style="${fillBgSeries}" title="${seriesTitle} (${ownedSeries}/${totalSeries})">
+                        <div class="pssr-stat-waffle-wrap${isCollapsedSeries ? ' collapsed' : ''}" data-waffle-group="${seriesGroupKey}" style="${fillBgSeries} ${borderSeries}" title="${seriesTitle} (${ownedSeries}/${totalSeries})">
                             <span class="pssr-waffle-badge">${seriesTitle}</span>
-                            <div class="pssr-waffle-grid">
+                            <div class="pssr-waffle-grid"${getWaffleGridStyle(totalSeries)}>
                                 ${waffleCellsHtml}
                             </div>
-                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${rateSeries}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedSeries}/${totalSeries})</span></span>
+                            <span class="pssr-waffle-footer-badge">${rateDisplaySeries} <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedSeries}/${totalSeries})</span></span>
                         </div>
                     `;
                 }
@@ -1846,16 +2082,14 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
             let badgeText = getBadgeText(c, lang);
             if (useSeriesBadgeForNormal && (c.source || 'normal') === 'normal' && !c.another) {
-                const seriesBadge = getSeriesBadgeText(c);
-                if (seriesBadge) {
-                    badgeText = seriesBadge;
+                const normalBadge = getNormalCardBadgeText(c, lang);
+                if (normalBadge) {
+                    badgeText = normalBadge;
                 }
             } else if (useSubCategoryBadgeForFes && c.source === 'limited_f') {
-                const idLower = (c.id || '').toLowerCase();
-                const nameLower = (c.name || '').toLowerCase();
-                if (idLower.includes('campus') || nameLower.includes('campus')) {
+                if (c.type === 'nia' || c.type === 'campus') {
                     badgeText = 'NIA';
-                } else if (idLower.includes('hif')) {
+                } else if (c.type === 'hif') {
                     badgeText = 'HIF';
                 }
             } else if (usePeriodBadgeForLimitedAndDist && (c.source === 'limited' || c.source === 'dist' || c.another)) {
@@ -1876,8 +2110,31 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 }
             }
 
+            // Determine waffle group for this card
+            let waffleGroup = '';
+            if (useSeriesBadgeForAnother && useWaffleChartForAnotherSeries && c.another) {
+                const ak = getCardAnotherKey(c);
+                if (ak) waffleGroup = `another-${ak}`;
+            } else if (useSubCategoryBadgeForFes && useWaffleChartForFesSubCategory && c.source === 'limited_f') {
+                const fo = getFesSubCategoryOrder(c);
+                if (fo === 1 || fo === 2) waffleGroup = `fes-${fo}`;
+            } else if (usePeriodBadgeForLimitedAndDist && useWaffleChartForLimitedPeriod && (c.source === 'limited' || c.source === 'dist')) {
+                const pk = getCardPeriodKey(c);
+                if (pk) waffleGroup = `period-${pk}`;
+            } else if (useWaffleChartForUnitName && c.source === 'limited_u') {
+                const uk = (c.name || '').trim();
+                if (uk) waffleGroup = `unit-${uk}`;
+            } else if (useSeriesBadgeForNormal && useWaffleChartForNormalSeries && (c.source || 'normal') === 'normal' && !c.another) {
+                const groupKey = getNormalCardGroupKey(c);
+                if (groupKey) waffleGroup = `normal-${groupKey}`;
+            }
+            const waffleGroupAttr = waffleGroup ? ` data-waffle-group="${waffleGroup}"` : '';
+            const isGroupCollapsed = waffleGroup && (waffleGroupState[waffleGroup] !== undefined ? waffleGroupState[waffleGroup] : waffleGroup.startsWith('another-'));
+            if (!isGroupCollapsed) hasVisibleCard = true;
+            const hideStyle = isGroupCollapsed ? ' display: none;' : '';
+
             html += `
-                <div class="pssr-stat-icon-wrap" style="${containerStyle}" title="${cardName}">
+                <div class="pssr-stat-icon-wrap"${waffleGroupAttr} style="${containerStyle}${hideStyle}" title="${cardName}">
                     <div class="pssr-stat-icon-box">
                         <img src="idols/thumb/${c.id}${suffix}" onerror="this.src='idols/${c.id}${suffix}'; this.onerror=function(){this.src='icons/idol.png'};" style="${imgStyle}">
                     </div>
@@ -1886,8 +2143,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 </div>
             `;
         });
+
+        const spacerHide = hasVisibleCard ? '' : ' style="display: none;"';
         for (let i = 0; i < 12; i++) {
-            html += `<div class="pssr-stat-icon-spacer"></div>`;
+            html += `<div class="pssr-stat-icon-spacer"${spacerHide}></div>`;
         }
         return html;
     };
@@ -3767,6 +4026,25 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
     // Register click delegator for collapsible details (character cards & plan cards)
     scrollArea.addEventListener('click', (e) => {
+        const waffleWrap = e.target.closest('.pssr-stat-waffle-wrap[data-waffle-group]');
+        if (waffleWrap) {
+            e.stopPropagation();
+            const group = waffleWrap.dataset.waffleGroup;
+            const parent = waffleWrap.parentElement;
+            if (!parent || !group) return;
+            const isCollapsed = waffleWrap.classList.toggle('collapsed');
+            waffleGroupState[group] = isCollapsed;
+            parent.querySelectorAll(`.pssr-stat-icon-wrap[data-waffle-group="${group}"]`).forEach(icon => {
+                icon.style.display = isCollapsed ? 'none' : '';
+            });
+
+            const hasVisibleIcon = Array.from(parent.querySelectorAll('.pssr-stat-icon-wrap')).some(icon => icon.style.display !== 'none');
+            parent.querySelectorAll('.pssr-stat-icon-spacer').forEach(spacer => {
+                spacer.style.display = hasVisibleIcon ? '' : 'none';
+            });
+            return;
+        }
+
         const toggleBtn = e.target.closest('.idol-stats-char-toggle-btn');
         if (toggleBtn) {
             e.stopPropagation();
@@ -3835,11 +4113,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             return cardSrc === src;
                         });
 
-                        const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : sortPssrByCharacterAndRelease));
+                        const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : (src === 'limited_u' ? sortPssrUnitCards : sortPssrByCharacterAndRelease)));
                         sourceCards.sort(sortFn);
 
                         const sourceColor = sourceCard.dataset.color || '#93c5fd';
-                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist' || src === 'another'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', sourceColor: sourceColor });
+                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', useWaffleChartForUnitName: src === 'limited_u', sourceColor: sourceColor });
 
                         const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                         const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
@@ -4060,30 +4338,30 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     updateStatsUI();
     scrollArea.scrollTop = 0;
 
-    // Save Image button listener
-    const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
-    saveBtn.onclick = () => {
-        // Reset all active bar filters inside the modal when saving image
-        modal.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
-        modal.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
-        modal.querySelectorAll('.idol-stats-chart-wrapper').forEach(w => w.classList.remove('has-active'));
-        modal.querySelectorAll('.idol-stats-xaxis-container').forEach(c => c.classList.remove('has-active'));
-        modal.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap').forEach(w => {
-            w.style.display = '';
-        });
-        modal.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]').forEach(sep => {
-            sep.style.display = '';
-        });
+        // Save Image button listener
+        const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
+        saveBtn.onclick = () => {
+            // Reset all active bar filters inside the modal when saving image
+            modal.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
+            modal.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
+            modal.querySelectorAll('.idol-stats-chart-wrapper').forEach(w => w.classList.remove('has-active'));
+            modal.querySelectorAll('.idol-stats-xaxis-container').forEach(c => c.classList.remove('has-active'));
+            modal.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap').forEach(w => {
+                w.style.display = '';
+            });
+            modal.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]').forEach(sep => {
+                sep.style.display = '';
+            });
 
-        const originalText = saveBtn.innerHTML;
+            const originalText = saveBtn.innerHTML;
 
-        const showSpinnerOverlay = () => {
-            let overlay = document.getElementById('possession-save-spinner-overlay');
-            if (overlay) overlay.remove();
+            const showSpinnerOverlay = () => {
+                let overlay = document.getElementById('possession-save-spinner-overlay');
+                if (overlay) overlay.remove();
 
-            overlay = document.createElement('div');
-            overlay.id = 'possession-save-spinner-overlay';
-            overlay.style.cssText = `
+                overlay = document.createElement('div');
+                overlay.id = 'possession-save-spinner-overlay';
+                overlay.style.cssText = `
                 position: fixed;
                 inset: 0;
                 background: rgba(0, 0, 0, 0.45);
@@ -4097,8 +4375,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 gap: 16px;
             `;
 
-            const spinner = document.createElement('div');
-            spinner.style.cssText = `
+                const spinner = document.createElement('div');
+                spinner.style.cssText = `
                 width: 46px;
                 height: 46px;
                 border: 4.5px solid rgba(255, 255, 255, 0.25);
@@ -4110,60 +4388,60 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 transform: translateZ(0);
             `;
 
-            if (!document.getElementById('possession-spin-style')) {
-                const style = document.createElement('style');
-                style.id = 'possession-spin-style';
-                style.textContent = `
+                if (!document.getElementById('possession-spin-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'possession-spin-style';
+                    style.textContent = `
                     @keyframes possession-spin {
                         0% { transform: rotate(0deg); }
                         100% { transform: rotate(360deg); }
                     }
                 `;
-                document.head.appendChild(style);
-            }
+                    document.head.appendChild(style);
+                }
 
-            const label = document.createElement('div');
-            label.style.cssText = `
+                const label = document.createElement('div');
+                label.style.cssText = `
                 font-size: 0.95rem;
                 font-weight: 800;
                 text-shadow: 0 1px 4px rgba(0,0,0,0.4);
                 letter-spacing: 0.5px;
             `;
-            label.textContent = text.alert_generating;
+                label.textContent = text.alert_generating;
 
-            overlay.appendChild(spinner);
-            overlay.appendChild(label);
-            document.body.appendChild(overlay);
-        };
+                overlay.appendChild(spinner);
+                overlay.appendChild(label);
+                document.body.appendChild(overlay);
+            };
 
-        const hideSpinnerOverlay = () => {
-            const overlay = document.getElementById('possession-save-spinner-overlay');
-            if (overlay) overlay.remove();
-        };
+            const hideSpinnerOverlay = () => {
+                const overlay = document.getElementById('possession-save-spinner-overlay');
+                if (overlay) overlay.remove();
+            };
 
-        const showSaveOptionsModal = (onSelect) => {
-            history.pushState({ modalOpen: 'saveOptions' }, "");
+            const showSaveOptionsModal = (onSelect) => {
+                history.pushState({ modalOpen: 'saveOptions' }, "");
 
-            let optionsModal = document.createElement('div');
-            let didClose = false;
-            optionsModal.className = 'modal';
-            optionsModal.style.zIndex = '36000';
-            optionsModal.style.display = 'flex';
-            optionsModal.style.alignItems = 'center';
-            optionsModal.style.justifyContent = 'center';
-            optionsModal.style.position = 'fixed';
-            optionsModal.style.inset = '0';
-            optionsModal.style.background = 'rgba(0, 0, 0, 0.7)';
+                let optionsModal = document.createElement('div');
+                let didClose = false;
+                optionsModal.className = 'modal';
+                optionsModal.style.zIndex = '36000';
+                optionsModal.style.display = 'flex';
+                optionsModal.style.alignItems = 'center';
+                optionsModal.style.justifyContent = 'center';
+                optionsModal.style.position = 'fixed';
+                optionsModal.style.inset = '0';
+                optionsModal.style.background = 'rgba(0, 0, 0, 0.7)';
 
-            const isJa = lang === 'ja';
-            const isEn = lang === 'en';
-            const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
-            const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
-            const optPlanAllText = isJa ? 'プラン別保存' : isEn ? 'Save by Plan' : '플랜별 저장';
-            const optSourceAllText = isJa ? '分類別保存' : isEn ? 'Save by Category' : '분류별 저장';
-            const optCharAllText = isJa ? 'アイドル別保存' : isEn ? 'Save by Idol' : '아이돌별 저장';
+                const isJa = lang === 'ja';
+                const isEn = lang === 'en';
+                const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
+                const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
+                const optPlanAllText = isJa ? 'プラン別保存' : isEn ? 'Save by Plan' : '플랜별 저장';
+                const optSourceAllText = isJa ? '分類別保存' : isEn ? 'Save by Category' : '분류별 저장';
+                const optCharAllText = isJa ? 'アイドル別保存' : isEn ? 'Save by Idol' : '아이돌별 저장';
 
-            optionsModal.innerHTML = `
+                optionsModal.innerHTML = `
                 <div class="modal-content possession-save-options-content">
                     <button id="btn-save-opt-close" style="position: absolute; right: 6px; top: 6px; background: none; border: none; font-size: 1.25rem; font-weight: bold; color: #888; cursor: pointer; padding: 2px; line-height: 1; transition: none !important;">&times;</button>
                     <div class="save-opt-title" style="font-weight: 800; font-size: 1.1rem; color: #333; margin-bottom: 4px; margin-top: 8px;">${titleText}</div>
@@ -4182,157 +4460,171 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 </div>
             `;
 
-            document.body.appendChild(optionsModal);
+                document.body.appendChild(optionsModal);
 
-            optionsModal.onClose = () => {
-                if (didClose) return;
-                didClose = true;
-                optionsModal.remove();
-                onSelect(null);
-            };
-
-            const closeOptionsModal = (result) => {
-                if (didClose) return;
-                didClose = true;
-                const parentModal = document.getElementById('idol-possession-modal');
-                if (parentModal) {
-                    parentModal.setAttribute('data-prevent-popstate', 'true');
-                }
-                optionsModal.remove();
-                if (history.state && history.state.modalOpen === 'saveOptions') {
-                    history.back();
-                } else {
-                    if (parentModal) {
-                        parentModal.removeAttribute('data-prevent-popstate');
-                    }
-                }
-                optionsModal.onClose = null;
-                onSelect(result);
-            };
-
-            const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
-            closeBtn.onclick = () => {
-                closeOptionsModal(null);
-            };
-            optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
-                closeOptionsModal('all');
-            };
-            optionsModal.querySelector('#btn-save-opt-plan-all').onclick = () => {
-                closeOptionsModal('plan-all');
-            };
-            optionsModal.querySelector('#btn-save-opt-source-all').onclick = () => {
-                closeOptionsModal('source-all');
-            };
-            optionsModal.querySelector('#btn-save-opt-char-all').onclick = () => {
-                closeOptionsModal('char-all');
-            };
-            optionsModal.onclick = (e) => {
-                if (e.target === optionsModal) {
-                    closeOptionsModal(null);
-                }
-            };
-        };
-
-        showSaveOptionsModal((saveType) => {
-            if (!saveType) return;
-
-            showSpinnerOverlay();
-
-            saveBtn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${text.alert_generating}</span>`;
-
-            const startCapture = () => {
-                const executeCapture = () => capture();
-
-                if (window.html2canvas) {
-                    setTimeout(executeCapture, 50);
-                } else {
-                    const script = document.createElement('script');
-                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-                    script.onload = () => executeCapture();
-                    script.onerror = () => {
-                        alert(text.alert_fail);
-                        saveBtn.innerHTML = originalText;
-                        hideSpinnerOverlay();
-                    };
-                    document.head.appendChild(script);
-                }
-            };
-
-            const capture = () => {
-                document.body.classList.add('is-capturing');
-                const mobileStyles = document.getElementById('idol-possession-mobile-styles');
-                if (mobileStyles) {
-                    mobileStyles.disabled = true;
-                    mobileStyles.setAttribute('disabled', '');
-                }
-                saveBtn.innerHTML = 'GAKUMAS NOTE';
-
-                const isPlanAll = saveType === 'plan-all';
-                const isSourceAll = saveType === 'source-all';
-                const isCharAll = saveType === 'char-all';
-                const getActiveCaptureCards = () => {
-                    let activeCards = pssrCards;
-                    if (!includeAnother) {
-                        activeCards = activeCards.filter(c => !c.another);
-                    }
-                    if (!includeDist) {
-                        activeCards = activeCards.filter(c => c.source !== 'dist');
-                    }
-                    return activeCards;
+                optionsModal.onClose = () => {
+                    if (didClose) return;
+                    didClose = true;
+                    optionsModal.remove();
+                    onSelect(null);
                 };
 
-                // Hide other sections/elements if plan-only or source-only or char-only mode
-                const elementsToHide = [];
-                if (isPlanAll || isSourceAll || isCharAll) {
-                    // Hide overall card
-                    const overallCard = modalContent.querySelector('.possession-section-card[data-is-overall="true"]');
-                    if (overallCard) elementsToHide.push(overallCard);
+                const closeOptionsModal = (result) => {
+                    if (didClose) return;
+                    didClose = true;
+                    const parentModal = document.getElementById('idol-possession-modal');
+                    if (parentModal) {
+                        parentModal.setAttribute('data-prevent-popstate', 'true');
+                    }
+                    optionsModal.remove();
+                    if (history.state && history.state.modalOpen === 'saveOptions') {
+                        history.back();
+                    } else {
+                        if (parentModal) {
+                            parentModal.removeAttribute('data-prevent-popstate');
+                        }
+                    }
+                    optionsModal.onClose = null;
+                    onSelect(result);
+                };
 
-                    // Hide background image
-                    const bgImg = modalContent.querySelector('.modal-bg-image');
-                    if (bgImg) elementsToHide.push(bgImg);
+                const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
+                closeBtn.onclick = () => {
+                    closeOptionsModal(null);
+                };
+                optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
+                    closeOptionsModal('all');
+                };
+                optionsModal.querySelector('#btn-save-opt-plan-all').onclick = () => {
+                    closeOptionsModal('plan-all');
+                };
+                optionsModal.querySelector('#btn-save-opt-source-all').onclick = () => {
+                    closeOptionsModal('source-all');
+                };
+                optionsModal.querySelector('#btn-save-opt-char-all').onclick = () => {
+                    closeOptionsModal('char-all');
+                };
+                optionsModal.onclick = (e) => {
+                    if (e.target === optionsModal) {
+                        closeOptionsModal(null);
+                    }
+                };
+            };
 
-                    if (isPlanAll) {
-                        // Hide source label/cards
-                        const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
-                        if (sourceLbl) elementsToHide.push(sourceLbl);
-                        const sourceCard = modalContent.querySelector('.idol-stats-source-card');
-                        if (sourceCard) elementsToHide.push(sourceCard);
+            showSaveOptionsModal((saveType) => {
+                if (!saveType) return;
 
-                        // Hide char label/cards
-                        const charLbl = modalContent.querySelector('#pssr-char-stats-label');
-                        if (charLbl) elementsToHide.push(charLbl);
-                        const charCard = modalContent.querySelector('.idol-stats-char-card');
-                        if (charCard) elementsToHide.push(charCard);
-                    } else if (isSourceAll) {
-                        // Hide plan label/cards
-                        const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
-                        if (planLbl) elementsToHide.push(planLbl);
-                        const planCard = modalContent.querySelector('.idol-stats-plan-card');
-                        if (planCard) elementsToHide.push(planCard);
+                showSpinnerOverlay();
 
-                        // Hide char label/cards
-                        const charLbl = modalContent.querySelector('#pssr-char-stats-label');
-                        if (charLbl) elementsToHide.push(charLbl);
-                        const charCard = modalContent.querySelector('.idol-stats-char-card');
-                        if (charCard) elementsToHide.push(charCard);
-                    } else if (isCharAll) {
-                        // Hide plan label/cards
-                        const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
-                        if (planLbl) elementsToHide.push(planLbl);
-                        const planCard = modalContent.querySelector('.idol-stats-plan-card');
-                        if (planCard) elementsToHide.push(planCard);
+                saveBtn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${text.alert_generating}</span>`;
 
-                        // Hide source label/cards
-                        const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
-                        if (sourceLbl) elementsToHide.push(sourceLbl);
-                        const sourceCard = modalContent.querySelector('.idol-stats-source-card');
-                        if (sourceCard) elementsToHide.push(sourceCard);
+                const startCapture = () => {
+                    const executeCapture = () => capture();
 
-                        // Hide 4th place and below characters' card icons list, keeping only the chart
+                    if (window.html2canvas) {
+                        setTimeout(executeCapture, 50);
+                    } else {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                        script.onload = () => executeCapture();
+                        script.onerror = () => {
+                            alert(text.alert_fail);
+                            saveBtn.innerHTML = originalText;
+                            hideSpinnerOverlay();
+                        };
+                        document.head.appendChild(script);
+                    }
+                };
+
+                const capture = () => {
+                    document.body.classList.add('is-capturing');
+                    const mobileStyles = document.getElementById('idol-possession-mobile-styles');
+                    if (mobileStyles) {
+                        mobileStyles.disabled = true;
+                        mobileStyles.setAttribute('disabled', '');
+                    }
+                    saveBtn.innerHTML = 'GAKUMAS NOTE';
+
+                    const isPlanAll = saveType === 'plan-all';
+                    const isSourceAll = saveType === 'source-all';
+                    const isCharAll = saveType === 'char-all';
+                    const getActiveCaptureCards = () => {
+                        let activeCards = pssrCards;
+                        if (!includeAnother) {
+                            activeCards = activeCards.filter(c => !c.another);
+                        }
+                        if (!includeDist) {
+                            activeCards = activeCards.filter(c => c.source !== 'dist');
+                        }
+                        return activeCards;
+                    };
+
+                    // Hide other sections/elements if plan-only or source-only or char-only mode
+                    const elementsToHide = [];
+                    if (isPlanAll || isSourceAll || isCharAll) {
+                        // Hide overall card
+                        const overallCard = modalContent.querySelector('.possession-section-card[data-is-overall="true"]');
+                        if (overallCard) elementsToHide.push(overallCard);
+
+                        // Hide background image
+                        const bgImg = modalContent.querySelector('.modal-bg-image');
+                        if (bgImg) elementsToHide.push(bgImg);
+
+                        if (isPlanAll) {
+                            // Hide source label/cards
+                            const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
+                            if (sourceLbl) elementsToHide.push(sourceLbl);
+                            const sourceCard = modalContent.querySelector('.idol-stats-source-card');
+                            if (sourceCard) elementsToHide.push(sourceCard);
+
+                            // Hide char label/cards
+                            const charLbl = modalContent.querySelector('#pssr-char-stats-label');
+                            if (charLbl) elementsToHide.push(charLbl);
+                            const charCard = modalContent.querySelector('.idol-stats-char-card');
+                            if (charCard) elementsToHide.push(charCard);
+                        } else if (isSourceAll) {
+                            // Hide plan label/cards
+                            const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
+                            if (planLbl) elementsToHide.push(planLbl);
+                            const planCard = modalContent.querySelector('.idol-stats-plan-card');
+                            if (planCard) elementsToHide.push(planCard);
+
+                            // Hide char label/cards
+                            const charLbl = modalContent.querySelector('#pssr-char-stats-label');
+                            if (charLbl) elementsToHide.push(charLbl);
+                            const charCard = modalContent.querySelector('.idol-stats-char-card');
+                            if (charCard) elementsToHide.push(charCard);
+                        } else if (isCharAll) {
+                            // Hide plan label/cards
+                            const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
+                            if (planLbl) elementsToHide.push(planLbl);
+                            const planCard = modalContent.querySelector('.idol-stats-plan-card');
+                            if (planCard) elementsToHide.push(planCard);
+
+                            // Hide source label/cards
+                            const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
+                            if (sourceLbl) elementsToHide.push(sourceLbl);
+                            const sourceCard = modalContent.querySelector('.idol-stats-source-card');
+                            if (sourceCard) elementsToHide.push(sourceCard);
+
+                            // Hide 4th place and below characters' card icons list, keeping only the chart
+                            const charCardsList = modalContent.querySelectorAll('.char-stat-card');
+                            charCardsList.forEach((card, idx) => {
+                                if (idx >= 3) {
+                                    const iconsContainer = card.querySelector('.pssr-char-icons-container');
+                                    if (iconsContainer) {
+                                        elementsToHide.push(iconsContainer);
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    // Hide 2nd and 3rd place characters' card icons list during overall save to prevent huge height
+                    if (!isPlanAll && !isSourceAll && !isCharAll) {
                         const charCardsList = modalContent.querySelectorAll('.char-stat-card');
                         charCardsList.forEach((card, idx) => {
-                            if (idx >= 3) {
+                            if (idx === 1 || idx === 2) {
                                 const iconsContainer = card.querySelector('.pssr-char-icons-container');
                                 if (iconsContainer) {
                                     elementsToHide.push(iconsContainer);
@@ -4340,73 +4632,59 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             }
                         });
                     }
-                }
 
-                // Hide 2nd and 3rd place characters' card icons list during overall save to prevent huge height
-                if (!isPlanAll && !isSourceAll && !isCharAll) {
-                    const charCardsList = modalContent.querySelectorAll('.char-stat-card');
-                    charCardsList.forEach((card, idx) => {
-                        if (idx === 1 || idx === 2) {
-                            const iconsContainer = card.querySelector('.pssr-char-icons-container');
-                            if (iconsContainer) {
-                                elementsToHide.push(iconsContainer);
-                            }
-                        }
+                    const origDisplays = [];
+                    elementsToHide.forEach(el => {
+                        origDisplays.push({
+                            el,
+                            display: el.style.display,
+                            displayPriority: el.style.getPropertyPriority('display')
+                        });
+                        el.style.setProperty('display', 'none', 'important');
                     });
-                }
 
-                const origDisplays = [];
-                elementsToHide.forEach(el => {
-                    origDisplays.push({
-                        el,
-                        display: el.style.display,
-                        displayPriority: el.style.getPropertyPriority('display')
+                    // Programmatically set up the plan drawer contents
+                    const detailsDiv = scrollArea.querySelector('#plan-stat-details');
+                    const origPlanDetailsHtml = detailsDiv ? detailsDiv.innerHTML : '';
+                    const origPlanDetailsDisplay = detailsDiv ? detailsDiv.style.display : '';
+                    const origPlanDetailsActive = detailsDiv ? detailsDiv.dataset.activePlan : '';
+                    const origPlanColsActive = [];
+                    scrollArea.querySelectorAll('.idol-stats-plan-col').forEach(col => {
+                        origPlanColsActive.push({ col, active: col.classList.contains('active') });
                     });
-                    el.style.setProperty('display', 'none', 'important');
-                });
 
-                // Programmatically set up the plan drawer contents
-                const detailsDiv = scrollArea.querySelector('#plan-stat-details');
-                const origPlanDetailsHtml = detailsDiv ? detailsDiv.innerHTML : '';
-                const origPlanDetailsDisplay = detailsDiv ? detailsDiv.style.display : '';
-                const origPlanDetailsActive = detailsDiv ? detailsDiv.dataset.activePlan : '';
-                const origPlanColsActive = [];
-                scrollArea.querySelectorAll('.idol-stats-plan-col').forEach(col => {
-                    origPlanColsActive.push({ col, active: col.classList.contains('active') });
-                });
+                    if (isPlanAll && detailsDiv) {
+                        const planCols = scrollArea.querySelectorAll('.idol-stats-plan-col');
+                        planCols.forEach(col => col.classList.add('active'));
 
-                if (isPlanAll && detailsDiv) {
-                    const planCols = scrollArea.querySelectorAll('.idol-stats-plan-col');
-                    planCols.forEach(col => col.classList.add('active'));
+                        const activeCards = getActiveCaptureCards();
 
-                    const activeCards = getActiveCaptureCards();
+                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useOsusumeBadgeForPlan: true });
 
-                    const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useOsusumeBadgeForPlan: true });
+                        const isJa = lang === 'ja';
+                        const isEn = lang === 'en';
+                        const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
+                        const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
 
-                    const isJa = lang === 'ja';
-                    const isEn = lang === 'en';
-                    const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
-                    const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+                        let allPlansHtml = '<div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">';
 
-                    let allPlansHtml = '<div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">';
+                        const plans = ['sense', 'logic', 'anomaly'];
+                        plans.forEach((p, pIdx) => {
+                            const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
+                            const ownedCards = planCards.filter(c => isCardOwned(c.id));
+                            const unownedCards = planCards.filter(c => !isCardOwned(c.id));
+                            ownedCards.sort(sortPssrByCharacterAndRelease);
+                            unownedCards.sort(sortPssrByCharacterAndRelease);
 
-                    const plans = ['sense', 'logic', 'anomaly'];
-                    plans.forEach((p, pIdx) => {
-                        const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
-                        const ownedCards = planCards.filter(c => isCardOwned(c.id));
-                        const unownedCards = planCards.filter(c => !isCardOwned(c.id));
-                        ownedCards.sort(sortPssrByCharacterAndRelease);
-                        unownedCards.sort(sortPssrByCharacterAndRelease);
+                            const planColor = p === 'sense' ? '#ff4d8d' : p === 'logic' ? '#46a4f3' : '#ffb300';
+                            const planTitle = p.toUpperCase();
 
-                        const planColor = p === 'sense' ? '#ff4d8d' : p === 'logic' ? '#46a4f3' : '#ffb300';
-                        const planTitle = p.toUpperCase();
+                            const borderStyle = pIdx < plans.length - 1 ? 'border-bottom: 1px dashed rgba(0, 0, 0, 0.08); padding-bottom: 16px;' : '';
 
-                        const borderStyle = pIdx < plans.length - 1 ? 'border-bottom: 1px dashed rgba(0, 0, 0, 0.08); padding-bottom: 16px;' : '';
+                            const ownedBg = hexToRgba(planColor, 0.08);
+                            const ownedBorder = hexToRgba(planColor, 0.12);
 
-                        const ownedBg = hexToRgba(planColor, 0.08);
-                        const ownedBorder = hexToRgba(planColor, 0.12);
-
-                        allPlansHtml += `
+                            allPlansHtml += `
                             <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${borderStyle}">
                                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
                                     <img src="icons/${p}.webp" style="width: 15px; height: 15px; object-fit: contain;">
@@ -4414,469 +4692,469 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                 </div>
                         `;
 
-                        if (ownedCards.length > 0) {
-                            const groupStyle = unownedCards.length > 0
-                                ? `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`
-                                : `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+                            if (ownedCards.length > 0) {
+                                const groupStyle = unownedCards.length > 0
+                                    ? `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`
+                                    : `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
 
-                            allPlansHtml += `
+                                allPlansHtml += `
                                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;">${ownedLabel} (${ownedCards.length})</div>
                                     ${renderPlanSubGroupsHtml(ownedCards, true, p, lang, buildIconsHtml, planCards)}
                                 </div>
                             `;
-                        }
+                            }
 
-                        if (unownedCards.length > 0) {
-                            const groupStyle = ownedCards.length > 0
-                                ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`
-                                : `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
+                            if (unownedCards.length > 0) {
+                                const groupStyle = ownedCards.length > 0
+                                    ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`
+                                    : `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
 
-                            allPlansHtml += `
+                                allPlansHtml += `
                                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;">${unownedLabel} (${unownedCards.length})</div>
                                     ${renderPlanSubGroupsHtml(unownedCards, false, p, lang, buildIconsHtml, planCards)}
                                 </div>
                             `;
-                        }
+                            }
 
-                        allPlansHtml += `</div>`;
-                    });
-
-                    allPlansHtml += '</div>';
-                    detailsDiv.innerHTML = allPlansHtml;
-                    detailsDiv.style.display = 'flex';
-                    detailsDiv.dataset.activePlan = 'all';
-                } else if (detailsDiv) {
-                    detailsDiv.style.display = 'none';
-                }
-
-                // Temporarily expand all classification/source cards during capture
-                const sourceCardsList = scrollArea.querySelectorAll('.source-stat-card');
-                const origSourceCardsState = [];
-
-                sourceCardsList.forEach(sourceCard => {
-                    const detailsDiv = sourceCard.querySelector('.source-stat-details');
-                    const chevron = sourceCard.querySelector('.source-chevron');
-
-                    if (detailsDiv) {
-                        // Save original state
-                        origSourceCardsState.push({
-                            sourceCard,
-                            detailsDiv,
-                            chevron,
-                            display: detailsDiv.style.display,
-                            innerHTML: detailsDiv.innerHTML,
-                            transform: chevron ? chevron.style.transform : '',
-                            isExpanded: sourceCard.classList.contains('expanded')
+                            allPlansHtml += `</div>`;
                         });
 
-                        if (isSourceAll) {
-                            // Populate details drawer
-                            const src = sourceCard.dataset.source;
-                            const activeCards = getActiveCaptureCards();
+                        allPlansHtml += '</div>';
+                        detailsDiv.innerHTML = allPlansHtml;
+                        detailsDiv.style.display = 'flex';
+                        detailsDiv.dataset.activePlan = 'all';
+                    } else if (detailsDiv) {
+                        detailsDiv.style.display = 'none';
+                    }
 
-                            const sourceCards = activeCards.filter(c => {
-                                const cardSrc = c.another ? 'another' : (c.source || 'normal');
-                                return cardSrc === src;
+                    // Temporarily expand all classification/source cards during capture
+                    const sourceCardsList = scrollArea.querySelectorAll('.source-stat-card');
+                    const origSourceCardsState = [];
+
+                    sourceCardsList.forEach(sourceCard => {
+                        const detailsDiv = sourceCard.querySelector('.source-stat-details');
+                        const chevron = sourceCard.querySelector('.source-chevron');
+
+                        if (detailsDiv) {
+                            // Save original state
+                            origSourceCardsState.push({
+                                sourceCard,
+                                detailsDiv,
+                                chevron,
+                                display: detailsDiv.style.display,
+                                innerHTML: detailsDiv.innerHTML,
+                                transform: chevron ? chevron.style.transform : '',
+                                isExpanded: sourceCard.classList.contains('expanded')
                             });
 
-                            const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : sortPssrByCharacterAndRelease));
-                            sourceCards.sort(sortFn);
+                            if (isSourceAll) {
+                                // Populate details drawer
+                                const src = sourceCard.dataset.source;
+                                const activeCards = getActiveCaptureCards();
 
-                            const sourceColor = sourceCard.dataset.color || '#93c5fd';
-                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', sourceColor: sourceColor });
+                                const sourceCards = activeCards.filter(c => {
+                                    const cardSrc = c.another ? 'another' : (c.source || 'normal');
+                                    return cardSrc === src;
+                                });
 
-                            const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
-                            const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
-                            const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
-                            const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
+                                const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : (src === 'limited_u' ? sortPssrUnitCards : sortPssrByCharacterAndRelease)));
+                                sourceCards.sort(sortFn);
 
-                            const ownedBg = hexToRgba(sourceColor, 0.08);
-                            const ownedBorder = hexToRgba(sourceColor, 0.12);
+                                const sourceColor = sourceCard.dataset.color || '#93c5fd';
+                                const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', useWaffleChartForUnitName: src === 'limited_u', sourceColor: sourceColor });
 
-                            if (sourceCards.length > 0) {
-                                ownedGroup.style.display = 'flex';
-                                const titleEl = ownedGroup.querySelector('.plan-group-title');
-                                if (titleEl) titleEl.style.display = 'none';
-                                ownedContainer.innerHTML = buildIconsHtml(sourceCards, null);
-                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box; background-color: transparent; border: none; padding: 0;`;
+                                const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
+                                const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
+                                const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
+                                const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
+
+                                const ownedBg = hexToRgba(sourceColor, 0.08);
+                                const ownedBorder = hexToRgba(sourceColor, 0.12);
+
+                                if (sourceCards.length > 0) {
+                                    ownedGroup.style.display = 'flex';
+                                    const titleEl = ownedGroup.querySelector('.plan-group-title');
+                                    if (titleEl) titleEl.style.display = 'none';
+                                    ownedContainer.innerHTML = buildIconsHtml(sourceCards, null);
+                                    ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box; background-color: transparent; border: none; padding: 0;`;
+                                } else {
+                                    ownedGroup.style.display = 'none';
+                                }
+                                unownedGroup.style.display = 'none';
+
+                                detailsDiv.style.display = 'flex';
+                                detailsDiv.style.gap = '0';
+                                if (chevron) chevron.style.transform = 'rotate(180deg)';
+                                sourceCard.classList.add('expanded');
                             } else {
-                                ownedGroup.style.display = 'none';
+                                detailsDiv.style.display = 'none';
+                                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                                sourceCard.classList.remove('expanded');
                             }
-                            unownedGroup.style.display = 'none';
-
-                            detailsDiv.style.display = 'flex';
-                            detailsDiv.style.gap = '0';
-                            if (chevron) chevron.style.transform = 'rotate(180deg)';
-                            sourceCard.classList.add('expanded');
-                        } else {
-                            detailsDiv.style.display = 'none';
-                            if (chevron) chevron.style.transform = 'rotate(0deg)';
-                            sourceCard.classList.remove('expanded');
                         }
-                    }
-                });
-
-                // Temporarily convert SVG <image> hrefs to absolute URLs for html2canvas
-                const svgImages = modalContent.querySelectorAll('svg image[href]');
-                const origSvgHrefs = [];
-                svgImages.forEach(img => {
-                    const origHref = img.getAttribute('href');
-                    if (origHref && !origHref.startsWith('http') && !origHref.startsWith('data:')) {
-                        origSvgHrefs.push({ img, href: origHref });
-                        img.setAttribute('href', getAbsoluteUrl(origHref));
-                    }
-                });
-
-                const rasterizeRadarSvgs = async () => {
-                    const radarSvgs = Array.from(modalContent.querySelectorAll('.idol-stats-plan-radar-container svg'));
-                    const replacements = [];
-                    const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(blob);
                     });
 
-                    await Promise.all(radarSvgs.map(svg => new Promise(resolve => {
-                        try {
-                            const rect = svg.getBoundingClientRect();
-                            if (rect.width === 0 || rect.height === 0) {
-                                resolve();
-                                return;
-                            }
-                            const width = Math.ceil(rect.width || Number(svg.getAttribute('width')) || 170);
-                            const height = Math.ceil(rect.height || Number(svg.getAttribute('height')) || 205);
-                            const clone = svg.cloneNode(true);
-                            clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                            clone.setAttribute('width', String(width));
-                            clone.setAttribute('height', String(height));
+                    // Temporarily convert SVG <image> hrefs to absolute URLs for html2canvas
+                    const svgImages = modalContent.querySelectorAll('svg image[href]');
+                    const origSvgHrefs = [];
+                    svgImages.forEach(img => {
+                        const origHref = img.getAttribute('href');
+                        if (origHref && !origHref.startsWith('http') && !origHref.startsWith('data:')) {
+                            origSvgHrefs.push({ img, href: origHref });
+                            img.setAttribute('href', getAbsoluteUrl(origHref));
+                        }
+                    });
 
-                            const inlineImages = async () => {
-                                const images = Array.from(clone.querySelectorAll('image'));
-                                await Promise.all(images.map(async imageNode => {
-                                    const href = imageNode.getAttribute('href') || imageNode.getAttribute('xlink:href');
-                                    if (!href || href.startsWith('data:')) return;
+                    const rasterizeRadarSvgs = async () => {
+                        const radarSvgs = Array.from(modalContent.querySelectorAll('.idol-stats-plan-radar-container svg'));
+                        const replacements = [];
+                        const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        });
 
-                                    try {
-                                        const response = await fetch(href);
-                                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                                        const dataUrl = await blobToDataUrl(await response.blob());
-                                        imageNode.setAttribute('href', dataUrl);
-                                        imageNode.removeAttribute('xlink:href');
-                                    } catch (err) {
-                                        imageNode.remove();
-                                    }
-                                }));
-                            };
+                        await Promise.all(radarSvgs.map(svg => new Promise(resolve => {
+                            try {
+                                const rect = svg.getBoundingClientRect();
+                                if (rect.width === 0 || rect.height === 0) {
+                                    resolve();
+                                    return;
+                                }
+                                const width = Math.ceil(rect.width || Number(svg.getAttribute('width')) || 170);
+                                const height = Math.ceil(rect.height || Number(svg.getAttribute('height')) || 205);
+                                const clone = svg.cloneNode(true);
+                                clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                                clone.setAttribute('width', String(width));
+                                clone.setAttribute('height', String(height));
 
-                            inlineImages().then(() => {
-                                const svgText = new XMLSerializer().serializeToString(clone);
-                                const svgUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
-                                const image = new Image();
+                                const inlineImages = async () => {
+                                    const images = Array.from(clone.querySelectorAll('image'));
+                                    await Promise.all(images.map(async imageNode => {
+                                        const href = imageNode.getAttribute('href') || imageNode.getAttribute('xlink:href');
+                                        if (!href || href.startsWith('data:')) return;
 
-                                image.onload = () => {
-                                    try {
-                                        const canvas = document.createElement('canvas');
-                                        canvas.width = width * 2;
-                                        canvas.height = height * 2;
-                                        const ctx = canvas.getContext('2d');
-                                        ctx.scale(2, 2);
-                                        ctx.drawImage(image, 0, 0, width, height);
+                                        try {
+                                            const response = await fetch(href);
+                                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                                            const dataUrl = await blobToDataUrl(await response.blob());
+                                            imageNode.setAttribute('href', dataUrl);
+                                            imageNode.removeAttribute('xlink:href');
+                                        } catch (err) {
+                                            imageNode.remove();
+                                        }
+                                    }));
+                                };
 
-                                        const replacement = document.createElement('img');
-                                        replacement.src = canvas.toDataURL('image/png');
-                                        replacement.style.cssText = `display: block; width: ${width}px; height: ${height}px; margin: 0 auto; flex-shrink: 0;`;
-                                        svg.replaceWith(replacement);
-                                        replacements.push({ replacement, svg });
-                                    } catch (err) {
-                                        console.warn('Radar SVG rasterize draw failed:', err);
-                                    } finally {
+                                inlineImages().then(() => {
+                                    const svgText = new XMLSerializer().serializeToString(clone);
+                                    const svgUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
+                                    const image = new Image();
+
+                                    image.onload = () => {
+                                        try {
+                                            const canvas = document.createElement('canvas');
+                                            canvas.width = width * 2;
+                                            canvas.height = height * 2;
+                                            const ctx = canvas.getContext('2d');
+                                            ctx.scale(2, 2);
+                                            ctx.drawImage(image, 0, 0, width, height);
+
+                                            const replacement = document.createElement('img');
+                                            replacement.src = canvas.toDataURL('image/png');
+                                            replacement.style.cssText = `display: block; width: ${width}px; height: ${height}px; margin: 0 auto; flex-shrink: 0;`;
+                                            svg.replaceWith(replacement);
+                                            replacements.push({ replacement, svg });
+                                        } catch (err) {
+                                            console.warn('Radar SVG rasterize draw failed:', err);
+                                        } finally {
+                                            URL.revokeObjectURL(svgUrl);
+                                            resolve();
+                                        }
+                                    };
+
+                                    image.onerror = () => {
                                         URL.revokeObjectURL(svgUrl);
                                         resolve();
-                                    }
-                                };
+                                    };
 
-                                image.onerror = () => {
-                                    URL.revokeObjectURL(svgUrl);
+                                    image.src = svgUrl;
+                                }).catch(err => {
+                                    console.warn('Radar SVG image inline failed:', err);
                                     resolve();
-                                };
-
-                                image.src = svgUrl;
-                            }).catch(err => {
-                                console.warn('Radar SVG image inline failed:', err);
+                                });
+                            } catch (err) {
+                                console.warn('Radar SVG rasterize failed:', err);
                                 resolve();
-                            });
-                        } catch (err) {
-                            console.warn('Radar SVG rasterize failed:', err);
-                            resolve();
-                        }
-                    })));
+                            }
+                        })));
 
-                    return replacements;
-                };
+                        return replacements;
+                    };
 
-                const restoreRadarSvgs = (items) => {
-                    items.forEach(item => {
-                        if (item.replacement.parentNode) {
-                            item.replacement.replaceWith(item.svg);
+                    const restoreRadarSvgs = (items) => {
+                        items.forEach(item => {
+                            if (item.replacement.parentNode) {
+                                item.replacement.replaceWith(item.svg);
+                            }
+                        });
+                    };
+
+                    // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
+                    const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
+                    const origImgSrcs = [];
+                    statImgs.forEach(img => {
+                        const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
+                        if (isUnowned) {
+                            origImgSrcs.push({ img: img, src: img.src });
+                            if (window.getGrayscaleDataUrl) {
+                                img.src = window.getGrayscaleDataUrl(img);
+                            }
                         }
                     });
-                };
 
-                // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
-                const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
-                const origImgSrcs = [];
-                statImgs.forEach(img => {
-                    const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
-                    if (isUnowned) {
-                        origImgSrcs.push({ img: img, src: img.src });
-                        if (window.getGrayscaleDataUrl) {
-                            img.src = window.getGrayscaleDataUrl(img);
-                        }
-                    }
-                });
+                    // Expand 1st place character drawer, collapse others during capture
+                    const charCards = modalContent.querySelectorAll('.char-stat-card');
+                    const origCharCardStyles = [];
+                    charCards.forEach((card, idx) => {
+                        const details = card.querySelector('.char-stat-details');
+                        const chevron = card.querySelector('.char-chevron');
+                        origCharCardStyles.push({
+                            card: card,
+                            details: details,
+                            chevron: chevron,
+                            display: details ? details.style.display : 'none',
+                            transform: chevron ? chevron.style.transform : '',
+                            isExpanded: card.classList.contains('expanded')
+                        });
 
-                // Expand 1st place character drawer, collapse others during capture
-                const charCards = modalContent.querySelectorAll('.char-stat-card');
-                const origCharCardStyles = [];
-                charCards.forEach((card, idx) => {
-                    const details = card.querySelector('.char-stat-details');
-                    const chevron = card.querySelector('.char-chevron');
-                    origCharCardStyles.push({
-                        card: card,
-                        details: details,
-                        chevron: chevron,
-                        display: details ? details.style.display : 'none',
-                        transform: chevron ? chevron.style.transform : '',
-                        isExpanded: card.classList.contains('expanded')
-                    });
-
-                    if (details) {
-                        if (isCharAll) {
-                            details.style.display = 'flex';
-                            card.classList.add('expanded');
-                            if (chevron) chevron.style.transform = 'rotate(180deg)';
-                        } else if (!isPlanAll && !isSourceAll) {
-                            if (idx < 3) {
+                        if (details) {
+                            if (isCharAll) {
                                 details.style.display = 'flex';
                                 card.classList.add('expanded');
                                 if (chevron) chevron.style.transform = 'rotate(180deg)';
-                            } else {
-                                details.style.display = 'none';
-                                card.classList.remove('expanded');
-                                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                            } else if (!isPlanAll && !isSourceAll) {
+                                if (idx < 3) {
+                                    details.style.display = 'flex';
+                                    card.classList.add('expanded');
+                                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                                } else {
+                                    details.style.display = 'none';
+                                    card.classList.remove('expanded');
+                                    if (chevron) chevron.style.transform = 'rotate(0deg)';
+                                }
                             }
                         }
+                    });
+
+                    const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    const captureScale = isMobileDevice ? 1.5 : 2;
+                    let captureDelay = isMobileDevice ? 500 : 350;
+                    if (isCharAll) {
+                        captureDelay = isMobileDevice ? 800 : 500;
                     }
-                });
 
-                const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const captureScale = isMobileDevice ? 1.5 : 2;
-                let captureDelay = isMobileDevice ? 500 : 350;
-                if (isCharAll) {
-                    captureDelay = isMobileDevice ? 800 : 500;
-                }
+                    // Set scroll to top and adjust styles for flat render
+                    const origScrollMaxHeight = scrollArea.style.maxHeight;
+                    const origScrollFlex = scrollArea.style.flex;
+                    const origScrollMinHeight = scrollArea.style.minHeight;
+                    const origScrollOverflow = scrollArea.style.overflowY;
+                    const origScrollPadding = scrollArea.style.paddingRight;
+                    const origScrollTop = scrollArea.scrollTop;
 
-                // Set scroll to top and adjust styles for flat render
-                const origScrollMaxHeight = scrollArea.style.maxHeight;
-                const origScrollFlex = scrollArea.style.flex;
-                const origScrollMinHeight = scrollArea.style.minHeight;
-                const origScrollOverflow = scrollArea.style.overflowY;
-                const origScrollPadding = scrollArea.style.paddingRight;
-                const origScrollTop = scrollArea.scrollTop;
+                    const origModalHeight = modalContent.style.height;
+                    const origModalMaxHeight = modalContent.style.maxHeight;
+                    const origModalOverflow = modalContent.style.overflow;
+                    const origModalWidth = modalContent.style.width;
+                    const origModalMaxWidth = modalContent.style.maxWidth;
+                    const origModalMinWidth = modalContent.style.minWidth;
+                    const origModalFlexShrink = modalContent.style.flexShrink;
 
-                const origModalHeight = modalContent.style.height;
-                const origModalMaxHeight = modalContent.style.maxHeight;
-                const origModalOverflow = modalContent.style.overflow;
-                const origModalWidth = modalContent.style.width;
-                const origModalMaxWidth = modalContent.style.maxWidth;
-                const origModalMinWidth = modalContent.style.minWidth;
-                const origModalFlexShrink = modalContent.style.flexShrink;
+                    scrollArea.scrollTop = 0;
+                    scrollArea.offsetHeight;
 
-                scrollArea.scrollTop = 0;
-                scrollArea.offsetHeight;
+                    scrollArea.style.maxHeight = 'none';
+                    scrollArea.style.flex = 'none';
+                    scrollArea.style.minHeight = 'auto';
+                    scrollArea.style.overflowY = 'visible';
+                    scrollArea.style.paddingRight = '0';
 
-                scrollArea.style.maxHeight = 'none';
-                scrollArea.style.flex = 'none';
-                scrollArea.style.minHeight = 'auto';
-                scrollArea.style.overflowY = 'visible';
-                scrollArea.style.paddingRight = '0';
+                    modalContent.style.height = 'auto';
+                    modalContent.style.maxHeight = 'none';
+                    modalContent.style.overflow = 'visible';
+                    modalContent.style.width = '740px';
+                    modalContent.style.maxWidth = '740px';
+                    modalContent.style.minWidth = '740px';
+                    modalContent.style.flexShrink = '0';
 
-                modalContent.style.height = 'auto';
-                modalContent.style.maxHeight = 'none';
-                modalContent.style.overflow = 'visible';
-                modalContent.style.width = '740px';
-                modalContent.style.maxWidth = '740px';
-                modalContent.style.minWidth = '740px';
-                modalContent.style.flexShrink = '0';
+                    // Save window scroll and parent modal styles to prevent cutoff on mobile
+                    const origScrollX = window.scrollX || window.pageXOffset || 0;
+                    const origScrollY = window.scrollY || window.pageYOffset || 0;
+                    const origParentPosition = modal.style.position;
+                    const origParentAlign = modal.style.alignItems;
+                    const origParentHeight = modal.style.height;
+                    const origParentOverflow = modal.style.overflow;
 
-                // Save window scroll and parent modal styles to prevent cutoff on mobile
-                const origScrollX = window.scrollX || window.pageXOffset || 0;
-                const origScrollY = window.scrollY || window.pageYOffset || 0;
-                const origParentPosition = modal.style.position;
-                const origParentAlign = modal.style.alignItems;
-                const origParentHeight = modal.style.height;
-                const origParentOverflow = modal.style.overflow;
+                    // Temporarily scroll to top and adjust parent layout so the fixed/centered content is drawn without clipping
+                    window.scrollTo(0, 0);
+                    modal.style.position = 'absolute';
+                    modal.style.alignItems = 'flex-start';
+                    modal.style.height = 'auto';
+                    modal.style.overflow = 'visible';
 
-                // Temporarily scroll to top and adjust parent layout so the fixed/centered content is drawn without clipping
-                window.scrollTo(0, 0);
-                modal.style.position = 'absolute';
-                modal.style.alignItems = 'flex-start';
-                modal.style.height = 'auto';
-                modal.style.overflow = 'visible';
-
-                // Temporarily convert all normal <img> srcs to absolute URLs for html2canvas
-                const normalImages = modalContent.querySelectorAll('img');
-                const origImgSrcsAbsolute = [];
-                normalImages.forEach(img => {
-                    const origSrc = img.getAttribute('src');
-                    if (origSrc && !origSrc.startsWith('http') && !origSrc.startsWith('data:')) {
-                        origImgSrcsAbsolute.push({ img, src: origSrc });
-                        img.setAttribute('src', getAbsoluteUrl(origSrc));
-                    }
-                });
-
-                let origRadarSvgs = [];
-
-                const restoreAfterCapture = () => {
-                    // Restore original image sources after capture
-                    origImgSrcs.forEach(item => {
-                        item.img.src = item.src;
-                    });
-
-                    // Restore original normal <img> srcs
-                    origImgSrcsAbsolute.forEach(item => {
-                        item.img.setAttribute('src', item.src);
-                    });
-
-                    // Restore original SVG image hrefs
-                    origSvgHrefs.forEach(item => {
-                        item.img.setAttribute('href', item.href);
-                    });
-
-                    restoreRadarSvgs(origRadarSvgs);
-
-                    // Restore original hidden elements
-                    origDisplays.forEach(item => {
-                        item.el.style.setProperty('display', item.display, item.displayPriority || '');
-                    });
-
-                    // Restore original plan stats details states
-                    if (detailsDiv) {
-                        detailsDiv.innerHTML = origPlanDetailsHtml;
-                        detailsDiv.style.display = origPlanDetailsDisplay;
-                        detailsDiv.dataset.activePlan = origPlanDetailsActive;
-                    }
-                    origPlanColsActive.forEach(item => {
-                        if (item.active) {
-                            item.col.classList.add('active');
-                        } else {
-                            item.col.classList.remove('active');
+                    // Temporarily convert all normal <img> srcs to absolute URLs for html2canvas
+                    const normalImages = modalContent.querySelectorAll('img');
+                    const origImgSrcsAbsolute = [];
+                    normalImages.forEach(img => {
+                        const origSrc = img.getAttribute('src');
+                        if (origSrc && !origSrc.startsWith('http') && !origSrc.startsWith('data:')) {
+                            origImgSrcsAbsolute.push({ img, src: origSrc });
+                            img.setAttribute('src', getAbsoluteUrl(origSrc));
                         }
                     });
 
-                    // Restore original source stats cards states
-                    origSourceCardsState.forEach(item => {
-                        item.detailsDiv.innerHTML = item.innerHTML;
-                        item.detailsDiv.style.display = item.display;
-                        if (item.chevron) item.chevron.style.transform = item.transform;
-                        if (item.isExpanded) {
-                            item.sourceCard.classList.add('expanded');
-                        } else {
-                            item.sourceCard.classList.remove('expanded');
-                        }
-                    });
+                    let origRadarSvgs = [];
 
-                    // Restore original char-stat-card details states
-                    origCharCardStyles.forEach(item => {
-                        if (item.details) item.details.style.display = item.display;
-                        if (item.chevron) item.chevron.style.transform = item.transform;
-                        if (item.isExpanded) {
-                            item.card.classList.add('expanded');
-                        } else {
-                            item.card.classList.remove('expanded');
-                        }
-                    });
-
-                    // Restore original styles
-                    scrollArea.style.maxHeight = origScrollMaxHeight;
-                    scrollArea.style.flex = origScrollFlex;
-                    scrollArea.style.minHeight = origScrollMinHeight;
-                    scrollArea.style.overflowY = origScrollOverflow;
-                    scrollArea.style.paddingRight = origScrollPadding;
-                    scrollArea.scrollTop = origScrollTop;
-
-                    modalContent.style.height = origModalHeight;
-                    modalContent.style.maxHeight = origModalMaxHeight;
-                    modalContent.style.overflow = origModalOverflow;
-                    modalContent.style.width = origModalWidth;
-                    modalContent.style.maxWidth = origModalMaxWidth;
-                    modalContent.style.minWidth = origModalMinWidth;
-                    modalContent.style.flexShrink = origModalFlexShrink;
-
-                    window.scrollTo(origScrollX, origScrollY);
-                    modal.style.position = origParentPosition;
-                    modal.style.alignItems = origParentAlign;
-                    modal.style.height = origParentHeight;
-                    modal.style.overflow = origParentOverflow;
-
-                    const mobileStyles = document.getElementById('idol-possession-mobile-styles');
-                    if (mobileStyles) {
-                        mobileStyles.disabled = false;
-                        mobileStyles.removeAttribute('disabled');
-                    }
-                    saveBtn.innerHTML = originalText;
-                    hideSpinnerOverlay();
-                    document.body.classList.remove('is-capturing');
-                };
-
-                setTimeout(async () => {
-                    try {
-                        origRadarSvgs = await rasterizeRadarSvgs();
-                        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-                        const canvas = await window.html2canvas(modalContent, {
-                            backgroundColor: '#ffffff',
-                            scale: captureScale,
-                            useCORS: true,
-                            logging: false,
-                            windowWidth: 1024,
-                            windowHeight: modalContent.scrollHeight || 2000,
-                            scrollX: 0,
-                            scrollY: 0,
-                            width: 740,
-                            height: modalContent.scrollHeight || 2000
+                    const restoreAfterCapture = () => {
+                        // Restore original image sources after capture
+                        origImgSrcs.forEach(item => {
+                            item.img.src = item.src;
                         });
 
-                        let dataUrl = canvas.toDataURL('image/webp', 0.85);
-                        let isWebp = dataUrl.startsWith('data:image/webp');
-                        let ext = isWebp ? 'webp' : 'png';
+                        // Restore original normal <img> srcs
+                        origImgSrcsAbsolute.forEach(item => {
+                            item.img.setAttribute('src', item.src);
+                        });
 
-                        // Fallback to PNG if webp encoding returns empty (common for huge canvas on some platforms)
-                        if (!dataUrl || dataUrl === 'data:' || dataUrl === 'data:,') {
-                            dataUrl = canvas.toDataURL('image/png');
-                            ext = 'png';
+                        // Restore original SVG image hrefs
+                        origSvgHrefs.forEach(item => {
+                            item.img.setAttribute('href', item.href);
+                        });
+
+                        restoreRadarSvgs(origRadarSvgs);
+
+                        // Restore original hidden elements
+                        origDisplays.forEach(item => {
+                            item.el.style.setProperty('display', item.display, item.displayPriority || '');
+                        });
+
+                        // Restore original plan stats details states
+                        if (detailsDiv) {
+                            detailsDiv.innerHTML = origPlanDetailsHtml;
+                            detailsDiv.style.display = origPlanDetailsDisplay;
+                            detailsDiv.dataset.activePlan = origPlanDetailsActive;
                         }
+                        origPlanColsActive.forEach(item => {
+                            if (item.active) {
+                                item.col.classList.add('active');
+                            } else {
+                                item.col.classList.remove('active');
+                            }
+                        });
 
-                        const rand = Math.floor(1000 + Math.random() * 9000);
-                        const nameSuffix = isPlanAll ? '_plan_all' : (isSourceAll ? '_source_all' : (isCharAll ? '_char_all' : ''));
-                        const link = document.createElement('a');
-                        link.download = `gakumasnote_possession_idol${nameSuffix}_${rand}.${ext}`;
-                        link.href = dataUrl;
-                        link.click();
-                        showIdolToast(text.alert_success);
-                    } catch (err) {
-                        console.error('html2canvas error:', err);
-                        alert(text.alert_fail);
-                    } finally {
-                        restoreAfterCapture();
-                    }
-                }, captureDelay);
-            };
+                        // Restore original source stats cards states
+                        origSourceCardsState.forEach(item => {
+                            item.detailsDiv.innerHTML = item.innerHTML;
+                            item.detailsDiv.style.display = item.display;
+                            if (item.chevron) item.chevron.style.transform = item.transform;
+                            if (item.isExpanded) {
+                                item.sourceCard.classList.add('expanded');
+                            } else {
+                                item.sourceCard.classList.remove('expanded');
+                            }
+                        });
 
-            startCapture();
-        });
-    };
-}
+                        // Restore original char-stat-card details states
+                        origCharCardStyles.forEach(item => {
+                            if (item.details) item.details.style.display = item.display;
+                            if (item.chevron) item.chevron.style.transform = item.transform;
+                            if (item.isExpanded) {
+                                item.card.classList.add('expanded');
+                            } else {
+                                item.card.classList.remove('expanded');
+                            }
+                        });
+
+                        // Restore original styles
+                        scrollArea.style.maxHeight = origScrollMaxHeight;
+                        scrollArea.style.flex = origScrollFlex;
+                        scrollArea.style.minHeight = origScrollMinHeight;
+                        scrollArea.style.overflowY = origScrollOverflow;
+                        scrollArea.style.paddingRight = origScrollPadding;
+                        scrollArea.scrollTop = origScrollTop;
+
+                        modalContent.style.height = origModalHeight;
+                        modalContent.style.maxHeight = origModalMaxHeight;
+                        modalContent.style.overflow = origModalOverflow;
+                        modalContent.style.width = origModalWidth;
+                        modalContent.style.maxWidth = origModalMaxWidth;
+                        modalContent.style.minWidth = origModalMinWidth;
+                        modalContent.style.flexShrink = origModalFlexShrink;
+
+                        window.scrollTo(origScrollX, origScrollY);
+                        modal.style.position = origParentPosition;
+                        modal.style.alignItems = origParentAlign;
+                        modal.style.height = origParentHeight;
+                        modal.style.overflow = origParentOverflow;
+
+                        const mobileStyles = document.getElementById('idol-possession-mobile-styles');
+                        if (mobileStyles) {
+                            mobileStyles.disabled = false;
+                            mobileStyles.removeAttribute('disabled');
+                        }
+                        saveBtn.innerHTML = originalText;
+                        hideSpinnerOverlay();
+                        document.body.classList.remove('is-capturing');
+                    };
+
+                    setTimeout(async () => {
+                        try {
+                            origRadarSvgs = await rasterizeRadarSvgs();
+                            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+                            const canvas = await window.html2canvas(modalContent, {
+                                backgroundColor: '#ffffff',
+                                scale: captureScale,
+                                useCORS: true,
+                                logging: false,
+                                windowWidth: 1024,
+                                windowHeight: modalContent.scrollHeight || 2000,
+                                scrollX: 0,
+                                scrollY: 0,
+                                width: 740,
+                                height: modalContent.scrollHeight || 2000
+                            });
+
+                            let dataUrl = canvas.toDataURL('image/webp', 0.85);
+                            let isWebp = dataUrl.startsWith('data:image/webp');
+                            let ext = isWebp ? 'webp' : 'png';
+
+                            // Fallback to PNG if webp encoding returns empty (common for huge canvas on some platforms)
+                            if (!dataUrl || dataUrl === 'data:' || dataUrl === 'data:,') {
+                                dataUrl = canvas.toDataURL('image/png');
+                                ext = 'png';
+                            }
+
+                            const rand = Math.floor(1000 + Math.random() * 9000);
+                            const nameSuffix = isPlanAll ? '_plan_all' : (isSourceAll ? '_source_all' : (isCharAll ? '_char_all' : ''));
+                            const link = document.createElement('a');
+                            link.download = `gakumasnote_possession_idol${nameSuffix}_${rand}.${ext}`;
+                            link.href = dataUrl;
+                            link.click();
+                            showIdolToast(text.alert_success);
+                        } catch (err) {
+                            console.error('html2canvas error:', err);
+                            alert(text.alert_fail);
+                        } finally {
+                            restoreAfterCapture();
+                        }
+                    }, captureDelay);
+                };
+
+                startCapture();
+            });
+        };
+    }

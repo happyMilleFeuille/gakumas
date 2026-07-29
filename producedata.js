@@ -40,16 +40,16 @@ export const produceList = [
             }
         }
     },
-    { id: "ssrrinami_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", osusume: "concentration", releasedAt: "2024-08-01", source: "limited", another: true, jumpTime2: 6.2 },
-    { id: "ssrrinami_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", osusume: "concentration", releasedAt: "2024-09-30", source: "limited", another: true },
-    { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2024-11-28", another: true, jumpTime2: 8.1 },
-    { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", osusume: "concentration", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
-    { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", osusume: "concentration", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
+    { id: "ssrrinami_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", type: "season", osusume: "concentration", releasedAt: "2024-08-01", source: "limited", another: true, jumpTime2: 6.2 },
+    { id: "ssrrinami_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", type: "season", plan: "sense", osusume: "concentration", releasedAt: "2024-09-30", source: "limited", another: true },
+    { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "concentration", type: "season", source: "limited", releasedAt: "2024-11-28", another: true, jumpTime2: 8.1 },
+    { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", osusume: "concentration", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
+    { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", osusume: "concentration", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
     { id: "ssrrinami_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 7.1, source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 7.7, source: "limited", another: true },
-    { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrrinami_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
+    { id: "ssrrinami_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", type: "live", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 7.7, source: "limited", another: true },
+    { id: "ssrrinami_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", type: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
+    { id: "ssrrinami_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", type: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4,
         item: {
@@ -143,14 +143,14 @@ export const produceList = [
             }
         }
     },
-    { id: "ssrsaki_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-07-01", another: true },
-    { id: "ssrsaki_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-09-30", another: true },
-    { id: "ssrsaki_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-12-09", another: true },
-    { id: "ssrsaki_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-02-01", another: true, jumpTime2: 7.2 },
-    { id: "ssrsaki_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2025-03-10", another: true },
-    { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2025-05-29", another: true },
-    { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-08-29", another: true },
-    { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 9.3, releasedAt: "2026-02-27", another: true },
+    { id: "ssrsaki_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", type: "season", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-07-01", another: true },
+    { id: "ssrsaki_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", type: "season", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-09-30", another: true },
+    { id: "ssrsaki_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "goodcondition", type: "season", source: "limited", releasedAt: "2024-12-09", another: true },
+    { id: "ssrsaki_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-02-01", another: true, jumpTime2: 7.2 },
+    { id: "ssrsaki_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2025-03-10", another: true },
+    { id: "ssrsaki_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", type: "live", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2025-05-29", another: true },
+    { id: "ssrsaki_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", type: "live", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2025-08-29", another: true },
+    { id: "ssrsaki_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", type: "live", source: "limited", jumpTime2: 9.3, releasedAt: "2026-02-27", another: true },
     {
         id: "ssrsaki_2nd", name: "Boom Boom Pow", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2024-06-19", plan: "logic", source: "normal", jumpTime2: 9.3,
         item: {
@@ -241,16 +241,16 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrchina_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true },
-    { id: "ssrchina_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", releasedAt: "2024-08-11", plan: "logic", osusume: "motivation", source: "limited", another: true },
-    { id: "ssrchina_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", osusume: "motivation", releasedAt: "2024-11-28", source: "limited", another: true, jumpTime2: 8.2 },
-    { id: "ssrchina_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", osusume: "motivation", releasedAt: "2025-02-14", source: "limited", another: true },
-    { id: "ssrchina_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", source: "limited", another: true, jumpTime2: 7.1 },
+    { id: "ssrchina_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true },
+    { id: "ssrchina_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", type: "season", releasedAt: "2024-08-11", plan: "logic", osusume: "motivation", source: "limited", another: true },
+    { id: "ssrchina_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", type: "season", osusume: "motivation", releasedAt: "2024-11-28", source: "limited", another: true, jumpTime2: 8.2 },
+    { id: "ssrchina_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", releasedAt: "2025-02-14", source: "limited", another: true },
+    { id: "ssrchina_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", source: "limited", another: true, jumpTime2: 7.1 },
     { id: "ssrchina_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrchina_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-08-29", another: true },
-    { id: "ssrchina_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", another: true },
-    { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.3, releasedAt: "2026-02-27", another: true },
-    { id: "ssrchina_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
+    { id: "ssrchina_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", type: "live", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-08-29", another: true },
+    { id: "ssrchina_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", another: true },
+    { id: "ssrchina_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", type: "live", source: "limited", jumpTime2: 7.3, releasedAt: "2026-02-27", another: true },
+    { id: "ssrchina_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", type: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrchina_2nd", name: "매일, 발견적 스텝!", name_en: "Every steps are for discovery!", name_ja: "日々、発見的ステップ!", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4,
         item: {
@@ -339,16 +339,16 @@ export const produceList = [
             }
         }
     },
-    { id: "ssrsumika_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", releasedAt: "2024-08-01", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, jumpTime2: 6.3 },
-    { id: "ssrsumika_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrsumika_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrsumika_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-14", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrsumika_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 7.3, source: "limited", another: true },
+    { id: "ssrsumika_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", releasedAt: "2024-08-01", type: "season", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, jumpTime2: 6.3 },
+    { id: "ssrsumika_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", type: "season", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrsumika_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", type: "season", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrsumika_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", rarity: "PSSR", releasedAt: "2025-02-14", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrsumika_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 7.3, source: "limited", another: true },
     { id: "ssrsumika_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", jumpTime2: 7.1, rarity: "PSSR", plan: "sense", osusume: "concentration", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 7.3, another: true },
-    { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
-    { id: "ssrsumika_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
+    { id: "ssrsumika_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", type: "live", osusume: "concentration", source: "limited", jumpTime2: 7.3, another: true },
+    { id: "ssrsumika_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", rarity: "PSSR", releasedAt: "2025-09-29", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", type: "live", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
+    { id: "ssrsumika_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", type: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrsumika_2nd", name: "숨겼던 나", name_en: "Two Sides Of The Same Me", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2,
         item: {
@@ -439,16 +439,16 @@ export const produceList = [
             }
         }
     },
-    { id: "ssrmao_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2024-08-01", another: true },
-    { id: "ssrmao_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", another: true },
-    { id: "ssrmao_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", plan: "sense", osusume: "goodcondition", source: "limited", another: true },
-    { id: "ssrmao_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", releasedAt: "2025-02-01", jumpTime2: 7.2, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
-    { id: "ssrmao_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
+    { id: "ssrmao_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", type: "season", osusume: "goodcondition", source: "limited", releasedAt: "2024-08-01", another: true },
+    { id: "ssrmao_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", type: "season", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", another: true },
+    { id: "ssrmao_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", type: "season", plan: "sense", osusume: "goodcondition", source: "limited", another: true },
+    { id: "ssrmao_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", rarity: "PSSR", releasedAt: "2025-02-01", jumpTime2: 7.2, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
+    { id: "ssrmao_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
     { id: "ssrmao_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", osusume: "goodcondition", source: "limited", another: true, jumpTime2: 7.3 },
-    { id: "ssrmao_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", another: true },
-    { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
-    { id: "ssrmao_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
+    { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", type: "live", osusume: "goodcondition", source: "limited", another: true, jumpTime2: 7.3 },
+    { id: "ssrmao_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "limited", another: true },
+    { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", type: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
+    { id: "ssrmao_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "goodcondition", type: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     {
         id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2,
         item: {
@@ -537,15 +537,15 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrkotone_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2024-07-01", another: true },
-    { id: "ssrkotone_1st3another", name: "가장광소곡", name_en: "Fancy dress party", releasedAt: "2024-09-30", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true, jumpTime2: 8.1 },
-    { id: "ssrkotone_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-01", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
-    { id: "ssrkotone_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", jumpTime2: 7.1, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
-    { id: "ssrkotone_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "logic", osusume: "goodimpression", source: "limited", jumpTime2: 7.2, another: true },
+    { id: "ssrkotone_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2024-07-01", another: true },
+    { id: "ssrkotone_1st3another", name: "가장광소곡", name_en: "Fancy dress party", releasedAt: "2024-09-30", type: "season", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true, jumpTime2: 8.1 },
+    { id: "ssrkotone_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", releasedAt: "2025-02-01", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
+    { id: "ssrkotone_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", releasedAt: "2025-03-10", jumpTime2: 7.1, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
+    { id: "ssrkotone_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", releasedAt: "2025-04-11", plan: "logic", osusume: "goodimpression", source: "limited", jumpTime2: 7.2, another: true },
     { id: "ssrkotone_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", osusume: "goodimpression", jumpTime2: 6.3, source: "limited", another: true },
-    { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", jumpTime2: 7.7, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
-    { id: "ssrkotone_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
+    { id: "ssrkotone_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", type: "live", plan: "logic", osusume: "goodimpression", jumpTime2: 6.3, source: "limited", another: true },
+    { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", type: "live", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", jumpTime2: 7.7, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
+    { id: "ssrkotone_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "goodimpression", type: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
     {
         id: "ssrkotone_2nd", name: "Yellow Big Bang!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", releasedAt: "2024-06-10", source: "normal", jumpTime2: 10.3,
         item: {
@@ -629,16 +629,16 @@ export const produceList = [
             }
         }
     },
-    { id: "ssrtemari_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 6.4, releasedAt: "2024-07-01", another: true },
-    { id: "ssrtemari_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2024-08-01", another: true },
-    { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, releasedAt: "2024-12-09", jumpTime2: 8.0 },
-    { id: "ssrtemari_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 10.2, source: "limited", another: true },
+    { id: "ssrtemari_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", jumpTime2: 6.4, releasedAt: "2024-07-01", another: true },
+    { id: "ssrtemari_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", type: "season", osusume: "concentration", source: "limited", releasedAt: "2024-08-01", another: true },
+    { id: "ssrtemari_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "concentration", type: "season", source: "limited", another: true, releasedAt: "2024-12-09", jumpTime2: 8.0 },
+    { id: "ssrtemari_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", releasedAt: "2025-02-14", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrtemari_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", releasedAt: "2025-04-01", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 10.2, source: "limited", another: true },
     { id: "ssrtemari_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, releasedAt: "2025-05-29", jumpTime2: 6.4 },
-    { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
-    { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
-    { id: "ssrtemari_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.6, another: true },
+    { id: "ssrtemari_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "sense", type: "live", osusume: "concentration", source: "limited", another: true, releasedAt: "2025-05-29", jumpTime2: 6.4 },
+    { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", type: "live", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", type: "live", osusume: "concentration", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
+    { id: "ssrtemari_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", type: "live", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.6, another: true },
     {
         id: "ssrtemari_2nd", name: "아이비", name_en: "IVY", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3,
         item: {
@@ -728,15 +728,15 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrlilja_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2024-07-01", another: true },
-    { id: "ssrlilja_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2024-10-08", another: true },
-    { id: "ssrlilja_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-01", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
-    { id: "ssrlilja_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "logic", osusume: "goodimpression", jumpTime2: 8.2, source: "limited", another: true },
+    { id: "ssrlilja_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2024-07-01", another: true },
+    { id: "ssrlilja_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", type: "season", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2024-10-08", another: true },
+    { id: "ssrlilja_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", releasedAt: "2025-02-01", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
+    { id: "ssrlilja_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", releasedAt: "2025-03-10", plan: "logic", osusume: "goodimpression", jumpTime2: 8.2, source: "limited", another: true },
     { id: "ssrlilja_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "normal", releasedAt: "2025-05-09", another: true, jumpTime2: 6.4 },
-    { id: "ssrlilja_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", osusume: "goodimpression", jumpTime2: 7.6, source: "limited", another: true },
-    { id: "ssrlilja_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
-    { id: "ssrlilja_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.4, another: true },
-    { id: "ssrlilja_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
+    { id: "ssrlilja_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", type: "live", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", osusume: "goodimpression", jumpTime2: 7.6, source: "limited", another: true },
+    { id: "ssrlilja_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "goodimpression", source: "limited", another: true },
+    { id: "ssrlilja_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "goodimpression", type: "live", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.4, another: true },
+    { id: "ssrlilja_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "goodimpression", type: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrlilja_2nd", name: "극광", name_en: "Kyokkoo", name_ja: "極光", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-03-21", plan: "anomaly", source: "normal", jumpTime2: 9.6,
         item: {
@@ -826,16 +826,16 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrhiro_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true, jumpTime2: 6.3 },
-    { id: "ssrhiro_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", osusume: "motivation", jumpTime2: 7.7, source: "limited", releasedAt: "2024-08-11", another: true },
-    { id: "ssrhiro_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", osusume: "motivation", releasedAt: "2024-12-09", source: "limited", another: true },
-    { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-02-28", another: true, jumpTime2: 8.2 },
-    { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", osusume: "motivation", jumpTime2: 7.2, source: "limited", another: true },
+    { id: "ssrhiro_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true, jumpTime2: 6.3 },
+    { id: "ssrhiro_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", type: "season", osusume: "motivation", jumpTime2: 7.7, source: "limited", releasedAt: "2024-08-11", another: true },
+    { id: "ssrhiro_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", osusume: "motivation", type: "season", releasedAt: "2024-12-09", source: "limited", another: true },
+    { id: "ssrhiro_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-02-28", another: true, jumpTime2: 8.2 },
+    { id: "ssrhiro_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", releasedAt: "2025-04-01", plan: "logic", osusume: "motivation", jumpTime2: 7.2, source: "limited", another: true },
     { id: "ssrhiro_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.3, another: true },
-    { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", another: true },
-    { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
-    { id: "ssrhiro_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
+    { id: "ssrhiro_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "logic", type: "live", osusume: "motivation", source: "limited", jumpTime2: 7.3, another: true },
+    { id: "ssrhiro_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", another: true },
+    { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", type: "live", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
+    { id: "ssrhiro_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", type: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrhiro_2nd", name: "콘트라스트", name_en: "Contrast", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3,
         item: {
@@ -906,16 +906,16 @@ export const produceList = [
             desc_ja: "やる気が9以上の場合、使用可\n✦ プライド（5ターン）\n✦ use1\n✦ goodimpression9\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
-    { id: "ssrtsubame_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
-    { id: "ssrtsubame_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
-    { id: "ssrtsubame_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.5, releasedAt: "2026-04-21", another: true },
-    { id: "ssrtsubame_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.3, another: true },
-    { id: "ssrtsubame_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-07-15", jumpTime2: 7.3, another: true },
-    //{ id: "ssrtsubame_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
-    //{ id: "ssrtsubame_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", pplan: "logic", osusume: "motivation", releasedAt: "2026-08-14", source: "limited", another: true, },
-    //{ id: "ssrtsubame_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "motivation", releasedAt: "2026-08-14", source: "limited", another: true },
-    //{ id: "ssrtsubame_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true, },
-    //{ id: "ssrtsubame_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
+    { id: "ssrtsubame_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", type: "live", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
+    { id: "ssrtsubame_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
+    { id: "ssrtsubame_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.5, releasedAt: "2026-04-21", another: true },
+    { id: "ssrtsubame_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", type: "live", releasedAt: "2026-06-26", jumpTime2: 7.3, another: true },
+    { id: "ssrtsubame_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", type: "live", releasedAt: "2026-07-15", jumpTime2: 7.3, another: true },
+    //{ id: "ssrtsubame_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー",type: "season",  rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
+    //{ id: "ssrtsubame_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", pplan: "logic",type: "season",  osusume: "motivation", releasedAt: "2026-08-14", source: "limited", another: true, },
+    //{ id: "ssrtsubame_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR",type: "season",  plan: "logic", osusume: "motivation", releasedAt: "2026-08-14", source: "limited", another: true },
+    //{ id: "ssrtsubame_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "logic", osusume: "motivation",type: "season",  source: "limited", releasedAt: "2026-08-14", another: true, },
+    //{ id: "ssrtsubame_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ",type: "season",  rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
     //{ id: "ssrtsubame_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2026-08-14", another: true },
 
     //{
@@ -982,17 +982,17 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrsena_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", jumpTime2: 7.0, releasedAt: "2025-02-28", another: true },
-    { id: "ssrsena_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", jumpTime2: 8.2, releasedAt: "2025-04-11", another: true },
+    { id: "ssrsena_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", plan: "anomaly", osusume: "enthusiasm", source: "limited", jumpTime2: 7.0, releasedAt: "2025-02-28", another: true },
+    { id: "ssrsena_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", jumpTime2: 8.2, releasedAt: "2025-04-11", another: true },
     { id: "ssrsena_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", jumpTime2: 6.3, rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "normal", releasedAt: "2025-05-09", another: true },
-    { id: "ssrsena_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-05-29", jumpTime2: 7.4, another: true },
-    { id: "ssrsena_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-07-07", another: true },
-    { id: "ssrsena_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-08-22", another: true },
-    { id: "ssrsena_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-08-29", another: true },
-    { id: "ssrsena_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-09-29", another: true },
-    { id: "ssrsena_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-11-07", another: true },
-    { id: "ssrsena_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-12-18", another: true },
-    { id: "ssrsena_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
+    { id: "ssrsena_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", type: "live", source: "limited", releasedAt: "2025-05-29", jumpTime2: 7.4, another: true },
+    { id: "ssrsena_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-07-07", another: true },
+    { id: "ssrsena_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", type: "season", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-08-22", another: true },
+    { id: "ssrsena_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", type: "live", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-08-29", another: true },
+    { id: "ssrsena_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-09-29", another: true },
+    { id: "ssrsena_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-11-07", another: true },
+    { id: "ssrsena_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", type: "season", osusume: "enthusiasm", source: "limited", releasedAt: "2025-12-18", another: true },
+    { id: "ssrsena_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", type: "live", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     {
         id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22",
         item: {
@@ -1081,16 +1081,16 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrume_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true },
-    { id: "ssrume_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-08-11", another: true },
-    { id: "ssrume_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-09-30", another: true },
+    { id: "ssrume_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true },
+    { id: "ssrume_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", type: "season", osusume: "motivation", source: "limited", releasedAt: "2024-08-11", another: true },
+    { id: "ssrume_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", type: "season", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-09-30", another: true },
     { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2025-05-09", another: true, jumpTime2: 6.3 },
-    { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-05-29", jumpTime2: 7.5, another: true },
-    { id: "ssrume_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-08-29", another: true },
-    { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-09-29", another: true },
-    { id: "ssrume_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-14", another: true },
-    { id: "ssrume_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.2, releasedAt: "2026-04-13", another: true },
-    { id: "ssrume_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
+    { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", type: "live", releasedAt: "2025-05-29", jumpTime2: 7.5, another: true },
+    { id: "ssrume_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", type: "live", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-08-29", another: true },
+    { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", type: "live", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-09-29", another: true },
+    { id: "ssrume_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-14", another: true },
+    { id: "ssrume_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.2, releasedAt: "2026-04-13", another: true },
+    { id: "ssrume_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
     {
         id: "ssrume_2nd", name: "구-스-피-", name_en: "Gu-Su-Pi", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.2, releasedAt: "2025-11-28",
         item: {
@@ -1163,18 +1163,18 @@ export const produceList = [
             desc_ja: "startingcard\n✦ fullpower3\n✦ 全力効果のスキルカードのパラメータ増加+9\n✦ 以降、ターン開始時、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
-    { id: "ssrmisuzu_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-07-07", another: true },
-    { id: "ssrmisuzu_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-08-22", another: true },
-    { id: "ssrmisuzu_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", plan: "anomaly", osusume: "preservation", releasedAt: "2025-08-29", source: "limited", another: true },
-    { id: "ssrmisuzu_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-09-29", another: true },
-    { id: "ssrmisuzu_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-11-07", another: true },
+    { id: "ssrmisuzu_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-07-07", another: true },
+    { id: "ssrmisuzu_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", type: "season", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-08-22", another: true },
+    { id: "ssrmisuzu_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", rarity: "PSSR", type: "live", plan: "anomaly", osusume: "preservation", releasedAt: "2025-08-29", source: "limited", another: true },
+    { id: "ssrmisuzu_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", rarity: "PSSR", type: "live", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-09-29", another: true },
+    { id: "ssrmisuzu_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-11-07", another: true },
     { id: "ssrmisuzu_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "anomaly", osusume: "preservation", releasedAt: "2025-11-21", source: "normal", another: true },
-    { id: "ssrmisuzu_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2025-12-18", jumpTime2: 8.3, another: true },
-    { id: "ssrmisuzu_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2026-02-14", another: true },
-    { id: "ssrmisuzu_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
-    { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
-    { id: "ssrmisuzu_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.5 },
-    { id: "ssrmisuzu_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2026-07-15", jumpTime2: 7.2, another: true },
+    { id: "ssrmisuzu_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", type: "season", osusume: "preservation", source: "limited", releasedAt: "2025-12-18", jumpTime2: 8.3, another: true },
+    { id: "ssrmisuzu_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", releasedAt: "2026-02-14", another: true },
+    { id: "ssrmisuzu_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", type: "season", plan: "anomaly", osusume: "preservation", source: "limited", jumpTime2: 7.1, releasedAt: "2026-04-13", another: true },
+    { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
+    { id: "ssrmisuzu_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", type: "live", releasedAt: "2026-06-26", another: true, jumpTime2: 7.5 },
+    { id: "ssrmisuzu_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "preservation", type: "live", source: "limited", releasedAt: "2026-07-15", jumpTime2: 7.2, another: true },
     {
         id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05",
         item: {
@@ -1227,7 +1227,7 @@ export const produceList = [
 
     // 특별 통상
     {
-        id: "ssrrinami_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", osusume: "motivation", rarity: "PSSR", releasedAt: "2024-09-01", plan: "logic", source: "normal", jumpTime2: 12.3,
+        id: "ssrrinami_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", type: "location", osusume: "motivation", rarity: "PSSR", releasedAt: "2024-09-01", plan: "logic", source: "normal", jumpTime2: 12.3,
         item: {
             name: "ぱたぱたうちわ",
             desc: "스킬카드를 3회 사용할 때마다\n✦ genki1\n✦ motivation3\n✦ inlesson2",
@@ -1248,7 +1248,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrchina_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-11", source: "normal", jumpTime2: 11.3,
+        id: "ssrchina_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", type: "location", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-11", source: "normal", jumpTime2: 11.3,
         item: {
             name: "温泉の後のお楽しみ",
             desc: "스킬카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki2\n✦ inlesson2",
@@ -1269,7 +1269,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2024-10-28", jumpTime2: 11.2,
+        id: "ssrsaki_animate", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", type: "collabo", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2024-10-28", jumpTime2: 11.2,
         item: {
             name: "アニメイト装備",
             desc: "2턴마다 호조상태일 경우\n✦ 호조의 40%만큼 집중 증가\n✦ concentration1\n✦ inlesson2",
@@ -1292,7 +1292,7 @@ export const produceList = [
 
     // 페스 (Campus Fes)
     {
-        id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
+        id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", type: "nia", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
         item: {
             name: "きみが見つけた私",
             desc: "嬉しい誤算 사용 후\n✦ 파라미터 상승량 증가 60% (2턴)\n✦ fullpower10\n✦ hpreduce1\n✦ inlesson1",
@@ -1315,7 +1315,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrchina_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09", jumpTime2: 8.4,
+        id: "ssrchina_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", type: "nia", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09", jumpTime2: 8.4,
         item: {
             name: "描いた夢へのあゆみ",
             desc: "ゆるふわおしゃべり 사용 시 \n✦ 턴 추가+1\n✦ 원기 1.5배\n✦ hpreduce2\n✦ inlesson1",
@@ -1338,7 +1338,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrtsubame_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.5, releasedAt: "2025-12-26",
+        id: "ssrtsubame_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", type: "nia", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.5, releasedAt: "2025-12-26",
         item: {
             name: "あの頃憧れたヒーロー",
             desc: "出演計画 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
@@ -1361,7 +1361,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2025-01-02",
+        id: "ssrsena_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", type: "nia", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2025-01-02",
         item: {
             name: "いつかの小さな星",
             desc: "ファンサ 사용 후\n✦ 턴 추가+1\n✦ goodconditionz2\n✦ hpreduce3\n✦ inlesson2",
@@ -1384,7 +1384,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-06-30",
+        id: "ssrmisuzu_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", type: "nia", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-06-30",
         item: {
             name: "太陽を追い越す歌声",
             desc: "ひなたぼっこ 사용 시\n✦ motivation15\n✦ 파라미터 상승량 감소 75% (2턴)\n✦ 3턴 후, 파라미터 상승량 증가 50% (4턴)\n✦ inlesson1",
@@ -1407,7 +1407,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2024-12-26",
+        id: "ssrsaki_campusfes", name: "Campus mode!!", osusume: "goodcondition", rarity: "PSSR", type: "nia", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.4, releasedAt: "2024-12-26",
         item: {
             name: "向き合う覚悟",
             desc: "軽い足取り 사용 후\n✦ goodcondition1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
@@ -1430,7 +1430,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
+        id: "ssrtemari_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", type: "nia", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
         item: {
             name: "いつかの小さな星",
             desc: "勢い任せ 사용 후\n✦ concentration1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
@@ -1453,7 +1453,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrkotone_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
+        id: "ssrkotone_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", type: "nia", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2024-12-26",
         item: {
             name: "あたしだけの一番星",
             desc: "思い出し笑い 사용 후\n✦ goodimpression2\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
@@ -1476,7 +1476,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrmao_campusfes", name: "Campus mode!!", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
+        id: "ssrmao_campusfes", name: "Campus mode!!", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", type: "nia", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
         item: {
             name: "ボクの一部",
             desc: "スターライト 사용 시 온존일 경우\n✦ draw1\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터치 증가+10\n✦ hpreduce1\n✦ inlesson3",
@@ -1499,7 +1499,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 9.1, releasedAt: "2025-01-16",
+        id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", type: "nia", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 9.1, releasedAt: "2025-01-16",
         item: {
             name: "いつか見た夢",
             desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce3\n✦ 이후 3턴 동안 턴 개시 시 concentration3\n✦ inlesson2",
@@ -1522,7 +1522,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-16",
+        id: "ssrsumika_campusfes", name: "Campus mode!!", osusume: "goodimpression", rarity: "PSSR", type: "nia", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-16",
         item: {
             name: "翼",
             desc: "リスタート 사용 후 원기가 7이상인 경우\n✦ 호인상 1.5배\n✦ 다음 턴, 제외에 있는 また、飛べる를 손패로 이동\n✦ hpreduce2\n✦ inlesson2",
@@ -1545,7 +1545,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrhiro_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-09",
+        id: "ssrhiro_campusfes", name: "Campus mode!!", osusume: "motivation", rarity: "PSSR", type: "nia", plan: "logic", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-09",
         item: {
             name: "選びとった熱",
             desc: "えいえいおー 사용 시、morehp50\n✦ motivation2\n✦ use1\n✦ 최대체력의 15%만큼 체력 소비\n✦ inlesson5",
@@ -1568,7 +1568,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09",
+        id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", type: "nia", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09",
         item: {
             name: "叶える覚悟",
             desc: "ジャストアピール 사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존으로 지침 변경\n✦ fullpower2\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+2\n✦ inlesson1",
@@ -1591,7 +1591,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.5, plan: "logic", source: "limited_f", releasedAt: "2026-05-16",
+        id: "ssrtemari_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", type: "hif", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.5, plan: "logic", source: "limited_f", releasedAt: "2026-05-16",
         item: {
             name: "太陽を超える輝き",
             desc: "마지막 턴 개시 시\n✦ 레슨 중 소비한 원기의 75%만큼 원기 증가\n✦ draw2\n✦ hpreduce3\n✦ inlesson1",
@@ -1621,7 +1621,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrrinami_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "goodcondition", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.6, plan: "sense", source: "limited_f", releasedAt: "2026-05-16",
+        id: "ssrrinami_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", type: "hif", osusume: "goodcondition", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.6, plan: "sense", source: "limited_f", releasedAt: "2026-05-16",
         item: {
             name: "憧れ続けた輝き",
             desc: "호조가 8턴 이상인 경우 호조 카드를 4회 사용할 때마다\n✦ goodconditionz1\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson5",
@@ -1651,7 +1651,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
+        id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", type: "hif", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
         item: {
             name: "すべてを賭けた輝き",
             desc: "아이돌 고유 스킬카드 사용 후 morehp80\n✦ 소비체력 절감 1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
@@ -1681,7 +1681,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrlilja_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-06-05",
+        id: "ssrlilja_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", type: "hif", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-06-05",
         item: {
             name: "強い意志の輝き",
             desc: "직접효과로 의욕이 5회 증가 시\n✦ genki10 (의욕효과 2배 적용)\n✦ hpreduce1\n✦ inlesson2",
@@ -1711,7 +1711,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsaki_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", osusume: "enthusiasm", rarity: "PSSR", jumpTime2: 7.6, youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-07-21",
+        id: "ssrsaki_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", type: "hif", osusume: "enthusiasm", rarity: "PSSR", jumpTime2: 7.6, youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-07-21",
         item: {
             name: "不屈の輝き",
             desc: "手を伸ばした先に를 사용 후 온존으로 지침 변경한 횟수가 2회 이상일 경우\n✦ 手を伸ばした先に의 파라미터치+100\n✦ 다음 턴, draw1\n✦ hpreduce3\n✦ inlesson2",
@@ -1743,7 +1743,7 @@ export const produceList = [
 
     // 한정 (Limited)
     {
-        id: "ssrmao_summerdist", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "concentration", releasedAt: "2024-07-01", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
+        id: "ssrmao_summerdist", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "concentration", releasedAt: "2024-07-01", rarity: "PSSR", type: "season", plan: "sense", source: "dist", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
         item: {
             name: "最後の夏の思い出",
             desc: "턴 개시 시 집중이 3이상일 경우\n✦ genki10\n✦ inlesson1",
@@ -1764,7 +1764,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrrinami_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "goodcondition", releasedAt: "2024-07-12", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 10.4, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
+        id: "ssrrinami_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "goodcondition", releasedAt: "2024-07-12", rarity: "PSSR", type: "season", plan: "sense", source: "limited", jumpTime2: 10.4, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
         item: {
             name: "きみと分け合う夏",
             desc: "턴 개시 후 소비체력 감소 상태일 경우\n✦ goodconditionz1\n✦ draw1\n✦ inlesson2",
@@ -1803,7 +1803,7 @@ export const produceList = [
         //}        
     },
     {
-        id: "ssrsumika_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "motivation", releasedAt: "2024-07-01", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
+        id: "ssrsumika_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "motivation", releasedAt: "2024-07-01", rarity: "PSSR", type: "season", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
         item: {
             name: "カエル印の扇風機",
             desc: "액티브카드 사용 후 의욕이 12이상인 경우 \n✦ 의욕의 270%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson4",
@@ -1843,7 +1843,7 @@ export const produceList = [
         //}           
     },
     {
-        id: "ssrsaki_kanmuridist", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodimpression", releasedAt: "2024-08-01", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
+        id: "ssrsaki_kanmuridist", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodimpression", releasedAt: "2024-08-01", rarity: "PSSR", type: "season", plan: "logic", source: "dist", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
         item: {
             name: "敗れ知らずのポイ",
             desc: "턴 개시 시 호인상이 6이상인 경우 \n✦ 체력회복 4\n✦ inlesson2",
@@ -1865,7 +1865,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrkotone_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "motivation", releasedAt: "2024-08-11", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
+        id: "ssrkotone_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "motivation", releasedAt: "2024-08-11", rarity: "PSSR", type: "season", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
         item: {
             name: "ぱちぱち線香花火",
             desc: "3턴마다 호인상이 6이상인 경우 \n✦ 호인상의 100%만큼 원기 증가\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
@@ -1904,7 +1904,7 @@ export const produceList = [
         //}           
     },
     {
-        id: "ssrlilja_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-01", plan: "sense", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
+        id: "ssrlilja_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-01", type: "season", plan: "sense", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
         item: {
             name: "瓶の中のきらめき",
             desc: "턴 종료 시 호조가 6턴 이상일 경우\n✦ goodcondition2\n✦ inlesson3",
@@ -1943,7 +1943,7 @@ export const produceList = [
         //}           
     },
     {
-        id: "ssrchina_halloweendist", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "concentration", releasedAt: "2024-09-30", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
+        id: "ssrchina_halloweendist", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "concentration", releasedAt: "2024-09-30", type: "season", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
         item: {
             name: "う～ら～め～し～や～",
             desc: "액티브카드 사용 후 \n✦ 고정genki5 \n✦ inlesson2",
@@ -1964,7 +1964,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "motivation", releasedAt: "2024-09-30", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
+        id: "ssrtemari_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "motivation", type: "season", releasedAt: "2024-09-30", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
         item: {
             name: "ぶきっちょコウモリ",
             desc: "3턴마다 호인상이 3이상인 경우\n✦ 원기의 90%만큼 파라미터 상승\n✦ 의욕의 160%만큼 파라미터 상승\n✦ 호인상 감소2\n✦ inlesson3",
@@ -1986,7 +1986,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrhiro_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-10-08", plan: "sense", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
+        id: "ssrhiro_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "goodcondition", type: "season", rarity: "PSSR", releasedAt: "2024-10-08", plan: "sense", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
         item: {
             name: "いたずらパペット",
             desc: "액티브카드 사용 후 현재 lesshp50\n✦ 레슨 중 소비한 체력의 180%만큼 파라미터 증가\n✦ 체력회복 5\n✦ 원기 증가 무효 2턴\n✦ inlesson2",
@@ -2007,7 +2007,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrkotone_christmasdist", name: "White Night! White Wish!", osusume: "motivation", rarity: "PSSR", plan: "logic", releasedAt: "2024-11-28", source: "dist", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
+        id: "ssrkotone_christmasdist", name: "White Night! White Wish!", osusume: "motivation", rarity: "PSSR", plan: "logic", releasedAt: "2024-11-28", type: "season", source: "dist", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
         item: {
             name: "費用0円愛情MAX",
             desc: "턴 개시 시 의욕이 5이상인 경우\n✦ genki4\n✦ inlesson2",
@@ -2028,7 +2028,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrume_christmaslimited", name: "White Night! White Wish!", osusume: "goodcondition", jumpTime2: 10.7, rarity: "PSSR", plan: "sense", source: "limited", releasedAt: "2024-11-28", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
+        id: "ssrume_christmaslimited", name: "White Night! White Wish!", osusume: "goodcondition", jumpTime2: 10.7, rarity: "PSSR", plan: "sense", type: "season", source: "limited", releasedAt: "2024-11-28", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
         item: {
             name: "めりくりらりおん",
             desc: "남은 턴이 3턴 이내일 때 턴 개시 시\n✦ 호조의 70%만큼 파라미터 상승\n✦ hpreduce1\n✦ inlesson2",
@@ -2049,7 +2049,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrlilja_christmaslimited", name: "White Night! White Wish!", osusume: "motivation", jumpTime2: 10.7, rarity: "PSSR", releasedAt: "2024-12-09", plan: "logic", source: "limited", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
+        id: "ssrlilja_christmaslimited", name: "White Night! White Wish!", osusume: "motivation", jumpTime2: 10.7, rarity: "PSSR", type: "season", releasedAt: "2024-12-09", plan: "logic", source: "limited", youtube_url: "https://youtu.be/MXWTuX-QC00?si=9SLS_nXFeHS0nAl_",
         item: {
             name: "海の向こうまで",
             desc: "턴 개시 후 의욕이 5이상인 경우\n✦ 의욕 1.3배\n✦ draw1\n✦ hpreduce1\n✦ inlesson3",
@@ -2070,7 +2070,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrhiro_valentinedist", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "fullpower", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
+        id: "ssrhiro_valentinedist", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "fullpower", name_ja: "ハッピーミルフィーユ", type: "season", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
         item: {
             name: "れんしゅーのしるし",
             desc: "전력효과의 스킬카드 사용 시 \n✦ genki10\n✦ inlesson1",
@@ -2091,7 +2091,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrrinami_valentinelimited", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "enthusiasm", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
+        id: "ssrrinami_valentinelimited", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "enthusiasm", name_ja: "ハッピーミルフィーユ", type: "season", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
         item: {
             name: "あまいくちどけ",
             desc: "턴 종료 시 지침이 강기인 경우\n✦ 온존으로 지침 변경\n✦ genki2\n✦ inlesson2",
@@ -2112,7 +2112,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsena_valentinelimited", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "motivation", name_ja: "ハッピーミルフィーユ", releasedAt: "2025-02-14", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.8, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
+        id: "ssrsena_valentinelimited", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "motivation", name_ja: "ハッピーミルフィーユ", type: "season", releasedAt: "2025-02-14", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.8, youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
         item: {
             name: "相手への深い愛",
             desc: "액티브카드 사용 시 의욕이 8이상인 경우\n✦ genki2 (의욕효과 2.2배 적용)\n✦ hpreduce2\n✦ inlesson2",
@@ -2133,7 +2133,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_yukidokenidist", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "enthusiasm", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
+        id: "ssrtemari_yukidokenidist", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "enthusiasm", name_ja: "雪解けに", rarity: "PSSR", type: "season", releasedAt: "2025-02-28", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
             name: "勝利の1枚",
             desc: "턴 개시 시 지침이 강기인 경우\n✦ genki6\n✦ inlesson2",
@@ -2154,7 +2154,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "goodimpression", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
+        id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "goodimpression", name_ja: "雪解けに", rarity: "PSSR", type: "season", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
             name: "春のおとずれ",
             desc: "스킬카드 코스트로 강화상태를 소비했을 때 호인상이 3이상인 경우,\n✦ goodimpression2\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
@@ -2175,7 +2175,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
+        id: "ssrmao_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "fullpower", name_ja: "雪解けに", rarity: "PSSR", type: "season", releasedAt: "2025-03-10", plan: "anomaly", source: "limited", jumpTime2: 11.4, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
             name: "まあるい春色",
             desc: "전력으로 지침이 변경되었을 때 강기로 지침 변경된 횟수가 1회 이상인 경우\n✦ 전력효과 액티브카드의 파라미터치 증가+11\n✦ 다음 턴, 온존 2단계로 지침 변경\n✦ hpreduce2\n✦ inlesson2",
@@ -2196,7 +2196,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
+        id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", type: "season", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "積み重ねた努力",
             desc: "턴 개시 시 레슨 중 누계 전력치가 5이상인 경우\n✦ genki6\n✦ inlesson2",
@@ -2217,7 +2217,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
+        id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", type: "season", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "Pっち",
             desc: "집중이 8이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
@@ -2239,7 +2239,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
+        id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", type: "season", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "運命の出逢い",
             desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 스킬카드의 파라미터치 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ hpreduce3\n✦ inlesson1",
@@ -2260,7 +2260,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
+        id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", type: "live", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "世界を救ったマイク",
             desc: "집중효과의 스킬카드 사용 후\n✦ 소비체력 감소 2턴\n✦ inlesson2",
@@ -2281,7 +2281,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", plan: "anomaly", source: "limited", jumpTime2: 8.1, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
+        id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", type: "live", plan: "anomaly", source: "limited", jumpTime2: 8.1, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "伝説のidol装備",
             desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 440% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ hpreduce2\n✦ inlesson2",
@@ -2302,7 +2302,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrlilja_howlinglimited", name: "Howling over the World", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2025-06-09", plan: "logic", source: "limited", jumpTime2: 7.3, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
+        id: "ssrlilja_howlinglimited", name: "Howling over the World", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2025-06-09", type: "live", plan: "logic", source: "limited", jumpTime2: 7.3, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "シルベスター出撃！",
             desc: "2턴마다 턴 종료 시 제외에 있는 스킬카드가 8장 이하일 경우, \n✦ 호인상 강화+70% (3턴)\n✦ hpreduce1",
@@ -2324,7 +2324,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsumika_miracledist", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "goodimpression", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
+        id: "ssrsumika_miracledist", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "goodimpression", type: "live", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "dist", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
             name: "シェアハピ缶バッジ",
             desc: "2턴 마다\n✦ 체력회복 3\n✦ goodimpression1\n✦ inlesson2",
@@ -2346,7 +2346,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrmao_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "motivation", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.2, youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
+        id: "ssrmao_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "motivation", type: "live", releasedAt: "2025-08-29", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 9.2, youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
             name: "ミラクルヘッド",
             desc: "턴 개시 시\n✦ 의욕증가량 증가+50%\n✦ 다음 턴, genki2\n✦ hpreduce2\n✦ inlesson1",
@@ -2368,7 +2368,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrhiro_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "fullpower", rarity: "PSSR", releasedAt: "2025-09-08", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
+        id: "ssrhiro_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "fullpower", type: "live", rarity: "PSSR", releasedAt: "2025-09-08", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
             name: "たこやきテクノドッグ",
             desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1매 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터치 증가+5・체력소비 코스트 수치 증가+2\n✦ inlesson3",
@@ -2389,7 +2389,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsaki_gamusyaradist", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "enthusiasm", releasedAt: "2025-09-29", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
+        id: "ssrsaki_gamusyaradist", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "enthusiasm", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
             name: "ごちゃまぜパッション",
             desc: "턴 개시 시 지침이 강기일 경우 \n✦ 온존으로 지침 변경\n✦ genki6\n✦ inlesson1",
@@ -2410,7 +2410,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrkotone_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodcondition", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
+        id: "ssrkotone_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodcondition", type: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
             name: "フレフレあたし！",
             desc: "액티브 카드 사용 후 절호조 상태일 경우, \n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson2",
@@ -2431,7 +2431,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodimpression", releasedAt: "2025-10-10", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
+        id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodimpression", type: "live", releasedAt: "2025-10-10", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
             name: "高くジャンプ！",
             desc: "한 턴 내에 스킬카드를 2회 사용할 때마다\n✦ genki5\n✦ 호인상 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ inlesson2",
@@ -2452,7 +2452,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "dist", releasedAt: "2026-02-27", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
+        id: "ssrmisuzu_endlessdist", name: "ENDLESS DANCE", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "dist", releasedAt: "2026-02-27", type: "live", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "箱庭のバラ",
             desc: "멘탈카드 사용 후 호인상이 6이상인 경우\n✦ genki1\n✦ goodimpression1\n✦ inlesson2",
@@ -2473,7 +2473,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrume_endlesslimited", name: "ENDLESS DANCE", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
+        id: "ssrume_endlesslimited", name: "ENDLESS DANCE", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, type: "live", releasedAt: "2026-02-27", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "知らない世界へ",
             desc: "집중효과의 스킬카드를 3회 사용할 때마다\n✦ 제외패에 있는 스킬카드 2장 당 concentration1",
@@ -2494,7 +2494,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
+        id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, type: "live", releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "ユートピアへの誘い",
             desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki4\n✦ 액티브 스킬카드의 파라미터치 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
@@ -2515,7 +2515,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsaki_gomywaydist", name: "GO MY WAY!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "dist", jumpTime2: 7.4, releasedAt: "2026-06-26",
+        id: "ssrsaki_gomywaydist", name: "GO MY WAY!!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "dist", type: "live", jumpTime2: 7.4, releasedAt: "2026-06-26",
         item: {
             name: "ふらいとライオン",
             desc: "턴 개시 시 호조가 6턴 이상일 경우\n✦ goodconditionz3\n✦ 소비체력 감소 2턴\n✦ inlesson1",
@@ -2536,7 +2536,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrkotone_gomywaylimited", name: "GO MY WAY!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.4, releasedAt: "2026-06-26",
+        id: "ssrkotone_gomywaylimited", name: "GO MY WAY!!", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited", type: "live", jumpTime2: 7.4, releasedAt: "2026-06-26",
         item: {
             name: "あこがれチャージャー",
             desc: "지침이 전력일 경우\n✦ 전력 강화+25%\n✦ inlesson4",
@@ -2557,7 +2557,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", jumpTime2: 8.2, releasedAt: "2026-07-08",
+        id: "ssrume_gomywaylimited", name: "GO MY WAY!!", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "limited", type: "live", jumpTime2: 8.2, releasedAt: "2026-07-08",
         item: {
             name: "アイドル博士の必需品",
             desc: "호인상이 10이상일 경우 액티브카드를 2회 사용할 때마다\n✦ goodimpression6\n✦ 다음 턴, draw1\n✦ inlesson2",
