@@ -160,19 +160,21 @@ export function getParsedItemEffectsText(itemEffects) {
                 }
             }
             const effectDesc = effectDescParts.join(', ');
-            let finalDesc = t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
+            let finalDesc = '';
 
             if (eff.triggertext) {
                 const tTexts = Array.isArray(eff.triggertext) ? eff.triggertext : [eff.triggertext];
+                const hasPercent = tTexts.some(tt => typeof tt === 'string' && tt.match(/^(hp)(\d+)percent(up|down)$/i));
+
                 const prefixStr = tTexts.map(tt => {
-                    const percentMatch = tt.match(/^(hp)(\d+)percent(up|down)$/i);
+                    const percentMatch = typeof tt === 'string' && tt.match(/^(hp)(\d+)percent(up|down)$/i);
                     if (percentMatch) {
                         const num = percentMatch[2];
                         const dir = percentMatch[3].toLowerCase();
                         return t(`support_effect_condition_percent_${dir}`, { num });
                     }
 
-                    const match = tt.match(/^(vocal|dance|visual|hp|ppoint)(\d+)(up|down)?$/i);
+                    const match = typeof tt === 'string' && tt.match(/^(vocal|dance|visual|hp|ppoint)(\d+)(up|down)?$/i);
                     if (match) {
                         const attrKey = match[1].toLowerCase();
                         const num = match[2];
@@ -189,7 +191,15 @@ export function getParsedItemEffectsText(itemEffects) {
                     }
                     return tt + (state.currentLang === 'ja' ? '、' : ', ');
                 }).join('');
-                finalDesc = prefixStr + finalDesc;
+
+                if (hasPercent) {
+                    finalDesc = t('support_effect_action_format', { trigger, effect: prefixStr + effectDesc, suffix: maxSuffix });
+                } else {
+                    const defaultDesc = t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
+                    finalDesc = prefixStr + defaultDesc;
+                }
+            } else {
+                finalDesc = t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
             }
 
             return finalDesc;
