@@ -1252,7 +1252,7 @@ export function openIdolPossessionModal() {
                 .pssr-stat-icon-wrap {
                     width: 35px !important;
                     height: 105px !important;
-                    border-radius: 0 5px 0 0 !important;
+                    border-radius: 0 9px 0 0 !important;
                     border-width: 1px !important;
                 }
                 .pssr-stat-icon-spacer {
