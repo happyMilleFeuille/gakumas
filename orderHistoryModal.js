@@ -963,6 +963,17 @@ function renderDashboard(data) {
                 </div>
             `;
         });
+    } else {
+        const noDataMsg = isJa 
+            ? '学園アイドルマスターの決済履歴が見つかりませんでした。' 
+            : isEn 
+            ? 'No Gakuen Idolmaster purchase history found.' 
+            : '학원 아이돌 마스터 결제 내역을 찾을 수 없습니다.';
+        summaryHTML = `
+            <div class="oh-card" style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 24px;">
+                ${noDataMsg}
+            </div>
+        `;
     }
 
     // Monthly Spend Chart
@@ -1119,7 +1130,7 @@ function renderDashboard(data) {
     const dateRangeLabel = isJa ? '期間' : isEn ? 'Period' : '분석 기간';
 
     const pad2 = n => String(n).padStart(2, '0');
-    const formatDateText = d => `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}`;
+    const formatDateText = d => (d && typeof d.getFullYear === 'function' && !isNaN(d.getTime())) ? `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())}` : '-';
     const startStr = formatDateText(overallMinDate);
     const endStr = formatDateText(overallMaxDate);
 
