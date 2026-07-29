@@ -3648,7 +3648,7 @@ export const cardList = [
         type: "visual",
         plan: "free",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["hp50percentup"], stats: { visual: 13 }, max: 9 }],
+        item_effects: [{ type: "action", trigger: ["lesson"], triggertext: ["hp50percentup"], stats: { visual: 13 }, max: 9 }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
