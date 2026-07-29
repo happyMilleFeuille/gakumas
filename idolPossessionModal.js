@@ -283,6 +283,12 @@ const getSeriesBadgeText = (card) => {
 
 const getCardPeriodKey = (c) => {
     if (!c) return null;
+    if (c.another) {
+        const order = getCardAnotherOrder(c);
+        if (order >= 1 && order <= 7) return 'season';
+        if (order >= 9 && order <= 13) return 'live';
+        return null;
+    }
     const relDate = c.releasedAt || '';
     if (relDate >= '2024-05-01' && relDate <= '2025-04-30') return 'season';
     if (relDate >= '2025-05-01' && relDate <= '2026-07-31') return 'live';
@@ -339,12 +345,43 @@ const sortPssrFesCards = (a, b) => {
     const idxB = CHARACTER_ORDER.indexOf(charB);
     if (idxA !== idxB) return idxA - idxB;
 
+    return a.id.localeCompare(b.id);
 };
 
 const sortPssrNormalCards = (a, b) => {
     const seriesOrderA = getCardSeriesOrder(a);
     const seriesOrderB = getCardSeriesOrder(b);
     if (seriesOrderA !== seriesOrderB) return seriesOrderA - seriesOrderB;
+
+    const dateA = a.releasedAt || '1970-01-01';
+    const dateB = b.releasedAt || '1970-01-01';
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+    const charA = getCharacterId(a.id);
+    const charB = getCharacterId(b.id);
+    const idxA = CHARACTER_ORDER.indexOf(charA);
+    const idxB = CHARACTER_ORDER.indexOf(charB);
+    if (idxA !== idxB) return idxA - idxB;
+
+    return a.id.localeCompare(b.id);
+};
+
+const getCardAnotherOrder = (card) => {
+    if (!card || !card.id) return 999;
+    const match = card.id.match(/1st(\d+)another/i) || card.id.match(/(\d+)another/i);
+    return match ? parseInt(match[1], 10) : 999;
+};
+
+const getAnotherBadgeText = (card) => {
+    const num = getCardAnotherOrder(card);
+    if (num === 0 || num === 999) return null;
+    return `1st${num}`;
+};
+
+const sortPssrAnotherCards = (a, b) => {
+    const orderA = getCardAnotherOrder(a);
+    const orderB = getCardAnotherOrder(b);
+    if (orderA !== orderB) return orderA - orderB;
 
     const dateA = a.releasedAt || '1970-01-01';
     const dateB = b.releasedAt || '1970-01-01';
@@ -619,11 +656,14 @@ export function openIdolPossessionModal() {
                 position: absolute;
                 top: 6px;
                 left: 8px;
+                right: 8px;
                 color: #555;
-                font-size: 0.72rem;
+                font-size: 0.64rem;
                 font-weight: 800;
-                line-height: 1;
+                line-height: 1.15;
                 z-index: 5;
+                white-space: normal;
+                word-break: break-word;
             }
             .pssr-waffle-footer-badge {
                 position: absolute;
@@ -1118,7 +1158,7 @@ export function openIdolPossessionModal() {
                     margin-left: 4px !important;
                 }
                 .idol-stats-source-label {
-                    width: 35px !important;
+                    width: 40px !important;
                     font-size: 0.6rem !important;
                 }
                 .idol-stats-source-pct {
@@ -1613,12 +1653,50 @@ export function openIdolPossessionModal() {
 function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeModal, onBackToSelection) {
     const getAbsoluteUrl = (relPath) => new URL(relPath, window.location.href).href;
 
-    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useWaffleChartForNormalSeries = false, useSubCategoryBadgeForFes = false, useWaffleChartForFesSubCategory = false, usePeriodBadgeForLimitedAndDist = false, useWaffleChartForLimitedPeriod = false, useOsusumeBadgeForPlan = false, sourceColor = '#93c5fd' } = {}) => {
+    const buildPssrIconsHtml = (cardsList, isOwnedList, { useSeriesBadgeForNormal = false, useWaffleChartForNormalSeries = false, useSubCategoryBadgeForFes = false, useWaffleChartForFesSubCategory = false, usePeriodBadgeForLimitedAndDist = false, useWaffleChartForLimitedPeriod = false, useSeriesBadgeForAnother = false, useWaffleChartForAnotherSeries = false, useOsusumeBadgeForPlan = false, sourceColor = '#93c5fd' } = {}) => {
         let html = '';
         const seenSeries = new Set();
         const seenPeriod = new Set();
         const seenFes = new Set();
+        const seenAnother = new Set();
         cardsList.forEach(c => {
+            if (useSeriesBadgeForAnother && useWaffleChartForAnotherSeries && c.another) {
+                const anotherNum = getCardAnotherOrder(c);
+                if (anotherNum !== 0 && anotherNum !== 999 && !seenAnother.has(anotherNum)) {
+                    seenAnother.add(anotherNum);
+                    const anotherCards = cardsList.filter(card => card.another && getCardAnotherOrder(card) === anotherNum);
+                    const totalAnother = anotherCards.length;
+                    const ownedAnother = anotherCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
+                    const rateAnother = totalAnother > 0 ? Math.round((ownedAnother / totalAnother) * 100) : 0;
+                    const anotherTitle = getLocalizedCardName(c, lang) || getAnotherBadgeText(c) || `1st${anotherNum}`;
+
+                    let waffleCellsHtml = '';
+                    anotherCards.forEach(card => {
+                        const cardOwned = (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id);
+                        const cardCharId = getCharacterId(card.id);
+                        const cardColor = idolColors[cardCharId] || '#ff4d8d';
+                        const cardName = getLocalizedCardName(card, lang);
+
+                        if (cardOwned) {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell owned" style="background-color: ${cardColor};" title="${cardName}"></div>`;
+                        } else {
+                            waffleCellsHtml += `<div class="pssr-waffle-cell unowned" style="background-color: #e2e8f0;" title="${cardName}"></div>`;
+                        }
+                    });
+
+                    const fillBgAnother = `background: linear-gradient(to top, color-mix(in srgb, ${sourceColor} 15%, white) 0%, color-mix(in srgb, ${sourceColor} 15%, white) ${rateAnother}%, #ffffff ${rateAnother}%, #ffffff 100%);`;
+
+                    html += `
+                        <div class="pssr-stat-waffle-wrap" style="${fillBgAnother}" title="${anotherTitle} (${ownedAnother}/${totalAnother})">
+                            <span class="pssr-waffle-badge">${anotherTitle}</span>
+                            <div class="pssr-waffle-grid">
+                                ${waffleCellsHtml}
+                            </div>
+                            <span class="pssr-waffle-footer-badge"><span style="color: ${sourceColor};">${rateAnother}%</span> <span style="font-size: 0.85em; opacity: 0.85; color: #666;">(${ownedAnother}/${totalAnother})</span></span>
+                        </div>
+                    `;
+                }
+            }
             if (useSubCategoryBadgeForFes && useWaffleChartForFesSubCategory && c.source === 'limited_f') {
                 const fesOrder = getFesSubCategoryOrder(c);
                 if (fesOrder !== 999 && (fesOrder === 1 || fesOrder === 2) && !seenFes.has(fesOrder)) {
@@ -1759,11 +1837,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 } else if (idLower.includes('hif')) {
                     badgeText = 'HIF';
                 }
-            } else if (usePeriodBadgeForLimitedAndDist && (c.source === 'limited' || c.source === 'dist')) {
-                const relDate = c.releasedAt || '';
-                if (relDate >= '2024-05-01' && relDate <= '2025-04-30') {
+            } else if (usePeriodBadgeForLimitedAndDist && (c.source === 'limited' || c.source === 'dist' || c.another)) {
+                const periodKey = getCardPeriodKey(c);
+                if (periodKey === 'season') {
                     badgeText = (lang === 'ja' || lang === 'en') ? 'Sea.' : '시즌';
-                } else if (relDate >= '2025-05-01' && relDate <= '2026-07-31') {
+                } else if (periodKey === 'live') {
                     badgeText = (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
                 }
             }
@@ -2371,8 +2449,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             let srcLabel = src === 'another'
                 ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
                 : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
-            if ((lang === 'ja' || lang === 'en') && src === 'limited_f') srcLabel = 'Fes';
-            if ((lang === 'ja' || lang === 'en') && src === 'limited_u') srcLabel = 'Unit';
+            if (lang === 'en' && src === 'limited_f') srcLabel = 'Fes';
+            if (lang === 'en' && src === 'limited_u') srcLabel = 'Unit';
 
             // Determine dominant character for this source (category)
             const ownedSrcCards = activeCards.filter(c => {
@@ -2436,7 +2514,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         </div>
                     </div>
                     <div class="source-stat-main" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: bold; color: #333; gap: 10px; cursor: pointer; user-select: none; padding: 4px 6px; border-radius: 8px; transition: background-color 0.15s ease;">
-                        <span class="idol-stats-source-label" style="display: flex; align-items: center; justify-content: center; width: 50px; font-weight: 800; color: #555; text-align: center; flex-shrink: 0; pointer-events: none;">${srcLabel}</span>
+                        <span class="idol-stats-source-label" style="display: flex; align-items: center; justify-content: center; width: 60px; font-weight: 800; color: #555; text-align: center; flex-shrink: 0; pointer-events: none;">${srcLabel}</span>
                         <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden; position: relative; pointer-events: none;">
                             <div style="width: ${rate}%; height: 100%; background: ${sourceColor}; border-radius: 0;"></div>
                         </div>
@@ -2588,8 +2666,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     let srcLabel = src === 'another'
                         ? (globalTranslations[lang]?.roadmap_show_another || globalTranslations.ko.roadmap_show_another || '어나더')
                         : (globalTranslations[lang]?.[`filter_${src}`] || globalTranslations.ko[`filter_${src}`] || text[`filter_${src}`] || src);
-                    if ((lang === 'ja' || lang === 'en') && src === 'limited_f') srcLabel = 'Fes';
-                    if ((lang === 'ja' || lang === 'en') && src === 'limited_u') srcLabel = 'Unit';
+                    if (lang === 'en' && src === 'limited_f') srcLabel = 'Fes';
+                    if (lang === 'en' && src === 'limited_u') srcLabel = 'Unit';
                     const isSelectable = s.total > 0;
                     const srcRate = isSelectable ? ((s.owned / s.total) * 100).toFixed(0) : '0';
                     const labelText = isSelectable ? `${s.owned}/${s.total}` : '';
@@ -3730,11 +3808,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             return cardSrc === src;
                         });
 
-                        const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : sortPssrByCharacterAndRelease);
+                        const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : sortPssrByCharacterAndRelease));
                         sourceCards.sort(sortFn);
 
                         const sourceColor = sourceCard.dataset.color || '#93c5fd';
-                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist' || src === 'another'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), sourceColor: sourceColor });
+                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist' || src === 'another'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', sourceColor: sourceColor });
 
                         const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                         const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
