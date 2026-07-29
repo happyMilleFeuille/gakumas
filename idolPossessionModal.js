@@ -635,6 +635,14 @@ export function openIdolPossessionModal() {
                 background: #eee;
                 flex-shrink: 0;
             }
+            .pssr-stat-icon-spacer {
+                width: 60px;
+                height: 0;
+                margin: 0;
+                padding: 0;
+                pointer-events: none;
+                visibility: hidden;
+            }
             .pssr-stat-waffle-wrap {
                 position: relative;
                 width: 128px;
@@ -1246,6 +1254,9 @@ export function openIdolPossessionModal() {
                     height: 105px !important;
                     border-radius: 0 5px 0 0 !important;
                     border-width: 1px !important;
+                }
+                .pssr-stat-icon-spacer {
+                    width: 35px !important;
                 }
                 .pssr-stat-waffle-wrap {
                     width: 73px !important;
@@ -1875,6 +1886,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 </div>
             `;
         });
+        for (let i = 0; i < 12; i++) {
+            html += `<div class="pssr-stat-icon-spacer"></div>`;
+        }
         return html;
     };
     const modalContent = modal.querySelector('.modal-content');
@@ -2650,6 +2664,9 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                         </div>
                     `;
                 });
+                for (let i = 0; i < 12; i++) {
+                    html += `<div class="pssr-stat-icon-spacer"></div>`;
+                }
                 return html;
             };
 
@@ -4464,11 +4481,11 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                 return cardSrc === src;
                             });
 
-                            const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : sortPssrByCharacterAndRelease);
+                            const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : sortPssrByCharacterAndRelease));
                             sourceCards.sort(sortFn);
 
                             const sourceColor = sourceCard.dataset.color || '#93c5fd';
-                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist' || src === 'another'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), sourceColor: sourceColor });
+                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', sourceColor: sourceColor });
 
                             const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
                             const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
