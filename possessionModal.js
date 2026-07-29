@@ -4,15 +4,6 @@ import { cardList } from './carddata.js';
 import translations from './i18n.js';
 import { openIdolPossessionModal } from './idolPossessionModal.js';
 
-
-
-// Avoid circular dependency by dynamically importing ui.js when needed
-async function getRenderSupport() {
-    const { renderSupport } = await import('./ui.js');
-    return renderSupport;
-}
-
-
 const SOURCE_ORDER = ['normal', 'limited', 'limited_f', 'limited_u', 'dist'];
 const SOURCE_KEY_MAP = {
     normal: 'filter_normal',
@@ -25,7 +16,7 @@ const getSourceLabel = (src) => {
     const key = SOURCE_KEY_MAP[src];
     if (!key) return src;
     const currentLang = state.currentLang || 'ko';
-    return translations[currentLang]?.[key] || translations.ko[key] || '';
+    return translations[currentLang]?.[key] || translations.ko[key] || src;
 };
 
 const formatRate = (owned, total) => {
@@ -51,13 +42,21 @@ const hexToRgba = (hex, alpha) => {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+const darkenColor = (hex, factor = 0.4) => {
+    if (!hex || !hex.startsWith('#')) return '#333333';
+    const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+    const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+    const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+    return `rgb(${r}, ${g}, ${b})`;
+};
+
 
 const TYPE_ORDER = ['vocal', 'dance', 'visual', 'assist'];
 const PLAN_ORDER = ['free', 'sense', 'logic', 'anomaly'];
 
 const RARITY_GRADIENTS = {
-    'SSR': 'linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)',
-    'SR': 'linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)',
+    'SSR': 'linear-gradient(180deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)',
+    'SR': 'linear-gradient(180deg, #fff44f 0%, #fffde6 25%, #ffcc00 100%)',
     'R': '#cbd5e1'
 };
 
@@ -67,6 +66,82 @@ const SOURCE_COLORS = {
     limited_f: '#f87171', // Soft Red
     limited_u: '#fcd34d', // Pastel Yellow
     dist: '#8FDDBA' // Pastel Mint
+};
+
+const TYPE_COLORS = {
+    vocal: '#ff2a6d', // Vivid Vibrant Pink/Red
+    dance: '#0091ff', // Vivid Electric Blue
+    visual: '#ffc107', // Vivid Pure Sunny Gold Yellow (No brown/mustard tone)
+    assist: '#72da49' // Vivid Lime Green
+};
+
+const waffleQuarterState = {};
+
+function getPreCroppedCardDataUrl(imgEl, targetWidth, targetHeight, isGrayscale, offsetYPx = 6) {
+    try {
+        const canvas = document.createElement('canvas');
+        const scale = 2;
+        const cw = Math.round((targetWidth || 138.4) * scale);
+        const ch = Math.round((targetHeight || 50.32) * scale);
+        canvas.width = cw;
+        canvas.height = ch;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, cw, ch);
+
+        const nw = imgEl.naturalWidth || imgEl.width || cw;
+        const nh = imgEl.naturalHeight || imgEl.height || ch;
+
+        const fillScale = Math.max(cw / nw, ch / nh);
+        const sWidth = cw / fillScale;
+        const sHeight = ch / fillScale;
+        const sx = (nw - sWidth) / 2;
+
+        const defaultSy = (nh - sHeight) / 2;
+        const syOffset = (offsetYPx / (targetHeight || 50.32)) * sHeight;
+        const sy = Math.max(0, Math.min(nh - sHeight, defaultSy - syOffset));
+
+        ctx.drawImage(imgEl, sx, sy, sWidth, sHeight, 0, 0, cw, ch);
+
+        if (isGrayscale) {
+            const imgData = ctx.getImageData(0, 0, cw, ch);
+            const data = imgData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = Math.round(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
+                data[i] = gray;
+                data[i + 1] = gray;
+                data[i + 2] = gray;
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        return canvas.toDataURL('image/png');
+    } catch (e) {
+        console.warn("Pre-cropped card data URL failed:", e);
+        return imgEl.src;
+    }
+}
+
+const getCardQuarterKey = (releasedAt) => {
+    if (!releasedAt) return '기타';
+    const dateStr = typeof releasedAt === 'object' ? releasedAt.releasedAt : releasedAt;
+    if (!dateStr) return '기타';
+    const parts = dateStr.split('-');
+    if (parts.length < 2) return '기타';
+    const yearShort = parts[0].slice(-2);
+    const month = parseInt(parts[1], 10);
+    const half = month <= 6 ? 'H1' : 'H2';
+    return `'${yearShort} ${half}`;
+};
+
+const getCardYearKey = (releasedAt) => {
+    if (!releasedAt) return '기타';
+    const dateStr = typeof releasedAt === 'object' ? releasedAt.releasedAt : releasedAt;
+    if (!dateStr) return '기타';
+    const parts = dateStr.split('-');
+    if (parts.length < 1) return '기타';
+    const yearShort = parts[0].slice(-2);
+    return `'${yearShort}`;
 };
 
 const getTypeLabel = (type) => {
@@ -285,7 +360,7 @@ function getPossessionTextSummary(stats) {
     return summary;
 }
 
-function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, sourceSegmentsHtml = '') {
+function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, sourceSegmentsHtml = '', srcKey = '') {
     const rate = formatRate(sStats.owned, sStats.total);
     const numRate = parseFloat(rate);
     let rankImgHtml = '';
@@ -375,105 +450,40 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         }
     }
 
-    let headersHtml = '';
-    let listsHtml = '';
+    const allCards = [];
     for (let i = 0; i <= 4; i++) {
-        const cards = sStats.cardsByLb?.[i] || [];
-
-        let cardImgsHtml = '';
-        cards.forEach(c => {
-            const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
-            const imgStyle = c.isDeactivated
-                ? 'filter: grayscale(90%); border: 1px dashed #ccc;'
-                : '';
-
-            cardImgsHtml += `
-                <div class="possession-detail-card" 
-                     data-card-id="${c.id}" 
-                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; border: 1px solid #ddd; box-sizing: border-box; padding-bottom: 5px; display: flex; flex-direction: column; margin-bottom: 4px; flex-shrink: 0;">
-                    <img src="${imgSrc}" 
-                         onerror="this.src='icons/card.png';" 
-                         style="width: 100%; height: 100%; object-fit: cover; display: block; ${imgStyle}">
-                    <img class="support-type-badge" src="icons/${(c.type || 'vocal').toLowerCase()}.webp">
-                    <img class="support-plan-badge" src="icons/${(c.plan || 'free').toLowerCase()}.webp">
-                </div>
-            `;
-        });
-
-        headersHtml += `
-            <div class="possession-col-header${i === 0 ? ' active' : ''}" data-lb="${i}" style="font-size: 0.72rem; font-weight: 800; color: #555; text-align: center; padding-top: 10px; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; user-select: none; flex-shrink: 0; background: transparent; z-index: 10; margin-bottom: 8px;">
-                ${i}${ownedLabel} (${cards.length})
-            </div>
-        `;
-
-        const borderRightStyle = i === 4 ? '' : 'border-right: 1px solid #f0f0f0;';
-        listsHtml += `
-            <div class="possession-detail-card-list" data-lb="${i}" style="display: flex; flex-direction: column; gap: 4px; padding: 0 8px 6px 8px; ${borderRightStyle} box-sizing: border-box; position: relative;">
-                ${cardImgsHtml || `<div style="font-size: 0.65rem; color: #bbb; text-align: center; margin-top: 10px; user-select: none;">-</div>`}
-            </div>
-        `;
+        if (sStats.cardsByLb?.[i]) {
+            allCards.push(...sStats.cardsByLb[i]);
+        }
+    }
+    if (sStats.unownedCards) {
+        allCards.push(...sStats.unownedCards);
     }
 
-    const unownedCards = sStats.unownedCards || [];
-    const hasOwned = sStats.owned > 0;
-    const hasUnowned = unownedCards.length > 0;
+    allCards.sort((a, b) => {
+        const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
+        const rA = rOrder[a.rarity] || 99;
+        const rB = rOrder[b.rarity] || 99;
+        if (rA !== rB) return rA - rB;
 
-    const ownedBg = 'rgba(0, 0, 0, 0.025)';
-    const ownedBorder = 'rgba(0, 0, 0, 0.06)';
+        const dateA = a.releasedAt || '1970-01-01';
+        const dateB = b.releasedAt || '1970-01-01';
+        if (dateA !== dateB) {
+            return dateA.localeCompare(dateB);
+        }
 
-    let ownedStyle = '';
-    let unownedSectionStyle = '';
+        const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
+        const tA = tOrder[(a.type || '').toLowerCase()] || 99;
+        const tB = tOrder[(b.type || '').toLowerCase()] || 99;
+        if (tA !== tB) return tA - tB;
 
-    if (hasOwned && hasUnowned) {
-        ownedStyle = `background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0; border-bottom: none;`;
-        unownedSectionStyle = `margin-top: -1px; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px;`;
-    } else if (hasOwned) {
-        ownedStyle = `background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
-    } else if (hasUnowned) {
-        unownedSectionStyle = `margin-top: 12px; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
-    }
+        const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
+        const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
+        const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
+        if (pA !== pB) return pA - pB;
 
-    let unownedCardsHtml = '';
-    if (hasUnowned) {
-        let unownedCardImgsHtml = '';
-        unownedCards.forEach(c => {
-            const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
-
-            unownedCardImgsHtml += `
-                <div class="possession-detail-card" 
-                     data-card-id="${c.id}" 
-                     style="position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; border: 1px solid #ddd; box-sizing: border-box; padding-bottom: 5px; display: flex; flex-direction: column;">
-                    <img src="${imgSrc}" 
-                         onerror="this.src='icons/card.png';" 
-                         style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(90%);">
-                    <img class="support-type-badge" src="icons/${(c.type || 'vocal').toLowerCase()}.webp">
-                    <img class="support-plan-badge" src="icons/${(c.plan || 'free').toLowerCase()}.webp">
-                </div>
-            `;
-        });
-
-        const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
-        unownedCardsHtml = `
-            <div class="possession-unowned-section" style="display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 8px; box-sizing: border-box; ${unownedSectionStyle}">
-                <div class="possession-unowned-title" style="font-size: 0.72rem; font-weight: 800; color: #999; text-align: left; padding-left: 8px; user-select: none;">
-                    ${unownedLabel} (${unownedCards.length})
-                </div>
-                <div class="possession-unowned-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 8px;">
-                    ${unownedCardImgsHtml}
-                </div>
-            </div>
-        `;
-    }
-
-    let ownedContainerHtml = '';
-    if (hasOwned) {
-        ownedContainerHtml = `
-            <div class="possession-owned-container" data-active-lb="0" style="display: grid; grid-template-columns: repeat(5, 1fr); width: 100%; box-sizing: border-box; ${ownedStyle}">
-                ${headersHtml}
-                ${listsHtml}
-            </div>
-        `;
-    }
+        return a.id.localeCompare(b.id);
+    });
 
     const headerHtml = `
         ${titleLabelHtml}
@@ -552,11 +562,173 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         </div>
     `;
 
+    // Group cards by quarter for Waffle Chart & Section Grouping (latest quarter first)
+    const isYearOnly = ['limited_f', 'limited_u', 'dist'].includes(srcKey);
+    const quarterMap = {};
+    allCards.forEach(c => {
+        const qKey = isYearOnly ? getCardYearKey(c.releasedAt) : getCardQuarterKey(c.releasedAt);
+        if (!quarterMap[qKey]) quarterMap[qKey] = [];
+        quarterMap[qKey].push(c);
+    });
+
+    const getLocalizedCardName = (card) => {
+        if (!card) return '';
+        const currentLang = state.currentLang || 'ko';
+        if (currentLang === 'en' && card.name_en) return card.name_en;
+        if (currentLang !== 'ko' && card.name_ja) return card.name_ja;
+        return card.name || card.name_ko || card.name_ja || card.id || '';
+    };
+
+    let quarterSectionsHtml = '';
+    const sortedQKeys = Object.keys(quarterMap).sort((a, b) => {
+        const getSortVal = (key) => {
+            if (key === '기타') return 9999;
+            const clean = key.replace("'", "").trim();
+            const parts = clean.split(' ');
+            const year = parseInt(parts[0], 10) || 0;
+            const sub = parts[1] || 'H99';
+            const subVal = sub === 'H1' ? 1 : sub === 'H2' ? 2 : 9;
+            return year * 10 + subVal;
+        };
+        return getSortVal(a) - getSortVal(b);
+    });
+
+    sortedQKeys.forEach(qKey => {
+        const qCards = quarterMap[qKey];
+        let waffleCellsHtml = '';
+        let qCardImgsHtml = '';
+
+        const ownedQCount = qCards.filter(x => !x.isDeactivated).length;
+        const waffleColsCount = Math.min(4, qCards.length);
+        const waffleColsDesktop = Math.min(5, qCards.length);
+        const waffleRowsCount = Math.ceil(qCards.length / waffleColsCount);
+        const waffleRowsCountDesktop = Math.ceil(qCards.length / waffleColsDesktop);
+        const maxRowsNeeded = Math.max(waffleRowsCount, waffleRowsCountDesktop);
+
+        // Desktop waffle content height: padding(16px) + title(~20px) + grid(rows*24 + gaps*3) + grid-padding(4px)
+        const waffleContentHeight = 40 + maxRowsNeeded * 24 + (maxRowsNeeded - 1) * 3;
+        // Mobile waffle content height: padding(~16px) + title(~14px) + grid(rows*16 + gaps*2)
+        const mobileWaffleContentHeight = 30 + waffleRowsCount * 16 + (waffleRowsCount - 1) * 2;
+        // Find smallest spanRows for desktop (row=63px) and mobile (row=34px), take max
+        const desktopSpanRows = Math.max(2, Math.ceil((waffleContentHeight + 8) / 63));
+        const mobileSpanRows = Math.max(2, Math.ceil((mobileWaffleContentHeight + 4) / 34));
+        const spanRows = Math.max(desktopSpanRows, mobileSpanRows);
+        const boxMinHeightCalc = `${spanRows * 55 + (spanRows - 1) * 8}px`;
+        const mobileBoxMinHeightCalc = `${spanRows * 34 - 2}px`;
+        const waffleMarginStyle = 'margin: auto;';
+
+        // Limit break progress score for Waffle Box background fill
+        // Unowned (isDeactivated) or 0-LB = 0 points, 1-LB = 1 pt, 2-LB = 2 pts, 3-LB = 3 pts, 4-LB = 4 pts
+        const maxScore = qCards.length * 4;
+        let currentScore = 0;
+        qCards.forEach(c => {
+            if (!c.isDeactivated) {
+                const lb = c.lb || 0;
+                currentScore += lb;
+            }
+        });
+        const progressPct = maxScore > 0 ? ((currentScore / maxScore) * 100).toFixed(1) : '0';
+        const fillRgba = hexToRgba(themeColor, 0.18);
+        const boxBgStyle = parseFloat(progressPct) > 0
+            ? `background: linear-gradient(to top, ${fillRgba} 0%, ${fillRgba} ${progressPct}%, #ffffff ${progressPct}%, #ffffff 100%);`
+            : 'background: #ffffff;';
+        const isFullScore = maxScore > 0 && currentScore >= maxScore;
+        const boxBorderStyle = isFullScore
+            ? `border: 1.5px solid ${themeColor};`
+            : 'border: 1px solid #cbd5e1;';
+
+        if (waffleQuarterState[qKey] === undefined) waffleQuarterState[qKey] = true;
+        const isCollapsed = !!waffleQuarterState[qKey];
+        const cardDisplayStyle = isCollapsed ? 'display: none !important;' : '';
+        const min2RowsHeightPx = '118px';
+        const containerGridStyle = isCollapsed
+            ? `grid-column: span 1; grid-row: span 1; min-height: ${boxMinHeightCalc};`
+            : `grid-column: 1; grid-row: span ${spanRows}; min-height: ${boxMinHeightCalc};`;
+        const chevronTransform = isCollapsed ? 'transform: rotate(-90deg);' : 'transform: rotate(0deg);';
+        const blockClass = isCollapsed ? 'possession-quarter-block collapsed' : 'possession-quarter-block';
+
+        qCards.forEach(c => {
+            const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
+            const imgStyle = c.isDeactivated ? 'filter: grayscale(100%) brightness(0.8);' : '';
+            const lb = c.isDeactivated ? 0 : (c.lb || 0);
+
+            // Waffle cell (Flat solid attribute color 100% opacity with white LB numbers 1~4)
+            const cardType = (c.type || 'vocal').toLowerCase();
+            const attrColor = TYPE_COLORS[cardType] || '#ff2a6d';
+            const darkAttrColor = darkenColor(attrColor, 0.45);
+            const cellBgStyle = c.isDeactivated
+                ? `background: ${darkAttrColor}; border: none; opacity: 0.35;`
+                : `background: ${attrColor}; border: none; opacity: 1.0;`;
+            const cellRadius = (c.rarity === 'SR') ? '14px 14px 4px 14px' : '4px';
+            const cardLocalizedName = getLocalizedCardName(c);
+            const cellTextHtml = (!c.isDeactivated)
+                ? `<span style="position: absolute; right: 3.5px; bottom: 2px; font-size: 0.6rem; font-weight: 900; color: #ffffff; line-height: 1; user-select: none;">${lb}</span>`
+                : '';
+
+            waffleCellsHtml += `
+                <div class="possession-waffle-cell" 
+                     data-card-id="${c.id}"
+                     title="${cardLocalizedName}"
+                     style="position: relative; width: 24px; height: 24px; border-radius: ${cellRadius}; overflow: hidden; ${cellBgStyle} box-sizing: border-box; flex-shrink: 0;">
+                    ${cellTextHtml}
+                </div>
+            `;
+
+            // Full detail card (Hide limit break flowers for unowned cards)
+            const flowersHtml = c.isDeactivated ? '' : Array.from({ length: 4 }, (_, idx) => {
+                const src = (idx < lb) ? 'icons/flower.webp' : 'icons/flowerback.webp';
+                return `<img src="${src}" class="support-card-flower">`;
+            }).join('');
+
+            qCardImgsHtml += `
+                <div class="possession-detail-card" 
+                     data-qkey="${qKey}"
+                     data-card-id="${c.id}" 
+                     style="position: relative; width: 100%; height: 55px; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; border: 1px solid #ddd; box-sizing: border-box; padding-left: 5px; display: flex; flex-direction: column; ${cardDisplayStyle}">
+                    <img src="${imgSrc}" 
+                         onerror="this.src='icons/card.png';" 
+                         style="width: 100%; height: 100%; object-fit: cover; display: block; ${imgStyle}">
+                    <div class="support-card-gradient-overlay"></div>
+                    <img class="support-type-badge" src="icons/${(c.type || 'vocal').toLowerCase()}.webp">
+                    <img class="support-plan-badge" src="icons/${(c.plan || 'free').toLowerCase()}.webp">
+                    <div class="support-card-flowers">${flowersHtml}</div>
+                </div>
+            `;
+        });
+
+        quarterSectionsHtml += `
+            <!-- 분기 첫번째 슬롯: 차트 내부 좌상단 분기 제목 + 와플 차트 -->
+            <div class="waffle-quarter-container ${blockClass}" 
+                 data-qkey="${qKey}" 
+                 data-span-rows="${spanRows}"
+                 data-min-height-calc="${boxMinHeightCalc}"
+                 data-mobile-min-height-calc="${mobileBoxMinHeightCalc}"
+                 style="${containerGridStyle} position: relative; width: 100%; border-radius: 3px 16px 3px 3px; ${boxBgStyle} ${boxBorderStyle} box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 8px 6px; overflow: hidden; cursor: pointer; user-select: none; --mobile-min-height: ${mobileBoxMinHeightCalc};">
+                <!-- 차트 내부 좌상단 제목 -->
+                <div class="waffle-quarter-title" style="font-size: 0.7rem; font-weight: 800; color: #333; margin-bottom: 6px; padding-left: 2px; user-select: none; align-self: flex-start; display: flex; align-items: center; width: 100%; justify-content: space-between;">
+                    <div>
+                        <span>${qKey}</span>
+                        <span style="font-size: 0.65rem; color: ${themeColor}; font-weight: 800; margin-left: 2px;">(${ownedQCount}/${qCards.length})</span>
+                    </div>
+                    <svg class="waffle-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.2s ease; ${chevronTransform} margin-right: 2px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <!-- 와플 셀 그리드 -->
+                <div class="possession-waffle-grid" style="display: grid; grid-template-columns: repeat(${waffleColsCount}, 24px); gap: 3px; max-width: 100%; align-self: center; ${waffleMarginStyle} padding: 2px; --waffle-cols: ${waffleColsCount}; --waffle-cols-desktop: ${waffleColsDesktop};">
+                    ${waffleCellsHtml}
+                </div>
+            </div>
+
+            <!-- 뒤이어 유동적으로 빈 슬롯을 채우는 카드 이미지들 -->
+            ${qCardImgsHtml}
+        `;
+    });
+
     const detailContainerHtml = `
         <div class="possession-detail-container" style="display: none; margin-top: 12px;">
             <div class="possession-detail-scroll-wrapper" style="box-sizing: border-box; display: flex; flex-direction: column;">
-                ${ownedContainerHtml}
-                ${unownedCardsHtml}
+                <div class="possession-unified-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; padding: 10px; box-sizing: border-box; background-color: rgba(0, 0, 0, 0.025); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 10px;">
+                    ${quarterSectionsHtml || `<div style="font-size: 0.65rem; color: #bbb; text-align: center; user-select: none; grid-column: 1 / -1;">-</div>`}
+                </div>
             </div>
         </div>
     `;
@@ -716,7 +888,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
             const customColor = SOURCE_COLORS[src] || themeColor;
 
             const rate = formatRate(sStats.owned, sStats.total);
-            const parts = buildSectionInnerParts(label, sStats, customColor, false);
+            const parts = buildSectionInnerParts(label, sStats, customColor, false, '', src);
 
             sourceCardsHtmlList.push(`
                 <div class="possession-source-card" data-source="${src}">
@@ -1350,12 +1522,15 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     padding-left: 8px;
                     user-select: none;
                 }
+                .possession-detail-card > img:first-child {
+                    object-position: center calc(50% + 6px);
+                }
                 .support-type-badge {
                     position: absolute;
-                    bottom: 8px;
-                    right: 3px;
-                    width: 18px;
-                    height: 18px;
+                    top: calc(50% - 22px);
+                    left: 8px;
+                    width: 20px;
+                    height: 20px;
                     z-index: 5;
                     pointer-events: none;
                     user-select: none;
@@ -1364,103 +1539,80 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                 }
                 .support-plan-badge {
                     position: absolute;
-                    top: 3px;
-                    left: 3px;
-                    width: 18px;
-                    height: 18px;
+                    top: calc(50% + 2px);
+                    left: 8px;
+                    width: 20px;
+                    height: 20px;
                     z-index: 5;
                     pointer-events: none;
                     user-select: none;
                     object-fit: contain;
                     box-sizing: border-box;
                 }
+                .support-card-gradient-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 5px;
+                    bottom: 0;
+                    right: 10px;
+                    background: linear-gradient(to right, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.3) 15%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+                    pointer-events: none;
+                    z-index: 2;
+                }
+                .support-card-flowers {
+                    position: absolute;
+                    bottom: 3px;
+                    right: 4px;
+                    display: flex;
+                    align-items: center;
+                    gap: 1px;
+                    z-index: 5;
+                    pointer-events: none;
+                    user-select: none;
+                }
+                .support-card-flower {
+                    width: 14px;
+                    height: 14px;
+                    object-fit: contain;
+                    display: block;
+                }
+                @media (min-width: 951px) {
+                    body:not(.is-capturing) .possession-waffle-grid {
+                        grid-template-columns: repeat(var(--waffle-cols-desktop, 5), 24px) !important;
+                    }
+                }
                 @media (max-width: 768px) {
-                    body:not(.is-capturing) .possession-owned-container {
-                        display: grid !important;
-                        grid-template-columns: repeat(5, 1fr) !important;
-                        gap: 0 !important;
-                        margin-left: -6px !important;
-                        margin-right: -6px !important;
-                        width: calc(100% + 12px) !important;
-                    }
-                    body:not(.is-capturing) .possession-unowned-section {
-                        margin-left: -6px !important;
-                        margin-right: -6px !important;
-                        width: calc(100% + 12px) !important;
-                    }
-                    body:not(.is-capturing) .possession-col-header {
-                        cursor: pointer !important;
-                        padding: 6px 2px !important;
-                        border-right: 1px solid #f0f0f0 !important;
-                        border-radius: 0 !important;
-                        background: transparent !important;
-                        text-align: center !important;
-                        font-size: 0.45rem !important;
-                        margin-bottom: 6px !important;
-                        padding-top: 6px !important;
-                        padding-bottom: 6px !important;
-                        transition: all 0.15s ease !important;
-                    }
-                    body:not(.is-capturing) .possession-col-header[data-lb="4"] {
-                        border-right: none !important;
-                    }
-                    body:not(.is-capturing) .possession-col-header:hover {
-                        color: #ff4d8d !important;
-                    }
-                    body:not(.is-capturing) .possession-col-header.active {
-                        color: #ff4d8d !important;
-                        font-weight: 900 !important;
-                    }
-                    body:not(.is-capturing) .possession-detail-card-list {
-                        grid-column: 1 / span 5 !important;
-                        display: none !important;
+                    body:not(.is-capturing) .possession-unified-grid {
                         grid-template-columns: repeat(3, 1fr) !important;
-                        gap: 8px !important;
-                        padding: 0 4px 3px 4px !important;
-                        border-right: none !important;
+                        column-gap: 6px !important;
+                        row-gap: 2px !important;
+                        padding: 6px 4px !important;
                     }
-                    
-                    /* CSS Filter Logic for Mobile Tabs */
-                    body:not(.is-capturing) .possession-owned-container[data-active-lb="0"] .possession-detail-card-list[data-lb="0"] {
-                        display: grid !important;
-                    }
-                    body:not(.is-capturing) .possession-owned-container[data-active-lb="1"] .possession-detail-card-list[data-lb="1"] {
-                        display: grid !important;
-                    }
-                    body:not(.is-capturing) .possession-owned-container[data-active-lb="2"] .possession-detail-card-list[data-lb="2"] {
-                        display: grid !important;
-                    }
-                    body:not(.is-capturing) .possession-owned-container[data-active-lb="3"] .possession-detail-card-list[data-lb="3"] {
-                        display: grid !important;
-                    }
-                    body:not(.is-capturing) .possession-owned-container[data-active-lb="4"] .possession-detail-card-list[data-lb="4"] {
-                        display: grid !important;
-                    }
-
                     body:not(.is-capturing) .possession-detail-card {
-                        padding-bottom: 3px !important;
-                    }
-                    body:not(.is-capturing) .possession-unowned-grid {
-                        display: grid !important;
-                        grid-template-columns: repeat(3, 1fr) !important;
-                        gap: 8px !important;
-                        padding: 0 4px !important;
-                    }
-                    body:not(.is-capturing) .possession-unowned-title {
-                        font-size: 0.55rem !important;
-                        padding-left: 4px !important;
+                        height: 30px !important;
                     }
                     body:not(.is-capturing) .support-type-badge {
-                        width: 12px !important;
-                        height: 12px !important;
-                        bottom: 6px !important;
-                        right: 3px !important;
+                        width: 11px !important;
+                        height: 11px !important;
+                        top: 2px !important;
+                        bottom: auto !important;
+                        left: 4px !important;
                     }
                     body:not(.is-capturing) .support-plan-badge {
-                        width: 12px !important;
-                        height: 12px !important;
-                        top: 3px !important;
-                        left: 3px !important;
+                        width: 11px !important;
+                        height: 11px !important;
+                        bottom: 2px !important;
+                        top: auto !important;
+                        left: 4px !important;
+                    }
+                    body:not(.is-capturing) .support-card-flowers {
+                        bottom: 2px !important;
+                        right: 3px !important;
+                        gap: 0.5px !important;
+                    }
+                    body:not(.is-capturing) .support-card-flower {
+                        width: 8px !important;
+                        height: 8px !important;
                     }
                     body:not(.is-capturing) .possession-category-header {
                         padding: 4px 6px !important;
@@ -1506,6 +1658,36 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     }
                     body:not(.is-capturing) .possession-plan-detail-wrapper .possession-detail-container {
                         margin-top: 2px !important;
+                    }
+                    body:not(.is-capturing) .possession-waffle-grid {
+                        grid-template-columns: repeat(var(--waffle-cols-mobile, 4), 16px) !important;
+                        gap: 2px !important;
+                    }
+                    body:not(.is-capturing) .possession-waffle-cell {
+                        width: 16px !important;
+                        height: 16px !important;
+                    }
+                    body:not(.is-capturing) .possession-waffle-cell > span {
+                        font-size: 0.42rem !important;
+                        right: 1px !important;
+                        bottom: 0.5px !important;
+                    }
+                    body:not(.is-capturing) .waffle-quarter-container {
+                        min-height: var(--mobile-min-height, 64px) !important;
+                    }
+                    body:not(.is-capturing) .waffle-quarter-title {
+                        font-size: 0.5rem !important;
+                        margin-bottom: 4px !important;
+                    }
+                    body:not(.is-capturing) .waffle-quarter-title span:first-child {
+                        font-size: 0.5rem !important;
+                    }
+                    body:not(.is-capturing) .waffle-quarter-title span:last-child {
+                        font-size: 0.44rem !important;
+                    }
+                    body:not(.is-capturing) .waffle-quarter-title .waffle-chevron {
+                        width: 7px !important;
+                        height: 7px !important;
                     }
                 }
             </style>
@@ -1953,6 +2135,49 @@ export function openPossessionModal() {
 
     const statsArea = modal.querySelector('#possession-stats-area');
     statsArea.addEventListener('click', (e) => {
+        // Waffle quarter container click handler (collapse/expand cards in that quarter)
+        const waffleQuarterContainer = e.target.closest('.waffle-quarter-container');
+        if (waffleQuarterContainer) {
+            const qKey = waffleQuarterContainer.getAttribute('data-qkey');
+            if (qKey) {
+                const isCurrentlyCollapsed = waffleQuarterContainer.classList.contains('collapsed');
+                const nextState = !isCurrentlyCollapsed;
+
+                waffleQuarterState[qKey] = nextState;
+                waffleQuarterContainer.classList.toggle('collapsed', nextState);
+
+                const origSpan = waffleQuarterContainer.getAttribute('data-span-rows') || '2';
+                const origMinHeight = waffleQuarterContainer.getAttribute('data-min-height-calc') || '';
+
+                const min2RowsHeightPx = '118px';
+                if (nextState) {
+                    waffleQuarterContainer.style.gridColumn = 'span 1';
+                    waffleQuarterContainer.style.gridRow = 'span 1';
+                    waffleQuarterContainer.style.height = '';
+                    waffleQuarterContainer.style.minHeight = origMinHeight;
+                } else {
+                    waffleQuarterContainer.style.gridColumn = '1';
+                    waffleQuarterContainer.style.gridRow = `span ${origSpan}`;
+                    waffleQuarterContainer.style.height = '';
+                    waffleQuarterContainer.style.minHeight = origMinHeight;
+                }
+
+                const unifiedGrid = waffleQuarterContainer.closest('.possession-unified-grid');
+                if (unifiedGrid) {
+                    const cards = unifiedGrid.querySelectorAll(`.possession-detail-card[data-qkey="${qKey}"]`);
+                    cards.forEach(c => {
+                        c.style.display = nextState ? 'none' : 'flex';
+                    });
+                }
+
+                const chevron = waffleQuarterContainer.querySelector('.waffle-chevron');
+                if (chevron) {
+                    chevron.style.transform = nextState ? 'rotate(-90deg)' : 'rotate(0deg)';
+                }
+            }
+            return;
+        }
+
         // Overall bar click handler
         const overallBar = e.target.closest('.possession-overall-bar-container');
         if (overallBar) {
@@ -1982,7 +2207,7 @@ export function openPossessionModal() {
         // 파라미터별 카드 클릭 -> 막대 그래프 및 상세 아코디언 펼침
         const typeCard = e.target.closest('.possession-type-card');
         if (typeCard && !typeCard.classList.contains('expanded')) {
-            if (e.target.closest('.possession-detail-card') || e.target.closest('.possession-col-header')) {
+            if (e.target.closest('.possession-detail-card') || e.target.closest('.possession-col-header') || e.target.closest('.waffle-quarter-container')) {
                 return;
             }
             const mainView = typeCard.querySelector('.possession-type-main-view');
@@ -2119,31 +2344,7 @@ export function openPossessionModal() {
             }
         }
 
-        // Tab click handler for mobile layout
-        const colHeader = e.target.closest('.possession-col-header');
-        if (colHeader) {
-            if (window.innerWidth <= 768) {
-                const container = colHeader.closest('.possession-owned-container');
-                if (container) {
-                    const lbVal = colHeader.getAttribute('data-lb');
-                    const currentActive = container.getAttribute('data-active-lb');
 
-                    if (currentActive === lbVal) {
-                        // Already active -> keep active and do nothing
-                        colHeader.classList.add('active');
-                        return;
-                    }
-
-                    // Deactivate all headers in this container
-                    const headers = container.querySelectorAll('.possession-col-header');
-                    headers.forEach(h => h.classList.remove('active'));
-
-                    // Activate clicked tab
-                    container.setAttribute('data-active-lb', lbVal);
-                    colHeader.classList.add('active');
-                }
-            }
-        }
     });
 
 
@@ -2502,6 +2703,41 @@ export function openPossessionModal() {
                     container.style.display = (saveType === 'overall' && isOverallSection) ? 'block' : 'none';
                 });
 
+                // Temporarily expand all Waffle Quarter Containers and Detail Cards inside overall section when saveType === 'overall'
+                const origWaffleBlockStates = [];
+                if (saveType === 'overall') {
+                    const overallWaffleBlocks = modalContent.querySelectorAll('.possession-section-card[data-is-overall="true"] .waffle-quarter-container');
+                    overallWaffleBlocks.forEach(box => {
+                        const qKey = box.getAttribute('data-qkey');
+                        const spanRows = box.getAttribute('data-span-rows');
+                        const boxMinHeightCalc = box.getAttribute('data-min-height-calc');
+                        const chevron = box.querySelector('.waffle-chevron');
+                        const detailCards = modalContent.querySelectorAll(`.possession-detail-card[data-qkey="${qKey}"]`);
+
+                        const origDetailCardDisplays = [];
+                        detailCards.forEach(card => {
+                            origDetailCardDisplays.push({ card: card, display: card.style.display });
+                            card.style.display = 'flex';
+                        });
+
+                        origWaffleBlockStates.push({
+                            box: box,
+                            isCollapsed: box.classList.contains('collapsed'),
+                            gridColumn: box.style.gridColumn,
+                            gridRow: box.style.gridRow,
+                            minHeight: box.style.minHeight,
+                            chevronTransform: chevron ? chevron.style.transform : '',
+                            detailCardStates: origDetailCardDisplays
+                        });
+
+                        box.classList.remove('collapsed');
+                        box.style.gridColumn = '1';
+                        box.style.gridRow = `span ${spanRows}`;
+                        box.style.minHeight = boxMinHeightCalc;
+                        if (chevron) chevron.style.transform = 'rotate(0deg)';
+                    });
+                }
+
                 // Reset wrapper scroll to top and force reflow
                 const scrollWrappers = modalContent.querySelectorAll('.possession-detail-scroll-wrapper');
                 const origWrapperStyles = [];
@@ -2539,22 +2775,24 @@ export function openPossessionModal() {
                     wrapper.style.overflowY = 'visible';
                 });
 
-                // Save sticky headers position and change to static so they draw naturally at the top
-                const headers = modalContent.querySelectorAll('.possession-col-header');
-                const origHeaderPositions = [];
-                headers.forEach(hdr => {
-                    origHeaderPositions.push({ el: hdr, position: hdr.style.position });
-                    hdr.style.position = 'static';
-                });
-
-                // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
-                const unownedImgs = modalContent.querySelectorAll('.possession-unowned-grid img:not(.support-type-badge):not(.support-plan-badge)');
-                const origImgSrcs = [];
-                unownedImgs.forEach(img => {
-                    origImgSrcs.push({ img: img, src: img.src });
-                    if (window.getGrayscaleDataUrl) {
-                        img.src = window.getGrayscaleDataUrl(img);
-                    }
+                // Temporarily pre-crop and convert all card thumbnail images right before capture so html2canvas renders exact 5.5:2 ratio without vertical squishing
+                const cardImgs = modalContent.querySelectorAll('.possession-detail-card > img:first-child');
+                const origImgStates = [];
+                cardImgs.forEach(img => {
+                    const isGrayscale = (img.style.filter || '').includes('grayscale');
+                    const w = img.offsetWidth || 138.4;
+                    const h = img.offsetHeight || 50.32;
+                    origImgStates.push({
+                        img: img,
+                        src: img.src,
+                        filter: img.style.filter,
+                        objectFit: img.style.objectFit,
+                        objectPosition: img.style.objectPosition
+                    });
+                    img.src = getPreCroppedCardDataUrl(img, w, h, isGrayscale, 6);
+                    img.style.filter = 'none';
+                    img.style.objectFit = 'fill';
+                    img.style.objectPosition = 'center';
                 });
 
                 const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -2580,9 +2818,12 @@ export function openPossessionModal() {
                         link.href = dataUrl;
                         link.click();
 
-                        // Restore original image sources after capture
-                        origImgSrcs.forEach(item => {
+                        // Restore original image sources and styles after capture
+                        origImgStates.forEach(item => {
                             item.img.src = item.src;
+                            item.img.style.filter = item.filter;
+                            item.img.style.objectFit = item.objectFit;
+                            item.img.style.objectPosition = item.objectPosition;
                         });
 
                         // Restore original styles
@@ -2660,6 +2901,22 @@ export function openPossessionModal() {
                             if (chevron) chevron.style.transform = state.chevronTransform;
                         });
 
+                        origWaffleBlockStates.forEach(state => {
+                            if (state.isCollapsed) {
+                                state.box.classList.add('collapsed');
+                            } else {
+                                state.box.classList.remove('collapsed');
+                            }
+                            state.box.style.gridColumn = state.gridColumn;
+                            state.box.style.gridRow = state.gridRow;
+                            state.box.style.minHeight = state.minHeight;
+                            const chevron = state.box.querySelector('.waffle-chevron');
+                            if (chevron) chevron.style.transform = state.chevronTransform;
+                            state.detailCardStates.forEach(item => {
+                                item.card.style.display = item.display;
+                            });
+                        });
+
                         origDetailDisplays.forEach(item => {
                             item.el.style.display = item.display;
                         });
@@ -2667,9 +2924,6 @@ export function openPossessionModal() {
                             item.el.style.maxHeight = item.maxHeight;
                             item.el.style.overflowY = item.overflowY;
                             item.el.scrollTop = item.scrollTop;
-                        });
-                        origHeaderPositions.forEach(item => {
-                            item.el.style.position = item.position;
                         });
 
                         btn.innerHTML = originalText;
@@ -2758,6 +3012,22 @@ export function openPossessionModal() {
 
                             if (detailContainer) detailContainer.style.display = state.detailDisplay;
                             if (chevron) chevron.style.transform = state.chevronTransform;
+                        });
+
+                        origWaffleBlockStates.forEach(state => {
+                            if (state.isCollapsed) {
+                                state.box.classList.add('collapsed');
+                            } else {
+                                state.box.classList.remove('collapsed');
+                            }
+                            state.box.style.gridColumn = state.gridColumn;
+                            state.box.style.gridRow = state.gridRow;
+                            state.box.style.minHeight = state.minHeight;
+                            const chevron = state.box.querySelector('.waffle-chevron');
+                            if (chevron) chevron.style.transform = state.chevronTransform;
+                            state.detailCardStates.forEach(item => {
+                                item.card.style.display = item.display;
+                            });
                         });
 
                         origDetailDisplays.forEach(item => {
