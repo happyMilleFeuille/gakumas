@@ -103,10 +103,10 @@ function getPreCroppedCardDataUrl(imgEl, targetWidth, targetHeight, isGrayscale,
 
         ctx.drawImage(imgEl, sx, sy, sWidth, sHeight, 0, 0, cw, ch);
 
-        if (grayscaleAmount > 0) {
+        if (isGrayscale) {
             const imgData = ctx.getImageData(0, 0, cw, ch);
             const data = imgData.data;
-            const factor = typeof grayscaleAmount === 'number' ? grayscaleAmount : 1.0;
+            const factor = typeof isGrayscale === 'number' ? isGrayscale : 1.0;
             const colorFactor = 1 - factor;
             for (let i = 0; i < data.length; i += 4) {
                 const gray = Math.round(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
@@ -601,6 +601,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
     });
 
     let sectionMaxSpanRows = 2;
+    let sectionMaxMobileSpanRows = 2;
     sortedQKeys.forEach(qKey => {
         const qCards = quarterMap[qKey];
         const waffleColsCount = Math.min(4, qCards.length);
@@ -609,11 +610,16 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         const waffleRowsCountDesktop = Math.ceil(qCards.length / waffleColsDesktop);
         const maxRowsNeeded = Math.max(waffleRowsCount, waffleRowsCountDesktop);
         const sRows = maxRowsNeeded <= 2 ? 2 : maxRowsNeeded <= 4 ? 3 : maxRowsNeeded <= 6 ? 4 : maxRowsNeeded <= 9 ? 5 : maxRowsNeeded <= 11 ? 6 : Math.ceil(maxRowsNeeded / 2) + 1;
+        const mRows = waffleRowsCount <= 2 ? 2 : waffleRowsCount <= 4 ? 3 : waffleRowsCount <= 5 ? 4 : waffleRowsCount <= 7 ? 5 : waffleRowsCount <= 9 ? 6 : waffleRowsCount <= 11 ? 7 : Math.ceil(waffleRowsCount / 2) + 1;
         if (sRows > sectionMaxSpanRows) {
             sectionMaxSpanRows = sRows;
         }
+        if (mRows > sectionMaxMobileSpanRows) {
+            sectionMaxMobileSpanRows = mRows;
+        }
     });
     const sectionMaxHeightCalc = `${sectionMaxSpanRows * 55 + (sectionMaxSpanRows - 1) * 5}px`;
+    const mobileSectionMaxHeightCalc = `${sectionMaxMobileSpanRows * 30 + (sectionMaxMobileSpanRows - 1) * 2}px`;
 
     sortedQKeys.forEach(qKey => {
         const qCards = quarterMap[qKey];
@@ -631,10 +637,13 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         const waffleContentHeight = 40 + maxRowsNeeded * 24 + (maxRowsNeeded - 1) * 3;
         // Mobile waffle content height: padding(~16px) + title(~14px) + grid(rows*16 + gaps*2)
         const mobileWaffleContentHeight = 30 + waffleRowsCount * 16 + (waffleRowsCount - 1) * 2;
-        // 1-2 cell rows = 2 (115px), 3-4 cell rows = 3 (175px), 5-6 cell rows = 4 (235px), 7-9 cell rows = 5 (295px), 10-11 cell rows = 6 (355px)
+        // PC: 1-2 cell rows = 2, 3-4 = 3, 5-6 = 4, 7-9 = 5, 10-11 = 6
         const spanRows = maxRowsNeeded <= 2 ? 2 : maxRowsNeeded <= 4 ? 3 : maxRowsNeeded <= 6 ? 4 : maxRowsNeeded <= 9 ? 5 : maxRowsNeeded <= 11 ? 6 : Math.ceil(maxRowsNeeded / 2) + 1;
+        // Mobile: 1-2 cell rows = 2, 3-4 = 3, 5 = 4, 6-7 = 5, 8-9 = 6, 10-11 = 7
+        const mobileSpanRows = waffleRowsCount <= 2 ? 2 : waffleRowsCount <= 4 ? 3 : waffleRowsCount <= 5 ? 4 : waffleRowsCount <= 7 ? 5 : waffleRowsCount <= 9 ? 6 : waffleRowsCount <= 11 ? 7 : Math.ceil(waffleRowsCount / 2) + 1;
+
         const boxMinHeightCalc = `${spanRows * 55 + (spanRows - 1) * 5}px`;
-        const mobileBoxMinHeightCalc = `${spanRows * 34 - 2}px`;
+        const mobileBoxMinHeightCalc = `${mobileSpanRows * 30 + (mobileSpanRows - 1) * 2}px`;
         const waffleMarginStyle = 'margin: auto;';
 
         // Limit break progress score for Waffle Box background fill
@@ -660,10 +669,11 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         if (waffleQuarterState[qKey] === undefined) waffleQuarterState[qKey] = true;
         const isCollapsed = !!waffleQuarterState[qKey];
         const cardDisplayStyle = isCollapsed ? 'display: none !important;' : '';
-        const min2RowsHeightPx = '115px';
+        const pcHeight = isCollapsed ? sectionMaxHeightCalc : boxMinHeightCalc;
+        const mobileHeight = isCollapsed ? mobileSectionMaxHeightCalc : mobileBoxMinHeightCalc;
         const containerGridStyle = isCollapsed
-            ? `grid-column: span 1; grid-row: span 1; height: ${sectionMaxHeightCalc} !important; min-height: ${sectionMaxHeightCalc} !important; max-height: ${sectionMaxHeightCalc} !important;`
-            : `grid-column: 1; grid-row: span ${spanRows}; height: ${boxMinHeightCalc} !important; min-height: ${boxMinHeightCalc} !important; max-height: ${boxMinHeightCalc} !important;`;
+            ? `grid-column: span 1; grid-row: span 1;`
+            : `grid-column: 1; grid-row: span ${spanRows};`;
         const chevronTransform = isCollapsed ? 'transform: rotate(-90deg);' : 'transform: rotate(0deg);';
         const blockClass = isCollapsed ? 'possession-quarter-block collapsed' : 'possession-quarter-block';
 
@@ -724,23 +734,41 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             `;
         });
 
-        // Detail card spacers:
-        // 1) Up to waffle box height (baseLimit = spanRows * 4): pad to baseLimit (4-col grid)
-        // 2) Overflow past waffle box (> baseLimit): pad overflow to multiples of 5 (5-col grid)
-        const baseLimit = spanRows * 4;
-        let totalTargetCount = baseLimit;
-        if (qCards.length > baseLimit) {
-            const overflow = qCards.length - baseLimit;
-            const overflowRemainder = overflow % 5;
-            const neededOverflowSpacers = overflowRemainder === 0 ? 0 : (5 - overflowRemainder);
-            totalTargetCount = qCards.length + neededOverflowSpacers;
+        // PC Detail card spacers: (1) pcBaseLimit = spanRows * 4 (2) overflow padded to multiples of 5
+        const pcBaseLimit = spanRows * 4;
+        let pcTargetCount = pcBaseLimit;
+        if (qCards.length > pcBaseLimit) {
+            const overflow = qCards.length - pcBaseLimit;
+            const overflowRem = overflow % 5;
+            pcTargetCount = qCards.length + (overflowRem === 0 ? 0 : (5 - overflowRem));
+        }
+        const pcSpacerCount = pcTargetCount - qCards.length;
+
+        // Mobile Detail card spacers: (1) mobileBaseLimit = mobileSpanRows * 2 (2) overflow padded to multiples of 3
+        const mobileBaseLimit = mobileSpanRows * 2;
+        let mobileTargetCount = mobileBaseLimit;
+        if (qCards.length > mobileBaseLimit) {
+            const overflow = qCards.length - mobileBaseLimit;
+            const overflowRem = overflow % 3;
+            mobileTargetCount = qCards.length + (overflowRem === 0 ? 0 : (3 - overflowRem));
+        }
+        const mobileSpacerCount = mobileTargetCount - qCards.length;
+
+        if (pcSpacerCount > 0) {
+            for (let s = 0; s < pcSpacerCount; s++) {
+                qCardImgsHtml += `
+                    <div class="possession-detail-card possession-detail-card-spacer possession-detail-card-spacer-pc" 
+                         data-qkey="${qKey}"
+                         style="position: relative; width: 100%; height: 55px; border-radius: 3px 16px 3px 3px; overflow: hidden; background: transparent; border: 1px dashed rgba(0, 0, 0, 0.08); box-sizing: border-box; visibility: hidden; pointer-events: none; ${cardDisplayStyle}">
+                    </div>
+                `;
+            }
         }
 
-        const spacerCount = totalTargetCount - qCards.length;
-        if (spacerCount > 0) {
-            for (let s = 0; s < spacerCount; s++) {
+        if (mobileSpacerCount > 0) {
+            for (let s = 0; s < mobileSpacerCount; s++) {
                 qCardImgsHtml += `
-                    <div class="possession-detail-card possession-detail-card-spacer" 
+                    <div class="possession-detail-card possession-detail-card-spacer possession-detail-card-spacer-mobile" 
                          data-qkey="${qKey}"
                          style="position: relative; width: 100%; height: 55px; border-radius: 3px 16px 3px 3px; overflow: hidden; background: transparent; border: 1px dashed rgba(0, 0, 0, 0.08); box-sizing: border-box; visibility: hidden; pointer-events: none; ${cardDisplayStyle}">
                     </div>
@@ -755,10 +783,12 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             <div class="waffle-quarter-container ${blockClass}" 
                  data-qkey="${qKey}" 
                  data-span-rows="${spanRows}"
+                 data-mobile-span-rows="${mobileSpanRows}"
                  data-min-height-calc="${boxMinHeightCalc}"
                  data-max-min-height-calc="${sectionMaxHeightCalc}"
                  data-mobile-min-height-calc="${mobileBoxMinHeightCalc}"
-                 style="${containerGridStyle} position: relative; width: 100%; border-radius: 3px 16px 3px 3px; ${boxBgStyle} ${boxBorderStyle} box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 8px 6px; overflow: hidden; cursor: pointer; user-select: none; --mobile-min-height: ${mobileBoxMinHeightCalc};">
+                 data-mobile-max-min-height-calc="${mobileSectionMaxHeightCalc}"
+                 style="${containerGridStyle} position: relative; width: 100%; border-radius: 3px 16px 3px 3px; ${boxBgStyle} ${boxBorderStyle} box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 8px 6px; overflow: hidden; cursor: pointer; user-select: none; --pc-height: ${pcHeight}; --mobile-min-height: ${mobileHeight}; --mobile-span-rows: ${mobileSpanRows};">
                 <!-- 차트 내부 좌상단 제목 -->
                 <div class="waffle-quarter-title" style="font-size: 0.7rem; font-weight: 800; color: #333; margin-bottom: 6px; padding-left: 2px; user-select: none; align-self: flex-start; display: flex; align-items: center; width: 100%; justify-content: space-between;">
                     <div>
@@ -768,7 +798,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
                     <svg class="waffle-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.2s ease; ${chevronTransform} margin-right: 2px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
                 <!-- 와플 셀 그리드 -->
-                <div class="possession-waffle-grid" style="display: grid; grid-template-columns: repeat(${waffleColsCount}, 24px); gap: 3px; max-width: 100%; align-self: center; ${waffleMarginStyle} padding: 2px; --waffle-cols: ${waffleColsCount}; --waffle-cols-desktop: ${waffleColsDesktop};">
+                <div class="possession-waffle-grid" style="display: grid; grid-template-columns: repeat(${waffleColsCount}, 24px); gap: 3px; max-width: 100%; align-self: center; ${waffleMarginStyle} padding: 2px; --waffle-cols: ${waffleColsCount}; --waffle-cols-desktop: ${waffleColsDesktop}; --waffle-cols-mobile: ${waffleColsCount};">
                     ${waffleCellsHtml}
                 </div>
             </div>
@@ -781,7 +811,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
     const detailContainerHtml = `
         <div class="possession-detail-container" style="display: none; margin-top: 12px;">
             <div class="possession-detail-scroll-wrapper" style="box-sizing: border-box; display: flex; flex-direction: column;">
-                <div class="possession-unified-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; padding: 10px; box-sizing: border-box; background-color: rgba(0, 0, 0, 0.025); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 10px;">
+                <div class="possession-unified-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; padding: 0; box-sizing: border-box;">
                     ${quarterSectionsHtml || `<div style="font-size: 0.65rem; color: #bbb; text-align: center; user-select: none; grid-column: 1 / -1;">-</div>`}
                 </div>
             </div>
@@ -1551,11 +1581,14 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     background: #888;
                 }
                 .possession-category-header {
-                    padding: 6px 8px;
+                    padding: 6px 12px;
                     margin: -6px -8px 6px -8px;
                     border-radius: 6px;
                     border: 1px solid transparent;
                     transition: background-color 0.15s, border-color 0.15s;
+                }
+                .possession-type-title-row {
+                    padding: 4px 12px;
                 }
                 .possession-category-header:hover {
                     background: rgba(0, 0, 0, 0.03);
@@ -1632,17 +1665,21 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     object-fit: contain;
                     display: block;
                 }
+                @media (min-width: 769px) {
+                    .possession-detail-card-spacer-mobile { display: none !important; }
+                }
                 @media (min-width: 951px) {
                     body:not(.is-capturing) .possession-waffle-grid {
                         grid-template-columns: repeat(var(--waffle-cols-desktop, 5), 24px) !important;
                     }
                 }
                 @media (max-width: 768px) {
+                    body:not(.is-capturing) .possession-detail-card-spacer-pc { display: none !important; }
                     body:not(.is-capturing) .possession-unified-grid {
                         grid-template-columns: repeat(3, 1fr) !important;
                         column-gap: 6px !important;
                         row-gap: 2px !important;
-                        padding: 6px 4px !important;
+                        padding: 6px 1px !important;
                     }
                     body:not(.is-capturing) .possession-detail-card {
                         height: 30px !important;
@@ -1716,30 +1753,46 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         margin-top: 2px !important;
                     }
                     body:not(.is-capturing) .possession-waffle-grid {
-                        grid-template-columns: repeat(var(--waffle-cols-mobile, 4), 16px) !important;
+                        grid-template-columns: repeat(var(--waffle-cols-mobile, 4), 15px) !important;
                         gap: 2px !important;
+                        margin: auto !important;
+                        align-self: center !important;
                     }
                     body:not(.is-capturing) .possession-waffle-cell {
-                        width: 16px !important;
-                        height: 16px !important;
+                        width: 15px !important;
+                        height: 15px !important;
                     }
                     body:not(.is-capturing) .possession-waffle-cell > span {
                         font-size: 0.42rem !important;
                         right: 1px !important;
                         bottom: 0.5px !important;
                     }
-                    body:not(.is-capturing) .waffle-quarter-container {
-                        min-height: var(--mobile-min-height, 64px) !important;
+                    .waffle-quarter-container {
+                        height: var(--pc-height) !important;
+                        min-height: var(--pc-height) !important;
+                        max-height: var(--pc-height) !important;
+                    }
+                    @media (max-width: 768px) {
+                        body:not(.is-capturing) .waffle-quarter-container {
+                            height: var(--mobile-min-height) !important;
+                            min-height: var(--mobile-min-height) !important;
+                            max-height: var(--mobile-min-height) !important;
+                            padding-top: 3px !important;
+                        }
+                        body:not(.is-capturing) .waffle-quarter-container:not(.collapsed) {
+                            grid-row: span var(--mobile-span-rows, 2) !important;
+                        }
                     }
                     body:not(.is-capturing) .waffle-quarter-title {
-                        font-size: 0.5rem !important;
-                        margin-bottom: 4px !important;
+                        font-size: 0.45rem !important;
+                        margin-top: -1px !important;
+                        margin-bottom: 3px !important;
                     }
                     body:not(.is-capturing) .waffle-quarter-title span:first-child {
-                        font-size: 0.5rem !important;
+                        font-size: 0.45rem !important;
                     }
                     body:not(.is-capturing) .waffle-quarter-title span:last-child {
-                        font-size: 0.44rem !important;
+                        font-size: 0.4rem !important;
                     }
                     body:not(.is-capturing) .waffle-quarter-title .waffle-chevron {
                         width: 7px !important;
@@ -1931,6 +1984,7 @@ export function openPossessionModal() {
                 }
                 body:not(.is-capturing) .possession-section-card {
                     border-radius: 6px !important;
+                    padding: 10px 8px !important;
                 }
                 body:not(.is-capturing) .possession-overall-rank-icon {
                     height: 38px !important;
@@ -1980,6 +2034,11 @@ export function openPossessionModal() {
                 body:not(.is-capturing) .possession-detail-col {
                     padding: 0 4px 6px 4px !important;
                 }
+                body:not(.is-capturing) .possession-category-header,
+                body:not(.is-capturing) .possession-type-title-row,
+                body:not(.is-capturing) .possession-section-title-label {
+                    padding: 0 10px !important;
+                }
                 body:not(.is-capturing) .possession-category-header:hover {
                     background: transparent !important;
                     border-color: transparent !important;
@@ -1994,14 +2053,14 @@ export function openPossessionModal() {
                 }
                 body:not(.is-capturing) .possession-detail-scroll-wrapper {
                     border-radius: 5px !important;
-                    padding: 3px 6px 8px 6px !important;
+                    padding: 3px 2px 8px 2px !important;
                 }
                 body:not(.is-capturing) .possession-detail-card-list {
                     gap: 2px !important;
                 }
                 body:not(.is-capturing) .possession-detail-card {
                     border-radius: 2px 12px 2px 2px !important;
-                    margin-bottom: 2px !important;
+                    margin-bottom: 0 !important;
                 }
                 body:not(.is-capturing) .possession-chart-area-wrapper {
                     max-width: 270px !important;
@@ -2203,22 +2262,26 @@ export function openPossessionModal() {
                 waffleQuarterContainer.classList.toggle('collapsed', nextState);
 
                 const origSpan = waffleQuarterContainer.getAttribute('data-span-rows') || '2';
+                const origMobileSpan = waffleQuarterContainer.getAttribute('data-mobile-span-rows') || origSpan;
                 const origMinHeight = waffleQuarterContainer.getAttribute('data-min-height-calc') || '';
                 const maxMinHeight = waffleQuarterContainer.getAttribute('data-max-min-height-calc') || origMinHeight;
+                const mobileMinHeight = waffleQuarterContainer.getAttribute('data-mobile-min-height-calc') || origMinHeight;
+                const mobileMaxMinHeight = waffleQuarterContainer.getAttribute('data-mobile-max-min-height-calc') || mobileMinHeight;
 
-                const min2RowsHeightPx = '115px';
+                const pcHeight = nextState ? maxMinHeight : origMinHeight;
+                const mobileHeight = nextState ? mobileMaxMinHeight : mobileMinHeight;
+
+                waffleQuarterContainer.style.setProperty('--pc-height', pcHeight);
+                waffleQuarterContainer.style.setProperty('--mobile-min-height', mobileHeight);
+
+                const isMobile = window.innerWidth <= 768;
                 if (nextState) {
                     waffleQuarterContainer.style.gridColumn = 'span 1';
                     waffleQuarterContainer.style.gridRow = 'span 1';
-                    waffleQuarterContainer.style.height = maxMinHeight;
-                    waffleQuarterContainer.style.minHeight = maxMinHeight;
-                    waffleQuarterContainer.style.maxHeight = maxMinHeight;
                 } else {
+                    const currentSpan = isMobile ? origMobileSpan : origSpan;
                     waffleQuarterContainer.style.gridColumn = '1';
-                    waffleQuarterContainer.style.gridRow = `span ${origSpan}`;
-                    waffleQuarterContainer.style.height = origMinHeight;
-                    waffleQuarterContainer.style.minHeight = origMinHeight;
-                    waffleQuarterContainer.style.maxHeight = origMinHeight;
+                    waffleQuarterContainer.style.gridRow = `span ${currentSpan}`;
                 }
 
                 const unifiedGrid = waffleQuarterContainer.closest('.possession-unified-grid');
