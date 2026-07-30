@@ -691,9 +691,14 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
                 : `background: ${attrColor}; border: none; opacity: 1.0;`;
             const cellRadius = (c.rarity === 'SR') ? '14px 14px 4px 14px' : '4px';
             const cardLocalizedName = getLocalizedCardName(c);
-            const cellTextHtml = (!c.isDeactivated)
-                ? `<span style="position: absolute; right: 3.5px; bottom: 2px; font-size: 0.6rem; font-weight: 900; color: #ffffff; line-height: 1; user-select: none;">${lb}</span>`
-                : '';
+            let cellTextHtml = '';
+            if (!c.isDeactivated) {
+                if (lb >= 4) {
+                    cellTextHtml = `<img src="icons/primastella.webp" class="waffle-cell-primastella" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; object-fit: contain; pointer-events: none; user-select: none; filter: brightness(0) invert(1);">`;
+                } else if (lb > 0) {
+                    cellTextHtml = `<span style="position: absolute; right: 3.5px; bottom: 2px; font-size: 0.6rem; font-weight: 900; color: #ffffff; line-height: 1; user-select: none;">${lb}</span>`;
+                }
+            }
 
             waffleCellsHtml += `
                 <div class="possession-waffle-cell" 
@@ -1770,6 +1775,10 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         font-size: 0.42rem !important;
                         right: 1px !important;
                         bottom: 0.5px !important;
+                    }
+                    body:not(.is-capturing) .waffle-cell-primastella {
+                        width: 9px !important;
+                        height: 9px !important;
                     }
                     .waffle-quarter-container {
                         height: var(--pc-height) !important;
