@@ -782,6 +782,27 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "vocal_anomaly4",
+        name: "풍기가 흐트러진다!",
+        name_ja: "風紀が乱れるぞ！",
+        type: "vocal",
+        plan: "anomaly",
+        have: "card_a",
+        attrs: ["fullpower"],
+        releasedAt: "2026-07-31",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
 
     {
         id: "vocal_limitedanomaly1",
@@ -2933,6 +2954,7 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+
     {
         id: "vocal_srlimitedanomaly1",
         name: "뾰족뾰족 주의보",
@@ -4027,6 +4049,27 @@ export const cardList = [
                 "supportrateup",
                 "sp_param20",
                 "get",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_sranomaly4",
+        name: "우연한 필연",
+        name_ja: "奇遇な必然",
+        type: "visual",
+        releasedAt: "2026-07-31",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["goout"], triggertext: ["visual700"], stats: { visual: 40 }, target: "change", max: 1 }],
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "percentparam",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

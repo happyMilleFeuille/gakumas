@@ -918,28 +918,27 @@ export const produceList = [
     //{ id: "ssrtsubame_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ",type: "season",  rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
     //{ id: "ssrtsubame_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2026-08-14", another: true },
 
-    //{
-    //id: "ssrtsubame_3rd", name: "크라이아이", name_en: "クライアイ", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "",
-    //item: {
-    //    name: "花火散るナイトキラー",
-    //    desc: "(미확인)",
-    //    desc_ja: "（未確認）",
-    //},
-    //itemplus: {
-    //    desc: "지침이 전력일 때 전력치가 10이상일 경우, \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터치 증가+3\n inlesson3",
-    //    desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson3",
-    //},
-    //card: {
-    //    name: "星を散らせ",
-    //    desc: "(미확인)",
-    //    desc_ja: "（未確認）",
-    //},
-    //cardplus: {
-    //    desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
-    //    desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
-    //},
-    //},
-
+    {
+        id: "ssrtsubame_3rd", name: "크라이아이", name_en: "クライアイ", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "",
+        item: {
+            name: "花火散るナイトキラー",
+            desc: "(미확인)",
+            desc_ja: "（未確認）",
+        },
+        itemplus: {
+            desc: "지침이 전력일 때 전력치가 10이상일 경우, \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터치 증가+3\n inlesson3",
+            desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson3",
+        },
+        card: {
+            name: "星を散らせ",
+            desc: "(미확인)",
+            desc_ja: "（未確認）",
+        },
+        cardplus: {
+            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
 
     // --- 세나 SSR (PSSR) ---
     {

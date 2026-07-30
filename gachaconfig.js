@@ -172,6 +172,16 @@ export const UNIT_CONFIG = [
 // 통상 가챠 상세 설정 (기간별 라인업 등)
 export const NORMAL_CONFIG = [
     {
+        id: 'ssrtsubame_3rd',
+        date: '2026-07-31',
+        bannerImg: 'idols/ssrtsubame_3rd1.webp',
+        pool: {
+            pssr: [{ id: 'ssrtsubame_3rd', char: 'tsubame' }],
+            sssr: ['vocal_anomaly4'],
+            sr_card: ['visual_sranomaly4']
+        }
+    },
+    {
         id: 'ssrmisuzu_3rd',
         date: '2026-04-29',
         bannerImg: 'idols/ssrmisuzu_3rd1.webp',

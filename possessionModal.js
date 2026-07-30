@@ -521,20 +521,145 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         </div>
     `;
 
-    const overallBarHtml = `
-        <div class="possession-overall-bar-container" style="width: 100%; height: ${isOverall ? '36px' : '10px'}; background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: ${isOverall ? '6px' : '0'}; overflow: hidden; box-sizing: border-box; margin-bottom: 14px; position: relative; ${isOverall ? 'cursor: pointer;' : ''}">
-            ${isOverall ? `
-            <!-- 평소에 보이는 그라데이션/단색 바 -->
-            <div class="overall-bar-gradient" style="width: ${rate}%; height: 100%; background: ${barColor};"></div>
-            <!-- 호버/클릭 시 보이는 분류별 분할 바 -->
-            <div class="overall-bar-chars" style="width: ${rate}%; height: 100%;">
-                ${sourceSegmentsHtml}
+    const isParameterSection = ['vocal', 'dance', 'visual', 'assist'].includes((srcKey || '').toLowerCase());
+
+    let overallBarHtml = '';
+    let expandedBarHtml = '';
+
+    if (isParameterSection) {
+        const buildTileHeatmap = (isExpanded = false) => {
+            const attrRgbMap = {
+                vocal: '255, 77, 141',
+                dance: '33, 150, 243',
+                visual: '255, 179, 0',
+                assist: '132, 204, 22'
+            };
+
+            const attrOrder = { vocal: 1, dance: 2, visual: 3, assist: 4 };
+            const sortedCards = [...allCards].sort((a, b) => {
+                const dateA = a.releasedAt || '1970-01-01';
+                const dateB = b.releasedAt || '1970-01-01';
+                if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+                const typeA = (a.type || 'vocal').toLowerCase();
+                const typeB = (b.type || 'vocal').toLowerCase();
+                const orderA = attrOrder[typeA] || 99;
+                const orderB = attrOrder[typeB] || 99;
+                if (orderA !== orderB) return orderA - orderB;
+
+                const lbA = a.isDeactivated ? -1 : (a.lb || 0);
+                const lbB = b.isDeactivated ? -1 : (b.lb || 0);
+                if (lbA !== lbB) return lbB - lbA;
+
+                return (a.id || '').localeCompare(b.id || '');
+            });
+
+            const tileWNum = isExpanded ? 106 : 53;
+            const tileRatio = 0.40; // 타일 세로 = 가로의 40%
+            const tileHNum = Math.round(tileWNum * tileRatio); // 21px (기본) / 42px (확장)
+            const rows = 4;
+            const containerHNum = tileHNum * rows + (rows - 1) * 1 + 4; // 91px (기본) / 179px (확장)
+
+            const maxContainerW = `${tileWNum * 15 + 14}px`;
+            const containerH = `${containerHNum}px`;
+            const tileW = `${tileWNum}px`;
+            const tileH = `${tileHNum}px`;
+
+            const getSolidRgb = (rgbStr, ratio) => {
+                const [r, g, b] = rgbStr.split(',').map(v => parseInt(v.trim(), 10));
+                const sr = Math.round(r * ratio + 255 * (1 - ratio));
+                const sg = Math.round(g * ratio + 255 * (1 - ratio));
+                const sb = Math.round(b * ratio + 255 * (1 - ratio));
+                return `rgb(${sr}, ${sg}, ${sb})`;
+            };
+
+            const cols = Math.max(1, Math.ceil(sortedCards.length / 4));
+            const calculatedW = `${cols * tileWNum + (cols - 1) * 1}px`;
+
+            // 4행 단위 청크로 분할 후 하단부터 채워지도록 역순 정렬
+            const gridTiles = [];
+            for (let i = 0; i < sortedCards.length; i += 4) {
+                const chunk = sortedCards.slice(i, i + 4);
+                chunk.reverse();
+                while (chunk.length < 4) {
+                    chunk.unshift(null);
+                }
+                gridTiles.push(...chunk);
+            }
+
+            let tilesHtml = '';
+            gridTiles.forEach(c => {
+                if (!c) {
+                    tilesHtml += `<div style="width: ${tileW}; height: ${tileH}; visibility: hidden; pointer-events: none;"></div>`;
+                    return;
+                }
+                const isDeactivated = c.isDeactivated;
+                const lb = isDeactivated ? -1 : (c.lb || 0);
+                const cType = (c.type || 'vocal').toLowerCase();
+                const rgb = attrRgbMap[cType] || '255, 77, 141';
+
+                let bgStyle = '';
+                let borderStyle = 'border: none;';
+
+                if (isDeactivated) {
+                    bgStyle = 'background-color: transparent;';
+                    borderStyle = 'border: 1px dashed #cbd5e1;';
+                } else if (lb === 0) {
+                    bgStyle = `background-color: ${getSolidRgb(rgb, 0.20)};`;
+                } else if (lb === 1) {
+                    bgStyle = `background-color: ${getSolidRgb(rgb, 0.40)};`;
+                } else if (lb === 2) {
+                    bgStyle = `background-color: ${getSolidRgb(rgb, 0.60)};`;
+                } else if (lb === 3) {
+                    bgStyle = `background-color: ${getSolidRgb(rgb, 0.80)};`;
+                } else if (lb === 4) {
+                    bgStyle = `background-color: rgb(${rgb});`;
+                }
+
+                tilesHtml += `
+                    <div class="possession-heatmap-tile" 
+                         style="width: 100%; height: ${tileH}; max-width: ${tileW}; border-radius: 0; ${bgStyle} ${borderStyle} box-sizing: border-box; pointer-events: none; margin: 0 auto;">
+                    </div>
+                `;
+            });
+
+            return `
+                <div style="display: grid; grid-template-rows: repeat(4, ${tileH}); grid-template-columns: repeat(${cols}, minmax(0, 1fr)); grid-auto-flow: column; gap: 1px; width: 100%; max-width: 100%; box-sizing: border-box; justify-content: center; align-content: center; overflow: hidden; margin: 0 auto 3px auto;">
+                    ${tilesHtml}
+                </div>
+                <div style="display: flex; justify-content: space-between; width: 100%; max-width: 100%; margin: 0 auto 14px auto; padding: 0 1px; box-sizing: border-box; font-size: 0.6rem; font-weight: 700; color: #94a3b8; user-select: none; pointer-events: none; line-height: 1;">
+                    <span>← Old</span>
+                    <span>New →</span>
+                </div>
+            `;
+        };
+
+        overallBarHtml = buildTileHeatmap(false);
+        expandedBarHtml = buildTileHeatmap(true);
+    } else {
+        overallBarHtml = `
+            <div class="possession-overall-bar-container" style="width: 100%; height: ${isOverall ? '36px' : '10px'}; background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: ${isOverall ? '6px' : '0'}; overflow: hidden; box-sizing: border-box; margin-bottom: 14px; position: relative; ${isOverall ? 'cursor: pointer;' : ''}">
+                ${isOverall ? `
+                <!-- 평소에 보이는 그라데이션/단색 바 -->
+                <div class="overall-bar-gradient" style="width: ${rate}%; height: 100%; background: ${barColor};"></div>
+                <!-- 호버/클릭 시 보이는 분류별 분할 바 -->
+                <div class="overall-bar-chars" style="width: ${rate}%; height: 100%;">
+                    ${sourceSegmentsHtml}
+                </div>
+                ` : `
+                <div style="width: ${rate}%; height: 100%; background: ${barColor};"></div>
+                `}
             </div>
-            ` : `
-            <div style="width: ${rate}%; height: 100%; background: ${barColor};"></div>
-            `}
-        </div>
-    `;
+        `;
+        expandedBarHtml = overallBarHtml;
+    }
+
+    const getLocalizedCardName = (card) => {
+        if (!card) return '';
+        if (currentLang === 'en' && card.name_en) return card.name_en;
+        if (currentLang !== 'ko' && card.name_ja) return card.name_ja;
+        return card.name || card.name_ko || card.name_ja || card.id || '';
+    };
 
     const chartHtml = `
         <div style="display: flex; flex-direction: column; gap: 5px; background: #ffffff; padding: 14px 12px 6px; border-radius: 8px; border: 1px solid #f0f0f0;">
@@ -577,14 +702,6 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         if (!quarterMap[qKey]) quarterMap[qKey] = [];
         quarterMap[qKey].push(c);
     });
-
-    const getLocalizedCardName = (card) => {
-        if (!card) return '';
-        const currentLang = state.currentLang || 'ko';
-        if (currentLang === 'en' && card.name_en) return card.name_en;
-        if (currentLang !== 'ko' && card.name_ja) return card.name_ja;
-        return card.name || card.name_ko || card.name_ja || card.id || '';
-    };
 
     let quarterSectionsHtml = '';
     const sortedQKeys = Object.keys(quarterMap).sort((a, b) => {
@@ -827,6 +944,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         headerHtml,
         overallValHtml,
         overallBarHtml,
+        expandedBarHtml,
         chartHtml,
         detailContainerHtml
     };
@@ -1038,7 +1156,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
             const customColor = typeColors[type] || themeColor;
 
             const rate = formatRate(tStats.owned, tStats.total);
-            const parts = buildSectionInnerParts(label, tStats, customColor, false);
+            const parts = buildSectionInnerParts(label, tStats, customColor, false, '', type);
 
             typeCardsHtmlList.push(`
                 <div class="possession-type-card" data-type="${type}">
@@ -1046,16 +1164,14 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         <div class="possession-type-title-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 800; color: #333;">
                             <span style="display: flex; align-items: center; gap: 6px;">
                                 <img src="icons/${type.toLowerCase()}.webp" onerror="this.src='icons/card.png';" style="width: 16px; height: 16px; object-fit: contain; flex-shrink: 0;">
-                                <span>${label}</span>
+                                <span class="possession-type-label-text">${label}</span>
                             </span>
                             <span class="possession-type-rate-col" style="font-size: 0.74rem;">
                                 <span style="color: ${customColor};">${rate}%</span>
                                 <span style="color: #777; font-weight: bold; margin-left: 2px;">(${tStats.owned}/${tStats.total})</span>
                             </span>
                         </div>
-                        <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 0; overflow: hidden; position: relative;">
-                            <div style="width: ${rate}%; height: 100%; background: ${customColor}; border-radius: 0;"></div>
-                        </div>
+                        ${parts.overallBarHtml}
                     </div>
                     <div class="possession-type-main-view" style="display: none; width: 100%;">
                         <div class="possession-category-item" style="display: flex; flex-direction: column;">
@@ -1074,7 +1190,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                                     </div>
                                 </div>
                             </div>
-                            ${parts.overallBarHtml}
+                            ${parts.expandedBarHtml}
                         </div>
                     </div>
                     <div class="possession-type-chart-container" style="display: none; width: 100%;">
@@ -1516,6 +1632,9 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     body:not(.is-capturing) .possession-stats-type-card {
                         grid-template-columns: repeat(2, 1fr) !important;
                         gap: 8px !important;
+                    }
+                    body:not(.is-capturing) .possession-stats-type-card .possession-type-basic-view .possession-type-label-text {
+                        display: none !important;
                     }
                     body:not(.is-capturing) .possession-stats-plan-card {
                         padding: 8px 8px 8px 8px !important;
@@ -2508,6 +2627,8 @@ export function openPossessionModal() {
         const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
         const optOverallText = isJa ? '全体所持率のみ保存 (詳細情報を含む)' : isEn ? 'Save Overall Rate Only (Include Details)' : '전체 소지율만 저장(상세정보 포함)';
         const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
+        const optSourceText = isJa ? '分類別保存 (詳細情報を含む)' : isEn ? 'Save Category Only (Include Details)' : '분류별 저장(상세정보 포함)';
+        const optTypeText = isJa ? 'パラメータ別保存 (詳細情報を含む)' : isEn ? 'Save Parameter Only (Include Details)' : '파라미터별 저장(상세정보 포함)';
         const warningText = isJa
             ? '※ モバイルではSSR+SRの全体所持率保存に対応していません。'
             : isEn
@@ -2525,7 +2646,7 @@ export function openPossessionModal() {
         const warningDisplay = overallDisabled ? 'display: block;' : 'display: none;';
 
         optionsModal.innerHTML = `
-            <div class="modal-content possession-save-options-content" style="width: 380px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 13px; box-sizing: border-box; text-align: center; position: relative;">
+            <div class="modal-content possession-save-options-content" style="width: 380px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; text-align: center; position: relative;">
                 <button id="btn-save-opt-close" style="position: absolute; right: 6px; top: 6px; background: none; border: none; font-size: 1.25rem; font-weight: bold; color: #888; cursor: pointer; padding: 2px; line-height: 1; transition: none !important;">&times;</button>
                 <div class="save-opt-title" style="font-weight: 800; font-size: 1.1rem; color: #333; margin-bottom: 4px; margin-top: 8px;">${titleText}</div>
                 <button id="btn-save-opt-all" class="calc-btn" style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; background: ${themeColor}; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: none !important;">
@@ -2533,6 +2654,12 @@ export function openPossessionModal() {
                 </button>
                 <button id="btn-save-opt-overall" class="calc-btn" ${disabledAttr} style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; ${disabledStyle} border: none; border-radius: 8px; transition: none !important;">
                     ${optOverallText}
+                </button>
+                <button id="btn-save-opt-source" class="calc-btn" ${disabledAttr} style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; ${disabledStyle} border: none; border-radius: 8px; transition: none !important;">
+                    ${optSourceText}
+                </button>
+                <button id="btn-save-opt-type" class="calc-btn" ${disabledAttr} style="width: 82%; margin: 0 auto; padding: 12px; font-weight: bold; ${disabledStyle} border: none; border-radius: 8px; transition: none !important;">
+                    ${optTypeText}
                 </button>
                 <div class="save-opt-warning" style="font-size: 0.72rem; color: #dc2626; font-weight: bold; margin-top: 4px; word-break: keep-all; line-height: 1.35; user-select: none; ${warningDisplay}">
                     ${warningText}
@@ -2572,6 +2699,12 @@ export function openPossessionModal() {
         };
         optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
             closeOptionsModal('all');
+        };
+        optionsModal.querySelector('#btn-save-opt-source').onclick = () => {
+            closeOptionsModal('source');
+        };
+        optionsModal.querySelector('#btn-save-opt-type').onclick = () => {
+            closeOptionsModal('type');
         };
         optionsModal.onclick = (e) => {
             if (e.target === optionsModal) {
@@ -2709,21 +2842,27 @@ export function openPossessionModal() {
                 const origTypeLabelDisplay = typeLabelEl ? typeLabelEl.style.display : '';
                 const origPlanLabelDisplay = planLabelEl ? planLabelEl.style.display : '';
 
+                const statsOverallCardEl = modalContent.querySelector('.possession-section-card[data-is-overall="true"]');
+                const origStatsOverallCardDisplay = statsOverallCardEl ? statsOverallCardEl.style.display : '';
+                if ((saveType === 'source' || saveType === 'type') && statsOverallCardEl) {
+                    statsOverallCardEl.style.display = 'none';
+                }
+
                 const statsSourceGridEl = modalContent.querySelector('.possession-stats-source-card');
                 const origStatsSourceGridDisplay = statsSourceGridEl ? statsSourceGridEl.style.display : '';
-                if (saveType === 'overall' && statsSourceGridEl) {
+                if ((saveType === 'overall' || saveType === 'type') && statsSourceGridEl) {
                     statsSourceGridEl.style.display = 'none';
                 }
 
                 const statsTypeGridEl = modalContent.querySelector('.possession-stats-type-card');
                 const origStatsTypeGridDisplay = statsTypeGridEl ? statsTypeGridEl.style.display : '';
-                if (saveType === 'overall' && statsTypeGridEl) {
+                if ((saveType === 'overall' || saveType === 'source') && statsTypeGridEl) {
                     statsTypeGridEl.style.display = 'none';
                 }
 
                 const statsPlanGridEl = modalContent.querySelector('.possession-stats-plan-card');
                 const origStatsPlanGridDisplay = statsPlanGridEl ? statsPlanGridEl.style.display : '';
-                if (saveType === 'overall' && statsPlanGridEl) {
+                if ((saveType === 'overall' || saveType === 'source' || saveType === 'type') && statsPlanGridEl) {
                     statsPlanGridEl.style.display = 'none';
                 }
 
@@ -2732,6 +2871,7 @@ export function openPossessionModal() {
                 const origSourceCardStates = [];
 
                 sourceCards.forEach(card => {
+                    const basicView = card.querySelector('.possession-source-basic-view');
                     const mainView = card.querySelector('.possession-source-main-view');
                     const chartContainer = card.querySelector('.possession-source-chart-container');
                     const detailContainer = card.querySelector('.possession-detail-container');
@@ -2740,6 +2880,7 @@ export function openPossessionModal() {
                     origSourceCardStates.push({
                         card,
                         expanded: card.classList.contains('expanded'),
+                        basicViewDisplay: basicView ? basicView.style.display : '',
                         mainViewDisplay: mainView ? mainView.style.display : '',
                         chartContainerDisplay: chartContainer ? chartContainer.style.display : '',
                         detailDisplay: detailContainer ? detailContainer.style.display : '',
@@ -2748,10 +2889,18 @@ export function openPossessionModal() {
 
                     if (saveType === 'all') {
                         card.classList.remove('expanded');
+                        if (basicView) basicView.style.display = '';
                         if (mainView) mainView.style.display = 'none';
                         if (chartContainer) chartContainer.style.display = '';
                         if (detailContainer) detailContainer.style.display = 'none';
                         if (chevron) chevron.style.transform = 'rotate(0deg)';
+                    } else if (saveType === 'source') {
+                        card.classList.add('expanded');
+                        if (basicView) basicView.style.display = 'none';
+                        if (mainView) mainView.style.display = '';
+                        if (chartContainer) chartContainer.style.display = 'none';
+                        if (detailContainer) detailContainer.style.display = 'none';
+                        if (chevron) chevron.style.transform = 'rotate(180deg)';
                     }
                 });
 
@@ -2760,6 +2909,7 @@ export function openPossessionModal() {
                 const origTypeCardStates = [];
 
                 typeCards.forEach(card => {
+                    const basicView = card.querySelector('.possession-type-basic-view');
                     const mainView = card.querySelector('.possession-type-main-view');
                     const chartContainer = card.querySelector('.possession-type-chart-container');
                     const detailContainer = card.querySelector('.possession-detail-container');
@@ -2768,6 +2918,7 @@ export function openPossessionModal() {
                     origTypeCardStates.push({
                         card,
                         expanded: card.classList.contains('expanded'),
+                        basicViewDisplay: basicView ? basicView.style.display : '',
                         mainViewDisplay: mainView ? mainView.style.display : '',
                         chartContainerDisplay: chartContainer ? chartContainer.style.display : '',
                         detailDisplay: detailContainer ? detailContainer.style.display : '',
@@ -2776,10 +2927,18 @@ export function openPossessionModal() {
 
                     if (saveType === 'all') {
                         card.classList.remove('expanded');
+                        if (basicView) basicView.style.display = '';
                         if (mainView) mainView.style.display = 'none';
                         if (chartContainer) chartContainer.style.display = '';
                         if (detailContainer) detailContainer.style.display = 'none';
                         if (chevron) chevron.style.transform = 'rotate(0deg)';
+                    } else if (saveType === 'type') {
+                        card.classList.add('expanded');
+                        if (basicView) basicView.style.display = 'none';
+                        if (mainView) mainView.style.display = '';
+                        if (chartContainer) chartContainer.style.display = 'none';
+                        if (detailContainer) detailContainer.style.display = 'none';
+                        if (chevron) chevron.style.transform = 'rotate(180deg)';
                     }
                 });
 
@@ -2819,9 +2978,9 @@ export function openPossessionModal() {
                 btn.innerHTML = 'GAKUMAS NOTE';
                 if (descArea) descArea.style.display = 'none';
                 if (filterRarityArea) filterRarityArea.style.display = 'none';
-                if (saveType === 'overall' && sourceLabelEl) sourceLabelEl.style.display = 'none';
-                if (saveType === 'overall' && typeLabelEl) typeLabelEl.style.display = 'none';
-                if (saveType === 'overall' && planLabelEl) planLabelEl.style.display = 'none';
+                if ((saveType === 'overall' || saveType === 'type') && sourceLabelEl) sourceLabelEl.style.display = 'none';
+                if ((saveType === 'overall' || saveType === 'source') && typeLabelEl) typeLabelEl.style.display = 'none';
+                if ((saveType === 'overall' || saveType === 'source' || saveType === 'type') && planLabelEl) planLabelEl.style.display = 'none';
 
                 // Reset scroll to top before screenshot
                 if (scrollArea) {
@@ -2840,11 +2999,11 @@ export function openPossessionModal() {
                     container.style.display = (saveType === 'overall' && isOverallSection) ? 'block' : 'none';
                 });
 
-                // Temporarily expand all Waffle Quarter Containers and Detail Cards inside overall section when saveType === 'overall'
+                // Temporarily expand all Waffle Quarter Containers and Detail Cards inside sections when saveType is overall, source, or type
                 const origWaffleBlockStates = [];
-                if (saveType === 'overall') {
-                    const overallWaffleBlocks = modalContent.querySelectorAll('.possession-section-card[data-is-overall="true"] .waffle-quarter-container');
-                    overallWaffleBlocks.forEach(box => {
+                if (saveType === 'overall' || saveType === 'source' || saveType === 'type') {
+                    const waffleBlocks = modalContent.querySelectorAll('.waffle-quarter-container');
+                    waffleBlocks.forEach(box => {
                         const qKey = box.getAttribute('data-qkey');
                         const spanRows = box.getAttribute('data-span-rows');
                         const boxMinHeightCalc = box.getAttribute('data-min-height-calc');
@@ -2992,6 +3151,9 @@ export function openPossessionModal() {
                         modalContent.style.maxWidth = origModalMaxWidth;
                         modalContent.style.minWidth = origModalMinWidth;
 
+                        if (statsOverallCardEl) {
+                            statsOverallCardEl.style.display = origStatsOverallCardDisplay;
+                        }
                         if (statsSourceGridEl) {
                             statsSourceGridEl.style.display = origStatsSourceGridDisplay;
                         }
@@ -3006,11 +3168,13 @@ export function openPossessionModal() {
                             if (state.expanded) state.card.classList.add('expanded');
                             else state.card.classList.remove('expanded');
 
+                            const basicView = state.card.querySelector('.possession-source-basic-view');
                             const mainView = state.card.querySelector('.possession-source-main-view');
                             const chartContainer = state.card.querySelector('.possession-source-chart-container');
                             const detailContainer = state.card.querySelector('.possession-detail-container');
                             const chevron = state.card.querySelector('.possession-chevron');
 
+                            if (basicView) basicView.style.display = state.basicViewDisplay;
                             if (mainView) mainView.style.display = state.mainViewDisplay;
                             if (chartContainer) chartContainer.style.display = state.chartContainerDisplay;
                             if (detailContainer) detailContainer.style.display = state.detailDisplay;
@@ -3021,11 +3185,13 @@ export function openPossessionModal() {
                             if (state.expanded) state.card.classList.add('expanded');
                             else state.card.classList.remove('expanded');
 
+                            const basicView = state.card.querySelector('.possession-type-basic-view');
                             const mainView = state.card.querySelector('.possession-type-main-view');
                             const chartContainer = state.card.querySelector('.possession-type-chart-container');
                             const detailContainer = state.card.querySelector('.possession-detail-container');
                             const chevron = state.card.querySelector('.possession-chevron');
 
+                            if (basicView) basicView.style.display = state.basicViewDisplay;
                             if (mainView) mainView.style.display = state.mainViewDisplay;
                             if (chartContainer) chartContainer.style.display = state.chartContainerDisplay;
                             if (detailContainer) detailContainer.style.display = state.detailDisplay;
@@ -3042,18 +3208,16 @@ export function openPossessionModal() {
                         });
 
                         origWaffleBlockStates.forEach(state => {
-                            if (state.isCollapsed) {
-                                state.box.classList.add('collapsed');
-                            } else {
-                                state.box.classList.remove('collapsed');
-                            }
-                            state.box.style.gridColumn = state.gridColumn;
-                            state.box.style.gridRow = state.gridRow;
-                            state.box.style.minHeight = state.minHeight;
+                            state.box.classList.add('collapsed');
+                            state.box.style.gridColumn = '';
+                            state.box.style.gridRow = '';
+                            state.box.style.height = '';
+                            state.box.style.minHeight = '';
+                            state.box.style.maxHeight = '';
                             const chevron = state.box.querySelector('.waffle-chevron');
-                            if (chevron) chevron.style.transform = state.chevronTransform;
+                            if (chevron) chevron.style.transform = 'rotate(0deg)';
                             state.detailCardStates.forEach(item => {
-                                item.card.style.display = item.display;
+                                item.card.style.display = 'none';
                             });
                         });
 
@@ -3158,18 +3322,16 @@ export function openPossessionModal() {
                         });
 
                         origWaffleBlockStates.forEach(state => {
-                            if (state.isCollapsed) {
-                                state.box.classList.add('collapsed');
-                            } else {
-                                state.box.classList.remove('collapsed');
-                            }
-                            state.box.style.gridColumn = state.gridColumn;
-                            state.box.style.gridRow = state.gridRow;
-                            state.box.style.minHeight = state.minHeight;
+                            state.box.classList.add('collapsed');
+                            state.box.style.gridColumn = '';
+                            state.box.style.gridRow = '';
+                            state.box.style.height = '';
+                            state.box.style.minHeight = '';
+                            state.box.style.maxHeight = '';
                             const chevron = state.box.querySelector('.waffle-chevron');
-                            if (chevron) chevron.style.transform = state.chevronTransform;
+                            if (chevron) chevron.style.transform = 'rotate(0deg)';
                             state.detailCardStates.forEach(item => {
-                                item.card.style.display = item.display;
+                                item.card.style.display = 'none';
                             });
                         });
 
