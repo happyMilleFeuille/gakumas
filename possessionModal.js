@@ -1683,17 +1683,21 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     }
                     body:not(.is-capturing) .possession-detail-card {
                         height: 30px !important;
+                        padding-left: 2.5px !important;
+                    }
+                    body:not(.is-capturing) .support-card-gradient-overlay {
+                        left: 2.5px !important;
                     }
                     body:not(.is-capturing) .support-type-badge {
-                        width: 11px !important;
-                        height: 11px !important;
+                        width: 10px !important;
+                        height: 10px !important;
                         top: 2px !important;
                         bottom: auto !important;
                         left: 4px !important;
                     }
                     body:not(.is-capturing) .support-plan-badge {
-                        width: 11px !important;
-                        height: 11px !important;
+                        width: 10px !important;
+                        height: 10px !important;
                         bottom: 2px !important;
                         top: auto !important;
                         left: 4px !important;
@@ -1704,8 +1708,8 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                         gap: 0.5px !important;
                     }
                     body:not(.is-capturing) .support-card-flower {
-                        width: 8px !important;
-                        height: 8px !important;
+                        width: 6px !important;
+                        height: 6px !important;
                     }
                     body:not(.is-capturing) .possession-category-header {
                         padding: 4px 6px !important;
