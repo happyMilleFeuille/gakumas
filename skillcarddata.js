@@ -89,6 +89,11 @@ export const skillCardList = {
     "anomaly-ssrrinami_sugarunit": { type: "active", attrs: ["enthusiasm", "preservation"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrkotone_gomywaylimited": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
 
+    "anomaly-ssrhiro_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
+    "anomaly-ssrmisuzu_3rdprima": { type: "mental", attrs: ["genki"], rarity: "Legend", primastella: true },
+    "anomaly-ssrtemari_3rdprima": { type: "mental", attrs: ["fullpower"], rarity: "Legend", primastella: true },
+    "anomaly-ssrlilja_3rdprima": { type: "active", attrs: [""], rarity: "Legend", primastella: true },
+
     // --- Free ---
     "free-r1": { type: "mental", attrs: ["genki"], rarity: "R", multi: true },
     "free-r2": { type: "mental", attrs: ["genki"], rarity: "R" },
@@ -199,6 +204,10 @@ export const skillCardList = {
     "logic-ssrume_starmineunit": { type: "mental", attrs: ["genki", "goodimpression"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrume_gomywaylimited": { type: "active", attrs: ["goodimpression"], rarity: "SSR", isKyoukaOnly: true },
 
+    "logic-ssrume_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
+    "logic-ssrsaki_3rdprima": { type: "mental", attrs: ["goodimpression"], rarity: "Legend", primastella: true },
+    "logic-ssrrinami_3rdprima": { type: "mental", attrs: ["goodimpression"], rarity: "Legend", primastella: true },
+
     // --- Sense ---
     "sense-legend1": { type: "mental", attrs: ["goodcondition", "concentration"], rarity: "Legend" },
     "sense-legend2": { type: "mental", attrs: ["goodcondition", "concentration"], rarity: "Legend" },
@@ -293,4 +302,8 @@ export const skillCardList = {
     "sense-ssrume_endlesslimited": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrmao_sugarunit": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrsaki_gomywaydist": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
+
+    "sense-ssrchina_3rdprima": { type: "mental", attrs: ["goodcondition"], rarity: "Legend", primastella: true },
+    "sense-ssrmao_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
+    "sense-ssrsumika_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
 };

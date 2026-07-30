@@ -344,6 +344,7 @@ export function getTriggerCounts(store) {
             else if (skill.type === 'mental') counts.total.get_m += count;
             if (skill.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + count;
             if (skill.attrs) skill.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + count; });
+            if (skill.primastella) counts.total.get += count;
         }
     });
 

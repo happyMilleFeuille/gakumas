@@ -588,13 +588,34 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
     const rarities = ['r', 'sr', 'ssr'];
     if (calcStore.type === 'hajime') rarities.push('legend');
 
+    const isHifMode = calcStore.type === 'hif';
+
+    // 0. HIF 모드일 때만 프리마스텔라(primastella: true) 카드를 모달 최상단 1순위로 배치 (현재 선택된 캐릭터 전용 카드만)
+    if (isHifMode) {
+        const primaCards = allCardIds.filter(id => {
+            const skill = skillCardList[id];
+            if (!id.startsWith(`${activePlan}-`) || id.endsWith('alt')) return false;
+            if (skill.isKyoukaOnly) return false;
+            if (!skill.primastella) return false;
+            if (calcStore.selectedIdol && id.includes('ssr') && !id.includes(`ssr${calcStore.selectedIdol}_`)) {
+                return false;
+            }
+            return true;
+        });
+        primaCards.forEach(baseId => {
+            const group = [baseId];
+            if (skillCardList[`${baseId}alt`]) group.push(`${baseId}alt`);
+            cardGroups.push(group);
+        });
+    }
+
     // 1. 모든 등급의 미분류 카드(기본, 프리, 레전드) 먼저 배치
     rarities.forEach(r => {
         const planCards = allCardIds
             .filter(id => {
                 const skill = skillCardList[id];
                 if (!id.startsWith(`${activePlan}-${r}`) || id.endsWith('alt')) return false;
-                if (skill.isKyoukaOnly) return false; // 강화월간 전용은 여기서 제외
+                if (skill.isKyoukaOnly || skill.primastella) return false; // 프리마스텔라는 최상단에서 이미 처리
                 return true;
             })
             .sort((a, b) => {
@@ -751,7 +772,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
             <div class="tune-card-item ${isSelected ? 'selected' : ''}" data-id="${id}" data-multi="true">
                 <img src="${imgSrc}" onerror="this.parentElement.style.display='none';">
                 <div class="card-count-badge ${count > 1 ? '' : 'hidden'}">x${count}</div>
-                <div class="card-reset-btn ${isSelected ? '' : 'hidden'}">×</div>
+                <div class="card-reset-btn ${isSelected && !skill.primastella ? '' : 'hidden'}">×</div>
             </div>`;
     };
 
@@ -978,8 +999,9 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
             if (resetBtn) delete skills[id];
             else {
                 const groupBox = item.closest('.tune-card-group-box');
-                if (groupBox) groupBox.dataset.group.split(',').forEach(gid => { if (gid !== id) delete skills[gid]; });
-                skills[id] = (skills[id] || 0) + 1;
+                if (groupBox && calcStore.type !== 'hif') groupBox.dataset.group.split(',').forEach(gid => { if (gid !== id) delete skills[gid]; });
+                if (skill.primastella && skills[id]) delete skills[id];
+                else skills[id] = (skills[id] || 0) + 1;
             }
             calcStore.save(); refreshAll(); updateTitle();
             const sidebarContainer = document.getElementById('tune-sidebar-cards');
@@ -991,7 +1013,7 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
                 const badge = el.querySelector('.card-count-badge');
                 if (badge) { badge.textContent = `x${count}`; badge.classList.toggle('hidden', count <= 1); }
                 const rb = el.querySelector('.card-reset-btn');
-                if (rb) rb.classList.toggle('hidden', count === 0);
+                if (rb) rb.classList.toggle('hidden', count === 0 || !!skillCardList[cid]?.primastella);
             });
         };
     });
