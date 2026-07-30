@@ -1955,6 +1955,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
 }
 
 export function openPossessionModal() {
+    Object.keys(waffleQuarterState).forEach(key => delete waffleQuarterState[key]);
     let modal = document.getElementById('possession-modal');
     if (modal) modal.remove();
 
