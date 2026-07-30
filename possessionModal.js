@@ -695,7 +695,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             if (!c.isDeactivated) {
                 if (lb >= 4) {
                     cellTextHtml = `<img src="icons/primastella.webp" class="waffle-cell-primastella" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; object-fit: contain; pointer-events: none; user-select: none; filter: brightness(0) invert(1);">`;
-                } else if (lb > 0) {
+                } else {
                     cellTextHtml = `<span style="position: absolute; right: 3.5px; bottom: 2px; font-size: 0.6rem; font-weight: 900; color: #ffffff; line-height: 1; user-select: none;">${lb}</span>`;
                 }
             }
