@@ -108,11 +108,12 @@ function getPreCroppedCardDataUrl(imgEl, targetWidth, targetHeight, isGrayscale,
             const data = imgData.data;
             const factor = typeof isGrayscale === 'number' ? isGrayscale : 1.0;
             const colorFactor = 1 - factor;
+            const brightnessFactor = 0.8; // 80% brightness matching filter: brightness(0.8)
             for (let i = 0; i < data.length; i += 4) {
                 const gray = Math.round(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
-                data[i] = Math.round(data[i] * colorFactor + gray * factor);
-                data[i + 1] = Math.round(data[i + 1] * colorFactor + gray * factor);
-                data[i + 2] = Math.round(data[i + 2] * colorFactor + gray * factor);
+                data[i] = Math.round((data[i] * colorFactor + gray * factor) * brightnessFactor);
+                data[i + 1] = Math.round((data[i + 1] * colorFactor + gray * factor) * brightnessFactor);
+                data[i + 2] = Math.round((data[i + 2] * colorFactor + gray * factor) * brightnessFactor);
             }
             ctx.putImageData(imgData, 0, 0);
         }
