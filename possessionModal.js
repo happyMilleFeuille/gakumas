@@ -103,14 +103,16 @@ function getPreCroppedCardDataUrl(imgEl, targetWidth, targetHeight, isGrayscale,
 
         ctx.drawImage(imgEl, sx, sy, sWidth, sHeight, 0, 0, cw, ch);
 
-        if (isGrayscale) {
+        if (grayscaleAmount > 0) {
             const imgData = ctx.getImageData(0, 0, cw, ch);
             const data = imgData.data;
+            const factor = typeof grayscaleAmount === 'number' ? grayscaleAmount : 1.0;
+            const colorFactor = 1 - factor;
             for (let i = 0; i < data.length; i += 4) {
                 const gray = Math.round(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
-                data[i] = gray;
-                data[i + 1] = gray;
-                data[i + 2] = gray;
+                data[i] = Math.round(data[i] * colorFactor + gray * factor);
+                data[i + 1] = Math.round(data[i + 1] * colorFactor + gray * factor);
+                data[i + 2] = Math.round(data[i + 2] * colorFactor + gray * factor);
             }
             ctx.putImageData(imgData, 0, 0);
         }
@@ -466,6 +468,11 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         const rB = rOrder[b.rarity] || 99;
         if (rA !== rB) return rA - rB;
 
+        // 2순위: 돌파 높은 순 (4돌 -> 0돌 -> 미보유)
+        const lbA = a.isDeactivated ? -1 : (a.lb || 0);
+        const lbB = b.isDeactivated ? -1 : (b.lb || 0);
+        if (lbA !== lbB) return lbB - lbA;
+
         const dateA = a.releasedAt || '1970-01-01';
         const dateB = b.releasedAt || '1970-01-01';
         if (dateA !== dateB) {
@@ -593,6 +600,21 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         return getSortVal(a) - getSortVal(b);
     });
 
+    let sectionMaxSpanRows = 2;
+    sortedQKeys.forEach(qKey => {
+        const qCards = quarterMap[qKey];
+        const waffleColsCount = Math.min(4, qCards.length);
+        const waffleColsDesktop = Math.min(5, qCards.length);
+        const waffleRowsCount = Math.ceil(qCards.length / waffleColsCount);
+        const waffleRowsCountDesktop = Math.ceil(qCards.length / waffleColsDesktop);
+        const maxRowsNeeded = Math.max(waffleRowsCount, waffleRowsCountDesktop);
+        const sRows = maxRowsNeeded <= 2 ? 2 : maxRowsNeeded <= 4 ? 3 : maxRowsNeeded <= 6 ? 4 : maxRowsNeeded <= 9 ? 5 : maxRowsNeeded <= 11 ? 6 : Math.ceil(maxRowsNeeded / 2) + 1;
+        if (sRows > sectionMaxSpanRows) {
+            sectionMaxSpanRows = sRows;
+        }
+    });
+    const sectionMaxHeightCalc = `${sectionMaxSpanRows * 55 + (sectionMaxSpanRows - 1) * 5}px`;
+
     sortedQKeys.forEach(qKey => {
         const qCards = quarterMap[qKey];
         let waffleCellsHtml = '';
@@ -609,11 +631,9 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         const waffleContentHeight = 40 + maxRowsNeeded * 24 + (maxRowsNeeded - 1) * 3;
         // Mobile waffle content height: padding(~16px) + title(~14px) + grid(rows*16 + gaps*2)
         const mobileWaffleContentHeight = 30 + waffleRowsCount * 16 + (waffleRowsCount - 1) * 2;
-        // Find smallest spanRows for desktop (row=63px) and mobile (row=34px), take max
-        const desktopSpanRows = Math.max(2, Math.ceil((waffleContentHeight + 8) / 63));
-        const mobileSpanRows = Math.max(2, Math.ceil((mobileWaffleContentHeight + 4) / 34));
-        const spanRows = Math.max(desktopSpanRows, mobileSpanRows);
-        const boxMinHeightCalc = `${spanRows * 55 + (spanRows - 1) * 8}px`;
+        // 1-2 cell rows = 2 (115px), 3-4 cell rows = 3 (175px), 5-6 cell rows = 4 (235px), 7-9 cell rows = 5 (295px), 10-11 cell rows = 6 (355px)
+        const spanRows = maxRowsNeeded <= 2 ? 2 : maxRowsNeeded <= 4 ? 3 : maxRowsNeeded <= 6 ? 4 : maxRowsNeeded <= 9 ? 5 : maxRowsNeeded <= 11 ? 6 : Math.ceil(maxRowsNeeded / 2) + 1;
+        const boxMinHeightCalc = `${spanRows * 55 + (spanRows - 1) * 5}px`;
         const mobileBoxMinHeightCalc = `${spanRows * 34 - 2}px`;
         const waffleMarginStyle = 'margin: auto;';
 
@@ -640,17 +660,17 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         if (waffleQuarterState[qKey] === undefined) waffleQuarterState[qKey] = true;
         const isCollapsed = !!waffleQuarterState[qKey];
         const cardDisplayStyle = isCollapsed ? 'display: none !important;' : '';
-        const min2RowsHeightPx = '118px';
+        const min2RowsHeightPx = '115px';
         const containerGridStyle = isCollapsed
-            ? `grid-column: span 1; grid-row: span 1; min-height: ${boxMinHeightCalc};`
-            : `grid-column: 1; grid-row: span ${spanRows}; min-height: ${boxMinHeightCalc};`;
+            ? `grid-column: span 1; grid-row: span 1; height: ${sectionMaxHeightCalc} !important; min-height: ${sectionMaxHeightCalc} !important; max-height: ${sectionMaxHeightCalc} !important;`
+            : `grid-column: 1; grid-row: span ${spanRows}; height: ${boxMinHeightCalc} !important; min-height: ${boxMinHeightCalc} !important; max-height: ${boxMinHeightCalc} !important;`;
         const chevronTransform = isCollapsed ? 'transform: rotate(-90deg);' : 'transform: rotate(0deg);';
         const blockClass = isCollapsed ? 'possession-quarter-block collapsed' : 'possession-quarter-block';
 
         qCards.forEach(c => {
             const imgSrc = c.image || `images/support/thumb/${c.id}.webp`;
+            const lb = c.isDeactivated ? -1 : (c.lb || 0);
             const imgStyle = c.isDeactivated ? 'filter: grayscale(100%) brightness(0.8);' : '';
-            const lb = c.isDeactivated ? 0 : (c.lb || 0);
 
             // Waffle cell (Flat solid attribute color 100% opacity with white LB numbers 1~4)
             const cardType = (c.type || 'vocal').toLowerCase();
@@ -680,15 +700,23 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
                 return `<img src="${src}" class="support-card-flower">`;
             }).join('');
 
+            const is4Lb = !c.isDeactivated && lb >= 4;
+            const detailCardBorder = is4Lb
+                ? `border: 1px solid ${attrColor};`
+                : 'border: 1px solid #ddd;';
+            const overlayStyle = is4Lb
+                ? `background: linear-gradient(to right, ${hexToRgba(attrColor, 0.65)} 0%, ${hexToRgba(attrColor, 0.3)} 10%, ${hexToRgba(attrColor, 0.08)} 20%, ${hexToRgba(attrColor, 0)} 33%, ${hexToRgba(attrColor, 0)} 100%);`
+                : '';
+
             qCardImgsHtml += `
                 <div class="possession-detail-card" 
                      data-qkey="${qKey}"
                      data-card-id="${c.id}" 
-                     style="position: relative; width: 100%; height: 55px; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; border: 1px solid #ddd; box-sizing: border-box; padding-left: 5px; display: flex; flex-direction: column; ${cardDisplayStyle}">
+                     style="position: relative; width: 100%; height: 55px; border-radius: 3px 16px 3px 3px; overflow: hidden; background: ${RARITY_GRADIENTS[c.rarity] || '#f0f0f0'}; ${detailCardBorder} box-sizing: border-box; padding-left: 5px; display: flex; flex-direction: column; ${cardDisplayStyle}">
                     <img src="${imgSrc}" 
                          onerror="this.src='icons/card.png';" 
                          style="width: 100%; height: 100%; object-fit: cover; display: block; ${imgStyle}">
-                    <div class="support-card-gradient-overlay"></div>
+                    <div class="support-card-gradient-overlay" style="${overlayStyle}"></div>
                     <img class="support-type-badge" src="icons/${(c.type || 'vocal').toLowerCase()}.webp">
                     <img class="support-plan-badge" src="icons/${(c.plan || 'free').toLowerCase()}.webp">
                     <div class="support-card-flowers">${flowersHtml}</div>
@@ -696,12 +724,39 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             `;
         });
 
+        // Detail card spacers:
+        // 1) Up to waffle box height (baseLimit = spanRows * 4): pad to baseLimit (4-col grid)
+        // 2) Overflow past waffle box (> baseLimit): pad overflow to multiples of 5 (5-col grid)
+        const baseLimit = spanRows * 4;
+        let totalTargetCount = baseLimit;
+        if (qCards.length > baseLimit) {
+            const overflow = qCards.length - baseLimit;
+            const overflowRemainder = overflow % 5;
+            const neededOverflowSpacers = overflowRemainder === 0 ? 0 : (5 - overflowRemainder);
+            totalTargetCount = qCards.length + neededOverflowSpacers;
+        }
+
+        const spacerCount = totalTargetCount - qCards.length;
+        if (spacerCount > 0) {
+            for (let s = 0; s < spacerCount; s++) {
+                qCardImgsHtml += `
+                    <div class="possession-detail-card possession-detail-card-spacer" 
+                         data-qkey="${qKey}"
+                         style="position: relative; width: 100%; height: 55px; border-radius: 3px 16px 3px 3px; overflow: hidden; background: transparent; border: 1px dashed rgba(0, 0, 0, 0.08); box-sizing: border-box; visibility: hidden; pointer-events: none; ${cardDisplayStyle}">
+                    </div>
+                `;
+            }
+        }
+
+
+
         quarterSectionsHtml += `
             <!-- 분기 첫번째 슬롯: 차트 내부 좌상단 분기 제목 + 와플 차트 -->
             <div class="waffle-quarter-container ${blockClass}" 
                  data-qkey="${qKey}" 
                  data-span-rows="${spanRows}"
                  data-min-height-calc="${boxMinHeightCalc}"
+                 data-max-min-height-calc="${sectionMaxHeightCalc}"
                  data-mobile-min-height-calc="${mobileBoxMinHeightCalc}"
                  style="${containerGridStyle} position: relative; width: 100%; border-radius: 3px 16px 3px 3px; ${boxBgStyle} ${boxBorderStyle} box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 8px 6px; overflow: hidden; cursor: pointer; user-select: none; --mobile-min-height: ${mobileBoxMinHeightCalc};">
                 <!-- 차트 내부 좌상단 제목 -->
@@ -726,7 +781,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
     const detailContainerHtml = `
         <div class="possession-detail-container" style="display: none; margin-top: 12px;">
             <div class="possession-detail-scroll-wrapper" style="box-sizing: border-box; display: flex; flex-direction: column;">
-                <div class="possession-unified-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; padding: 10px; box-sizing: border-box; background-color: rgba(0, 0, 0, 0.025); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 10px;">
+                <div class="possession-unified-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; padding: 10px; box-sizing: border-box; background-color: rgba(0, 0, 0, 0.025); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 10px;">
                     ${quarterSectionsHtml || `<div style="font-size: 0.65rem; color: #bbb; text-align: center; user-select: none; grid-column: 1 / -1;">-</div>`}
                 </div>
             </div>
@@ -920,6 +975,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                 </div>
             `);
         });
+
         if (sourceCardsHtmlList.length > 0) {
             sourceSectionsHtml = `
                 <div class="possession-stats-source-card" style="margin-bottom: 15px;">
@@ -1554,8 +1610,8 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     top: 0;
                     left: 5px;
                     bottom: 0;
-                    right: 10px;
-                    background: linear-gradient(to right, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.3) 15%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+                    right: -1px;
+                    background: linear-gradient(to right, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.08) 20%, rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0) 100%);
                     pointer-events: none;
                     z-index: 2;
                 }
@@ -1571,8 +1627,8 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     user-select: none;
                 }
                 .support-card-flower {
-                    width: 14px;
-                    height: 14px;
+                    width: 12px;
+                    height: 12px;
                     object-fit: contain;
                     display: block;
                 }
@@ -2148,18 +2204,21 @@ export function openPossessionModal() {
 
                 const origSpan = waffleQuarterContainer.getAttribute('data-span-rows') || '2';
                 const origMinHeight = waffleQuarterContainer.getAttribute('data-min-height-calc') || '';
+                const maxMinHeight = waffleQuarterContainer.getAttribute('data-max-min-height-calc') || origMinHeight;
 
-                const min2RowsHeightPx = '118px';
+                const min2RowsHeightPx = '115px';
                 if (nextState) {
                     waffleQuarterContainer.style.gridColumn = 'span 1';
                     waffleQuarterContainer.style.gridRow = 'span 1';
-                    waffleQuarterContainer.style.height = '';
-                    waffleQuarterContainer.style.minHeight = origMinHeight;
+                    waffleQuarterContainer.style.height = maxMinHeight;
+                    waffleQuarterContainer.style.minHeight = maxMinHeight;
+                    waffleQuarterContainer.style.maxHeight = maxMinHeight;
                 } else {
                     waffleQuarterContainer.style.gridColumn = '1';
                     waffleQuarterContainer.style.gridRow = `span ${origSpan}`;
-                    waffleQuarterContainer.style.height = '';
+                    waffleQuarterContainer.style.height = origMinHeight;
                     waffleQuarterContainer.style.minHeight = origMinHeight;
+                    waffleQuarterContainer.style.maxHeight = origMinHeight;
                 }
 
                 const unifiedGrid = waffleQuarterContainer.closest('.possession-unified-grid');
@@ -2685,13 +2744,6 @@ export function openPossessionModal() {
                     scrollArea.offsetHeight; // force reflow
                 }
 
-                // Hide the "By Source" section cards completely
-                const sourceSectionCards = modalContent.querySelectorAll('.possession-section-card:not([data-is-overall="true"])');
-                const origSourceCardDisplays = [];
-                sourceSectionCards.forEach(card => {
-                    origSourceCardDisplays.push({ el: card, display: card.style.display });
-                    if (saveType === 'overall') card.style.display = 'none';
-                });
 
                 // Expand only the overall rate section and columns during screenshot
                 const detailContainers = modalContent.querySelectorAll('.possession-detail-container');
@@ -2733,7 +2785,9 @@ export function openPossessionModal() {
                         box.classList.remove('collapsed');
                         box.style.gridColumn = '1';
                         box.style.gridRow = `span ${spanRows}`;
+                        box.style.height = boxMinHeightCalc;
                         box.style.minHeight = boxMinHeightCalc;
+                        box.style.maxHeight = boxMinHeightCalc;
                         if (chevron) chevron.style.transform = 'rotate(0deg)';
                     });
                 }
@@ -2779,7 +2833,8 @@ export function openPossessionModal() {
                 const cardImgs = modalContent.querySelectorAll('.possession-detail-card > img:first-child');
                 const origImgStates = [];
                 cardImgs.forEach(img => {
-                    const isGrayscale = (img.style.filter || '').includes('grayscale');
+                    const isGrayscale = (img.style.filter || '').includes('grayscale(100%)');
+                    const grayscaleAmount = isGrayscale ? 1.0 : 0;
                     const w = img.offsetWidth || 138.4;
                     const h = img.offsetHeight || 50.32;
                     origImgStates.push({
@@ -2789,7 +2844,7 @@ export function openPossessionModal() {
                         objectFit: img.style.objectFit,
                         objectPosition: img.style.objectPosition
                     });
-                    img.src = getPreCroppedCardDataUrl(img, w, h, isGrayscale, 6);
+                    img.src = getPreCroppedCardDataUrl(img, w, h, grayscaleAmount, 6);
                     img.style.filter = 'none';
                     img.style.objectFit = 'fill';
                     img.style.objectPosition = 'center';
@@ -2935,8 +2990,11 @@ export function openPossessionModal() {
                         alert(alertFailImage);
 
                         // Restore original image sources after capture failure
-                        origImgSrcs.forEach(item => {
+                        origImgStates.forEach(item => {
                             item.img.src = item.src;
+                            item.img.style.filter = item.filter;
+                            item.img.style.objectFit = item.objectFit;
+                            item.img.style.objectPosition = item.objectPosition;
                         });
 
                         // Restore original styles
@@ -3037,9 +3095,6 @@ export function openPossessionModal() {
                             item.el.style.maxHeight = item.maxHeight;
                             item.el.style.overflowY = item.overflowY;
                             item.el.scrollTop = item.scrollTop;
-                        });
-                        origHeaderPositions.forEach(item => {
-                            item.el.style.position = item.position;
                         });
 
                         btn.innerHTML = originalText;
