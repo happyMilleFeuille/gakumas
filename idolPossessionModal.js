@@ -2895,6 +2895,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
             // Generate owned/unowned PSSR icons for this character (separated into normal and another cards)
             const buildCardIconsHtml = (cards) => {
+                if (!cards || cards.length === 0) return '';
                 let html = '';
                 cards.forEach(c => {
                     const isOwned = isCardOwned(c.id);
@@ -3089,13 +3090,15 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                     </div>
                                 </div>
                             </div>
-                            ${(normalIconsHtml || anotherIconsHtml) ? `
+                            ${(normalIconsHtml || (anotherIconsHtml && includeAnother)) ? `
                             <div class="pssr-char-icons-container">
+                                ${normalIconsHtml ? `
                                 <div class="pssr-stat-icons-row">
                                     ${normalIconsHtml}
                                 </div>
-                                ${anotherIconsHtml ? `
-                                <div style="width: 100%; border-top: 1px dashed rgba(0, 0, 0, 0.12); margin: 6px 0;"></div>
+                                ` : ''}
+                                ${(anotherIconsHtml && includeAnother) ? `
+                                ${normalIconsHtml ? `<div style="width: 100%; border-top: 1px dashed rgba(0, 0, 0, 0.12); margin: 6px 0;"></div>` : ''}
                                 <div class="pssr-stat-icons-row">
                                     ${anotherIconsHtml}
                                 </div>
@@ -4338,30 +4341,30 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
     updateStatsUI();
     scrollArea.scrollTop = 0;
 
-        // Save Image button listener
-        const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
-        saveBtn.onclick = () => {
-            // Reset all active bar filters inside the modal when saving image
-            modal.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
-            modal.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
-            modal.querySelectorAll('.idol-stats-chart-wrapper').forEach(w => w.classList.remove('has-active'));
-            modal.querySelectorAll('.idol-stats-xaxis-container').forEach(c => c.classList.remove('has-active'));
-            modal.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap').forEach(w => {
-                w.style.display = '';
-            });
-            modal.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]').forEach(sep => {
-                sep.style.display = '';
-            });
+    // Save Image button listener
+    const saveBtn = headerArea.querySelector('#btn-idol-possession-save');
+    saveBtn.onclick = () => {
+        // Reset all active bar filters inside the modal when saving image
+        modal.querySelectorAll('.idol-stats-bar-outer').forEach(b => b.classList.remove('active'));
+        modal.querySelectorAll('.idol-stats-xaxis-label').forEach(l => l.classList.remove('active'));
+        modal.querySelectorAll('.idol-stats-chart-wrapper').forEach(w => w.classList.remove('has-active'));
+        modal.querySelectorAll('.idol-stats-xaxis-container').forEach(c => c.classList.remove('has-active'));
+        modal.querySelectorAll('.pssr-char-icons-container .pssr-stat-icon-wrap').forEach(w => {
+            w.style.display = '';
+        });
+        modal.querySelectorAll('.pssr-char-icons-container div[style*="border-top"]').forEach(sep => {
+            sep.style.display = '';
+        });
 
-            const originalText = saveBtn.innerHTML;
+        const originalText = saveBtn.innerHTML;
 
-            const showSpinnerOverlay = () => {
-                let overlay = document.getElementById('possession-save-spinner-overlay');
-                if (overlay) overlay.remove();
+        const showSpinnerOverlay = () => {
+            let overlay = document.getElementById('possession-save-spinner-overlay');
+            if (overlay) overlay.remove();
 
-                overlay = document.createElement('div');
-                overlay.id = 'possession-save-spinner-overlay';
-                overlay.style.cssText = `
+            overlay = document.createElement('div');
+            overlay.id = 'possession-save-spinner-overlay';
+            overlay.style.cssText = `
                 position: fixed;
                 inset: 0;
                 background: rgba(0, 0, 0, 0.45);
@@ -4375,8 +4378,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 gap: 16px;
             `;
 
-                const spinner = document.createElement('div');
-                spinner.style.cssText = `
+            const spinner = document.createElement('div');
+            spinner.style.cssText = `
                 width: 46px;
                 height: 46px;
                 border: 4.5px solid rgba(255, 255, 255, 0.25);
@@ -4388,60 +4391,60 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 transform: translateZ(0);
             `;
 
-                if (!document.getElementById('possession-spin-style')) {
-                    const style = document.createElement('style');
-                    style.id = 'possession-spin-style';
-                    style.textContent = `
+            if (!document.getElementById('possession-spin-style')) {
+                const style = document.createElement('style');
+                style.id = 'possession-spin-style';
+                style.textContent = `
                     @keyframes possession-spin {
                         0% { transform: rotate(0deg); }
                         100% { transform: rotate(360deg); }
                     }
                 `;
-                    document.head.appendChild(style);
-                }
+                document.head.appendChild(style);
+            }
 
-                const label = document.createElement('div');
-                label.style.cssText = `
+            const label = document.createElement('div');
+            label.style.cssText = `
                 font-size: 0.95rem;
                 font-weight: 800;
                 text-shadow: 0 1px 4px rgba(0,0,0,0.4);
                 letter-spacing: 0.5px;
             `;
-                label.textContent = text.alert_generating;
+            label.textContent = text.alert_generating;
 
-                overlay.appendChild(spinner);
-                overlay.appendChild(label);
-                document.body.appendChild(overlay);
-            };
+            overlay.appendChild(spinner);
+            overlay.appendChild(label);
+            document.body.appendChild(overlay);
+        };
 
-            const hideSpinnerOverlay = () => {
-                const overlay = document.getElementById('possession-save-spinner-overlay');
-                if (overlay) overlay.remove();
-            };
+        const hideSpinnerOverlay = () => {
+            const overlay = document.getElementById('possession-save-spinner-overlay');
+            if (overlay) overlay.remove();
+        };
 
-            const showSaveOptionsModal = (onSelect) => {
-                history.pushState({ modalOpen: 'saveOptions' }, "");
+        const showSaveOptionsModal = (onSelect) => {
+            history.pushState({ modalOpen: 'saveOptions' }, "");
 
-                let optionsModal = document.createElement('div');
-                let didClose = false;
-                optionsModal.className = 'modal';
-                optionsModal.style.zIndex = '36000';
-                optionsModal.style.display = 'flex';
-                optionsModal.style.alignItems = 'center';
-                optionsModal.style.justifyContent = 'center';
-                optionsModal.style.position = 'fixed';
-                optionsModal.style.inset = '0';
-                optionsModal.style.background = 'rgba(0, 0, 0, 0.7)';
+            let optionsModal = document.createElement('div');
+            let didClose = false;
+            optionsModal.className = 'modal';
+            optionsModal.style.zIndex = '36000';
+            optionsModal.style.display = 'flex';
+            optionsModal.style.alignItems = 'center';
+            optionsModal.style.justifyContent = 'center';
+            optionsModal.style.position = 'fixed';
+            optionsModal.style.inset = '0';
+            optionsModal.style.background = 'rgba(0, 0, 0, 0.7)';
 
-                const isJa = lang === 'ja';
-                const isEn = lang === 'en';
-                const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
-                const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
-                const optPlanAllText = isJa ? 'プラン別保存' : isEn ? 'Save by Plan' : '플랜별 저장';
-                const optSourceAllText = isJa ? '分類別保存' : isEn ? 'Save by Category' : '분류별 저장';
-                const optCharAllText = isJa ? 'アイドル別保存' : isEn ? 'Save by Idol' : '아이돌별 저장';
+            const isJa = lang === 'ja';
+            const isEn = lang === 'en';
+            const titleText = isJa ? '保存方法の選択 (.webp)' : isEn ? 'Select Save Method (.webp)' : '저장 방식 선택 (.webp)';
+            const optAllText = isJa ? '全体保存' : isEn ? 'Save Everything' : '전체 저장';
+            const optPlanAllText = isJa ? 'プラン別保存' : isEn ? 'Save by Plan' : '플랜별 저장';
+            const optSourceAllText = isJa ? '分類別保存' : isEn ? 'Save by Category' : '분류별 저장';
+            const optCharAllText = isJa ? 'アイドル別保存' : isEn ? 'Save by Idol' : '아이돌별 저장';
 
-                optionsModal.innerHTML = `
+            optionsModal.innerHTML = `
                 <div class="modal-content possession-save-options-content">
                     <button id="btn-save-opt-close" style="position: absolute; right: 6px; top: 6px; background: none; border: none; font-size: 1.25rem; font-weight: bold; color: #888; cursor: pointer; padding: 2px; line-height: 1; transition: none !important;">&times;</button>
                     <div class="save-opt-title" style="font-weight: 800; font-size: 1.1rem; color: #333; margin-bottom: 4px; margin-top: 8px;">${titleText}</div>
@@ -4460,171 +4463,157 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                 </div>
             `;
 
-                document.body.appendChild(optionsModal);
+            document.body.appendChild(optionsModal);
 
-                optionsModal.onClose = () => {
-                    if (didClose) return;
-                    didClose = true;
-                    optionsModal.remove();
-                    onSelect(null);
-                };
-
-                const closeOptionsModal = (result) => {
-                    if (didClose) return;
-                    didClose = true;
-                    const parentModal = document.getElementById('idol-possession-modal');
-                    if (parentModal) {
-                        parentModal.setAttribute('data-prevent-popstate', 'true');
-                    }
-                    optionsModal.remove();
-                    if (history.state && history.state.modalOpen === 'saveOptions') {
-                        history.back();
-                    } else {
-                        if (parentModal) {
-                            parentModal.removeAttribute('data-prevent-popstate');
-                        }
-                    }
-                    optionsModal.onClose = null;
-                    onSelect(result);
-                };
-
-                const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
-                closeBtn.onclick = () => {
-                    closeOptionsModal(null);
-                };
-                optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
-                    closeOptionsModal('all');
-                };
-                optionsModal.querySelector('#btn-save-opt-plan-all').onclick = () => {
-                    closeOptionsModal('plan-all');
-                };
-                optionsModal.querySelector('#btn-save-opt-source-all').onclick = () => {
-                    closeOptionsModal('source-all');
-                };
-                optionsModal.querySelector('#btn-save-opt-char-all').onclick = () => {
-                    closeOptionsModal('char-all');
-                };
-                optionsModal.onclick = (e) => {
-                    if (e.target === optionsModal) {
-                        closeOptionsModal(null);
-                    }
-                };
+            optionsModal.onClose = () => {
+                if (didClose) return;
+                didClose = true;
+                optionsModal.remove();
+                onSelect(null);
             };
 
-            showSaveOptionsModal((saveType) => {
-                if (!saveType) return;
-
-                showSpinnerOverlay();
-
-                saveBtn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${text.alert_generating}</span>`;
-
-                const startCapture = () => {
-                    const executeCapture = () => capture();
-
-                    if (window.html2canvas) {
-                        setTimeout(executeCapture, 50);
-                    } else {
-                        const script = document.createElement('script');
-                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-                        script.onload = () => executeCapture();
-                        script.onerror = () => {
-                            alert(text.alert_fail);
-                            saveBtn.innerHTML = originalText;
-                            hideSpinnerOverlay();
-                        };
-                        document.head.appendChild(script);
+            const closeOptionsModal = (result) => {
+                if (didClose) return;
+                didClose = true;
+                const parentModal = document.getElementById('idol-possession-modal');
+                if (parentModal) {
+                    parentModal.setAttribute('data-prevent-popstate', 'true');
+                }
+                optionsModal.remove();
+                if (history.state && history.state.modalOpen === 'saveOptions') {
+                    history.back();
+                } else {
+                    if (parentModal) {
+                        parentModal.removeAttribute('data-prevent-popstate');
                     }
+                }
+                optionsModal.onClose = null;
+                onSelect(result);
+            };
+
+            const closeBtn = optionsModal.querySelector('#btn-save-opt-close');
+            closeBtn.onclick = () => {
+                closeOptionsModal(null);
+            };
+            optionsModal.querySelector('#btn-save-opt-all').onclick = () => {
+                closeOptionsModal('all');
+            };
+            optionsModal.querySelector('#btn-save-opt-plan-all').onclick = () => {
+                closeOptionsModal('plan-all');
+            };
+            optionsModal.querySelector('#btn-save-opt-source-all').onclick = () => {
+                closeOptionsModal('source-all');
+            };
+            optionsModal.querySelector('#btn-save-opt-char-all').onclick = () => {
+                closeOptionsModal('char-all');
+            };
+            optionsModal.onclick = (e) => {
+                if (e.target === optionsModal) {
+                    closeOptionsModal(null);
+                }
+            };
+        };
+
+        showSaveOptionsModal((saveType) => {
+            if (!saveType) return;
+
+            showSpinnerOverlay();
+
+            saveBtn.innerHTML = `<span style="font-size: 0.8rem; font-weight: normal; display: flex; align-items: center; gap: 4px;">${text.alert_generating}</span>`;
+
+            const startCapture = () => {
+                const executeCapture = () => capture();
+
+                if (window.html2canvas) {
+                    setTimeout(executeCapture, 50);
+                } else {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    script.onload = () => executeCapture();
+                    script.onerror = () => {
+                        alert(text.alert_fail);
+                        saveBtn.innerHTML = originalText;
+                        hideSpinnerOverlay();
+                    };
+                    document.head.appendChild(script);
+                }
+            };
+
+            const capture = () => {
+                document.body.classList.add('is-capturing');
+                const mobileStyles = document.getElementById('idol-possession-mobile-styles');
+                if (mobileStyles) {
+                    mobileStyles.disabled = true;
+                    mobileStyles.setAttribute('disabled', '');
+                }
+                saveBtn.innerHTML = 'GAKUMAS NOTE';
+
+                const isPlanAll = saveType === 'plan-all';
+                const isSourceAll = saveType === 'source-all';
+                const isCharAll = saveType === 'char-all';
+                const getActiveCaptureCards = () => {
+                    let activeCards = pssrCards;
+                    if (!includeAnother) {
+                        activeCards = activeCards.filter(c => !c.another);
+                    }
+                    if (!includeDist) {
+                        activeCards = activeCards.filter(c => c.source !== 'dist');
+                    }
+                    return activeCards;
                 };
 
-                const capture = () => {
-                    document.body.classList.add('is-capturing');
-                    const mobileStyles = document.getElementById('idol-possession-mobile-styles');
-                    if (mobileStyles) {
-                        mobileStyles.disabled = true;
-                        mobileStyles.setAttribute('disabled', '');
-                    }
-                    saveBtn.innerHTML = 'GAKUMAS NOTE';
+                // Hide other sections/elements if plan-only or source-only or char-only mode
+                const elementsToHide = [];
+                if (isPlanAll || isSourceAll || isCharAll) {
+                    // Hide overall card
+                    const overallCard = modalContent.querySelector('.possession-section-card[data-is-overall="true"]');
+                    if (overallCard) elementsToHide.push(overallCard);
 
-                    const isPlanAll = saveType === 'plan-all';
-                    const isSourceAll = saveType === 'source-all';
-                    const isCharAll = saveType === 'char-all';
-                    const getActiveCaptureCards = () => {
-                        let activeCards = pssrCards;
-                        if (!includeAnother) {
-                            activeCards = activeCards.filter(c => !c.another);
-                        }
-                        if (!includeDist) {
-                            activeCards = activeCards.filter(c => c.source !== 'dist');
-                        }
-                        return activeCards;
-                    };
+                    // Hide background image
+                    const bgImg = modalContent.querySelector('.modal-bg-image');
+                    if (bgImg) elementsToHide.push(bgImg);
 
-                    // Hide other sections/elements if plan-only or source-only or char-only mode
-                    const elementsToHide = [];
-                    if (isPlanAll || isSourceAll || isCharAll) {
-                        // Hide overall card
-                        const overallCard = modalContent.querySelector('.possession-section-card[data-is-overall="true"]');
-                        if (overallCard) elementsToHide.push(overallCard);
+                    if (isPlanAll) {
+                        // Hide source label/cards
+                        const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
+                        if (sourceLbl) elementsToHide.push(sourceLbl);
+                        const sourceCard = modalContent.querySelector('.idol-stats-source-card');
+                        if (sourceCard) elementsToHide.push(sourceCard);
 
-                        // Hide background image
-                        const bgImg = modalContent.querySelector('.modal-bg-image');
-                        if (bgImg) elementsToHide.push(bgImg);
+                        // Hide char label/cards
+                        const charLbl = modalContent.querySelector('#pssr-char-stats-label');
+                        if (charLbl) elementsToHide.push(charLbl);
+                        const charCard = modalContent.querySelector('.idol-stats-char-card');
+                        if (charCard) elementsToHide.push(charCard);
+                    } else if (isSourceAll) {
+                        // Hide plan label/cards
+                        const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
+                        if (planLbl) elementsToHide.push(planLbl);
+                        const planCard = modalContent.querySelector('.idol-stats-plan-card');
+                        if (planCard) elementsToHide.push(planCard);
 
-                        if (isPlanAll) {
-                            // Hide source label/cards
-                            const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
-                            if (sourceLbl) elementsToHide.push(sourceLbl);
-                            const sourceCard = modalContent.querySelector('.idol-stats-source-card');
-                            if (sourceCard) elementsToHide.push(sourceCard);
+                        // Hide char label/cards
+                        const charLbl = modalContent.querySelector('#pssr-char-stats-label');
+                        if (charLbl) elementsToHide.push(charLbl);
+                        const charCard = modalContent.querySelector('.idol-stats-char-card');
+                        if (charCard) elementsToHide.push(charCard);
+                    } else if (isCharAll) {
+                        // Hide plan label/cards
+                        const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
+                        if (planLbl) elementsToHide.push(planLbl);
+                        const planCard = modalContent.querySelector('.idol-stats-plan-card');
+                        if (planCard) elementsToHide.push(planCard);
 
-                            // Hide char label/cards
-                            const charLbl = modalContent.querySelector('#pssr-char-stats-label');
-                            if (charLbl) elementsToHide.push(charLbl);
-                            const charCard = modalContent.querySelector('.idol-stats-char-card');
-                            if (charCard) elementsToHide.push(charCard);
-                        } else if (isSourceAll) {
-                            // Hide plan label/cards
-                            const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
-                            if (planLbl) elementsToHide.push(planLbl);
-                            const planCard = modalContent.querySelector('.idol-stats-plan-card');
-                            if (planCard) elementsToHide.push(planCard);
+                        // Hide source label/cards
+                        const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
+                        if (sourceLbl) elementsToHide.push(sourceLbl);
+                        const sourceCard = modalContent.querySelector('.idol-stats-source-card');
+                        if (sourceCard) elementsToHide.push(sourceCard);
 
-                            // Hide char label/cards
-                            const charLbl = modalContent.querySelector('#pssr-char-stats-label');
-                            if (charLbl) elementsToHide.push(charLbl);
-                            const charCard = modalContent.querySelector('.idol-stats-char-card');
-                            if (charCard) elementsToHide.push(charCard);
-                        } else if (isCharAll) {
-                            // Hide plan label/cards
-                            const planLbl = modalContent.querySelector('#pssr-plan-stats-label');
-                            if (planLbl) elementsToHide.push(planLbl);
-                            const planCard = modalContent.querySelector('.idol-stats-plan-card');
-                            if (planCard) elementsToHide.push(planCard);
-
-                            // Hide source label/cards
-                            const sourceLbl = modalContent.querySelector('#pssr-source-stats-label');
-                            if (sourceLbl) elementsToHide.push(sourceLbl);
-                            const sourceCard = modalContent.querySelector('.idol-stats-source-card');
-                            if (sourceCard) elementsToHide.push(sourceCard);
-
-                            // Hide 4th place and below characters' card icons list, keeping only the chart
-                            const charCardsList = modalContent.querySelectorAll('.char-stat-card');
-                            charCardsList.forEach((card, idx) => {
-                                if (idx >= 3) {
-                                    const iconsContainer = card.querySelector('.pssr-char-icons-container');
-                                    if (iconsContainer) {
-                                        elementsToHide.push(iconsContainer);
-                                    }
-                                }
-                            });
-                        }
-                    }
-
-                    // Hide 2nd and 3rd place characters' card icons list during overall save to prevent huge height
-                    if (!isPlanAll && !isSourceAll && !isCharAll) {
+                        // Hide 4th place and below characters' card icons list, keeping only the chart
                         const charCardsList = modalContent.querySelectorAll('.char-stat-card');
                         charCardsList.forEach((card, idx) => {
-                            if (idx === 1 || idx === 2) {
+                            if (idx >= 3) {
                                 const iconsContainer = card.querySelector('.pssr-char-icons-container');
                                 if (iconsContainer) {
                                     elementsToHide.push(iconsContainer);
@@ -4632,59 +4621,73 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                             }
                         });
                     }
+                }
 
-                    const origDisplays = [];
-                    elementsToHide.forEach(el => {
-                        origDisplays.push({
-                            el,
-                            display: el.style.display,
-                            displayPriority: el.style.getPropertyPriority('display')
-                        });
-                        el.style.setProperty('display', 'none', 'important');
+                // Hide 2nd and 3rd place characters' card icons list during overall save to prevent huge height
+                if (!isPlanAll && !isSourceAll && !isCharAll) {
+                    const charCardsList = modalContent.querySelectorAll('.char-stat-card');
+                    charCardsList.forEach((card, idx) => {
+                        if (idx === 1 || idx === 2) {
+                            const iconsContainer = card.querySelector('.pssr-char-icons-container');
+                            if (iconsContainer) {
+                                elementsToHide.push(iconsContainer);
+                            }
+                        }
                     });
+                }
 
-                    // Programmatically set up the plan drawer contents
-                    const detailsDiv = scrollArea.querySelector('#plan-stat-details');
-                    const origPlanDetailsHtml = detailsDiv ? detailsDiv.innerHTML : '';
-                    const origPlanDetailsDisplay = detailsDiv ? detailsDiv.style.display : '';
-                    const origPlanDetailsActive = detailsDiv ? detailsDiv.dataset.activePlan : '';
-                    const origPlanColsActive = [];
-                    scrollArea.querySelectorAll('.idol-stats-plan-col').forEach(col => {
-                        origPlanColsActive.push({ col, active: col.classList.contains('active') });
+                const origDisplays = [];
+                elementsToHide.forEach(el => {
+                    origDisplays.push({
+                        el,
+                        display: el.style.display,
+                        displayPriority: el.style.getPropertyPriority('display')
                     });
+                    el.style.setProperty('display', 'none', 'important');
+                });
 
-                    if (isPlanAll && detailsDiv) {
-                        const planCols = scrollArea.querySelectorAll('.idol-stats-plan-col');
-                        planCols.forEach(col => col.classList.add('active'));
+                // Programmatically set up the plan drawer contents
+                const detailsDiv = scrollArea.querySelector('#plan-stat-details');
+                const origPlanDetailsHtml = detailsDiv ? detailsDiv.innerHTML : '';
+                const origPlanDetailsDisplay = detailsDiv ? detailsDiv.style.display : '';
+                const origPlanDetailsActive = detailsDiv ? detailsDiv.dataset.activePlan : '';
+                const origPlanColsActive = [];
+                scrollArea.querySelectorAll('.idol-stats-plan-col').forEach(col => {
+                    origPlanColsActive.push({ col, active: col.classList.contains('active') });
+                });
 
-                        const activeCards = getActiveCaptureCards();
+                if (isPlanAll && detailsDiv) {
+                    const planCols = scrollArea.querySelectorAll('.idol-stats-plan-col');
+                    planCols.forEach(col => col.classList.add('active'));
 
-                        const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useOsusumeBadgeForPlan: true });
+                    const activeCards = getActiveCaptureCards();
 
-                        const isJa = lang === 'ja';
-                        const isEn = lang === 'en';
-                        const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
-                        const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
+                    const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useOsusumeBadgeForPlan: true });
 
-                        let allPlansHtml = '<div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">';
+                    const isJa = lang === 'ja';
+                    const isEn = lang === 'en';
+                    const ownedLabel = isJa ? '所持' : isEn ? 'Owned' : '소지';
+                    const unownedLabel = isJa ? '未所持' : isEn ? 'Not Owned' : '미소지';
 
-                        const plans = ['sense', 'logic', 'anomaly'];
-                        plans.forEach((p, pIdx) => {
-                            const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
-                            const ownedCards = planCards.filter(c => isCardOwned(c.id));
-                            const unownedCards = planCards.filter(c => !isCardOwned(c.id));
-                            ownedCards.sort(sortPssrByCharacterAndRelease);
-                            unownedCards.sort(sortPssrByCharacterAndRelease);
+                    let allPlansHtml = '<div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">';
 
-                            const planColor = p === 'sense' ? '#ff4d8d' : p === 'logic' ? '#46a4f3' : '#ffb300';
-                            const planTitle = p.toUpperCase();
+                    const plans = ['sense', 'logic', 'anomaly'];
+                    plans.forEach((p, pIdx) => {
+                        const planCards = activeCards.filter(c => (c.plan || 'sense') === p);
+                        const ownedCards = planCards.filter(c => isCardOwned(c.id));
+                        const unownedCards = planCards.filter(c => !isCardOwned(c.id));
+                        ownedCards.sort(sortPssrByCharacterAndRelease);
+                        unownedCards.sort(sortPssrByCharacterAndRelease);
 
-                            const borderStyle = pIdx < plans.length - 1 ? 'border-bottom: 1px dashed rgba(0, 0, 0, 0.08); padding-bottom: 16px;' : '';
+                        const planColor = p === 'sense' ? '#ff4d8d' : p === 'logic' ? '#46a4f3' : '#ffb300';
+                        const planTitle = p.toUpperCase();
 
-                            const ownedBg = hexToRgba(planColor, 0.08);
-                            const ownedBorder = hexToRgba(planColor, 0.12);
+                        const borderStyle = pIdx < plans.length - 1 ? 'border-bottom: 1px dashed rgba(0, 0, 0, 0.08); padding-bottom: 16px;' : '';
 
-                            allPlansHtml += `
+                        const ownedBg = hexToRgba(planColor, 0.08);
+                        const ownedBorder = hexToRgba(planColor, 0.12);
+
+                        allPlansHtml += `
                             <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${borderStyle}">
                                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
                                     <img src="icons/${p}.webp" style="width: 15px; height: 15px; object-fit: contain;">
@@ -4692,469 +4695,469 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                 </div>
                         `;
 
-                            if (ownedCards.length > 0) {
-                                const groupStyle = unownedCards.length > 0
-                                    ? `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`
-                                    : `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
+                        if (ownedCards.length > 0) {
+                            const groupStyle = unownedCards.length > 0
+                                ? `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px 8px 0 0;`
+                                : `padding: 8px; box-sizing: border-box; background-color: ${ownedBg}; border: 1px solid ${ownedBorder}; border-radius: 8px;`;
 
-                                allPlansHtml += `
+                            allPlansHtml += `
                                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #555; padding-left: 6px; user-select: none;">${ownedLabel} (${ownedCards.length})</div>
                                     ${renderPlanSubGroupsHtml(ownedCards, true, p, lang, buildIconsHtml, planCards)}
                                 </div>
                             `;
-                            }
+                        }
 
-                            if (unownedCards.length > 0) {
-                                const groupStyle = ownedCards.length > 0
-                                    ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`
-                                    : `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
+                        if (unownedCards.length > 0) {
+                            const groupStyle = ownedCards.length > 0
+                                ? `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 0 0 8px 8px; margin-top: var(--pssr-group-gap);`
+                                : `padding: 8px; box-sizing: border-box; background-color: rgba(100, 116, 139, 0.09); border: 1px solid rgba(100, 116, 139, 0.12); border-radius: 8px;`;
 
-                                allPlansHtml += `
+                            allPlansHtml += `
                                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; ${groupStyle}">
                                     <div class="plan-group-title" style="font-size: 0.72rem; font-weight: 800; color: #999; padding-left: 6px; user-select: none;">${unownedLabel} (${unownedCards.length})</div>
                                     ${renderPlanSubGroupsHtml(unownedCards, false, p, lang, buildIconsHtml, planCards)}
                                 </div>
                             `;
-                            }
+                        }
 
-                            allPlansHtml += `</div>`;
+                        allPlansHtml += `</div>`;
+                    });
+
+                    allPlansHtml += '</div>';
+                    detailsDiv.innerHTML = allPlansHtml;
+                    detailsDiv.style.display = 'flex';
+                    detailsDiv.dataset.activePlan = 'all';
+                } else if (detailsDiv) {
+                    detailsDiv.style.display = 'none';
+                }
+
+                // Temporarily expand all classification/source cards during capture
+                const sourceCardsList = scrollArea.querySelectorAll('.source-stat-card');
+                const origSourceCardsState = [];
+
+                sourceCardsList.forEach(sourceCard => {
+                    const detailsDiv = sourceCard.querySelector('.source-stat-details');
+                    const chevron = sourceCard.querySelector('.source-chevron');
+
+                    if (detailsDiv) {
+                        // Save original state
+                        origSourceCardsState.push({
+                            sourceCard,
+                            detailsDiv,
+                            chevron,
+                            display: detailsDiv.style.display,
+                            innerHTML: detailsDiv.innerHTML,
+                            transform: chevron ? chevron.style.transform : '',
+                            isExpanded: sourceCard.classList.contains('expanded')
                         });
 
-                        allPlansHtml += '</div>';
-                        detailsDiv.innerHTML = allPlansHtml;
-                        detailsDiv.style.display = 'flex';
-                        detailsDiv.dataset.activePlan = 'all';
-                    } else if (detailsDiv) {
-                        detailsDiv.style.display = 'none';
-                    }
+                        if (isSourceAll) {
+                            // Populate details drawer
+                            const src = sourceCard.dataset.source;
+                            const activeCards = getActiveCaptureCards();
 
-                    // Temporarily expand all classification/source cards during capture
-                    const sourceCardsList = scrollArea.querySelectorAll('.source-stat-card');
-                    const origSourceCardsState = [];
-
-                    sourceCardsList.forEach(sourceCard => {
-                        const detailsDiv = sourceCard.querySelector('.source-stat-details');
-                        const chevron = sourceCard.querySelector('.source-chevron');
-
-                        if (detailsDiv) {
-                            // Save original state
-                            origSourceCardsState.push({
-                                sourceCard,
-                                detailsDiv,
-                                chevron,
-                                display: detailsDiv.style.display,
-                                innerHTML: detailsDiv.innerHTML,
-                                transform: chevron ? chevron.style.transform : '',
-                                isExpanded: sourceCard.classList.contains('expanded')
+                            const sourceCards = activeCards.filter(c => {
+                                const cardSrc = c.another ? 'another' : (c.source || 'normal');
+                                return cardSrc === src;
                             });
 
-                            if (isSourceAll) {
-                                // Populate details drawer
-                                const src = sourceCard.dataset.source;
-                                const activeCards = getActiveCaptureCards();
+                            const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : (src === 'limited_u' ? sortPssrUnitCards : sortPssrByCharacterAndRelease)));
+                            sourceCards.sort(sortFn);
 
-                                const sourceCards = activeCards.filter(c => {
-                                    const cardSrc = c.another ? 'another' : (c.source || 'normal');
-                                    return cardSrc === src;
-                                });
+                            const sourceColor = sourceCard.dataset.color || '#93c5fd';
+                            const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', useWaffleChartForUnitName: src === 'limited_u', sourceColor: sourceColor });
 
-                                const sortFn = src === 'limited_f' ? sortPssrFesCards : (src === 'normal' ? sortPssrNormalCards : (src === 'another' ? sortPssrAnotherCards : (src === 'limited_u' ? sortPssrUnitCards : sortPssrByCharacterAndRelease)));
-                                sourceCards.sort(sortFn);
+                            const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
+                            const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
+                            const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
+                            const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
 
-                                const sourceColor = sourceCard.dataset.color || '#93c5fd';
-                                const buildIconsHtml = (cardsList, isOwnedList) => buildPssrIconsHtml(cardsList, isOwnedList, { useSeriesBadgeForNormal: src === 'normal', useWaffleChartForNormalSeries: src === 'normal', useSubCategoryBadgeForFes: src === 'limited_f', useWaffleChartForFesSubCategory: src === 'limited_f', usePeriodBadgeForLimitedAndDist: (src === 'limited' || src === 'dist'), useWaffleChartForLimitedPeriod: (src === 'limited' || src === 'dist'), useSeriesBadgeForAnother: src === 'another', useWaffleChartForAnotherSeries: src === 'another', useWaffleChartForUnitName: src === 'limited_u', sourceColor: sourceColor });
+                            const ownedBg = hexToRgba(sourceColor, 0.08);
+                            const ownedBorder = hexToRgba(sourceColor, 0.12);
 
-                                const ownedContainer = detailsDiv.querySelector('.source-stat-owned-container');
-                                const unownedContainer = detailsDiv.querySelector('.source-stat-unowned-container');
-                                const ownedGroup = detailsDiv.querySelector('.source-stat-owned-group');
-                                const unownedGroup = detailsDiv.querySelector('.source-stat-unowned-group');
-
-                                const ownedBg = hexToRgba(sourceColor, 0.08);
-                                const ownedBorder = hexToRgba(sourceColor, 0.12);
-
-                                if (sourceCards.length > 0) {
-                                    ownedGroup.style.display = 'flex';
-                                    const titleEl = ownedGroup.querySelector('.plan-group-title');
-                                    if (titleEl) titleEl.style.display = 'none';
-                                    ownedContainer.innerHTML = buildIconsHtml(sourceCards, null);
-                                    ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box; background-color: transparent; border: none; padding: 0;`;
-                                } else {
-                                    ownedGroup.style.display = 'none';
-                                }
-                                unownedGroup.style.display = 'none';
-
-                                detailsDiv.style.display = 'flex';
-                                detailsDiv.style.gap = '0';
-                                if (chevron) chevron.style.transform = 'rotate(180deg)';
-                                sourceCard.classList.add('expanded');
+                            if (sourceCards.length > 0) {
+                                ownedGroup.style.display = 'flex';
+                                const titleEl = ownedGroup.querySelector('.plan-group-title');
+                                if (titleEl) titleEl.style.display = 'none';
+                                ownedContainer.innerHTML = buildIconsHtml(sourceCards, null);
+                                ownedGroup.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box; background-color: transparent; border: none; padding: 0;`;
                             } else {
-                                detailsDiv.style.display = 'none';
-                                if (chevron) chevron.style.transform = 'rotate(0deg)';
-                                sourceCard.classList.remove('expanded');
+                                ownedGroup.style.display = 'none';
                             }
+                            unownedGroup.style.display = 'none';
+
+                            detailsDiv.style.display = 'flex';
+                            detailsDiv.style.gap = '0';
+                            if (chevron) chevron.style.transform = 'rotate(180deg)';
+                            sourceCard.classList.add('expanded');
+                        } else {
+                            detailsDiv.style.display = 'none';
+                            if (chevron) chevron.style.transform = 'rotate(0deg)';
+                            sourceCard.classList.remove('expanded');
                         }
+                    }
+                });
+
+                // Temporarily convert SVG <image> hrefs to absolute URLs for html2canvas
+                const svgImages = modalContent.querySelectorAll('svg image[href]');
+                const origSvgHrefs = [];
+                svgImages.forEach(img => {
+                    const origHref = img.getAttribute('href');
+                    if (origHref && !origHref.startsWith('http') && !origHref.startsWith('data:')) {
+                        origSvgHrefs.push({ img, href: origHref });
+                        img.setAttribute('href', getAbsoluteUrl(origHref));
+                    }
+                });
+
+                const rasterizeRadarSvgs = async () => {
+                    const radarSvgs = Array.from(modalContent.querySelectorAll('.idol-stats-plan-radar-container svg'));
+                    const replacements = [];
+                    const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
                     });
 
-                    // Temporarily convert SVG <image> hrefs to absolute URLs for html2canvas
-                    const svgImages = modalContent.querySelectorAll('svg image[href]');
-                    const origSvgHrefs = [];
-                    svgImages.forEach(img => {
-                        const origHref = img.getAttribute('href');
-                        if (origHref && !origHref.startsWith('http') && !origHref.startsWith('data:')) {
-                            origSvgHrefs.push({ img, href: origHref });
-                            img.setAttribute('href', getAbsoluteUrl(origHref));
-                        }
-                    });
+                    await Promise.all(radarSvgs.map(svg => new Promise(resolve => {
+                        try {
+                            const rect = svg.getBoundingClientRect();
+                            if (rect.width === 0 || rect.height === 0) {
+                                resolve();
+                                return;
+                            }
+                            const width = Math.ceil(rect.width || Number(svg.getAttribute('width')) || 170);
+                            const height = Math.ceil(rect.height || Number(svg.getAttribute('height')) || 205);
+                            const clone = svg.cloneNode(true);
+                            clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                            clone.setAttribute('width', String(width));
+                            clone.setAttribute('height', String(height));
 
-                    const rasterizeRadarSvgs = async () => {
-                        const radarSvgs = Array.from(modalContent.querySelectorAll('.idol-stats-plan-radar-container svg'));
-                        const replacements = [];
-                        const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
-                            const reader = new FileReader();
-                            reader.onload = () => resolve(reader.result);
-                            reader.onerror = reject;
-                            reader.readAsDataURL(blob);
-                        });
+                            const inlineImages = async () => {
+                                const images = Array.from(clone.querySelectorAll('image'));
+                                await Promise.all(images.map(async imageNode => {
+                                    const href = imageNode.getAttribute('href') || imageNode.getAttribute('xlink:href');
+                                    if (!href || href.startsWith('data:')) return;
 
-                        await Promise.all(radarSvgs.map(svg => new Promise(resolve => {
-                            try {
-                                const rect = svg.getBoundingClientRect();
-                                if (rect.width === 0 || rect.height === 0) {
-                                    resolve();
-                                    return;
-                                }
-                                const width = Math.ceil(rect.width || Number(svg.getAttribute('width')) || 170);
-                                const height = Math.ceil(rect.height || Number(svg.getAttribute('height')) || 205);
-                                const clone = svg.cloneNode(true);
-                                clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                                clone.setAttribute('width', String(width));
-                                clone.setAttribute('height', String(height));
+                                    try {
+                                        const response = await fetch(href);
+                                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                                        const dataUrl = await blobToDataUrl(await response.blob());
+                                        imageNode.setAttribute('href', dataUrl);
+                                        imageNode.removeAttribute('xlink:href');
+                                    } catch (err) {
+                                        imageNode.remove();
+                                    }
+                                }));
+                            };
 
-                                const inlineImages = async () => {
-                                    const images = Array.from(clone.querySelectorAll('image'));
-                                    await Promise.all(images.map(async imageNode => {
-                                        const href = imageNode.getAttribute('href') || imageNode.getAttribute('xlink:href');
-                                        if (!href || href.startsWith('data:')) return;
+                            inlineImages().then(() => {
+                                const svgText = new XMLSerializer().serializeToString(clone);
+                                const svgUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
+                                const image = new Image();
 
-                                        try {
-                                            const response = await fetch(href);
-                                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                                            const dataUrl = await blobToDataUrl(await response.blob());
-                                            imageNode.setAttribute('href', dataUrl);
-                                            imageNode.removeAttribute('xlink:href');
-                                        } catch (err) {
-                                            imageNode.remove();
-                                        }
-                                    }));
-                                };
+                                image.onload = () => {
+                                    try {
+                                        const canvas = document.createElement('canvas');
+                                        canvas.width = width * 2;
+                                        canvas.height = height * 2;
+                                        const ctx = canvas.getContext('2d');
+                                        ctx.scale(2, 2);
+                                        ctx.drawImage(image, 0, 0, width, height);
 
-                                inlineImages().then(() => {
-                                    const svgText = new XMLSerializer().serializeToString(clone);
-                                    const svgUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
-                                    const image = new Image();
-
-                                    image.onload = () => {
-                                        try {
-                                            const canvas = document.createElement('canvas');
-                                            canvas.width = width * 2;
-                                            canvas.height = height * 2;
-                                            const ctx = canvas.getContext('2d');
-                                            ctx.scale(2, 2);
-                                            ctx.drawImage(image, 0, 0, width, height);
-
-                                            const replacement = document.createElement('img');
-                                            replacement.src = canvas.toDataURL('image/png');
-                                            replacement.style.cssText = `display: block; width: ${width}px; height: ${height}px; margin: 0 auto; flex-shrink: 0;`;
-                                            svg.replaceWith(replacement);
-                                            replacements.push({ replacement, svg });
-                                        } catch (err) {
-                                            console.warn('Radar SVG rasterize draw failed:', err);
-                                        } finally {
-                                            URL.revokeObjectURL(svgUrl);
-                                            resolve();
-                                        }
-                                    };
-
-                                    image.onerror = () => {
+                                        const replacement = document.createElement('img');
+                                        replacement.src = canvas.toDataURL('image/png');
+                                        replacement.style.cssText = `display: block; width: ${width}px; height: ${height}px; margin: 0 auto; flex-shrink: 0;`;
+                                        svg.replaceWith(replacement);
+                                        replacements.push({ replacement, svg });
+                                    } catch (err) {
+                                        console.warn('Radar SVG rasterize draw failed:', err);
+                                    } finally {
                                         URL.revokeObjectURL(svgUrl);
                                         resolve();
-                                    };
+                                    }
+                                };
 
-                                    image.src = svgUrl;
-                                }).catch(err => {
-                                    console.warn('Radar SVG image inline failed:', err);
+                                image.onerror = () => {
+                                    URL.revokeObjectURL(svgUrl);
                                     resolve();
-                                });
-                            } catch (err) {
-                                console.warn('Radar SVG rasterize failed:', err);
+                                };
+
+                                image.src = svgUrl;
+                            }).catch(err => {
+                                console.warn('Radar SVG image inline failed:', err);
                                 resolve();
-                            }
-                        })));
+                            });
+                        } catch (err) {
+                            console.warn('Radar SVG rasterize failed:', err);
+                            resolve();
+                        }
+                    })));
 
-                        return replacements;
-                    };
+                    return replacements;
+                };
 
-                    const restoreRadarSvgs = (items) => {
-                        items.forEach(item => {
-                            if (item.replacement.parentNode) {
-                                item.replacement.replaceWith(item.svg);
-                            }
-                        });
-                    };
-
-                    // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
-                    const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
-                    const origImgSrcs = [];
-                    statImgs.forEach(img => {
-                        const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
-                        if (isUnowned) {
-                            origImgSrcs.push({ img: img, src: img.src });
-                            if (window.getGrayscaleDataUrl) {
-                                img.src = window.getGrayscaleDataUrl(img);
-                            }
+                const restoreRadarSvgs = (items) => {
+                    items.forEach(item => {
+                        if (item.replacement.parentNode) {
+                            item.replacement.replaceWith(item.svg);
                         }
                     });
+                };
 
-                    // Expand 1st place character drawer, collapse others during capture
-                    const charCards = modalContent.querySelectorAll('.char-stat-card');
-                    const origCharCardStyles = [];
-                    charCards.forEach((card, idx) => {
-                        const details = card.querySelector('.char-stat-details');
-                        const chevron = card.querySelector('.char-chevron');
-                        origCharCardStyles.push({
-                            card: card,
-                            details: details,
-                            chevron: chevron,
-                            display: details ? details.style.display : 'none',
-                            transform: chevron ? chevron.style.transform : '',
-                            isExpanded: card.classList.contains('expanded')
-                        });
+                // Temporarily convert unowned card images to grayscale Base64 data URLs right before capture
+                const statImgs = modalContent.querySelectorAll('.pssr-stat-icon-wrap img');
+                const origImgSrcs = [];
+                statImgs.forEach(img => {
+                    const isUnowned = img.style.opacity === '0.9' || img.style.opacity === '0.8' || img.style.opacity === '0.85' || img.style.opacity === '0.3' || (img.style.filter && img.style.filter.includes('grayscale'));
+                    if (isUnowned) {
+                        origImgSrcs.push({ img: img, src: img.src });
+                        if (window.getGrayscaleDataUrl) {
+                            img.src = window.getGrayscaleDataUrl(img);
+                        }
+                    }
+                });
 
-                        if (details) {
-                            if (isCharAll) {
+                // Expand 1st place character drawer, collapse others during capture
+                const charCards = modalContent.querySelectorAll('.char-stat-card');
+                const origCharCardStyles = [];
+                charCards.forEach((card, idx) => {
+                    const details = card.querySelector('.char-stat-details');
+                    const chevron = card.querySelector('.char-chevron');
+                    origCharCardStyles.push({
+                        card: card,
+                        details: details,
+                        chevron: chevron,
+                        display: details ? details.style.display : 'none',
+                        transform: chevron ? chevron.style.transform : '',
+                        isExpanded: card.classList.contains('expanded')
+                    });
+
+                    if (details) {
+                        if (isCharAll) {
+                            details.style.display = 'flex';
+                            card.classList.add('expanded');
+                            if (chevron) chevron.style.transform = 'rotate(180deg)';
+                        } else if (!isPlanAll && !isSourceAll) {
+                            if (idx < 3) {
                                 details.style.display = 'flex';
                                 card.classList.add('expanded');
                                 if (chevron) chevron.style.transform = 'rotate(180deg)';
-                            } else if (!isPlanAll && !isSourceAll) {
-                                if (idx < 3) {
-                                    details.style.display = 'flex';
-                                    card.classList.add('expanded');
-                                    if (chevron) chevron.style.transform = 'rotate(180deg)';
-                                } else {
-                                    details.style.display = 'none';
-                                    card.classList.remove('expanded');
-                                    if (chevron) chevron.style.transform = 'rotate(0deg)';
-                                }
+                            } else {
+                                details.style.display = 'none';
+                                card.classList.remove('expanded');
+                                if (chevron) chevron.style.transform = 'rotate(0deg)';
                             }
                         }
-                    });
-
-                    const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                    const captureScale = isMobileDevice ? 1.5 : 2;
-                    let captureDelay = isMobileDevice ? 500 : 350;
-                    if (isCharAll) {
-                        captureDelay = isMobileDevice ? 800 : 500;
                     }
+                });
 
-                    // Set scroll to top and adjust styles for flat render
-                    const origScrollMaxHeight = scrollArea.style.maxHeight;
-                    const origScrollFlex = scrollArea.style.flex;
-                    const origScrollMinHeight = scrollArea.style.minHeight;
-                    const origScrollOverflow = scrollArea.style.overflowY;
-                    const origScrollPadding = scrollArea.style.paddingRight;
-                    const origScrollTop = scrollArea.scrollTop;
+                const isMobileDevice = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const captureScale = isMobileDevice ? 1.5 : 2;
+                let captureDelay = isMobileDevice ? 500 : 350;
+                if (isCharAll) {
+                    captureDelay = isMobileDevice ? 800 : 500;
+                }
 
-                    const origModalHeight = modalContent.style.height;
-                    const origModalMaxHeight = modalContent.style.maxHeight;
-                    const origModalOverflow = modalContent.style.overflow;
-                    const origModalWidth = modalContent.style.width;
-                    const origModalMaxWidth = modalContent.style.maxWidth;
-                    const origModalMinWidth = modalContent.style.minWidth;
-                    const origModalFlexShrink = modalContent.style.flexShrink;
+                // Set scroll to top and adjust styles for flat render
+                const origScrollMaxHeight = scrollArea.style.maxHeight;
+                const origScrollFlex = scrollArea.style.flex;
+                const origScrollMinHeight = scrollArea.style.minHeight;
+                const origScrollOverflow = scrollArea.style.overflowY;
+                const origScrollPadding = scrollArea.style.paddingRight;
+                const origScrollTop = scrollArea.scrollTop;
 
-                    scrollArea.scrollTop = 0;
-                    scrollArea.offsetHeight;
+                const origModalHeight = modalContent.style.height;
+                const origModalMaxHeight = modalContent.style.maxHeight;
+                const origModalOverflow = modalContent.style.overflow;
+                const origModalWidth = modalContent.style.width;
+                const origModalMaxWidth = modalContent.style.maxWidth;
+                const origModalMinWidth = modalContent.style.minWidth;
+                const origModalFlexShrink = modalContent.style.flexShrink;
 
-                    scrollArea.style.maxHeight = 'none';
-                    scrollArea.style.flex = 'none';
-                    scrollArea.style.minHeight = 'auto';
-                    scrollArea.style.overflowY = 'visible';
-                    scrollArea.style.paddingRight = '0';
+                scrollArea.scrollTop = 0;
+                scrollArea.offsetHeight;
 
-                    modalContent.style.height = 'auto';
-                    modalContent.style.maxHeight = 'none';
-                    modalContent.style.overflow = 'visible';
-                    modalContent.style.width = '740px';
-                    modalContent.style.maxWidth = '740px';
-                    modalContent.style.minWidth = '740px';
-                    modalContent.style.flexShrink = '0';
+                scrollArea.style.maxHeight = 'none';
+                scrollArea.style.flex = 'none';
+                scrollArea.style.minHeight = 'auto';
+                scrollArea.style.overflowY = 'visible';
+                scrollArea.style.paddingRight = '0';
 
-                    // Save window scroll and parent modal styles to prevent cutoff on mobile
-                    const origScrollX = window.scrollX || window.pageXOffset || 0;
-                    const origScrollY = window.scrollY || window.pageYOffset || 0;
-                    const origParentPosition = modal.style.position;
-                    const origParentAlign = modal.style.alignItems;
-                    const origParentHeight = modal.style.height;
-                    const origParentOverflow = modal.style.overflow;
+                modalContent.style.height = 'auto';
+                modalContent.style.maxHeight = 'none';
+                modalContent.style.overflow = 'visible';
+                modalContent.style.width = '740px';
+                modalContent.style.maxWidth = '740px';
+                modalContent.style.minWidth = '740px';
+                modalContent.style.flexShrink = '0';
 
-                    // Temporarily scroll to top and adjust parent layout so the fixed/centered content is drawn without clipping
-                    window.scrollTo(0, 0);
-                    modal.style.position = 'absolute';
-                    modal.style.alignItems = 'flex-start';
-                    modal.style.height = 'auto';
-                    modal.style.overflow = 'visible';
+                // Save window scroll and parent modal styles to prevent cutoff on mobile
+                const origScrollX = window.scrollX || window.pageXOffset || 0;
+                const origScrollY = window.scrollY || window.pageYOffset || 0;
+                const origParentPosition = modal.style.position;
+                const origParentAlign = modal.style.alignItems;
+                const origParentHeight = modal.style.height;
+                const origParentOverflow = modal.style.overflow;
 
-                    // Temporarily convert all normal <img> srcs to absolute URLs for html2canvas
-                    const normalImages = modalContent.querySelectorAll('img');
-                    const origImgSrcsAbsolute = [];
-                    normalImages.forEach(img => {
-                        const origSrc = img.getAttribute('src');
-                        if (origSrc && !origSrc.startsWith('http') && !origSrc.startsWith('data:')) {
-                            origImgSrcsAbsolute.push({ img, src: origSrc });
-                            img.setAttribute('src', getAbsoluteUrl(origSrc));
+                // Temporarily scroll to top and adjust parent layout so the fixed/centered content is drawn without clipping
+                window.scrollTo(0, 0);
+                modal.style.position = 'absolute';
+                modal.style.alignItems = 'flex-start';
+                modal.style.height = 'auto';
+                modal.style.overflow = 'visible';
+
+                // Temporarily convert all normal <img> srcs to absolute URLs for html2canvas
+                const normalImages = modalContent.querySelectorAll('img');
+                const origImgSrcsAbsolute = [];
+                normalImages.forEach(img => {
+                    const origSrc = img.getAttribute('src');
+                    if (origSrc && !origSrc.startsWith('http') && !origSrc.startsWith('data:')) {
+                        origImgSrcsAbsolute.push({ img, src: origSrc });
+                        img.setAttribute('src', getAbsoluteUrl(origSrc));
+                    }
+                });
+
+                let origRadarSvgs = [];
+
+                const restoreAfterCapture = () => {
+                    // Restore original image sources after capture
+                    origImgSrcs.forEach(item => {
+                        item.img.src = item.src;
+                    });
+
+                    // Restore original normal <img> srcs
+                    origImgSrcsAbsolute.forEach(item => {
+                        item.img.setAttribute('src', item.src);
+                    });
+
+                    // Restore original SVG image hrefs
+                    origSvgHrefs.forEach(item => {
+                        item.img.setAttribute('href', item.href);
+                    });
+
+                    restoreRadarSvgs(origRadarSvgs);
+
+                    // Restore original hidden elements
+                    origDisplays.forEach(item => {
+                        item.el.style.setProperty('display', item.display, item.displayPriority || '');
+                    });
+
+                    // Restore original plan stats details states
+                    if (detailsDiv) {
+                        detailsDiv.innerHTML = origPlanDetailsHtml;
+                        detailsDiv.style.display = origPlanDetailsDisplay;
+                        detailsDiv.dataset.activePlan = origPlanDetailsActive;
+                    }
+                    origPlanColsActive.forEach(item => {
+                        if (item.active) {
+                            item.col.classList.add('active');
+                        } else {
+                            item.col.classList.remove('active');
                         }
                     });
 
-                    let origRadarSvgs = [];
-
-                    const restoreAfterCapture = () => {
-                        // Restore original image sources after capture
-                        origImgSrcs.forEach(item => {
-                            item.img.src = item.src;
-                        });
-
-                        // Restore original normal <img> srcs
-                        origImgSrcsAbsolute.forEach(item => {
-                            item.img.setAttribute('src', item.src);
-                        });
-
-                        // Restore original SVG image hrefs
-                        origSvgHrefs.forEach(item => {
-                            item.img.setAttribute('href', item.href);
-                        });
-
-                        restoreRadarSvgs(origRadarSvgs);
-
-                        // Restore original hidden elements
-                        origDisplays.forEach(item => {
-                            item.el.style.setProperty('display', item.display, item.displayPriority || '');
-                        });
-
-                        // Restore original plan stats details states
-                        if (detailsDiv) {
-                            detailsDiv.innerHTML = origPlanDetailsHtml;
-                            detailsDiv.style.display = origPlanDetailsDisplay;
-                            detailsDiv.dataset.activePlan = origPlanDetailsActive;
+                    // Restore original source stats cards states
+                    origSourceCardsState.forEach(item => {
+                        item.detailsDiv.innerHTML = item.innerHTML;
+                        item.detailsDiv.style.display = item.display;
+                        if (item.chevron) item.chevron.style.transform = item.transform;
+                        if (item.isExpanded) {
+                            item.sourceCard.classList.add('expanded');
+                        } else {
+                            item.sourceCard.classList.remove('expanded');
                         }
-                        origPlanColsActive.forEach(item => {
-                            if (item.active) {
-                                item.col.classList.add('active');
-                            } else {
-                                item.col.classList.remove('active');
-                            }
-                        });
+                    });
 
-                        // Restore original source stats cards states
-                        origSourceCardsState.forEach(item => {
-                            item.detailsDiv.innerHTML = item.innerHTML;
-                            item.detailsDiv.style.display = item.display;
-                            if (item.chevron) item.chevron.style.transform = item.transform;
-                            if (item.isExpanded) {
-                                item.sourceCard.classList.add('expanded');
-                            } else {
-                                item.sourceCard.classList.remove('expanded');
-                            }
-                        });
-
-                        // Restore original char-stat-card details states
-                        origCharCardStyles.forEach(item => {
-                            if (item.details) item.details.style.display = item.display;
-                            if (item.chevron) item.chevron.style.transform = item.transform;
-                            if (item.isExpanded) {
-                                item.card.classList.add('expanded');
-                            } else {
-                                item.card.classList.remove('expanded');
-                            }
-                        });
-
-                        // Restore original styles
-                        scrollArea.style.maxHeight = origScrollMaxHeight;
-                        scrollArea.style.flex = origScrollFlex;
-                        scrollArea.style.minHeight = origScrollMinHeight;
-                        scrollArea.style.overflowY = origScrollOverflow;
-                        scrollArea.style.paddingRight = origScrollPadding;
-                        scrollArea.scrollTop = origScrollTop;
-
-                        modalContent.style.height = origModalHeight;
-                        modalContent.style.maxHeight = origModalMaxHeight;
-                        modalContent.style.overflow = origModalOverflow;
-                        modalContent.style.width = origModalWidth;
-                        modalContent.style.maxWidth = origModalMaxWidth;
-                        modalContent.style.minWidth = origModalMinWidth;
-                        modalContent.style.flexShrink = origModalFlexShrink;
-
-                        window.scrollTo(origScrollX, origScrollY);
-                        modal.style.position = origParentPosition;
-                        modal.style.alignItems = origParentAlign;
-                        modal.style.height = origParentHeight;
-                        modal.style.overflow = origParentOverflow;
-
-                        const mobileStyles = document.getElementById('idol-possession-mobile-styles');
-                        if (mobileStyles) {
-                            mobileStyles.disabled = false;
-                            mobileStyles.removeAttribute('disabled');
+                    // Restore original char-stat-card details states
+                    origCharCardStyles.forEach(item => {
+                        if (item.details) item.details.style.display = item.display;
+                        if (item.chevron) item.chevron.style.transform = item.transform;
+                        if (item.isExpanded) {
+                            item.card.classList.add('expanded');
+                        } else {
+                            item.card.classList.remove('expanded');
                         }
-                        saveBtn.innerHTML = originalText;
-                        hideSpinnerOverlay();
-                        document.body.classList.remove('is-capturing');
-                    };
+                    });
 
-                    setTimeout(async () => {
-                        try {
-                            origRadarSvgs = await rasterizeRadarSvgs();
-                            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    // Restore original styles
+                    scrollArea.style.maxHeight = origScrollMaxHeight;
+                    scrollArea.style.flex = origScrollFlex;
+                    scrollArea.style.minHeight = origScrollMinHeight;
+                    scrollArea.style.overflowY = origScrollOverflow;
+                    scrollArea.style.paddingRight = origScrollPadding;
+                    scrollArea.scrollTop = origScrollTop;
 
-                            const canvas = await window.html2canvas(modalContent, {
-                                backgroundColor: '#ffffff',
-                                scale: captureScale,
-                                useCORS: true,
-                                logging: false,
-                                windowWidth: 1024,
-                                windowHeight: modalContent.scrollHeight || 2000,
-                                scrollX: 0,
-                                scrollY: 0,
-                                width: 740,
-                                height: modalContent.scrollHeight || 2000
-                            });
+                    modalContent.style.height = origModalHeight;
+                    modalContent.style.maxHeight = origModalMaxHeight;
+                    modalContent.style.overflow = origModalOverflow;
+                    modalContent.style.width = origModalWidth;
+                    modalContent.style.maxWidth = origModalMaxWidth;
+                    modalContent.style.minWidth = origModalMinWidth;
+                    modalContent.style.flexShrink = origModalFlexShrink;
 
-                            let dataUrl = canvas.toDataURL('image/webp', 0.85);
-                            let isWebp = dataUrl.startsWith('data:image/webp');
-                            let ext = isWebp ? 'webp' : 'png';
+                    window.scrollTo(origScrollX, origScrollY);
+                    modal.style.position = origParentPosition;
+                    modal.style.alignItems = origParentAlign;
+                    modal.style.height = origParentHeight;
+                    modal.style.overflow = origParentOverflow;
 
-                            // Fallback to PNG if webp encoding returns empty (common for huge canvas on some platforms)
-                            if (!dataUrl || dataUrl === 'data:' || dataUrl === 'data:,') {
-                                dataUrl = canvas.toDataURL('image/png');
-                                ext = 'png';
-                            }
-
-                            const rand = Math.floor(1000 + Math.random() * 9000);
-                            const nameSuffix = isPlanAll ? '_plan_all' : (isSourceAll ? '_source_all' : (isCharAll ? '_char_all' : ''));
-                            const link = document.createElement('a');
-                            link.download = `gakumasnote_possession_idol${nameSuffix}_${rand}.${ext}`;
-                            link.href = dataUrl;
-                            link.click();
-                            showIdolToast(text.alert_success);
-                        } catch (err) {
-                            console.error('html2canvas error:', err);
-                            alert(text.alert_fail);
-                        } finally {
-                            restoreAfterCapture();
-                        }
-                    }, captureDelay);
+                    const mobileStyles = document.getElementById('idol-possession-mobile-styles');
+                    if (mobileStyles) {
+                        mobileStyles.disabled = false;
+                        mobileStyles.removeAttribute('disabled');
+                    }
+                    saveBtn.innerHTML = originalText;
+                    hideSpinnerOverlay();
+                    document.body.classList.remove('is-capturing');
                 };
 
-                startCapture();
-            });
-        };
-    }
+                setTimeout(async () => {
+                    try {
+                        origRadarSvgs = await rasterizeRadarSvgs();
+                        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+                        const canvas = await window.html2canvas(modalContent, {
+                            backgroundColor: '#ffffff',
+                            scale: captureScale,
+                            useCORS: true,
+                            logging: false,
+                            windowWidth: 1024,
+                            windowHeight: modalContent.scrollHeight || 2000,
+                            scrollX: 0,
+                            scrollY: 0,
+                            width: 740,
+                            height: modalContent.scrollHeight || 2000
+                        });
+
+                        let dataUrl = canvas.toDataURL('image/webp', 0.85);
+                        let isWebp = dataUrl.startsWith('data:image/webp');
+                        let ext = isWebp ? 'webp' : 'png';
+
+                        // Fallback to PNG if webp encoding returns empty (common for huge canvas on some platforms)
+                        if (!dataUrl || dataUrl === 'data:' || dataUrl === 'data:,') {
+                            dataUrl = canvas.toDataURL('image/png');
+                            ext = 'png';
+                        }
+
+                        const rand = Math.floor(1000 + Math.random() * 9000);
+                        const nameSuffix = isPlanAll ? '_plan_all' : (isSourceAll ? '_source_all' : (isCharAll ? '_char_all' : ''));
+                        const link = document.createElement('a');
+                        link.download = `gakumasnote_possession_idol${nameSuffix}_${rand}.${ext}`;
+                        link.href = dataUrl;
+                        link.click();
+                        showIdolToast(text.alert_success);
+                    } catch (err) {
+                        console.error('html2canvas error:', err);
+                        alert(text.alert_fail);
+                    } finally {
+                        restoreAfterCapture();
+                    }
+                }, captureDelay);
+            };
+
+            startCapture();
+        });
+    };
+}
