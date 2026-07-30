@@ -2180,18 +2180,21 @@ export function openPossessionModal() {
 
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
-    // Filter logic
+    // Filter logic - Default ALL selected (on Mobile, SR is excluded by default)
+    const isMobileModal = window.innerWidth <= 768;
     const filterSSR = modal.querySelector('#filter-ssr');
     const filterSR = modal.querySelector('#filter-sr');
-    let ssrActive = false;
-    let srActive = false;
+    let ssrActive = true;
+    let srActive = isMobileModal ? false : true;
 
     const sourceButtons = {};
     const activeSources = {};
     SOURCE_ORDER.forEach(src => {
         sourceButtons[src] = modal.querySelector(`#filter-src-${src}`);
-        activeSources[src] = false;
+        activeSources[src] = true;
     });
+
+    updateFilters();
 
     function updateFilters() {
         currentFilter = [];
@@ -2236,17 +2239,23 @@ export function openPossessionModal() {
     }
 
     filterSSR.onclick = () => {
+        if (ssrActive && !srActive) return; // Block unselecting last active rarity
         ssrActive = !ssrActive;
         updateFilters();
     };
 
     filterSR.onclick = () => {
+        if (srActive && !ssrActive) return; // Block unselecting last active rarity
         srActive = !srActive;
         updateFilters();
     };
 
     SOURCE_ORDER.forEach(src => {
         sourceButtons[src].onclick = () => {
+            if (activeSources[src]) {
+                const activeCount = Object.values(activeSources).filter(Boolean).length;
+                if (activeCount <= 1) return; // Block unselecting last active source
+            }
             activeSources[src] = !activeSources[src];
             updateFilters();
         };
