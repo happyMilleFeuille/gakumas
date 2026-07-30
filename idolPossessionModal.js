@@ -2232,7 +2232,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
         const numRate = parseFloat(overallRate);
         let rankImg = 'r.png';
-        if (numRate >= 95) rankImg = 'ssr.png';
+        if (numRate >= 85) rankImg = 'ssr.png';
         else if (numRate >= 50) rankImg = 'sr.png';
         const rankImgHtml = `<img class="idol-stats-overall-rank-icon" src="icons/${rankImg}" style="height: 46px; object-fit: contain; flex-shrink: 0; vertical-align: middle;">`;
 
@@ -3115,7 +3115,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             barColor = '#eef8ff';
             cardBg = 'linear-gradient(135deg, rgba(70, 164, 243, 0.04), rgba(70, 164, 243, 0.08))';
             cardBorder = '1px solid rgba(70, 164, 243, 0.15)';
-        } else if (numRate < 95) {
+        } else if (numRate < 85) {
             barColor = 'linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)';
             cardBg = 'linear-gradient(135deg, rgba(255, 204, 0, 0.08), rgba(255, 204, 0, 0.14))';
             cardBorder = '1px solid rgba(255, 204, 0, 0.25)';
