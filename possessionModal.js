@@ -368,7 +368,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
     let rankImgHtml = '';
     if (isOverall) {
         let rankImg = 'r.png';
-        if (numRate >= 85) rankImg = 'ssr.png';
+        if (numRate >= 90) rankImg = 'ssr.png';
         else if (numRate >= 50) rankImg = 'sr.png';
         rankImgHtml = `<img class="possession-overall-rank-icon" src="icons/${rankImg}" style="height: 46px; object-fit: contain; flex-shrink: 0; margin-right: 2px; vertical-align: middle;">`;
     }
@@ -447,7 +447,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
         barColor = 'linear-gradient(90deg, #ffeb7a 0%, #ff8bad 35%, #c293ff 70%, #73e8ff 100%)';
         if (numRate < 50) {
             barColor = '#eef8ff';
-        } else if (numRate < 85) {
+        } else if (numRate < 90) {
             barColor = 'linear-gradient(90deg, #fff44f 0%, #fffde6 25%, #ffcc00 50%)';
         }
     }
@@ -938,7 +938,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
     if (numRate < 50) {
         cardBg = 'linear-gradient(135deg, rgba(70, 164, 243, 0.09), rgba(70, 164, 243, 0.13))';
         cardBorder = '1px solid rgba(70, 164, 243, 0.20)';
-    } else if (numRate < 85) {
+    } else if (numRate < 90) {
         cardBg = 'linear-gradient(135deg, rgba(255, 204, 0, 0.09), rgba(255, 204, 0, 0.13))';
         cardBorder = '1px solid rgba(255, 204, 0, 0.20)';
     }
