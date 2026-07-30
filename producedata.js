@@ -919,7 +919,7 @@ export const produceList = [
     //{ id: "ssrtsubame_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2026-08-14", another: true },
 
     {
-        id: "ssrtsubame_3rd", name: "크라이아이", name_en: "Kuraiai", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "https://youtu.be/Ik1VyCRlAts?si=ICEMqa9JLt-XFVHK",
+        id: "ssrtsubame_3rd", name: "쿠라이아이", name_en: "Kuraiai", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "https://youtu.be/Ik1VyCRlAts?si=ICEMqa9JLt-XFVHK",
         item: {
             name: "花火散るナイトキラー",
             desc: "(미확인)",
