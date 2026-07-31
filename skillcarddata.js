@@ -191,7 +191,7 @@ export const skillCardList = {
     "logic-ssrsaki_ameagariunit": { type: "mental", attrs: ["motivation", "genki"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrsaki_kanmuridist": { type: "mental", attrs: ["goodimpression"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrsena_2nd": { type: "mental", attrs: ["goodimpression"], rarity: "SSR", isKyoukaOnly: true },
-    "logic-ssrsena_3rd": { type: "mental", attrs: [], rarity: "SSR", isKyoukaOnly: true },
+    "logic-ssrsena_3rd": { type: "mental", attrs: ["genki"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrsena_valentinelimited": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrsumika_campusfes": { type: "mental", attrs: ["genki", "goodimpression"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrsumika_miracledist": { type: "mental", attrs: ["genki", "motivation", "goodimpression"], rarity: "SSR", isKyoukaOnly: true },
