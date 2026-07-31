@@ -922,8 +922,8 @@ export const produceList = [
         id: "ssrtsubame_3rd", name: "쿠라이아이", name_en: "Kuraiai", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "https://youtu.be/Ik1VyCRlAts?si=ICEMqa9JLt-XFVHK",
         item: {
             name: "花火散るナイトキラー",
-            desc: "(미확인)",
-            desc_ja: "（未確認）",
+            desc: "지침이 전력일 때 전력치가 10이상일 경우, \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터치 증가+3\n inlesson2",
+            desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson2",
         },
         itemplus: {
             desc: "지침이 전력일 때 전력치가 10이상일 경우, \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터치 증가+3\n inlesson3",
@@ -931,8 +931,8 @@ export const produceList = [
         },
         card: {
             name: "星を散らせ",
-            desc: "(미확인)",
-            desc_ja: "（未確認）",
+            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 2회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降2回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
