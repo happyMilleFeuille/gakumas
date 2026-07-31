@@ -445,7 +445,7 @@ export const abilityData = {
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
-        trigger: ["purchase_card", "get_card"],
+        trigger: ["purchase_card", "get_card"], max: 5,
     },
     "gift": {
         name: { ko: "활동지급/사시이레", ja: "活動支給・差し入れ", en: "Supplies/Gift" },
