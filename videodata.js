@@ -173,6 +173,13 @@ export const videoList = {
     ],
     china: [
         {
+            title: "生誕記念配信2026",
+            title_ko: "생일 라이브방송2026",
+            title_en: "Birthday stream 2026",
+            url: "https://youtu.be/oO3srCStpXU?si=3-1RDMfOwHn4pYKY",
+            date: "2026.08.01."
+        },
+        {
             title: "生誕ミニライブ2025",
             title_ko: "생일 미니라이브2025",
             title_en: "Birthday MiniLive 2025",
