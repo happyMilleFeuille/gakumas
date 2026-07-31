@@ -52,7 +52,7 @@ export const activityOptions = {
     advice: [
         { id: "enhance", results: ["enhance"], mainLabelKey: "calc_option_main_enhance", labelKey: "calc_option_advice_enhance", type: "counter", max: 2 },
         { id: "delete", results: ["delete"], mainLabelKey: "calc_option_main_delete", labelKey: "calc_option_advice_delete", type: "counter", max: 2 },
-        { id: "purchase_ssr", results: ["get", "purchase_card"], mainLabelKey: "calc_option_main_card", labelKey: "calc_option_purchase_ssr", type: "counter", max: 8 },
+        { id: "purchase_ssr", results: ["purchase_card"], mainLabelKey: "calc_option_main_card", labelKey: "calc_option_purchase_ssr", type: "counter", max: 8 },
         { id: "purchase_drink", results: ["purchase_drink"], mainLabelKey: "calc_option_main_drink", labelKey: "calc_option_purchase_drink", type: "counter", max: 8 },
     ],
     advice_hif: [
