@@ -307,8 +307,9 @@ const getNormalCardGroupKey = (c) => {
     if (num !== 0 && num !== 999) {
         return `series-${num}`;
     }
-    if (c.type && !IGNORED_CARD_TYPES.has(c.type.toLowerCase())) {
-        return c.type;
+    const type = c.category || c.type;
+    if (type && !IGNORED_CARD_TYPES.has(type.toLowerCase())) {
+        return type;
     }
     return null;
 };
@@ -319,8 +320,9 @@ const getNormalCardGroupTitle = (c, lang) => {
     if (num !== 0 && num !== 999) {
         return getSeriesBadgeText(c) || `${num}th`;
     }
-    if (c.type && !IGNORED_CARD_TYPES.has(c.type.toLowerCase())) {
-        return getTypeTitle(c.type, lang);
+    const type = c.category || c.type;
+    if (type && !IGNORED_CARD_TYPES.has(type.toLowerCase())) {
+        return getTypeTitle(type, lang);
     }
     return getSeriesBadgeText(c) || `${num}th`;
 };
@@ -331,7 +333,8 @@ const getNormalCardBadgeText = (c, lang) => {
     if (num !== 0 && num !== 999) {
         return getSeriesBadgeText(c);
     }
-    if (c.type && !IGNORED_CARD_TYPES.has(c.type.toLowerCase())) {
+    const type = c.category || c.type;
+    if (type && !IGNORED_CARD_TYPES.has(type.toLowerCase())) {
         return null;
     }
     return getSeriesBadgeText(c);
@@ -348,8 +351,9 @@ const getNormalGroupSortOrder = (card) => {
     if (num !== 0 && num !== 999) {
         return num;
     }
-    if (card.type && !IGNORED_CARD_TYPES.has(card.type.toLowerCase())) {
-        return TYPE_SORT_ORDERS[card.type] || 500;
+    const type = card.category || card.type;
+    if (type && !IGNORED_CARD_TYPES.has(type.toLowerCase())) {
+        return TYPE_SORT_ORDERS[type] || 500;
     }
     return 900;
 };
@@ -362,9 +366,11 @@ const getWaffleGridStyle = (totalCards) => {
 };
 
 const getCardPeriodKey = (c) => {
-    if (!c || !c.type) return null;
-    if (c.type === 'season' || c.type === 'live') {
-        return c.type;
+    if (!c) return null;
+    const type = c.category || c.type;
+    if (!type) return null;
+    if (type === 'season' || type === 'live') {
+        return type;
     }
     return null;
 };
@@ -390,9 +396,11 @@ const getPeriodWaffleTitle = (periodKey, lang) => {
 };
 
 const getFesSubCategoryOrder = (card) => {
-    if (!card || !card.type) return 999;
-    if (card.type === 'nia' || card.type === 'campus') return 1;
-    if (card.type === 'hif') return 2;
+    if (!card) return 999;
+    const type = card.category || card.type;
+    if (!type) return 999;
+    if (type === 'nia' || type === 'campus') return 1;
+    if (type === 'hif') return 2;
     return 999;
 };
 
@@ -2087,9 +2095,10 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     badgeText = normalBadge;
                 }
             } else if (useSubCategoryBadgeForFes && c.source === 'limited_f') {
-                if (c.type === 'nia' || c.type === 'campus') {
+                const type = c.category || c.type;
+                if (type === 'nia' || type === 'campus') {
                     badgeText = 'NIA';
-                } else if (c.type === 'hif') {
+                } else if (type === 'hif') {
                     badgeText = 'HIF';
                 }
             } else if (usePeriodBadgeForLimitedAndDist && (c.source === 'limited' || c.source === 'dist' || c.another)) {
