@@ -368,7 +368,6 @@ export function updateActivityCountsUI(store, counts) {
         <div class="enhance-item-content compact-dist" style="background: rgba(76, 175, 80, 0.05); border-color: rgba(76, 175, 80, 0.2);">
             <span class="dist-label" style="opacity: ${drinkTotal > 0 ? 1 : 0.3}; color: #4caf50;">${t('calc_label_drink')} <span class="counter-count">${drinkTotal}</span></span>
             <div class="dist-group" style="opacity: ${drinkTotal > 0 ? 1 : 0.3};">
-                <div class="dist-unit"><span>${t('calc_label_get')}</span><span class="dist-val" style="color: #4caf50;">${counts.total.get_drink || 0}</span></div>
                 <div class="dist-unit"><span>${t('calc_label_purchase')}</span><span class="dist-val" style="color: #4caf50;">${counts.total.purchase_drink || 0}</span></div>
             </div>
         </div>
@@ -456,6 +455,10 @@ export function updateActivityCountsUI(store, counts) {
                 <div class="text-count-item">
                     <div class="enhance-item-content compact-dist has-tune-btn" style="background: rgba(255, 152, 0, 0.05); border-color: rgba(255, 152, 0, 0.2); position: relative;">
                         <span class="dist-label" style="opacity: ${counts.total.get > 0 ? 1 : 0.3}; color: #ff9800;">${t('calc_title_card_get')} <span class="counter-count">${counts.total.get || 0}</span></span>
+                        <div class="dist-group" style="opacity: ${counts.total.purchase_card > 0 ? 1 : 0.3}; margin-top: 2px;">
+                            <div class="dist-unit"><span>${t('calc_label_purchase')}</span><span class="dist-val" style="color: #ff9800;">${counts.total.purchase_card || 0}</span></div>
+                        </div>
+                        <div style="width: 100%; height: 1px; background: rgba(255,152,0,0.1); margin: 4px 0;"></div>
                         <div class="dist-group" style="opacity: ${counts.total.get > 0 ? 1 : 0.3};">
                             <div class="dist-unit"><span>${t('calc_label_mental')}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_m || 0}</span></div>
                             <div class="dist-unit"><span>${t('calc_label_active')}</span><span class="dist-val" style="color: #ff9800;">${counts.total.get_a || 0}</span></div>
