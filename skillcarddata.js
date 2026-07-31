@@ -88,6 +88,7 @@ export const skillCardList = {
     "anomaly-ssrmisuzu_3rd": { type: "active", attrs: ["enthusiasm"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrrinami_sugarunit": { type: "active", attrs: ["enthusiasm", "preservation"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrkotone_gomywaylimited": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
+    "anomaly-ssrtsubame_3rd": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
 
     "anomaly-ssrhiro_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
     "anomaly-ssrmisuzu_3rdprima": { type: "mental", attrs: ["genki"], rarity: "Legend", primastella: true },
