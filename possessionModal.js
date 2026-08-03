@@ -591,7 +591,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             let tilesHtml = '';
             gridTiles.forEach(c => {
                 if (!c) {
-                    tilesHtml += `<div style="width: ${tileW}; height: ${tileH}; visibility: hidden; pointer-events: none;"></div>`;
+                    tilesHtml += `<div class="possession-heatmap-tile-empty" style="width: ${tileW}; height: ${tileH}; visibility: hidden; pointer-events: none;"></div>`;
                     return;
                 }
                 const isDeactivated = c.isDeactivated;
@@ -625,7 +625,7 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             });
 
             return `
-                <div style="display: grid; grid-template-rows: repeat(4, ${tileH}); grid-template-columns: repeat(${cols}, minmax(0, 1fr)); grid-auto-flow: column; gap: 1px; width: 100%; max-width: 100%; box-sizing: border-box; justify-content: center; align-content: center; overflow: hidden; margin: 0 auto 3px auto;">
+                <div class="possession-tile-heatmap-grid" style="--tile-h: ${tileH}; --tile-w: ${tileW}; display: grid; grid-template-rows: repeat(4, ${tileH}); grid-template-columns: repeat(${cols}, minmax(0, 1fr)); grid-auto-flow: column; gap: 1px; width: 100%; max-width: 100%; box-sizing: border-box; justify-content: center; align-content: center; overflow: hidden; margin: 0 auto 3px auto;">
                     ${tilesHtml}
                 </div>
                 <div style="display: flex; justify-content: space-between; width: 100%; max-width: 100%; margin: 0 auto 14px auto; padding: 0 1px; box-sizing: border-box; font-size: 0.6rem; font-weight: 700; color: #94a3b8; user-select: none; pointer-events: none; line-height: 1;">
@@ -1674,6 +1674,16 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     }
                     body:not(.is-capturing) .possession-heatmap-header-subtxt {
                         font-size: 0.35rem !important;
+                    }
+                    body:not(.is-capturing) .possession-tile-heatmap-grid {
+                        gap: 0.5px !important;
+                        grid-template-rows: repeat(4, calc(var(--tile-h) * 0.49)) !important;
+                    }
+                    body:not(.is-capturing) .possession-tile-heatmap-grid .possession-heatmap-tile,
+                    body:not(.is-capturing) .possession-tile-heatmap-grid .possession-heatmap-tile-empty {
+                        height: calc(var(--tile-h) * 0.49) !important;
+                        max-width: calc(var(--tile-w) * 0.49) !important;
+                        border-width: 0.7px !important;
                     }
                 }
 
