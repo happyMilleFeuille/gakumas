@@ -2487,6 +2487,7 @@
     flex-direction: column;
     gap: 8px;
     pointer-events: auto;
+    cursor: default;
     transform: translate(10px, -50%);
 }
 

@@ -39,15 +39,15 @@ export const activityOptions = {
     ],
     lessonvo: [
         { id: "sp", labelKey: "calc_option_sp", type: "checkbox" },
-        { id: "not", labelKey: "calc_option_none", type: "checkbox" },
+        { id: "not", labelKey: "calc_option_normal_lesson", type: "checkbox" },
     ],
     lessondan: [
         { id: "sp", labelKey: "calc_option_sp", type: "checkbox" },
-        { id: "not", labelKey: "calc_option_none", type: "checkbox" },
+        { id: "not", labelKey: "calc_option_normal_lesson", type: "checkbox" },
     ],
     lessonvi: [
         { id: "sp", labelKey: "calc_option_sp", type: "checkbox" },
-        { id: "not", labelKey: "calc_option_none", type: "checkbox" },
+        { id: "not", labelKey: "calc_option_normal_lesson", type: "checkbox" },
     ],
     advice: [
         { id: "enhance", results: ["enhance"], mainLabelKey: "calc_option_main_enhance", labelKey: "calc_option_advice_enhance", type: "counter", max: 2 },

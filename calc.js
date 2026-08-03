@@ -243,11 +243,11 @@ function isIncompleteWeekSelection(wrapper) {
     const hasSelectedSubAttr = !!savedOpts.selectedSubAttr;
 
     if (requiresAttr) {
-        return hasCheckedOption !== hasSelectedAttr;
+        return !hasCheckedOption && !hasSelectedAttr;
     }
 
     if (requiresSubAttr) {
-        return hasCheckedOption !== hasSelectedSubAttr;
+        return !hasCheckedOption && !hasSelectedSubAttr;
     }
 
     return !hasCheckedOption;
@@ -902,10 +902,6 @@ function startWeeklyPlan(type) {
                                     cleanedOpts[k] = savedOpts[k];
                                 }
                             }
-                        } else if (val.startsWith('class_') || hifClassActionIds.includes(val)) {
-                            if (savedOpts.selectedAttr) cleanedOpts.selectedAttr = savedOpts.selectedAttr;
-                        } else if (val.startsWith('lesson')) {
-                            if (savedOpts.selectedSubAttr) cleanedOpts.selectedSubAttr = savedOpts.selectedSubAttr;
                         }
                         calcStore.setWeekAction(weekNum, val, cleanedOpts);
                         wrapper.classList.add('active');
@@ -1019,8 +1015,7 @@ function startWeeklyPlan(type) {
                                         return;
                                     }
                                     if (!tooltip.contains(e.target) && !wrapper.contains(e.target) && !e.target.closest('.calc-sub-tooltip')) {
-                                        tooltip.remove();
-                                        document.querySelectorAll('.calc-sub-tooltip').forEach(st => st.remove());
+                                        removeAllTooltips();
                                         document.removeEventListener('click', closeWeeklyTooltip);
                                     }
                                 };
@@ -1058,19 +1053,22 @@ function startWeeklyPlan(type) {
                                     if (chk.checked && currentOptDef?.subOptions) {
                                         showSubTooltip(currentOptDef, weekNum, wrapper, tooltip);
                                     } else if (!opts.some(o => o.type === 'counter')) {
-                                        // 클래스/HIF 레슨은 속성 선택도 완료되어 있어야 닫음
+                                        // 클래스/레슨은 속성 선택도 완료되어 있다면 닫음
                                         const hasAttr = !!calcStore.weeks[weekNum].opts.selectedAttr;
                                         const hasSubAttr = !!calcStore.weeks[weekNum].opts.selectedSubAttr;
+                                        const isLessonWithSub = ['lessonvo', 'lessondan', 'lessonvi'].includes(val) && usesAttrColumn;
                                         if (isClass) {
                                             if (chk.checked && hasAttr) {
                                                 setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
                                             }
-                                        } else if (isHifLesson) {
+                                        } else if (isLessonWithSub) {
                                             if (chk.checked && hasSubAttr) {
                                                 setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
                                             }
                                         } else {
-                                            setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
+                                            if (chk.checked) {
+                                                setTimeout(() => { if (!document.querySelector('.calc-sub-tooltip')) removeAllTooltips(); }, 100);
+                                            }
                                         }
                                     }
                                     refreshAll();
