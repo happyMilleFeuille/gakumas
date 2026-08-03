@@ -464,27 +464,36 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
     }
 
     allCards.sort((a, b) => {
+        // 1순위: 소지 여부 (소지 카드가 무조건 먼저, 미소지 카드는 맨 뒤로)
+        const deactA = a.isDeactivated ? 1 : 0;
+        const deactB = b.isDeactivated ? 1 : 0;
+        if (deactA !== deactB) return deactA - deactB;
+
+        // 2순위: 레어리티 (SSR -> SR -> R)
         const rOrder = { 'SSR': 1, 'SR': 2, 'R': 3 };
         const rA = rOrder[a.rarity] || 99;
         const rB = rOrder[b.rarity] || 99;
         if (rA !== rB) return rA - rB;
 
-        // 2순위: 돌파 높은 순 (4돌 -> 0돌 -> 미보유)
-        const lbA = a.isDeactivated ? -1 : (a.lb || 0);
-        const lbB = b.isDeactivated ? -1 : (b.lb || 0);
+        // 3순위: 돌파 높은 순 (4돌 -> 0돌)
+        const lbA = a.lb || 0;
+        const lbB = b.lb || 0;
         if (lbA !== lbB) return lbB - lbA;
 
+        // 4순위: 출시일 순 (오래된순 -> 최신순)
         const dateA = a.releasedAt || '1970-01-01';
         const dateB = b.releasedAt || '1970-01-01';
         if (dateA !== dateB) {
             return dateA.localeCompare(dateB);
         }
 
+        // 5순위: 속성 순
         const tOrder = { 'vocal': 1, 'dance': 2, 'visual': 3, 'assist': 4 };
         const tA = tOrder[(a.type || '').toLowerCase()] || 99;
         const tB = tOrder[(b.type || '').toLowerCase()] || 99;
         if (tA !== tB) return tA - tB;
 
+        // 6순위: 플랜 순
         const pOrder = { 'sense': 1, 'logic': 2, 'anomaly': 3, 'free': 4 };
         const pA = pOrder[(a.plan || '').toLowerCase()] || 99;
         const pB = pOrder[(b.plan || '').toLowerCase()] || 99;
@@ -834,10 +843,13 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             }).join('');
 
             const is4Lb = !c.isDeactivated && lb >= 4;
+            const isUnowned = c.isDeactivated;
             const detailCardBorder = 'border: 0.8px solid #cbd5e1;';
             const overlayStyle = is4Lb
                 ? `background: linear-gradient(to right, ${hexToRgba(attrColor, 1.0)} 0%, ${hexToRgba(attrColor, 0.45)} 12%, ${hexToRgba(attrColor, 0.12)} 25%, ${hexToRgba(attrColor, 0)} 40%, ${hexToRgba(attrColor, 0)} 100%);`
-                : '';
+                : isUnowned
+                    ? `background: linear-gradient(to right, rgba(0, 0, 0, 1.0) 0%, rgba(0, 0, 0, 0.55) 21%, rgba(0, 0, 0, 0.18) 42%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0) 100%);`
+                    : '';
 
             qCardImgsHtml += `
                 <div class="possession-detail-card" 
@@ -1777,7 +1789,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     left: 5px;
                     bottom: 0;
                     right: -1px;
-                    background: linear-gradient(to right, rgba(0, 0, 0, 1.0) 0%, rgba(0, 0, 0, 0.45) 15%, rgba(0, 0, 0, 0.12) 30%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+                    background: linear-gradient(to right, rgba(0, 0, 0, 1.0) 0%, rgba(0, 0, 0, 0.5) 18%, rgba(0, 0, 0, 0.15) 36%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0) 100%);
                     pointer-events: none;
                     z-index: 2;
                 }
