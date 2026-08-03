@@ -834,9 +834,9 @@ function buildSectionInnerParts(label, sStats, themeColor, isOverall = false, so
             }).join('');
 
             const is4Lb = !c.isDeactivated && lb >= 4;
-            const detailCardBorder = 'border: 1px solid #ddd;';
+            const detailCardBorder = 'border: 0.8px solid #cbd5e1;';
             const overlayStyle = is4Lb
-                ? `background: linear-gradient(to right, ${hexToRgba(attrColor, 0.85)} 0%, ${hexToRgba(attrColor, 0.5)} 10%, ${hexToRgba(attrColor, 0.15)} 20%, ${hexToRgba(attrColor, 0)} 33%, ${hexToRgba(attrColor, 0)} 100%);`
+                ? `background: linear-gradient(to right, ${hexToRgba(attrColor, 1.0)} 0%, ${hexToRgba(attrColor, 0.45)} 12%, ${hexToRgba(attrColor, 0.12)} 25%, ${hexToRgba(attrColor, 0)} 40%, ${hexToRgba(attrColor, 0)} 100%);`
                 : '';
 
             qCardImgsHtml += `
@@ -1777,7 +1777,7 @@ function buildStatsContent(stats, themeColor, langKey, isJa, isEn) {
                     left: 5px;
                     bottom: 0;
                     right: -1px;
-                    background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 15%, rgba(0, 0, 0, 0.15) 30%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+                    background: linear-gradient(to right, rgba(0, 0, 0, 1.0) 0%, rgba(0, 0, 0, 0.45) 15%, rgba(0, 0, 0, 0.12) 30%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
                     pointer-events: none;
                     z-index: 2;
                 }
