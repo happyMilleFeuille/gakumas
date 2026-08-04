@@ -492,7 +492,7 @@ export const produceList = [
         },
         primacard: {
             name: "舞台で輝く一番星",
-            desc: "startingcard\n✦ concentration4\n✦ 손패에 있는 랜덤한 멘탈카드(SR) 1장을 코스트를 소비하지 않고 사용\n✦ use1\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ concentration4\n✦ 손패에 있는 랜덤한 멘탈카드(SR) 1장을 코스트 소비없이 사용\n✦ use1\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ concentration4\n✦ ランダムな手札にあるメンタルスキルカード（SR）1枚をコストを消費せず使用\n✦ use1\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
