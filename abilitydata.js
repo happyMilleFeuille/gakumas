@@ -441,7 +441,7 @@ export const abilityData = {
         name: { ko: "카드 구매(5회)", ja: "カード交換(5回)", en: "Purchase Card(5 times)" },
         format: { ko: "상담에서 스킬카드 교환 시 {type} 상승+{val} (프로듀스 중 5회)", ja: "相談でスキルカード交換後、{type}上昇+{val} (プロデュース中5回)", en: "When buying a Skill Card in consultation, {type} Up +{val} (5 times during Produce)" },
         levels: {
-            "SSR": { 1: 16, 2: 21 },
+            "SSR": { 1: 18, 2: 21 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
