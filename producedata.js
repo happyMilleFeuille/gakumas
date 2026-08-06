@@ -931,11 +931,11 @@ export const produceList = [
         },
         card: {
             name: "星を散らせ",
-            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 2회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 2회까지 스킬카드 사용 시, 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降2回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시 전력일 경우, fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시, 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
