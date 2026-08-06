@@ -1176,6 +1176,14 @@ function setupStaticListeners(container) {
                     const idx = state.filters.ability.indexOf(k);
                     if (idx > -1) state.filters.ability.splice(idx, 1);
                 });
+            } else if (val === 'percentparam' && !state.filters.ability.includes('percentparam')) {
+                // Flip-flop: turning Bonus(%) on turns Initial Stats off
+                const idx = state.filters.ability.indexOf('fixedparam');
+                if (idx > -1) state.filters.ability.splice(idx, 1);
+            } else if (val === 'fixedparam' && !state.filters.ability.includes('fixedparam')) {
+                // Flip-flop: turning Initial Stats on turns Bonus(%) off
+                const idx = state.filters.ability.indexOf('percentparam');
+                if (idx > -1) state.filters.ability.splice(idx, 1);
             }
 
             setFilter('ability', val);
@@ -1453,14 +1461,14 @@ export function checkCardMatchFilters(card, includeDate = false) {
     }
 
     const abilityMatch = (state.filters.ability.length === 0) || (() => {
-        const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_inexam'];
+        const andKeys = ['sp_lessonup', 'percentparam', 'fixedparam', 'pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_inexam'];
         const supportCardKeys = ['card_m', 'card_a'];
 
         const groupA = [];
         const groupBC = [];
 
         state.filters.ability.forEach(ab => {
-            if (pItemKeys.includes(ab) || supportCardKeys.includes(ab)) {
+            if (andKeys.includes(ab) || supportCardKeys.includes(ab)) {
                 groupBC.push(ab);
             } else {
                 groupA.push(ab);

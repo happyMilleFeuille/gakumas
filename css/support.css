@@ -1708,6 +1708,13 @@ select.sort-select {
     border-color: #fdc361 !important;
 }
 
+#filter-ability .ability-dropdown .ability-sub-btn[data-val="sp_lessonup"],
+#filter-ability .ability-dropdown .ability-sub-btn[data-val="percentparam"],
+#filter-ability .ability-dropdown .ability-sub-btn[data-val="fixedparam"] {
+    border-radius: 12px !important;
+    border-color: #fdc361 !important;
+}
+
 @media (max-width: 768px) {
     .ability-dropdown {
         width: 75vw;
