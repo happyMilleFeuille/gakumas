@@ -13,6 +13,27 @@ import { hifParameterLimitBonuses } from './calcData.js';
 
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
+// sessionStorage 단위로 강화월간 그룹 헤더 접힘/펼침 상태 유지 (탭 닫을 때 초기화, 새로고침 시 유지)
+const getKyoukaHeaderCollapsedState = () => {
+    try {
+        return JSON.parse(sessionStorage.getItem('kyouka_header_collapsed_state') || '{}');
+    } catch (e) {
+        return {};
+    }
+};
+
+const setKyoukaHeaderCollapsedState = (type, isCollapsed) => {
+    try {
+        const stateObj = getKyoukaHeaderCollapsedState();
+        if (isCollapsed) {
+            stateObj[type] = true;
+        } else {
+            delete stateObj[type];
+        }
+        sessionStorage.setItem('kyouka_header_collapsed_state', JSON.stringify(stateObj));
+    } catch (e) {}
+};
+
 // 모달 및 상세 내역 스타일 상수
 const MODAL_STYLES = {
     row: `display: grid; grid-template-columns: 100px repeat(4, 1fr); align-items: center; padding: 6px 0;`,
@@ -748,7 +769,10 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
             } else if (type === 'fullpower') {
                 label = `${t('calc_tune_prefix_kyouka')}${t('support_effect_get_fullpower')}`;
             }
-            return `<div class="tune-card-group-header" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: #f3e5f5; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; color: #9c27b0; border-radius: 6px; margin-top: 8px; border-left: 4px solid #9c27b0; cursor: pointer; transition: background 0.2s; position: relative;">${icon}<span>${label}</span><span class="toggle-icon" style="margin-left: auto; transition: transform 0.2s;">▼</span></div>`;
+            const isCollapsed = !!getKyoukaHeaderCollapsedState()[type];
+            const transformStyle = isCollapsed ? 'transform: rotate(-90deg);' : '';
+            const collapsedClass = isCollapsed ? ' collapsed' : '';
+            return `<div class="tune-card-group-header${collapsedClass}" data-header-type="${type}" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: #f3e5f5; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; color: #9c27b0; border-radius: 6px; margin-top: 8px; border-left: 4px solid #9c27b0; cursor: pointer; transition: background 0.2s; position: relative;">${icon}<span>${label}</span><span class="toggle-icon" style="margin-left: auto; transition: transform 0.2s; ${transformStyle}">▼</span></div>`;
         }
         if (id === 'trouble') {
             const tCount = counts.total.get_t || 0;
@@ -970,13 +994,28 @@ export function showOtherTuneModal(refreshAll, showSidebar = false) {
     };
     updateTitle();
 
-    // 강화월간 그룹 토글 이벤트 리스너
+    // 강화월간 그룹 토글 이벤트 리스너 및 세션 기억 적용
     modal.querySelectorAll('.tune-card-group-header').forEach(header => {
+        const type = header.dataset.headerType;
+        const initCollapsed = header.classList.contains('collapsed');
+
+        // 초기 렌더링 시 메모리에 접힌 상태로 저장되어 있으면 아이템 숨김
+        if (initCollapsed) {
+            let next = header.nextElementSibling;
+            while (next && next.classList.contains('tune-card-item')) {
+                next.style.display = 'none';
+                next = next.nextElementSibling;
+            }
+        }
+
         header.onclick = (e) => {
             e.preventDefault(); e.stopPropagation();
-            const container = header.parentElement; // display: contents 때문에 형제들을 찾아야 함
             const toggleIcon = header.querySelector('.toggle-icon');
             const isCollapsed = header.classList.toggle('collapsed');
+
+            if (type) {
+                setKyoukaHeaderCollapsedState(type, isCollapsed);
+            }
 
             if (toggleIcon) toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
 
