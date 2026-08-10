@@ -1026,11 +1026,11 @@ export const produceList = [
         },
         card: {
             name: "私を超えて",
-            desc: "startingcard\n✦ use1\n✦ 이후 원기효과의 스킬카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 위에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ use1\n✦ 이후 원기효과의 스킬카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 앞에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ use1\n✦ 以降、元気効果のスキルカードを2回使用するごとに、私を超えて（翔）を山札の一番上に生成\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "startingcard\n✦ use1\n✦ 이후 원기효과의 스킬카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 위에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ use1\n✦ 이후 원기효과의 스킬카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 앞에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ use1\n✦ 以降、元気効果のスキルカードを2回使用するごとに、私を超えて（翔）を山札の一番上に生成\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         tokencard: {
@@ -1782,24 +1782,24 @@ export const produceList = [
             desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
-        //cardcustom: {
-        //    custom1: {
-        //        name: { ko: "효과 변경", ja: "効果変更" },
-        //        cost: "100",
-        //        desc: {
-        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //        },
-        //    },
-        //    custom2: {
-        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
-        //       cost: "100",
-        //        desc: {
-        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //       }
-        //    }
-        //}        
+        cardcustom: {
+            custom1: {
+                name: { ko: "효과 추가", ja: "効果追加" },
+                cost: "100",
+                desc: {
+                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬 카드 (SSR) 3장을 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n✦ ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            },
+            custom2: {
+                name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+                cost: "100",
+                desc: {
+                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                }
+            }
+        }
     },
     {
         id: "ssrsumika_summerlimited", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "motivation", releasedAt: "2024-07-01", rarity: "PSSR", category: "season", plan: "logic", source: "limited", jumpTime2: 10.2, youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
@@ -1822,24 +1822,24 @@ export const produceList = [
             desc: "hpreduce3\n✦ motivation8 \n✦ 의욕이 6이상인 경우 motivation5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce3\n✦ motivation8 \n✦ やる気が6以上の場合、motivation5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
-        //cardcustom: {
-        //    custom1: {
-        //        name: { ko: "효과 변경", ja: "効果変更" },
-        //        cost: "100",
-        //        desc: {
-        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //        },
-        //    },
-        //    custom2: {
-        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
-        //       cost: "100",
-        //        desc: {
-        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //       }
-        //    }
-        //}           
+        cardcustom: {
+            custom1: {
+                name: { ko: "효과 변경", ja: "効果変更" },
+                cost: "100",
+                desc: {
+                    ko: "hpreduce3\n✦ motivation8\n✦ 이후 5회까지 직접 효과로 의욕이 증가한 이후 motivation5\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "hpreduce3\n✦ motivation8\n✦ 以降5回まで、直接効果でやる気が増加後、motivation5\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            },
+            custom2: {
+                name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+                cost: "100",
+                desc: {
+                    ko: "hpreduce3\n✦ motivation8 \n✦ 의욕이 6이상인 경우 motivation5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "hpreduce3\n✦ motivation8 \n✦ やる気が6以上の場合、motivation5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            }
+        }
     },
     {
         id: "ssrsaki_kanmuridist", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodimpression", releasedAt: "2024-08-01", rarity: "PSSR", category: "season", plan: "logic", source: "dist", youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
@@ -1883,24 +1883,24 @@ export const produceList = [
             desc: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기효과의 스킬카드 사용 후 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
-        //cardcustom: {
-        //    custom1: {
-        //        name: { ko: "효과 변경", ja: "効果変更" },
-        //        cost: "100",
-        //        desc: {
-        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //        },
-        //    },
-        //    custom2: {
-        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
-        //       cost: "100",
-        //        desc: {
-        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //       }
-        //    }
-        //}           
+        cardcustom: {
+            custom1: {
+                name: { ko: "효과 변경", ja: "効果変更" },
+                cost: "100",
+                desc: {
+                    ko: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기효과의 스킬카드 사용 후 goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            },
+            custom2: {
+                name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+                cost: "100",
+                desc: {
+                    ko: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기효과의 스킬카드 사용 후 goodimpression1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            }
+        }
     },
     {
         id: "ssrlilja_kanmurilimited", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-01", category: "season", plan: "sense", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/E8G7BMd2a7g?si=4Q4zuYDOCt5A0pK4",
@@ -1922,24 +1922,24 @@ export const produceList = [
             desc: "호조상태일 경우 사용 가능\n✦ param12\n✦ 호조의 300%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "好調状態の場合、使用可\n✦ param12\n✦ 好調の300%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
-        //cardcustom: {
-        //    custom1: {
-        //        name: { ko: "효과 변경", ja: "効果変更" },
-        //        cost: "100",
-        //        desc: {
-        //            ko: "✦ 이후 턴 개시 시 체력이 50% 이상일 경우 concentration2\n✦ 체력회복 5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ 以降、ターン開始時、morehp50concentration2\n✦ 体力回復5\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //        },
-        //    },
-        //    custom2: {
-        //        name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
-        //       cost: "100",
-        //        desc: {
-        //            ko: "✦ concentration5\n✦ 체력회복 5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //            ja: "✦ concentration5\n✦ 体力回復5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
-        //       }
-        //    }
-        //}           
+        cardcustom: {
+            custom1: {
+                name: { ko: "효과 변경", ja: "効果変更" },
+                cost: "100",
+                desc: {
+                    ko: "호조상태일 경우 사용 가능\n✦ param12 (호조효과 3배 적용)\n✦ 호조의 300%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "好調状態の場合、使用可\n✦ param12（好調効果を3倍適用）\n✦ 好調の300%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            },
+            custom2: {
+                name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
+                cost: "100",
+                desc: {
+                    ko: "호조상태일 경우 사용 가능\n✦ param12\n✦ 호조의 300%만큼 파라미터 상승\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ja: "好調状態の場合、使用可\n✦ param12\n✦ 好調の300%分パラメータ上昇\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                },
+            }
+        }
     },
     {
         id: "ssrchina_halloweendist", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", osusume: "concentration", releasedAt: "2024-09-30", category: "season", rarity: "PSSR", plan: "sense", source: "dist", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
