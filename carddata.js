@@ -831,6 +831,28 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_limitedanomaly3",
+        name: "음식 리포터, 체질일지도!",
+        name_ja: "食べレポ、得意かも！",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["spclass"], triggertext: ["dance900down"], stats: { vocal: 25 }, target: "enhance", targettext: "spclassdiscount25", max: 1 }],
+        releasedAt: "2026-08-17",
+        rarity: "SSR",
+        source: "limited",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_fesanomaly1",
         name: "자, 모두 함께♪",
         name_ja: "はいっ、みんなも一緒に♪",
@@ -2742,6 +2764,50 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_limitedanomaly2", // 이거 실수로 코드명 이상하게함 수정하기엔 이미 늦음
+        name: "☆친해지자는 표시☆",
+        name_ja: "☆お近づきの印☆",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_preservation"], triggertext: ["vocal700"], stats: { vocal: 20 }, target: "enhance", max: 1 }],
+        releasedAt: "2026-03-09",
+        rarity: "SR",
+        source: "limited",
+        extra1: "param",
+        abilities:
+            [
+                "percentparam",
+                "sp_lessonup",
+                "supportrateup",
+                "sp_param",
+                "advice",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_srlimitedanomaly2",
+        name: "곤약같은 담력시험",
+        name_ja: "こんにゃくなきもだめし",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["test"], triggertext: ["vocal700"], stats: { vocal: 20 }, targettext: ["hp5"], max: 2 }],
+        releasedAt: "2026-08-17",
+        rarity: "SR",
+        source: "limited",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_srlogic1",
         name: "이어폰 나눠서",
         name_ja: "イヤホンはんぶんこ",
@@ -2974,28 +3040,6 @@ export const cardList = [
                 "supportrateup",
                 "spclass",
                 "delete",
-                "event_paraup"
-            ]
-    },
-    {
-        id: "vocal_limitedanomaly2",
-        name: "☆친해지자는 표시☆",
-        name_ja: "☆お近づきの印☆",
-        type: "vocal",
-        plan: "anomaly",
-        have: "item",
-        item_effects: [{ type: "action", trigger: ["get_preservation"], triggertext: ["vocal700"], stats: { vocal: 20 }, target: "enhance", max: 1 }],
-        releasedAt: "2026-03-09",
-        rarity: "SR",
-        source: "limited",
-        extra1: "param",
-        abilities:
-            [
-                "percentparam",
-                "sp_lessonup",
-                "supportrateup",
-                "sp_param",
-                "advice",
                 "event_paraup"
             ]
     },

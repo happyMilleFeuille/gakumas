@@ -122,6 +122,7 @@ export function getParsedItemEffectsText(itemEffects) {
                 const parsedParts = [];
                 tTexts.forEach(tt => {
                     const match = tt.match(/^(ppoint|hp|goodcondition|concentration|motivation|goodimpression|anomaly)(\d+)$/i);
+                    const conditionMatch = tt.match(/^(enhance|drink|delete|get|discount|spclassdiscount)(\d+)$/i);
                     let translated = "";
                     let isSpecial = false;
 
@@ -132,6 +133,10 @@ export function getParsedItemEffectsText(itemEffects) {
                         if (['goodcondition', 'concentration', 'motivation', 'goodimpression'].includes(type)) {
                             isSpecial = true;
                         }
+                    } else if (conditionMatch) {
+                        const type = conditionMatch[1].toLowerCase();
+                        const num = conditionMatch[2];
+                        translated = t(`support_effect_condition_${type}`, { num });
                     } else {
                         let localTrans = t(`support_effect_condition_${tt}`);
                         if (!localTrans) {
