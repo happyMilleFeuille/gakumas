@@ -2576,6 +2576,48 @@ export const produceList = [
             desc_ja: "✦ goodimpression2\n✦ 好印象が10以上の場合、次のターン、好印象の440%分パラメータ上昇\n✦ 好印象が15以上の場合、2ターン後、好印象の550%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
+    {
+        id: "ssrtemari_summer2limited", name: "저기, 말해버릴까.", name_ja: "ねえ、言っちゃう。", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", category: "gravia", jumpTime2: 7.4, releasedAt: "2026-08-17",
+        item: {
+            name: "夏を編んだ影",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
+        },
+        itemplus: {
+            desc: "강기효과의 스킬카드 사용 시 지침이 강기 2단계일 경우\n✦ 강기 강화 +60%\n✦ 다음 턴 온존으로 지침 변경\n✦ inlesson2",
+            desc_ja: "強気効果のスキルカード使用時、強気2段階目の場合、\n✦ 強気強化+60%\n✦ 次のターン、温存に変更\n✦ inlesson2",
+        },
+        card: {
+            name: "夏風の通り道",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
+        },
+        cardplus: {
+            desc: "✦ 온존으로 지침 변경\n✦ genki13\n✦ 지침이 강기일 경우, 다음 턴 강기 2단계로 변경\n✦ 이후 2회까지 직접효과로 강기 2단계로 지침 변경 시, 다음에 사용하는 스킬카드의 소비체력을 0으로 감소 (1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 温存に変更\n✦ genki13\n✦ 強気の場合、次のターン、強気2段階目に変更\n✦ 以降2回まで、直接効果で強気2段階目になった時、次に使用したスキルカードの消費体力を0にする（1回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "ssrsena_summer2dist", name: "저기, 말해버릴까.", name_ja: "ねえ、言っちゃう。", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "dist", category: "gravia", jumpTime2: 7.4, releasedAt: "2026-08-17",
+        item: {
+            name: "溶けてゆく夏",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
+        },
+        itemplus: {
+            desc: "3턴 마다 \n✦ genki5\n✦ concentration3\n✦ inlesson2",
+            desc_ja: "3ターンごとに\n✦ genki5\n✦ concentration3\n✦ inlesson2",
+        },
+        card: {
+            name: "見惚れる横顔",
+            desc: "(미확인)",
+            desc_ja: "(未確認)",
+        },
+        cardplus: {
+            desc: "✦ concentration3\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3 이상일 경우 param+13 (집중효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ concentration3\n✦ 集中強化15%（3ターン）\n✦ 集中が3以上の場合、param+ 13（集中効果を1.5倍適用）\n <span style = 'color:#8B8FD8' > nooverlab limit1",
+        }
+    },
 
 
     // 유닛 (unit)

@@ -288,6 +288,7 @@ const TYPE_TITLES = {
     collabo: { ko: '콜라보', ja: 'コラボ', en: 'Collab' },
     season: { ko: '시즌', ja: 'シーズン', en: 'Season' },
     live: { ko: '라이브 투어', ja: 'ライブツアー', en: 'Live Tour' },
+    gravia: { ko: '그라비아', ja: 'グラビア', en: 'Gravia' },
     nia: { ko: 'NIA', ja: 'NIA', en: 'NIA' },
     campus: { ko: 'NIA', ja: 'NIA', en: 'NIA' },
     hif: { ko: 'HIF', ja: 'HIF', en: 'HIF' }
@@ -369,7 +370,7 @@ const getCardPeriodKey = (c) => {
     if (!c) return null;
     const type = c.category || c.type;
     if (!type) return null;
-    if (type === 'season' || type === 'live') {
+    if (type === 'season' || type === 'live' || type === 'gravia') {
         return type;
     }
     return null;
@@ -378,6 +379,7 @@ const getCardPeriodKey = (c) => {
 const getPeriodBadgeTitle = (periodKey, lang) => {
     if (periodKey === 'season') return (lang === 'ja' || lang === 'en') ? 'Sea.' : '시즌';
     if (periodKey === 'live') return (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
+    if (periodKey === 'gravia') return (lang === 'ja' || lang === 'en') ? 'Gravia' : '그라비아';
     return null;
 };
 
@@ -391,6 +393,11 @@ const getPeriodWaffleTitle = (periodKey, lang) => {
         if (lang === 'ja') return 'ライブツアー';
         if (lang === 'en') return 'Live Tour';
         return '라이브 투어';
+    }
+    if (periodKey === 'gravia') {
+        if (lang === 'ja') return 'グラビア';
+        if (lang === 'en') return 'Gravia';
+        return '그라비아';
     }
     return null;
 };
@@ -2107,6 +2114,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     badgeText = (lang === 'ja' || lang === 'en') ? 'Sea.' : '시즌';
                 } else if (periodKey === 'live') {
                     badgeText = (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
+                } else if (periodKey === 'gravia') {
+                    badgeText = (lang === 'ja' || lang === 'en') ? 'Gravia' : '그라비아';
                 }
             }
 
