@@ -2614,8 +2614,8 @@ export const produceList = [
             desc_ja: "(未確認)",
         },
         cardplus: {
-            desc: "✦ concentration3\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3 이상일 경우 param+13 (집중효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "✦ concentration3\n✦ 集中強化15%（3ターン）\n✦ 集中が3以上の場合、param+ 13（集中効果を1.5倍適用）\n <span style = 'color:#8B8FD8' > nooverlab limit1",
+            desc: "✦ concentration3\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3 이상일 경우 param13 (집중효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ concentration3\n✦ 集中強化15%（3ターン）\n✦ 集中が3以上の場合、param13（集中効果を1.5倍適用）\n <span style = 'color:#8B8FD8' > nooverlab limit1",
         }
     },
 
