@@ -841,14 +841,14 @@ export const cardList = [
         releasedAt: "2026-08-17",
         rarity: "SSR",
         source: "limited",
-        extra1: "param",
+        extra1: "param", extra2: "ranenhance",
         abilities:
             [
-                "hpmax",
-                "hpmax",
+                "percentparam",
+                "get_8preservation4",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "sp_param",
+                "gift2",
                 "event_paraup"
             ]
     },
@@ -2799,11 +2799,11 @@ export const cardList = [
         extra1: "param",
         abilities:
             [
-                "hpmax",
-                "hpmax",
+                "fixedparam",
+                "sp_lessonup",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "sp_param",
+                "sp_param20",
                 "event_paraup"
             ]
     },
