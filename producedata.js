@@ -1819,7 +1819,7 @@ export const produceList = [
                 name: { ko: "효과 추가", ja: "効果追加" },
                 cost: "100",
                 desc: {
-                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬 카드 (SSR) 3장을 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬 카드 (SSR) 3장을 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n✦ ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
                 },
             },
@@ -1827,7 +1827,7 @@ export const produceList = [
                 name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
                 cost: "100",
                 desc: {
-                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                 }
             }
