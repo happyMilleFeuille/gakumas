@@ -304,7 +304,7 @@ export const skillCardList = {
     "sense-ssrume_endlesslimited": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrmao_sugarunit": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrsaki_gomywaydist": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
-    "sense-ssrsena_summer2dist": { type: "active", attrs: [concentration], rarity: "SSR", isKyoukaOnly: true },
+    "sense-ssrsena_summer2dist": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
 
     "sense-ssrchina_3rdprima": { type: "mental", attrs: ["goodcondition"], rarity: "Legend", primastella: true },
     "sense-ssrmao_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
