@@ -1807,11 +1807,11 @@ export const produceList = [
         },
         card: {
             name: "入道曇と、きみ",
-            desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition3\n✦ 소비체력 감소 2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition3\n✦ 소비체력 감소 2턴\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition3\n✦ 消費体力減少2ターン\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardcustom: {
