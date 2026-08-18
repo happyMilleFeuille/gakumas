@@ -1750,6 +1750,28 @@ export const produceList = [
         }
     },
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // 한정 (Limited)
     {
         id: "ssrmao_summerdist", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", osusume: "concentration", releasedAt: "2024-07-01", rarity: "PSSR", category: "season", plan: "sense", source: "dist", youtube_url: "https://youtu.be/Z-LWjF5J6Mw?si=iDZ_xMAwUs5PeSz6",
@@ -2630,6 +2652,32 @@ export const produceList = [
     },
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // 유닛 (unit)
     {
         id: "ssrsena_starmineunit", name: "Star-mine", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
@@ -2883,6 +2931,34 @@ export const produceList = [
             desc_ja: "✦ 強気に変更\n✦ draw1\n✦ 以降3回まで、アクティブスキルカード使用時、強気2段階目の場合、温存2段階目に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // --- PSR (Produce SR) ---
     {

@@ -89,6 +89,7 @@ export const skillCardList = {
     "anomaly-ssrrinami_sugarunit": { type: "active", attrs: ["enthusiasm", "preservation"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrkotone_gomywaylimited": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrtsubame_3rd": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
+    "anomaly-ssrtemari_summer2limited": { type: "active", attrs: ["enthusiasm", "genki", "preservation"], rarity: "SSR", isKyoukaOnly: true },
 
     "anomaly-ssrhiro_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
     "anomaly-ssrmisuzu_3rdprima": { type: "mental", attrs: ["genki"], rarity: "Legend", primastella: true },
@@ -303,6 +304,7 @@ export const skillCardList = {
     "sense-ssrume_endlesslimited": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrmao_sugarunit": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrsaki_gomywaydist": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
+    "sense-ssrsena_summer2dist": { type: "active", attrs: [concentration], rarity: "SSR", isKyoukaOnly: true },
 
     "sense-ssrchina_3rdprima": { type: "mental", attrs: ["goodcondition"], rarity: "Legend", primastella: true },
     "sense-ssrmao_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
