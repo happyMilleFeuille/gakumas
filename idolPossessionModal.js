@@ -896,7 +896,7 @@ export function openIdolPossessionModal() {
                 justify-content: center;
                 color: #fff;
                 font-family: 'Inter', sans-serif;
-                font-size: 11px;
+                font-size: 9.5px;
                 font-weight: bold;
                 line-height: 1;
             }
@@ -1575,7 +1575,7 @@ export function openIdolPossessionModal() {
                 body.is-capturing .pssr-char-badge {
                     height: 20px !important;
                     padding: 0 6px !important;
-                    font-size: 9px !important;
+                    font-size: 7.5px !important;
                     font-weight: bold !important;
                     border-radius: 0 0 4px 0 !important;
                 }
