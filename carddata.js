@@ -461,6 +461,28 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_limitedsense4",
+        name: "귀중한 추억, 또 하나",
+        name_ja: "大切な思い出、またひとつ",
+        type: "vocal",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_concentration"], triggertext: ["vocal900"], stats: { vocal: 10 }, target: ["delete", "get"], max: 2 }],
+        releasedAt: "2026-08-26",
+        rarity: "SSR",
+        source: "limited",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_fessense1",
         name: "다시 한번, 처음부터!",
         name_ja: "もう一度、最初から！",
@@ -2764,46 +2786,24 @@ export const cardList = [
             ]
     },
     {
-        id: "vocal_limitedanomaly2", // 이거 실수로 코드명 이상하게함 수정하기엔 이미 늦음
-        name: "☆친해지자는 표시☆",
-        name_ja: "☆お近づきの印☆",
+        id: "vocal_srlimitedsense2",
+        name: "잠자는 둘",
+        name_ja: "おやすみのふたり",
         type: "vocal",
-        plan: "anomaly",
-        have: "item",
-        item_effects: [{ type: "action", trigger: ["get_preservation"], triggertext: ["vocal700"], stats: { vocal: 20 }, target: "enhance", max: 1 }],
-        releasedAt: "2026-03-09",
+        releasedAt: "2026-08-26",
+        plan: "sense",
+        have: "card_m",
+        attrs: ["concentration"],
         rarity: "SR",
         source: "limited",
         extra1: "param",
         abilities:
             [
-                "percentparam",
-                "sp_lessonup",
+                "hpmax",
+                "hpmax",
                 "supportrateup",
-                "sp_param",
-                "advice",
-                "event_paraup"
-            ]
-    },
-    {
-        id: "vocal_srlimitedanomaly2",
-        name: "곤약같은 담력시험",
-        name_ja: "こんにゃくなきもだめし",
-        type: "vocal",
-        plan: "anomaly",
-        have: "item",
-        item_effects: [{ type: "action", trigger: ["test"], triggertext: ["vocal700"], stats: { vocal: 20 }, targettext: ["hp5"], max: 2 }],
-        releasedAt: "2026-08-17",
-        rarity: "SR",
-        source: "limited",
-        extra1: "param",
-        abilities:
-            [
-                "fixedparam",
-                "sp_lessonup",
-                "supportrateup",
-                "sp_param",
-                "sp_param20",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
@@ -3044,6 +3044,50 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_limitedanomaly2", // 이거 실수로 코드명 이상하게함 수정하기엔 이미 늦음
+        name: "☆친해지자는 표시☆",
+        name_ja: "☆お近づきの印☆",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_preservation"], triggertext: ["vocal700"], stats: { vocal: 20 }, target: "enhance", max: 1 }],
+        releasedAt: "2026-03-09",
+        rarity: "SR",
+        source: "limited",
+        extra1: "param",
+        abilities:
+            [
+                "percentparam",
+                "sp_lessonup",
+                "supportrateup",
+                "sp_param",
+                "advice",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_srlimitedanomaly2",
+        name: "곤약같은 담력시험",
+        name_ja: "こんにゃくなきもだめし",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["test"], triggertext: ["vocal700"], stats: { vocal: 20 }, targettext: ["hp5"], max: 2 }],
+        releasedAt: "2026-08-17",
+        rarity: "SR",
+        source: "limited",
+        extra1: "param",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "sp_param",
+                "sp_param20",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_srunitanomaly1",
         name: "잡아당기기 스트레칭",
         name_ja: "ひっぱりじゅーなん",
@@ -3065,6 +3109,7 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+
 
 
 
