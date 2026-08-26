@@ -427,6 +427,16 @@ export const abilityData = {
         },
         trigger: ["get_drink", "purchase_drink"],
     },
+    "get_drink10": {
+        name: { ko: "P드링크 획득(10회)", ja: "Pドリンク獲得(10回)", en: "Get P-Drink(10 times)" },
+        format: { ko: "P드링크 획득 시 {type} 상승+{val} (프로듀스 중 10회)", ja: "Pドリンク獲得時、{type}上昇+{val} (プロデュース中10回)", en: "When getting a P-Drink, {type} Up +{val} (10 times during Produce)" },
+        levels: {
+            "SSR": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 3, 2: 6 }
+        },
+        trigger: ["get_drink", "purchase_drink"], max: 10,
+    },
     "purchase_drink": {
         name: { ko: "P드링크 구매", ja: "Pドリンク交換", en: "Purchase P-Drink" },
         format: { ko: "상담에서 P드링크 교환 시 {type} 상승+{val}", ja: "相談でPドリンク交換後、{type}上昇+{val}", en: "When buying a P-Drink in consultation, {type} Up +{val}" },

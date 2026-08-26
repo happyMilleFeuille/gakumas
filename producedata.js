@@ -343,7 +343,7 @@ export const produceList = [
         }
     },
     { id: "ssrsumika_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", releasedAt: "2024-08-01", category: "season", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true, jumpTime2: 6.3 },
-    { id: "ssrsumika_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", category: "season", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
+    { id: "ssrsumika_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", category: "season", releasedAt: "2024-10-08", rarity: "PSSR", plan: "sense", osusume: "concentration", jumpTime2: 8.2, source: "limited", another: true },
     { id: "ssrsumika_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", category: "season", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrsumika_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", category: "season", rarity: "PSSR", releasedAt: "2025-02-14", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrsumika_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", category: "season", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 7.3, source: "limited", another: true },
@@ -2651,11 +2651,11 @@ export const produceList = [
         }
     },
     {
-        id: "ssrmisuzu_summer2limited", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 9.1, releasedAt: "2026-08-26", youtube_url: "https://youtu.be/ebTsJRw7e0c?si=5flzzHh-cGgEQhNd",
+        id: "ssrmisuzu_summer2limited", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 9.5, releasedAt: "2026-08-26", youtube_url: "https://youtu.be/ebTsJRw7e0c?si=5flzzHh-cGgEQhNd",
         item: {
             name: "夏の足音",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13 이상인 경우\n✦ concentration2\n✦ 집중 강화 5% (1턴)\n✦ genki1",
+            desc_ja: "スキルカードコストで強化状態を消費した時、集中が13以上の場合、\n✦ concentration2\n✦ 集中強化5%（1ターン）\n✦ genki1",
         },
         itemplus: {
             desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13 이상인 경우\n✦ concentration3\n✦ 집중 강화 5% (1턴)\n✦ genki1",
@@ -2663,8 +2663,8 @@ export const produceList = [
         },
         card: {
             name: "波間に揺れる光",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "집중 소비 2\n✦ param3 (집중효과 2배 적용)\n✦ 집중 증가량 추가+1 (1턴)\n✦ 다음 턴, draw2\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "集中消費2\n✦ param3（集中効果を2倍適用）\n✦ 集中増加量追加+1（4ターン）\n✦ 次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
             desc: "집중 소비 1\n✦ param7 (집중효과 2배 적용)\n✦ 집중 증가량 추가+1 (1턴)\n✦ 다음 턴, draw2\n <span style='color:#8B8FD8'>nooverlab",
