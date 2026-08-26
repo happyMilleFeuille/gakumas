@@ -2663,11 +2663,11 @@ export const produceList = [
         },
         card: {
             name: "波間に揺れる光",
-            desc: "집중 소비 2\n✦ param3 (집중효과 2배 적용)\n✦ 집중 증가량 추가+1 (1턴)\n✦ 다음 턴, draw2\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "집중 소비 2\n✦ param3 (집중효과 2배 적용)\n✦ 집중 증가량 추가+1 (4턴)\n✦ 다음 턴, draw2\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "集中消費2\n✦ param3（集中効果を2倍適用）\n✦ 集中増加量追加+1（4ターン）\n✦ 次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "집중 소비 1\n✦ param7 (집중효과 2배 적용)\n✦ 집중 증가량 추가+1 (1턴)\n✦ 다음 턴, draw2\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "집중 소비 1\n✦ param7 (집중효과 2배 적용)\n✦ 집중 증가량 추가+1 (4턴)\n✦ 다음 턴, draw2\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "集中消費1\n✦ param7（集中効果を2倍適用）\n✦ 集中増加量追加+1（4ターン）\n✦ 次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
