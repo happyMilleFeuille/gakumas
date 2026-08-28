@@ -13,6 +13,14 @@ export const videoList = {
             url: "https://youtu.be/-6ukHEaeBzU?si=wWTiiBzr-FFvEvl4",
             date: "2026.04.02."
         },
+
+        {
+            title: "カタマリオンザドゥン",
+            title_ko: "카타마리 온 더 둔",
+            title_en: "Katamari on the Doun",
+            url: "https://youtu.be/YBI8JjoWPhI?si=M6HpGVSEYuhlKolW",
+            date: "2025.10.03."
+        },
         {
             title: "SUPREMACY",
             url: "https://youtu.be/9GELzbI-8F4?si=VzegAu9F26KezvOF",
