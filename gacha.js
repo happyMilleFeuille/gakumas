@@ -2,11 +2,11 @@
 import { updatePageTranslations } from './utils.js';
 import {
     state, setJewels, setTotalPulls, clearGachaLog, setGachaType, setSelectedPickup, idolColors,
-    setActiveNormalId, setActiveLimitedId, setActiveUnitId, setActiveFesId, setActiveSelectionId
+    setActiveNormalId, setActiveNormalMultiId, setActiveLimitedId, setActiveUnitId, setActiveFesId, setActiveSelectionId
 } from './state.js';
 import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import { audioCtx, assetBlobs, audioBuffers, loadGachaAssets, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
@@ -72,6 +72,7 @@ function showDownloadConfirm(contentArea) {
             // 가장 최신 가챠로 덮어씌우기
             setGachaType('normal');
             if (NORMAL_CONFIG.length > 0) setActiveNormalId(NORMAL_CONFIG[0].id);
+            if (NORMAL_MULTI_CONFIG.length > 0) setActiveNormalMultiId(NORMAL_MULTI_CONFIG[0].id);
             if (LIMITED_CONFIG.length > 0) setActiveLimitedId(LIMITED_CONFIG[0].id);
             if (UNIT_CONFIG.length > 0) setActiveUnitId(UNIT_CONFIG[0].id);
             if (FES_CONFIG.length > 0) setActiveFesId(FES_CONFIG[0].id);
@@ -174,7 +175,7 @@ function initUIState(ui) {
 }
 
 function initNavigation(ui) {
-    const types = ['normal', 'limited', 'unit', 'fes', 'selection'];
+    const types = ['normal', 'normal_multi', 'limited', 'unit', 'fes', 'selection'];
     const typeDisplay = document.getElementById('current-gacha-type-display');
     const btnPrev = document.getElementById('btn-prev-gacha');
     const btnNext = document.getElementById('btn-next-gacha');
@@ -334,10 +335,11 @@ function initHeaderControls(ui) {
 }
 
 function updateTypeUI(ui) {
-    const types = ['normal', 'limited', 'unit', 'fes', 'selection'];
+    const types = ['normal', 'normal_multi', 'limited', 'unit', 'fes', 'selection'];
     const t = translations[state.currentLang];
     const typeDisplayNames = {
         normal: t.gacha_type_normal,
+        normal_multi: t.gacha_type_normal_multi,
         limited: t.gacha_type_limited,
         unit: t.gacha_type_unit,
         fes: t.gacha_type_fes,
@@ -457,6 +459,7 @@ async function handleGachaClick(ui, mode, animation) {
     let activeCfg = null;
     if (state.gachaType === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId);
     else if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
+    else if (state.gachaType === 'normal_multi') activeCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId);
     else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
     else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
     else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId);
@@ -484,6 +487,9 @@ async function handleGachaClick(ui, mode, animation) {
     } else if (state.gachaType === 'normal') {
         const norm = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
         if (norm) customPool = norm.pool;
+    } else if (state.gachaType === 'normal_multi') {
+        const nm = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId);
+        if (nm) customPool = nm.pool;
     } else if (state.gachaType === 'limited') {
         const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
         if (lim) customPool = lim.pool;
@@ -504,6 +510,7 @@ async function handleGachaClick(ui, mode, animation) {
         let activeCfg = CURRENT_PICKUPS[state.gachaType] || {};
         if (state.gachaType === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || {};
         else if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || {};
+        else if (state.gachaType === 'normal_multi') activeCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || {};
         else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || {};
         else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || {};
         else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || {};
@@ -554,6 +561,7 @@ function updateGachaButtonsState(ui) {
             // 무료 여부 확인
             let activeCfg = null;
             if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
+            else if (state.gachaType === 'normal_multi') activeCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId);
             else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
             else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
             else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId);
@@ -596,6 +604,7 @@ function updateGachaButtonsState(ui) {
             // 무료 여부 확인
             let activeCfg = null;
             if (state.gachaType === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
+            else if (state.gachaType === 'normal_multi') activeCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId);
             else if (state.gachaType === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
             else if (state.gachaType === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId);
             else if (state.gachaType === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId);

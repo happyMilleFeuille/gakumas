@@ -18,13 +18,17 @@ const getTodayStr = () => {
 let storedPulls = safeParse('totalPullsObj', null);
 if (!storedPulls) {
     const oldVal = parseInt(localStorage.getItem('totalPulls')) || 0;
-    storedPulls = { normal: oldVal, limited: 0, unit: 0, fes: 0 };
+    storedPulls = { normal: oldVal, limited: 0, unit: 0, fes: 0, normal_multi: 0 };
+} else if (storedPulls.normal_multi === undefined) {
+    storedPulls.normal_multi = 0;
 }
 
 let storedLog = safeParse('gachaLogObj', null);
 if (!storedLog) {
     const oldVal = safeParse('gachaLog', []);
-    storedLog = { normal: oldVal, limited: [], unit: [], fes: [] };
+    storedLog = { normal: oldVal, limited: [], unit: [], fes: [], normal_multi: [] };
+} else if (!storedLog.normal_multi) {
+    storedLog.normal_multi = [];
 }
 
 export const idolColors = {
@@ -96,6 +100,7 @@ export const state = {
     selectedPickup: safeParse('selectedPickup', {}),
     activeSelectionId: localStorage.getItem('activeSelectionId') || 'ongakusai_day1',
     activeNormalId: localStorage.getItem('activeNormalId') || 'normal_default',
+    activeNormalMultiId: localStorage.getItem('activeNormalMultiId') || 'shirube',
     activeLimitedId: localStorage.getItem('activeLimitedId') || 'ssrume_endlesslimited',
     activeUnitId: localStorage.getItem('activeUnitId') || 'michinaruunit',
     activeFesId: localStorage.getItem('activeFesId') || 'ssrtsubame_campusfes'
@@ -128,6 +133,11 @@ export function setActiveSelectionId(id) {
 export function setActiveNormalId(id) {
     state.activeNormalId = id;
     localStorage.setItem('activeNormalId', id);
+}
+
+export function setActiveNormalMultiId(id) {
+    state.activeNormalMultiId = id;
+    localStorage.setItem('activeNormalMultiId', id);
 }
 
 export function setActiveLimitedId(id) {

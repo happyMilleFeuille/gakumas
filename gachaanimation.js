@@ -1,7 +1,7 @@
 import { state, setJewels, setTotalPulls, addGachaLog } from './state.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopBGM } from './gacha.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
@@ -609,6 +609,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         let activeCfg = CURRENT_PICKUPS[type] || { pssr: [] };
         if (type === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         else if (type === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+        else if (type === 'normal_multi') activeCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
         else if (type === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         else if (type === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         else if (type === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];

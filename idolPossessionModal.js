@@ -289,6 +289,7 @@ const TYPE_TITLES = {
     season: { ko: '시즌', ja: 'シーズン', en: 'Season' },
     live: { ko: '라이브 투어', ja: 'ライブツアー', en: 'Live Tour' },
     gravia: { ko: '그라비아', ja: 'グラビア', en: 'Gravia' },
+    shirube: { ko: '시루베', ja: '標', en: 'Shirube' },
     nia: { ko: 'NIA', ja: 'NIA', en: 'NIA' },
     campus: { ko: 'NIA', ja: 'NIA', en: 'NIA' },
     hif: { ko: 'HIF', ja: 'HIF', en: 'HIF' }
@@ -380,6 +381,7 @@ const getPeriodBadgeTitle = (periodKey, lang) => {
     if (periodKey === 'season') return (lang === 'ja' || lang === 'en') ? 'Sea.' : '시즌';
     if (periodKey === 'live') return (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
     if (periodKey === 'gravia') return (lang === 'ja' || lang === 'en') ? 'Gravia' : '그라비아';
+    if (periodKey === 'shirube') return (lang === 'ja' || lang === 'en') ? 'Shirube' : '시루베';
     return null;
 };
 
@@ -398,6 +400,11 @@ const getPeriodWaffleTitle = (periodKey, lang) => {
         if (lang === 'ja') return 'グラビア';
         if (lang === 'en') return 'Gravia';
         return '그라비아';
+    }
+    if (periodKey === 'shirube') {
+        if (lang === 'ja') return '標';
+        if (lang === 'en') return 'Shirube';
+        return '시루베';
     }
     return null;
 };
@@ -2116,6 +2123,8 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     badgeText = (lang === 'ja' || lang === 'en') ? 'Live' : '라이브';
                 } else if (periodKey === 'gravia') {
                     badgeText = (lang === 'ja' || lang === 'en') ? 'Gravia' : '그라비아';
+                } else if (periodKey === 'shirube') {
+                    badgeText = (lang === 'ja' || lang === 'en') ? 'Shirube' : '시루베';
                 }
             }
 

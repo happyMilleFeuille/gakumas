@@ -169,6 +169,27 @@ export const UNIT_CONFIG = [
     },
 ];
 
+// 통상 (다중) 가챠 상세 설정
+export const NORMAL_MULTI_CONFIG = [
+    {
+        id: 'shirube',
+        name: '시루베',
+        name_ja: '標',
+        name_en: 'Shirube',
+        date: '2026-09-04',
+        bannerImg: 'idols/ssrmao_shirube1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrmao_shirube', char: 'mao' },
+                { id: 'ssrchina_shirube', char: 'china' },
+                { id: 'ssrsumika_shirube', char: 'sumika' }
+            ],
+            sssr: [],
+            sr_card: []
+        }
+    }
+];
+
 // 통상 가챠 상세 설정 (기간별 라인업 등)
 export const NORMAL_CONFIG = [
     {

@@ -1,6 +1,6 @@
 // gacha-ui-render.js - 가챠 UI 렌더링 로직
 import { state, setSelectedPickup, idolColors } from './state.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import { cardList } from './carddata.js'; // 서포트 카드 데이터 추가
 import { openDrawer } from './gacha-drawer.js';
@@ -22,16 +22,16 @@ export function renderPickupSelector(ui) {
     const type = state.gachaType;
     const checkHasCard = (id) => (state.gachaLog[type] || []).some(item => item.id === id);
 
-    // 1. 드로어 방식 (셀렉션, 통상, 한정, 유닛, 페스)
-    if (type === 'selection' || type === 'normal' || type === 'limited' || type === 'unit' || type === 'fes') {
+    // 1. 드로어 방식 (셀렉션, 통상, 통상 (다중), 한정, 유닛, 페스)
+    if (type === 'selection' || type === 'normal' || type === 'normal_multi' || type === 'limited' || type === 'unit' || type === 'fes') {
         ui.pickupSelector.classList.remove('hidden');
         const { currentCfg, favColor, displayName, bannerImg, bgImg } = getDrawerTypeDisplayData(type, checkHasCard);
         
         const gachaDate = currentCfg.display_date || currentCfg.date || ''; // display_date가 있으면 우선 사용
         
-        // 셀렉션이거나 유닛/페스 더블 픽업일 때만 가로 스타일 적용
+        // 셀렉션이거나 유닛/페스/통상다중 더블 픽업일 때만 가로 스타일 적용
         const isSelection = type === 'selection';
-        const isMulti = ( (type === 'unit' || type === 'fes') && currentCfg.pool?.pssr?.length >= 2);
+        const isMulti = ( (type === 'unit' || type === 'fes' || type === 'normal_multi') && currentCfg.pool?.pssr?.length >= 2);
         const itemClass = (isSelection || isMulti) ? 'selection-item' : 'normal-selection-item';
 
         // 픽업 서포트 카드 데이터 추출
@@ -407,6 +407,16 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         displayName = getLocalizedCardName(cardData) || currentCfg.name;
+        const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
+        favColor = idolColors[charKey] || "#ff4081";
+        const imgVer = checkHasCard(pid) ? '2' : '1';
+        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
+    } else if (type === 'normal_multi') {
+        currentCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
+        const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
+        displayName = getConfigDisplayName(currentCfg) || getLocalizedCardName(cardData) || currentCfg.name;
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';

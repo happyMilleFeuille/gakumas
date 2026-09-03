@@ -71,6 +71,12 @@ export function openGachaRatesModal() {
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         activeName = getCardDisplayName(cardData, lang);
+    } else if (type === 'normal_multi') {
+        config = activeConfig?.pool || config;
+        const firstPSSR = config.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
+        activeName = getConfigDisplayName(activeConfig, cardData, lang);
     } else if (type === 'limited') {
         config = activeConfig?.pool || config;
         const firstPSSR = config.pssr?.[0];

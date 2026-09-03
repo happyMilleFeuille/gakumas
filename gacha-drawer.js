@@ -1,6 +1,6 @@
 // gacha-drawer.js - 가챠 선택 서랍 로직 (스크롤 정밀 보정)
-import { state, setSelectedPickup, setActiveSelectionId, setActiveNormalId, setActiveLimitedId, setActiveUnitId, setActiveFesId, idolColors } from './state.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { state, setSelectedPickup, setActiveSelectionId, setActiveNormalId, setActiveNormalMultiId, setActiveLimitedId, setActiveUnitId, setActiveFesId, idolColors } from './state.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import { renderGacha } from './gacha.js';
 
@@ -115,7 +115,7 @@ export function initGachaDrawer() {
 
             const type = state.gachaType;
             // 가로형 타입인 경우 전용 클래스 추가
-            if (type === 'selection' || type === 'unit') {
+            if (type === 'selection' || type === 'unit' || type === 'normal_multi') {
                 drawerEl.classList.add('drawer-horizontal-mode');
             } else {
                 drawerEl.classList.remove('drawer-horizontal-mode');
@@ -180,6 +180,7 @@ function renderDrawerContent() {
 
     if (type === 'selection') renderSelectionList(itemsLayer, indicatorLayer);
     else if (type === 'normal') renderNormalList(itemsLayer, indicatorLayer);
+    else if (type === 'normal_multi') renderNormalMultiList(itemsLayer, indicatorLayer);
     else if (type === 'limited') renderLimitedList(itemsLayer, indicatorLayer);
     else if (type === 'unit') renderUnitList(itemsLayer, indicatorLayer);
     else if (type === 'fes') renderFesList(itemsLayer, indicatorLayer);
@@ -294,6 +295,8 @@ function updateSelection(id) {
         if (state.activeSelectionId !== id) { setActiveSelectionId(id); changed = true; }
     } else if (type === 'normal') {
         if (state.activeNormalId !== id) { setActiveNormalId(id); changed = true; }
+    } else if (type === 'normal_multi') {
+        if (state.activeNormalMultiId !== id) { setActiveNormalMultiId(id); changed = true; }
     } else if (type === 'limited') {
         if (state.activeLimitedId !== id) { setActiveLimitedId(id); changed = true; }
     } else if (type === 'unit') {
@@ -313,6 +316,7 @@ function scrollToActiveItem(instant = false) {
     const type = state.gachaType;
     const activeId = (type === 'selection') ? state.activeSelectionId : 
                      (type === 'normal') ? state.activeNormalId : 
+                     (type === 'normal_multi') ? state.activeNormalMultiId :
                      (type === 'limited') ? state.activeLimitedId :
                      (type === 'unit') ? state.activeUnitId :
                      (type === 'fes') ? state.activeFesId : state.selectedPickup[type];
@@ -549,6 +553,65 @@ function renderFesList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper';
+        dw.dataset.color = color;
+        const displayDate = (cfg?.display_date || cfg?.date || '');
+        dw.innerHTML = `
+            <div class="drawer-item-date">${displayDate}</div>
+            <div class="drawer-diamond">✦</div>
+        `;
+        indicatorLayer.appendChild(dw);
+    });
+}
+
+function renderNormalMultiList(itemsLayer, indicatorLayer) {
+    const isMobile = window.innerWidth <= 768;
+    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+    NORMAL_MULTI_CONFIG.forEach(cfg => {
+        const pssrCount = cfg.pool?.pssr?.length || 0;
+        const isMulti = pssrCount >= 2;
+        
+        const firstPSSR = cfg.pool?.pssr?.[0];
+        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
+        const cardData = produceList.find(c => c.id === pid);
+        const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
+        
+        const item = document.createElement('div');
+        item.className = `drawer-item ${isMulti ? 'selection-type' : ''}`;
+        item.dataset.id = cfg.id;
+        
+        let imgInnerHtml = '';
+        if (isMulti) {
+            imgInnerHtml = `<div style="display: flex; width: 100%; height: 100%;">
+                ${cfg.pool.pssr.map(p => {
+                    const pid = typeof p === 'string' ? p : p.id;
+                    const imgVer = checkHasCard(pid) ? '2' : '1';
+                    const memberData = produceList.find(c => c.id === pid);
+                    const memberPlan = memberData?.plan ? `<img src="icons/${memberData.plan}.webp" class="drawer-plan-icon" style="top: 4px; left: 4px; width: ${isMobile ? '16px' : '20px'};">` : '';
+                    return `<div style="flex: 1; position: relative; overflow: hidden;">
+                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                        ${memberPlan}
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else {
+            const imgVer = checkHasCard(pid) ? '2' : '1';
+            const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+            imgInnerHtml = `<div style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                ${planIconHtml}
+            </div>`;
+        }
+        
+        const displayName = getConfigDisplayName(cfg);
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; overflow: hidden; position: relative;">
+                ${imgInnerHtml}
+            </div>
+            <div class="drawer-item-name">${displayName}</div>`;
+        item.onclick = () => handleItemClick(cfg.id, item);
+        itemsLayer.appendChild(item);
+
+        const dw = document.createElement('div');
+        dw.className = `drawer-diamond-wrapper ${isMulti ? 'selection-diamond' : ''}`;
         dw.dataset.color = color;
         const displayDate = (cfg?.display_date || cfg?.date || '');
         dw.innerHTML = `

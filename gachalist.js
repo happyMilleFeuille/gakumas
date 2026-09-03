@@ -1,7 +1,7 @@
 // gachalist.js
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { state } from './state.js';
 
 // --- 확률 테이블 정의 ---
@@ -176,6 +176,7 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
 export function getActiveGachaConfig(poolType = state.gachaType) {
     if (poolType === 'selection') return SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
     if (poolType === 'normal') return NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+    if (poolType === 'normal_multi') return NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
     if (poolType === 'limited') return LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
     if (poolType === 'unit') return UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
     if (poolType === 'fes') return FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
@@ -290,6 +291,7 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
 
 export const GACHA_STRATEGIES = {
     normal: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'normal') },
+    normal_multi: { rates: UNIT_RATES, guaranteed: UNIT_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'normal_multi') },
     limited: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'limited') },
     unit: { rates: UNIT_RATES, guaranteed: UNIT_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'unit') },
     fes: { rates: FES_RATES, guaranteed: FES_GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) },
@@ -305,6 +307,9 @@ export function getGachaPool(poolType) {
     let activeConfig = config;
     if (poolType === 'normal') {
         activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+        config = activeConfig?.pool || config;
+    } else if (poolType === 'normal_multi') {
+        activeConfig = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
         config = activeConfig?.pool || config;
     } else if (poolType === 'limited') {
         activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
@@ -349,6 +354,9 @@ export function getGachaPool(poolType) {
         } else if (poolType === 'normal') {
             const norm = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
             if (norm?.date) referenceDate = new Date(norm.date);
+        } else if (poolType === 'normal_multi') {
+            const nm = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId);
+            if (nm?.date) referenceDate = new Date(nm.date);
         } else if (poolType === 'limited') {
             const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
             if (lim?.date) referenceDate = new Date(lim.date);
@@ -425,6 +433,8 @@ export function pickGacha(count = 1, poolType = 'normal', customPool = null) {
         activeConfig = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
     } else if (poolType === 'normal') {
         activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
+    } else if (poolType === 'normal_multi') {
+        activeConfig = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
     } else if (poolType === 'limited') {
         activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
     } else if (poolType === 'unit') {

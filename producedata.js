@@ -1299,6 +1299,82 @@ export const produceList = [
         },
     },
 
+
+
+
+    // 시루베
+    {
+        id: "ssrmao_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 11.2,
+        item: {
+            name: "憧れの標",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        itemplus: {
+            desc: "액티브카드 사용 후, 호조가 8턴 이상일 경우\n✦ goodcondition5\n✦ use1\n✦ genki5\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用後、好調が8ターン以上の場合、\n✦ goodcondition5\n✦ use1\n✦ genki5\n✦ inlesson1",
+        },
+        card: {
+            name: "受け止める光",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        cardplus: {
+            desc: "호조가 8턴 이상일 경우 사용 가능 \n✦ param140\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "好調が8ターン以上の場合、使用可 \n✦ param140\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
+    {
+        id: "ssrchina_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-09-04", jumpTime2: 11.2,
+        item: {
+            name: "可能性の標",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        itemplus: {
+            desc: "남은 턴이 3턴 이내일 때 턴 개시 시\n✦ 원기의 80%만큼 파라미터 상승\n✦ hpreduce2",
+            desc_ja: "残り2ターン以内のターン開始時、\n✦ 元気の80%分パラメータ上昇\n✦ hpreduce2",
+        },
+        card: {
+            name: "出発進行ですわ～♪",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        cardplus: {
+            desc: "✦ genki7\n✦ 의욕이 6이상일 경우 genki10\n✦ 의욕이 9이상일 경우 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki7\n✦ やる気が6以上の場合、genki10\n✦ やる気が9以上次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
+    {
+        id: "ssrsumika_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 11.2,
+        item: {
+            name: "勇気の標",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        itemplus: {
+            desc: "스킬카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration7\n✦ inlesson1",
+            desc_ja: "スキルカード使用時、集中が13以上の場合、\n✦ use1\n✦ concentration7\n✦ inlesson1",
+        },
+        card: {
+            name: "応えたい気持ち",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        cardplus: {
+            desc: "✦ param20 (집중효과 2배 적용)\n✦ concentration6\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param20（集中効果を2倍適用）\n✦ concentration6\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
+
+
+
+
+
+
+
+
+
     // 페스 (Campus Fes)
     {
         id: "ssrrinami_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", category: "nia", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
