@@ -2306,6 +2306,28 @@ export const cardList = [
             ]
     },
     {
+        id: "visual_distlogic2",
+        name: "연어알~♪ 성게~♪",
+        name_ja: "イクラ～♪ ウニ～♪",
+        type: "visual",
+        plan: "logic",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["test"], targettext: ["hp6"], max: 4 }],
+        source: "dist",
+        releasedAt: "2026-09-04",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranchange",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "get_item6",
+                "get_goodimpression",
+                "event_paraup"
+            ]
+    },
+    {
         id: "visual_anomaly1",
         name: "혼잣말이에요",
         name_ja: "ひとりごとです",
