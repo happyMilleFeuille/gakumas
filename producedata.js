@@ -1304,7 +1304,7 @@ export const produceList = [
 
     // 시루베
     {
-        id: "ssrmao_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 11.2,
+        id: "ssrmao_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
         item: {
             name: "憧れの標",
             desc: "액티브카드 사용 후, 호조가 8턴 이상일 경우\n✦ goodcondition4\n✦ use1\n✦ inlesson1",
@@ -1325,7 +1325,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrchina_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-09-04", jumpTime2: 11.2,
+        id: "ssrchina_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
         item: {
             name: "可能性の標",
             desc: "남은 턴이 3턴 이내일 때 턴 개시 시\n✦ 원기의 65%만큼 파라미터 상승\n✦ hpreduce2",
@@ -1346,7 +1346,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsumika_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 11.2,
+        id: "ssrsumika_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
         item: {
             name: "勇気の標",
             desc: "스킬카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration4\n✦ inlesson1",
