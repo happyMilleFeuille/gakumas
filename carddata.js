@@ -1953,6 +1953,28 @@ export const cardList = [
             ]
     },
     {
+        id: "visual_fesfree1",
+        name: "이제 곧 본선이네요",
+        name_ja: "もうすぐ本番ですね",
+        type: "visual",
+        plan: "free",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["change"], triggertext: ["visual400"], stats: { visual: 25 }, targettext: ["hp2"], max: 3 }],
+        releasedAt: "2026-09-10",
+        rarity: "SSR",
+        source: "limited_f",
+        extra1: "param", extra2: "ranchange",
+        abilities:
+            [
+                "hpmax",
+                "sp_recovery",
+                "supportrateup",
+                "change_normal3",
+                "test15",
+                "event_paraup"
+            ]
+    },
+    {
         id: "visual_sense1",
         name: "풀어주는 시간이 중요해!",
         name_ja: "クールダウンが大切よ！",
@@ -2279,6 +2301,7 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+
     {
         id: "visual_distlogic1",
         name: "미아의 안내 말씀 드립니다",

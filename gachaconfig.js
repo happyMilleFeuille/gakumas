@@ -6,6 +6,18 @@ export const CURRENT_PICKUPS = {
 // 페스 가챠 상세 설정
 export const FES_CONFIG = [
     {
+        id: 'ssrsena_hiffes',
+        date: '2026-09-10',
+        bannerImg: 'idols/ssrsena_hiffes1.webp',
+        pickupRate: 0.015,
+        pool: {
+            pssr: ['ssrsena_hiffes'],
+            sssr: ['visual_fesfree1'],
+            sr_card: []
+        },
+    },
+
+    {
         id: 'ssrsaki_hiffes',
         date: '2026-07-21',
         bannerImg: 'idols/ssrsaki_hiffes1.webp',

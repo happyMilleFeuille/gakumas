@@ -556,6 +556,16 @@ export const abilityData = {
         },
         trigger: ["test", "audition", "round_hif"], max: 2,
     },
+    "test15": {
+        name: { ko: "시험/오디션(15장)", ja: "試験/オーディション(15枚)", en: "Exam/Audition(15 cards)" },
+        format: { ko: "시험・오디션 종료 시 소지한 카드가 15장 이상인 경우, {type} 상승+{val} (프로듀스 중 5회)", ja: "試験・オーディション終了時、所持しているスキルカードが15枚以上の場合、{type}上昇+{val} (プロデュース中5回)", en: "After Exam or Audition, if you have 15 or more cards, {type} Up +{val} (5 times during Produce)" },
+        levels: {
+            "SSR": { 1: 26, 2: 37 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["test", "audition", "round_hif"], max: 5,
+    },
     "spclass": {
         name: { ko: "특별지도", ja: "特別指導", en: "Special Guidance" },
         format: { ko: "특별지도 시작 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "特別指導開始時、{type}上昇+{val} (プロデュース中3回)", en: "At the start of Special Guidance, {type} Up +{val} (3 times during Produce)" },
@@ -628,6 +638,17 @@ export const abilityData = {
             "SSR": { 1: 16, 2: 21 },
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 8, 2: 16 }
+        },
+        trigger: ["change"], max: 3,
+
+    },
+    "change_normal3": {
+        name: { ko: "체인지(기본)", ja: "チェンジ(基本)", en: "Change(Normal)" },
+        format: { ko: "이름에 \"기본\"이 포함된 카드를 카드 체인지 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "名前に「基本」を含むスキルカードチェンジ時、{type}上昇+{val} (プロデュース中3回)", en: "When changing a Normal card, {type} Up +{val} (3 times during Produce)" },
+        levels: {
+            "SSR": { 1: 27, 2: 39 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
         },
         trigger: ["change"], max: 3,
 
