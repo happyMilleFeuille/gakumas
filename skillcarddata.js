@@ -209,6 +209,7 @@ export const skillCardList = {
     "logic-ssrume_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
     "logic-ssrsaki_3rdprima": { type: "mental", attrs: ["goodimpression"], rarity: "Legend", primastella: true },
     "logic-ssrrinami_3rdprima": { type: "mental", attrs: ["goodimpression"], rarity: "Legend", primastella: true },
+    "logic-ssrsena_3rdprima": { type: "mental", attrs: ["genki"], rarity: "Legend", primastella: true },
 
     // --- Sense ---
     "sense-legend1": { type: "mental", attrs: ["goodcondition", "concentration"], rarity: "Legend" },
@@ -309,4 +310,5 @@ export const skillCardList = {
     "sense-ssrchina_3rdprima": { type: "mental", attrs: ["goodcondition"], rarity: "Legend", primastella: true },
     "sense-ssrmao_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
     "sense-ssrsumika_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
+    "sense-ssrkotone_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
 };

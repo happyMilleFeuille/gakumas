@@ -593,6 +593,11 @@ export const produceList = [
             desc: "hpreduce3\n✦ concentration1\n✦ 이후 멘탈카드 사용 시 concentration2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce3\n✦ concentration1\n✦ 以降、メンタルスキルカード使用時、concentration2\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
+        primacard: {
+            name: "好きを集める一番星",
+            desc: "startingcard \n✦ concentration7\n✦ use1\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드를 2장 선택해 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard \n✦ concentration7\n✦ use1\n✦ 山札か捨札にあるスキルカードを2枚まで選択し、山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
     },
 
     // --- 테마리 SSR (PSSR) ---
@@ -1046,6 +1051,11 @@ export const produceList = [
             name: "私を超えて（翔）",
             desc: "hpreduce1\n✦ 원기가 15이상인 경우 사용 가능\n✦ 원기의 80%만큼 파라미터 상승\n✦ use1\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce1\n✦ 元気が15以上の場合、使用可\n✦ 元気の80%分パラメータ上昇\n✦ use1\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        primacard: {
+            name: "夢を追い続ける一番星",
+            desc: "✦ 이후 4회까지 스킬카드 코스트로 체력 감소 시 genki5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 以降4回まで、スキルカードコストで体力減少時、genki5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
 
