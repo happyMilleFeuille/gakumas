@@ -1839,8 +1839,8 @@ export const produceList = [
         id: "ssrsena_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-09-10",
         item: {
             name: "頂点の輝き",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ 호인상 감소 6\n✦ inlesson2",
+            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ 好印象減少6\n✦ inlesson2",
         },
         itemplus: {
             desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ hpreduce1\n✦ 호인상 감소 6\n✦ inlesson2",
@@ -1848,8 +1848,8 @@ export const produceList = [
         },
         card: {
             name: "光り輝く道しるべ",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "호인상 소비 5\n✦ goodimpression3\n✦ motivation1\n✦ use1\n✦ 마지막 턴 개시 후 자신을 재사용 (최대 3회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "好印象消費5\n✦ goodimpression3\n✦ motivation1\n✦ use1\n✦ 最終ターンのターン開始後、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "호인상 소비 5\n✦ goodimpression4\n✦ motivation3\n✦ use1\n✦ 마지막 턴 개시 후 자신을 재사용 (최대 3회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -1857,8 +1857,8 @@ export const produceList = [
         },
         cardsecond: {
             name: "先へ進む姿",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "호인상 소비 4\n✦ 레슨 중 소비한 호인상의 85%만큼 호인상 증가\n✦ 호인상의 180%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "好印象消費4\n✦ レッスン中に消費した好印象の85%分好印象増加\n✦ 好印象の180%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardsecondplus: {
             desc: "호인상 소비 4\n✦ 레슨 중 소비한 호인상의 85%만큼 호인상 증가\n✦ 호인상의 270%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",
