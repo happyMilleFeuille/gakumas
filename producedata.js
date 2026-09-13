@@ -76,11 +76,11 @@ export const produceList = [
         id: "ssrrinami_3rd", name: "36℃ U.B.U", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2025-09-17", source: "normal", jumpTime2: 8.7, youtube_url: "https://youtu.be/szxn42peP3M?si=0Fa3iBImUAHj4Rsm",
         item: {
             name: "アイドルになりたい",
-            desc: "직접효과로 호인상이 7이상 증가한 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hprecovery3\n✦ inlesson2",
+            desc: "직접효과로 호인상이 7이상 증가한 후 원기가 30이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hprecovery3\n✦ inlesson2",
             desc_ja: "直接効果で好印象が7以上増加後、元気が30以上の場合、\n✦ 好印象の250%分パラメータ上昇\n✦ hprecovery3\n✦ inlesson2",
         },
         itemplus: {
-            desc: "직접효과로 호인상이 7이상 증가한 후 원기가 30 이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hprecovery3\n✦ inlesson3",
+            desc: "직접효과로 호인상이 7이상 증가한 후 원기가 30이상일 시\n✦ 호인상의 250%만큼 파라미터 상승\n✦ hprecovery3\n✦ inlesson3",
             desc_ja: "直接効果で好印象が7以上増加後、元気が30以上の場合、\n✦ 好印象の250%分パラメータ上昇\n✦ hprecovery3\n✦ inlesson3",
         },
         card: {
@@ -2518,11 +2518,11 @@ export const produceList = [
         id: "ssrhiro_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "fullpower", category: "live", rarity: "PSSR", releasedAt: "2025-09-08", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
             name: "たこやきテクノドッグ",
-            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1매 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터치 증가+5・체력 소비 코스트 수치 증가+2\n✦ inlesson3",
+            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1장 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터치 증가+5・체력 소비 코스트 수치 증가+2\n✦ inlesson3",
             desc_ja: "全力を解除後、除外にあるでこれーとまじっくが1枚以上の場合、\n✦ でこれーとまじっくを保留に移動\n✦ でこれーとまじっくの全力値増加+2・パラメータ値増加+5・体力消費コスト値増加+2\n✦ inlesson3",
         },
         itemplus: {
-            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1매 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터치 증가+12・체력 소비 코스트 수치 증가+2\n✦ inlesson3",
+            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1장 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터치 증가+12・체력 소비 코스트 수치 증가+2\n✦ inlesson3",
             desc_ja: "全力を解除後、除外にあるでこれーとまじっくが1枚以上の場合、\n✦ でこれーとまじっくを保留に移動\n✦ でこれーとまじっくの全力値増加+2・パラメータ値増加+12・体力消費コスト値増加+2\n✦ inlesson3",
         },
         card: {
@@ -2737,11 +2737,11 @@ export const produceList = [
         },
         card: {
             name: "見惚れる横顔",
-            desc: "✦ concentration1\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3 이상일 경우 param13 (집중 효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ concentration1\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3이상일 경우 param13 (집중 효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ concentration1\n✦ 集中強化15%（3ターン）\n✦ 集中が3以上の場合、param13（集中効果を1.5倍適用）\n <span style = 'color:#8B8FD8' > nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ concentration3\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3 이상일 경우 param13 (집중 효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ concentration3\n✦ 집중 강화 15% (3턴)\n✦ 집중이 3이상일 경우 param13 (집중 효과 1.5배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ concentration3\n✦ 集中強化15%（3ターン）\n✦ 集中が3以上の場合、param13（集中効果を1.5倍適用）\n <span style = 'color:#8B8FD8' > nooverlab limit1",
         }
     },
@@ -2770,11 +2770,11 @@ export const produceList = [
         id: "ssrmisuzu_summer2limited", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 9.5, releasedAt: "2026-08-26", youtube_url: "https://youtu.be/ebTsJRw7e0c?si=5flzzHh-cGgEQhNd",
         item: {
             name: "夏の足音",
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13 이상인 경우\n✦ concentration2\n✦ 집중 강화 5% (1턴)\n✦ genki1",
+            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13이상인 경우\n✦ concentration2\n✦ 집중 강화 5% (1턴)\n✦ genki1",
             desc_ja: "スキルカードコストで強化状態を消費した時、集中が13以上の場合、\n✦ concentration2\n✦ 集中強化5%（1ターン）\n✦ genki1",
         },
         itemplus: {
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13 이상인 경우\n✦ concentration3\n✦ 집중 강화 5% (1턴)\n✦ genki1",
+            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13이상인 경우\n✦ concentration3\n✦ 집중 강화 5% (1턴)\n✦ genki1",
             desc_ja: "スキルカードコストで強化状態を消費した時、集中が13以上の場合、\n✦ concentration3\n✦ 集中強化5%（1ターン）\n✦ genki1",
         },
         card: {
