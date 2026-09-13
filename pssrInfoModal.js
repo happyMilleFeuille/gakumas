@@ -66,8 +66,8 @@ export const replaceDescIcons = (text) => {
     });
     result = result.replace(/体力が(\d+)%以上の場合、?/g, (match, num) => `morehp${num}`);
 
-    result = result.replace(/(체력\s*회복|체력회복)\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `hp${spanOpen || ''}${num}${spanClose || ''}`);
-    result = result.replace(/体力回復\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `hp${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/(체력\s*회복|체력회복)\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `hprecovery${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/体力回復\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `hprecovery${spanOpen || ''}${num}${spanClose || ''}`);
 
     // 1. 체력 소비 / 体力消費
     result = result.replace(/(체력\s*소비|体力\s*消費)/g, (match) => {
@@ -139,6 +139,16 @@ export const replaceDescIcons = (text) => {
         return `<img src="icons/pride.webp" alt="Pride" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
+    // 9-4. 열의 / 熱意
+    result = result.replace(/(열의|熱意)/g, (match) => {
+        return `<img src="icons/netui.webp" alt="Netsui" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
+    // 9-5. 재연 / 再演
+    result = result.replace(/(재연|再演)/g, (match) => {
+        return `<img src="icons/saien.webp" alt="Saien" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
     // 9. 시작 카드 / 레슨 개시 시 손패로 이동 / レッスン開始時手札に入る -> Map to startingcard first for dynamic localization
     result = result.replace(/(레슨\s*개시\s*시\s*손패에\s*추가|レッスン開始時手札に入る)/gi, 'startingcard');
 
@@ -172,7 +182,7 @@ export const replaceDescIcons = (text) => {
     result = result.replace(/hpreduce\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         let label = '';
         if (state.currentLang === 'ko') {
-            label = `체력소비 ${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `체력 소비 ${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
             label = `体力消費 ${spanOpen || ''}${num}${spanClose || ''}`;
         } else {
@@ -288,17 +298,17 @@ export const replaceDescIcons = (text) => {
         }
     });
 
-    // hp[num] (optional span tags wrapping the number are preserved)
-    result = result.replace(/hp\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+    // hprecovery[num] / hp[num] (optional span tags wrapping the number are preserved)
+    result = result.replace(/(hprecovery|hp)\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, prefix, spanOpen, num, spanClose) => {
         let label = '';
         if (state.currentLang === 'ko') {
-            label = `체력회복 ${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `체력 회복 ${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
             label = `体力回復${spanOpen || ''}${num}${spanClose || ''}`;
         } else {
             label = `Recover ${spanOpen || ''}${num}${spanClose || ''} HP`;
         }
-        return `<img src="icons/hpreduce.webp" alt="HP" class="pssr-info-modal-desc-inline-icon">${label}`;
+        return `<img src="icons/hprecovery.webp" alt="HP Recovery" class="pssr-info-modal-desc-inline-icon">${label}`;
     });
 
     // inlesson[num] (optional span tags wrapping the number are preserved)
@@ -441,13 +451,15 @@ export const replaceDescIcons = (text) => {
 
     // netsui[num]
     result = result.replace(/netsui\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
+        let label = '';
         if (state.currentLang === 'ko') {
-            return `열의 추가+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `열의 추가+${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
-            return `熱意追加+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `熱意追加+${spanOpen || ''}${num}${spanClose || ''}`;
         } else {
-            return `Enthusiasm +${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `Enthusiasm +${spanOpen || ''}${num}${spanClose || ''}`;
         }
+        return `<img src="icons/netui.webp" alt="Netsui" class="pssr-info-modal-desc-inline-icon">${label}`;
     });
 
     // plusattack[num]
@@ -813,7 +825,11 @@ export function preloadProduceCardInfoModalImages(card) {
         `idols/item/${card.id}.webp`,
         'icons/sainou.webp',
         'icons/itemplus.webp',
-        'icons/download.svg'
+        'icons/download.svg',
+        'icons/hpreduce.webp',
+        'icons/hprecovery.webp',
+        'icons/netui.webp',
+        'icons/saien.webp'
     ];
 
     const idolMatch = card.id ? card.id.match(/^ssr([a-z]+)_/) : null;
@@ -1287,7 +1303,7 @@ export function showProduceCardInfoModal(card, personalColor) {
         const id = card.id;
         let suffix1 = '1';
         let suffix2 = '2';
-        
+
         // R 및 SR 등급에 따른 파일명 접미사 매핑 규칙 (r1/r2, sr1/sr2)
         if (id.startsWith('r') && !id.startsWith('sr') && !id.startsWith('ssr')) {
             if (!id.endsWith('r')) {
@@ -1300,13 +1316,13 @@ export function showProduceCardInfoModal(card, personalColor) {
                 suffix2 = 'sr2';
             }
         }
-        
+
         const img1Src = `idols/verygood/${id}${suffix1}.webp`;
         const img2Src = `idols/verygood/${id}${suffix2}.webp`;
 
         // 어나더 카드들 필터링
         const anotherCards = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
-        
+
         // 검사 대상 이미지 리스트 구성
         const targets = [
             { id: 'normal1', src: img1Src, labelPrefix: '특훈 전', defaultLabel: '특훈 전', suffix: suffix1, isAnother: false },
@@ -1327,7 +1343,7 @@ export function showProduceCardInfoModal(card, personalColor) {
 
         let loadedCount = 0;
         const results = {}; // targetId -> { success: boolean, width: number, height: number }
-        
+
         const checkComplete = () => {
             loadedCount++;
             if (loadedCount === targets.length) {
@@ -1336,28 +1352,28 @@ export function showProduceCardInfoModal(card, personalColor) {
                     const btn = document.getElementById('pssr-info-modal-download-btn');
                     if (btn) {
                         btn.style.display = 'flex';
-                        
+
                         btn.onclick = (e) => {
                             e.stopPropagation(); // 모달 닫힘 방지
-                            
+
                             // 고화질 이미지 다운로드 모달 띄우기
                             const downloadModal = document.createElement('div');
                             downloadModal.id = 'verygood-download-modal';
                             downloadModal.className = 'verygood-download-modal';
                             downloadModal.style.setProperty('--personal-color', personalColor);
-                            
+
                             const titleText = {
                                 ko: '고화질 이미지 다운로드 (.webp)',
                                 ja: '高画質画像ダウンロード (.webp)',
                                 en: 'High-Res Image Download (.webp)'
                             }[state.currentLang] || '고화질 이미지 다운로드 (.webp)';
-                            
+
                             const buttonHtmls = [];
-                            
+
                             targets.forEach((t) => {
                                 const res = results[t.id];
                                 if (!res || !res.success) return; // 로드 실패한 이미지는 제외
-                                
+
                                 let displayLabel = '';
                                 if (!t.isAnother) {
                                     displayLabel = {
@@ -1368,14 +1384,14 @@ export function showProduceCardInfoModal(card, personalColor) {
                                 } else {
                                     displayLabel = t.defaultLabel;
                                 }
-                                
+
                                 if (res.width && res.height) {
                                     displayLabel += ` (${res.width}x${res.height})`;
                                 }
-                                
+
                                 buttonHtmls.push(`<button class="verygood-download-action-btn" data-target-id="${t.id}">${displayLabel}</button>`);
                             });
-                            
+
                             downloadModal.innerHTML = `
                                 <div class="verygood-download-content">
                                     <button class="verygood-download-close-btn">&times;</button>
@@ -1385,9 +1401,9 @@ export function showProduceCardInfoModal(card, personalColor) {
                                     </div>
                                 </div>
                             `;
-                            
+
                             document.body.appendChild(downloadModal);
-                            
+
                             // 다운로드 완료 토스트 메시지 표시 함수
                             const showDownloadToast = (message, duration = 2000) => {
                                 const existing = document.querySelector('.pssr-download-toast');
@@ -1448,7 +1464,7 @@ export function showProduceCardInfoModal(card, personalColor) {
                             targets.forEach((t) => {
                                 const res = results[t.id];
                                 if (!res || !res.success) return;
-                                
+
                                 const btnEl = downloadModal.querySelector(`[data-target-id="${t.id}"]`);
                                 if (btnEl) {
                                     btnEl.onclick = () => {
@@ -1472,20 +1488,20 @@ export function showProduceCardInfoModal(card, personalColor) {
                             downloadModal.querySelector('.verygood-download-close-btn').onclick = () => {
                                 window.closeVeryGoodDownloadModal();
                             };
-                            
+
                             downloadModal.onclick = (event) => {
                                 if (event.target === downloadModal) {
                                     window.closeVeryGoodDownloadModal();
                                 }
                             };
-                            
+
                             history.pushState({ modalOpen: 'verygood-download' }, "");
                         };
                     }
                 }
             }
         };
-        
+
         targets.forEach((t) => {
             const img = new Image();
             img.onload = () => {
