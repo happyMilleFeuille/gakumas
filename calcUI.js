@@ -16,6 +16,18 @@ export const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 const getOptionLabel = (opt) => opt?.labelKey ? t(opt.labelKey) : (opt?.[`label_${state.currentLang}`] || opt?.label_ko || '');
 const getOptionMainLabel = (opt) => opt?.mainLabelKey ? t(opt.mainLabelKey) : (opt?.mainlabel || '');
+const getOptionValue = (source, opt) => {
+    if (!source || !opt) return undefined;
+    if (typeof source.getAttribute === 'function') {
+        const value = source.getAttribute(`data-opt${opt.id}`);
+        if (value !== null) return value;
+        return (opt.legacyIds || [])
+            .map(id => source.getAttribute(`data-opt${id}`))
+            .find(value => value !== null);
+    }
+    if (source[opt.id] !== undefined) return source[opt.id];
+    return (opt.legacyIds || []).map(id => source[id]).find(value => value !== undefined);
+};
 const getCalcIconSrc = (value, calcType = calcStore.type) => `icons/cal/${calcType === 'hif' && value === 'test' ? 'test_hif' : value}.webp`;
 
 /**
@@ -1094,10 +1106,14 @@ export function updateMainLabel(w) {
 
     const opts = activityOptions[w.dataset.value] || [];
     const labels = opts
-        .filter(o => getOptionMainLabel(o) && (o.type === 'counter' ? parseInt(w.dataset[`opt${o.id}`]) > 0 : w.dataset[`opt${o.id}`] === 'true'))
+        .filter(o => {
+            const value = getOptionValue(w, o);
+            return getOptionMainLabel(o) && (o.type === 'counter' ? parseInt(value) > 0 : value === 'true');
+        })
         .map(o => {
             const mainLabel = getOptionMainLabel(o);
-            return o.type === 'counter' ? `${mainLabel} ${w.dataset[`opt${o.id}`]}` : mainLabel;
+            const value = getOptionValue(w, o);
+            return o.type === 'counter' ? `${mainLabel} ${value}` : mainLabel;
         });
     if (labels.length > 0) {
         const l = document.createElement('div'); l.className = 'main-label-text'; l.textContent = labels.join(' '); w.appendChild(l);

@@ -12,17 +12,30 @@ const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
  * @param {Object} store - 현재 계산기 상태 (calcStore)
  * @param {string} targetAttr - 집중할 속성 ('all', 'vocal', 'dance', 'visual')
  * @param {Object} spSettings - 필수 포함할 SP 레슨 확률 업 카드 설정 {vocal, dance, visual}
- * @returns {Array} 추천된 카드 ID 배열 (6개)
+ * @param {Function} onProgress - 진행 상태 표시 콜백
+ * @returns {Promise<Object>} 추천 결과와 강화 배분
  */
-export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vocal: 0, dance: 0, visual: 0 }, lockedCards = [], lockedRentalId = null) {
+export async function getRecommendedCards(store, targetAttr = 'all', spSettings = { vocal: 0, dance: 0, visual: 0 }, lockedCards = [], lockedRentalId = null, onProgress = null) {
     const planType = store.planType || 'sense';
     const currentCards = [...(store.planCards[planType] || [])];
     const cardMap = new Map(cardList.map(card => [card.id, card]));
+    const cardOrderMap = new Map(cardList.map((card, index) => [card.id, index]));
     const maxStackCache = new Map();
     const evaluationCache = new Map();
     const validAttrs = new Set(['vocal', 'dance', 'visual']);
     const hifParamLimitBonus = (store.type === 'hif') ? (hifParameterLimitBonuses[store.hifParamLimitLevel || 0] || 0) : 0;
     const cap = (store.type === 'nia') ? 2600 : (store.type === 'hajime' ? 3000 : (store.type === 'hif' ? (3000 + hifParamLimitBonus) : 9999));
+    const capBufferRate = 0.05;
+    const updateProgress = (key) => {
+        if (typeof onProgress === 'function') onProgress(key);
+    };
+    let lastYieldAt = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const yieldToBrowser = async () => {
+        const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        if (now - lastYieldAt < 16) return;
+        await new Promise(resolve => setTimeout(resolve, 0));
+        lastYieldAt = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    };
 
     // 1. 카드 판별 유틸리티 (속성 및 SP 여부)
     const getCardData = (id) => cardMap.get(id);
@@ -56,7 +69,6 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
 
         return [];
     };
-    const isSPCard = (id) => getSPAttrs(id).length > 0;
     const getCardAttr = (id) => {
         const card = getCardData(id);
         if (!card || !card.type) return null;
@@ -64,6 +76,13 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         if (validAttrs.has(type)) return type;
         return null;
     };
+    const getLatestCards = (cards, limit) => [...cards]
+        .sort((a, b) => {
+            const dateCompare = (b.releasedAt || '').localeCompare(a.releasedAt || '');
+            if (dateCompare !== 0) return dateCompare;
+            return (cardOrderMap.get(b.id) || 0) - (cardOrderMap.get(a.id) || 0);
+        })
+        .slice(0, limit);
     const buildCheckedMap = (cards) => {
         const checkedMap = {};
         cards.forEach(id => {
@@ -102,15 +121,24 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         const overflowVi = Math.max(0, result.finalTotal.visual - cap);
         return overflowVo + overflowDa + overflowVi;
     };
+    const getCapBufferAmount = (result) => {
+        const bufferLimit = cap * capBufferRate;
+        const bufferVo = Math.min(Math.max(0, result.finalTotal.vocal - cap), bufferLimit);
+        const bufferDa = Math.min(Math.max(0, result.finalTotal.dance - cap), bufferLimit);
+        const bufferVi = Math.min(Math.max(0, result.finalTotal.visual - cap), bufferLimit);
+        return bufferVo + bufferDa + bufferVi;
+    };
     const buildInvalidEvaluation = () => ({
         baseScore: -9999999,
         overflowAmount: Number.POSITIVE_INFINITY,
+        bufferAmount: 0,
         penalty: Number.POSITIVE_INFINITY,
         finalScore: -9999999
     });
     const isBetterEvaluation = (nextEval, currentEval) => {
         if (!currentEval) return true;
         if (nextEval.finalScore !== currentEval.finalScore) return nextEval.finalScore > currentEval.finalScore;
+        if (nextEval.bufferAmount !== currentEval.bufferAmount) return nextEval.bufferAmount > currentEval.bufferAmount;
         if (nextEval.overflowAmount !== currentEval.overflowAmount) return nextEval.overflowAmount > currentEval.overflowAmount;
         return nextEval.baseScore > currentEval.baseScore;
     };
@@ -172,6 +200,7 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         return nextSeed.slice(0, 6);
     };
     const seedKey = (cards) => cards.join('|');
+    updateProgress('calc_recommend_progress_prepare');
 
     // 플랜 필터링
     const baseFilter = (c) => !state.disabledCards[c.id] && (c.plan === 'free' || c.plan === planType);
@@ -215,11 +244,13 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
 
         const baseScore = getBaseScore(result);
         const overflowAmount = getOverflowAmount(result);
+        const bufferAmount = getCapBufferAmount(result);
         const finalScore = baseScore - penalty;
 
         const evaluation = {
             baseScore,
             overflowAmount,
+            bufferAmount,
             penalty,
             finalScore
         };
@@ -228,23 +259,28 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     };
 
     // 렌탈 카드 풀(poolB) 사전 정렬 로직 (보유 덱 기준 최적 렌탈 기용 시뮬레이션)
+    updateProgress('calc_recommend_progress_rental');
     const currentOwned = currentCards.filter(id => id && !lockedSet.has(id)).slice(0, 5);
-    const evaluatedPoolB = poolB.map(card => {
+    const evaluatedPoolB = [];
+    for (const card of poolB) {
+        await yieldToBrowser();
         if (currentOwned.includes(card.id)) {
-            return { card, score: -Infinity };
+            evaluatedPoolB.push({ card, score: -Infinity });
+            continue;
         }
         const tempDeck = fillSeedToSix([...lockedCards, ...currentOwned]);
         if (tempDeck.length === 6) {
             tempDeck[5] = card.id;
             const normalized = normalizeCardsForRentalSlot(tempDeck);
-            return { card, score: normalized.evaluation.finalScore };
+            evaluatedPoolB.push({ card, score: normalized.evaluation.finalScore });
+            continue;
         }
-        return { card, score: -Infinity };
-    });
+        evaluatedPoolB.push({ card, score: -Infinity });
+    }
     evaluatedPoolB.sort((a, b) => b.score - a.score);
     poolB = evaluatedPoolB.map(x => x.card);
 
-    const optimize = (initialCards) => {
+    const optimize = async (initialCards) => {
         let { cards, evaluation } = normalizeCardsForRentalSlot([...initialCards]);
 
         let improved = true;
@@ -258,6 +294,7 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
                 if (lockedSet.has(cards[i])) continue;
                 const pool = (i === 5) ? poolB : poolA;
                 for (const cand of pool) {
+                    await yieldToBrowser();
                     if (cards.includes(cand.id) || cand.id === cards[i]) continue;
                     const next = [...cards]; next[i] = cand.id;
                     const normalized = normalizeCardsForRentalSlot(next);
@@ -287,6 +324,8 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         seeds.push(seed);
     };
 
+    updateProgress('calc_recommend_progress_seed');
+
     // 시드 1: 현재 덱 기반 최적화 (고정 카드 포함)
     addSeed(fillSeedToSix([...lockedCards, ...currentCards.filter(id => id && !lockedSet.has(id))]));
 
@@ -307,7 +346,7 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     addSeed(fillSeedToSix(seed2));
 
     // 시드 3+: 상위 카드들을 섞어 시작점을 다양화
-    const seedPoolAIds = poolA.slice(0, Math.min(poolA.length, 12)).map(card => card.id);
+    const seedPoolAIds = getLatestCards(poolA, Math.min(poolA.length, 12)).map(card => card.id);
     const seedPoolBIds = poolB.slice(0, Math.min(poolB.length, 6)).map(card => card.id);
     const seedAttrIds = {
         vocal: poolA.filter(card => getCardAttr(card.id) === 'vocal').slice(0, 4).map(card => card.id),
@@ -355,14 +394,16 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
         }
     });
 
-    seeds.forEach(seed => {
-        const result = optimize(seed);
+    updateProgress('calc_recommend_progress_optimize');
+    for (const seed of seeds) {
+        const result = await optimize(seed);
         if (isBetterEvaluation(result.evaluation, bestResult.evaluation)) bestResult = result;
-    });
+    }
 
     if (!bestResult.cards || bestResult.cards.length !== 6 || bestResult.cards.some(id => !id)) {
         const fallbackCards = fillSeedToSix(currentCards.filter(Boolean));
         if (fallbackCards.length === 6 && !fallbackCards.some(id => !id)) {
+            await yieldToBrowser();
             const normalizedFallback = normalizeCardsForRentalSlot(fallbackCards);
             bestResult = {
                 cards: normalizedFallback.cards,
@@ -373,6 +414,8 @@ export function getRecommendedCards(store, targetAttr = 'all', spSettings = { vo
     }
 
     // 최종 추천된 카드들에 대해 7:3 강화 배분 기대값 계산
+    updateProgress('calc_recommend_progress_finalize');
+    await yieldToBrowser();
     const finalCards = bestResult.cards;
     const tempStore = buildRecommendationStore(finalCards);
     const finalCounts = getTriggerCounts(tempStore);
@@ -403,7 +446,7 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
             return;
         }
 
-        showRecommendModal((settings, lockEnabled, selectedLockedCards) => {
+        showRecommendModal(async (settings, lockEnabled, selectedLockedCards, onProgress) => {
             const lockedCards = [];
             let lockedRentalId = null;
             if (lockEnabled && selectedLockedCards && selectedLockedCards.length > 0) {
@@ -415,7 +458,8 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
                     else if (idx >= 0) lockedCards.push(id);
                 });
             }
-            const result = getRecommendedCards(store, 'all', settings, lockedCards, lockedRentalId);
+            const result = await getRecommendedCards(store, 'all', settings, lockedCards, lockedRentalId, onProgress);
+            if (typeof onProgress === 'function') onProgress('calc_recommend_progress_apply');
             if (applyRecommendedCards(store, result.cards, result.bestEnhance)) {
                 store.save();
                 refreshAll();

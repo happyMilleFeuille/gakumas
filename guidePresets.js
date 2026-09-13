@@ -36,7 +36,7 @@ export const guidePresets = {
                     '5': { value: 'gift_hajime', opts: {} },
                     '6': { value: 'class_hajime', opts: { 'class_hajime2': 'true', 'selectedAttr': '{thirdAttr}' } },
                     '7': { value: '{secondAttrLesson}', opts: { 'sp': 'true' } },
-                    '8': { value: 'advice', opts: { 'enhance': '1', 'delete': '1', 'purchase_ssr': '1', 'purchase_drink': '2' } },
+                    '8': { value: 'advice', opts: { 'enhance': '1', 'delete': '1', 'purchase_card': '1', 'purchase_drink': '2' } },
                     '9': { value: 'spclass', opts: { 'spclass_customize': '4' } },
                     '10': { value: 'test', opts: {} },
                     '11': { value: 'gift_hajime', opts: {} },
@@ -304,23 +304,23 @@ export const guidePresets = {
                     '9': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
                     '10': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '11': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
-                    '12': { value: 'advice', opts: { enhance: '1', purchase_ssr: '1', purchase_drink: '4' } },
+                    '12': { value: 'advice', opts: { enhance: '1', purchase_card: '1', purchase_drink: '4' } },
                     '13': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest13_1st}', 'hif_test_{secondAttr}': '{hifTest13_2nd}', 'hif_test_{thirdAttr}': '{hifTest13_3rd}' } },
-                    '14': { value: 'goout_hif', opts: { goout_hif2: 'true' } },
+                    '14': { value: 'gift_hif', opts: {} },
                     '15': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
                     '16': { value: 'gift_hif', opts: {} },
                     '17': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '18': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
-                    '19': { value: 'advice', opts: { delete: '1', purchase_drink: '4' } },
+                    '19': { value: 'advice', opts: { delete: '1', purchase_card: '2', purchase_drink: '4' } },
                     '20': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest20_1st}', 'hif_test_{secondAttr}': '{hifTest20_2nd}', 'hif_test_{thirdAttr}': '{hifTest20_3rd}' } },
                     '21': { value: 'class_hif1', opts: { selectedAttr: '{secondAttr}', class_hif1: 'true' } },
                     '22': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
                     '23': { value: 'gift_hif', opts: {} },
                     '24': { value: 'class_hif1', opts: { selectedAttr: '{secondAttr}', class_hif1: 'true' } },
                     '25': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
-                    '26': { value: 'advice', opts: { purchase_drink: '6', purchase_ssr: '1' } },
+                    '26': { value: 'advice', opts: { purchase_drink: '3', purchase_card: '1' } },
                     '27': { value: 'round_hif', opts: {} },
-                    '28': { value: 'advice_hif', opts: { purchase_drink: '2', purchase_ssr: '1' } },
+                    '28': { value: 'advice_hif', opts: { purchase_drink: '2', purchase_card: '1', spclass_customize: '4' } },
                     '29': { value: 'round_hif', opts: {} }
                 }
             }
@@ -354,23 +354,23 @@ export const guidePresets = {
                     '9': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
                     '10': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '11': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
-                    '12': { value: 'advice', opts: { enhance: '1', purchase_ssr: '1', purchase_drink: '4' } },
+                    '12': { value: 'advice', opts: { enhance: '1', purchase_card: '1', purchase_drink: '4' } },
                     '13': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest13_1st}', 'hif_test_{secondAttr}': '{hifTest13_2nd}', 'hif_test_{thirdAttr}': '{hifTest13_3rd}' } },
-                    '14': { value: 'goout_hif', opts: { goout_hif2: 'true' } },
+                    '14': { value: 'gift_hif', opts: {} },
                     '15': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
                     '16': { value: 'gift_hif', opts: {} },
                     '17': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '18': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
-                    '19': { value: 'advice', opts: { delete: '1', purchase_drink: '4' } },
+                    '19': { value: 'advice', opts: { delete: '1', purchase_card: '2', purchase_drink: '4' } },
                     '20': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest20_1st}', 'hif_test_{secondAttr}': '{hifTest20_2nd}', 'hif_test_{thirdAttr}': '{hifTest20_3rd}' } },
                     '21': { value: 'class_hif1', opts: { selectedAttr: '{firstAttr}', class_hif1: 'true' } },
                     '22': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
                     '23': { value: 'gift_hif', opts: {} },
                     '24': { value: 'class_hif1', opts: { selectedAttr: '{firstAttr}', class_hif1: 'true' } },
                     '25': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
-                    '26': { value: 'advice', opts: { purchase_drink: '6', purchase_ssr: '1' } },
+                    '26': { value: 'advice', opts: { purchase_drink: '7', } },
                     '27': { value: 'round_hif', opts: {} },
-                    '28': { value: 'advice_hif', opts: { purchase_drink: '2', purchase_ssr: '1' } },
+                    '28': { value: 'advice_hif', opts: { purchase_drink: '2', purchase_card: '2' } },
                     '29': { value: 'round_hif', opts: {} }
                 }
             }
@@ -387,6 +387,7 @@ export const guidePresets = {
                         "sense-sr12": 1,
                         "sense-sr10": 1,
                         "sense-sr8": 1,
+                        "sense-sr15": 1,
                         "sense-sr6alt": 1,
                         "sense-r11": 1,
                         "sense-ssr4": 1,
@@ -406,21 +407,24 @@ export const guidePresets = {
             calcState: {
                 planSkills: {
                     logic: {
-                        "logic-ssr13": 2,
+                        "logic-ssr13": 1,
                         "logic-ssr7": 1,
                         "logic-ssr6": 1,
                         "logic-ssr2alt": 1,
                         "logic-ssr5": 1,
-                        "logic-ssr10": 2,
+                        "logic-ssr10": 1,
                         "free-ssr4": 1,
                         "logic-sr18": 1,
+                        "logic-sr11": 1,
                         "logic-sr17": 1,
                         "logic-sr14": 1,
+                        "logic-sr13": 1,
                         "logic-sr15": 1,
                         "logic-sr6alt": 1,
                         "logic-sr3alt": 1,
                         "logic-ssr3": 1,
-                        "logic-ssr4": 1
+                        "logic-ssr4": 1,
+                        "logic-r12": 1
                     }
                 }
             }
@@ -433,13 +437,14 @@ export const guidePresets = {
                         "anomaly-ssr1alt": 1,
                         "anomaly-ssr2alt": 1,
                         "anomaly-ssr7": 1,
+                        "anomaly-ssr9": 1,
                         "anomaly-ssr8": 1,
                         "anomaly-ssr11": 1,
-                        "free-ssr1": 1,
                         "free-ssr4": 1,
                         "anomaly-sr17": 1,
                         "anomaly-sr9": 1,
                         "anomaly-sr8": 1,
+                        "anomaly-r10": 1,
                         "anomaly-sr3alt": 1,
                         "anomaly-sr4alt": 1,
                         "anomaly-sr1alt": 1,
@@ -495,8 +500,7 @@ export function getGuidePreset(mode, idol, planType, slotId = 'guide') {
     }
 
     // 1. 우선순위 로드 및 병합 (default 공용 뼈대 + 플랜별 특약 세팅 + 아이돌별 개별 세팅)
-    // 댄스가 1속성(firstAttr === 'dance')이면 guide2 요청이더라도 default1과 그대로 동일하게 작동
-    const defaultKey = (mode === 'hif' && slotId === 'guide2' && firstAttr !== 'dance') ? 'default2' : 'default';
+    const defaultKey = (mode === 'hif' && slotId === 'guide2') ? 'default2' : 'default';
     const defaultData = guidePresets[mode]?.[defaultKey] || {};
     const planData = guidePresets[mode]?.[planType] || {};
     const idolDataPreset = guidePresets[mode]?.[idol]?.[planType] || {};
@@ -551,8 +555,13 @@ export function getGuidePreset(mode, idol, planType, slotId = 'guide') {
         hifTestConfig.forEach(({ week, max, min }) => {
             const flex = max - min * 3;
             let v1st, v2nd, v3rd;
-            if (mode === 'hif' && slotId === 'guide2' && firstAttr !== 'dance') {
-                // 가이드 프리셋 2번 (댄스가 1속성이 아닐 때): 1속 70%, 댄스 10%, 나머지 20% 배분
+            if (mode === 'hif' && slotId === 'guide2' && firstAttr === 'dance') {
+                // 가이드 프리셋 2번에서 1속이 댄스면 시험은 가이드 프리셋 1번과 동일하게 배분
+                v1st = String(min + Math.round(flex * 0.20));
+                v2nd = String(min + Math.round(flex * 0.70));
+                v3rd = String(min + Math.round(flex * 0.10));
+            } else if (mode === 'hif' && slotId === 'guide2') {
+                // 가이드 프리셋 2번: 1속 70%, 댄스 10%, 나머지 20% 배분
                 v1st = String(min + Math.round(flex * 0.70));
                 if (secondAttr === 'dance') {
                     v2nd = String(min + Math.round(flex * 0.10)); // 댄스 10%
@@ -590,6 +599,16 @@ export function getGuidePreset(mode, idol, planType, slotId = 'guide') {
                 .replace(/\{hif2Mem1\}/g, m1)
                 .replace(/\{hif2Mem2\}/g, m2)
                 .replace(/\{hif2Mem3\}/g, m3);
+        }
+
+        // HIF 가이드 프리셋 2에서 1속성이 dance이면 댄스 레슨의 서브 속성이 중복되지 않도록 보정
+        if (mode === 'hif' && slotId === 'guide2' && firstAttr === 'dance') {
+            calcStateStr = calcStateStr.replace(/"selectedSubAttr"\s*:\s*"\{firstAttr\}"/g, `"selectedSubAttr": "${secondAttr}"`);
+        }
+
+        // HIF 가이드 프리셋 2에서 1속성이 dance이면 수업/영업 선택 속성도 중복되지 않도록 보정
+        if (mode === 'hif' && slotId === 'guide2' && firstAttr === 'dance') {
+            calcStateStr = calcStateStr.replace(/"selectedAttr"\s*:\s*"\{firstAttr\}"/g, `"selectedAttr": "${secondAttr}"`);
         }
 
         // HIF 가이드 프리셋 2에서 3속성이 dance이고 댄스 레슨 고정으로 인해 서브 속성마저 dance가 되는 현상(중복) 방지
@@ -653,11 +672,11 @@ export function getGuidePreset(mode, idol, planType, slotId = 'guide') {
     let customName = '가이드 프리셋';
     if (mode === 'hif' && slotId === 'guide2') {
         if (lang === 'ja') {
-            customName = 'ガイドプリセット (ダンス+ドリンク)';
+            customName = 'ガイドプリセット (ダンス/ドリンク)';
         } else if (lang === 'en') {
-            customName = 'Guide Preset (Dance+Drink)';
+            customName = 'Guide Preset (Dance/Drink)';
         } else {
-            customName = '가이드 프리셋 (댄스+드링크)';
+            customName = '가이드 프리셋 (댄스/드링런)';
         }
     } else {
         if (lang === 'ja') {

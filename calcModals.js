@@ -1417,15 +1417,17 @@ export function showRecommendModal(onConfirm) {
     modal.style.zIndex = '30000';
 
     const totalDisplay = modal.querySelector('#sp-total-count');
+    let isRecommending = false;
 
     // 이벤트 바인딩 및 실시간 합계 업데이트 (6개 제한 추가)
     modal.querySelectorAll('.sp-sub-options').forEach(container => {
         const key = container.dataset.key;
-        const btns = container.querySelectorAll('.sp-opt-btn');
-        btns.forEach(btn => {
-            btn.onclick = () => {
-                const newVal = parseInt(btn.dataset.val);
-                const currentSumWithoutKey = getSum() - settings[key];
+            const btns = container.querySelectorAll('.sp-opt-btn');
+            btns.forEach(btn => {
+                btn.onclick = () => {
+                    if (isRecommending) return;
+                    const newVal = parseInt(btn.dataset.val);
+                    const currentSumWithoutKey = getSum() - settings[key];
 
                 // 합계가 6を 넘으면 선택 불가
                 if (currentSumWithoutKey + newVal > 6) {
@@ -1465,13 +1467,13 @@ export function showRecommendModal(onConfirm) {
 
         if (checked) {
             if (currentCards.length > 0) {
-                lockPreview.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">${currentCards.map((id, idx) => {
+                lockPreview.innerHTML = `<div style="display: grid; grid-template-columns: repeat(3, 92px); grid-auto-rows: 51px; gap: 6px; justify-content: center;">${currentCards.map((id, idx) => {
                     const card = (typeof cardList !== 'undefined' ? cardList : []).find(c => c.id === id);
                     const attrColor = card?.type === 'vocal' ? '#ff4d8d' : (card?.type === 'dance' ? '#46a4f3' : '#fcc75e');
                     const isRental = idx === 5;
                     const isLocked = lockedCardSet.has(id);
                     const borderColor = isLocked ? (isRental ? '#5ECFB1' : attrColor) : '#88888866';
-                    return `<div class="lock-card-item" data-card-id="${id}" style="position: relative; width: 81px; height: 45px; border-radius: 4px; overflow: hidden; border: 2px solid ${borderColor}; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s;">
+                    return `<div class="lock-card-item" data-card-id="${id}" style="position: relative; width: 92px; height: 51px; border-radius: 4px; overflow: hidden; border: 2px solid ${borderColor}; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s;">
                         <img src="images/support/thumb/${id}.webp" style="width: 100%; height: 100%; object-fit: cover;">
                         <div class="lock-card-overlay" style="position: absolute; inset: 0; background: ${isLocked ? 'transparent' : 'rgba(0,0,0,0.55)'}; transition: background 0.2s; display: flex; align-items: center; justify-content: center;">
                             ${(!isLocked && isRental) ? '<span style="color: #fff; font-size: 10px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">RENTAL</span>' : ''}
@@ -1484,6 +1486,7 @@ export function showRecommendModal(onConfirm) {
                 lockPreview.querySelectorAll('.lock-card-item').forEach(el => {
                     el.onclick = (e) => {
                         e.stopPropagation();
+                        if (isRecommending) return;
                         const cardId = el.dataset.cardId;
                         if (lockedCardSet.has(cardId)) {
                             lockedCardSet.delete(cardId);
@@ -1511,6 +1514,7 @@ export function showRecommendModal(onConfirm) {
     if (lockToggle) {
         lockToggle.onclick = (e) => {
             e.preventDefault();
+            if (isRecommending) return;
             lockCheckbox.checked = !lockCheckbox.checked;
             calcStore.lockCards = lockCheckbox.checked;
             calcStore.save();
@@ -1525,6 +1529,10 @@ export function showRecommendModal(onConfirm) {
     }
 
     const close = (isPopState = false) => {
+        if (isRecommending) {
+            if (isPopState) history.pushState({ modalOpen: 'recommend' }, "");
+            return;
+        }
         if (!isPopState) history.back();
         else modal.style.display = 'none';
     };
@@ -1533,19 +1541,37 @@ export function showRecommendModal(onConfirm) {
 
     const okBtn = modal.querySelector('.confirm-btn.ok');
     okBtn.onclick = () => {
+        if (isRecommending) return;
+        isRecommending = true;
+        const content = modal.querySelector('.confirm-modal-content');
+        if (content) {
+            content.style.pointerEvents = 'none';
+            content.style.cursor = 'wait';
+        }
         const footer = modal.querySelector('.confirm-modal-content > div:last-of-type');
         footer.innerHTML = `
             <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0;">
                 <div class="loading-spinner" style="width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid ${idolColor}; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-                <div style="font-size: 12px; color: ${idolColor}; font-weight: bold;"></div>
+                <div id="recommend-progress-text" style="font-size: 12px; color: ${idolColor}; font-weight: bold;">${t('calc_recommend_progress_prepare')}</div>
             </div>
         `;
 
-        setTimeout(() => {
+        setTimeout(async () => {
             const lockEnabled = modal.querySelector('#lock-cards-checkbox')?.checked || false;
             const selectedLockedCards = lockEnabled ? [...lockedCardSet] : [];
-            onConfirm(settings, lockEnabled, selectedLockedCards);
-            close();
+            const progressText = modal.querySelector('#recommend-progress-text');
+            const updateProgress = (key) => {
+                if (progressText) progressText.textContent = t(key);
+            };
+            try {
+                await Promise.resolve(onConfirm(settings, lockEnabled, selectedLockedCards, updateProgress));
+                isRecommending = false;
+                close();
+            } catch (err) {
+                console.error('Recommendation failed:', err);
+                isRecommending = false;
+                close();
+            }
         }, 100);
     };
 

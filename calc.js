@@ -27,6 +27,11 @@ import { triggerImmediateCloudSave } from './firebase-sync.js';
 const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 const hifClassActionIds = ['class_hif', 'class_hif0', 'class_hif1'];
+const getOptionValue = (source, opt) => {
+    if (!source || !opt) return undefined;
+    if (source[opt.id] !== undefined) return source[opt.id];
+    return (opt.legacyIds || []).map(id => source[id]).find(value => value !== undefined);
+};
 
 function getVisibleIdolList(type) {
     if (type === 'hif') return idolList.filter(id => hifPrimaStellaIdols.includes(id));
@@ -236,7 +241,7 @@ function isIncompleteWeekSelection(wrapper) {
 
     const week = wrapper.closest('.week-row')?.dataset.week;
     const savedOpts = calcStore.weeks[week]?.opts || {};
-    const hasCheckedOption = checkboxOpts.some(o => savedOpts[o.id] === 'true');
+    const hasCheckedOption = checkboxOpts.some(o => getOptionValue(savedOpts, o) === 'true');
     const requiresAttr = value === 'class_hajime' || value === 'class_nia' || hifClassActionIds.includes(value);
     const requiresSubAttr = calcStore.type === 'hif' && ['lessonvo', 'lessondan', 'lessonvi'].includes(value);
     const hasSelectedAttr = !!savedOpts.selectedAttr;
@@ -944,7 +949,7 @@ function startWeeklyPlan(type) {
 
                             const optionsHtml = opts.map(o => {
                                 const label = o.labelKey ? t(o.labelKey) : (o[`label_${state.currentLang}`] || o.label_ko || '');
-                                const savedVal = savedOpts[o.id];
+                                const savedVal = getOptionValue(savedOpts, o);
                                 if (o.type === 'checkbox') {
                                     return `<label class="tooltip-option"><input type="checkbox" data-id="${o.id}" ${savedVal === 'true' ? 'checked' : ''}><span>${label}${o.subOptions ? ' ▶' : ''}</span></label>`;
                                 } else {
@@ -1081,11 +1086,13 @@ function startWeeklyPlan(type) {
                                     const btn = ce.target.closest('.cnt-btn'); if (!btn) return;
                                     const optId = ctrl.dataset.id;
                                     const optDef = opts.find(o => o.id === optId);
-                                    let cur = parseInt(calcStore.weeks[weekNum].opts[optId]) || 0;
+                                    let cur = parseInt(getOptionValue(calcStore.weeks[weekNum].opts, optDef)) || 0;
                                     if (btn.classList.contains('plus') && cur < (optDef.max || 9)) cur++;
                                     else if (btn.classList.contains('minus') && cur > 0) cur--;
                                     calcStore.updateWeekOpt(weekNum, optId, cur);
-                                    wrapper.dataset[`opt${optId}`] = String(cur);
+                                    (optDef.legacyIds || []).forEach(legacyId => calcStore.updateWeekOpt(weekNum, legacyId, null));
+                                    wrapper.setAttribute(`data-opt${optId}`, String(cur));
+                                    (optDef.legacyIds || []).forEach(legacyId => wrapper.removeAttribute(`data-opt${legacyId}`));
                                     ctrl.querySelector('.cnt-val').textContent = cur;
                                     updateMainLabel(wrapper);
                                     refreshAll();

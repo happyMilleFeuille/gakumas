@@ -132,7 +132,8 @@ export function getTriggerCounts(store) {
             if (countInc === 0) return;
 
             const options = activityOptions[actionId] || [];
-            const optDef = options.find(o => o.id === optId) || options.flatMap(o => o.subOptions || []).find(so => so.id === optId);
+            const optDef = options.find(o => o.id === optId || (o.legacyIds || []).includes(optId))
+                || options.flatMap(o => o.subOptions || []).find(so => so.id === optId || (so.legacyIds || []).includes(optId));
             const targets = (optDef && optDef.results) ? optDef.results : [optId];
 
             targets.forEach(t => {
