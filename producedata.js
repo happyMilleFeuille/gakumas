@@ -1843,8 +1843,8 @@ export const produceList = [
             desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ 好印象減少6\n✦ inlesson2",
         },
         itemplus: {
-            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ hpreduce1\n✦ 호인상 감소 6\n✦ inlesson2",
-            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ hpreduce1\n✦ 好印象減少6\n✦ inlesson2",
+            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ 체력 회복 1\n✦ 호인상 감소 6\n✦ inlesson2",
+            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ 体力回復1\n✦ 好印象減少6\n✦ inlesson2",
         },
         card: {
             name: "光り輝く道しるべ",
