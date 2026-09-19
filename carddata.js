@@ -825,6 +825,27 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "vocal_anomaly5",
+        name: "나한테, 맡겨줘",
+        name_ja: "わたしに、まかせて",
+        type: "vocal",
+        plan: "anomaly",
+        have: "card_m",
+        attrs: ["fullpower"],
+        releasedAt: "2026-09-20",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
 
     {
         id: "vocal_limitedanomaly1",
@@ -3685,6 +3706,27 @@ export const cardList = [
                 "supportrateup",
                 "test",
                 "get_item6",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "dance_sranomaly3",
+        name: "핵불맛! 하츠보시 카레!!",
+        name_ja: "激辛！　初星カレー！！",
+        type: "dance",
+        releasedAt: "2026-09-20",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", triggertext: ["dance700"], trigger: ["enhance"], triggerdisplay: { ko: "온존 카드 강화", ja: "温存効果のスキルカード強化", en: "enhancing a Preserve skill card" }, targettext: ["ppoint10"], stats: { dance: 20 }, max: 3 }],
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

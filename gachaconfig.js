@@ -205,6 +205,16 @@ export const NORMAL_MULTI_CONFIG = [
 // 통상 가챠 상세 설정 (기간별 라인업 등)
 export const NORMAL_CONFIG = [
     {
+        id: 'ssrhiro_4th',
+        date: '2026-09-20',
+        bannerImg: 'idols/ssrhiro_4th1.webp',
+        pool: {
+            pssr: [{ id: 'ssrhiro_4th', char: 'hiro' }],
+            sssr: ['vocal_anomaly4'],
+            sr_card: ['visual_sranomaly4']
+        }
+    },
+    {
         id: 'ssrtsubame_3rd',
         date: '2026-07-31',
         bannerImg: 'idols/ssrtsubame_3rd1.webp',
