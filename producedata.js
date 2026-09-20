@@ -900,8 +900,8 @@ export const produceList = [
         id: "ssrhiro_4th", name: "메", name_en: "Me", name_ja: "め", osusume: "fullpower", rarity: "PSSR", releasedAt: "2026-09-20", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/lYafXo-rjU8?si=CtEO8rFuI4IEXewd",
         item: {
             name: "止まない風",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "턴 개시 시 \n✦ 전력치 증가량 증가+25% (1턴)\n✦ 온존으로 지침 변경\n✦ genki2\n✦ 강화상태 코스트 증가 1턴",
+            desc_ja: "ターン開始時、\n✦ 全力値増加量増加+25%（1ターン）\n✦ 温存に変更\n✦ genki2\n✦ 強化状態コスト増加1ターン",
         },
         itemplus: {
             desc: "턴 개시 시 \n✦ 전력치 증가량 증가+40% (1턴)\n✦ 온존으로 지침 변경\n✦ genki2\n✦ 강화상태 코스트 증가 1턴",
@@ -909,8 +909,8 @@ export const produceList = [
         },
         card: {
             name: "わたしは、風！",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "전력치 소비 2\n✦ 전력 강화+10% (1턴)\n✦ param2 (누계 전력치의 120%만큼 파라미터 상승량 증가・2회)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "全力値消費2\n✦ 全力強化+10%（1ターン）\n✦ param2（累計全力値の120%分、パラメータ上昇量増加・2回）\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
             desc: "전력치 소비 2\n✦ 전력 강화+10% (1턴)\n✦ param5 (누계 전력치의 150%만큼 파라미터 상승량 증가・2회)\n <span style='color:#8B8FD8'>nooverlab",

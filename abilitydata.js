@@ -233,7 +233,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },
@@ -243,7 +243,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },
@@ -253,7 +253,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },
@@ -263,7 +263,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },
@@ -273,7 +273,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },
@@ -283,7 +283,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },
@@ -293,7 +293,7 @@ export const abilityData = {
         levels: {
             "SSR": { 1: 16, 2: 22 },
             "SSR_DIST": { 1: 0, 2: 0 },
-            "SR": { 1: 0, 2: 0 }
+            "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
     },

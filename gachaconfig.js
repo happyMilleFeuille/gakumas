@@ -210,8 +210,8 @@ export const NORMAL_CONFIG = [
         bannerImg: 'idols/ssrhiro_4th1.webp',
         pool: {
             pssr: [{ id: 'ssrhiro_4th', char: 'hiro' }],
-            sssr: ['vocal_anomaly4'],
-            sr_card: ['visual_sranomaly4']
+            sssr: ['vocal_anomaly5'],
+            sr_card: ['dance_sranomaly3']
         }
     },
     {
