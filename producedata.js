@@ -897,7 +897,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrhiro_4th", name: "메", name_en: "Me", name_ja: "め", osusume: "fullpower", rarity: "PSSR", releasedAt: "2026-09-20", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/lYafXo-rjU8?si=CtEO8rFuI4IEXewd",
+        id: "ssrhiro_4th", name: "메", name_en: "Me", name_ja: "め", osusume: "fullpower", rarity: "PSSR", releasedAt: "2026-09-20", plan: "anomaly", source: "normal", jumpTime2: 10.1, youtube_url: "https://youtu.be/lYafXo-rjU8?si=CtEO8rFuI4IEXewd",
         item: {
             name: "止まない風",
             desc: "턴 개시 시 \n✦ 전력치 증가량 증가+25% (1턴)\n✦ 온존으로 지침 변경\n✦ genki2\n✦ 강화상태 코스트 증가 1턴",
