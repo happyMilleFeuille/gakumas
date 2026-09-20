@@ -90,11 +90,13 @@ export const skillCardList = {
     "anomaly-ssrkotone_gomywaylimited": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrtsubame_3rd": { type: "mental", attrs: ["fullpower"], rarity: "SSR", isKyoukaOnly: true },
     "anomaly-ssrtemari_summer2limited": { type: "active", attrs: ["enthusiasm", "genki", "preservation"], rarity: "SSR", isKyoukaOnly: true },
+    "anomaly-ssrhiro_4th": { type: "active", attrs: ["genki"], rarity: "SSR", isKyoukaOnly: true },
 
     "anomaly-ssrhiro_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
     "anomaly-ssrmisuzu_3rdprima": { type: "mental", attrs: ["genki"], rarity: "Legend", primastella: true },
     "anomaly-ssrtemari_3rdprima": { type: "mental", attrs: ["fullpower"], rarity: "Legend", primastella: true },
     "anomaly-ssrlilja_3rdprima": { type: "active", attrs: [""], rarity: "Legend", primastella: true },
+
 
     // --- Free ---
     "free-r1": { type: "mental", attrs: ["genki"], rarity: "R", multi: true },
