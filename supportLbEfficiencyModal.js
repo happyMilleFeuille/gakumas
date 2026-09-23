@@ -1114,7 +1114,7 @@ function renderResultStep(content, modalState) {
     const globalMax = Math.max(1, ...rows.map(row => row.max || 0));
     const calcType = modalState.calcType || 'step';
     const isStep = calcType === 'step';
-    const sortType = modalState.sortType || 'latest';
+    const sortType = modalState.sortType || 'currentValue';
 
     // 전체 리스트 중 최대 상승 수치(점수 차이 최댓값) 계산 (구간별 vs 누적 모드 반영)
     const allGains = rows.flatMap(r => {
@@ -1190,6 +1190,22 @@ function renderResultStep(content, modalState) {
             const rB = rarityOrder[(b.card.rarity || 'r').toLowerCase()] ?? 9;
             if (rA !== rB) return rA - rB;
         }
+        if (sortType === 'currentValue') {
+            const disabledA = !!state.disabledCards?.[a.card.id];
+            const disabledB = !!state.disabledCards?.[b.card.id];
+            if (disabledA !== disabledB) return disabledA ? 1 : -1;
+
+            const lbA = state.supportLB[a.card.id] ?? 0;
+            const lbB = state.supportLB[b.card.id] ?? 0;
+            const valA = a.values[lbA] || 0;
+            const valB = b.values[lbB] || 0;
+            if (valB !== valA) return valB - valA;
+
+            const rarityOrder = { ssr: 0, sr: 1, r: 2 };
+            const rA = rarityOrder[(a.card.rarity || 'r').toLowerCase()] ?? 9;
+            const rB = rarityOrder[(b.card.rarity || 'r').toLowerCase()] ?? 9;
+            if (rA !== rB) return rA - rB;
+        }
         if (sortType === 'lbLow' || sortType === 'lbHigh') {
             const lbA = state.disabledCards?.[a.card.id] ? -1 : (state.supportLB[a.card.id] ?? 0);
             const lbB = state.disabledCards?.[b.card.id] ? -1 : (state.supportLB[b.card.id] ?? 0);
@@ -1220,10 +1236,11 @@ function renderResultStep(content, modalState) {
         <div class="support-lb-header-result-controls">
             ${renderCalcTypeToggle(isStep)}
             <select class="support-lb-sort-select" aria-label="sort">
+                <option value="currentValue" ${sortType === 'currentValue' ? 'selected' : ''}>${getText('수치순', '数値順', 'Current Score')}</option>
+                <option value="base0" ${sortType === 'base0' ? 'selected' : ''}>${getText('0돌 수치순', '0凸数値順', '0LB Score')}</option>
+                <option value="max4" ${sortType === 'max4' ? 'selected' : ''}>${getText('4돌 수치순', '4凸数値順', '4LB Score')}</option>
                 <option value="latest" ${sortType === 'latest' ? 'selected' : ''}>${getText('최신순', '新しい順', 'Newest')}</option>
                 <option value="oldest" ${sortType === 'oldest' ? 'selected' : ''}>${getText('오래된순', '古い順', 'Oldest')}</option>
-                <option value="base0" ${sortType === 'base0' ? 'selected' : ''}>${getText('0돌 수치순', '0凸順', '0LB Score')}</option>
-                <option value="max4" ${sortType === 'max4' ? 'selected' : ''}>${getText('4돌 수치순', '4凸順', '4LB Score')}</option>
                 <option value="lbHigh" ${sortType === 'lbHigh' ? 'selected' : ''}>${getText('돌파순', '凸順', 'LB')}</option>
                 <option value="lbLow" ${sortType === 'lbLow' ? 'selected' : ''}>${getText('낮은 돌파순', '低凸順', 'Low LB')}</option>
                 <option value="efficiency" ${sortType === 'efficiency' ? 'selected' : ''}>${getText('효율순', '効率順', 'Efficiency')}</option>
@@ -1566,7 +1583,7 @@ export function openSupportLbEfficiencyModal() {
         selectedPlan,
         selectedPresetKey: savedSelection.selectedPresetKey || '',
         calcType: 'step',
-        sortType: 'latest',
+        sortType: 'currentValue',
         selectedRewards: [],
         selectedRewardCounters: [],
         rewardEnhanceMental: null,
