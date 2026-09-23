@@ -1445,10 +1445,10 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         const pctNum = globalMax > 0 ? ((val / globalMax) * 100) : 0;
         const barHeight = Math.max(val > 0 ? 3 : 0, pctNum).toFixed(1);
 
-        // 구간별: 현재돌파+1만 진한색, 그 초과는 연한색 / 누적: 현재돌파 초과 전부 진한색
+        // 구간별: 현재돌파와 현재돌파+1 진한색 / 누적: 현재돌파 이상 전부 진한색
         const isHighlighted = isDisabledCard
             ? (isStep ? i === 0 : true)
-            : displayCurrentLb < 4 && (isStep ? i === displayCurrentLb + 1 : i > displayCurrentLb);
+            : (isStep ? (i === displayCurrentLb || i === Math.min(4, displayCurrentLb + 1)) : i >= displayCurrentLb);
         const barBgColor = isHighlighted ? attrColor : `color-mix(in srgb, ${attrColor} 34%, #ffffff)`;
         const dotColor = lineColor;
 
@@ -1469,7 +1469,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         let dotHtml = '';
         let pctLabelHtml = '';
         if (i > 0) {
-            const lineLabelOpacity = i <= displayCurrentLb ? '0.6' : '1';
+            const lineLabelOpacity = isHighlighted ? '1' : '0.6';
             const isHighPoint = lineHeightPct >= 78;
             const pctPosStyle = isHighPoint
                 ? `bottom: calc(${lineHeightPct}% - 17px); left: calc(50% + 8px); transform: translateX(-50%);`
@@ -1498,7 +1498,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         const pctSubHtml = (i > 0)
             ? `<div style="font-size: 0.60rem; font-weight: 700; color: ${pctSubColor}; margin-top: 1px;">(+${gainPct}%)</div>`
             : `<div style="font-size: 0.60rem; font-weight: 700; color: transparent; margin-top: 1px;">-</div>`;
-        const valOpacity = i <= displayCurrentLb ? '0.6' : '1';
+        const valOpacity = isHighlighted ? '1' : '0.6';
         valColsHtml += `
             <div class="support-lb-val-col" style="flex: 1; text-align: center; font-size: 0.72rem; font-weight: ${isHighlighted ? '900' : '800'}; color: ${isHighlighted ? '#0f172a' : (val > 0 ? '#475569' : '#bbb')}; line-height: 1.1; opacity: ${valOpacity};">
                 <div>${val}</div>
@@ -1524,7 +1524,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
     const dividerRatio = (currentLb + 0.5) / 5;
     const dividerOffset = 7 - (14 * dividerRatio);
     const dividerLeft = `calc(${(dividerRatio * 100).toFixed(1)}% ${dividerOffset >= 0 ? '+' : '-'} ${Math.abs(dividerOffset).toFixed(1)}px)`;
-    const currentDividerHtml = !isDisabledCard && currentLb < 4
+    const currentDividerHtml = !isDisabledCard
         ? `<div class="support-lb-current-divider" style="position: absolute; top: 0; bottom: 0; left: ${dividerLeft}; border-left: 1px dashed ${chartGuideColor}; pointer-events: none; z-index: 1;"></div>`
         : '';
 
