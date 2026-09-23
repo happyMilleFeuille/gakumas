@@ -31,6 +31,45 @@ let preloadedSupport = false;
 
 const preloadedSupportCardAssets = new Set();
 
+function showLbEfficiencyMobileTooltip(anchorEl) {
+    document.querySelectorAll('.lb-efficiency-mobile-tooltip').forEach(el => el.remove());
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'lb-efficiency-mobile-tooltip';
+    tooltip.innerHTML = state.currentLang === 'ja'
+        ? 'モバイルでは対応していません。<br>PCでご確認ください。'
+        : (state.currentLang === 'en'
+            ? 'Mobile is not supported.<br>Please check on PC.'
+            : '모바일은 지원하지 않습니다.<br>PC에서 확인해주세요.');
+    document.body.appendChild(tooltip);
+
+    const rect = anchorEl.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+    let left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+    let top = rect.bottom + window.scrollY + 8;
+
+    if (left < 10) left = 10;
+    if (left + tooltipWidth > window.innerWidth - 10) left = window.innerWidth - tooltipWidth - 10;
+    if (top + tooltipHeight > window.scrollY + window.innerHeight - 10) top = rect.top + window.scrollY - tooltipHeight - 8;
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    const closeTooltip = (e) => {
+        if (!tooltip.parentElement) return;
+        if (!tooltip.contains(e.target) && !anchorEl.contains(e.target)) {
+            tooltip.remove();
+            document.removeEventListener('click', closeTooltip);
+        }
+    };
+    setTimeout(() => document.addEventListener('click', closeTooltip), 10);
+    setTimeout(() => {
+        tooltip.remove();
+        document.removeEventListener('click', closeTooltip);
+    }, 2600);
+}
+
 const preloadSupportCardAssets = (cardId) => {
     if (!cardId || preloadedSupportCardAssets.has(cardId)) return;
     preloadedSupportCardAssets.add(cardId);
@@ -1276,7 +1315,12 @@ function setupStaticListeners(container) {
 
     const lbEfficiencyBtn = container.querySelector('#btn-lb-efficiency');
     if (lbEfficiencyBtn) {
-        lbEfficiencyBtn.addEventListener('click', async () => {
+        lbEfficiencyBtn.addEventListener('click', async (e) => {
+            if (window.innerWidth <= 768) {
+                e.stopPropagation();
+                showLbEfficiencyMobileTooltip(lbEfficiencyBtn);
+                return;
+            }
             const { openSupportLbEfficiencyModal } = await import('./supportLbEfficiencyModal.js');
             openSupportLbEfficiencyModal();
         });

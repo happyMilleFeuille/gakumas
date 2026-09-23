@@ -8,6 +8,7 @@ import { getGuidePreset } from './guidePresets.js';
 import { checkCardMatchFilters } from './ui.js';
 import { showCardModal } from './cardModal.js';
 import { calculateCardBonus } from './simulator-engine.js';
+import { showSupportItemTooltip } from './calcUI.js';
 
 const MODES = ['hajime', 'nia', 'hif'];
 const PLAN_TYPES = ['sense', 'logic', 'anomaly'];
@@ -217,7 +218,6 @@ function getMaxItemCounter(card) {
 function getEligibleCards(planType) {
     return cardList
         .filter(card => card.encyclopedia !== false)
-        .filter(card => !state.disabledCards?.[card.id])
         .filter(card => card.plan === 'free' || card.plan === planType)
         .filter(card => checkCardMatchFilters(card, true));
 }
@@ -698,10 +698,10 @@ function renderRewardDetailSummary(modalState) {
         <div class="support-lb-detail-summary">
             <div class="support-lb-cardget-summary">
                 ${detailItems.map(([key, label, className = 'card']) => {
-                    const baseDetail = key === 'purchaseDrink' ? (baseCounts.purchaseDrink || 0) : (baseCounts.cardGetDetails?.[key] || 0);
-                    const deltaDetail = key === 'purchaseDrink' ? (simpleTotals.purchaseDrink || 0) : (simpleTotals.cardGetDetails?.[key] || 0);
-                    return `<div class="${className}"><span>${label}</span><strong>${renderTotalWithDelta(baseDetail, deltaDetail)}</strong></div>`;
-                }).join('')}
+        const baseDetail = key === 'purchaseDrink' ? (baseCounts.purchaseDrink || 0) : (baseCounts.cardGetDetails?.[key] || 0);
+        const deltaDetail = key === 'purchaseDrink' ? (simpleTotals.purchaseDrink || 0) : (simpleTotals.cardGetDetails?.[key] || 0);
+        return `<div class="${className}"><span>${label}</span><strong>${renderTotalWithDelta(baseDetail, deltaDetail)}</strong></div>`;
+    }).join('')}
             </div>
         </div>
     `;
@@ -786,7 +786,7 @@ function pruneSelectedRewardsForPlan(modalState, planType) {
     modalState.selectedRewards = selectedRewards.map(cardId => {
         if (!cardId) return cardId;
         const card = cardList.find(c => c.id === cardId);
-        const isValid = card && !state.disabledCards?.[card.id] && (card.plan === 'free' || card.plan === planType);
+        const isValid = card && (card.plan === 'free' || card.plan === planType);
         if (isValid) return cardId;
         changed = true;
         return null;
@@ -801,6 +801,54 @@ function pruneSelectedRewardsForPlan(modalState, planType) {
 
 function closeSupportRewardPicker() {
     document.querySelectorAll('.support-lb-reward-picker').forEach(el => el.remove());
+}
+
+function closeSupportLbInfoTooltip() {
+    document.querySelectorAll('.support-lb-info-tooltip').forEach(el => el.remove());
+}
+
+function openSupportLbInfoTooltip(anchorEl) {
+    const existing = document.querySelector('.support-lb-info-tooltip');
+    if (existing) {
+        existing.remove();
+        return;
+    }
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'support-lb-info-tooltip';
+    tooltip.textContent = getText(
+        '각 서포트 카드의 P아이템 및 이벤트 등은 프리셋의 스케줄을 기준으로 모두 최대치로 발동되어 계산되었으며, 추가로 P아이템 등을 추가해 타 서포트 카드와의 시너지도 확인할 수 있습니다.',
+        '各サポートカードのPアイテムやイベントなどは、プリセットのスケジュールを基準にすべて最大値で発動したものとして計算されています。さらにPアイテムなどを追加して、他のサポートカードとのシナジーも確認できます。',
+        'Each support card\'s P items, events, and related effects are calculated as if they triggered at their maximum values based on the preset schedule. You can also add P items to check synergy with other support cards.'
+    );
+    const themeHost = anchorEl.closest('.support-lb-efficiency-content');
+    tooltip.style.setProperty('--support-lb-theme', themeHost ? getComputedStyle(themeHost).getPropertyValue('--support-lb-theme').trim() : getThemeColor());
+    document.body.appendChild(tooltip);
+
+    const rect = anchorEl.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+    let left = rect.right + 8;
+    let top = rect.top + window.scrollY + (rect.height / 2) - (tooltipHeight / 2);
+
+    if (left + tooltipWidth > window.innerWidth - 10) left = rect.left - tooltipWidth - 8;
+    if (left < 10) left = 10;
+    if (top < window.scrollY + 10) top = window.scrollY + 10;
+    if (top + tooltipHeight > window.scrollY + window.innerHeight - 10) top = window.scrollY + window.innerHeight - tooltipHeight - 10;
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    setTimeout(() => {
+        const closeOnOutside = (e) => {
+            if (!tooltip.parentElement) return;
+            if (!tooltip.contains(e.target) && !anchorEl.contains(e.target)) {
+                tooltip.remove();
+                document.removeEventListener('click', closeOnOutside);
+            }
+        };
+        document.addEventListener('click', closeOnOutside);
+    }, 10);
 }
 
 function getRecentRewardStorageKey(planType) {
@@ -867,8 +915,8 @@ function openSupportRewardPicker(slotEl, slotIndex, modalState, rows, rerender) 
         <div class="support-lb-reward-recent ${recentCards.length > 0 ? '' : 'empty'}">
             <div class="support-lb-reward-recent-grid">
                 ${Array.from({ length: 5 }, (_, idx) => recentCards[idx]
-                    ? renderRewardPickerOption(recentCards[idx], 'recent')
-                    : '<div class="support-lb-reward-recent-empty"></div>').join('')}
+        ? renderRewardPickerOption(recentCards[idx], 'recent')
+        : '<div class="support-lb-reward-recent-empty"></div>').join('')}
             </div>
         </div>
         <div class="support-lb-reward-tabs">
@@ -895,7 +943,7 @@ function openSupportRewardPicker(slotEl, slotIndex, modalState, rows, rerender) 
         });
     });
     tooltip.querySelectorAll('.support-lb-reward-option').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (e) => {
             e.stopPropagation();
             modalState.selectedRewards = [...(modalState.selectedRewards || [])];
             modalState.selectedRewardCounters = [...(modalState.selectedRewardCounters || [])];
@@ -1062,7 +1110,7 @@ function renderResultStep(content, modalState) {
     const globalMax = Math.max(1, ...rows.map(row => row.max || 0));
     const calcType = modalState.calcType || 'step';
     const isStep = calcType === 'step';
-    const sortType = modalState.sortType || 'efficiency';
+    const sortType = modalState.sortType || 'latest';
 
     // 전체 리스트 중 최대 상승 수치(점수 차이 최댓값) 계산 (구간별 vs 누적 모드 반영)
     const allGains = rows.flatMap(r => {
@@ -1083,10 +1131,6 @@ function renderResultStep(content, modalState) {
     }).join('');
 
     const compareEfficiency = (a, b) => {
-        const isFullA = (state.supportLB[a.card.id] ?? 0) >= 4;
-        const isFullB = (state.supportLB[b.card.id] ?? 0) >= 4;
-        if (isFullA !== isFullB) return isFullA ? 1 : -1;
-
         if (isStep) {
             // 구간별 모드: 1순위 현재 돌파에서 +1돌 시 점수 상승 수치, 2순위 4돌 점수 수치
             const getStepGainVal = (row) => {
@@ -1143,8 +1187,8 @@ function renderResultStep(content, modalState) {
             if (rA !== rB) return rA - rB;
         }
         if (sortType === 'lbLow' || sortType === 'lbHigh') {
-            const lbA = state.supportLB[a.card.id] ?? 0;
-            const lbB = state.supportLB[b.card.id] ?? 0;
+            const lbA = state.disabledCards?.[a.card.id] ? -1 : (state.supportLB[a.card.id] ?? 0);
+            const lbB = state.disabledCards?.[b.card.id] ? -1 : (state.supportLB[b.card.id] ?? 0);
             if (lbA !== lbB) return sortType === 'lbLow' ? lbA - lbB : lbB - lbA;
             const rarityOrder = { ssr: 0, sr: 1, r: 2 };
             const rA = rarityOrder[(a.card.rarity || 'r').toLowerCase()] ?? 9;
@@ -1172,13 +1216,13 @@ function renderResultStep(content, modalState) {
         <div class="support-lb-header-result-controls">
             ${renderCalcTypeToggle(isStep)}
             <select class="support-lb-sort-select" aria-label="sort">
-                <option value="efficiency" ${sortType === 'efficiency' ? 'selected' : ''}>${getText('효율순', '効率順', 'Efficiency')}</option>
                 <option value="latest" ${sortType === 'latest' ? 'selected' : ''}>${getText('최신순', '新しい順', 'Newest')}</option>
                 <option value="oldest" ${sortType === 'oldest' ? 'selected' : ''}>${getText('오래된순', '古い順', 'Oldest')}</option>
                 <option value="base0" ${sortType === 'base0' ? 'selected' : ''}>${getText('0돌 수치순', '0凸順', '0LB Score')}</option>
                 <option value="max4" ${sortType === 'max4' ? 'selected' : ''}>${getText('4돌 수치순', '4凸順', '4LB Score')}</option>
-                <option value="lbLow" ${sortType === 'lbLow' ? 'selected' : ''}>${getText('낮은 돌파순', '低凸順', 'Low LB')}</option>
                 <option value="lbHigh" ${sortType === 'lbHigh' ? 'selected' : ''}>${getText('돌파순', '凸順', 'LB')}</option>
+                <option value="lbLow" ${sortType === 'lbLow' ? 'selected' : ''}>${getText('낮은 돌파순', '低凸順', 'Low LB')}</option>
+                <option value="efficiency" ${sortType === 'efficiency' ? 'selected' : ''}>${getText('효율순', '効率順', 'Efficiency')}</option>
             </select>
             <button class="support-lb-back-btn" type="button">${getText('돌아가기', '戻る', 'Back')}</button>
         </div>
@@ -1194,12 +1238,13 @@ function renderResultStep(content, modalState) {
                     ${renderRewardCountSummary(modalState)}
                     ${renderEnhanceDistributor(modalState)}
                     ${renderRewardDetailSummary(modalState)}
+                    <button class="support-lb-info-btn" type="button" aria-label="info"><img src="icons/info.svg" alt=""></button>
                     <button class="support-lb-meta-expand-btn ${modalState.metaExpanded ? 'expanded' : ''}" type="button" aria-label="expand">‹</button>
                 </div>
             </div>
             <div class="support-lb-table">
                 <div class="support-lb-table-header">
-                    <div class="support-lb-header-card">${getText('카드', 'カード', 'Card')}</div>
+                    <div class="support-lb-header-card"></div>
                     <div class="support-lb-header-chart">
                         <div class="support-lb-header-cols">
                             ${headerLabels}
@@ -1226,6 +1271,12 @@ function renderResultStep(content, modalState) {
         if (btn) btn.classList.toggle('expanded', modalState.metaExpanded);
     });
 
+    content.querySelector('.support-lb-info-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeSupportRewardPicker();
+        openSupportLbInfoTooltip(e.currentTarget);
+    });
+
     headerAction?.querySelector('.support-lb-sort-select')?.addEventListener('change', (e) => {
         modalState.sortType = e.currentTarget.value;
         renderResultStep(content, modalState);
@@ -1244,7 +1295,14 @@ function renderResultStep(content, modalState) {
     content.querySelectorAll('.support-lb-result-slot').forEach(slotEl => {
         slotEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            openSupportRewardPicker(slotEl, Number(slotEl.dataset.slotIndex), modalState, sortedRows, () => {
+            const slotIndex = Number(slotEl.dataset.slotIndex);
+            const selectedRewardId = modalState.selectedRewards?.[slotIndex];
+            if (selectedRewardId) {
+                closeSupportRewardPicker();
+                showSupportItemTooltip(slotEl, selectedRewardId);
+                return;
+            }
+            openSupportRewardPicker(slotEl, slotIndex, modalState, sortedRows, () => {
                 refreshRowsWithSelectedRewards(modalState);
                 rerenderResultStepPreservingScroll(content, modalState);
             });
@@ -1342,7 +1400,12 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
     const card = row.card;
     const currentLb = state.supportLB[card.id] ?? 0;
     const attrColor = card.type === 'vocal' ? '#ff4d8d' : (card.type === 'dance' ? '#46a4f3' : (card.type === 'visual' ? '#fcc75e' : '#72da49'));
+    const lineColor = card.type === 'vocal' ? '#a92758' : (card.type === 'dance' ? '#24679f' : (card.type === 'visual' ? '#946815' : '#3e7f28'));
+    const isDisabledCard = !!state.disabledCards?.[card.id];
     const isFullLb = currentLb >= 4;
+    const cardImageStyle = isDisabledCard ? 'filter: grayscale(95%);' : (isFullLb ? 'filter: grayscale(0%); opacity: 1;' : '');
+    const displayCurrentLb = isDisabledCard ? 0 : currentLb;
+    const chartGuideColor = '#a0aec0';
     const baseVal = row.values[0] || 0;
     const hasSpLessonUp = card.abilities?.some(ability =>
         ability === 'allsp_lessonup' ||
@@ -1360,11 +1423,13 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         const val = row.values[i] || 0;
         const pctNum = globalMax > 0 ? ((val / globalMax) * 100) : 0;
         const barHeight = Math.max(val > 0 ? 3 : 0, pctNum).toFixed(1);
-        
+
         // 구간별: 현재돌파+1만 진한색, 그 초과는 연한색 / 누적: 현재돌파 초과 전부 진한색
-        const isHighlighted = currentLb < 4 && (isStep ? i === currentLb + 1 : i > currentLb);
-        const barBgColor = isHighlighted ? attrColor : `color-mix(in srgb, ${attrColor} 42%, #ffffff)`;
-        const dotColor = '#475569';
+        const isHighlighted = isDisabledCard
+            ? (isStep ? i === 0 : true)
+            : displayCurrentLb < 4 && (isStep ? i === displayCurrentLb + 1 : i > displayCurrentLb);
+        const barBgColor = isHighlighted ? attrColor : `color-mix(in srgb, ${attrColor} 34%, #ffffff)`;
+        const dotColor = lineColor;
 
         // 꺾은선 보조축: 0돌은 0(하단 4%), 1~4돌은 전체 리스트의 최고 상승 수치(globalMaxGain)를 100%(상단 90%) 기준으로 매핑
         const prevVal = isStep ? (row.values[i - 1] || 0) : baseVal;
@@ -1383,7 +1448,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         let dotHtml = '';
         let pctLabelHtml = '';
         if (i > 0) {
-            const lineLabelOpacity = i <= currentLb ? '0.6' : '1';
+            const lineLabelOpacity = i <= displayCurrentLb ? '0.6' : '1';
             const isHighPoint = lineHeightPct >= 78;
             const pctPosStyle = isHighPoint
                 ? `bottom: calc(${lineHeightPct}% - 17px); left: calc(50% + 8px); transform: translateX(-50%);`
@@ -1395,7 +1460,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         // 레이어 1: 막대 본체 (선보다 뒤쪽, z-index: 2)
         barsOnlyHtml += `
             <div style="flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 100%; position: relative;">
-                <div class="support-lb-bar" style="width: 16px; height: ${barHeight}%; background: ${barBgColor}; opacity: ${isHighlighted ? '1' : '0.6'}; border-radius: 0; box-sizing: border-box;"></div>
+                <div class="support-lb-bar" style="width: 16px; height: ${barHeight}%; background: ${barBgColor}; opacity: 1; border-radius: 0; box-sizing: border-box;"></div>
             </div>
         `;
 
@@ -1412,7 +1477,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         const pctSubHtml = (i > 0)
             ? `<div style="font-size: 0.60rem; font-weight: 700; color: ${pctSubColor}; margin-top: 1px;">(+${gainPct}%)</div>`
             : `<div style="font-size: 0.60rem; font-weight: 700; color: transparent; margin-top: 1px;">-</div>`;
-        const valOpacity = i <= currentLb ? '0.6' : '1';
+        const valOpacity = i <= displayCurrentLb ? '0.6' : '1';
         valColsHtml += `
             <div class="support-lb-val-col" style="flex: 1; text-align: center; font-size: 0.72rem; font-weight: ${isHighlighted ? '900' : '800'}; color: ${isHighlighted ? '#0f172a' : (val > 0 ? '#475569' : '#bbb')}; line-height: 1.1; opacity: ${valOpacity};">
                 <div>${val}</div>
@@ -1427,7 +1492,7 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
     // 레이어 2: 꺾은선 (막대보다 앞, 원/수치보다 뒤, z-index: 4)
     const lineChartSvg = `
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; left: 7px; right: 7px; top: 0; bottom: 0; width: calc(100% - 14px); height: 100%; overflow: visible; pointer-events: none; z-index: 4;">
-            <polyline points="${points.join(' ')}" fill="none" stroke="#475569" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+            <polyline points="${points.join(' ')}" fill="none" stroke="${lineColor}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
         </svg>
     `;
 
@@ -1435,26 +1500,26 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         const src = idx < currentLb ? 'icons/flower.webp' : 'icons/flowerback.webp';
         return `<img src="${src}" class="support-lb-card-flower" alt="flower">`;
     }).join('');
-    const dividerRatio = (currentLb + 1) / 5;
+    const dividerRatio = (currentLb + 0.5) / 5;
     const dividerOffset = 7 - (14 * dividerRatio);
     const dividerLeft = `calc(${(dividerRatio * 100).toFixed(1)}% ${dividerOffset >= 0 ? '+' : '-'} ${Math.abs(dividerOffset).toFixed(1)}px)`;
-    const currentDividerHtml = currentLb < 4
-        ? `<div class="support-lb-current-divider" style="position: absolute; top: 0; bottom: 0; left: ${dividerLeft}; border-left: 1px dashed #cbd5e1; pointer-events: none; z-index: 7;"></div>`
+    const currentDividerHtml = !isDisabledCard && currentLb < 4
+        ? `<div class="support-lb-current-divider" style="position: absolute; top: 0; bottom: 0; left: ${dividerLeft}; border-left: 1px dashed ${chartGuideColor}; pointer-events: none; z-index: 1;"></div>`
         : '';
 
     return `
         <div class="support-lb-row rarity-${(card.rarity || 'r').toLowerCase()} ${isFullLb ? 'is-full-lb' : ''}" style="--row-attr-color: ${attrColor};">
-            <div class="support-lb-card-bg" data-card-id="${escapeHtml(card.id)}">
-                <img class="support-lb-card-img" src="images/support/thumb/${card.id}.webp" alt="${card.id}" onerror="this.src='images/support/${card.id}.webp';">
+            <div class="support-lb-card-bg ${isDisabledCard ? 'is-disabled-card' : ''}" data-card-id="${escapeHtml(card.id)}">
+                <img class="support-lb-card-img" src="images/support/thumb/${card.id}.webp" alt="${card.id}" style="${cardImageStyle}" onerror="this.src='images/support/${card.id}.webp';">
                 ${card.type ? `<img class="support-lb-type-icon" src="icons/${card.type.toLowerCase()}.webp" alt="${escapeHtml(card.type)}" onerror="this.style.display='none';">` : ''}
                 ${hasSpLessonUp ? `<img class="support-lb-sp-icon" src="icons/sp_icon.webp" alt="SP" onerror="this.style.display='none';">` : ''}
-                <div class="support-lb-card-flowers">${flowersHtml}</div>
+                ${isDisabledCard ? '' : `<div class="support-lb-card-flowers">${flowersHtml}</div>`}
             </div>
             <div class="support-lb-card-spacer"></div>
             <div class="support-lb-chart-wrapper">
-                <div class="possession-chart-bars" style="width: 100%; height: 66px; position: relative; border-bottom: 2px solid #cbd5e1; box-sizing: border-box;">
-                    <div style="position: absolute; left: 0; right: 0; top: 0%; border-top: 1px dashed #cbd5e1; z-index: 1;"></div>
-                    <div style="position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed #cbd5e1; z-index: 1;"></div>
+                <div class="possession-chart-bars" style="width: 100%; height: 66px; position: relative; border-bottom: 2px solid ${chartGuideColor}; box-sizing: border-box;">
+                    <div style="position: absolute; left: 0; right: 0; top: 0%; border-top: 1px dashed ${chartGuideColor}; z-index: 1;"></div>
+                    <div style="position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed ${chartGuideColor}; z-index: 1;"></div>
                     
                     <div style="position: absolute; inset: 0; display: flex; justify-content: space-around; align-items: flex-end; z-index: 2; padding: 0 7px;">
                         ${barsOnlyHtml}
@@ -1497,7 +1562,7 @@ export function openSupportLbEfficiencyModal() {
         selectedPlan,
         selectedPresetKey: savedSelection.selectedPresetKey || '',
         calcType: 'step',
-        sortType: 'efficiency',
+        sortType: 'latest',
         selectedRewards: [],
         selectedRewardCounters: [],
         rewardEnhanceMental: null,

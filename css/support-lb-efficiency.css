@@ -15,6 +15,22 @@
     filter: brightness(1.05);
 }
 
+.lb-efficiency-mobile-tooltip {
+    position: absolute;
+    z-index: 50000;
+    max-width: min(260px, calc(100vw - 20px));
+    padding: 8px 11px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #334155;
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1.45;
+    text-align: center;
+    box-sizing: border-box;
+}
+
 #support-lb-efficiency-modal .modal-content,
 #support-lb-efficiency-modal .support-lb-efficiency-content,
 .support-lb-efficiency-content {
@@ -411,6 +427,7 @@
 }
 
 .support-lb-result-meta {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -478,7 +495,7 @@
     gap: 2px;
     min-width: 0;
     flex: 0 1 auto;
-    max-width: 260px;
+    max-width: 540px;
 }
 
 .support-lb-result-slots {
@@ -566,6 +583,7 @@
 
 .support-lb-result-slot.filled {
     border-style: solid;
+    cursor: default;
 }
 
 .support-lb-result-slot img {
@@ -1104,6 +1122,56 @@
     background: #e2e8f0;
     color: #64748b;
 }
+
+.support-lb-info-btn {
+    position: absolute;
+    top: 13px;
+    left: 13px;
+    z-index: 3;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    transform: translate(-50%, -50%);
+}
+
+.support-lb-info-btn img {
+    width: 15px;
+    height: 15px;
+    opacity: 0.72;
+    display: block;
+    transform-origin: center;
+    transition: transform 0.15s ease;
+}
+
+.support-lb-info-btn:hover img {
+    transform: scale(1.12);
+}
+
+.support-lb-info-tooltip {
+    position: absolute;
+    z-index: 50000;
+    width: max-content;
+    max-width: min(405px, calc(100vw - 20px));
+    padding: 9px 12px;
+    border: 1.5px solid var(--support-lb-theme, #ff4d8d);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #334155;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.45;
+    pointer-events: auto;
+    box-sizing: border-box;
+}
+
 .support-lb-sort-select {
     height: 30px;
     min-width: 112px;
@@ -1235,6 +1303,10 @@
     background: linear-gradient(to right, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.44) 16%, rgba(0, 0, 0, 0) 30%);
     z-index: 1;
     pointer-events: none;
+}
+
+.support-lb-card-bg.is-disabled-card::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.44) 30%, rgba(0, 0, 0, 0.16) 62%, rgba(0, 0, 0, 0) 86%);
 }
 
 .support-lb-card-img {
