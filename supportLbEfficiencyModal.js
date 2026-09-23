@@ -817,7 +817,7 @@ function openSupportLbInfoTooltip(anchorEl) {
     const tooltip = document.createElement('div');
     tooltip.className = 'support-lb-info-tooltip';
     tooltip.textContent = getText(
-        '각 서포트 카드의 P아이템 및 이벤트 등은 프리셋의 스케줄을 기준으로 모두 최대치로 발동되어 계산되었으며, 추가로 P아이템 등을 추가해 타 서포트 카드와의 시너지도 확인할 수 있습니다.',
+        '각 서포트 카드의 P아이템 및 이벤트 등은 프리셋의 스케줄을 기준으로 최대치로 발동되어 계산되었으며, 추가로 P아이템 등을 추가해 타 서포트 카드와의 시너지도 확인할 수 있습니다.',
         '各サポートカードのPアイテムやイベントなどは、プリセットのスケジュールを基準にすべて最大値で発動したものとして計算されています。さらにPアイテムなどを追加して、他のサポートカードとのシナジーも確認できます。',
         'Each support card\'s P items, events, and related effects are calculated as if they triggered at their maximum values based on the preset schedule. You can also add P items to check synergy with other support cards.'
     );
