@@ -2942,7 +2942,7 @@
 
 .class-attr-badge {
     position: absolute;
-    right: -4px;
+    left: -4px;
     top: -4px;
     width: 24px;
     height: 24px;
@@ -2951,6 +2951,13 @@
     justify-content: center;
     z-index: 5;
     pointer-events: none;
+}
+
+.class-attr-badge.lesson-attr-badge {
+    left: auto;
+    right: -4px;
+    top: auto;
+    bottom: -4px;
 }
 
 @media (max-width: 480px) {
@@ -3039,8 +3046,15 @@
     .class-attr-badge {
         width: 19px;
         height: 19px;
-        right: -2px;
+        left: -2px;
         top: -2px;
+    }
+
+    .class-attr-badge.lesson-attr-badge {
+        left: auto;
+        right: -2px;
+        top: auto;
+        bottom: -2px;
     }
 
     .class-attr-badge img {

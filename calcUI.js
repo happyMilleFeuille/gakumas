@@ -1101,8 +1101,9 @@ export function updateMainLabel(w) {
     const attrBadge = savedOpts?.selectedAttr || savedOpts?.selectedSubAttr;
     if (attrBadge) {
         const attrColors = { vocal: '#ff4d8d', dance: '#46a4f3', visual: '#fcc75e' };
+        const isLessonBadge = ['lessonvo', 'lessondan', 'lessonvi'].includes(w.dataset.value);
         const b = document.createElement('div');
-        b.className = 'class-attr-badge';
+        b.className = `class-attr-badge${isLessonBadge ? ' lesson-attr-badge' : ''}`;
         b.style.setProperty('--attr-badge-color', attrColors[attrBadge] || '#94a3b8');
         b.innerHTML = `<img src="icons/${attrBadge}.webp" alt="${attrBadge}">`;
         w.appendChild(b);
