@@ -1,6 +1,6 @@
 // main.js
 import './storage-override.js';
-import { state, setLanguage } from './state.js';
+import { state, setLanguage, setSupportLB } from './state.js';
 import { updatePageTranslations, initMobileHeightFix, translate } from './utils.js';
 import { handleNavigation } from './router.js';
 import { renderSupport, updateGlobalBackgroundColor, preloadCalcImages } from './ui.js';
@@ -444,6 +444,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // [추가] 모달이 닫힐 때 활성화된 모든 서포트 아이템 툴팁 제거
             document.querySelectorAll('.support-item-tooltip').forEach(el => el.remove());
+            document.querySelectorAll('.lb-restore-notice').forEach(el => el.remove());
+            clearTimeout(window._modalRestoreNoticeTimer);
+
+            if (window._modalRestoreLBOnClose && window._modalCardId) {
+                setSupportLB(window._modalCardId, window._modalInitialLB || 0);
+            }
 
             // [수정] 모달이 닫힐 때 계산기가 활성화된 상태라면 무조건 갱신
             if (document.querySelector('.stat-header') || window._modalCardId) {
@@ -454,6 +460,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // 상태 및 이미지 초기화
             window._modalCardId = null;
             window._modalInitialLB = null;
+            window._modalRestoreLBOnClose = false;
+            window._modalRestoreNoticeTimer = null;
 
             const mImg = document.getElementById('modal-img');
             const mRarity = document.getElementById('modal-rarity');
@@ -562,6 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const supportPresetSaveModal = document.getElementById('support-preset-save-modal');
         const slotShareModal = document.getElementById('slot-share-modal');
         const hifEvalModal = document.getElementById('hif-eval-modal');
+        const supportLbEfficiencyModal = document.getElementById('support-lb-efficiency-modal');
         const isVideoModalOpen = window.__videoModalOpen ||
             window.__videoModalPendingClose ||
             document.body.classList.contains('video-modal-open') ||
@@ -587,6 +596,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pssrInfoModal && pssrInfoModal.style.display !== 'none' && !pssrInfoModal.classList.contains('hidden')) {
             if (typeof window.closeProduceCardInfoModal === 'function') window.closeProduceCardInfoModal(true);
             else pssrInfoModal.remove();
+            return;
+        }
+
+        // 상세 모달이 다른 모달 위에 열린 경우, 상세 모달을 먼저 닫음
+        if (cardModal && (cardModal.style.display === 'flex' || !cardModal.classList.contains('hidden'))) {
+            hideModal();
+            return;
+        }
+
+        if (supportLbEfficiencyModal && supportLbEfficiencyModal.style.display !== 'none' && !supportLbEfficiencyModal.classList.contains('hidden')) {
+            if (typeof window.closeSupportLbEfficiencyModal === 'function') window.closeSupportLbEfficiencyModal(true);
+            else supportLbEfficiencyModal.remove();
             return;
         }
 
@@ -692,13 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 1. 최상위 상세 모달이 열려있으면 얘부터 닫기 (최우선순위)
-        if (cardModal && (cardModal.style.display === 'flex' || !cardModal.classList.contains('hidden'))) {
-            hideModal();
-            return;
-        }
-
-        // 2. 모든 종류의 모달 및 툴팁 자동 감지 및 닫기
+        // 모든 종류의 모달 및 툴팁 자동 감지 및 닫기
         const allPossibleModals = document.querySelectorAll('.modal, .calc-tooltip, .modal-content, .confirm-modal-content, .side-panel, #calc-side-panel');
         let overlayClosed = false;
 

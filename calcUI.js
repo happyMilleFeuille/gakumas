@@ -1014,8 +1014,10 @@ export function renderWeeklyPlan(store, calcPlans, idolList, handlers) {
 export function updateSPBadge(w, currentIdolId) {
     w.querySelector('.sp-badge')?.remove();
     if (w.dataset.optsp === 'true') {
-        const b = document.createElement('div'); b.className = 'sp-badge'; b.textContent = 'SP';
-        b.style.backgroundColor = getIdolDisplayColor(currentIdolId || 'saki');
+        const b = document.createElement('img');
+        b.className = 'sp-badge';
+        b.src = 'icons/sp_icon.webp';
+        b.alt = 'SP';
         w.appendChild(b);
     }
 }
@@ -1098,8 +1100,10 @@ export function updateMainLabel(w) {
     // 속성 아이콘 추가 (수업 메인 속성 / HIF 레슨 보조 속성)
     const attrBadge = savedOpts?.selectedAttr || savedOpts?.selectedSubAttr;
     if (attrBadge) {
+        const attrColors = { vocal: '#ff4d8d', dance: '#46a4f3', visual: '#fcc75e' };
         const b = document.createElement('div');
         b.className = 'class-attr-badge';
+        b.style.setProperty('--attr-badge-color', attrColors[attrBadge] || '#94a3b8');
         b.innerHTML = `<img src="icons/${attrBadge}.webp" alt="${attrBadge}">`;
         w.appendChild(b);
     }

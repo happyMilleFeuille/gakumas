@@ -4,6 +4,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
@@ -18,6 +19,7 @@
     width: 90%;
     max-width: 600px;
     max-height: 85vh;
+    max-height: 85dvh;
     overflow: hidden;
     padding: 0;
     position: relative;
@@ -26,6 +28,7 @@
 
 .pssr-info-modal-scroll-wrapper {
     max-height: calc(85vh - 48px);
+    max-height: calc(85dvh - 48px);
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0 24px;
@@ -471,6 +474,7 @@
     
     .pssr-info-modal-scroll-wrapper {
         max-height: calc(85vh - 32px);
+        max-height: calc(85dvh - 32px);
         margin: 16px 0;
         padding: 0 16px;
     }

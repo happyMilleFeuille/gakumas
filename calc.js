@@ -159,8 +159,6 @@ function applyCalcThemeColor(color) {
             w.style.borderColor = color;
             w.style.boxShadow = 'none';
         }
-        const badge = w.querySelector('.sp-badge');
-        if (badge) badge.style.backgroundColor = color;
     });
 
     document.querySelectorAll('.info-i-btn').forEach(iBtn => {
@@ -1895,9 +1893,6 @@ function renderCalcPresetSlots(container) {
                             <button class="slot-btn slot-load" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_load')}">
                                 <img src="icons/upload.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
                             </button>
-                            <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
-                                <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
-                            </button>
                             <button class="slot-btn slot-delete" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="${t('calc_label_delete')}">
                                 <img src="icons/trash.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
                             </button>
@@ -1914,9 +1909,6 @@ function renderCalcPresetSlots(container) {
                 <div style="display: flex; gap: ${btnGap}; flex-shrink: 0;">
                     <button class="slot-btn slot-save" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_save')}">
                         <img src="icons/save.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
-                    </button>
-                    <button class="slot-btn slot-share" data-slot="${i}" style="width: ${btnSize}; height: ${btnSize}; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="${t('ui_slot_share')}">
-                        <img src="icons/cloud.svg" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
                     </button>
                 </div>
             </div>
@@ -2093,6 +2085,89 @@ function showSavePresetModal(slotId, container) {
     };
 }
 
+function showCalcConfirmModal(message) {
+    return new Promise(resolve => {
+        const idol = calcStore.selectedIdol || 'saki';
+        const idolColor = getIdolDisplayColor(idol);
+        const isJa = state.currentLang === 'ja';
+        const isEn = state.currentLang === 'en';
+        const titleText = isJa ? '確認' : isEn ? 'Confirm' : '확인';
+        const cancelText = t('ui_cancel');
+        const confirmText = t('ui_confirm');
+
+        const backdrop = document.createElement('div');
+        backdrop.id = 'calc-confirm-modal';
+        backdrop.className = 'modal';
+        backdrop.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30000;
+        `;
+
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            background: white;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            box-sizing: border-box;
+            border: 2px solid ${idolColor};
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        `;
+
+        dialog.innerHTML = `
+            <div style="font-size: 1rem; font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; user-select: none;">
+                <div style="width: 4px; height: 16px; background-color: ${idolColor}; border-radius: 2px;"></div>
+                <span>${titleText}</span>
+            </div>
+            <div style="font-size: 0.85rem; color: #555; font-weight: 600; line-height: 1.55; word-break: keep-all; white-space: pre-line;">${message}</div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px;">
+                <button class="modal-cancel-btn" style="padding: 6px 14px; background: #f5f5f5; color: #555; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit;">${cancelText}</button>
+                <button class="modal-confirm-btn" style="padding: 6px 16px; background: ${idolColor}; color: white; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; box-shadow: 0 2px 4px ${idolColor}33;">${confirmText}</button>
+            </div>
+        `;
+
+        backdrop.appendChild(dialog);
+        document.body.appendChild(backdrop);
+        history.pushState({ modalOpen: 'calcConfirm' }, "");
+
+        let settled = false;
+        const finish = (value) => {
+            if (settled) return;
+            settled = true;
+            window.removeEventListener('popstate', onPopState);
+            backdrop.remove();
+            resolve(value);
+        };
+        const closeWithHistory = (value) => {
+            if (settled) return;
+            backdrop.dataset.resolveValue = value ? 'true' : 'false';
+            history.back();
+        };
+        const onPopState = () => finish(backdrop.dataset.resolveValue === 'true');
+        window.addEventListener('popstate', onPopState);
+
+        let isMouseDownOnBackdrop = false;
+        backdrop.onmousedown = (e) => { isMouseDownOnBackdrop = (e.target === backdrop); };
+        backdrop.onclick = (e) => {
+            if (e.target === backdrop && isMouseDownOnBackdrop) closeWithHistory(false);
+        };
+        dialog.querySelector('.modal-cancel-btn').onclick = () => closeWithHistory(false);
+        dialog.querySelector('.modal-confirm-btn').onclick = () => closeWithHistory(true);
+    });
+}
+
 function saveCalcPreset(slotId, customName, container) {
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
@@ -2141,7 +2216,7 @@ function saveCalcPreset(slotId, customName, container) {
 async function loadCalcPreset(slotId) {
     const isGuide = slotId === 'guide' || slotId === 'guide2';
     const confirmSlotName = isGuide ? (state.currentLang === 'ko' ? '가이드' : 'Guide') : slotId;
-    if (!confirm(t('calc_preset_load_confirm', { slotId: confirmSlotName }))) return;
+    if (!await showCalcConfirmModal(t('calc_preset_load_confirm', { slotId: confirmSlotName }))) return;
     const mode = calcStore.type;
     const idol = calcStore.selectedIdol || 'saki';
 

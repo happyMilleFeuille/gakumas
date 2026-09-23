@@ -64,14 +64,44 @@ const getSupportGachaInfo = (cardId) => {
     return { name: names.find(Boolean) || '', chars };
 };
 
+const getLbRestoreNoticeText = () => {
+    if (state.currentLang === 'ja') return '開花効率の確認中は変更が保存されません。';
+    if (state.currentLang === 'en') return 'LB changes are not saved while checking efficiency.';
+    return '돌파 효율 확인 중에는 변경이 저장되지 않습니다.';
+};
+
+const showLbRestoreNotice = () => {
+    const starRating = document.getElementById('modal-limit-break');
+    if (!starRating) return;
+
+    let notice = starRating.querySelector('.lb-restore-notice');
+    if (!notice) {
+        notice = document.createElement('div');
+        notice.className = 'lb-restore-notice';
+        starRating.appendChild(notice);
+    }
+
+    notice.textContent = getLbRestoreNoticeText();
+    notice.classList.add('visible');
+    clearTimeout(window._modalRestoreNoticeTimer);
+    window._modalRestoreNoticeTimer = setTimeout(() => {
+        notice?.classList.remove('visible');
+    }, 2200);
+};
+
 // 모달 표시 함수
 export function showCardModal(card, displayName, imgSrc) {
     const modal = document.getElementById('card-modal');
     if (!modal) return;
+    const supportLbEfficiencyModal = document.getElementById('support-lb-efficiency-modal');
+    const shouldRestoreLBOnClose = !!(supportLbEfficiencyModal &&
+        supportLbEfficiencyModal.style.display !== 'none' &&
+        !supportLbEfficiencyModal.classList.contains('hidden'));
 
     // 초기 상태 저장 (닫을 때 변화 감지용)
     window._modalCardId = card.id;
     window._modalInitialLB = state.supportLB[card.id] || 0;
+    window._modalRestoreLBOnClose = shouldRestoreLBOnClose;
 
     const mImg = document.getElementById('modal-img');
     const mTitle = document.getElementById('modal-title');
@@ -86,6 +116,8 @@ export function showCardModal(card, displayName, imgSrc) {
     const mExtra2 = document.getElementById('modal-extra-2');
     const mAbilities = document.getElementById('modal-abilities');
     const stars = document.querySelectorAll('.star');
+    const starRating = document.getElementById('modal-limit-break');
+    starRating?.classList.remove('locked');
 
     const thumbSrc = card.image || `images/support/thumb/${card.id}.webp`;
     
@@ -416,6 +448,7 @@ export function showCardModal(card, displayName, imgSrc) {
             const newLB = (idx + 1 === currentLB) ? 0 : idx + 1;
             currentLB = newLB;
             setSupportLB(card.id, currentLB);
+            if (window._modalRestoreLBOnClose) showLbRestoreNotice();
             updateStars(currentLB);
             if (typeof window.refreshCardBonuses === 'function') window.refreshCardBonuses();
             if (typeof window.updateActivityCounts === 'function') window.updateActivityCounts();

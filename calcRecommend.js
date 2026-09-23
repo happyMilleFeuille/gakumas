@@ -97,6 +97,10 @@ export async function getRecommendedCards(store, targetAttr = 'all', spSettings 
         });
         return itemCounters;
     };
+    const hasDuplicateCards = (cards) => {
+        const ids = (cards || []).filter(Boolean);
+        return new Set(ids).size !== ids.length;
+    };
     const buildRecommendationStore = (cards) => ({
         ...store,
         planCards: { ...store.planCards, [planType]: cards },
@@ -139,14 +143,14 @@ export async function getRecommendedCards(store, targetAttr = 'all', spSettings 
         if (!currentEval) return true;
         if (nextEval.finalScore !== currentEval.finalScore) return nextEval.finalScore > currentEval.finalScore;
         if (nextEval.bufferAmount !== currentEval.bufferAmount) return nextEval.bufferAmount > currentEval.bufferAmount;
-        if (nextEval.overflowAmount !== currentEval.overflowAmount) return nextEval.overflowAmount > currentEval.overflowAmount;
+        if (nextEval.overflowAmount !== currentEval.overflowAmount) return nextEval.overflowAmount < currentEval.overflowAmount;
         return nextEval.baseScore > currentEval.baseScore;
     };
     // 고정 카드 세트
     const lockedSet = new Set(lockedCards);
 
     const normalizeCardsForRentalSlot = (cards) => {
-        if (!cards || cards.length !== 6 || cards.some(id => !id)) {
+        if (!cards || cards.length !== 6 || cards.some(id => !id) || hasDuplicateCards(cards)) {
             return { cards, evaluation: buildInvalidEvaluation() };
         }
 
@@ -210,7 +214,7 @@ export async function getRecommendedCards(store, targetAttr = 'all', spSettings 
 
     // 평가 함수 (7:3 강화 배분 기대값 반영)
     const evaluate = (cards) => {
-        if (!cards || cards.length < 6 || cards.some(id => !id)) return buildInvalidEvaluation();
+        if (!cards || cards.length < 6 || cards.some(id => !id) || hasDuplicateCards(cards)) return buildInvalidEvaluation();
         const cacheKey = seedKey(cards);
         if (evaluationCache.has(cacheKey)) return evaluationCache.get(cacheKey);
 
@@ -317,7 +321,7 @@ export async function getRecommendedCards(store, targetAttr = 'all', spSettings 
     const seeds = [];
     const seenSeeds = new Set();
     const addSeed = (seed) => {
-        if (!seed || seed.length !== 6 || seed.some(id => !id)) return;
+        if (!seed || seed.length !== 6 || seed.some(id => !id) || hasDuplicateCards(seed)) return;
         const key = seedKey(seed);
         if (seenSeeds.has(key)) return;
         seenSeeds.add(key);
@@ -476,8 +480,9 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
  */
 export function applyRecommendedCards(store, recommended, bestEnhance = null) {
     if (!recommended || recommended.length !== 6) return false;
+    if (new Set(recommended.filter(Boolean)).size !== recommended.filter(Boolean).length) return false;
 
-    const planType = store.planType;
+    const planType = store.planType || 'sense';
     store.planCards[planType] = [...recommended];
 
     // 강화 설정 최적화 반영

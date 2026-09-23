@@ -390,10 +390,11 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                 return;
             }
             if (item) {
-                const cardId = item.dataset.id, isSelected = item.classList.contains('selected');
+                const cardId = item.dataset.id;
                 const plan = calcStore.planType;
                 let currentPlanCards = calcStore.planCards[plan] || [];
                 while (currentPlanCards.length < 6) currentPlanCards.push(null);
+                const isSelected = currentPlanCards.includes(cardId);
                 const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
 
                 if (isSelected) {
@@ -467,11 +468,14 @@ export function toggleSupportCardPanel(selectedPlan, refreshAll) {
                     const id = el.dataset.id;
                     const isSixth = updatedPlanCards.indexOf(id) === 5;
                     if (updatedPlanCards.includes(id)) {
+                        el.classList.add('selected');
                         el.style.borderColor = isSixth ? '#8FDDBA' : idolColor;
                         el.style.borderWidth = '2px';
                     } else {
+                        el.classList.remove('selected');
                         el.style.borderColor = '#ddd';
                         el.style.borderWidth = '';
+                        delete el.dataset.selectTime;
                     }
                     // Update star display for 6th slot mode
                     const isSelectedCard = updatedPlanCards.includes(id);

@@ -751,26 +751,28 @@ function openSlotModal() {
         let slotsHtml = '';
         for (let i = 1; i <= 5; i++) {
             const data = getSlotData(i);
+            if (i > 3 && !data) continue;
             const timeInfo = data ? data.timestamp : null;
             const customName = data && data.customName ? data.customName : `Slot ${i}`;
 
             slotsHtml += `
                 <div class="slot-modal-item" style="position: relative; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
-                    <button class="slot-btn delete" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="position: absolute; top: 7px; right: 9px; background: transparent; color: #b0b0b0; border: none; width: auto; height: auto; padding: 0; border-radius: 0; display: block; font-size: 0.95rem; line-height: 1; cursor: pointer;">&times;</button>
                     <div class="slot-modal-info" style="display: flex; flex-direction: column; gap: 4px; text-align: left; flex: 1; min-width: 0;">
                         <span class="slot-modal-name" style="font-weight: bold; font-size: 1rem; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 15px;">${customName}</span>
                         <span class="slot-modal-date" style="font-size: 0.75rem; color: #888;">${timeInfo || t('ui_slot_empty')}</span>
                     </div>
-                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: ${actionGap}; padding-top: 10px; padding-right: 2px;">
+                    <div class="slot-modal-actions" style="display: flex; align-items: center; gap: ${actionGap}; padding-right: 2px;">
                         <button class="slot-btn save" data-slot="${i}" style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #ffe4ef; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/save.svg" alt="${t('ui_slot_save')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(305deg) brightness(88%) contrast(92%);">
                         </button>
                         <button class="slot-btn load" data-slot="${i}" ${!timeInfo ? 'style="display:none;"' : ''} style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #e3f2fd; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <img src="icons/upload.svg" alt="${t('ui_slot_load')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(94%) saturate(1478%) hue-rotate(189deg) brightness(91%) contrast(92%);">
                         </button>
-                        <button class="slot-btn share" data-slot="${i}" style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #fff1cc; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                            <img src="icons/cloud.svg" alt="${t('ui_slot_share')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(47%) sepia(97%) saturate(452%) hue-rotate(5deg) brightness(91%) contrast(105%);">
+                        ${timeInfo ? `
+                        <button class="slot-btn delete" data-slot="${i}" style="width: ${btnWidth}; height: ${btnHeight}; flex: none; padding: 0; background: #ffebee; border: none; border-radius: ${btnRadius}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <img src="icons/trash.svg" alt="${t('calc_label_delete')}" style="width: ${btnIconSize}; height: ${btnIconSize}; filter: invert(36%) sepia(84%) saturate(884%) hue-rotate(336deg) brightness(88%) contrast(92%);">
                         </button>
+                        ` : ''}
                     </div>
                 </div>`;
         }
@@ -976,15 +978,6 @@ function adjustDateFilterPosition(container) {
 }
 
 function setupStaticListeners(container) {
-    const topRightBtn = container.querySelector('#btn-support-top-right');
-    if (topRightBtn) {
-        topRightBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const { openSupportMenuModal } = await import('./possessionModal.js');
-            openSupportMenuModal();
-        });
-    }
-
     const filterGroups = ['plan', 'attr', 'source', 'rarity'];
     filterGroups.forEach(type => {
         const group = container.querySelector(`#filter-${type}`);
@@ -1281,6 +1274,14 @@ function setupStaticListeners(container) {
         });
     }
 
+    const lbEfficiencyBtn = container.querySelector('#btn-lb-efficiency');
+    if (lbEfficiencyBtn) {
+        lbEfficiencyBtn.addEventListener('click', async () => {
+            const { openSupportLbEfficiencyModal } = await import('./supportLbEfficiencyModal.js');
+            openSupportLbEfficiencyModal();
+        });
+    }
+
     const grid = container.querySelector('.support-grid');
     let longPressTimer;
     let isLongPress = false;
@@ -1520,14 +1521,27 @@ function updateSupportGrid(container) {
     filteredList.sort((a, b) => {
         const aDisabled = !!state.disabledCards[a.id];
         const bDisabled = !!state.disabledCards[b.id];
-        if (aDisabled !== bDisabled) return aDisabled ? 1 : -1;
+        if (state.sortBy === 'disabled') {
+            if (aDisabled !== bDisabled) return aDisabled ? -1 : 1;
 
-        const isAsc = (state.sortOrder === 'asc');
-
-        if (state.sortBy === 'id') {
             const dateA = a.releasedAt || "0000.00.00";
             const dateB = b.releasedAt || "0000.00.00";
-            if (dateA !== dateB) return isAsc ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
+            if (dateA !== dateB) return dateB.localeCompare(dateA);
+
+            const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
+            const rA = rarityOrder[a.rarity] || 0;
+            const rB = rarityOrder[b.rarity] || 0;
+            if (rA !== rB) return rB - rA;
+
+            return getNumericId(b.id) - getNumericId(a.id);
+        }
+        if (aDisabled !== bDisabled) return aDisabled ? 1 : -1;
+
+        if (state.sortBy === 'id' || state.sortBy === 'oldest') {
+            const isOldest = state.sortBy === 'oldest';
+            const dateA = a.releasedAt || "0000.00.00";
+            const dateB = b.releasedAt || "0000.00.00";
+            if (dateA !== dateB) return isOldest ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
 
             const rarityOrder = { 'SSR': 3, 'SR': 2, 'R': 1 };
             const rA = rarityOrder[a.rarity] || 0;
@@ -1536,16 +1550,17 @@ function updateSupportGrid(container) {
 
             const idA = getNumericId(a.id);
             const idB = getNumericId(b.id);
-            return isAsc ? (idA - idB) : (idB - idA);
-        } else if (state.sortBy === 'lb') {
+            return isOldest ? (idA - idB) : (idB - idA);
+        } else if (state.sortBy === 'lb' || state.sortBy === 'lb_low') {
+            const isLowLb = state.sortBy === 'lb_low';
             const lbA = state.supportLB[a.id] || 0;
             const lbB = state.supportLB[b.id] || 0;
-            if (lbA !== lbB) return isAsc ? (lbA - lbB) : (lbB - lbA);
+            if (lbA !== lbB) return isLowLb ? (lbA - lbB) : (lbB - lbA);
             return getNumericId(b.id) - getNumericId(a.id);
         } else if (state.sortBy === 'name') {
             const nameA = getLocalizedCardName(a);
             const nameB = getLocalizedCardName(b);
-            return isAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+            return nameA.localeCompare(nameB);
         }
         return 0;
     });
