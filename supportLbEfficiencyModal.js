@@ -890,6 +890,10 @@ function openSupportRewardPicker(slotEl, slotIndex, modalState, rows, rerender) 
         .filter(card => card?.have)
         .filter(card => getSupportRewardKind(card) === 'item' || getSupportRewardKind(card) === 'card')
         .sort((a, b) => {
+            const rarityOrder = { SSR: 0, SR: 1, R: 2 };
+            const rarityA = rarityOrder[a.rarity] ?? 9;
+            const rarityB = rarityOrder[b.rarity] ?? 9;
+            if (rarityA !== rarityB) return rarityA - rarityB;
             const dateA = a.releasedAt || '0000-00-00';
             const dateB = b.releasedAt || '0000-00-00';
             if (dateA !== dateB) return dateB.localeCompare(dateA);
