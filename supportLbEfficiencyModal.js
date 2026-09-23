@@ -1446,8 +1446,9 @@ function renderResultRow(row, globalMax, globalMaxGain, isStep = true) {
         const barHeight = Math.max(val > 0 ? 3 : 0, pctNum).toFixed(1);
 
         // 구간별: 현재돌파와 현재돌파+1 진한색 / 누적: 현재돌파 이상 전부 진한색
+        // 비활성 카드는 구간별 강조 없이, 누적에서만 전체 강조
         const isHighlighted = isDisabledCard
-            ? (isStep ? i === 0 : true)
+            ? !isStep
             : (isStep ? (i === displayCurrentLb || i === Math.min(4, displayCurrentLb + 1)) : i >= displayCurrentLb);
         const barBgColor = isHighlighted ? attrColor : `color-mix(in srgb, ${attrColor} 34%, #ffffff)`;
         const dotColor = lineColor;
