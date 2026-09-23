@@ -816,10 +816,10 @@ function openSupportLbInfoTooltip(anchorEl) {
 
     const tooltip = document.createElement('div');
     tooltip.className = 'support-lb-info-tooltip';
-    tooltip.textContent = getText(
-        '각 서포트 카드의 P아이템 및 이벤트 등은 프리셋의 스케줄을 기준으로 최대치로 발동되어 계산되었으며, 추가로 P아이템 등을 추가해 타 서포트 카드와의 시너지도 확인할 수 있습니다.',
-        '各サポートカードのPアイテムやイベントなどは、プリセットのスケジュールを基準にすべて最大値で発動したものとして計算されています。さらにPアイテムなどを追加して、他のサポートカードとのシナジーも確認できます。',
-        'Each support card\'s P items, events, and related effects are calculated as if they triggered at their maximum values based on the preset schedule. You can also add P items to check synergy with other support cards.'
+    tooltip.innerHTML = getText(
+        '각 서포트 카드의 P아이템 및 이벤트 등은 프리셋의 스케줄을 기준으로 최대치로 발동되어 계산되었으며, 추가로 P아이템 등을 추가해 타 서포트 카드와의 시너지도 확인할 수 있습니다. <br><span class="support-lb-info-note">※ P아이템의 직접적인 스텟 상승 옵션은 이미 기계산되어 있기에 무시됩니다.</span>',
+        '各サポートカードのPアイテムやイベントなどは、プリセットのスケジュールを基準に最大値で発動したものとして計算されています。さらにPアイテムなどを追加して、他のサポートカードとのシナジーも確認できます。<br><span class="support-lb-info-note">※ Pアイテムの直接的なパラメータ上昇効果はすでに計算済みのため無視されます。</span>',
+        'Each support card\'s P items, events, and related effects are calculated as if they triggered at their maximum values based on the preset schedule. You can also add P items to check synergy with other support cards.<br><span class="support-lb-info-note">* Direct stat increases from P items are ignored because they are already pre-calculated.</span>'
     );
     const themeHost = anchorEl.closest('.support-lb-efficiency-content');
     tooltip.style.setProperty('--support-lb-theme', themeHost ? getComputedStyle(themeHost).getPropertyValue('--support-lb-theme').trim() : getThemeColor());

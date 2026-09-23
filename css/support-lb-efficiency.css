@@ -1159,7 +1159,7 @@
     position: absolute;
     z-index: 50000;
     width: max-content;
-    max-width: min(405px, calc(100vw - 20px));
+    max-width: min(450px, calc(100vw - 20px));
     padding: 9px 12px;
     border: 1.5px solid var(--support-lb-theme, #ff4d8d);
     border-radius: 8px;
@@ -1170,6 +1170,11 @@
     line-height: 1.45;
     pointer-events: auto;
     box-sizing: border-box;
+}
+
+.support-lb-info-note {
+    font-size: 0.68rem;
+    color: #64748b;
 }
 
 .support-lb-sort-select {
