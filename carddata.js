@@ -2065,7 +2065,7 @@ export const cardList = [
             ]
     },
     {
-        id: "visual_limitedsense2",
+        id: "visual_limitedsense2", // 실수한거
         name: "항상 힘내고 있구나.",
         name_ja: "いつも頑張ってるね。",
         type: "visual",
@@ -2086,6 +2086,28 @@ export const cardList = [
                 "supportrateup",
                 "sp_param",
                 "get_drink",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_limitedsense3",
+        name: "소악마가 되어버려♪",
+        name_ja: "小悪魔になっちゃえ♪",
+        type: "visual",
+        plan: "sense",
+        have: "card_m",
+        attrs: ["goodcondition"],
+        source: "limited",
+        releasedAt: "2026-09-30",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
@@ -3547,6 +3569,28 @@ export const cardList = [
                 "supportrateup",
                 "get_item6",
                 "change3",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "dance_srlimitedsense5",
+        name: "겨울의 공주님과 왕자님",
+        name_ja: "冬のお姫様と王子様",
+        type: "dance",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["enhance"], triggertext: "dance700", stats: { dance: 20 }, targettext: ["ppoint10"], max: 3 }],
+        releasedAt: "2026-09-30",
+        source: "limited",
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
