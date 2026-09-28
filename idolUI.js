@@ -75,6 +75,27 @@ function setPSSRImage(img, src, defer) {
     img.src = src;
 }
 
+function getAnotherOrder(cardId) {
+    const match = cardId.match(/_1st(\d+)another$/);
+    return match ? Number(match[1]) : null;
+}
+
+function updateAnotherOrderBadge(badge, anothers, currentIndex) {
+    if (!badge) return;
+
+    const anotherIndex = currentIndex - 2;
+    const anotherCard = anothers[anotherIndex];
+
+    if (!anotherCard) {
+        badge.textContent = '';
+        badge.style.display = 'none';
+        return;
+    }
+
+    badge.textContent = `${anotherIndex + 1}/${anothers.length}`;
+    badge.style.display = 'inline-flex';
+}
+
 function updateActiveFilterColorCSS() {
     const getActiveFilterColor = () => {
         if (currentSelectedIdol && currentSelectedIdol !== 'all') {
@@ -635,7 +656,9 @@ export function renderProduceCards(idolName, container) {
         ];
         const videoIdList = [card.id, card.id];
 
-        const anothers = produceList.filter(p => p.another === true && p.id.startsWith(card.id));
+        const anothers = produceList
+            .filter(p => p.another === true && p.id.startsWith(card.id))
+            .sort((a, b) => (getAnotherOrder(a.id) || 0) - (getAnotherOrder(b.id) || 0));
         anothers.forEach(a => {
             imageList.push(`${imageFolder}/${a.id}1.webp`);
             videoIdList.push(a.id);
@@ -645,6 +668,9 @@ export function renderProduceCards(idolName, container) {
         if (currentIndex >= imageList.length) currentIndex = 0;
 
         setPSSRImage(img, imageList[currentIndex], isAll);
+        const anotherOrderBadge = item.querySelector('.pssr-another-order-badge');
+        if (anotherOrderBadge) anotherOrderBadge.style.setProperty('--pssr-another-badge-color', personalColor);
+        updateAnotherOrderBadge(anotherOrderBadge, anothers, currentIndex);
 
         const infoBtn = item.querySelector('.pssr-info-btn');
         if (infoBtn) {
@@ -690,6 +716,7 @@ export function renderProduceCards(idolName, container) {
                 setTimeout(() => {
                     currentIndex = nextIndex;
                     setPSSRIndex(card.id, currentIndex);
+                    updateAnotherOrderBadge(anotherOrderBadge, anothers, currentIndex);
                     if (typeof updateGachaVideo === 'function') updateGachaVideo(currentIndex);
 
                     img.style.transition = 'none';
@@ -721,6 +748,7 @@ export function renderProduceCards(idolName, container) {
                 retryCount++;
                 currentIndex = (currentIndex + 1) % imageList.length;
                 setPSSRImage(img, imageList[currentIndex], isAll);
+                updateAnotherOrderBadge(anotherOrderBadge, anothers, currentIndex);
             }
         };
 

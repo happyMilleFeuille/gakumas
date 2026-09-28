@@ -272,6 +272,28 @@
     height: 20px;
 }
 
+.pssr-another-order-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 10;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 22px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: var(--pssr-another-badge-color, #ff4d8d);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
 /* 슬라이드 아웃 (왼쪽으로 사라짐) */
 .pssr-img.slide-out {
     transform: translateX(-100%);
@@ -405,6 +427,15 @@
     .pssr-info-btn svg {
         width: 15.5px;
         height: 15.5px;
+    }
+
+    .pssr-another-order-badge {
+        top: 4px;
+        right: 4px;
+        min-width: 34px;
+        height: 17px;
+        padding: 0 5px;
+        font-size: 0.58rem;
     }
 
     .pssr-card {
@@ -1039,4 +1070,4 @@
         padding: 0 3px !important;
     }
 }
-
+

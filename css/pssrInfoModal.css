@@ -785,11 +785,16 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding: 24px 12px;
+    box-sizing: border-box;
+    overflow-y: auto;
     z-index: 100000;
+    -webkit-overflow-scrolling: touch;
 }
 
 .verygood-download-content {
@@ -798,7 +803,8 @@
     border: 3px solid var(--personal-color, #ff4d8d);
     width: 90%;
     max-width: 500px;
-    max-height: 85dvh;
+    max-height: calc(100dvh - 48px);
+    margin: auto 0;
     padding: 24px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -807,6 +813,8 @@
     align-items: center;
     gap: 20px;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
 }
 
@@ -883,11 +891,15 @@
 }
 
 @media (max-width: 768px) {
+    .verygood-download-modal {
+        padding: 12px 8px;
+    }
+
     .verygood-download-content {
         padding: 16px;
         border-radius: 16px;
         max-width: 95%;
-        max-height: 88dvh;
+        max-height: calc(100dvh - 24px);
         gap: 14px;
     }
     
