@@ -798,6 +798,7 @@
     border: 3px solid var(--personal-color, #ff4d8d);
     width: 90%;
     max-width: 500px;
+    max-height: 85dvh;
     padding: 24px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -805,6 +806,8 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .verygood-download-close-btn {
@@ -884,6 +887,7 @@
         padding: 16px;
         border-radius: 16px;
         max-width: 95%;
+        max-height: 88dvh;
         gap: 14px;
     }
     
