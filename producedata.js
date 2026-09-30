@@ -2822,8 +2822,8 @@ export const produceList = [
         id: "ssrume_halloween2dist", name: "Agitato", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "dist", category: "gravia", jumpTime2: 9.5, releasedAt: "2026-09-30", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
         item: {
             name: "小悪魔の色気",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "턴 개시 시 지침이 전력일 경우 \n✦ genki7\n✦ fullpower1\n✦ inlesson2",
+            desc_ja: "ターン開始時、全力の場合、\n✦ genki7\n✦ fullpower1\n✦ inlesson2",
         },
         itemplus: {
             desc: "턴 개시 시 지침이 전력일 경우 \n✦ genki7\n✦ fullpower2\n✦ inlesson2",
@@ -2831,8 +2831,8 @@ export const produceList = [
         },
         card: {
             name: "悪戯ハートジャック",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "✦ param4 (2회)\n✦ 성장 : 전력 효과의 스킬카드를 2회 사용할 때마다 자신의 파라미터 값 증가+8 (3회까지)\n <span style = 'color:#8B8FD8'> nooverlab limit1",
+            desc_ja: "✦ param4（2回）\n✦ 成長：全力効果のスキルカードを2回使用するごとに、自身のパラメータ値増加+8（3回まで）\n <span style = 'color:#8B8FD8'> nooverlab limit1",
         },
         cardplus: {
             desc: "✦ param4 (2회)\n✦ 성장 : 전력 효과의 스킬카드를 2회 사용할 때마다 자신의 파라미터 값 증가+15 (3회까지)\n <span style = 'color:#8B8FD8'> nooverlab limit1",
@@ -2843,8 +2843,8 @@ export const produceList = [
         id: "ssrlilja_halloween2limited", name: "Agitato", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 9.5, releasedAt: "2026-09-30", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
         item: {
             name: "天性の才能",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "스킬카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ 호조의 30%만큼 파라미터 상승",
+            desc_ja: "スキルカード使用後、手札の眠気が1枚以上の場合、\n✦ 好調の30%分パラメータ上昇",
         },
         itemplus: {
             desc: "스킬카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ genki1\n✦ 호조의 50%만큼 파라미터 상승",
@@ -2852,8 +2852,8 @@ export const produceList = [
         },
         card: {
             name: "無自覚チャーム",
-            desc: "미확인",
-            desc_ja: "美確認",
+            desc: "호조가 8턴 이상일 경우 사용 가능\n✦ goodcondition10\n✦ 졸음 카드를 덱의 맨 앞에 생성\n✦ 다음턴, draw2・use1\n✦ 2턴 후, draw1\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "好調が8ターン以上の場合、使用可\n✦ goodcondition10\n✦ 眠気を山札の一番上に生成\n✦ 次のターン、draw2・use1\n✦ 2ターン後、draw1\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
             desc: "호조가 8턴 이상일 경우 사용 가능\n✦ goodcondition10\n✦ 졸음 카드를 덱의 맨 앞에 생성\n✦ 다음턴, draw2・use1\n✦ 2턴 후, draw2\n <span style='color:#8B8FD8'>nooverlab",

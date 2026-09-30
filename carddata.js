@@ -2103,11 +2103,11 @@ export const cardList = [
         extra1: "param", extra2: "ranenhance",
         abilities:
             [
-                "hpmax",
-                "hpmax",
+                "fixedparam",
+                "sp_lessonup",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "sp_param",
+                "get_8goodcondition4",
                 "event_paraup"
             ]
     },
@@ -3586,11 +3586,11 @@ export const cardList = [
         extra1: "param",
         abilities:
             [
-                "hpmax",
-                "hpmax",
+                "fixedparam",
+                "sp_lessonup",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "gift2",
+                "get_8goodcondition4",
                 "event_paraup"
             ]
     },
