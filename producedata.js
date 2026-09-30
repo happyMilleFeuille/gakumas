@@ -51,7 +51,7 @@ export const produceList = [
     { id: "ssrrinami_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
     { id: "ssrrinami_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     { id: "ssrrinami_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.5 },
-    { id: "ssrrinami_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrrinami_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.2 },
     {
         id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4,
         item: {
@@ -355,7 +355,7 @@ export const produceList = [
     { id: "ssrsumika_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "live", source: "limited", jumpTime2: 7.4, releasedAt: "2026-02-27", another: true },
     { id: "ssrsumika_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     { id: "ssrsumika_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.6 },
-    { id: "ssrsumika_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrsumika_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 5.9 },
     {
         id: "ssrsumika_2nd", name: "숨겼던 나", name_en: "Two Sides Of The Same Me", osusume: "fullpower", name_ja: "カクシタワタシ", releasedAt: "2024-12-18", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 12.2,
         item: {
@@ -457,7 +457,7 @@ export const produceList = [
     { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", category: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
     { id: "ssrmao_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", osusume: "goodcondition", category: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.4 },
     { id: "ssrmao_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "sense", osusume: "goodcondition", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.5 },
-    { id: "ssrmao_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "goodcondition", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrmao_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "goodcondition", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.1 },
     {
         id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2,
         item: {
@@ -556,7 +556,7 @@ export const produceList = [
     { id: "ssrkotone_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", category: "live", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", jumpTime2: 7.7, plan: "logic", osusume: "goodimpression", source: "limited", another: true },
     { id: "ssrkotone_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "goodimpression", category: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
     { id: "ssrkotone_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "logic", osusume: "goodimpression", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.5 },
-    { id: "ssrkotone_1st15another", name: "Agitato", rarity: "PSSR", plan: "logic", osusume: "goodimpression", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrkotone_1st15another", name: "Agitato", rarity: "PSSR", plan: "logic", osusume: "goodimpression", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.2 },
     {
         id: "ssrkotone_2nd", name: "Yellow Big Bang!", osusume: "goodcondition", rarity: "PSSR", plan: "sense", releasedAt: "2024-06-10", source: "normal", jumpTime2: 10.3,
         item: {
@@ -655,7 +655,7 @@ export const produceList = [
     { id: "ssrtemari_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", category: "live", name_ja: "ミラクルナナウ(˚∀˚)!", releasedAt: "2025-08-29", rarity: "PSSR", plan: "sense", osusume: "concentration", source: "limited", another: true },
     { id: "ssrtemari_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", category: "live", osusume: "concentration", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
     { id: "ssrtemari_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "sense", category: "live", osusume: "concentration", source: "limited", releasedAt: "2026-06-26", jumpTime2: 7.6, another: true },
-    { id: "ssrtemari_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrtemari_1st15another", name: "Agitato", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.1 },
     {
         id: "ssrtemari_2nd", name: "아이비", name_en: "IVY", osusume: "goodimpression", name_ja: "アイヴイ", rarity: "PSSR", releasedAt: "2024-05-22", plan: "logic", source: "normal", jumpTime2: 9.3,
         item: {
@@ -855,7 +855,7 @@ export const produceList = [
     { id: "ssrhiro_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "live", source: "limited", releasedAt: "2026-02-27", jumpTime2: 7.5, another: true },
     { id: "ssrhiro_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "live", source: "limited", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
     { id: "ssrhiro_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.5 },
-    { id: "ssrhiro_1st15another", name: "Agitato", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrhiro_1st15another", name: "Agitato", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.1 },
     {
         id: "ssrhiro_2nd", name: "콘트라스트", name_en: "Contrast", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3,
         item: {
@@ -959,7 +959,7 @@ export const produceList = [
     { id: "ssrtsubame_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", jumpTime2: 8.2, category: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-08-14", another: true },
     { id: "ssrtsubame_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", jumpTime2: 10.3, plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2026-08-14", another: true },
     { id: "ssrtsubame_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.5 },
-    { id: "ssrtsubame_1st15another", name: "Agitato", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrtsubame_1st15another", name: "Agitato", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.0 },
 
     {
         id: "ssrtsubame_3rd", name: "쿠라이아이", name_en: "Kuraiai", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "https://youtu.be/Ik1VyCRlAts?si=ICEMqa9JLt-XFVHK",
@@ -1035,7 +1035,7 @@ export const produceList = [
     { id: "ssrsena_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", category: "season", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", releasedAt: "2025-11-07", another: true },
     { id: "ssrsena_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "anomaly", category: "season", jumpTime2: 8.5, osusume: "enthusiasm", source: "limited", releasedAt: "2025-12-18", another: true },
     { id: "ssrsena_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", source: "limited", category: "live", releasedAt: "2026-06-26", another: true, jumpTime2: 7.3 },
-    { id: "ssrsena_1st15another", name: "Agitato", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrsena_1st15another", name: "Agitato", rarity: "PSSR", plan: "anomaly", osusume: "enthusiasm", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.4 },
     {
         id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22",
         item: {
@@ -1224,7 +1224,7 @@ export const produceList = [
     { id: "ssrmisuzu_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", category: "season", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
     { id: "ssrmisuzu_1st13another", name: "GO MY WAY!!", rarity: "PSSR", plan: "anomaly", osusume: "preservation", source: "limited", category: "live", releasedAt: "2026-06-26", another: true, jumpTime2: 7.5 },
     { id: "ssrmisuzu_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "anomaly", osusume: "preservation", category: "live", source: "limited", releasedAt: "2026-07-15", jumpTime2: 7.2, another: true },
-    { id: "ssrmisuzu_1st15another", name: "Agitato", rarity: "PSSR", plan: "anomaly", osusume: "preservation", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 7.5 },
+    { id: "ssrmisuzu_1st15another", name: "Agitato", rarity: "PSSR", plan: "anomaly", osusume: "preservation", category: "gravia", source: "limited", releasedAt: "2026-09-30", another: true, jumpTime2: 6.5 },
     {
         id: "ssrmisuzu_2nd", name: "Superlative", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 7.2, releasedAt: "2026-01-05",
         item: {
@@ -2840,7 +2840,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrlilja_halloween2limited", name: "Agitato", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 9.5, releasedAt: "2026-09-30", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
+        id: "ssrlilja_halloween2limited", name: "Agitato", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 8.0, releasedAt: "2026-09-30", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
         item: {
             name: "天性の才能",
             desc: "스킬카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ 호조의 30%만큼 파라미터 상승",
