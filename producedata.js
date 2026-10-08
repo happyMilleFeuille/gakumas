@@ -2877,7 +2877,7 @@ export const produceList = [
             desc_ja: "美確認",
         },
         cardplus: {
-            desc: "✦ 저하상태 무효 1회\n✦ use1\n✦ 이후 턴 개시 시 원기가 40이상일 경우 자신의 덱과 버림패에 있는 랜덤한 액티브카드를 덱의 맨 앞으로 이동・hprecovery\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 저하상태 무효 1회\n✦ use1\n✦ 이후 턴 개시 시 원기가 40이상일 경우 자신의 덱과 버림패에 있는 랜덤한 액티브카드를 덱의 맨 앞으로 이동・hprecovery2\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ 低下状態無効1回\n✦ use1\n✦ 以降、ターン開始時、元気が40以上の場合、ランダムな山札か捨札のアクティブスキルカードを山札の一番上に移動・hprecovery2\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
