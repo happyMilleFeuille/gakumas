@@ -537,6 +537,16 @@ export const NORMAL_CONFIG = [
 // 한정 가챠 상세 설정
 export const LIMITED_CONFIG = [
     {
+        id: 'ssrsaki_halloween2limited',
+        date: '2026-10-09',
+        bannerImg: 'idols/ssrsaki_halloween2limited1.webp',
+        pool: {
+            pssr: [{ id: 'ssrsaki_halloween2limited', char: 'saki' }],
+            sssr: ['visual_limitedlogic3'],
+            sr_card: ['dance_srlimitedlogic5']
+        }
+    },
+    {
         id: 'ssrlilja_halloween2limited',
         date: '2026-09-30',
         bannerImg: 'idols/ssrlilja_halloween2limited1.webp',

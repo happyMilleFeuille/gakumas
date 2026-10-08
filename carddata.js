@@ -2344,6 +2344,28 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "visual_limitedlogic3",
+        name: "이것이 그 호박......",
+        name_ja: "これがあのかぼちゃ……",
+        type: "visual",
+        plan: "logic",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["enhance"], triggertext: ["visual900"], stat: { visual: 30 }, targettext: ["ppoint40"], max: 2 }],
+        source: "limited",
+        releasedAt: "2026-10-09",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
 
     {
         id: "visual_distlogic1",
@@ -3704,6 +3726,28 @@ export const cardList = [
                 "supportrateup",
                 "sp_param20",
                 "get",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "dance_srlimitedlogic5",
+        name: "둘이서 의상 만들기",
+        name_ja: "ふたりで衣装作り",
+        type: "dance",
+        releasedAt: "2026-10-09",
+        plan: "logic",
+        source: "limited",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["enhance"], triggertext: "dance700", targettext: ["ppoint10"], stats: { dance: 20 }, max: 3 }],
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

@@ -2860,6 +2860,27 @@ export const produceList = [
             desc_ja: "好調が8ターン以上の場合、使用可\n✦ goodcondition10\n✦ 眠気を山札の一番上に生成\n✦ 次のターン、draw2・use1\n✦ 2ターン後、draw2\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
+    {
+        id: "ssrsaki_halloween2limited", name: "Agitato", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited", category: "gravia", jumpTime2: 8.0, releasedAt: "2026-10-09", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
+        item: {
+            name: "規格外の魅力",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        itemplus: {
+            desc: "의욕이 5이상일 경우 멘탈카드를 2회 사용할 때마다 \n✦ motivation5\n✦ goodimpression1\n✦ 소비체력 절감1\n✦ inlesson2",
+            desc_ja: "やる気が5以上の場合、メンタルスキルカードを2回使用するごとに、\n✦ motivation5\n✦ goodimpression1\n✦ 消費体力削減1\n✦ inlesson2",
+        },
+        card: {
+            name: "スイートトラップ",
+            desc: "미확인",
+            desc_ja: "美確認",
+        },
+        cardplus: {
+            desc: "✦ 저하상태 무효 1회\n✦ use1\n✦ 이후 턴 개시 시 원기가 40이상일 경우 자신의 덱과 버림패에 있는 랜덤한 액티브카드를 덱의 맨 앞으로 이동・hprecovery\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ 低下状態無効1回\n✦ use1\n✦ 以降、ターン開始時、元気が40以上の場合、ランダムな山札か捨札のアクティブスキルカードを山札の一番上に移動・hprecovery2\n <span style='color:#8B8FD8'>nooverlab",
+        }
+    },
 
 
 
