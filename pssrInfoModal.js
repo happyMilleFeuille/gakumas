@@ -99,8 +99,13 @@ export const replaceDescIcons = (text) => {
         return `<img src="icons/motivation.webp" alt="Motivation" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
-    // 4. 전력 / 全力
-    result = result.replace(/(전력치|전력|全力値|全力)/g, (match) => {
+    // 4. 전력치 / 全力値
+    result = result.replace(/(전력치|全力値)/g, (match) => {
+        return `<img src="icons/fullpowerparam.webp" alt="Full Power Value" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
+    // 4-2. 전력 / 全力
+    result = result.replace(/(전력(?!치)|全力(?!値))/g, (match) => {
         return `<img src="icons/fullpower.webp" alt="Full Power" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
@@ -409,7 +414,7 @@ export const replaceDescIcons = (text) => {
         } else {
             label = `Full Power +${spanOpen || ''}${num}${spanClose || ''}`;
         }
-        return `<img src="icons/fullpower.webp" alt="Full Power" class="pssr-info-modal-desc-inline-icon">${label}`;
+        return `<img src="icons/fullpowerparam.webp" alt="Full Power Value" class="pssr-info-modal-desc-inline-icon">${label}`;
     });
 
     // goodimpression[num]

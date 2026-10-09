@@ -14,6 +14,22 @@ import { replaceDescIcons } from './pssrInfoModal.js';
  */
 export const getIdolDisplayColor = (id) => (idolColors[id] || "#ff4d8d");
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
+const replaceActionStatusIcons = (text) => {
+    if (!text) return '';
+    return text
+        .replace(/(호조|好調)/g, '<img src="icons/goodcondition.webp" alt="Good Condition" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(집중|集中)/g, '<img src="icons/concentration.webp" alt="Concentration" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(의욕|やる気)/g, '<img src="icons/motivation.webp" alt="Motivation" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(호인상|好印象)/g, '<img src="icons/goodimpression.webp" alt="Good Impression" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(강기|強気)/g, '<img src="icons/enthusiasm.webp" alt="Enthusiasm" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(전력치|全力値)/g, '<img src="icons/fullpowerparam.webp" alt="Full Power Value" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(전력(?!치)|全力(?!値))/g, '<img src="icons/fullpower.webp" alt="Full Power" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(온존|温存)/g, '<img src="icons/preservation.webp" alt="Preservation" class="pssr-info-modal-desc-inline-icon">$1');
+};
+const normalizeEffectText = (text) => replaceActionStatusIcons(text)
+    .replace(/경우,\s*,/g, '경우,')
+    .replace(/場合、\s*、/g, '場合、')
+    .replace(/,\s*,/g, ',');
 const getOptionLabel = (opt) => opt?.labelKey ? t(opt.labelKey) : (opt?.[`label_${state.currentLang}`] || opt?.label_ko || '');
 const getOptionMainLabel = (opt) => opt?.mainLabelKey ? t(opt.mainLabelKey) : (opt?.mainlabel || '');
 const getOptionValue = (source, opt) => {
@@ -33,7 +49,7 @@ const getCalcIconSrc = (value, calcType = calcStore.type) => `icons/cal/${calcTy
 /**
  * 서포트 카드의 아이템 효과 또는 HIF P-아이템의 item_effects 배열을 다국어 설명 텍스트로 파싱하는 공통 엔진
  */
-export function getParsedItemEffectsText(itemEffects) {
+export function getParsedItemEffectsText(itemEffects, cardContext = null) {
     if (!itemEffects || !Array.isArray(itemEffects)) return '';
 
     const labels = {
@@ -74,6 +90,15 @@ export function getParsedItemEffectsText(itemEffects) {
         visual: t('attr_visual')
     };
 
+    const getEffectLabel = (key) => {
+        if ((key === 'lesson' || key === 'sp' || key === 'sp_lesson') && cardContext?.type && statLabels[cardContext.type]) {
+            const attrName = statLabels[cardContext.type];
+            const label = labels[key] || key;
+            return state.currentLang === 'ja' ? `${attrName}${label}` : `${attrName} ${label}`;
+        }
+        return labels[key] || key;
+    };
+
     return itemEffects.map(eff => {
         // 트리거 처리 (배열인 경우 모든 요소를 매핑하여 합침)
         let trigger = "";
@@ -85,7 +110,7 @@ export function getParsedItemEffectsText(itemEffects) {
             }
         } else {
             const triggers = Array.isArray(eff.trigger) ? eff.trigger : [eff.trigger];
-            trigger = triggers.map(t => labels[t] || t).join(', ');
+            trigger = triggers.map(t => getEffectLabel(t)).join(', ');
         }
         const maxSuffix = (eff.max && eff.max < 9) ? t('support_effect_max_suffix', { count: eff.max }) : '';
 
@@ -97,11 +122,19 @@ export function getParsedItemEffectsText(itemEffects) {
             }
             if (eff.target) {
                 let displayText = null;
-                if (eff.display) {
-                    if (typeof eff.display === 'object') {
-                        displayText = eff.display[state.currentLang] || eff.display.ja || eff.display.ko || '';
+                const targetTextTokens = eff.targettext ? (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]) : [];
+                const targetPrefix = targetTextTokens
+                    .filter(tt => tt === 'random' || tt === 'select')
+                    .map(tt => t(`support_effect_target_modifier_${tt}`))
+                    .filter(Boolean)
+                    .join('');
+
+                const targetDisplay = eff.targetdisplay || eff.display;
+                if (targetDisplay) {
+                    if (typeof targetDisplay === 'object') {
+                        displayText = targetDisplay[state.currentLang] || targetDisplay.ja || targetDisplay.ko || '';
                     } else {
-                        displayText = eff.display;
+                        displayText = targetDisplay;
                     }
                 }
 
@@ -126,6 +159,7 @@ export function getParsedItemEffectsText(itemEffects) {
                     }).join(', ');
                 }
 
+                if (targetPrefix) targetStr = targetPrefix + targetStr;
                 if (eff.value) targetStr += ` +${eff.value}`;
                 effectDescParts.push(targetStr);
             }
@@ -133,6 +167,7 @@ export function getParsedItemEffectsText(itemEffects) {
                 const tTexts = Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext];
                 const parsedParts = [];
                 tTexts.forEach(tt => {
+                    if (eff.target && (tt === 'random' || tt === 'select')) return;
                     const match = tt.match(/^(ppoint|hp|goodcondition|concentration|motivation|goodimpression|anomaly)(\d+)$/i);
                     const conditionMatch = tt.match(/^(enhance|drink|delete|get|discount|spclassdiscount)(\d+)$/i);
                     let translated = "";
@@ -206,6 +241,8 @@ export function getParsedItemEffectsText(itemEffects) {
                         }
                         return t(`support_effect_condition_${dir}`, { attr: attrName, num: num });
                     }
+                    const conditionText = t(`support_effect_condition_${tt}`);
+                    if (conditionText) return conditionText;
                     return tt + (state.currentLang === 'ja' ? '、' : ', ');
                 }).join('');
 
@@ -219,7 +256,7 @@ export function getParsedItemEffectsText(itemEffects) {
                 finalDesc = t('support_effect_action_format', { trigger, effect: effectDesc, suffix: maxSuffix });
             }
 
-            return finalDesc;
+            return normalizeEffectText(finalDesc);
         } else if (eff.type === 'add_count') {
             const targets = Array.isArray(eff.target) ? eff.target : [eff.target];
             const target = targets.map(t => labels[t] || t).join(', ');
@@ -237,6 +274,12 @@ export function getParsedItemEffectsText(itemEffects) {
         }
         return '';
     }).filter(t => t).join('<br>');
+}
+
+function getParsedCardEffectsText(cardEffects, cardContext = null) {
+    if (!cardEffects || !Array.isArray(cardEffects)) return '';
+    const normalizedEffects = cardEffects.map(eff => eff.type ? eff : { type: 'inexam', ...eff });
+    return getParsedItemEffectsText(normalizedEffects, cardContext);
 }
 
 export function getNormalizedSelectedCardIds(store, disabledCards = state.disabledCards) {
@@ -1882,7 +1925,7 @@ export function showSupportItemTooltip(slot, cardId) {
         assist: "#72da49"
     };
     const card = cardList.find(c => c.id === cardId);
-    if (!card || !card.item_effects) return;
+    if (!card || (!card.item_effects && !card.card_effects)) return;
 
     const tooltip = document.createElement('div');
     tooltip.className = 'calc-tooltip support-item-tooltip';
@@ -1899,10 +1942,16 @@ export function showSupportItemTooltip(slot, cardId) {
     tooltip.style.cssText = `position: absolute; display: inline-flex; flex-direction: row; align-items: center; gap: ${gap}; width: auto; max-width: ${maxWidth}; padding: ${padding}; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: ${borderWidth} solid ${borderColor}; border-radius: 8px; font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 40000;`;
 
     // 아이템 효과 텍스트 생성
-    const effects = getParsedItemEffectsText(card.item_effects);
+    const effectParts = [
+        getParsedItemEffectsText(card.item_effects, card),
+        getParsedCardEffectsText(card.card_effects, card)
+    ].filter(Boolean);
+    const effects = effectParts.join('<br>');
+    const rewardKind = card.have?.startsWith('card') ? 'card' : 'item';
+    const fallbackKind = rewardKind === 'card' ? 'item' : 'card';
 
     tooltip.innerHTML = `
-        <img src="images/support/${cardId}_item.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; border: 1px solid #eee; flex-shrink: 0;" onerror="this.src='images/support/thumb/${cardId}.webp'; this.onerror=null;">
+        <img src="images/support/${cardId}_${rewardKind}.webp" style="width: ${imgSize}; height: ${imgSize}; border-radius: 4px; border: 1px solid #eee; flex-shrink: 0;" onerror="this.src='images/support/${cardId}_${fallbackKind}.webp'; this.onerror=function(){this.src='images/support/thumb/${cardId}.webp'; this.onerror=null;};">
         <div style="opacity: 0.9;">${effects}</div>
     `;
 

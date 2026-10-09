@@ -311,7 +311,7 @@ export function showCardModal(card, displayName, imgSrc) {
         assist: "#72da49"
     };
 
-    if (card.item_effects) {
+    if (card.item_effects || card.card_effects) {
         const color = attrColors[card.type.toLowerCase()] || '#ff4d8d';
         mExtraIcon.style.backgroundColor = '#fff';
         mExtraIcon.style.borderColor = color;
@@ -324,7 +324,7 @@ export function showCardModal(card, displayName, imgSrc) {
     mExtraIcon.style.filter = 'none';
 
     mExtraIcon.onclick = (e) => {
-        if (card.item_effects) {
+        if (card.item_effects || card.card_effects) {
             e.stopPropagation();
             showSupportItemTooltip(mExtraIcon, card.id);
         }

@@ -103,7 +103,7 @@ export function initGlobalDistListener(refreshAll) {
             const cardId = slotEl?.dataset.id;
             if (cardId) {
                 const card = cardList.find(c => c.id === cardId);
-                if (card?.item_effects) {
+                if (card?.item_effects || card?.card_effects) {
                     showSupportItemTooltip(slotEl, cardId);
                     return;
                 }
