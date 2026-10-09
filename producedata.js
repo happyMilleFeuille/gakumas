@@ -2861,7 +2861,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsaki_halloween2limited", name: "Agitato", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited", category: "gravia", jumpTime2: 8.0, releasedAt: "2026-10-09", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
+        id: "ssrsaki_halloween2limited", name: "Agitato", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited", category: "gravia", jumpTime2: 9.4, releasedAt: "2026-10-09", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
         item: {
             name: "規格外の魅力",
             desc: "의욕이 5이상일 경우 멘탈카드를 2회 사용할 때마다 \n✦ motivation4\n✦ 소비체력 절감1\n✦ inlesson2",
