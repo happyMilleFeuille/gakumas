@@ -202,7 +202,7 @@ const translations = {
         hif_param_limit_title: "파라미터 상한 증가",
         hif_test_max_total: "총 획득가능 수치 [합 {maxTotal}]",
         hif_test_tooltip_desc: "시험으로 얻은 스텟을 기입해주세요.<br>(%보너스 제외)",
-        hif_test_tooltip_desc_inc: "시험에 기여한 비율을 기입해주세요.<br>(최대 점수 기준)",
+        hif_test_tooltip_desc_inc: "시험에 기여한 비율을 기입해주세요.<br>(상한을 채운 상태 기준)",
         hif_test_complete: "완료",
         calc_detail_final_total: "최종 합계",
         support_effect_get: "카드 획득",
