@@ -340,6 +340,13 @@ export const videoList = {
     ],
     ume: [
         {
+            title: "どんどこ🥁x4どんタスティック!!!",
+            title_ko: "돈도코🥁x4🥁돈타스틱!!!",
+            title_en: "Dondoko🥁x4🥁Dontastic!!!",
+            url: "https://youtu.be/s8OtRQkGYrA?si=cs28d4SuvZaAQa2p",
+            date: "2026.10.05."
+        },
+        {
             title: "金の斧、銀の斧、エメラルドの斧",
             title_ko: "금도끼, 은도끼, 에메랄드도끼",
             title_en: "Mercury and the Honest Dorothy",
