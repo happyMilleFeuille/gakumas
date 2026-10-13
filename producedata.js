@@ -56,11 +56,11 @@ export const produceList = [
         id: "ssrrinami_2nd", name: "L.U.V", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-10-18", source: "normal", jumpTime2: 11.4,
         item: {
             name: "これでばっちり",
-            desc: "체력 회복 효과의 스킬카드 사용 후\n✦ 원기의 50%만큼 호인상을 증가시키고 원기를 전부 소모\n✦ 호인상의 200%만큼 파라미터 상승\n✦ hpreduce5\n✦ inlesson1",
+            desc: "체력 회복 효과의 카드 사용 후\n✦ 원기의 50%만큼 호인상을 증가시키고 원기를 전부 소모\n✦ 호인상의 200%만큼 파라미터 상승\n✦ hpreduce5\n✦ inlesson1",
             desc_ja: "体力回復効果のスキルカード使用後、\n✦ 元気の50%分好印象増加させ、元気を0にする\n✦ 好印象の200%分パラメータ上昇\n✦ hpreduce5\n✦ inlesson1",
         },
         itemplus: {
-            desc: "체력 회복 효과의 스킬카드 사용 후\n✦ 원기의 70%만큼 호인상을 증가시키고 원기를 전부 소모\n✦ 호인상의 200%만큼 파라미터 상승\n✦ hpreduce5\n✦ inlesson1",
+            desc: "체력 회복 효과의 카드 사용 후\n✦ 원기의 70%만큼 호인상을 증가시키고 원기를 전부 소모\n✦ 호인상의 200%만큼 파라미터 상승\n✦ hpreduce5\n✦ inlesson1",
             desc_ja: "体力回復効果のスキルカード使用後、\n✦ 元気の70%分好印象増加させ、元気を0にする\n✦ 好印象の200%分パラメータ上昇\n✦ hpreduce5\n✦ inlesson1",
         },
         card: {
@@ -110,11 +110,11 @@ export const produceList = [
         id: "ssrsaki_1st", name: "Fighting My Way", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 6.2, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/T1GK55fsIhw?si=co4Dg0YTDqRSh5hQ",
         item: {
             name: "共に戦うタオル",
-            desc: "액티브 스킬카드 사용 후 \n✦ goodcondition1\n✦ use1\n✦ inlesson1",
+            desc: "액티브카드 사용 후 \n✦ goodcondition1\n✦ use1\n✦ inlesson1",
             desc_ja: "アクティブスキルカード使用後、\n✦ goodcondition1\n✦ use1\n✦ inlesson1",
         },
         itemplus: {
-            desc: "액티브 스킬카드 사용 후 \n✦ goodcondition1\n✦ use1\n✦ genki5\n✦ inlesson1",
+            desc: "액티브카드 사용 후 \n✦ goodcondition1\n✦ use1\n✦ genki5\n✦ inlesson1",
             desc_ja: "アクティブスキルカード使用後、\n✦ goodcondition1\n✦ use1\n✦ genki5\n✦ inlesson1",
         },
         card: {
@@ -189,11 +189,11 @@ export const produceList = [
         },
         card: {
             name: "鮮やかに咲く花",
-            desc: "startingcard\n✦ 이후 호인상이 6이상인 경우 호인상 효과의 스킬카드를 3회 사용할 때마다 호인상 추가 발동+1 (3턴)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ 이후 호인상이 6이상인 경우 호인상 효과의 카드를 3회 사용할 때마다 호인상 추가 발동+1 (3턴)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ 以降、好印象が6以上の場合、好印象効果のスキルカードを3回使用するごとに、好印象追加発動+1（3ターン）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "startingcard\n✦ 이후 호인상이 6이상인 경우 호인상 효과의 스킬카드를 3회 사용할 때마다 호인상 추가 발동+1 (3턴)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ 이후 호인상이 6이상인 경우 호인상 효과의 카드를 3회 사용할 때마다 호인상 추가 발동+1 (3턴)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ 以降、好印象が6以上の場合、好印象効果のスキルカードを3回使用するごとに、好印象追加発動+1（3ターン）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
@@ -260,11 +260,11 @@ export const produceList = [
         id: "ssrchina_2nd", name: "매일, 발견적 스텝!", name_en: "Every steps are for discovery!", name_ja: "日々、発見的ステップ!", osusume: "goodcondition", rarity: "PSSR", releasedAt: "2024-08-22", plan: "sense", source: "normal", jumpTime2: 9.4,
         item: {
             name: "ときめきのいっぱい",
-            desc: "마지막 턴 개시 시 \n✦ param3 (레슨 중 사용한 스킬카드 1장 당 파라미터 상승량+3)\n✦ hpreduce2\n✦ inlesson1",
+            desc: "마지막 턴 개시 시 \n✦ param3 (레슨 중 사용한 카드 1장 당 파라미터 상승량+3)\n✦ hpreduce2\n✦ inlesson1",
             desc_ja: "最終ターンのターン開始時、\n✦ param3（レッスン中使用したスキルカード1枚につき、パラメータ上昇量+3）\n✦ hpreduce2\n✦ inlesson1",
         },
         itemplus: {
-            desc: "마지막 턴 개시 시 \n✦ param5 (레슨 중 사용한 스킬카드 1장 당 파라미터 상승량+3)\n✦ hpreduce2\n✦ inlesson1",
+            desc: "마지막 턴 개시 시 \n✦ param5 (레슨 중 사용한 카드 1장 당 파라미터 상승량+3)\n✦ hpreduce2\n✦ inlesson1",
             desc_ja: "最終ターンのターン開始時、\n✦ param5（レッスン中使用したスキルカード1枚につき、パラメータ上昇量+3）\n✦ hpreduce1\n✦ inlesson1",
         },
         card: {
@@ -281,11 +281,11 @@ export const produceList = [
         id: "ssrchina_3rd", name: "하늘과 약속", name_en: "A Tiny Brave Promise", osusume: "goodcondition", name_ja: "空と約束", rarity: "PSSR", plan: "sense", releasedAt: "2025-10-21", source: "normal", jumpTime2: 9.0, youtube_url: "https://youtu.be/WxFmsuy4nrM?si=AD1GxXNrDtL2AG29",
         item: {
             name: "届けたい想い",
-            desc: "남은 턴이 3턴 이내일 때 턴 개시 시 \n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드 (SSR)를 손패로 이동\n✦ 호조의 20%만큼 집중 증가\n✦ hpreduce1\n✦ inlesson3",
+            desc: "남은 턴이 3턴 이내일 때 턴 개시 시 \n✦ 덱 혹은 버림패에 있는 랜덤한 카드 (SSR)를 손패로 이동\n✦ 호조의 20%만큼 집중 증가\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "残り3ターン以内のターン開始時、\n✦ ランダムな山札か捨札にあるスキルカード（SSR）を手札に移動\n✦ 好調の20%分集中増加\n✦ hpreduce1\n✦ inlesson3",
         },
         itemplus: {
-            desc: "남은 턴이 3턴 이내일 때 턴 개시 시 \n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드 (SSR)를 손패로 이동\n✦ 호조의 30%만큼 집중 증가\n✦ hpreduce1\n✦ inlesson3",
+            desc: "남은 턴이 3턴 이내일 때 턴 개시 시 \n✦ 덱 혹은 버림패에 있는 랜덤한 카드 (SSR)를 손패로 이동\n✦ 호조의 30%만큼 집중 증가\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "残り3ターン以内のターン開始時、\n✦ ランダムな山札か捨札にあるスキルカード（SSR）を手札に移動\n✦ 好調の30%分集中増加\n✦ hpreduce1\n✦ inlesson3",
         },
         card: {
@@ -471,11 +471,11 @@ export const produceList = [
         },
         card: {
             name: "月夜のランウェイ",
-            desc: "✦ motivation3 \n✦ 이후 호인상 효과의 스킬카드 사용 후, 호인상의 30%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation3 \n✦ 이후 호인상 효과의 카드 사용 후, 호인상의 30%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation3 \n✦ 以降、好印象効果のスキルカード使用後、好印象の30%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ motivation3 \n✦ 이후 호인상 효과의 스킬카드 사용 후, 호인상의 50%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation3 \n✦ 이후 호인상 효과의 카드 사용 후, 호인상의 50%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation3 \n✦ 以降、好印象効果のスキルカード使用後、好印象の50%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -511,11 +511,11 @@ export const produceList = [
         id: "ssrkotone_1st", name: "세계에서 제일 귀여운 나", name_en: "Sekaiichi kawaii watashi", osusume: "goodimpression", name_ja: "世界一可愛い私", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 5.3, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/cHaEJgn4HYc?si=b6kiMK7AwkQuMJB1",
         item: {
             name: "ピッグドリーム貯金箱",
-            desc: "스킬카드 사용 후 호인상이 6이상일 경우\n✦ goodimpression3\n✦ use1\n✦ inlesson1",
+            desc: "카드 사용 후 호인상이 6이상일 경우\n✦ goodimpression3\n✦ use1\n✦ inlesson1",
             desc_ja: "スキルカード使用後、好印象が6以上の場合、\n✦ goodimpression3\n✦ use1\n✦ inlesson1",
         },
         itemplus: {
-            desc: "스킬카드 사용 후 호인상이 6이상일 경우\n✦ goodimpression5\n✦ use1\n✦ inlesson1",
+            desc: "카드 사용 후 호인상이 6이상일 경우\n✦ goodimpression5\n✦ use1\n✦ inlesson1",
             desc_ja: "スキルカード使用後、好印象が6以上の場合、\n✦ goodimpression5\n✦ use1\n✦ inlesson1",
         },
         card: {
@@ -600,7 +600,7 @@ export const produceList = [
         },
         primacard: {
             name: "好きを集める一番星",
-            desc: "startingcard \n✦ concentration7\n✦ use1\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드를 2장 선택해 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard \n✦ concentration7\n✦ use1\n✦ 덱 혹은 버림패에 있는 랜덤한 카드를 2장 선택해 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard \n✦ concentration7\n✦ use1\n✦ 山札か捨札にあるスキルカードを2枚まで選択し、山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -610,11 +610,11 @@ export const produceList = [
         id: "ssrtemari_1st", name: "Luna say maybe", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 11.4, releasedAt: "2024-05-16", youtube_url: "https://youtu.be/Sq5Dj0U06vQ?si=z7zi9RBA43D7QpwX",
         item: {
             name: "自分を守るイヤホン",
-            desc: "스킬카드 사용 후 집중이 5이상일 경우\n✦ use1\n✦ concentration1\n✦ inlesson1",
+            desc: "카드 사용 후 집중이 5이상일 경우\n✦ use1\n✦ concentration1\n✦ inlesson1",
             desc_ja: "スキルカード使用後、集中が5以上の場合、\n✦ use1\n✦ concentration1\n✦ inlesson1",
         },
         itemplus: {
-            desc: "스킬카드 사용 후 집중이 5이상일 경우\n✦ use1\n✦ concentration3\n✦ inlesson1",
+            desc: "카드 사용 후 집중이 5이상일 경우\n✦ use1\n✦ concentration3\n✦ inlesson1",
             desc_ja: "スキルカード使用後、集中が5以上の場合、\n✦ use1\n✦ concentration3\n✦ inlesson1",
         },
         card: {
@@ -631,7 +631,7 @@ export const produceList = [
                 name: { ko: "효과 추가", ja: "効果追加" },
                 cost: "100",
                 desc: {
-                    ko: "✦ param15\n✦ concentration5\n✦ 이후 3턴 간 턴 종료 시, param5・hpreduce1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ param15\n✦ concentration5\n✦ 이후 3턴 간, 턴 종료 시 param5・hpreduce1\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ param15\n✦ concentration5\n✦ 以降の3ターンの間、ターン終了時、param5・hpreduce1\n <span style='color:#8B8FD8'>nooverlab limit1",
                 },
             },
@@ -691,16 +691,16 @@ export const produceList = [
         },
         card: {
             name: "置き去りな自分",
-            desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 증가량+40・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 값 증가+40・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存に変更\n✦ fullpower2\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+40・コスト値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 증가량+50・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "온존으로 지침 변경\n✦ fullpower2\n✦ 전력 액티브카드의 파라미터 값 증가+50・코스트 수치 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存に変更\n✦ fullpower2\n✦ 全力効果のアクティブスキルカードのパラメータ値増加+50・コスト値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
             name: "高みへ羽ばたく一番星",
-            desc: "\n✦ fullpower5\n✦ use1\n✦ 이후 1회까지 턴 개시 시 전력인 경우, 제외패 이외에 있는 스킬카드 1장 선택해 코스트를 소비해서 사용\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "\n✦ fullpower5\n✦ use1\n✦ 이후 1회까지 턴 개시 시 전력인 경우, 제외패 이외에 있는 카드 1장 선택해 코스트를 소비해서 사용\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "\n✦ fullpower5\n✦ use1\n✦ 以降1回まで、ターン開始時、全力の場合、除外以外のスキルカードを1枚選択し、コストを消費して使用\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -768,11 +768,11 @@ export const produceList = [
         },
         card: {
             name: "きらきらプリズム",
-            desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기효과 스킬카드의 파라미터 값 증가+7\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기 효과 카드의 파라미터 값 증가+7\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存の場合、使用可\n✦ 強気2段階目に変更\n✦ 以降、メンタルスキルカード使用時、強気2段階目の場合、強気効果のスキルカードのパラメータ値増加+7\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기효과 스킬카드의 파라미터 값 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "지침이 온존일 경우 사용 가능\n✦ 강기 2단계로 지침 변경\n✦ 이후 멘탈카드 사용 시 지침이 강기 2단계일 경우, 강기 효과 카드의 파라미터 값 증가+8\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存の場合、使用可\n✦ 強気2段階目に変更\n✦ 以降、メンタルスキルカード使用時、強気2段階目の場合、強気効果のスキルカードのパラメータ値増加+8\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -798,7 +798,7 @@ export const produceList = [
         },
         primacard: {
             name: "勇気を届ける一番星",
-            desc: "\n✦ param20 (누계 전력치의 650만큼 파라미터 상승량 증가)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "\n✦ param20 (누계 전력치의 650%만큼 파라미터 상승량 증가)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "\n✦ param20（累積全力値の650%分、パラメータ上昇量増加）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -860,11 +860,11 @@ export const produceList = [
         id: "ssrhiro_2nd", name: "콘트라스트", name_en: "Contrast", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3,
         item: {
             name: "まだ見ぬ世界へ",
-            desc: "턴 개시 후 lesshp50\n✦ concentration5\n✦ 소비체력 절감 2\n✦ inlesson1",
+            desc: "턴 개시 후 lesshp50\n✦ concentration5\n✦ 소비체력 절감2\n✦ inlesson1",
             desc_ja: "ターン開始後、lesshp50\n✦ concentration5\n✦ 消費体力削減2\n✦ inlesson1",
         },
         itemplus: {
-            desc: "턴 개시 후 lesshp50\n✦ concentration7\n✦ 소비체력 절감 3\n✦ inlesson1",
+            desc: "턴 개시 후 lesshp50\n✦ concentration7\n✦ 소비체력 절감3\n✦ inlesson1",
             desc_ja: "ターン開始後、lesshp50\n✦ concentration7\n✦ 消費体力削減3\n✦ inlesson1",
         },
         card: {
@@ -881,11 +881,11 @@ export const produceList = [
         id: "ssrhiro_3rd", name: "SUNFADED", name_en: "SUNFADED", name_ja: "サンフェーデッド", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-07-17", plan: "anomaly", source: "normal", jumpTime2: 8.3, youtube_url: "https://youtu.be/XLwmEuM0dIw?si=kG6RqnAE6FqImH1J",
         item: {
             name: "原点へのチケット",
-            desc: "스킬카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+40%\n✦ inlesson3",
+            desc: "카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+40%\n✦ inlesson3",
             desc_ja: "スキルカードコストで体力減少時、\n✦ 熱意増加+40%\n✦ inlesson3",
         },
         itemplus: {
-            desc: "스킬카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+60%\n✦ inlesson3",
+            desc: "카드 코스트로 체력이 감소할 경우\n✦ 열의 증가+60%\n✦ inlesson3",
             desc_ja: "スキルカードコストで体力減少時、\n✦ 熱意増加+60%\n✦ inlesson3",
         },
         card: {
@@ -899,7 +899,7 @@ export const produceList = [
         },
         primacard: {
             name: "奇跡を起こした一番星",
-            desc: "\n✦ 다음에 사용하는 日が差す方へ의 소비체력을 0으로 감소 (최대 5회)\n✦ use1\n✦ 강기효과 스킬카드의 파라미터 값 증가+11\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "\n✦ 다음에 사용하는 日が差す方へ의 소비체력을 0으로 감소 (최대 5회)\n✦ use1\n✦ 강기효과 카드의 파라미터 값 증가+11\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "\n✦ 次に使用した日が差す方への消費体力を0にする（5回）\n✦ use1\n✦ 強気効果のスキルカードのパラメータ値増加+11\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -965,20 +965,20 @@ export const produceList = [
         id: "ssrtsubame_3rd", name: "쿠라이아이", name_en: "Kuraiai", name_ja: "クライアイ", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.6, releasedAt: "2026-07-31", youtube_url: "https://youtu.be/Ik1VyCRlAts?si=ICEMqa9JLt-XFVHK",
         item: {
             name: "花火散るナイトキラー",
-            desc: "지침이 전력일 때 전력치가 10이상일 경우 \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터 값 증가+3\n inlesson2",
+            desc: "지침이 전력일 때 전력치가 10이상일 경우 \n✦ genki6\n✦ fullpower6\n✦ 모든 카드의 파라미터 값 증가+3\n inlesson2",
             desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson2",
         },
         itemplus: {
-            desc: "지침이 전력일 때 전력치가 10이상일 경우 \n✦ genki6\n✦ fullpower6\n✦ 모든 스킬카드의 파라미터 값 증가+3\n inlesson3",
+            desc: "지침이 전력일 때 전력치가 10이상일 경우 \n✦ genki6\n✦ fullpower6\n✦ 모든 카드의 파라미터 값 증가+3\n inlesson3",
             desc_ja: "全力になった時、全力値が10以上の場合、\n✦ genki6\n✦ fullpower6\n✦ すべてのスキルカードのパラメータ値増加+3\n inlesson3",
         },
         card: {
             name: "星を散らせ",
-            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 2회까지 스킬카드 사용 시 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동 \n✦ 이후 2회까지 카드 사용 시 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降2回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 스킬카드 사용 시 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 카드 사용 시 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -988,21 +988,21 @@ export const produceList = [
         id: "ssrsena_1st", name: "작은 야망", name_en: "Tiny Ambition", name_ja: "ちいさな野望", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.4, releasedAt: "2024-11-16", youtube_url: "https://youtu.be/UwA_4TafA_g?si=XjElH7VzQHnl7TGi",
         item: {
             name: "新しい、私",
-            desc: "액티브 스킬카드 사용 후 \n✦ param8\n✦ hprecovery4\n✦ inlesson1",
+            desc: "액티브카드 사용 후 \n✦ param8\n✦ hprecovery4\n✦ inlesson1",
             desc_ja: "アクティブスキルカード使用後、\n✦ param8\n✦ hprecovery4\n✦ inlesson1",
         },
         itemplus: {
-            desc: "액티브 스킬카드 사용 후 \n✦ param12\n✦ hprecovery6\n✦ inlesson1",
+            desc: "액티브카드 사용 후 \n✦ param12\n✦ hprecovery6\n✦ inlesson1",
             desc_ja: "アクティブスキルカード使用後、\n✦ param12\n✦ hprecovery6\n✦ inlesson1",
         },
         card: {
             name: "一番高い星",
-            desc: "✦ 강기로 지침 변경\n✦ param3 (2회) \n✦ 성장 : 강기 효과의 스킬카드 사용 후 자신의 파라미터 값 증가+10・코스트 수치 증가+1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경\n✦ param3 (2회) \n✦ 성장 : 강기 효과의 카드 사용 후 자신의 파라미터 값 증가+10・코스트 수치 증가+1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更\n✦ param3（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+10・コスト値増加+1（2回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
 
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기 효과의 스킬카드 사용 후 자신의 파라미터 값 증가+15・코스트 수치 증가+1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기 효과의 카드 사용 후 자신의 파라미터 값 증가+15・코스트 수치 증가+1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更\n✦ param6（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+15・コスト値増加+1（2回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardcustom: {
@@ -1010,7 +1010,7 @@ export const produceList = [
                 name: { ko: "성장 변경", ja: "成長変更" },
                 cost: "100",
                 desc: {
-                    ko: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기 효과의 스킬카드 사용 후 자신의 파라미터 값 증가+15・코스트 수치 증가+1・plusattack1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기 효과의 카드 사용 후 자신의 파라미터 값 증가+15・코스트 수치 증가+1・plusattack1 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ 強気に変更\n✦ param6（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+15・コスト値増加+1・plusattack1（2回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
                 },
             },
@@ -1018,7 +1018,7 @@ export const produceList = [
                 name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
                 cost: "100",
                 desc: {
-                    ko: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기 효과의 스킬카드 사용 후 자신의 파라미터 값 증가+15・코스트 수치 증가+1 (최대 2회)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ 강기로 지침 변경\n✦ param6 (2회) \n✦ 성장 : 강기 효과의 카드 사용 후 자신의 파라미터 값 증가+15・코스트 수치 증가+1 (최대 2회)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ 強気に変更\n✦ param6（2回） \n✦ 成長：強気効果のスキルカード使用後、自身のパラメータ値増加+15・コスト値増加+1（2回まで）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                 }
             }
@@ -1040,11 +1040,11 @@ export const produceList = [
         id: "ssrsena_2nd", name: "Our Chant", osusume: "goodimpression", rarity: "PSSR", plan: "logic", source: "normal", jumpTime2: 10.1, releasedAt: "2025-04-22",
         item: {
             name: "一番星の挑戦状",
-            desc: "스킬카드 사용 후 호인상이 6이상인 경우\n✦ goodimpression2\n✦ motivation2\n✦ hpreduce1\n✦ inlesson3",
+            desc: "카드 사용 후 호인상이 6이상인 경우\n✦ goodimpression2\n✦ motivation2\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "スキルカード使用後、好印象が6以上の場合、\n✦ goodimpression2\n✦ motivation2\n✦ hpreduce1\n✦ inlesson3",
         },
         itemplus: {
-            desc: "스킬카드 사용 후 호인상이 6이상인 경우\n✦ goodimpression2\n✦ motivation2\n✦ inlesson3",
+            desc: "카드 사용 후 호인상이 6이상인 경우\n✦ goodimpression2\n✦ motivation2\n✦ inlesson3",
             desc_ja: "スキルカード使用後、好印象が6以上の場合、\n✦ goodimpression2\n✦ motivation2\n✦ inlesson3",
         },
         card: {
@@ -1070,11 +1070,11 @@ export const produceList = [
         },
         card: {
             name: "私を超えて",
-            desc: "startingcard\n✦ use1\n✦ 이후 원기 효과의 스킬카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 앞에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ use1\n✦ 이후 원기 효과의 카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 앞에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ use1\n✦ 以降、元気効果のスキルカードを2回使用するごとに、私を超えて（翔）を山札の一番上に生成\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "startingcard\n✦ use1\n✦ 이후 원기 효과의 스킬카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 앞에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ use1\n✦ 이후 원기 효과의 카드를 2회 사용할 때마다 私を超えて（翔）를 덱의 제일 앞에 생성\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ use1\n✦ 以降、元気効果のスキルカードを2回使用するごとに、私を超えて（翔）を山札の一番上に生成\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         tokencard: {
@@ -1084,7 +1084,7 @@ export const produceList = [
         },
         primacard: {
             name: "夢を追い続ける一番星",
-            desc: "✦ 이후 4회까지 스킬카드 코스트로 체력 감소 시 genki5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 이후 4회까지 카드 코스트로 체력 감소 시 genki5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 以降4回まで、スキルカードコストで体力減少時、genki5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -1103,11 +1103,11 @@ export const produceList = [
         },
         card: {
             name: "おっきなおにぎり",
-            desc: "hpreduce3\n✦ genki2 (레슨 중 사용한 스킬카드 1장 당 원기 증가량+5)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce3\n✦ genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+5)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce3\n✦ genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+5）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce3\n✦ genki2 (레슨 중 사용한 스킬카드 1장 당 원기 증가량+8)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce3\n✦ genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+8)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce3\n✦ genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+8）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardcustom: {
@@ -1115,7 +1115,7 @@ export const produceList = [
                 name: { ko: "효과변경", ja: "効果変更" },
                 cost: "100",
                 desc: {
-                    ko: "hpreduce3\n✦ 이후 2회까지 액티브카드를 3회 사용할 때마다 genki2 (레슨 중 사용한 스킬카드 1장 당 원기 증가량+12)\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "hpreduce3\n✦ 이후 2회까지 액티브카드를 3회 사용할 때마다 genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+12)\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "hpreduce3\n✦ 以降2回まで、アクティブスキルカードを3回使用するごとに、genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+12）\n <span style='color:#8B8FD8'>nooverlab limit1"
                 },
             },
@@ -1123,7 +1123,7 @@ export const produceList = [
                 name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
                 cost: "100",
                 desc: {
-                    ko: "hpreduce3\n✦ genki2 (레슨 중 사용한 스킬카드 1장 당 원기 증가량+8)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "hpreduce3\n✦ genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+8)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "hpreduce3\n✦ genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+8）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                 }
             }
@@ -1144,21 +1144,21 @@ export const produceList = [
         id: "ssrume_2nd", name: "구-스-피-", name_en: "Gu-Su-Pi", name_ja: "グースーピー", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 9.2, releasedAt: "2025-11-28",
         item: {
             name: "地球とランデブー！",
-            desc: "턴 개시 시 지침을 변경한 횟수가 4회 이상인 경우\n✦ 덱 혹은 버림패에 있는 랜덤한 온존 효과의 스킬카드를 손패로 이동\n✦ グーチョキパーデポン의 plusattack1・파라미터 증가량+10・코스트 수치 증가+4\n✦ inlesson2",
+            desc: "턴 개시 시 지침을 변경한 횟수가 4회 이상인 경우\n✦ 덱 혹은 버림패에 있는 랜덤한 온존 효과의 카드를 손패로 이동\n✦ グーチョキパーデポン의 plusattack1・파라미터 값 증가+10・코스트 수치 증가+4\n✦ inlesson2",
             desc_ja: "ターン開始時、指針を変更した回数が4回以上の場合、\n✦ ランダムな山札か捨札の温存効果のスキルカードを手札に移動\n✦ グーチョキパーデポンのplusattack1・パラメータ値増加+10・コスト値増加+4\n✦ inlesson2",
         },
         itemplus: {
-            desc: "턴 개시 시 지침을 변경한 횟수가 4회 이상인 경우\n✦ 덱 혹은 버림패에 있는 랜덤한 온존 효과의 스킬카드를 손패로 이동\n✦ グーチョキパーデポン의 plusattack1・파라미터 증가량+15・코스트 수치 증가+3\n✦ inlesson2",
+            desc: "턴 개시 시 지침을 변경한 횟수가 4회 이상인 경우\n✦ 덱 혹은 버림패에 있는 랜덤한 온존 효과의 카드를 손패로 이동\n✦ グーチョキパーデポン의 plusattack1・파라미터 값 증가+15・코스트 수치 증가+3\n✦ inlesson2",
             desc_ja: "ターン開始時、指針を変更した回数が4回以上の場合、\n✦ ランダムな山札か捨札の温存効果のスキルカードを手札に移動\n✦ グーチョキパーデポンのplusattack1・パラメータ値増加+15・コスト値増加+3\n✦ inlesson2",
         },
         card: {
             name: "グーチョキパーデポン",
-            desc: "✦ 강기로 지침 변경\n✦ param8\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 증가량+5\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "✦ 強気に変更\n✦ param8\n✦ 成長：直接効果で強気になった時、自身のパラメータ増加量+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경\n✦ param8\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param8\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경\n✦ param10\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 증가량+5\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "✦ 強気に変更\n✦ param10\n✦ 成長：直接効果で強気になった時、自身のパラメータ増加量+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경\n✦ param10\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param10\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
     {
@@ -1195,20 +1195,20 @@ export const produceList = [
         id: "ssrmisuzu_1st", name: "달거북이", name_en: "Moon Turtle", name_ja: "ツキノカメ", osusume: "preservation", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 11.3, releasedAt: "2025-05-16", youtube_url: "https://youtu.be/E74wm1P6CPI?si=aXXLizwFsr42Igwf",
         item: {
             name: "いつもの持ち物",
-            desc: "온존 효과의 스킬카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승\n✦ hpreduce1",
+            desc: "온존 효과의 카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승\n✦ hpreduce1",
             desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の140%分パラメータ上昇\n✦ hpreduce1",
         },
         itemplus: {
-            desc: "온존 효과의 스킬카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승",
+            desc: "온존 효과의 카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 140%만큼 파라미터 상승",
             desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の140%分パラメータ上昇",
         },
         card: {
             name: "屋上から景色",
-            desc: "startingcard\n✦ fullpower2\n✦ 전력 효과의 스킬카드의 파라미터 값 증가+4\n✦ 이후 턴 개시 시 지침이 온존인 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ fullpower2\n✦ 전력 효과 카드의 파라미터 값 증가+4\n✦ 이후 턴 개시 시 지침이 온존인 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ fullpower2\n✦ 全力効果のスキルカードのパラメータ増加+4\n✦ 以降、ターン開始時、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "startingcard\n✦ fullpower3\n✦ 전력 효과의 스킬카드의 파라미터 값 증가+9\n✦ 이후 턴 개시 시 지침이 온존인 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ fullpower3\n✦ 전력 효과 카드의 파라미터 값 증가+9\n✦ 이후 턴 개시 시 지침이 온존인 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ fullpower3\n✦ 全力効果のスキルカードのパラメータ増加+9\n✦ 以降、ターン開始時、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -1238,11 +1238,11 @@ export const produceList = [
         },
         card: {
             name: "夢と現の境界線",
-            desc: "✦ use1\n✦ 의욕이 8이하인 경우, 호인상 1.1배\n✦ 의욕이 9이상인 경우, 호인상의 140%만큼 파라미터 증가\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ use1\n✦ 의욕이 8이하인 경우, 호인상 1.1배\n✦ 의욕이 9이상인 경우, 호인상의 140%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ use1\n✦ やる気が8以下の場合、好印象1.1倍\n✦ やる気が9以上の場合、好印象の140%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "✦ use1\n✦ 의욕이 8이하인 경우, 호인상 1.1배\n✦ 의욕이 9이상인 경우, 호인상의 250%만큼 파라미터 증가\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ use1\n✦ 의욕이 8이하인 경우, 호인상 1.1배\n✦ 의욕이 9이상인 경우, 호인상의 250%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ use1\n✦ やる気が8以下の場合、好印象1.1倍\n✦ やる気が9以上の場合、好印象の250%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
@@ -1250,11 +1250,11 @@ export const produceList = [
         id: "ssrmisuzu_3rd", name: "VEIL", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "normal", jumpTime2: 7.2, releasedAt: "2026-04-29", youtube_url: "https://youtu.be/AbxzlgJTM-I?si=u1JejBnCmOJ1RGgX",
         item: {
             name: "夜空を従える花",
-            desc: "어느 한 쪽의 지침인 경우 강기 스킬카드 사용 후 3회마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3\n✦ inlesson3",
+            desc: "지침을 가지고 있으며 강기 카드를 3회 사용할 때마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3\n✦ inlesson3",
             desc_ja: "いずれかの指針の場合、強気効果のスキルカード使用後3回ごとに、\n✦ のんびりに変更\n✦ 熱意増加+40%（1ターン）\n✦ genki3\n✦ inlesson5",
         },
         itemplus: {
-            desc: "어느 한 쪽의 지침인 경우 강기 스킬카드 사용 후 3회마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3",
+            desc: "지침을 가지고 있으며 강기 카드를 3회 사용할 때마다 \n✦ 여유로 지침 변경\n✦ 열의 증가+40% (1턴)\n✦ genki3",
             desc_ja: "いずれかの指針の場合、強気効果のスキルカード使用後3回ごとに、\n✦ のんびりに変更\n✦ 熱意増加+40%（1ターン）\n✦ genki3",
         },
         card: {
@@ -1280,20 +1280,20 @@ export const produceList = [
         id: "ssrrinami_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", category: "location", osusume: "motivation", rarity: "PSSR", releasedAt: "2024-09-01", plan: "logic", source: "normal", jumpTime2: 12.3,
         item: {
             name: "ぱたぱたうちわ",
-            desc: "스킬카드를 3회 사용할 때마다\n✦ genki1\n✦ motivation3\n✦ inlesson2",
+            desc: "카드를 3회 사용할 때마다\n✦ genki1\n✦ motivation3\n✦ inlesson2",
             desc_ja: "スキルカードを3回使用するごとに、\n✦ genki1\n✦ motivation3\n✦ inlesson2",
         },
         itemplus: {
-            desc: "스킬카드를 3회 사용할 때마다\n✦ genki2\n✦ motivation4\n✦ inlesson2",
+            desc: "카드를 3회 사용할 때마다\n✦ genki2\n✦ motivation4\n✦ inlesson2",
             desc_ja: "スキルカードを3回使用するごとに、\n✦ genki2\n✦ motivation4\n✦ inlesson2",
         },
         card: {
             name: "さっぱりひといき",
-            desc: "hpreduce5 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 50%만큼 파라미터 증가\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce5 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 50%만큼 파라미터 상승\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce5 \n✦ genki2（やる気効果を2.3倍適用）\n✦ 元気の50%分パラメータ上昇\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce4 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 80%만큼 파라미터 증가\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce4 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 80%만큼 파라미터 상승\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4 \n✦ genki2（やる気効果を2.3倍適用）\n✦ 元気の80%分パラメータ上昇\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -1301,11 +1301,11 @@ export const produceList = [
         id: "ssrchina_onsen", name: "어서오세요 초성온천", name_en: "Welcome to Hatsuboshi Onsen", name_ja: "ようこそ初星温泉", category: "location", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-09-11", source: "normal", jumpTime2: 11.3,
         item: {
             name: "温泉の後のお楽しみ",
-            desc: "스킬카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki2\n✦ inlesson2",
+            desc: "카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki2\n✦ inlesson2",
             desc_ja: "スキルカードを4回使用するごとに、\n✦ 集中1.3倍\n✦ 固定genki2\n✦ inlesson2",
         },
         itemplus: {
-            desc: "스킬카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki7\n✦ inlesson2",
+            desc: "카드를 4회 사용할 때마다\n✦ 집중 1.3배\n✦ 固定genki7\n✦ inlesson2",
             desc_ja: "スキルカードを4回使用するごとに、\n✦ 集中1.3倍\n✦ 固定genki7\n✦ inlesson2",
         },
         card: {
@@ -1331,11 +1331,11 @@ export const produceList = [
         },
         card: {
             name: "ちょちょいのちょい",
-            desc: "✦ goodcondition2 \n✦ 이후 3턴 간 턴 종료 시 param4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodcondition2 \n✦ 이후 3턴 간, 턴 종료 시 param4\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodcondition2 \n✦ 以降3ターンの間、ターン終了時、param4\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ goodcondition2 \n✦ 이후 5턴 간 턴 종료 시 param4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodcondition2 \n✦ 이후 5턴 간, 턴 종료 시 param4\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodcondition2 \n✦ 以降5ターンの間、ターン終了時、param4\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -1390,11 +1390,11 @@ export const produceList = [
         id: "ssrsumika_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
         item: {
             name: "勇気の標",
-            desc: "스킬카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration4\n✦ inlesson1",
+            desc: "카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration4\n✦ inlesson1",
             desc_ja: "スキルカード使用時、集中が13以上の場合、\n✦ use1\n✦ concentration4\n✦ inlesson1",
         },
         itemplus: {
-            desc: "스킬카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration7\n✦ inlesson1",
+            desc: "카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration7\n✦ inlesson1",
             desc_ja: "スキルカード使用時、集中が13以上の場合、\n✦ use1\n✦ concentration7\n✦ inlesson1",
         },
         card: {
@@ -1616,11 +1616,11 @@ export const produceList = [
         },
         card: {
             name: "手にした答え",
-            desc: "✦ スターライト의 plusattack1 \n✦ 덱 혹은 버림패에 있는 スターライト+1장을 손패로 이동\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ スターライト의 plusattack1 \n✦ 덱 혹은 버림패에 있는 スターライト+ 1장을 손패로 이동\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ スターライトのplusattack1 \n✦ 山札か捨札にあるスターライト+1枚を手札に移動\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 온존 2단계로 지침 변경\n✦ スターライト의 plusattack1 \n✦ 덱 혹은 버림패에 있는 スターライト+1장을 손패로 이동\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존 2단계로 지침 변경\n✦ スターライト의 plusattack1 \n✦ 덱 혹은 버림패에 있는 スターライト+ 1장을 손패로 이동\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存2段階目に変更\n✦ スターライトのplusattack1 \n✦ 山札か捨札にあるスターライト+1枚を手札に移動\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -1628,12 +1628,12 @@ export const produceList = [
         id: "ssrlilja_campusfes", name: "Campus mode!!", osusume: "concentration", rarity: "PSSR", category: "nia", plan: "sense", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 9.1, releasedAt: "2025-01-16",
         item: {
             name: "いつか見た夢",
-            desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce3\n✦ 이후 3턴 동안 턴 개시 시 concentration3\n✦ inlesson2",
+            desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce3\n✦ 이후 3턴 간, 턴 개시 시 concentration3\n✦ inlesson2",
             desc_ja: "準備運動使用後、\n✦ concentration1\n✦ hpreduce3\n✦ 以降の3ターンの間、ターン開始時、concentration3\n✦ inlesson2",
             referimage: ["sense-r3"]
         },
         itemplus: {
-            desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce1\n✦ 이후 3턴 동안 턴 개시 시 concentration3\n✦ inlesson2",
+            desc: "準備運動 사용 후\n✦ concentration1\n✦ hpreduce1\n✦ 이후 3턴 간, 턴 개시 시 concentration3\n✦ inlesson2",
             desc_ja: "準備運動使用後、\n✦ concentration1\n✦ hpreduce1\n✦ 以降の3ターンの間、ターン開始時、concentration3\n✦ inlesson2",
             referimage: ["sense-r3"]
         },
@@ -1697,22 +1697,22 @@ export const produceList = [
         id: "ssrume_campusfes", name: "Campus mode!!", osusume: "fullpower", rarity: "PSSR", category: "nia", plan: "anomaly", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", releasedAt: "2025-01-09",
         item: {
             name: "叶える覚悟",
-            desc: "ジャストアピール 사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존으로 지침 변경\n✦ fullpower2\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+2\n✦ inlesson1",
+            desc: "ジャストアピール 사용 후 보류에 있는 카드가 1장 이상일 시\n✦ 온존으로 지침 변경\n✦ fullpower2\n✦ 보류에 있는 카드의 plusattack1・코스트 수치 증가+2\n✦ inlesson1",
             desc_ja: "ジャストアピール使用後、保留にあるスキルカードが1枚以上の場合、\n✦ 温存に変更\n✦ fullpower2\n✦ 保留にあるスキルカードのplusattack1・コスト値増加+2\n✦ inlesson1",
             referimage: ["anomaly-r1"]
         },
         itemplus: {
-            desc: "ジャストアピール 사용 후 보류에 있는 스킬카드가 1장 이상일 시\n✦ 온존 2단계로 지침 변경\n✦ fullpower4\n✦ 보류에 있는 스킬카드의 plusattack1・코스트 수치 증가+1\n✦ inlesson1",
+            desc: "ジャストアピール 사용 후 보류에 있는 카드가 1장 이상일 시\n✦ 온존 2단계로 지침 변경\n✦ fullpower4\n✦ 보류에 있는 카드의 plusattack1・코스트 수치 증가+1\n✦ inlesson1",
             desc_ja: "ジャストアピール使用後、保留にあるスキルカードが1枚以上の場合、\n✦ 温存2段階目に変更\n✦ fullpower4\n✦ 保留にあるスキルカードのplusattack1・コスト値増加+1\n✦ inlesson1",
             referimage: ["anomaly-r1"]
         },
         card: {
             name: "新たなステージ",
-            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동\n✦ fullpower1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동\n✦ fullpower1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ fullpower1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "✦ 덱이나 버림패에 있는 스킬 카드를 선택해 보류로 이동\n✦ fullpower2\n✦ use1\n✦ 보류에 있는 스킬카드의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동\n✦ fullpower2\n✦ use1\n✦ 보류에 있는 카드의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ fullpower2\n✦ use1\n✦ 保留にあるスキルカードのパラメータ値増加+5\n <span style='color:#8B8FD8'>nooverlab",
         },
     },
@@ -1759,11 +1759,11 @@ export const produceList = [
         },
         card: {
             name: "お姉さんの感覚",
-            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition4\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 스킬카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition4\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce6\n好調が4ターン以上の場合、使用可\n✦ goodcondition4\n✦ 最大体力の10%分体力回復\n✦ 再演：スキルカード使用後、手札にある自然体の魅力が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition6\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 스킬카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition6\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce6\n好調が4ターン以上の場合、使用可\n✦ goodcondition6\n✦ 最大体力の10%分体力回復\n✦ 再演：スキルカード使用後、手札にある自然体の魅力が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>	nooverlab limit1",
         },
         cardsecond: {
@@ -1780,20 +1780,20 @@ export const produceList = [
         id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
         item: {
             name: "すべてを賭けた輝き",
-            desc: "아이돌 고유 스킬카드 사용 후 morehp80\n✦ 소비체력 절감 1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
+            desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
             desc_ja: "アイドル固有スキルカード使用後、morehp80\n✦ 消費体力削減1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
         },
         itemplus: {
-            desc: "아이돌 고유 스킬카드 사용 후 morehp80\n✦ 소비체력 절감 1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "アイドル固有スキルカード使用後、morehp80\n✦ 消費体力削減1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
         },
         card: {
             name: "わたしだけの思い出",
-            desc: "hpreduce5\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴동안 턴 종료 시、concentration2\n✦ 재연 : 2턴마다 morehp80 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'> nooverlab limit1",
+            desc: "hpreduce5\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴 간, 턴 종료 시 concentration2\n✦ 재연 : 2턴마다 morehp80 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'> nooverlab limit1",
             desc_ja: "hpreduce5\nstartingcard\n✦ draw1\n✦ 集中強化5%\n✦ 以降の2ターンの間、ターン終了時、concentration2\n✦ 再演：2ターンごとに、morehp80自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>　nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce3\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴동안 턴 종료 시、concentration2\n✦ 재연 : 2턴마다 morehp80자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'> nooverlab limit1",
+            desc: "hpreduce3\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴 간, 턴 종료 시 concentration2\n✦ 재연 : 2턴마다 morehp80자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'> nooverlab limit1",
             desc_ja: "hpreduce3\nstartingcard\n✦ draw1\n✦ 集中強化5%\n✦ 以降の2ターンの間、ターン終了時、concentration2\n✦ 再演：2ターンごとに、morehp80自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>　nooverlab limit1",
         },
         cardsecond: {
@@ -1954,11 +1954,11 @@ export const produceList = [
         },
         card: {
             name: "入道曇と、きみ",
-            desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition3\n✦ 소비체력 감소 2턴\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 다음에 사용하는 액티브카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition3\n✦ 소비체력 감소 2턴\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition3\n✦ 消費体力減少2ターン\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 다음에 사용하는 액티브카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardcustom: {
@@ -1966,7 +1966,7 @@ export const produceList = [
                 name: { ko: "효과 추가", ja: "効果追加" },
                 cost: "100",
                 desc: {
-                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬 카드 (SSR) 3장을 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ 다음에 사용하는 액티브카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n✦ 덱 혹은 버림패에 있는 랜덤한 카드 (SSR) 3장을 덱의 맨 앞으로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n✦ ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
                 },
             },
@@ -1974,7 +1974,7 @@ export const produceList = [
                 name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
                 cost: "100",
                 desc: {
-                    ko: "✦ 다음에 사용하는 액티브 스킬카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "✦ 다음에 사용하는 액티브카드의 효과를 한 번 더 발동 (1회・1턴)\n✦ goodcondition5\n✦ 소비체력 감소 2턴\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "✦ 次に使用するアクティブスキルカードの効果をもう1回発動（1回・1ターン）\n✦ goodcondition5\n✦ 消費体力減少2ターン\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                 }
             }
@@ -2055,11 +2055,11 @@ export const produceList = [
         },
         card: {
             name: "夏宵の線香花火",
-            desc: "hpreduce4\nstartingcard\n✦ goodimpression3\n✦ motivation2 \n✦ 이후 원기 효과의 스킬카드 사용 후 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce4\nstartingcard\n✦ goodimpression3\n✦ motivation2 \n✦ 이후 원기 효과의 카드 사용 후 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4\nstartingcard\n✦ goodimpression3\n✦ motivation2 \n✦ 以降、元気効果のスキルカード使用後、goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기 효과의 스킬카드 사용 후 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기 효과의 카드 사용 후 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardcustom: {
@@ -2067,7 +2067,7 @@ export const produceList = [
                 name: { ko: "효과 변경", ja: "効果変更" },
                 cost: "100",
                 desc: {
-                    ko: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기 효과의 스킬카드 사용 후 goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기 효과의 카드 사용 후 goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
                 },
             },
@@ -2075,7 +2075,7 @@ export const produceList = [
                 name: { ko: "스킬카드 사용 수+", ja: "スキルカード使用数+" },
                 cost: "100",
                 desc: {
-                    ko: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기 효과의 스킬카드 사용 후 goodimpression1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+                    ko: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 이후 원기 효과의 카드 사용 후 goodimpression1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                     ja: "hpreduce4\nstartingcard\n✦ goodimpression4\n✦ motivation3 \n✦ 以降、元気効果のスキルカード使用後、goodimpression1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
                 },
             }
@@ -2167,11 +2167,11 @@ export const produceList = [
         id: "ssrhiro_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "goodcondition", category: "season", rarity: "PSSR", releasedAt: "2024-10-08", plan: "sense", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
         item: {
             name: "いたずらパペット",
-            desc: "액티브카드 사용 후 현재 lesshp50\n✦ 레슨 중 소비한 체력의 180%만큼 파라미터 증가\n✦ hprecovery5\n✦ 원기 증가 무효 2턴\n✦ inlesson2",
+            desc: "액티브카드 사용 후 현재 lesshp50\n✦ 레슨 중 소비한 체력의 180%만큼 파라미터 상승\n✦ hprecovery5\n✦ 원기 증가 무효 2턴\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、lesshp50\n✦ レッスン中に消費した体力の180%分パラメータ上昇\n✦ hprecovery5\n✦ 元気増加無効2ターン\n✦ inlesson2",
         },
         itemplus: {
-            desc: "액티브카드 사용 후 현재 lesshp50\n✦ 레슨 중 소비한 체력의 220%만큼 파라미터 증가\n✦ hprecovery6\n✦ 원기 증가 무효 2턴\n✦ inlesson2",
+            desc: "액티브카드 사용 후 현재 lesshp50\n✦ 레슨 중 소비한 체력의 220%만큼 파라미터 상승\n✦ hprecovery6\n✦ 원기 증가 무효 2턴\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、lesshp50\n✦ レッスン中に消費した体力の220%分パラメータ上昇\n✦ hprecovery6\n✦ 元気増加無効2ターン\n✦ inlesson2",
         },
         card: {
@@ -2251,20 +2251,20 @@ export const produceList = [
         id: "ssrhiro_valentinedist", name: "해피 밀푀유", name_en: "happymillefeuille", osusume: "fullpower", name_ja: "ハッピーミルフィーユ", category: "season", releasedAt: "2025-02-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/AON5aAVG3QU?si=jjjTsAYWxnD3L_Wd",
         item: {
             name: "れんしゅーのしるし",
-            desc: "전력 효과의 스킬카드 사용 시 \n✦ genki10\n✦ inlesson1",
+            desc: "전력 효과의 카드 사용 시 \n✦ genki10\n✦ inlesson1",
             desc_ja: "全力効果のスキルカード使用時、\n✦ genki10\n✦ inlesson1",
         },
         itemplus: {
-            desc: "전력 효과의 스킬카드 사용 시 \n✦ genki13\n✦ inlesson1",
+            desc: "전력 효과의 카드 사용 시 \n✦ genki13\n✦ inlesson1",
             desc_ja: "全力効果のスキルカード使用時、\n✦ genki13\n✦ inlesson1",
         },
         card: {
             name: "がんばった、よ",
-            desc: "✦ fullpower4 \n✦ 덱 혹은 버림패에 있는 스킬카드를 선택해 보류로 이동\n✦ 이후 턴 개시 시 지침이 전력인 경우, 모든 카드의 파라미터 값 증가+2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ fullpower4 \n✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동\n✦ 이후 턴 개시 시 지침이 전력인 경우, 모든 카드의 파라미터 값 증가+2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ fullpower4 \n✦ 山札か捨札にあるスキルカードを選択し、保留に移動\n✦ 以降、ターン開始時、全力の場合、すべてのスキルカードのパラメータ値増加+2\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ fullpower5 \n✦ 덱 혹은 버림패에 있는 스킬카드를 선택해 보류로 이동\n✦ 이후 턴 개시 시 지침이 전력인 경우, 모든 카드의 파라미터 값 증가+2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ fullpower5 \n✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동\n✦ 이후 턴 개시 시 지침이 전력인 경우, 모든 카드의 파라미터 값 증가+2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ fullpower5 \n✦ 山札か捨札にあるスキルカードを選択し、保留に移動\n✦ 以降、ターン開始時、全力の場合、すべてのスキルカードのパラメータ値増加+2\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -2281,11 +2281,11 @@ export const produceList = [
         },
         card: {
             name: "受け取ってくれる？",
-            desc: "✦ 온존으로 지침 변경 \n✦ 이후 강기 효과의 스킬카드 사용 후 강기 효과의 스킬카드의 파라미터 값 증가+2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존으로 지침 변경 \n✦ 이후 강기 효과의 카드 사용 후 강기 효과 카드의 파라미터 값 증가+2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存に変更 \n✦ 以降、強気効果のスキルカード使用後、強気効果のスキルカードのパラメータ値増加+2\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 온존으로 지침 변경 \n✦ 이후 강기 효과의 스킬카드 사용 후 강기 효과의 스킬카드의 파라미터 값 증가+3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존으로 지침 변경 \n✦ 이후 강기 효과의 카드 사용 후 강기 효과 카드의 파라미터 값 증가+3\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存に変更 \n✦ 以降、強気効果のスキルカード使用後、強気効果のスキルカードのパラメータ値増加+3\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -2302,11 +2302,11 @@ export const produceList = [
         },
         card: {
             name: "あなたにあげる",
-            desc: "✦ 이후 3턴 간 턴 종료 시, 원기의 60%만큼 파라미터 상승 \n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 이후 3턴 간, 턴 종료 시 원기의 60%만큼 파라미터 상승 \n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 以降の3ターン間、ターン終了時、元気の60%分パラメータ上昇 \n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 이후 3턴 간 턴 종료 시, 원기의 80%만큼 파라미터 상승 \n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 이후 3턴 간, 턴 종료 시 원기의 80%만큼 파라미터 상승 \n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 以降の3ターン間、ターン終了時、元気の80%分パラメータ上昇 \n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -2323,11 +2323,11 @@ export const produceList = [
         },
         card: {
             name: "おてつき注意！",
-            desc: "startingcard\n✦ 이후 5턴 간 턴 개시 시, 지침이 강기가 아닌 경우 강기로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ 이후 5턴 간, 턴 개시 시 지침이 강기가 아닌 경우 강기로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ 以降の5ターンの間、ターンの開始時、非強気の場合、強気に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "startingcard\n✦ 이후 5턴 간 턴 개시 시, 지침이 강기가 아닌 경우 강기로 지침 변경\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ 이후 5턴 간, 턴 개시 시 지침이 강기가 아닌 경우 강기로 지침 변경\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ 以降の5ターンの間、ターンの開始時、非強気の場合、強気に変更\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -2335,11 +2335,11 @@ export const produceList = [
         id: "ssrchina_yukidokenilimited", name: "눈녹을 쯤에", name_en: "Yukidokeni", osusume: "goodimpression", name_ja: "雪解けに", rarity: "PSSR", category: "season", releasedAt: "2025-02-28", plan: "logic", source: "limited", jumpTime2: 9.3, youtube_url: "https://youtu.be/ZnUy-qYDhAo?si=6Awhdq0VlneX_z9s",
         item: {
             name: "春のおとずれ",
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 호인상이 3이상인 경우,\n✦ goodimpression2\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
+            desc: "카드 코스트로 강화상태를 소비했을 때 호인상이 3이상인 경우,\n✦ goodimpression2\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
             desc_ja: "スキルカードコストで強化状態を消費した時、好印象が3以上の場合、\n✦ goodimpression2\n✦ motivation1\n✦ hpreduce1\n✦ inlesson4",
         },
         itemplus: {
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 호인상이 3이상인 경우,\n✦ goodimpression2\n✦ motivation1\n✦ inlesson4",
+            desc: "카드 코스트로 강화상태를 소비했을 때 호인상이 3이상인 경우,\n✦ goodimpression2\n✦ motivation1\n✦ inlesson4",
             desc_ja: "スキルカードコストで強化状態を消費した時、好印象が3以上の場合、\n✦ goodimpression2\n✦ motivation1\n✦ inlesson4",
         },
         card: {
@@ -2398,21 +2398,21 @@ export const produceList = [
         id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", category: "season", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "Pっち",
-            desc: "집중이 8이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
+            desc: "집중이 8이상인 경우 카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
             desc_ja: "集中が8以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
         },
         itemplus: {
-            desc: "집중이 3이상인 경우 스킬카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
+            desc: "집중이 3이상인 경우 카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
             desc_ja: "集中が3以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
         },
         card: {
             name: "ヒーローと出会い",
-            desc: "✦ goodcondition4\n✦ concentration1 \n✦ 호조가 4이상인 경우 다음 턴, use1\n✦ 호조가 12이상인 경우 2턴 후, use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodcondition4\n✦ concentration1 \n✦ 호조가 4턴 이상인 경우 다음 턴 use1\n✦ 호조가 12턴 이상인 경우 2턴 후 use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodcondition4\n✦ concentration1 \n✦ 好調が4ターン以上の場合、次のターン、use1\n✦ 好調が12ターン以上の場合、2ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
 
         },
         cardplus: {
-            desc: "✦ goodcondition4\n✦ concentration2 \n✦ 호조가 4이상인 경우 다음 턴, use1\n✦ 호조가 12이상인 경우 2턴 후, use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodcondition4\n✦ concentration2 \n✦ 호조가 4턴 이상인 경우 다음 턴 use1\n✦ 호조가 12턴 이상인 경우 2턴 후 use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodcondition4\n✦ concentration2 \n✦ 好調が4ターン以上の場合、次のターン、use1\n✦ 好調が12ターン以上の場合、2ターン後、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -2420,20 +2420,20 @@ export const produceList = [
         id: "ssrsaki_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", category: "season", rarity: "PSSR", releasedAt: "2025-04-11", plan: "anomaly", jumpTime2: 11.4, source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "運命の出逢い",
-            desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 스킬카드의 파라미터 값 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ hpreduce3\n✦ inlesson1",
+            desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 카드의 파라미터 값 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ hpreduce3\n✦ inlesson1",
             desc_ja: "ターン開始後、全力の場合、\n✦ genki10\n✦ fullpower3\n✦ 手札のパラメータ値増加+10\n✦ 次のターン、温存に変更\n✦ hpreduce3\n✦ inlesson1",
         },
         itemplus: {
-            desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 스킬카드의 파라미터 값 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ inlesson1",
+            desc: "턴 개시 후 지침이 전력일 경우\n✦ genki10\n✦ fullpower3\n✦ 손패 카드의 파라미터 값 증가+10\n✦ 다음 턴, 온존으로 지침 변경\n✦ inlesson1",
             desc_ja: "ターン開始後、全力の場合、\n✦ genki10\n✦ fullpower3\n✦ 手札のパラメータ値増加+10\n✦ 次のターン、温存に変更\n✦ inlesson1",
         },
         card: {
             name: "あの日、この場所で",
-            desc: "hpreduce6\n✦ fullpower10\n✦ 덱 혹은 버림패에 있는 스킬카드를 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce6\n✦ fullpower10\n✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce6\n✦ fullpower10\n✦ 山札か捨札にあるスキルカードを選択し、保留に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce4\n✦ fullpower10\n✦ 덱 혹은 버림패에 있는 스킬카드를 2장 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce4\n✦ fullpower10\n✦ 덱 혹은 버림패에 있는 카드를 2장 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4\n✦ fullpower10\n✦ 山札か捨札にあるスキルカードを2枚選択し、保留に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -2441,11 +2441,11 @@ export const produceList = [
         id: "ssrrinami_howlingdist", name: "Howling over the World", osusume: "concentration", rarity: "PSSR", releasedAt: "2025-05-29", category: "live", plan: "sense", source: "dist", youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "世界を救ったマイク",
-            desc: "집중 효과의 스킬카드 사용 후\n✦ 소비체력 감소 2턴\n✦ inlesson2",
+            desc: "집중 효과의 카드 사용 후\n✦ 소비체력 감소 2턴\n✦ inlesson2",
             desc_ja: "集中効果のスキルカード使用後、\n✦ 消費体力減少2ターン\n✦ inlesson2",
         },
         itemplus: {
-            desc: "집중 효과의 스킬카드 사용 후\n✦ 소비체력 감소 2턴\n✦ inlesson3",
+            desc: "집중 효과의 카드 사용 후\n✦ 소비체력 감소 2턴\n✦ inlesson3",
             desc_ja: "集中効果のスキルカード使用後、\n✦ 消費体力減少2ターン\n✦ inlesson3",
         },
         card: {
@@ -2483,11 +2483,11 @@ export const produceList = [
         id: "ssrlilja_howlinglimited", name: "Howling over the World", osusume: "goodimpression", rarity: "PSSR", releasedAt: "2025-06-09", category: "live", plan: "logic", source: "limited", jumpTime2: 7.3, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "シルベスター出撃！",
-            desc: "2턴마다 턴 종료 시 제외에 있는 스킬카드가 8장 이하일 경우, \n✦ 호인상 강화+70% (3턴)\n✦ hpreduce1",
+            desc: "2턴마다 턴 종료 시 제외에 있는 카드가 8장 이하일 경우, \n✦ 호인상 강화+70% (3턴)\n✦ hpreduce1",
             desc_ja: "2ターンごとのターン終了時、除外にあるスキルカードが8枚以下の場合、\n✦ 好印象強化+70%（3ターン）\n✦ hpreduce1",
         },
         itemplus: {
-            desc: "2턴마다 턴 종료 시 제외에 있는 스킬카드가 8장 이하일 경우, \n✦ 호인상 강화+70% (3턴)",
+            desc: "2턴마다 턴 종료 시 제외에 있는 카드가 8장 이하일 경우, \n✦ 호인상 강화+70% (3턴)",
             desc_ja: "2ターンごとのターン終了時、除外にあるスキルカードが8枚以下の場合、\n✦ 好印象強化+70%（3ターン）",
         },
         card: {
@@ -2612,11 +2612,11 @@ export const produceList = [
         id: "ssrtemari_gamusyaralimited", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", osusume: "goodimpression", category: "live", releasedAt: "2025-10-10", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/RVazZ92UGL8?si=3CuzdLdv9TMvOY5H",
         item: {
             name: "高くジャンプ！",
-            desc: "한 턴 내에 스킬카드를 2회 사용할 때마다\n✦ genki5\n✦ 호인상 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ inlesson2",
+            desc: "한 턴 내에 카드를 2회 사용할 때마다\n✦ genki5\n✦ 호인상 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ inlesson2",
             desc_ja: "ターン内にスキルカードを2回使用するごとに、\n✦ genki5\n✦ 好印象増加量増加+50%（1ターン）\n✦ hpreduce1\n✦ inlesson2",
         },
         itemplus: {
-            desc: "한 턴 내에 스킬카드를 2회 사용할 때마다\n✦ genki7\n✦ 호인상 증가량 증가+50% (1턴)\n✦ inlesson2",
+            desc: "한 턴 내에 카드를 2회 사용할 때마다\n✦ genki7\n✦ 호인상 증가량 증가+50% (1턴)\n✦ inlesson2",
             desc_ja: "ターン内にスキルカードを2回使用するごとに、\n✦ genki7\n✦ 好印象増加量増加+50%（1ターン）\n\n✦ inlesson2",
         },
         card: {
@@ -2654,20 +2654,20 @@ export const produceList = [
         id: "ssrume_endlesslimited", name: "ENDLESS DANCE", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", jumpTime2: 7.4, category: "live", releasedAt: "2026-02-27", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "知らない世界へ",
-            desc: "집중 효과의 스킬카드를 3회 사용할 때마다\n✦ 제외패에 있는 스킬카드 2장 당 concentration1",
+            desc: "집중 효과의 카드를 3회 사용할 때마다\n✦ 제외패에 있는 카드 2장 당 concentration1",
             desc_ja: "集中効果のスキルカードを3回使用するごとに、\n✦ 除外にあるスキルカード2枚につきconcentration1",
         },
         itemplus: {
-            desc: "집중 효과의 스킬카드를 3회 사용할 때마다\n✦ 제외패에 있는 스킬카드 2장 당 concentration1\n✦ genki2",
+            desc: "집중 효과의 카드를 3회 사용할 때마다\n✦ 제외패에 있는 카드 2장 당 concentration1\n✦ genki2",
             desc_ja: "集中効果のスキルカードを3回使用するごとに、\n✦ 除外にあるスキルカード2枚につきconcentration1\n✦ genki2",
         },
         card: {
             name: "狂い咲け！",
-            desc: "✦ concentration1\n✦ use1\n✦ 제외패에 있는 스킬카드가 4장 이상인 경우 param5\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ concentration1\n✦ use1\n✦ 제외패에 있는 카드가 4장 이상인 경우 param5\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ concentration1\n✦ use1\n✦ 除外にあるスキルカードが4枚以上にの場合、param5\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "✦ concentration3\n✦ use1\n✦ 제외패에 있는 스킬카드가 4장 이상인 경우 param5\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ concentration3\n✦ use1\n✦ 제외패에 있는 카드가 4장 이상인 경우 param5\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ concentration3\n✦ use1\n✦ 除外にあるスキルカードが4枚以上にの場合、param5\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
@@ -2675,11 +2675,11 @@ export const produceList = [
         id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, category: "live", releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "ユートピアへの誘い",
-            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki4\n✦ 액티브 스킬카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
+            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki4\n✦ 액티브카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
             desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
         },
         itemplus: {
-            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki6\n✦ 액티브 스킬카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
+            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우,\n✦ genki6\n✦ 액티브카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴, draw1",
             desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki6\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
         },
         card: {
@@ -2780,20 +2780,20 @@ export const produceList = [
         id: "ssrtemari_summer2limited", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", category: "gravia", jumpTime2: 9.1, releasedAt: "2026-08-17", youtube_url: "https://youtu.be/ebTsJRw7e0c?si=5flzzHh-cGgEQhNd",
         item: {
             name: "夏を編んだ影",
-            desc: "강기 효과의 스킬카드 사용 시 지침이 강기 2단계일 경우\n✦ 강기 강화 +35%\n✦ 다음 턴 온존으로 지침 변경\n✦ inlesson2",
+            desc: "강기 효과의 카드 사용 시 지침이 강기 2단계일 경우\n✦ 강기 강화 +35%\n✦ 다음 턴 온존으로 지침 변경\n✦ inlesson2",
             desc_ja: "強気効果のスキルカード使用時、強気2段階目の場合、\n✦ 強気強化+35%\n✦ 次のターン、温存に変更\n✦ inlesson2",
         },
         itemplus: {
-            desc: "강기 효과의 스킬카드 사용 시 지침이 강기 2단계일 경우\n✦ 강기 강화 +60%\n✦ 다음 턴 온존으로 지침 변경\n✦ inlesson2",
+            desc: "강기 효과의 카드 사용 시 지침이 강기 2단계일 경우\n✦ 강기 강화 +60%\n✦ 다음 턴 온존으로 지침 변경\n✦ inlesson2",
             desc_ja: "強気効果のスキルカード使用時、強気2段階目の場合、\n✦ 強気強化+60%\n✦ 次のターン、温存に変更\n✦ inlesson2",
         },
         card: {
             name: "夏風の通り道",
-            desc: "✦ 온존으로 지침 변경\n✦ genki5\n✦ 지침이 강기일 경우, 다음 턴 강기 2단계로 변경\n✦ 이후 2회까지 직접효과로 강기 2단계로 지침 변경 시, 다음에 사용하는 스킬카드의 소비체력을 0으로 감소 (1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존으로 지침 변경\n✦ genki5\n✦ 지침이 강기일 경우, 다음 턴 강기 2단계로 변경\n✦ 이후 2회까지 직접효과로 강기 2단계로 지침 변경 시, 다음에 사용하는 카드의 체력소비를 0으로 고정 (1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存に変更\n✦ genki5\n✦ 強気の場合、次のターン、強気2段階目に変更\n✦ 以降2回まで、直接効果で強気2段階目になった時、次に使用したスキルカードの消費体力を0にする（1回）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 온존으로 지침 변경\n✦ genki13\n✦ 지침이 강기일 경우, 다음 턴 강기 2단계로 변경\n✦ 이후 2회까지 직접효과로 강기 2단계로 지침 변경 시, 다음에 사용하는 스킬카드의 소비체력을 0으로 감소 (1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 온존으로 지침 변경\n✦ genki13\n✦ 지침이 강기일 경우, 다음 턴 강기 2단계로 변경\n✦ 이후 2회까지 직접효과로 강기 2단계로 지침 변경 시, 다음에 사용하는 카드의 체력소비를 0으로 고정 (1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 温存に変更\n✦ genki13\n✦ 強気の場合、次のターン、強気2段階目に変更\n✦ 以降2回まで、直接効果で強気2段階目になった時、次に使用したスキルカードの消費体力を0にする（1回）\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -2801,11 +2801,11 @@ export const produceList = [
         id: "ssrmisuzu_summer2limited", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 9.5, releasedAt: "2026-08-26", youtube_url: "https://youtu.be/ebTsJRw7e0c?si=5flzzHh-cGgEQhNd",
         item: {
             name: "夏の足音",
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13이상인 경우\n✦ concentration2\n✦ 집중 강화 5% (1턴)\n✦ genki1",
+            desc: "카드 코스트로 강화상태를 소비했을 때 집중이 13이상인 경우\n✦ concentration2\n✦ 집중 강화 5% (1턴)\n✦ genki1",
             desc_ja: "スキルカードコストで強化状態を消費した時、集中が13以上の場合、\n✦ concentration2\n✦ 集中強化5%（1ターン）\n✦ genki1",
         },
         itemplus: {
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 집중이 13이상인 경우\n✦ concentration3\n✦ 집중 강화 5% (1턴)\n✦ genki1",
+            desc: "카드 코스트로 강화상태를 소비했을 때 집중이 13이상인 경우\n✦ concentration3\n✦ 집중 강화 5% (1턴)\n✦ genki1",
             desc_ja: "スキルカードコストで強化状態を消費した時、集中が13以上の場合、\n✦ concentration3\n✦ 集中強化5%（1ターン）\n✦ genki1",
         },
         card: {
@@ -2831,11 +2831,11 @@ export const produceList = [
         },
         card: {
             name: "悪戯ハートジャック",
-            desc: "✦ param4 (2회)\n✦ 성장 : 전력 효과의 스킬카드를 2회 사용할 때마다 자신의 파라미터 값 증가+8 (3회까지)\n <span style = 'color:#8B8FD8'> nooverlab limit1",
+            desc: "✦ param4 (2회)\n✦ 성장 : 전력 효과의 카드를 2회 사용할 때마다 자신의 파라미터 값 증가+8 (3회까지)\n <span style = 'color:#8B8FD8'> nooverlab limit1",
             desc_ja: "✦ param4（2回）\n✦ 成長：全力効果のスキルカードを2回使用するごとに、自身のパラメータ値増加+8（3回まで）\n <span style = 'color:#8B8FD8'> nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ param4 (2회)\n✦ 성장 : 전력 효과의 스킬카드를 2회 사용할 때마다 자신의 파라미터 값 증가+15 (3회까지)\n <span style = 'color:#8B8FD8'> nooverlab limit1",
+            desc: "✦ param4 (2회)\n✦ 성장 : 전력 효과의 카드를 2회 사용할 때마다 자신의 파라미터 값 증가+15 (3회까지)\n <span style = 'color:#8B8FD8'> nooverlab limit1",
             desc_ja: "✦ param4（2回）\n✦ 成長：全力効果のスキルカードを2回使用するごとに、自身のパラメータ値増加+15（3回まで）\n <span style = 'color:#8B8FD8'> nooverlab limit1",
         }
     },
@@ -2843,11 +2843,11 @@ export const produceList = [
         id: "ssrlilja_halloween2limited", name: "Agitato", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "limited", category: "gravia", jumpTime2: 8.0, releasedAt: "2026-09-30", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
         item: {
             name: "天性の才能",
-            desc: "스킬카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ 호조의 30%만큼 파라미터 상승",
+            desc: "카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ 호조의 30%만큼 파라미터 상승",
             desc_ja: "スキルカード使用後、手札の眠気が1枚以上の場合、\n✦ 好調の30%分パラメータ上昇",
         },
         itemplus: {
-            desc: "스킬카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ genki1\n✦ 호조의 50%만큼 파라미터 상승",
+            desc: "카드 사용 후 손패에 졸음 카드가 1장 이상일 경우 \n✦ genki1\n✦ 호조의 50%만큼 파라미터 상승",
             desc_ja: "スキルカード使用後、手札の眠気が1枚以上の場合、\n✦ genki1\n✦ 好調の50%分パラメータ上昇",
         },
         card: {
@@ -2914,11 +2914,11 @@ export const produceList = [
         id: "ssrsena_starmineunit", name: "Star-mine", osusume: "fullpower", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 10.6, releasedAt: "2025-07-31", youtube_url: "https://youtu.be/BLkCR5h_Sv4?si=_4ic9SB8p_Ze-2aQ",
         item: {
             name: "夢見る星",
-            desc: "지침이 전력일 경우, 한 턴 내 스킬카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ 다음 턴, 온존 2단계로 지침 변경",
+            desc: "지침이 전력일 경우, 한 턴 내에 카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ hpreduce1\n✦ 다음 턴, 온존 2단계로 지침 변경",
             desc_ja: "全力の場合、ターン内にスキルカードを3回使用するごとに、\n✦ 全力値増加量増加+50%（1ターン）\n✦ hpreduce1\n✦ 次のターン、温存2段階目に変更",
         },
         itemplus: {
-            desc: "지침이 전력일 경우, 한 턴 내 스킬카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ 다음 턴, 온존 2단계로 지침 변경",
+            desc: "지침이 전력일 경우, 한 턴 내에 카드를 3회 사용할 때마다 \n✦ 전력치 증가량 증가+50% (1턴)\n✦ 다음 턴, 온존 2단계로 지침 변경",
             desc_ja: "全力の場合、ターン内にスキルカードを3回使用するごとに、\n✦ 全力値増加量増加+50%（1ターン）\n✦ 次のターン、温存2段階目に変更",
         },
         card: {
@@ -2944,11 +2944,11 @@ export const produceList = [
         },
         card: {
             name: "つかみ取った未来",
-            desc: "✦ genki2 (레슨 중 사용한 스킬카드 1장 당 원기 증가량+5)\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+5)\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+5）\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ genki2 (레슨 중 사용한 스킬카드 1장 당 원기 증가량+8)\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+8)\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ genki2（レッスン中に使用したスキルカード1枚につき、元気増加量+8）\n✦ goodimpression2\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -3040,11 +3040,11 @@ export const produceList = [
         id: "ssrchina_michinaruunit", name: "미지로 펼쳐지는", name_en: "Unknown Unbound", name_ja: "みちなるひろがる", osusume: "concentration", releasedAt: "2026-01-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.2, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO",
         item: {
             name: "ひろがる未来へ",
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 호조가 3턴 이상인 경우\n✦ concentration2\n✦ 다음 턴, draw1\n✦ 호조소비 1",
+            desc: "카드 코스트로 강화상태를 소비했을 때 호조가 3턴 이상인 경우\n✦ concentration2\n✦ 다음 턴, draw1\n✦ 호조소비 1",
             desc_ja: "スキルカードコストで強化状態を消費した時、好調が3ターン以上の場合、\n✦ concentration2\n✦ 次のターン、draw1\n✦ 好調消費1",
         },
         itemplus: {
-            desc: "스킬카드 코스트로 강화상태를 소비했을 때 호조가 3턴 이상인 경우\n✦ concentration2\n✦ 다음 턴, draw2\n✦ 호조소비 1",
+            desc: "카드 코스트로 강화상태를 소비했을 때 호조가 3턴 이상인 경우\n✦ concentration2\n✦ 다음 턴, draw2\n✦ 호조소비 1",
             desc_ja: "スキルカードコストで強化状態を消費した時、好調が3ターン以上の場合、\n✦ concentration2\n✦ 次のターン、draw2\n✦ 好調消費1",
         },
         card: {
@@ -3061,11 +3061,11 @@ export const produceList = [
         id: "ssrhiro_michinaruunit", name: "미지로 펼쳐지는", name_en: "Unknown Unbound", name_ja: "みちなるひろがる", osusume: "goodimpression", releasedAt: "2026-01-27", rarity: "PSSR", plan: "logic", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/qwfpgEhngVI?si=VRd8V2lIVDiOGYgO",
         item: {
             name: "みちなるシグナル",
-            desc: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 최대체력의 80%만큼 체력 소비 \n✦ 이후 스킬카드 코스트로 강화상태를 소비한 경우 최대체력의 20%만큼 체력 회복・호인상 강화+10%\n✦ inlesson1",
+            desc: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 최대체력의 80%만큼 체력 소비 \n✦ 이후 카드 코스트로 강화상태를 소비할 경우 최대체력의 20%만큼 체력 회복・호인상 강화+10%\n✦ inlesson1",
             desc_ja: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 最大体力の80%分体力消費 \n✦ 以降、スキルカードコストで強化状態を消費した時、最大体力の20%分体力回復・好印象強化+10%\n✦ inlesson1",
         },
         itemplus: {
-            desc: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 최대체력의 80%만큼 체력 소비 \n✦ 이후 스킬카드 코스트로 강화상태를 소비한 경우 최대체력의 20%만큼 체력 회복・호인상 강화+10%\n✦ inlesson1",
+            desc: "lessonstart\n✦ genki7\n✦ motivation4\n✦ 최대체력의 80%만큼 체력 소비 \n✦ 이후 카드 코스트로 강화상태를 소비할 경우 최대체력의 20%만큼 체력 회복・호인상 강화+10%\n✦ inlesson1",
             desc_ja: "lessonstart\n✦ genki8\n✦ motivation5\n✦ 最大体力の80%分体力消費 \n✦ 以降、スキルカードコストで強化状態を消費した時、最大体力の20%分体力回復・好印象強化+10%\n✦ inlesson1",
         },
         card: {
@@ -3082,11 +3082,11 @@ export const produceList = [
         id: "ssrlilja_dokimekiunit", name: "두근두근 이모션", name_en: "Tokimeki Emotion", name_ja: "どきめきエモーション", osusume: "goodcondition", releasedAt: "2026-04-01", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-",
         item: {
             name: "わたしたちの約束",
-            desc: "직접효과로 호조가 7이상 증가했을 시 집중이 13이상인 경우,\n✦ 집중의 75%만큼 호조를 증가시키고 집중을 절반으로 감소\n✦ goodconditionz1\n✦ genki2",
+            desc: "직접효과로 호조가 7턴 이상 증가했을 시 집중이 13이상인 경우,\n✦ 집중의 75%만큼 호조를 증가시키고 집중을 절반으로 감소\n✦ goodconditionz1\n✦ genki2",
             desc_ja: "直接効果で好調が7以上増加後、集中が13以上の場合、\n✦ 集中の75%分好調増加させ、集中を半分にする\n✦ goodconditionz1\n✦ genki2",
         },
         itemplus: {
-            desc: "직접효과로 호조가 7이상 증가했을 시 집중이 13이상인 경우,\n✦ 집중의 75%만큼 호조를 증가시키고 집중을 절반으로 감소\n✦ goodconditionz2\n✦ genki2",
+            desc: "직접효과로 호조가 7턴 이상 증가했을 시 집중이 13이상인 경우,\n✦ 집중의 75%만큼 호조를 증가시키고 집중을 절반으로 감소\n✦ goodconditionz2\n✦ genki2",
             desc_ja: "直接効果で好調が7以上増加後、集中が13以上の場合、\n✦ 集中の75%分好調増加させ、集中を半分にする\n✦ goodconditionz2\n✦ genki2",
         },
         card: {
@@ -3112,32 +3112,32 @@ export const produceList = [
         },
         card: {
             name: "いつもあなたの隣で",
-            desc: "✦ 강기로 지침 변경\n✦ param7\n✦ genki7 \n✦ 성장 : 직접효과로 온존이 되었을 시 자신의 파라미터 증가치+7 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab",
-            desc_ja: "✦ 強気に変更\n✦ param7\n✦ genki7 \n✦　成長：直接効果で温存になった時、自身のパラメータ増加値+7（2回まで）\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 강기로 지침 변경\n✦ param7\n✦ genki7 \n✦ 성장 : 직접효과로 온존이 되었을 시 자신의 파라미터 상승치+7 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ 強気に変更\n✦ param7\n✦ genki7 \n✦ 成長：直接効果で温存になった時、自身のパラメータ増加値+7（2回まで）\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경\n✦ param7\n✦ genki7 \n✦ 성장 : 직접효과로 온존이 되었을 시 자신의 파라미터 증가치+7 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab",
-            desc_ja: "✦ 強気に変更\n✦ param7\n✦ genki7 \n✦　成長：直接効果で温存になった時、自身のパラメータ増加値+7（2回まで）\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 강기로 지침 변경\n✦ param7\n✦ genki7 \n✦ 성장 : 직접효과로 온존이 되었을 시 자신의 파라미터 상승치+7 (최대 2회)\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦ 強気に変更\n✦ param7\n✦ genki7 \n✦ 成長：直接効果で温存になった時、自身のパラメータ増加値+7（2回まで）\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
     {
         id: "ssrmao_sugarunit", name: "SUGAR FLAVOR", osusume: "goodcondition", releasedAt: "2026-06-15", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 9.1, youtube_url: "https://youtu.be/z2WzTPOIWkE?si=IeVc4KvH4bf1ij8N",
         item: {
             name: "溢れ出る想い",
-            desc: "호조가 5턴 이상인 경우 멘탈 스킬 사용 시 3회마다 \n✦ goodcondition3\n✦ goodconditionz1\n✦ inlesson3",
+            desc: "호조가 5턴 이상인 경우 멘탈카드 사용 시 3회마다 \n✦ goodcondition3\n✦ goodconditionz1\n✦ inlesson3",
             desc_ja: "好調が5ターン以上の場合、メンタルスキルカード使用後3回ごとに、\n✦ goodcondition3\n✦ goodconditionz1\n✦ inlesson3",
         },
         itemplus: {
-            desc: "호조가 5턴 이상인 경우 멘탈 스킬 사용 시 3회마다 \n✦ goodcondition3\n✦ goodconditionz1\n✦ genki3\n✦ inlesson3",
+            desc: "호조가 5턴 이상인 경우 멘탈카드 사용 시 3회마다 \n✦ goodcondition3\n✦ goodconditionz1\n✦ genki3\n✦ inlesson3",
             desc_ja: "好調が5ターン以上の場合、メンタルスキルカード使用後3回ごとに、\n✦ goodcondition3\n✦ goodconditionz1\n✦ genki3\n✦ inlesson3",
         },
         card: {
             name: "奪われる心",
-            desc: "✦ 이후 3회까지 액티브 스킬카드 사용 2회마다 호조의 150%만큼 파라미터 증가 \n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 이후 3회까지 액티브카드 사용 2회마다 호조의 150%만큼 파라미터 상승 \n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 以降3回まで、アクティブスキルカード使用時2回ごとに、好調の150%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 이후 3회까지 액티브 스킬카드 사용 2회마다 호조의 200%만큼 파라미터 증가 \n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 이후 3회까지 액티브카드 사용 2회마다 호조의 200%만큼 파라미터 상승 \n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 以降3回まで、アクティブスキルカード使用時2回ごとに、好調の200%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -3217,11 +3217,11 @@ export const produceList = [
         id: "srchina_1sr", name: "가슴을 펴고 한걸음씩", name_en: "Chest Out, One Step at a Time", name_ja: "胸を張って一歩ずつ", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
         item: {
             name: "しょげないハンカチ",
-            desc: "액티브 스킬 사용 후 \n✦ 원기의 60%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson2",
+            desc: "액티브카드 사용 후 \n✦ 원기의 60%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、\n✦ 元気の60%分パラメータ上昇\n✦ hpreduce2\n✦ inlesson2",
         },
         itemplus: {
-            desc: "액티브 스킬 사용 후 \n✦ 원기의 70%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson2",
+            desc: "액티브카드 사용 후 \n✦ 원기의 70%만큼 파라미터 상승\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、\n✦ 元気の70%分パラメータ上昇\n✦ hpreduce2\n✦ inlesson2",
         },
         card: {
@@ -3247,11 +3247,11 @@ export const produceList = [
         },
         card: {
             name: "紫電一閃",
-            desc: "✦ goodimpression2\n✦ 이후 4회까지 턴 종료 시 의욕이 6이상인 경우, 호인상의 80%만큼 파라미터 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodimpression2\n✦ 이후 4회까지 턴 종료 시 의욕이 6이상인 경우, 호인상의 80%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodimpression2\n✦ 以降4回まで、ターン終了時、やる気が6以上の場合、好印象の80%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ goodimpression4\n✦ 이후 4회까지 턴 종료 시 의욕이 6이상인 경우, 호인상의 80%만큼 파라미터 증가\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ goodimpression4\n✦ 이후 4회까지 턴 종료 시 의욕이 6이상인 경우, 호인상의 80%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ goodimpression4\n✦ 以降4回まで、ターン終了時、やる気が6以上の場合、好印象の80%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
@@ -3259,11 +3259,11 @@ export const produceList = [
         id: "srsena_1sr", name: "첫 번째 별", name_en: "First Star", name_ja: "一番星", osusume: "fullpower", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2024-11-16",
         item: {
             name: "みんなの憧れ",
-            desc: "스킬카드 사용 시 지침이 전력일 경우\n✦ param9\n✦ genki9\n✦ inlesson1",
+            desc: "카드 사용 시 지침이 전력일 경우\n✦ param9\n✦ genki9\n✦ inlesson1",
             desc_ja: "スキルカード使用時、全力の場合、\n✦ param9\n✦ genki9\n✦ inlesson1",
         },
         itemplus: {
-            desc: "스킬카드 사용 시 지침이 전력일 경우\n✦ param18\n✦ genki9\n✦ inlesson1",
+            desc: "카드 사용 시 지침이 전력일 경우\n✦ param18\n✦ genki9\n✦ inlesson1",
             desc_ja: "スキルカード使用時、全力の場合、\n✦ param18\n✦ genki9\n✦ inlesson1",
         },
         card: {
@@ -3301,11 +3301,11 @@ export const produceList = [
         id: "srmisuzu_1sr", name: "느긋하게, 한 걸음씩", name_en: "Slowly, One Step at a Time", name_ja: "ゆっくり、一歩ずつ", osusume: "preservation", rarity: "PSR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16",
         item: {
             name: "そよ風に揺れる髪飾り",
-            desc: " 액티브카드 사용 후 \n✦ 온존으로 지침 변경\n✦ 강기 효과의 스킬카드의 파라미터 수치 증가+3\n✦ hpreduce2\n✦ inlesson2",
+            desc: " 액티브카드 사용 후 \n✦ 온존으로 지침 변경\n✦ 강기 효과의 카드의 파라미터 수치 증가+3\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "アクティブスキルカード使用後、\n✦ 温存に変更\n✦ 強気効果のスキルカードのパラメータ値増加+3\n✦ hpreduce2\n✦ inlesson2",
         },
         itemplus: {
-            desc: " 액티브카드 사용 후 \n✦ 온존으로 지침 변경\n✦ 강기 효과의 스킬카드의 파라미터 수치 증가+3\n✦ hpreduce2\n✦ inlesson3",
+            desc: " 액티브카드 사용 후 \n✦ 온존으로 지침 변경\n✦ 강기 효과의 카드의 파라미터 수치 증가+3\n✦ hpreduce2\n✦ inlesson3",
             desc_ja: "アクティブスキルカード使用後、\n✦ 温存に変更\n✦ 強気効果のスキルカードのパラメータ値増加+3\n✦ hpreduce2\n✦ inlesson3",
         },
         card: {

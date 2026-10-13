@@ -24,7 +24,7 @@ export const abilityData = {
         }
     },
     "fixedparam": {
-        name: { ko: "초기 스탯", ja: "初期パラメータ", en: "Initial Stats" },
+        name: { ko: "초기 스텟", ja: "初期パラメータ", en: "Initial Stats" },
         format: { ko: "초기 {type} 상승+{val}", ja: "初期{type}上昇+{val}", en: "Initial {type} Up +{val}" },
         levels: {
             "SSR": { 1: 52, 2: 55, 3: 59, 4: 62, 5: 65 },
@@ -667,7 +667,7 @@ export const abilityData = {
         name: { ko: "개조(3회)", ja: "カスタマイズ(3回)", en: "Customize(3 times)" },
         format: { ko: "카드 개조 시 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカードカスタマイズ時、{type}上昇+{val} (プロデュース中3回)", en: "When customizing a card, {type} Up +{val} (3 times during Produce)" },
         levels: {
-            "SSR": { 1: 17, 2: 24 },
+            "SSR": { 1: 17, 2: 24 }, // 40렙 미확인
             "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },

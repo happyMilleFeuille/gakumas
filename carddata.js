@@ -82,6 +82,10 @@ export const cardList = [
         releasedAt: "2024-05-16",
         have: "card_m",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "✦ use1\n✦ draw1\n✦ 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ use1\n✦ draw1\n✦ 手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         plan: "free",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -101,6 +105,10 @@ export const cardList = [
         name_ja: "次の桜の季節には",
         type: "vocal",
         have: "card_m",
+        card_effects: [{
+            kr: "✦ 랜덤한 강화된 카드를 손패에 생성\n✦ use1\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ ランダムな強化済みスキルカードを、手札に生成\n✦ use1\n✦ 次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         plan: "free",
         rarity: "SSR",
@@ -199,6 +207,10 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "hpreduce1 \n✦ genki8\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce1 \n✦ genki8\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
         abilities:
@@ -237,13 +249,17 @@ export const cardList = [
             ]
     },
     {
-        id: "vocal_free8",
+        id: "vocal_free8", // 한정인데 프리로 넣어버림 일단 그냥 둠
         name: "대운동회, 개최!",
         name_ja: "大運動会、開催っ！",
         type: "vocal",
         releasedAt: "2025-09-20",
         plan: "free",
         have: "card_m",
+        card_effects: [{
+            kr: "✦ 다음에 사용하는 카드의 체력소비를 0으로 고정 (1회)\n✦ draw1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 次に使用したスキルカードの消費体力を0にする（1回）\n✦ draw1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         source: "limited",
         source_details: "sale",
@@ -293,6 +309,10 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "✦ param5\n✦ genki5\n✦ 소비체력 감소 3턴\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ param5\n✦ genki5\n✦ 消費体力減少3ターン\n✦ 次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-04-11",
         rarity: "SSR",
         source: "dist",
@@ -316,6 +336,10 @@ export const cardList = [
         plan: "free",
         rarity: "SSR",
         have: "card_m",
+        card_effects: [{
+            kr: "startingcard \n✦ 소비체력 절감1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "startingcard \n✦ 消費体力削減1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         source: "dist",
         extra1: "param", extra2: "troubledel",
         abilities:
@@ -336,6 +360,10 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "hpreduce1\n✦ 고정genki10\n✦ 체력이 50% 이상일 경우 use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce1\n✦ 固定genki10\n✦ 体力が50%以上の場合、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-11-10",
         rarity: "SSR",
         source: "dist",
@@ -382,6 +410,10 @@ export const cardList = [
         type: "vocal",
         plan: "sense",
         have: "card_a",
+        card_effects: [{
+            kr: "✦ param8\n✦ 집중이 15이상일 경우 다음 턴 param8 (호조 효과 2배 적용)\n✦ 호조가 12턴 이상일 경우 2턴 후 param8 (호조 효과 2배 적용)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ param8\n✦ 集中が15以上の場合、次のターン、param8（好調効果を2倍適用）\n✦ 好調が12ターン以上の場合、2ターン後、param8（集中効果を2倍適用）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-10-31",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -402,6 +434,10 @@ export const cardList = [
         type: "vocal",
         plan: "sense",
         have: "card_a",
+        card_effects: [{
+            kr: "hpreduce6\n✦ param45\n✦ 호조가 4턴 이상일 경우 2턴 후 hprecovery6\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce6\n✦ param45\n✦ 好調が4ターン以上の場合、2ターン後、hprecovery6\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-07-12",
         rarity: "SSR",
         source: "limited",
@@ -490,6 +526,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["goodcondition"],
+        card_effects: [{
+            kr: "✦ goodcondition3\n✦ 손패를 전부 버리고 버린 만큼 드로우\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodcondition3\n✦ 手札をすべて入れ替える\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-12-26",
         name_modal: "Campus mode!!",
         char: ["saki", "temari", "kotone"],
@@ -515,6 +555,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["goodcondition", "concentration"],
+        card_effects: [{
+            kr: "✦ concentration4\n✦ goodcondition4\n✦ 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ concentration4\n✦ goodcondition4\n✦ 次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         rarity: "SSR",
         source: "dist",
@@ -558,6 +602,10 @@ export const cardList = [
         plan: "logic",
         have: "card_m",
         attrs: ["goodimpression"],
+        card_effects: [{
+            kr: "의욕 소비2\n✦ goodimpression4\n✦ use1\n✦ 다음 턴 draw1\n✦ 의욕이 6이상일 경우 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "やる気消費2\n✦ goodimpression4\n✦ use1\n✦ 次のターン、draw1\n✦ やる気が6以上の場合、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-01-05",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -607,7 +655,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[vocal]アクティブスキルカード使用時、\n✦ パラメータ上昇量増加50％（1ターン）\n✦ genki2（やる気効果を1.3倍適用）\n✦ inlesson1",
-            kr: "[vocal]액티브카드 사용 시\n✦ 파라미터 증가량 증가50% (1턴)\n✦ genki2 (의욕효과 1.3배 적용)\n✦ inlesson1",
+            kr: "[vocal]액티브카드 사용 시\n✦ 파라미터 증가량 증가 50% (1턴)\n✦ genki2 (의욕효과 1.3배 적용)\n✦ inlesson1",
         }],
         releasedAt: "2025-02-14",
         rarity: "SSR",
@@ -653,6 +701,10 @@ export const cardList = [
         plan: "logic",
         have: "card_m",
         attrs: ["goodimpression", "genki"],
+        card_effects: [{
+            kr: "✦ genki6\n✦ 호인상 강화+100% (3턴)\n✦ 호인상이 10이상일 경우 이후 3턴 간, 턴 개시 후 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ genki6\n✦ 好印象強化+100%（3ターン）\n✦ 好印象が10以上の場合、以降の3ターンの間、ターン開始後、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-10-10",
         rarity: "SSR",
         source: "limited",
@@ -701,7 +753,12 @@ export const cardList = [
         plan: "logic",
         have: "card_a",
         attrs: ["goodimpression"],
+        card_effects: [{
+            kr: "의욕 소비2\n✦ 4턴 후 호인상의 120%만큼 파라미터 상승\n✦ 의욕이 3이상일 경우 이후 3턴 간, 턴 종료 시 goodimpression3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "やる気消費2\n✦ 4ターン後、好印象の120%分パラメータ上昇\n✦ やる気が３以上の場合、以降の3ターンの間、ターン終了時、goodimpression3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-01-27",
+
         rarity: "SSR",
         source: "limited_u",
         extra1: "param", extra2: "ranenhance",
@@ -770,6 +827,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_m",
         attrs: ["fullpower"],
+        card_effects: [{
+            kr: "✦ genki7\n✦ fullpower2\n✦  이후 3회까지, 멘탈카드 사용 시 비전력 상태일 경우 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ genki7\n✦ fullpower2\n✦ 以降3回まで、メンタルスキルカード使用時、非全力状態の場合、fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-01-16",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -791,6 +852,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_a",
         attrs: ["enthusiasm"],
+        card_effects: [{
+            kr: "지침이 온존일 경우 사용 가능\n✦ 강기로 지침 변경\n✦ param16\n✦ 손패를 전부 버리고 버린 만큼 드로우\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "温存の場合、使用可\n✦ 強気に変更\n✦ param16\n✦ 手札をすべて入れ替える\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-04-29",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -812,6 +877,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_a",
         attrs: ["fullpower"],
+        card_effects: [{
+            kr: "레슨 중 누계 전력치가 10이상일 경우 사용 가능\n✦ param1 (3회)\n✦ fullpower5\n✦ 성장 : 직접효과로 지침을 3회 변경할 때마다 자신의 파라미터 값+10 (3회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "このレッスン中の累計全力値が10以上の場合、使用可\n✦ param1（3回）\n✦ fullpower5\n✦ 成長：直接効果で指針を3回変更するたび、自身のパラメータ値増加+10（3回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-07-31",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -834,7 +903,7 @@ export const cardList = [
         have: "card_m",
         attrs: ["fullpower"],
         card_effects: [{
-            kr: "✦ fullpower5\n✦ 지침이 전력이 아닐 경우 fullpower2\n✦ 지침이 전력일 경우 손패의 파라미터치 증가+7\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "✦ fullpower5\n✦ 지침이 전력이 아닐 경우 fullpower2\n✦ 지침이 전력일 경우 손패의 파라미터 값 증가+7\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "✦ fullpower5\n✦ 非全力状態の場合、fullpower2\n✦ 全力状態の場合、手札のパラメータ値増加+7\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2026-09-20",
@@ -1012,6 +1081,10 @@ export const cardList = [
         plan: "free",
         have: "card_a",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "✦ param6\n✦ genki5\n✦ 다음 턴 draw1\n✦ 2턴 후 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ param6\n✦ genki5\n✦ 次のターン、draw1\n✦ 2ターン後、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
         abilities:
@@ -1032,6 +1105,10 @@ export const cardList = [
         releasedAt: "2024-05-16",
         plan: "free",
         have: "card_m",
+        card_effects: [{
+            kr: "✦ 소비체력 절감1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 消費体力削減1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
         abilities:
@@ -1196,6 +1273,10 @@ export const cardList = [
         releasedAt: "2025-07-31",
         plan: "free",
         have: "card_a",
+        card_effects: [{
+            kr: "덱 혹은 버림패에 있는 랜덤한 졸음 카드를 제외로 이동\n✦ use1\n✦ 이후 카드를 5회 사용할 때마다 param4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "ランダムな山札か捨札の眠気を除外に移動\n✦ use1\n✦ 以降、スキルカードを5回使用するごとに、param4\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         source: "limited_u",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -1284,6 +1365,10 @@ export const cardList = [
         type: "dance",
         plan: "sense",
         have: "card_m",
+        card_effects: [{
+            kr: "✦ goodconditionz3\n✦ hprecovery4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodconditionz3\n✦ hprecovery4\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-11-28",
         source: "limited",
         rarity: "SSR",
@@ -1377,6 +1462,10 @@ export const cardList = [
         have: "card_m",
         attrs: ["genki", "motivation", "goodimpression"],
         releasedAt: "2024-11-06",
+        card_effects: [{
+            kr: "✦ genki7\n✦ motivation5\n✦ 원기가 30이상일 경우 goodimpression4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ genki7\n✦ motivation5\n✦ 元気が30以上の場合、goodimpression4\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         plan: "logic",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -1423,6 +1512,10 @@ export const cardList = [
         plan: "logic",
         have: "card_m",
         attrs: ["motivation"],
+        card_effects: [{
+            kr: "3턴째 이후일 경우 사용 가능 \n✦ motivation3\n✦ 의욕 증가량 증가+50% (3턴)\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "3ターン目以降の場合、使用可\n✦ motivation3\n✦ やる気増加量増加+50%（３ターン）\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-04-10",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -1444,6 +1537,10 @@ export const cardList = [
         have: "card_m",
         attrs: ["motivation", "goodimpression"],
         releasedAt: "2024-05-16",
+        card_effects: [{
+            kr: "✦ goodimpression5\n✦ motivation4\n✦ 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodimpression5\n✦ motivation4\n✦ 次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         plan: "logic",
         rarity: "SSR",
         source: "dist",
@@ -1566,6 +1663,10 @@ export const cardList = [
         plan: "logic",
         have: "card_m",
         attrs: ["motivation"],
+        card_effects: [{
+            kr: "✦ motivation5\n✦ 손패를 전부 버리고 버린 만큼 드로우\n✦ draw1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ motivation5\n✦ 手札をすべて入れ替える\n✦ draw1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-06-05",
         source: "limited_f",
         rarity: "SSR",
@@ -1613,6 +1714,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_m",
         attrs: ["preservation"],
+        card_effects: [{
+            kr: "✦ 온존 2단계로 지침 변경\n✦ 열의 증가+50% (3턴)\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 温存2段階目に変更\n✦ 熱意増加+50%（3ターン）\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-11-28",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -1757,6 +1862,10 @@ export const cardList = [
         name_ja: "お疲れ様、千奈ちゃん。",
         type: "visual",
         have: "card_m",
+        card_effects: [{
+            kr: "✦ hprecovery5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ hprecovery5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         plan: "free",
         rarity: "SSR",
@@ -1870,9 +1979,13 @@ export const cardList = [
     {
         id: "visual_free7",
         name: "반드시 따라잡아 주겠어!",
-        name_ja: "新たな挑戦の成功ですわ!",
+        name_ja: "ぜったい追いついてやる！",
         type: "visual",
         releasedAt: "2024-11-16",
+        card_effects: [{
+            kr: "✦ 저하 상태 무효 1회\n✦ draw2\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 低下状態無効1回\n✦ draw2\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         plan: "free",
         have: "card_m",
         rarity: "SSR",
@@ -1895,6 +2008,10 @@ export const cardList = [
         releasedAt: "2024-05-16",
         plan: "free",
         have: "card_m",
+        card_effects: [{
+            kr: "startingcard \n✦ 소비체력 감소 4턴\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "startingcard \n✦ 消費体力減少4ターン\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         source: "dist",
         rarity: "SSR",
         extra1: "param", extra2: "troubledel",
@@ -1917,6 +2034,10 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "✦ genki3\n✦ 다음 턴 손패의 카드를 강화\n✦ 2턴 후 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ genki3\n✦ 次のターン、手札をすべてレッスン中強化\n✦ 2ターン後、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         source: "dist",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -2007,6 +2128,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["concentration"],
+        card_effects: [{
+            kr: "호조 소비 1턴\n 3턴째 이후일 경우 사용 가능\n✦ 집중 증가량 증가+50% (3턴)\n✦ 호조 상태일 경우 다음 턴 concentration6\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "好調消費1ターン\n 3ターン目以降の場合、使用可\n✦ 集中増加量増加+50%（3ターン）\n✦ 好調状態の場合、次のターン、concentration6\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-10-21",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -2054,6 +2179,10 @@ export const cardList = [
         plan: "sense",
         have: "card_a",
         attrs: ["concentration"],
+        card_effects: [{
+            kr: "✦ param13 (집중 효과 1.5배 적용)\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ param13（集中効果を1.5倍適用）\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         source: "limited",
         releasedAt: "2024-08-01",
         rarity: "SSR",
@@ -2179,6 +2308,10 @@ export const cardList = [
         plan: "logic",
         have: "card_m",
         attrs: ["goodimpression"],
+        card_effects: [{
+            kr: "hpreduce1\n✦ goodimpression6\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce1\n✦ goodimpression6\n✦ 次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-06-19",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -2199,6 +2332,10 @@ export const cardList = [
         type: "visual",
         plan: "logic",
         have: "card_a",
+        card_effects: [{
+            kr: "hpreduce4 \n✦ 호인상이 3이상일 경우 호인상의 150%만큼 파라미터 상승\n✦ 의욕이 3이상일 경우 원기의 70%만큼 파라미터 상승\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce4 \n✦ 好印象が3以上の場合、好印象の150%分パラメータ上昇\n✦ やる気が3以上の場合、元気の70%分パラメータ上昇\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-09-01",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -2266,6 +2403,10 @@ export const cardList = [
         plan: "logic",
         have: "card_a",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "hpreduce2 \n 의욕이 6이상일 경우 사용 가능\n✦ genki3\n✦ 원기의 130%만큼 파라미터 상승\n✦ 다음 턴 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce2 \n やる気が6以上の場合、使用可\n✦ genki3\n✦ 元気の130%分パラメータ上昇\n✦ 次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2026-02-09",
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -2370,7 +2511,7 @@ export const cardList = [
                 "sp_lessonup",
                 "supportrateup",
                 "sp_param",
-                "customize3",
+                "customize3", // 40렙 미확인
                 "event_paraup"
             ]
     },
@@ -2453,6 +2594,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_m",
         attrs: ["preservation", "fullpower"],
+        card_effects: [{
+            kr: "✦ 온존 2단계로 지침 변경\n✦ fullpower4\n✦ 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 温存2段階目に変更\n✦ fullpower4\n✦ 次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         source: "dist",
         extra1: "param", extra2: "ranenhance",
@@ -2475,6 +2620,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_m",
         attrs: ["preservation"],
+        card_effects: [{
+            kr: "hpreduce2\n✦ genki8\n✦ 온존으로 지침 변경\n✦ 이후 2턴 간, 턴 개시 시 온존으로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce2\n✦ genki8\n✦ 温存に変更\n✦ 以降2ターンの間、ターン開始時、温存に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         source: "limited",
         extra1: "param", extra2: "ranenhance",
@@ -2518,6 +2667,10 @@ export const cardList = [
         releasedAt: "2025-04-11",
         plan: "anomaly",
         have: "card_m",
+        card_effects: [{
+            kr: "✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동\n✦ draw1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動\n✦ draw1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         source: "limited",
         extra1: "param", extra2: "ranenhance",
@@ -2540,6 +2693,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_a",
         attrs: ["preservation", "fullpower", "enthusiasm"],
+        card_effects: [{
+            kr: "✦ 강기로 지침 변경\n✦ fullpower3\n✦ param3 (2회)\n✦ 지침이 온존일 경우 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 強気に変更\n✦ fullpower3\n✦ param3（2回）\n✦ 温存の場合、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         source: "limited",
         extra1: "param", extra2: "ranenhance",
@@ -2562,6 +2719,10 @@ export const cardList = [
         plan: "anomaly",
         have: "card_a",
         attrs: ["fullpower"],
+        card_effects: [{
+            kr: "✦ fullpower1\n✦ 이후 4회까지, 턴 종료 시 지침이 전력일 경우 param6 (누적 전력치의 200%만큼 파라미터 상승량 증가)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ fullpower1\n✦ 以降4回まで、ターン終了時、全力の場合、param6（累積全力値の200%分、パラメータ上昇量増加）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SSR",
         source: "limited",
         extra1: "param", extra2: "ranenhance",
@@ -2584,7 +2745,7 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]턴 개시 시 온존으로 지침 변경한 횟수가 4회 이상일 경우\n✦ 액티브카드의 파라미터치 증가+22 \n✦ inlesson1",
+            kr: "[visual]턴 개시 시 온존으로 지침 변경한 횟수가 4회 이상일 경우\n✦ 액티브카드의 파라미터 값 증가+22 \n✦ inlesson1",
             jp: "[visual]ターン開始時、温存になった回数が4回以上の場合、\n✦ アクティブスキルカードのパラメータ値増加+22 \n✦ inlesson1",
         }],
         releasedAt: "2026-07-21",
@@ -2656,6 +2817,10 @@ export const cardList = [
         source_details: "sale",
         gacha: false,
         have: "card_m",
+        card_effects: [{
+            kr: "✦ use1\n✦ 다음 턴 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ use1\n✦ 次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         abilities:
@@ -2760,6 +2925,10 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "원기가 0인 경우 사용 가능\n✦ genki6\n✦ 소비체력 감소 3턴\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "元気が0の場合、使用可\n✦ genki6\n✦ 消費体力減少3ターン\n✦ 次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
@@ -2890,6 +3059,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["concentration"],
+        card_effects: [{
+            kr: "✦ concentration5\n✦ 집중이 3이상일 경우 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ concentration5\n✦ 集中が3以上の場合、次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         source: "limited",
         extra1: "param",
@@ -2912,6 +3085,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["concentration"],
+        card_effects: [{
+            kr: "✦ 이후 3턴 간, 턴 종료 시 concentration2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 以降の3ターンの間、ターン終了時、concentration2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         source: "limited",
         extra1: "param",
@@ -2934,6 +3111,10 @@ export const cardList = [
         plan: "logic",
         have: "card_a",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "✦ genki2\n✦ hprecovery5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ genki2\n✦ hprecovery5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3018,6 +3199,10 @@ export const cardList = [
         plan: "logic",
         have: "card_m",
         attrs: ["goodimpression", "motivation"],
+        card_effects: [{
+            kr: "덱 혹은 버림패에 있는 랜덤한 졸음 카드를 제외로 이동\n✦ goodimpression4\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "ランダムな山札か捨札の眠気を除外に移動\n✦ goodimpression4\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3083,6 +3268,10 @@ export const cardList = [
         source: "limited",
         have: "card_a",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "hpreduce3\n✦ genki7\n✦ 의욕의 340%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "hpreduce3\n✦ genki7\n✦ やる気の340%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3240,6 +3429,10 @@ export const cardList = [
         type: "dance",
         plan: "free",
         have: "card_a",
+        card_effects: [{
+            kr: "3턴째 이후 사용 가능\n✦ param3\n✦ 소비체력 감소 2턴\n✦ 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "3ターン目以降の場合、使用可\n✦ param3\n✦ 消費体力減少2ターン\n✦ 次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
@@ -3410,6 +3603,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["goodcondition", "concentration"],
+        card_effects: [{
+            kr: "✦ goodcondition4\n✦ concentration3\n✦ 체력이 50% 이상인 경우 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodcondition4\n✦ concentration3\n✦ 体力が50%以上の場合、次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3633,6 +3830,10 @@ export const cardList = [
         plan: "logic",
         have: "card_a",
         attrs: ["goodimpression"],
+        card_effects: [{
+            kr: "✦ goodimpression2\n✦ 호인상의 100%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodimpression2\n✦ 好印象の100%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3703,6 +3904,10 @@ export const cardList = [
         source: "limited",
         have: "card_m",
         attrs: ["goodimpression"],
+        card_effects: [{
+            kr: "✦ goodimpression2\n✦ hprecovery3\n✦ 호인상이 10이상일 경우 use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodimpression2\n✦ hprecovery3\n✦ 好印象が10以上の場合、use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         rarity: "SR",
         extra1: "param",
         abilities:
@@ -3880,6 +4085,10 @@ export const cardList = [
         plan: "free",
         have: "card_a",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "레슨 클리어 100% 이하일 경우 사용 가능\n✦ param10\n✦ genki9\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "レッスンCLEARの100%以下の場合、使用可\n✦ param10\n✦ genki9\n✦ 次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
@@ -3901,6 +4110,10 @@ export const cardList = [
         plan: "free",
         have: "card_a",
         attrs: ["genki"],
+        card_effects: [{
+            kr: "체력이 50% 이상인 경우 사용 가능\n✦ param4\n✦ genki5\n✦ 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "体力が50%以上の場合、使用可\n✦ param4\n✦ genki5\n✦ 次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-05-16",
         rarity: "SR",
         extra1: "param",
@@ -3963,6 +4176,10 @@ export const cardList = [
         type: "visual",
         plan: "free",
         have: "card_a",
+        card_effects: [{
+            kr: "✦ param6 (2회)\n✦ 다음 턴 손패의 카드를 강화\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ param6（2回）\n✦ 次のターン、手札をすべてレッスン中強化\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-11-16",
         rarity: "SR",
         extra1: "param",
@@ -4047,6 +4264,10 @@ export const cardList = [
         plan: "sense",
         have: "card_m",
         attrs: ["goodcondition"],
+        card_effects: [{
+            kr: "✦ goodcondition5\n✦ 다음 턴 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ goodcondition5\n✦ 次のターン、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2024-08-01",
         source: "limited",
         rarity: "SR",
@@ -4354,6 +4575,10 @@ export const cardList = [
         source: "limited",
         have: "card_m",
         attrs: ["fullpower"],
+        card_effects: [{
+            kr: "지침이 온존일 경우 사용 가능 \n✦ fullpower3\n✦ hprecovery3\n✦ 덱에 있는 카드를 선택해 보류로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "温存の場合、使用可 \n✦ fullpower3\n✦ hprecovery3\n✦ 山札にあるスキルカードを選択し、保留に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-02-01",
         rarity: "SR",
         extra1: "param",
@@ -4376,6 +4601,10 @@ export const cardList = [
         source: "limited",
         have: "card_a",
         attrs: ["fullpower", "preservation"],
+        card_effects: [{
+            kr: "✦ 다음 턴 온존으로 지침 변경\n✦ 다음 턴 fullpower3\n✦ 지침이 전력일 경우 param24\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ 次のターン、温存に変更\n✦ 次のターン、fullpower3\n✦ 全力の場合、param24\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
         releasedAt: "2025-03-10",
         rarity: "SR",
         extra1: "param",
@@ -4419,7 +4648,7 @@ export const cardList = [
         plan: "anomaly",
         source: "limited",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["visual400"], stats: { visual: 10 }, target: "get", max: 2 }],
+        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["visual400"], stats: { visual: 10 }, target: "get", targetdisplay: { ko: "랜덤한 스킬카드(R) 획득", ja: "ランダムなスキルカード（R）獲得", en: "get a random skill card(R)" }, max: 2 }],
         releasedAt: "2026-06-26",
         rarity: "SR",
         extra1: "param",

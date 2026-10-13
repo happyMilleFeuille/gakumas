@@ -613,12 +613,106 @@ function startWeeklyPlan(type) {
                         { key: 'hif_test_dance', icon: 'dance', color: '#46a4f3', label: 'Da' },
                         { key: 'hif_test_visual', icon: 'visual', color: '#fcc75e', label: 'Vi' }
                     ];
+                    const percKeyMap = {
+                        hif_test_vocal: 'hif_test_perc_vocal',
+                        hif_test_dance: 'hif_test_perc_dance',
+                        hif_test_visual: 'hif_test_perc_visual'
+                    };
+                    const getActiveInputKey = (key) => {
+                        const isPerc = tooltip.dataset.hifTestUsePerc === 'true';
+                        return isPerc ? percKeyMap[key] : key;
+                    };
+                    const ensureHifPercentDefaults = () => {
+                        const defaults = {
+                            hif_test_perc_vocal: 34,
+                            hif_test_perc_dance: 33,
+                            hif_test_perc_visual: 33
+                        };
+                        Object.entries(defaults).forEach(([key, value]) => {
+                            if (calcStore.weeks[weekNum].opts[key] === undefined) {
+                                calcStore.updateWeekOpt(weekNum, key, value);
+                            }
+                        });
+                    };
+                    const normalizeHifPercentValues = () => {
+                        const keys = ['hif_test_perc_vocal', 'hif_test_perc_dance', 'hif_test_perc_visual'];
+                        const values = keys.map(key => Math.max(0, Math.min(100, parseInt(calcStore.weeks[weekNum].opts[key]) || 0)));
+                        let total = values.reduce((sum, val) => sum + val, 0);
+
+                        if (total > 100) {
+                            let overflow = total - 100;
+                            for (let i = values.length - 1; i >= 0 && overflow > 0; i--) {
+                                const reduction = Math.min(values[i], overflow);
+                                values[i] -= reduction;
+                                overflow -= reduction;
+                            }
+                        } else if (total < 100) {
+                            let deficit = 100 - total;
+                            for (let i = 0; i < values.length && deficit > 0; i++) {
+                                const addition = Math.min(100 - values[i], deficit);
+                                values[i] += addition;
+                                deficit -= addition;
+                            }
+                        }
+
+                        keys.forEach((key, idx) => {
+                            calcStore.updateWeekOpt(weekNum, key, values[idx]);
+                        });
+                    };
+                    const getHifPercentPreviewStats = () => {
+                        const variableTotal = Math.max(0, maxTotalVal - (minVal * 3));
+                        const inputValues = fields.map(field => {
+                            const input = tooltip.querySelector(`.hif-test-stat-input[data-id="${field.key}"]`);
+                            return {
+                                field,
+                                percent: Math.max(0, Math.min(100, parseInt(input?.value) || 0))
+                            };
+                        });
+                        const percentTotal = inputValues.reduce((sum, entry) => sum + entry.percent, 0);
+                        const scale = percentTotal > 100 ? 100 / percentTotal : 1;
+                        const entries = inputValues.map(entry => {
+                            const raw = variableTotal * entry.percent * scale / 100;
+                            return {
+                                field: entry.field,
+                                value: Math.floor(raw),
+                                remainder: raw - Math.floor(raw)
+                            };
+                        });
+                        const targetExtraTotal = Math.round(variableTotal * Math.min(percentTotal, 100) / 100);
+                        let remaining = targetExtraTotal - entries.reduce((sum, entry) => sum + entry.value, 0);
+                        entries
+                            .slice()
+                            .sort((a, b) => b.remainder - a.remainder)
+                            .forEach(entry => {
+                                if (remaining <= 0) return;
+                                entry.value += 1;
+                                remaining -= 1;
+                            });
+
+                        return entries.reduce((stats, entry) => {
+                            stats[entry.field.key] = minVal + entry.value;
+                            return stats;
+                        }, {});
+                    };
+                    const updateHifPercentPreview = () => {
+                        const isPerc = tooltip.dataset.hifTestUsePerc === 'true';
+                        const stats = isPerc ? getHifPercentPreviewStats() : {};
+                        tooltip.querySelectorAll('.hif-test-percent-preview').forEach(el => {
+                            const val = stats[el.dataset.id];
+                            el.textContent = Number.isFinite(val) ? String(val) : '';
+                            el.style.display = isPerc ? 'block' : 'none';
+                        });
+                    };
 
                     const maxTotals = { '7': 140, '13': 440, '20': 520 };
                     const minTotals = { '7': 20, '13': 80, '20': 100 };
                     const maxTotalVal = maxTotals[weekNum] || 0;
                     const minVal = minTotals[weekNum] || 0;
                     const isInitiallyPerc = savedOpts.hif_test_use_perc === 'true';
+                    if (isInitiallyPerc) {
+                        ensureHifPercentDefaults();
+                        normalizeHifPercentValues();
+                    }
 
                     // 최저치 깔아두기 적용 (% 제외 모드이고 최저치 설정이 있는 경우)
                     if (!isInitiallyPerc && minVal > 0) {
@@ -633,7 +727,7 @@ function startWeeklyPlan(type) {
                         updateMainLabel(wrapper);
                     }
 
-                    const maxTotalText = maxTotalVal ? `<div class="hif-test-max-total" style="display: ${isInitiallyPerc ? 'none' : 'block'}; font-size:${isMobile ? '0.65rem' : '0.72rem'}; font-weight:bold; color:${idolColor}; text-align:center; margin-bottom: 2px;">${t('hif_test_max_total', { maxTotal: maxTotalVal })}</div>` : '';
+                    const maxTotalText = maxTotalVal ? `<div class="hif-test-max-total" style="display: block; font-size:${isMobile ? '0.65rem' : '0.72rem'}; font-weight:bold; color:${idolColor}; text-align:center; margin-bottom: 2px;">${t('hif_test_max_total', { maxTotal: maxTotalVal })}</div>` : '';
 
                     tooltip.innerHTML = `
                         <div style="display:flex; flex-direction:column; gap:${isMobile ? '6px' : '10px'}; min-width:${isMobile ? '160px' : '190px'};">
@@ -642,21 +736,31 @@ function startWeeklyPlan(type) {
                                 ${t(savedOpts.hif_test_use_perc === 'true' ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc')}
                             </div>
                             <div style="display:grid; grid-template-columns:repeat(3, minmax(${isMobile ? '48px' : '58px'}, 1fr)); gap:${isMobile ? '6px' : '10px'}; align-items:start;">
-                            ${fields.map(field => `
+                            ${fields.map(field => {
+                                const inputKey = isInitiallyPerc ? percKeyMap[field.key] : field.key;
+                                const inputVal = savedOpts[inputKey] ?? (isInitiallyPerc ? 0 : minVal);
+                                return `
                                 <label style="display:flex; flex-direction:column; align-items:center; gap:${isMobile ? '4px' : '6px'};">
                                     <img src="icons/${field.icon}.webp" alt="${field.label}" style="width:${isMobile ? '15px' : '18px'}; height:${isMobile ? '15px' : '18px'};">
-                                    <input
-                                        type="number"
-                                        inputmode="numeric"
-                                        max="999"
-                                        class="hif-test-stat-input"
-                                        data-id="${field.key}"
-                                        value="${savedOpts[field.key] ?? minVal}"
-                                        placeholder="${minVal}"
-                                        style="width:${isMobile ? '48px' : '58px'}; border:1px solid ${field.color}55; border-radius:6px; padding:${isMobile ? '4px 5px' : '5px 6px'}; font-size:${isMobile ? '0.72rem' : '0.8rem'}; outline:none; text-align:center;"
-                                    >
+                                    <div style="position:relative; width:${isMobile ? '48px' : '58px'};">
+                                        <input
+                                            type="number"
+                                            inputmode="numeric"
+                                            max="${isInitiallyPerc ? '100' : '999'}"
+                                            class="hif-test-stat-input"
+                                            data-id="${field.key}"
+                                            value="${inputVal}"
+                                            placeholder="${isInitiallyPerc ? 0 : minVal}"
+                                            data-padding-normal="${isMobile ? '4px 5px' : '5px 6px'}"
+                                            data-padding-percent="${isMobile ? '4px 14px 4px 5px' : '5px 16px 5px 6px'}"
+                                            style="width:100%; box-sizing:border-box; border:1px solid ${field.color}55; border-radius:6px; padding:${isInitiallyPerc ? (isMobile ? '4px 14px 4px 5px' : '5px 16px 5px 6px') : (isMobile ? '4px 5px' : '5px 6px')}; font-size:${isMobile ? '0.72rem' : '0.8rem'}; outline:none; text-align:center;"
+                                        >
+                                        <span class="hif-test-percent-suffix" style="display:${isInitiallyPerc ? 'block' : 'none'}; position:absolute; right:${isMobile ? '5px' : '6px'}; top:50%; transform:translateY(-50%); font-size:${isMobile ? '0.62rem' : '0.7rem'}; font-weight:700; color:#888; pointer-events:none;">%</span>
+                                    </div>
+                                    <span class="hif-test-percent-preview" data-id="${field.key}" style="display:${isInitiallyPerc ? 'block' : 'none'}; min-height:${isMobile ? '10px' : '12px'}; font-size:${isMobile ? '0.58rem' : '0.66rem'}; font-weight:800; color:${field.color}; line-height:1;"></span>
                                 </label>
-                            `).join('')}
+                            `;
+                            }).join('')}
                             </div>
                             <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; width:100%;">
                                 <button class="hif-test-perc-btn" style="width:${isMobile ? '26px' : '30px'}; height:${isMobile ? '26px' : '30px'}; background:${savedOpts.hif_test_use_perc === 'true' ? idolColor : 'white'}; color:${savedOpts.hif_test_use_perc === 'true' ? 'white' : idolColor}; border:1px solid ${idolColor}; border-radius:50%; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">%</button>
@@ -679,12 +783,14 @@ function startWeeklyPlan(type) {
                     tooltip.style.transform = 'translate(-50%, -50%)';
                     tooltip.style.width = 'max-content';
                     tooltip.style.zIndex = '50001';
+                    tooltip.dataset.hifTestUsePerc = String(isInitiallyPerc);
+                    updateHifPercentPreview();
 
                     // 완료 버튼 클릭 시에만 닫기
                     tooltip.querySelector('.hif-test-complete-btn').onclick = (e) => {
                         e.stopPropagation();
 
-                        const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                        const isPerc = tooltip.dataset.hifTestUsePerc === 'true';
                         if (!isPerc && minVal > 0) {
                             // 완료 누를 때 최저치 미만인 값들을 최저치로 강제 보정
                             tooltip.querySelectorAll('.hif-test-stat-input').forEach(inp => {
@@ -702,7 +808,7 @@ function startWeeklyPlan(type) {
                         const inputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
                         const allZero = inputs.every(input => (parseInt(input.value) || 0) === 0);
 
-                        if (allZero) {
+                        if (!isPerc && allZero) {
                             // 값이 없으면 선택 해제
                             calcStore.setWeekAction(weekNum, 'none', {});
                             wrapper.classList.remove('active');
@@ -733,6 +839,11 @@ function startWeeklyPlan(type) {
                         const nextState = !isCurrentlyPerc;
 
                         calcStore.updateWeekOpt(weekNum, 'hif_test_use_perc', String(nextState));
+                        tooltip.dataset.hifTestUsePerc = String(nextState);
+                        if (nextState) {
+                            ensureHifPercentDefaults();
+                            normalizeHifPercentValues();
+                        }
                         percBtn.style.background = nextState ? idolColor : 'white';
                         percBtn.style.color = nextState ? 'white' : idolColor;
 
@@ -742,11 +853,19 @@ function startWeeklyPlan(type) {
                             descEl.innerHTML = t(nextState ? 'hif_test_tooltip_desc_inc' : 'hif_test_tooltip_desc');
                         }
 
-                        // 최대 총합 가리기/보여주기 토글
-                        const maxTotalEl = tooltip.querySelector('.hif-test-max-total');
-                        if (maxTotalEl) {
-                            maxTotalEl.style.display = nextState ? 'none' : 'block';
-                        }
+                        tooltip.querySelectorAll('.hif-test-percent-suffix').forEach(el => {
+                            el.style.display = nextState ? 'block' : 'none';
+                        });
+                        tooltip.querySelectorAll('.hif-test-stat-input').forEach(inp => {
+                            inp.style.padding = nextState ? inp.dataset.paddingPercent : inp.dataset.paddingNormal;
+                            const activeKey = nextState ? percKeyMap[inp.dataset.id] : inp.dataset.id;
+                            const fallbackVal = nextState ? (inp.dataset.id === 'hif_test_vocal' ? 34 : 33) : minVal;
+                            inp.value = String(calcStore.weeks[weekNum].opts[activeKey] ?? fallbackVal);
+                            inp.placeholder = String(fallbackVal);
+                            inp.max = nextState ? '100' : '999';
+                        });
+                        updateHifPercentPreview();
+                        updateMainLabel(wrapper);
 
                         if (!nextState && maxTotalVal > 0) {
                             // % 모드가 꺼질 때(제외 모드로 전환 시) 세 수치 합이 maxTotalVal을 넘지 않도록 조정
@@ -791,12 +910,17 @@ function startWeeklyPlan(type) {
 
                     tooltip.querySelectorAll('input[type="number"]').forEach(input => {
                         const syncValue = () => {
-                            const raw = input.value.trim();
-                            const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                            const sanitized = input.value.replace(/\D/g, '');
+                            if (input.value !== sanitized) {
+                                input.value = sanitized;
+                            }
+                            const raw = sanitized.trim();
+                            const isPerc = tooltip.dataset.hifTestUsePerc === 'true';
+                            const activeInputKey = getActiveInputKey(input.dataset.id);
 
-                            if (raw === '') {
-                                calcStore.updateWeekOpt(weekNum, input.dataset.id, null);
-                                delete wrapper.dataset[`opt${input.dataset.id}`];
+                            if (raw === '' && !isPerc) {
+                                calcStore.updateWeekOpt(weekNum, activeInputKey, null);
+                                delete wrapper.dataset[`opt${activeInputKey}`];
                             } else {
                                 let num = Math.max(0, parseInt(raw) || 0);
 
@@ -831,27 +955,98 @@ function startWeeklyPlan(type) {
                                         if (otherInput) {
                                             otherInput.value = String(newOtherVal);
                                         }
-                                        calcStore.updateWeekOpt(weekNum, otherId, newOtherVal);
-                                        wrapper.dataset[`opt${otherId}`] = String(newOtherVal);
+                                        const otherInputKey = getActiveInputKey(otherId);
+                                        calcStore.updateWeekOpt(weekNum, otherInputKey, newOtherVal);
+                                        wrapper.dataset[`opt${otherInputKey}`] = String(newOtherVal);
                                     });
+                                } else if (isPerc) {
+                                    const allInputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
+                                    num = Math.min(100, num);
+                                    input.value = String(num);
+
+                                    const currentId = input.dataset.id;
+                                    const order = ['hif_test_vocal', 'hif_test_dance', 'hif_test_visual'];
+                                    const curIdx = order.indexOf(currentId);
+                                    const otherIds = [
+                                        order[(curIdx + 1) % 3],
+                                        order[(curIdx + 2) % 3]
+                                    ];
+
+                                    let overflow = allInputs.reduce((sum, inp) => sum + (parseInt(inp.value) || 0), 0) - 100;
+                                    if (overflow > 0) {
+                                        otherIds.forEach(otherId => {
+                                            if (overflow <= 0) return;
+                                            const otherInput = allInputs.find(inp => inp.dataset.id === otherId);
+                                            const otherVal = parseInt(otherInput ? otherInput.value : 0) || 0;
+                                            const reduction = Math.min(otherVal, overflow);
+                                            const newOtherVal = otherVal - reduction;
+                                            overflow -= reduction;
+
+                                            if (otherInput) {
+                                                otherInput.value = String(newOtherVal);
+                                            }
+                                            const otherInputKey = getActiveInputKey(otherId);
+                                            calcStore.updateWeekOpt(weekNum, otherInputKey, newOtherVal);
+                                            wrapper.dataset[`opt${otherInputKey}`] = String(newOtherVal);
+                                        });
+                                    }
+
+                                    let deficit = 100 - allInputs.reduce((sum, inp) => sum + (parseInt(inp.value) || 0), 0);
+                                    if (deficit > 0) {
+                                        otherIds.forEach(otherId => {
+                                            if (deficit <= 0) return;
+                                            const otherInput = allInputs.find(inp => inp.dataset.id === otherId);
+                                            const otherVal = parseInt(otherInput ? otherInput.value : 0) || 0;
+                                            const addition = Math.min(100 - otherVal, deficit);
+                                            const newOtherVal = otherVal + addition;
+                                            deficit -= addition;
+
+                                            if (otherInput) {
+                                                otherInput.value = String(newOtherVal);
+                                            }
+                                            const otherInputKey = getActiveInputKey(otherId);
+                                            calcStore.updateWeekOpt(weekNum, otherInputKey, newOtherVal);
+                                            wrapper.dataset[`opt${otherInputKey}`] = String(newOtherVal);
+                                        });
+                                    }
                                 } else {
                                     num = Math.min(999, num);
                                     input.value = String(num);
                                 }
 
-                                calcStore.updateWeekOpt(weekNum, input.dataset.id, num);
-                                wrapper.dataset[`opt${input.dataset.id}`] = String(num);
+                                calcStore.updateWeekOpt(weekNum, activeInputKey, num);
+                                wrapper.dataset[`opt${activeInputKey}`] = String(num);
                             }
                             updateMainLabel(wrapper);
+                            updateHifPercentPreview();
                             refreshAll();
                         };
 
+                        input.addEventListener('keydown', (e) => {
+                            const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+                            if (allowedKeys.includes(e.key) || e.ctrlKey || e.metaKey) return;
+                            if (!/^\d$/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        });
+                        input.addEventListener('beforeinput', (e) => {
+                            if (e.inputType?.startsWith('delete')) return;
+                            if (e.data && !/^\d+$/.test(e.data)) {
+                                e.preventDefault();
+                            }
+                        });
+                        input.addEventListener('paste', (e) => {
+                            const text = e.clipboardData?.getData('text') || '';
+                            if (!/^\d+$/.test(text)) {
+                                e.preventDefault();
+                            }
+                        });
                         input.addEventListener('input', syncValue);
                         input.addEventListener('change', syncValue);
 
                         // 포커스 아웃(blur) 시 최저치 미만인 경우 최저치로 강제 보정하는 로직
                         input.addEventListener('blur', () => {
-                            const isPerc = calcStore.weeks[weekNum].opts.hif_test_use_perc === 'true';
+                            const isPerc = tooltip.dataset.hifTestUsePerc === 'true';
                             if (!isPerc && minVal > 0) {
                                 let curVal = parseInt(input.value) || 0;
                                 if (curVal < minVal) {

@@ -8,6 +8,68 @@ import { calculateCardBonus } from './simulator-engine.js';
 import { pItemDescriptions } from './pItemData.js';
 
 const hifClassActionIds = ['class_hif', 'class_hif0', 'class_hif1'];
+const hifTestMaxTotals = { 7: 140, 13: 440, 20: 520 };
+const hifTestMinVals = { 7: 20, 13: 80, 20: 100 };
+
+function getHifManualTestStats(week, opts = {}) {
+    const usePercInput = opts.hif_test_use_perc === 'true';
+
+    if (!usePercInput) {
+        const manualVo = parseInt(opts.hif_test_vocal);
+        const manualDa = parseInt(opts.hif_test_dance);
+        const manualVi = parseInt(opts.hif_test_visual);
+        const hasManualInput = !isNaN(manualVo) || !isNaN(manualDa) || !isNaN(manualVi);
+        if (!hasManualInput) return null;
+
+        return {
+            vocal: isNaN(manualVo) ? 0 : manualVo,
+            dance: isNaN(manualDa) ? 0 : manualDa,
+            visual: isNaN(manualVi) ? 0 : manualVi
+        };
+    }
+
+    const minVal = hifTestMinVals[week] || 0;
+    const maxTotal = hifTestMaxTotals[week] || (minVal * 3);
+    const variableTotal = Math.max(0, maxTotal - (minVal * 3));
+    const attrs = ['vocal', 'dance', 'visual'];
+    const rawPercs = {
+        vocal: Math.max(0, Math.min(100, parseInt(opts.hif_test_perc_vocal ?? 34) || 0)),
+        dance: Math.max(0, Math.min(100, parseInt(opts.hif_test_perc_dance ?? 33) || 0)),
+        visual: Math.max(0, Math.min(100, parseInt(opts.hif_test_perc_visual ?? 33) || 0))
+    };
+    let normalizedTotal = attrs.reduce((sum, attr) => sum + rawPercs[attr], 0);
+    if (normalizedTotal < 100) {
+        let deficit = 100 - normalizedTotal;
+        attrs.forEach(attr => {
+            if (deficit <= 0) return;
+            const addition = Math.min(100 - rawPercs[attr], deficit);
+            rawPercs[attr] += addition;
+            deficit -= addition;
+        });
+    }
+    const percTotal = attrs.reduce((sum, attr) => sum + rawPercs[attr], 0);
+    const scale = percTotal > 100 ? 100 / percTotal : 1;
+    const rawExtras = attrs.map(attr => {
+        const raw = variableTotal * rawPercs[attr] * scale / 100;
+        return { attr, value: Math.floor(raw), remainder: raw - Math.floor(raw) };
+    });
+    const targetExtraTotal = Math.round(variableTotal * Math.min(percTotal, 100) / 100);
+    let remaining = targetExtraTotal - rawExtras.reduce((sum, entry) => sum + entry.value, 0);
+
+    rawExtras
+        .slice()
+        .sort((a, b) => b.remainder - a.remainder)
+        .forEach(entry => {
+            if (remaining <= 0) return;
+            entry.value += 1;
+            remaining -= 1;
+        });
+
+    return rawExtras.reduce((stats, entry) => {
+        stats[entry.attr] = minVal + entry.value;
+        return stats;
+    }, { vocal: minVal, dance: minVal, visual: minVal });
+}
 
 /**
  * 하지메(Hajime) 전용 레슨 수치 로직
@@ -676,29 +738,10 @@ export function calculateTotals(store, detailedCounts) {
                 }
             }
         } else if (store.type === 'hif' && actionId === 'test') {
-            const manualVo = parseInt(week.opts.hif_test_vocal);
-            const manualDa = parseInt(week.opts.hif_test_dance);
-            const manualVi = parseInt(week.opts.hif_test_visual);
-            const hasManualInput = !isNaN(manualVo) || !isNaN(manualDa) || !isNaN(manualVi);
+            const manualStats = getHifManualTestStats(wInt, week.opts);
 
-            if (hasManualInput) {
-                stats = {
-                    vocal: isNaN(manualVo) ? 0 : manualVo,
-                    dance: isNaN(manualDa) ? 0 : manualDa,
-                    visual: isNaN(manualVi) ? 0 : manualVi
-                };
-
-                // [% 포함] 옵션이 켜져있다면, 입력한 수치를 (1 + 현재보너스%)로 나누어 베이스 수치로 역산
-                if (week.opts.hif_test_use_perc === 'true') {
-                    ['vocal', 'dance', 'visual'].forEach(attr => {
-                        if (stats[attr] > 0) {
-                            const bonusFactor = 1 + (totalPercs[attr] / 100);
-                            const rawBase = stats[attr] / bonusFactor;
-                            // 소수점 4째자리에서 반올림 후 올림 처리 (더 정밀한 오차 방지)
-                            stats[attr] = Math.ceil(Math.round(rawBase * 10000) / 10000);
-                        }
-                    });
-                }
+            if (manualStats) {
+                stats = manualStats;
             } else {
                 const testStat = hifTestStats[wInt];
                 const data = idolData[store.selectedIdol];
@@ -913,25 +956,13 @@ export function getSupportPercentBonusForCard(store, cardPercent, cardType, tota
                     }
                 }
             } else if (store.type === 'hif' && actionId === 'test') {
-                const manualVo = parseInt(week.opts.hif_test_vocal);
-                const manualDa = parseInt(week.opts.hif_test_dance);
-                const manualVi = parseInt(week.opts.hif_test_visual);
-                const hasManualInput = !isNaN(manualVo) || !isNaN(manualDa) || !isNaN(manualVi);
+                const manualStats = getHifManualTestStats(wInt, week.opts);
 
-                if (hasManualInput) {
-                    let val = 0;
-                    if (cardType === 'vocal' && !isNaN(manualVo)) val = manualVo;
-                    else if (cardType === 'dance' && !isNaN(manualDa)) val = manualDa;
-                    else if (cardType === 'visual' && !isNaN(manualVi)) val = manualVi;
+                if (manualStats) {
+                    const val = manualStats[cardType] || 0;
 
                     if (val > 0) {
-                        let baseVal = val;
-                        if (week.opts.hif_test_use_perc === 'true' && totalPercs) {
-                            const bonusFactor = 1 + (totalPercs[cardType] / 100);
-                            const rawBase = val / bonusFactor;
-                            baseVal = Math.ceil(Math.round(rawBase * 10000) / 10000);
-                        }
-                        totalFlooredBonus += Math.floor(baseVal * (cardPercent / 100));
+                        totalFlooredBonus += Math.floor(val * (cardPercent / 100));
                     }
                 } else {
                     const testStat = hifTestStats[wInt];

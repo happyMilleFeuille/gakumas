@@ -1052,7 +1052,7 @@ function setupStaticListeners(container) {
             const hasAbility = cardList.some(card => {
                 if (!card.abilities) return false;
                 if (entry.key === 'sp_lessonup') {
-                    return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
+                    return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup') || card.abilities.includes('suballsp_lessonup');
                 }
                 return card.abilities.includes(entry.key);
             });
@@ -1061,7 +1061,13 @@ function setupStaticListeners(container) {
             const btn = document.createElement('button');
             btn.className = 'filter-btn ability-sub-btn';
             btn.dataset.val = entry.key;
-            btn.textContent = entry.name[state.currentLang] || entry.name.en;
+            const label = entry.name[state.currentLang] || entry.name.en;
+            if (entry.key === 'sp_lessonup') {
+                btn.setAttribute('aria-label', label);
+                btn.innerHTML = '<img class="ability-filter-icon" src="icons/sp_icon.webp" alt="">';
+            } else {
+                btn.textContent = label;
+            }
             abilityDropdown.appendChild(btn);
         }
         // Add all abilityData entries that have name:
@@ -1113,6 +1119,7 @@ function setupStaticListeners(container) {
             { key: 'pitem_stats', name: { ko: '스텟', ja: 'パラメーター獲得', en: 'Stat Gain' } },
             { key: 'pitem_ppoint', name: { ko: 'P포인트', ja: 'Pポイント', en: 'P-Points' } },
             { key: 'pitem_hp', name: { ko: '체력 회복', ja: '体力回復', en: 'HP Recovery' } },
+            { key: 'pitem_discount', name: { ko: '할인', ja: '割引', en: 'Discount' } },
             { key: 'pitem_inexam', name: { ko: '레슨/시험 내', ja: 'レッスン/試験内', en: 'In Lesson/Exam' } }
         ];
 
@@ -1191,20 +1198,16 @@ function setupStaticListeners(container) {
             if (!btn) return;
             const val = btn.dataset.val;
 
-            // Support Unique Card category: only 1 selection allowed
             const supportCardKeys = ['card_m', 'card_a'];
-            // P-Item category: only 1 selection allowed
-            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_inexam'];
+            const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_discount', 'pitem_inexam'];
 
             if (supportCardKeys.includes(val)) {
-                // Remove other support card filters + all p-item filters
-                [...supportCardKeys.filter(k => k !== val), ...pItemKeys].forEach(k => {
+                pItemKeys.forEach(k => {
                     const idx = state.filters.ability.indexOf(k);
                     if (idx > -1) state.filters.ability.splice(idx, 1);
                 });
             } else if (pItemKeys.includes(val)) {
-                // Remove other p-item filters + all support card filters
-                [...pItemKeys.filter(k => k !== val), ...supportCardKeys].forEach(k => {
+                supportCardKeys.forEach(k => {
                     const idx = state.filters.ability.indexOf(k);
                     if (idx > -1) state.filters.ability.splice(idx, 1);
                 });
@@ -1506,15 +1509,22 @@ export function checkCardMatchFilters(card, includeDate = false) {
     }
 
     const abilityMatch = (state.filters.ability.length === 0) || (() => {
-        const andKeys = ['sp_lessonup', 'percentparam', 'fixedparam', 'pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_inexam'];
+        const andKeys = ['sp_lessonup', 'percentparam', 'fixedparam'];
         const supportCardKeys = ['card_m', 'card_a'];
+        const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_discount', 'pitem_inexam'];
 
         const groupA = [];
-        const groupBC = [];
+        const groupAnd = [];
+        const groupSupportCard = [];
+        const groupPItem = [];
 
         state.filters.ability.forEach(ab => {
-            if (andKeys.includes(ab) || supportCardKeys.includes(ab)) {
-                groupBC.push(ab);
+            if (supportCardKeys.includes(ab)) {
+                groupSupportCard.push(ab);
+            } else if (pItemKeys.includes(ab)) {
+                groupPItem.push(ab);
+            } else if (andKeys.includes(ab)) {
+                groupAnd.push(ab);
             } else {
                 groupA.push(ab);
             }
@@ -1533,19 +1543,22 @@ export function checkCardMatchFilters(card, includeDate = false) {
             if (ab === 'pitem_stats') return card.item_effects && card.item_effects.some(eff => eff.stats);
             if (ab === 'pitem_ppoint') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('ppoint')));
             if (ab === 'pitem_hp') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('hp')));
+            if (ab === 'pitem_discount') return card.item_effects && card.item_effects.some(eff => eff.targettext && (Array.isArray(eff.targettext) ? eff.targettext : [eff.targettext]).some(t => typeof t === 'string' && t.includes('discount')));
             if (ab === 'pitem_inexam') return card.item_effects && card.item_effects.some(eff => eff.type === 'inexam');
 
             if (!card.abilities) return false;
             if (ab === 'sp_lessonup') {
-                return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup');
+                return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup') || card.abilities.includes('suballsp_lessonup');
             }
             return card.abilities.includes(ab);
         };
 
         const matchA = groupA.length === 0 || groupA.some(ab => checkAbility(ab));
-        const matchBC = groupBC.length === 0 || groupBC.every(ab => checkAbility(ab));
+        const matchAnd = groupAnd.length === 0 || groupAnd.every(ab => checkAbility(ab));
+        const matchSupportCard = groupSupportCard.length === 0 || groupSupportCard.some(ab => checkAbility(ab));
+        const matchPItem = groupPItem.length === 0 || groupPItem.some(ab => checkAbility(ab));
 
-        return matchA && matchBC;
+        return matchA && matchAnd && matchSupportCard && matchPItem;
     })();
 
     return abilityMatch;

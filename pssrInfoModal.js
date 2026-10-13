@@ -49,7 +49,7 @@ export const replaceDescIcons = (text) => {
     result = result.replace(/(집중|集中)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `concentration${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(전력치|전력|全力値|全力)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `fullpower${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(호인상|好印象)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `goodimpression${spanOpen || ''}${num}${spanClose || ''}`);
-    result = result.replace(/스킬카드\s*사용\s*수\s*추가\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `use${spanOpen || ''}${num}${spanClose || ''}`);
+    result = result.replace(/카드\s*사용\s*수\s*추가\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `use${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/スキルカード使用数追加\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => `use${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(파라미터|パラメータ)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `param${spanOpen || ''}${num}${spanClose || ''}`);
     result = result.replace(/(열의\s*추가|熱意追加)\s*\+\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, term, spanOpen, num, spanClose) => `netsui${spanOpen || ''}${num}${spanClose || ''}`);
@@ -172,10 +172,10 @@ export const replaceDescIcons = (text) => {
     });
 
     // 13. 스킬카드를 [num]장 드로우 / スキルカードを[num]枚引く -> Map to draw[num] first for dynamic localization
-    result = result.replace(/스킬카드를\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?장\s*드로우/gi, (match, spanOpen, num, spanClose) => {
+    result = result.replace(/카드\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?장\s*드로우/gi, (match, spanOpen, num, spanClose) => {
         return `draw${spanOpen || ''}${num}${spanClose || ''}`;
     });
-    result = result.replace(/스킬카드를\s*드로우/gi, 'draw1');
+    result = result.replace(/카드\s*드로우/gi, 'draw1');
     result = result.replace(/スキルカードを\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?枚\s*引く/gi, (match, spanOpen, num, spanClose) => {
         return `draw${spanOpen || ''}${num}${spanClose || ''}`;
     });
@@ -331,7 +331,7 @@ export const replaceDescIcons = (text) => {
     result = result.replace(/draw\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         const count = parseInt(num, 10);
         if (state.currentLang === 'ko') {
-            return `스킬카드를 ${spanOpen || ''}${num}${spanClose || ''}장 드로우`;
+            return `카드 ${spanOpen || ''}${num}${spanClose || ''}장 드로우`;
         } else if (state.currentLang === 'ja') {
             return `スキルカードを${spanOpen || ''}${num}${spanClose || ''}枚引く`;
         } else {
@@ -434,7 +434,7 @@ export const replaceDescIcons = (text) => {
     result = result.replace(/use\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         let label = '';
         if (state.currentLang === 'ko') {
-            label = `스킬카드 사용 수 추가+${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `카드 사용 수 추가+${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
             label = `スキルカード使用数追加+${spanOpen || ''}${num}${spanClose || ''}`;
         } else {

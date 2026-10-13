@@ -1078,9 +1078,10 @@ export function updateMainLabel(w) {
     const savedOpts = week ? week.opts : {};
 
     if (calcStore.type === 'hif' && w.dataset.value === 'test') {
-        const vo = parseInt(savedOpts.hif_test_vocal);
-        const da = parseInt(savedOpts.hif_test_dance);
-        const vi = parseInt(savedOpts.hif_test_visual);
+        const isPercInput = savedOpts.hif_test_use_perc === 'true';
+        const vo = isPercInput ? (parseInt(savedOpts.hif_test_perc_vocal ?? 34) || 0) : parseInt(savedOpts.hif_test_vocal);
+        const da = isPercInput ? (parseInt(savedOpts.hif_test_perc_dance ?? 33) || 0) : parseInt(savedOpts.hif_test_dance);
+        const vi = isPercInput ? (parseInt(savedOpts.hif_test_perc_visual ?? 33) || 0) : parseInt(savedOpts.hif_test_visual);
 
         const isMobile = window.innerWidth <= 768;
         const iconSize = isMobile ? '10px' : '12px';
@@ -1097,7 +1098,7 @@ export function updateMainLabel(w) {
         container.style.marginTop = '2px';
         container.style.flexWrap = 'nowrap';
 
-        if (savedOpts.hif_test_use_perc === 'true') {
+        if (isPercInput) {
             const percSpan = document.createElement('span');
             percSpan.textContent = '%';
             percSpan.style.color = '#ffffff';
@@ -1134,7 +1135,7 @@ export function updateMainLabel(w) {
         addBadge('dance', da, '#46a4f3');
         addBadge('visual', vi, '#fcc75e');
 
-        if (container.children.length > (savedOpts.hif_test_use_perc === 'true' ? 1 : 0)) {
+        if (container.children.length > (isPercInput ? 1 : 0)) {
             w.appendChild(container);
         }
         return;
@@ -1934,10 +1935,10 @@ export function showSupportItemTooltip(slot, cardId) {
     const padding = isMobile ? '6px 10px' : '10px 14px';
     const borderWidth = isMobile ? '1.2px' : '2px';
     const fontSize = isMobile ? '0.55rem' : '0.75rem';
-    const imgSize = isMobile ? '24px' : '32px';
+    const imgSize = isMobile ? '28px' : '76px';
 
     const borderColor = attrColors[card.type] || getIdolDisplayColor(calcStore.selectedIdol || 'saki');
-    const maxWidth = isMobile ? '240px' : '300px';
+    const maxWidth = isMobile ? '240px' : '380px';
     const gap = isMobile ? '6px' : '10px';
     tooltip.style.cssText = `position: absolute; display: inline-flex; flex-direction: row; align-items: center; gap: ${gap}; width: auto; max-width: ${maxWidth}; padding: ${padding}; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: ${borderWidth} solid ${borderColor}; border-radius: 8px; font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 40000;`;
 

@@ -299,20 +299,20 @@ export const guidePresets = {
                     '4': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
                     '5': { value: 'goout_hif', opts: { goout_hif2: 'true' } },
                     '6': { value: 'class_hif0', opts: { selectedAttr: '{thirdAttr}', class_hajime2: 'true' } },
-                    '7': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest7_1st}', 'hif_test_{secondAttr}': '{hifTest7_2nd}', 'hif_test_{thirdAttr}': '{hifTest7_3rd}' } },
+                    '7': { value: 'test', opts: { hif_test_use_perc: 'true', 'hif_test_perc_{firstAttr}': '{hifTestPct_1st}', 'hif_test_perc_{secondAttr}': '{hifTestPct_2nd}', 'hif_test_perc_{thirdAttr}': '{hifTestPct_3rd}' } },
                     '8': { value: 'gift_hif', opts: {} },
                     '9': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
                     '10': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '11': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
                     '12': { value: 'advice', opts: { enhance: '1', purchase_card: '1', purchase_drink: '4' } },
-                    '13': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest13_1st}', 'hif_test_{secondAttr}': '{hifTest13_2nd}', 'hif_test_{thirdAttr}': '{hifTest13_3rd}' } },
+                    '13': { value: 'test', opts: { hif_test_use_perc: 'true', 'hif_test_perc_{firstAttr}': '{hifTestPct_1st}', 'hif_test_perc_{secondAttr}': '{hifTestPct_2nd}', 'hif_test_perc_{thirdAttr}': '{hifTestPct_3rd}' } },
                     '14': { value: 'gift_hif', opts: {} },
                     '15': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
                     '16': { value: 'gift_hif', opts: {} },
                     '17': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '18': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
                     '19': { value: 'advice', opts: { delete: '1', purchase_card: '2', purchase_drink: '4' } },
-                    '20': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest20_1st}', 'hif_test_{secondAttr}': '{hifTest20_2nd}', 'hif_test_{thirdAttr}': '{hifTest20_3rd}' } },
+                    '20': { value: 'test', opts: { hif_test_use_perc: 'true', 'hif_test_perc_{firstAttr}': '{hifTestPct_1st}', 'hif_test_perc_{secondAttr}': '{hifTestPct_2nd}', 'hif_test_perc_{thirdAttr}': '{hifTestPct_3rd}' } },
                     '21': { value: 'class_hif1', opts: { selectedAttr: '{secondAttr}', class_hif1: 'true' } },
                     '22': { value: '{firstAttrLesson}', opts: { sp: 'true', selectedSubAttr: '{secondAttr}' } },
                     '23': { value: 'gift_hif', opts: {} },
@@ -349,20 +349,20 @@ export const guidePresets = {
                     '4': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
                     '5': { value: 'goout_hif', opts: { goout_hif2: 'true' } },
                     '6': { value: 'class_hif0', opts: { selectedAttr: '{thirdAttr}', class_hajime2: 'true' } },
-                    '7': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest7_1st}', 'hif_test_{secondAttr}': '{hifTest7_2nd}', 'hif_test_{thirdAttr}': '{hifTest7_3rd}' } },
+                    '7': { value: 'test', opts: { hif_test_use_perc: 'true', 'hif_test_perc_{firstAttr}': '{hifTestPct_1st}', 'hif_test_perc_{secondAttr}': '{hifTestPct_2nd}', 'hif_test_perc_{thirdAttr}': '{hifTestPct_3rd}' } },
                     '8': { value: 'gift_hif', opts: {} },
                     '9': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
                     '10': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '11': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
                     '12': { value: 'advice', opts: { enhance: '1', purchase_card: '1', purchase_drink: '4' } },
-                    '13': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest13_1st}', 'hif_test_{secondAttr}': '{hifTest13_2nd}', 'hif_test_{thirdAttr}': '{hifTest13_3rd}' } },
+                    '13': { value: 'test', opts: { hif_test_use_perc: 'true', 'hif_test_perc_{firstAttr}': '{hifTestPct_1st}', 'hif_test_perc_{secondAttr}': '{hifTestPct_2nd}', 'hif_test_perc_{thirdAttr}': '{hifTestPct_3rd}' } },
                     '14': { value: 'gift_hif', opts: {} },
                     '15': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
                     '16': { value: 'gift_hif', opts: {} },
                     '17': { value: 'class_hif1', opts: { selectedAttr: '{thirdAttr}', class_hif1: 'true' } },
                     '18': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{thirdAttr}' } },
                     '19': { value: 'advice', opts: { delete: '1', purchase_card: '2', purchase_drink: '4' } },
-                    '20': { value: 'test', opts: { 'hif_test_{firstAttr}': '{hifTest20_1st}', 'hif_test_{secondAttr}': '{hifTest20_2nd}', 'hif_test_{thirdAttr}': '{hifTest20_3rd}' } },
+                    '20': { value: 'test', opts: { hif_test_use_perc: 'true', 'hif_test_perc_{firstAttr}': '{hifTestPct_1st}', 'hif_test_perc_{secondAttr}': '{hifTestPct_2nd}', 'hif_test_perc_{thirdAttr}': '{hifTestPct_3rd}' } },
                     '21': { value: 'class_hif1', opts: { selectedAttr: '{firstAttr}', class_hif1: 'true' } },
                     '22': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
                     '23': { value: 'gift_hif', opts: {} },
@@ -546,41 +546,33 @@ export function getGuidePreset(mode, idol, planType, slotId = 'guide') {
         else if (secondAttr === 'dance') secondAttrLesson = 'lessondan';
         else if (secondAttr === 'visual') secondAttrLesson = 'lessonvi';
 
-        // HIF 시험 점수 동적 계산 (최저치 + 유동분 배분)
-        const hifTestConfig = [
-            { week: 7, max: 140, min: 20 },
-            { week: 13, max: 440, min: 80 },
-            { week: 20, max: 520, min: 100 }
-        ];
-        hifTestConfig.forEach(({ week, max, min }) => {
-            const flex = max - min * 3;
-            let v1st, v2nd, v3rd;
-            if (mode === 'hif' && slotId === 'guide2' && firstAttr === 'dance') {
-                // 가이드 프리셋 2번에서 1속이 댄스면 시험은 가이드 프리셋 1번과 동일하게 배분
-                v1st = String(min + Math.round(flex * 0.20));
-                v2nd = String(min + Math.round(flex * 0.70));
-                v3rd = String(min + Math.round(flex * 0.10));
-            } else if (mode === 'hif' && slotId === 'guide2') {
-                // 가이드 프리셋 2번: 1속 70%, 댄스 10%, 나머지 20% 배분
-                v1st = String(min + Math.round(flex * 0.70));
-                if (secondAttr === 'dance') {
-                    v2nd = String(min + Math.round(flex * 0.10)); // 댄스 10%
-                    v3rd = String(min + Math.round(flex * 0.20)); // 나머지 3속성 20%
-                } else {
-                    v2nd = String(min + Math.round(flex * 0.20)); // 나머지 2속성 20%
-                    v3rd = String(min + Math.round(flex * 0.10)); // 댄스 10%
-                }
+        // HIF 시험 점수 배분 비율
+        let hifTestPct1st, hifTestPct2nd, hifTestPct3rd;
+        if (mode === 'hif' && slotId === 'guide2' && firstAttr === 'dance') {
+            // 가이드 프리셋 2번에서 1속이 댄스면 시험은 가이드 프리셋 1번과 동일하게 배분
+            hifTestPct1st = '20';
+            hifTestPct2nd = '70';
+            hifTestPct3rd = '10';
+        } else if (mode === 'hif' && slotId === 'guide2') {
+            // 가이드 프리셋 2번: 1속 70%, 댄스 10%, 나머지 20% 배분
+            hifTestPct1st = '70';
+            if (secondAttr === 'dance') {
+                hifTestPct2nd = '10';
+                hifTestPct3rd = '20';
             } else {
-                // 가이드 프리셋 1번 기본형: 1속 20%, 2속 70%, 3속 10% 배분
-                v1st = String(min + Math.round(flex * 0.20));
-                v2nd = String(min + Math.round(flex * 0.70));
-                v3rd = String(min + Math.round(flex * 0.10));
+                hifTestPct2nd = '20';
+                hifTestPct3rd = '10';
             }
-            calcStateStr = calcStateStr
-                .replace(new RegExp(`\\{hifTest${week}_1st\\}`, 'g'), v1st)
-                .replace(new RegExp(`\\{hifTest${week}_2nd\\}`, 'g'), v2nd)
-                .replace(new RegExp(`\\{hifTest${week}_3rd\\}`, 'g'), v3rd);
-        });
+        } else {
+            // 가이드 프리셋 1번 기본형: 1속 20%, 2속 70%, 3속 10% 배분
+            hifTestPct1st = '20';
+            hifTestPct2nd = '70';
+            hifTestPct3rd = '10';
+        }
+        calcStateStr = calcStateStr
+            .replace(/\{hifTestPct_1st\}/g, hifTestPct1st)
+            .replace(/\{hifTestPct_2nd\}/g, hifTestPct2nd)
+            .replace(/\{hifTestPct_3rd\}/g, hifTestPct3rd);
 
         // HIF 가이드 프리셋 2 전용 메모리 템플릿 치환 (1속이 dance면 그대로, 아니면 1속/dance 2.8%, 나머지 20)
         if (mode === 'hif' && slotId === 'guide2') {
