@@ -158,7 +158,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[vocal]アクティブスキルカード使用時、\n✦ hp2\n✦ inlesson3",
-            kr: "[vocal]액티브카드 사용 시 \n✦ hp2\n✦ inlesson3",
+            kr: "[vocal]액티브 카드 사용 시 \n✦ hp2\n✦ inlesson3",
         }],
         releasedAt: "2024-05-16",
         rarity: "SSR",
@@ -655,7 +655,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[vocal]アクティブスキルカード使用時、\n✦ パラメータ上昇量増加50％（1ターン）\n✦ genki2（やる気効果を1.3倍適用）\n✦ inlesson1",
-            kr: "[vocal]액티브카드 사용 시\n✦ 파라미터 증가량 증가 50% (1턴)\n✦ genki2 (의욕효과 1.3배 적용)\n✦ inlesson1",
+            kr: "[vocal]액티브 카드 사용 시\n✦ 파라미터 증가량 증가 50% (1턴)\n✦ genki2 (의욕효과 1.3배 적용)\n✦ inlesson1",
         }],
         releasedAt: "2025-02-14",
         rarity: "SSR",
@@ -729,7 +729,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[vocal]アクティブスキルカード使用時、元気が30以下の場合、\n✦ goodimpression3\n✦ パラメータ上昇量増加10%（5ターン）\n✦ inlesson1",
-            kr: "[vocal]액티브카드 사용 시 원기가 30이하일 경우\n✦ goodimpression3\n✦ 파라미터 상승량 증가 10% (5턴)\n✦ inlesson1",
+            kr: "[vocal]액티브 카드 사용 시 원기가 30이하일 경우\n✦ goodimpression3\n✦ 파라미터 상승량 증가 10% (5턴)\n✦ inlesson1",
         }],
         releasedAt: "2026-07-08",
         rarity: "SSR",
@@ -828,7 +828,7 @@ export const cardList = [
         have: "card_m",
         attrs: ["fullpower"],
         card_effects: [{
-            kr: "✦ genki7\n✦ fullpower2\n✦  이후 3회까지, 멘탈카드 사용 시 비전력 상태일 경우 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "✦ genki7\n✦ fullpower2\n✦  이후 3회까지, 멘탈 카드 사용 시 비전력 상태일 경우 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "✦ genki7\n✦ fullpower2\n✦ 以降3回まで、メンタルスキルカード使用時、非全力状態の場合、fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2026-01-16",
@@ -878,7 +878,7 @@ export const cardList = [
         have: "card_a",
         attrs: ["fullpower"],
         card_effects: [{
-            kr: "레슨 중 누계 전력치가 10이상일 경우 사용 가능\n✦ param1 (3회)\n✦ fullpower5\n✦ 성장 : 직접효과로 지침을 3회 변경할 때마다 자신의 파라미터 값+10 (3회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "레슨 중 누계 전력치가 10이상일 경우 사용 가능\n✦ param1 (3회)\n✦ fullpower5\n✦ 성장 : 직접효과로 지침을 3회 변경할 때마다 자신의 파라미터 값+10 (최대 3회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "このレッスン中の累計全力値が10以上の場合、使用可\n✦ param1（3回）\n✦ fullpower5\n✦ 成長：直接効果で指針を3回変更するたび、自身のパラメータ値増加+10（3回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2026-07-31",
@@ -1132,7 +1132,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[dance]ターン開始時、アクティブスキルカード使用時、\n✦ hp2\n✦ inlesson3",
-            kr: "[dance]턴 개시 시 액티브카드 사용 시 \n✦ hp2\n✦ inlesson3",
+            kr: "[dance]턴 개시 시 액티브 카드 사용 시 \n✦ hp2\n✦ inlesson3",
         }],
         rarity: "SSR",
         extra1: "param", extra2: "ranenhance",
@@ -1889,7 +1889,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[visual]アクティブスキルカード使用時、\n✦ hp2\n✦ inlesson3",
-            kr: "[visual]액티브카드 사용 시 \n✦ hp2\n✦ inlesson3",
+            kr: "[visual]액티브 카드 사용 시 \n✦ hp2\n✦ inlesson3",
         }],
         releasedAt: "2024-05-16",
         plan: "free",
@@ -2081,7 +2081,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "ターン開始時、直前にアクティブスキルカードを使用した状態の場合、\n✦ 山札か捨札にあるアイドル固有スキルカード1枚を手札に移動\n✦ ランダムな手札1枚をレッスン中強化\n✦ inlesson1",
-            kr: "턴 개시 시 직전에 액티브카드를 사용한 경우\n✦ 덱 혹은 버림패에 있는 아이돌 고유 스킬카드 1장을 손패로 이동\n✦ 손패에 있는 랜덤한 카드 1장을 레슨 중 강화\n✦ inlesson1"
+            kr: "턴 개시 시 직전에 액티브 카드를 사용한 경우\n✦ 덱 혹은 버림패에 있는 아이돌 고유 카드 1장을 손패로 이동\n✦ 손패에 있는 랜덤한 카드 1장을 레슨 중 강화\n✦ inlesson1"
         }],
         releasedAt: "2025-11-28",
         plan: "free",
@@ -2154,7 +2154,7 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]액티브카드 사용 시 moregoodcondition3\n✦ concentration2\n✦ param4\n✦ inlesson1",
+            kr: "[visual]액티브 카드 사용 시 moregoodcondition3\n✦ concentration2\n✦ param4\n✦ inlesson1",
             jp: "[visual]アクティブスキルカード使用時、moregoodcondition3\n✦ concentration2\n✦ param4\n✦ inlesson1",
         }],
         source: "dist",
@@ -2257,7 +2257,7 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]턴 개시 후 moregoodcondition10\n✦ goodcondition3 \n✦ 덱 혹은 버림패에 있는 아이돌 고유 스킬카드 1장을 손패로 이동\n✦ use1\n✦ inlesson1",
+            kr: "[visual]턴 개시 후 moregoodcondition10\n✦ goodcondition3 \n✦ 덱 혹은 버림패에 있는 아이돌 고유 카드 1장을 손패로 이동\n✦ use1\n✦ inlesson1",
             jp: "[visual]ターン開始後、moregoodcondition10\n✦ goodcondition3 \n✦ 山札か捨札にあるアイドル固有スキルカード1枚を手札に移動\n✦ use1\n✦ inlesson1",
         }],
         releasedAt: "2026-05-16",
@@ -2283,7 +2283,7 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]턴 개시 시 버림패에 있는 스킬카드가 7장 이상인 경우\n✦ goodcondition1",
+            kr: "[visual]턴 개시 시 버림패에 있는 카드가 7장 이상인 경우\n✦ goodcondition1",
             jp: "[visual]ターン開始時、捨札にあるスキルカードが7枚以上の場合、\n✦ goodcondition1",
         }],
         releasedAt: "2026-04-01",
@@ -2379,7 +2379,7 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]턴 개시 후\n✦ goodimpression3\n✦ 덱 혹은 버림패에 있는 랜덤한 스킬카드(SSR)를 손패로 이동\n✦ inlesson1",
+            kr: "[visual]턴 개시 후\n✦ goodimpression3\n✦ 덱 혹은 버림패에 있는 랜덤한 카드(SSR)를 손패로 이동\n✦ inlesson1",
             jp: "[visual]ターン開始後、\n✦ goodimpression3\n✦ ランダムな山札か捨札にあるスキルカード（SSR）を手札に移動\n✦ inlesson1",
         }],
         releasedAt: "2025-09-17",
@@ -2429,8 +2429,8 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "한 턴 이내에 스킬카드를 2회 사용 시\n✦ goodimpression2\n✦ 호인상 강화+25%\n✦ inlesson1",
-            jp: "ターン内にスキルカードを2回使用時、\n✦ goodimpression2\n✦ +25%\n✦ inlesson1",
+            kr: "한 턴 이내에 카드를 2회 사용 시\n✦ goodimpression2\n✦ 호인상 강화+25%\n✦ inlesson1",
+            jp: "ターン内にスキルカードを2回使用時、\n✦ goodimpression2\n✦ 好印象強化+25%\n✦ inlesson1",
         }],
         releasedAt: "2026-03-19",
         rarity: "SSR",
@@ -2455,7 +2455,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[visual]スキルカード使用後、moremotivation5\n✦ genki2\n✦ inlesson1",
-            kr: "[visual]스킬카드 사용 후 moremotivation5\n✦ genki2\n✦ inlesson1",
+            kr: "[visual]카드 사용 후 moremotivation5\n✦ genki2\n✦ inlesson1",
         }],
         source: "limited",
         releasedAt: "2024-12-09",
@@ -2745,7 +2745,7 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[visual]턴 개시 시 온존으로 지침 변경한 횟수가 4회 이상일 경우\n✦ 액티브카드의 파라미터 값 증가+22 \n✦ inlesson1",
+            kr: "[visual]턴 개시 시 온존으로 지침 변경한 횟수가 4회 이상일 경우\n✦ 액티브 카드의 파라미터 값 증가+22 \n✦ inlesson1",
             jp: "[visual]ターン開始時、温存になった回数が4回以上の場合、\n✦ アクティブスキルカードのパラメータ値増加+22 \n✦ inlesson1",
         }],
         releasedAt: "2026-07-21",
@@ -2772,7 +2772,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[visual]ターン開始後、温存の場合、\n✦ genki3\n✦ ランダムな山札か捨札にある強気効果のスキルカードを手札に移動\n✦ inlesson3",
-            kr: "[visual]턴 개시 후 지침이 온존일 경우\n✦ genki3\n✦ 덱 혹은 버림패에 있는 랜덤한 강기 스킬카드를 손패로 이동\n✦ inlesson3",
+            kr: "[visual]턴 개시 후 지침이 온존일 경우\n✦ genki3\n✦ 덱 혹은 버림패에 있는 랜덤한 강기 카드를 손패로 이동\n✦ inlesson3",
         }],
         releasedAt: "2026-06-15",
         rarity: "SSR",
@@ -4398,7 +4398,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[visual]スキルカードコストで体力減少時、\n✦ goodimpression2\n✦ 消費体力減少2ターン\n✦ inlesson1",
-            kr: "[visual]스킬카드 코스트로 체력감소 시\n✦ goodimpression2\n✦ 소비체력 감소 2턴\n✦ inlesson1",
+            kr: "[visual]카드 코스트로 체력감소 시\n✦ goodimpression2\n✦ 소비체력 감소 2턴\n✦ inlesson1",
         }],
         releasedAt: "2026-03-19",
         rarity: "SR",
@@ -4648,7 +4648,7 @@ export const cardList = [
         plan: "anomaly",
         source: "limited",
         have: "item",
-        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["visual400"], stats: { visual: 10 }, target: "get", targetdisplay: { ko: "랜덤한 스킬카드(R) 획득", ja: "ランダムなスキルカード（R）獲得", en: "get a random skill card(R)" }, max: 2 }],
+        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["visual400"], stats: { visual: 10 }, target: "get", targetdisplay: { ko: "랜덤한 카드(R) 획득", ja: "ランダムなスキルカード（R）獲得", en: "get a random skill card(R)" }, max: 2 }],
         releasedAt: "2026-06-26",
         rarity: "SR",
         extra1: "param",
