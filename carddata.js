@@ -428,6 +428,27 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_sense3",
+        name: "데, 데이트 신청!?",
+        name_ja: "デ、デートのお誘い！？",
+        type: "vocal",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["gift"], triggertext: ["vocal700"], stats: { vocal: 10 }, targettext: "hp4", max: 4 }],
+        releasedAt: "2026-10-20",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_limitedsense1",
         name: "일시 휴전이에요",
         name_ja: "一時休戦です",
@@ -4253,6 +4274,27 @@ export const cardList = [
                 "supportrateup",
                 "get_item6",
                 "delete",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_srsense3",
+        name: "위풍당당 낮잠타임",
+        name_ja: "威風堂々・お昼寝タイム",
+        type: "visual",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["gift"], triggertext: "visual700", stats: { visual: 10 }, targettext: ["ppoint25"], max: 2 }],
+        releasedAt: "2026-10-20",
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

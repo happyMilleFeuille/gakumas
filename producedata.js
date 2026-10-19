@@ -1088,6 +1088,27 @@ export const produceList = [
             desc_ja: "✦ 以降4回まで、スキルカードコストで体力減少時、genki5\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
+    {
+        id: "ssrsena_4th", name: "Roar", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 7.6, releasedAt: "2026-10-20", youtube_url: "https://youtu.be/Mdyk3h5-TQE?si=IbPPBkLP3eGxJ5Tx",
+        item: {
+            name: "世界を魅了する姿",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        itemplus: {
+            desc: "남은 턴이 5턴 이내일 때 턴 개시 후\n✦ genki2\n✦ 제외에 있는 獲物はあなた 1장을 손패로 이동\n✦ hpreduce1\n✦ 강화상태 코스트 증가 1턴\n✦ inlesson5",
+            desc_ja: "残り5ターン以内のターン開始後、\n✦ genki2\n✦ 除外にある獲物はあなた1枚を手札に移動\n✦ hpreduce1\n✦ 強化状態コスト増加1ターン\n✦ inlesson5",
+        },
+        card: {
+            name: "獲物はあなた",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardplus: {
+            desc: "집중이 6이상일 경우 사용 가능\n✦ concentration6\n✦ use1\n✦ 남은 턴이 5턴 이내일 경우 param5\n✦ 최종 턴일 경우 param10\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "集中が6以上の場合、使用可\n✦ concentration6\n✦ use1\n✦ 残り5ターン以内の場合、param5\n✦ 最終ターンの場合、param10\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+    },
 
     // --- 우메 SSR (PSSR) ---
     {
