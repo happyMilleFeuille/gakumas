@@ -215,6 +215,7 @@ export const skillCardList = {
     "logic-ssrume_starmineunit": { type: "mental", attrs: ["genki", "goodimpression"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrume_gomywaylimited": { type: "active", attrs: ["goodimpression"], rarity: "SSR", isKyoukaOnly: true },
     "logic-ssrsaki_halloween2limited": { type: "mental", attrs: [], rarity: "SSR", isKyoukaOnly: true },
+    "logic-ssrchina_shirube": { type: "active", attrs: ["genki"], rarity: "SSR", isKyoukaOnly: true },
 
     "logic-ssrume_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
     "logic-ssrsaki_3rdprima": { type: "mental", attrs: ["goodimpression"], rarity: "Legend", primastella: true },
@@ -321,6 +322,8 @@ export const skillCardList = {
     "sense-ssrsaki_gomywaydist": { type: "active", attrs: [], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrsena_summer2dist": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
     "sense-ssrlilja_halloween2limited": { type: "mental", attrs: ["goodcondition"], rarity: "SSR", isKyoukaOnly: true },
+    "sense-ssrmao_shirube": { type: "active", attrs: [""], rarity: "SSR", isKyoukaOnly: true },
+    "sense-ssrsumika_shirube": { type: "active", attrs: ["concentration"], rarity: "SSR", isKyoukaOnly: true },
 
     "sense-ssrchina_3rdprima": { type: "mental", attrs: ["goodcondition"], rarity: "Legend", primastella: true },
     "sense-ssrmao_3rdprima": { type: "mental", attrs: ["concentration"], rarity: "Legend", primastella: true },
