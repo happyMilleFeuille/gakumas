@@ -1750,11 +1750,11 @@ export const produceList = [
         },
         card: {
             name: "クールすぎるアイドル",
-            desc: "✦ motivation4\n✦ 燃え盛る青い炎를 덱의 맨 앞으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation4\n✦ 燃え盛る青い炎를 덱의 맨 앞으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation4\n✦ 燃え盛る青い炎を山札の上に移動\n消費体力増加1ターン\n✦ 再演 : 燃え盛る青い炎使用後、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>	nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ motivation5\n✦ 燃え盛る青い炎를 덱의 맨 앞으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회까지)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation5\n✦ 燃え盛る青い炎를 덱의 맨 앞으로 이동\n소비체력 증가 1턴\n✦ 재연 : 燃え盛る青い炎를 사용 후 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation5\n✦ 燃え盛る青い炎を山札の上に移動\n消費体力増加1ターン\n✦ 再演 : 燃え盛る青い炎使用後、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>	nooverlab limit1",
         },
         cardsecond: {
@@ -1780,11 +1780,11 @@ export const produceList = [
         },
         card: {
             name: "お姉さんの感覚",
-            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition4\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition4\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce6\n好調が4ターン以上の場合、使用可\n✦ goodcondition4\n✦ 最大体力の10%分体力回復\n✦ 再演：スキルカード使用後、手札にある自然体の魅力が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition6\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce6\n호조가 4턴 이상인 경우\n✦ goodcondition6\n✦ 최대체력의 10%만큼 체력 회복\n✦ 재연 : 카드 사용 후 손패에 自然体の魅力이 1장 이상일 경우 자신을 재사용 (최대 4회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce6\n好調が4ターン以上の場合、使用可\n✦ goodcondition6\n✦ 最大体力の10%分体力回復\n✦ 再演：スキルカード使用後、手札にある自然体の魅力が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>	nooverlab limit1",
         },
         cardsecond: {
@@ -1810,11 +1810,11 @@ export const produceList = [
         },
         card: {
             name: "わたしだけの思い出",
-            desc: "hpreduce5\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴 간, 턴 종료 시 concentration2\n✦ 재연 : 2턴마다 morehp80 자신을 재사용 (최대 2회・턴 내 1회)\n <span style='color:#8B8FD8'> nooverlab limit1",
+            desc: "hpreduce5\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴 간, 턴 종료 시 concentration2\n✦ 재연 : 2턴마다 morehp80 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'> nooverlab limit1",
             desc_ja: "hpreduce5\nstartingcard\n✦ draw1\n✦ 集中強化5%\n✦ 以降の2ターンの間、ターン終了時、concentration2\n✦ 再演：2ターンごとに、morehp80自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>　nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce3\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴 간, 턴 종료 시 concentration2\n✦ 재연 : 2턴마다 morehp80 자신을 재사용 (최대 2회・턴 내 1회)\n <span style='color:#8B8FD8'> nooverlab limit1",
+            desc: "hpreduce3\nstartingcard\n✦ draw1\n✦ 집중강화 5%\n✦ 이후 2턴 간, 턴 종료 시 concentration2\n✦ 재연 : 2턴마다 morehp80 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'> nooverlab limit1",
             desc_ja: "hpreduce3\nstartingcard\n✦ draw1\n✦ 集中強化5%\n✦ 以降の2ターンの間、ターン終了時、concentration2\n✦ 再演：2ターンごとに、morehp80自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>　nooverlab limit1",
         },
         cardsecond: {
@@ -1840,11 +1840,11 @@ export const produceList = [
         },
         card: {
             name: "わたしを支える言葉",
-            desc: "✦ motivation3\n✦ 의욕 증가량 추가+1 (2턴)\n✦ 다음 턴 draw1\n✦ 재연 : 직접효과로 의욕이 5회 증가할 경우 자신을 재사용 (최대 2회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation3\n✦ 의욕 증가량 추가+1 (2턴)\n✦ 다음 턴 draw1\n✦ 재연 : 직접효과로 의욕이 5회 증가할 경우 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation3\n✦ やる気増加量追加+1（2ターン）\n✦ 次のターン、draw1\n✦ 再演：直接効果でやる気が5回増加時、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ motivation3\n✦ 의욕 증가량 추가+1 (2턴)\n✦ 다음 턴 draw1\n✦ 재연 : 직접효과로 의욕이 5회 증가할 경우 자신을 재사용 (최대 2회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ motivation3\n✦ 의욕 증가량 추가+1 (2턴)\n✦ 다음 턴 draw1\n✦ 재연 : 직접효과로 의욕이 5회 증가할 경우 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ motivation3\n✦ やる気増加量追加+1（2ターン）\n✦ 次のターン、draw1\n✦ 再演：直接効果でやる気が5回増加時、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecond: {
@@ -1870,11 +1870,11 @@ export const produceList = [
         },
         card: {
             name: "手を伸ばした先に",
-            desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의 효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존으로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의 효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존으로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시 자신을 재사용 (최대 3회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存になった回数が2回以上の場合、使用可\n✦ param1（熱意効果を2倍適用）\n✦ genki1\n✦ 強気の場合、温存に変更\n✦ 再演：残り3ターン以内のターン終了時、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의 효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존 2단계로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "온존으로 지침 변경한 횟수가 2회 이상일 경우 사용 가능 \n✦ param1 (열의 효과 2배 적용)\n✦ genki1\n✦ 지침이 강기일 경우 온존 2단계로 지침 변경\n✦ 재연 : 남은 턴이 3턴 이내일 때 턴 종료 시 자신을 재사용 (최대 3회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "温存になった回数が2回以上の場合、使用可\n✦ param1（熱意効果を2倍適用）\n✦ genki1\n✦ 強気の場合、温存2段階目に変更\n✦ 再演：残り3ターン以内のターン終了時、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecond: {
@@ -1900,11 +1900,11 @@ export const produceList = [
         },
         card: {
             name: "光り輝く道しるべ",
-            desc: "호인상 소비 5\n✦ goodimpression3\n✦ motivation1\n✦ use1\n✦ 재연 : 마지막 턴 개시 후 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "호인상 소비 5\n✦ goodimpression3\n✦ motivation1\n✦ use1\n✦ 재연 : 마지막 턴 개시 후 자신을 재사용 (최대 3회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "好印象消費5\n✦ goodimpression3\n✦ motivation1\n✦ use1\n✦ 再演：最終ターンのターン開始後、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "호인상 소비 5\n✦ goodimpression4\n✦ motivation3\n✦ use1\n✦ 재연 : 마지막 턴 개시 후 자신을 재사용 (최대 3회・턴 내 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "호인상 소비 5\n✦ goodimpression4\n✦ motivation3\n✦ use1\n✦ 재연 : 마지막 턴 개시 후 자신을 재사용 (최대 3회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "好印象消費5\n✦ goodimpression4\n✦ motivation3\n✦ use1\n✦ 再演：最終ターンのターン開始後、自身を再使用（3回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecond: {
@@ -1917,8 +1917,96 @@ export const produceList = [
             desc_ja: "好印象消費4\n✦ レッスン中に消費した好印象の85%分好印象増加\n✦ 好印象の270%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
-
-
+    /* {
+         id: "ssrtsubame_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-10-28",
+         item: {
+             name: "ヒーローの輝き",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         itemplus: {
+             desc: "턴 개시 후 레슨 중 얻은 누계 전력치가 10이상일 경우\n✦ genki11\n✦ 파라미터 상승량 증가 25%\n✦ 덱 혹은 버림패에 있는 結果としての今 1장을 손패로 이동\n✦ inlesson1",
+             desc_ja: "ターン開始後、このレッスン中の累計全力値が10以上の場合、\n✦ genki11\n✦ パラメータ上昇量増加25%\n✦ 山札か捨札にある結果としての今1枚を手札に移動\n✦ inlesson1",
+         },
+         card: {
+             name: "結果としての今",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         cardplus: {
+             desc: "전력치 소비 2\n 레슨 중 얻은 누계 전력치가 10이상일 경우 사용 가능\n✦ hprecovery7\n✦ 현재 턴 종료 시 열의 연장 (1턴)\n✦ 재연 : 턴 개시 후 자신을 재사용 (최대 1회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
+             desc_ja: "全力値消費2\n このレッスン中の累計全力値が10以上の場合、使用可\n✦ hprecovery7\n✦ このターンのターン終了時、熱意延長（1ターン）\n✦ 再演：ターン開始後、自身を再使用（1回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+         },
+         cardsecond: {
+             name: "ファンが望むこと",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         cardsecondplus: {
+             desc: "hpreduce4\n startingcard \n✦ 온존으로 지침 변경\n✦ 이후 직접효과로 지침을 강기로 변경할 시 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+             desc_ja: "hpreduce4\n startingcard \n✦ 温存に変更\n✦ 以降、直接効果で強気になった時、fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+         }
+     },
+     {
+         id: "ssrchina_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "fullpower", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
+         item: {
+             name: "夢見る輝き",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         itemplus: {
+             desc: "わずかずつの歩み 사용 후\n✦ 제외에 있는 わずかずつの歩み 1장을 덱의 맨 위로 이동\n✦ genki2\n✦ inlesson3",
+             desc_ja: "わずかずつの歩み使用後、\n✦ 除外にあるわずかずつの歩み1枚を山札の一番上に移動\n✦ genki2\n✦ inlesson3",
+         },
+         card: {
+             name: "なにかを続ける尊さ",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         cardplus: {
+             desc: "✦ fullpower2 \n✦ use1\n✦ 재연 : 지침이 전력일 경우 한 턴 내에 카드를 2회 사용할 시 자신을 재사용 (최대 3회・턴 내 1회 제한)\n<span style = 'color:#8B8FD8'>nooverlab limit1",
+             desc_ja: "✦ fullpower2 \n✦ use1\n✦ 再演：全力の場合、ターン内にスキルカードを2回使用するごとに、自身を再使用（3回まで・ターン内1回まで）\n<span style = 'color:#8B8FD8'>nooverlab limit1",
+         },
+         cardsecond: {
+             name: "わずかずつの歩み",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         cardsecondplus: {
+             desc: "hpreduce5\n✦ genki1\n✦ 보류에 있는 카드를 손패로 이동\n✦ use3\n <span style='color:#8B8FD8'>nooverlab limit1",
+             desc_ja: "hpreduce5\n✦ genki1\n✦ 保留にあるスキルカードを手札に移動\n✦ use3\n <span style='color:#8B8FD8'>nooverlab limit1",
+         }
+     },
+     {
+         id: "ssrmisuzu_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
+         item: {
+             name: "星々を統べる輝き",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         itemplus: {
+             desc: "직접효과로 호인상이 4회 증가 시\n✦ 호인상 추가 발동+1 (2턴)\n✦ 호인상 강화+10% (2턴)",
+             desc_ja: "直接効果で好印象が4回増加時、\n✦ 好印象追加発動+1（2ターン）\n✦ 好印象強化+10%（2ターン）",
+         },
+         card: {
+             name: "ありのままのわたし",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         cardplus: {
+             desc: "✦genki4\n✦ 호인상 강화+50%\n✦ 재연 : 직접효과로 호인상이 3회 증가 시 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
+             desc_ja: "✦genki4\n✦ 好印象強化+50%\n✦ 再演：直接効果で好印象が3回増加時、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+         },
+         cardsecond: {
+             name: "認めてくれるひと",
+             desc: "미확인",
+             desc_ja: "未確認",
+         },
+         cardsecondplus: {
+             desc: "✦goodimpression3\n✦ 제외에 있는 카드가 7장 이상일 경우 goodimpression5 \n✦ 제외에 있는 카드가 11장 이상일 경우 호인상의 280%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",
+             desc_ja: "✦goodimpression3\n✦ 除外にあるスキルカードが7枚以上の場合、goodimpression5 \n✦ 除外にあるスキルカードが11枚以上の場合、好印象の280%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
+         }
+     }, */
 
 
 
@@ -2398,11 +2486,11 @@ export const produceList = [
         id: "ssrlilja_sakuradist", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "fullpower", name_ja: "桜フォトグラフ", category: "season", releasedAt: "2025-04-01", rarity: "PSSR", plan: "anomaly", source: "dist", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "積み重ねた努力",
-            desc: "턴 개시 시 레슨 중 누계 전력치가 5이상인 경우\n✦ genki6\n✦ inlesson2",
+            desc: "턴 개시 시 레슨 중 얻은 누계 전력치가 5이상인 경우\n✦ genki6\n✦ inlesson2",
             desc_ja: "ターン開始時、このレッスン中累計全力値が5以上の場合、\n✦ genki6\n✦ inlesson2",
         },
         itemplus: {
-            desc: "턴 개시 시 레슨 중 누계 전력치가 5이상인 경우\n✦ genki8\n✦ inlesson2",
+            desc: "턴 개시 시 레슨 중 얻은 누계 전력치가 5이상인 경우\n✦ genki8\n✦ inlesson2",
             desc_ja: "ターン開始時、このレッスン中累計全力値が5以上の場合、\n✦ genki8\n✦ inlesson2",
         },
         card: {
@@ -2483,11 +2571,11 @@ export const produceList = [
         id: "ssrchina_howlinglimited", name: "Howling over the World", osusume: "enthusiasm", rarity: "PSSR", releasedAt: "2025-05-29", category: "live", plan: "anomaly", source: "limited", jumpTime2: 8.1, youtube_url: "https://youtu.be/NBJ67a459u8?si=n1AX0T-I27T5_Jjz",
         item: {
             name: "伝説のidol装備",
-            desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 440% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ hpreduce2\n✦ inlesson2",
+            desc: "직접효과로 지침을 강기로 변경할 시 원기가 50이상일 경우 \n✦ 원기의 440% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ hpreduce2\n✦ inlesson2",
             desc_ja: "直接効果で強気になった時、元気が50以上の場合、\n✦ 元気の440%分パラメータ上昇させ、元気を0にする\n✦ hpreduce2\n✦ inlesson2",
         },
         itemplus: {
-            desc: "직접효과로 지침이 강기로 변경 됐을 때 원기가 50이상일 경우 \n✦ 원기의 500% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ inlesson2",
+            desc: "직접효과로 지침을 강기로 변경할 시 원기가 50이상일 경우 \n✦ 원기의 500% 만큼 파라미터를 상승시키고 원기를 전부 소모\n✦ inlesson2",
             desc_ja: "直接効果で強気になった時、元気が50以上の場合、\n✦ 元気の500%分パラメータ上昇させ、元気を0にする\n✦ inlesson2",
         },
         card: {
@@ -3124,11 +3212,11 @@ export const produceList = [
         id: "ssrsumika_dokimekiunit", name: "두근두근 이모션", name_en: "Tokimeki Emotion", name_ja: "どきめきエモーション", osusume: "enthusiasm", releasedAt: "2026-04-01", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 8.3, youtube_url: "https://youtu.be/QulHtowM_6o?si=Benh9o2SxRGcRtG-",
         item: {
             name: "あたしたちの約束",
-            desc: "턴 종료 시 레슨 중 누계 전력치가 13이상인 경우\n✦ いつもあなたの隣で의 plusattack1\n✦ hpreduce1\n✦ 다음 턴 いつもあなたの隣で를 손패로 이동\n✦ inlesson2",
+            desc: "턴 종료 시 레슨 중 얻은 누계 전력치가 13이상인 경우\n✦ いつもあなたの隣で의 plusattack1\n✦ hpreduce1\n✦ 다음 턴 いつもあなたの隣で를 손패로 이동\n✦ inlesson2",
             desc_ja: "ターン終了時、このレッスン中累計全力値が13以上の場合、\n✦ いつもあなたの隣でのplusattack1\n✦ hpreduce1\n✦ 次のターン、いつもあなたの隣でを手札に移動\n✦ inlesson2",
         },
         itemplus: {
-            desc: "턴 종료 시 레슨 중 누계 전력치가 13이상인 경우\n✦ いつもあなたの隣で의 plusattack1\n✦ 다음 턴 いつもあなたの隣で를 손패로 이동\n✦ inlesson2",
+            desc: "턴 종료 시 레슨 중 얻은 누계 전력치가 13이상인 경우\n✦ いつもあなたの隣で의 plusattack1\n✦ 다음 턴 いつもあなたの隣で를 손패로 이동\n✦ inlesson2",
             desc_ja: "ターン終了時、このレッスン中累計全力値が13以上の場合、\n✦ いつもあなたの隣でのplusattack1\n✦ 次のターン、いつもあなたの隣でを手札に移動\n✦ inlesson2",
         },
         card: {
