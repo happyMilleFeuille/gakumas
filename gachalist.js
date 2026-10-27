@@ -108,7 +108,8 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
     }
 
     if (key === 'SSSR') {
-        const pickupTotal = Math.min(0.01 * pickupCards.length, rates.SSSR);
+        // SSSR 픽업은 카드 수와 관계없이 전체 1%를 균등 분배한다.
+        const pickupTotal = Math.min(pickupCards.length > 0 ? 0.01 : 0, rates.SSSR);
         if (poolType === 'fes') {
             const hasExplicitPickupRate = typeof pickups.pickupRate === 'number';
 
