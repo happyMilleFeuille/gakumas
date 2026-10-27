@@ -38,13 +38,24 @@ const normalizeCardChars = (chars) => {
 
 const getSupportGachaInfo = (cardId) => {
     const configs = [...FES_CONFIG, ...UNIT_CONFIG, ...NORMAL_CONFIG, ...LIMITED_CONFIG];
-    const matchedConfigs = configs.filter(config => {
+    const allMatchedConfigs = configs.filter(config => {
         const supportIds = [
             ...normalizePoolIds(config.pool?.sssr),
             ...normalizePoolIds(config.pool?.sr_card)
         ];
         return supportIds.includes(cardId);
     });
+    const datedMatches = allMatchedConfigs
+        .map(config => ({ config, time: Date.parse(config.date) }))
+        .filter(entry => Number.isFinite(entry.time));
+    const earliestTime = datedMatches.length > 0
+        ? Math.min(...datedMatches.map(entry => entry.time))
+        : null;
+    // 복각된 가챠는 제외하고, 카드가 최초로 등장한 날짜의 설정만 참조한다.
+    // 같은 날 여러 배너에서 동시에 등장한 경우에는 해당 배너들을 모두 유지한다.
+    const matchedConfigs = earliestTime === null
+        ? allMatchedConfigs.slice(0, 1)
+        : datedMatches.filter(entry => entry.time === earliestTime).map(entry => entry.config);
     if (matchedConfigs.length === 0) return { name: '', chars: [] };
 
     const chars = [...new Set(matchedConfigs.flatMap(config =>
