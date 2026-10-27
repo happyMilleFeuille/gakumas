@@ -41,7 +41,7 @@ export const produceList = [
         }
     },
     { id: "ssrrinami_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "sense", category: "season", osusume: "concentration", releasedAt: "2024-08-01", source: "limited", another: true, jumpTime2: 6.2 },
-    { id: "ssrrinami_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", category: "season", plan: "sense", osusume: "concentration", releasedAt: "2024-09-30", source: "limited", another: true },
+    { id: "ssrrinami_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", category: "season", plan: "sense", osusume: "concentration", jumpTime2: 8.2, releasedAt: "2024-09-30", source: "limited", another: true },
     { id: "ssrrinami_1st4another", name: "White Night! White Wish!", rarity: "PSSR", plan: "sense", osusume: "concentration", category: "season", source: "limited", releasedAt: "2024-11-28", another: true, jumpTime2: 8.1 },
     { id: "ssrrinami_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", category: "season", osusume: "concentration", releasedAt: "2025-02-28", plan: "sense", jumpTime2: 6.3, source: "limited", another: true },
     { id: "ssrrinami_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", category: "season", rarity: "PSSR", osusume: "concentration", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", source: "limited", another: true },
@@ -1151,14 +1151,14 @@ export const produceList = [
             }
         },
     },
-    { id: "ssrume_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", category: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-07-12", another: true },
-    { id: "ssrume_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", category: "season", osusume: "motivation", source: "limited", releasedAt: "2024-08-11", another: true },
-    { id: "ssrume_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", category: "season", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2024-09-30", another: true },
+    { id: "ssrume_1st1another", name: "너와 세미블루", name_en: "Kimi to Semi Blue", name_ja: "キミトセミブルー", category: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", jumpTime2: 6.2, source: "limited", releasedAt: "2024-07-12", another: true },
+    { id: "ssrume_1st2another", name: "관국", name_en: "Kamurogiku", name_ja: "冠菊", rarity: "PSSR", plan: "logic", category: "season", osusume: "motivation", source: "limited", releasedAt: "2024-08-11", jumpTime2: 8.4, another: true },
+    { id: "ssrume_1st3another", name: "가장광소곡", name_en: "Fancy dress party", name_ja: "仮装狂騒曲", rarity: "PSSR", category: "season", plan: "logic", osusume: "motivation", jumpTime2: 8.3, source: "limited", releasedAt: "2024-09-30", another: true },
     { id: "ssrume_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "normal", releasedAt: "2025-05-09", another: true, jumpTime2: 6.3 },
     { id: "ssrume_1st9another", name: "Howling over the World", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", category: "live", releasedAt: "2025-05-29", jumpTime2: 7.5, another: true },
     { id: "ssrume_1st10another", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", category: "live", rarity: "PSSR", plan: "logic", jumpTime2: 7.8, osusume: "motivation", source: "limited", releasedAt: "2025-08-29", another: true },
     { id: "ssrume_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", category: "live", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2025-09-29", another: true },
-    { id: "ssrume_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", category: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", releasedAt: "2026-02-14", another: true },
+    { id: "ssrume_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", category: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 8.2, releasedAt: "2026-02-14", another: true },
     { id: "ssrume_1st6another", name: "눈녹을 쯤에", name_en: "Yukidokeni", name_ja: "雪解けに", rarity: "PSSR", category: "season", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 7.2, releasedAt: "2026-04-13", another: true },
     { id: "ssrume_1st7another", name: "벛꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", category: "season", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", jumpTime2: 8.1, releasedAt: "2026-04-21", another: true },
     { id: "ssrume_1st14another", name: "「저기, 말할 게 있어.」", name_ja: "「ねえ、言っちゃうよ。」", name_en: "\"Listen... I have to say it.\"", rarity: "PSSR", plan: "logic", osusume: "motivation", category: "gravia", source: "limited", releasedAt: "2026-08-16", another: true, jumpTime2: 7.5 },
@@ -1918,37 +1918,37 @@ export const produceList = [
             desc_ja: "好印象消費4\n✦ レッスン中に消費した好印象の85%分好印象増加\n✦ 好印象の270%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
+    {
+        id: "ssrtsubame_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-10-28",
+        item: {
+            name: "ヒーローの輝き",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        itemplus: {
+            desc: "턴 개시 후 레슨 중 얻은 누계 전력치가 10이상일 경우\n✦ genki11\n✦ 파라미터 상승량 증가 25%\n✦ 덱 혹은 버림패에 있는 結果としての今 1장을 손패로 이동\n✦ inlesson1",
+            desc_ja: "ターン開始後、このレッスン中の累計全力値が10以上の場合、\n✦ genki11\n✦ パラメータ上昇量増加25%\n✦ 山札か捨札にある結果としての今1枚を手札に移動\n✦ inlesson1",
+        },
+        card: {
+            name: "結果としての今",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardplus: {
+            desc: "전력치 소비 2\n 레슨 중 얻은 누계 전력치가 10이상일 경우 사용 가능\n✦ hprecovery7\n✦ 현재 턴 종료 시 열의 연장 (1턴)\n✦ 재연 : 턴 개시 후 자신을 재사용 (최대 1회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "全力値消費2\n このレッスン中の累計全力値が10以上の場合、使用可\n✦ hprecovery7\n✦ このターンのターン終了時、熱意延長（1ターン）\n✦ 再演：ターン開始後、自身を再使用（1回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardsecond: {
+            name: "ファンが望むこと",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardsecondplus: {
+            desc: "hpreduce4\n startingcard \n✦ 온존으로 지침 변경\n✦ 이후 직접효과로 지침을 강기로 변경할 시 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce4\n startingcard \n✦ 温存に変更\n✦ 以降、直接効果で強気になった時、fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
     /*  {
-          id: "ssrtsubame_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-10-28",
-          item: {
-              name: "ヒーローの輝き",
-              desc: "미확인",
-              desc_ja: "未確認",
-          },
-          itemplus: {
-              desc: "턴 개시 후 레슨 중 얻은 누계 전력치가 10이상일 경우\n✦ genki11\n✦ 파라미터 상승량 증가 25%\n✦ 덱 혹은 버림패에 있는 結果としての今 1장을 손패로 이동\n✦ inlesson1",
-              desc_ja: "ターン開始後、このレッスン中の累計全力値が10以上の場合、\n✦ genki11\n✦ パラメータ上昇量増加25%\n✦ 山札か捨札にある結果としての今1枚を手札に移動\n✦ inlesson1",
-          },
-          card: {
-              name: "結果としての今",
-              desc: "미확인",
-              desc_ja: "未確認",
-          },
-          cardplus: {
-              desc: "전력치 소비 2\n 레슨 중 얻은 누계 전력치가 10이상일 경우 사용 가능\n✦ hprecovery7\n✦ 현재 턴 종료 시 열의 연장 (1턴)\n✦ 재연 : 턴 개시 후 자신을 재사용 (최대 1회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
-              desc_ja: "全力値消費2\n このレッスン中の累計全力値が10以上の場合、使用可\n✦ hprecovery7\n✦ このターンのターン終了時、熱意延長（1ターン）\n✦ 再演：ターン開始後、自身を再使用（1回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
-          },
-          cardsecond: {
-              name: "ファンが望むこと",
-              desc: "미확인",
-              desc_ja: "未確認",
-          },
-          cardsecondplus: {
-              desc: "hpreduce4\n startingcard \n✦ 온존으로 지침 변경\n✦ 이후 직접효과로 지침을 강기로 변경할 시 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
-              desc_ja: "hpreduce4\n startingcard \n✦ 温存に変更\n✦ 以降、直接効果で強気になった時、fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
-          }
-      },
-      {
           id: "ssrchina_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "fullpower", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
           item: {
               name: "夢見る輝き",
