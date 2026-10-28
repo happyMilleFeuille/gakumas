@@ -99,6 +99,7 @@ export const skillCardList = {
     "anomaly-ssrmisuzu_3rdprima": { type: "mental", attrs: ["genki"], rarity: "Legend", primastella: true },
     "anomaly-ssrtemari_3rdprima": { type: "mental", attrs: ["fullpower"], rarity: "Legend", primastella: true },
     "anomaly-ssrlilja_3rdprima": { type: "active", attrs: [""], rarity: "Legend", primastella: true },
+    "anomaly-ssrtsubame_3rdprima": { type: "mental", attrs: [""], rarity: "Legend", primastella: true },
 
 
     // --- Free ---

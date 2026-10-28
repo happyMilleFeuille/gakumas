@@ -890,11 +890,11 @@ export const produceList = [
         },
         card: {
             name: "日が差す方へ",
-            desc: "hpreduce1\n✦ 지침이 강기인 경우 사용 가능\n✦ 온존으로 지침 변경\n✦ genki5\n✦ netsui8\n✦ 멘탈 카드의 코스트 수치 증가+1・체력 소비 코스트 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "hpreduce1\n✦ 지침이 강기인 경우 사용 가능\n✦ 온존으로 지침 변경\n✦ genki5\n✦ netsui8\n✦ 멘탈 카드의 코스트 수치 증가+1・체력 소비 코스트 증가+1\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "hpreduce1\n✦ 強気の場合、使用可\n✦ 温存に変更\n✦ genki5\n✦ netsui8\n✦ メンタルスキルカードのコスト値増加+1・体力消費コスト値増加+1\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "hpreduce1\n✦ 지침이 강기인 경우 사용 가능\n✦ 온존으로 지침 변경\n✦ genki8\n✦ netsui10\n✦ 멘탈 카드의 코스트 수치 증가+1・체력 소비 코스트 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "hpreduce1\n✦ 지침이 강기인 경우 사용 가능\n✦ 온존으로 지침 변경\n✦ genki8\n✦ netsui10\n✦ 멘탈 카드의 코스트 수치 증가+1・체력 소비 코스트 증가+1\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "hpreduce1\n✦ 強気の場合、使用可\n✦ 温存に変更\n✦ genki8\n✦ netsui10\n✦ メンタルスキルカードのコスト値増加+1・体力消費コスト値増加+1\n <span style='color:#8B8FD8'>nooverlab",
         },
         primacard: {
@@ -981,6 +981,11 @@ export const produceList = [
         cardplus: {
             desc: "✦ 덱 혹은 버림패에 있는 카드를 선택해 보류로 이동 \n✦ 이후 3회까지 카드 사용 시 전력일 경우 fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        primacard: {
+            name: "恩に報える一番星",
+            desc: "✦ use1\n✦ 이후 1회까지 지침이 전력이며 전력치가 10이상일 경우 제외 이외에 있는 카드 최대 2개를 선택 후 plusattack1・파라미터 값 증가+10・체력 소비 코스트 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ use1\n✦ 以降1回まで、全力になった時、全力値が10以上の場合、除外以外のスキルカードを２枚まで選択し、plusattack1・パラメータ値増加+10・体力消費コスト値増加+5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
 
@@ -1919,11 +1924,11 @@ export const produceList = [
         }
     },
     {
-        id: "ssrtsubame_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-10-28",
+        id: "ssrtsubame_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.9, source: "limited_f", releasedAt: "2026-10-28",
         item: {
             name: "ヒーローの輝き",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "턴 개시 후 레슨 중 얻은 누계 전력치가 10이상일 경우\n✦ genki4\n✦ 파라미터 상승량 증가 25%\n✦ 덱 혹은 버림패에 있는 結果としての今 1장을 손패로 이동\n✦ inlesson1",
+            desc_ja: "ターン開始後、このレッスン中の累計全力値が10以上の場合、\n✦ genki4\n✦ パラメータ上昇量増加25%\n✦ 山札か捨札にある結果としての今1枚を手札に移動\n✦ inlesson1",
         },
         itemplus: {
             desc: "턴 개시 후 레슨 중 얻은 누계 전력치가 10이상일 경우\n✦ genki11\n✦ 파라미터 상승량 증가 25%\n✦ 덱 혹은 버림패에 있는 結果としての今 1장을 손패로 이동\n✦ inlesson1",
@@ -1931,8 +1936,8 @@ export const produceList = [
         },
         card: {
             name: "結果としての今",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "전력치 소비 2\n 레슨 중 얻은 누계 전력치가 10이상일 경우 사용 가능\n✦ hprecovery4\n✦ 현재 턴 종료 시 열의 연장 (1턴)\n✦ 재연 : 턴 개시 후 자신을 재사용 (최대 1회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "全力値消費2\n このレッスン中の累計全力値が10以上の場合、使用可\n✦ hprecovery4\n✦ このターンのターン終了時、熱意延長（1ターン）\n✦ 再演：ターン開始後、自身を再使用（1回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "전력치 소비 2\n 레슨 중 얻은 누계 전력치가 10이상일 경우 사용 가능\n✦ hprecovery7\n✦ 현재 턴 종료 시 열의 연장 (1턴)\n✦ 재연 : 턴 개시 후 자신을 재사용 (최대 1회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -1940,8 +1945,8 @@ export const produceList = [
         },
         cardsecond: {
             name: "ファンが望むこと",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "hpreduce7\n startingcard \n✦ 온존으로 지침 변경\n✦ 이후 직접효과로 지침을 강기로 변경할 시 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce7\n startingcard \n✦ 温存に変更\n✦ 以降、直接効果で強気になった時、fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecondplus: {
             desc: "hpreduce4\n startingcard \n✦ 온존으로 지침 변경\n✦ 이후 직접효과로 지침을 강기로 변경할 시 fullpower2\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -2659,11 +2664,11 @@ export const produceList = [
         id: "ssrhiro_miraclelimited", name: "미라클 나나우(˚∀˚)!", name_en: "Mirakulu Na Now(ﾟ∀ﾟ)！", name_ja: "ミラクルナナウ(˚∀˚)!", osusume: "fullpower", category: "live", rarity: "PSSR", jumpTime2: 7.4, releasedAt: "2025-09-08", plan: "anomaly", source: "limited", youtube_url: "https://youtu.be/dp-x87l413o?si=Hv_16Q1XBERH5SNg",
         item: {
             name: "たこやきテクノドッグ",
-            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1장 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터 값 증가+5・체력 소비 코스트 수치 증가+2\n✦ inlesson3",
+            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1장 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터 값 증가+5・체력 소비 코스트 증가+2\n✦ inlesson3",
             desc_ja: "全力を解除後、除外にあるでこれーとまじっくが1枚以上の場合、\n✦ でこれーとまじっくを保留に移動\n✦ でこれーとまじっくの全力値増加+2・パラメータ値増加+5・体力消費コスト値増加+2\n✦ inlesson3",
         },
         itemplus: {
-            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1장 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터 값 증가+12・체력 소비 코스트 수치 증가+2\n✦ inlesson3",
+            desc: "전력상태 해제 후 제외패에 でこれーとまじっく가 1장 이상일 경우\n✦ でこれーとまじっく를 보류로 이동\n✦ でこれーとまじっく의 전력치 증가+2・파라미터 값 증가+12・체력 소비 코스트 증가+2\n✦ inlesson3",
             desc_ja: "全力を解除後、除外にあるでこれーとまじっくが1枚以上の場合、\n✦ でこれーとまじっくを保留に移動\n✦ でこれーとまじっくの全力値増加+2・パラメータ値増加+12・体力消費コスト値増加+2\n✦ inlesson3",
         },
         card: {
