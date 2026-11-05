@@ -12,7 +12,7 @@ export const FES_CONFIG = [
         pickupRate: 0.015,
         pool: {
             pssr: ['ssrmisuzu_hiffes'],
-            sssr: ['vocal_feslogic1'],
+            sssr: ['vocal_feslogic2'],
             sr_card: [],
         },
         exclude: {
@@ -27,7 +27,7 @@ export const FES_CONFIG = [
         pickupRate: 0.015,
         pool: {
             pssr: ['ssrchina_hiffes'],
-            sssr: ['vocal_feslogic1'],
+            sssr: ['vocal_feslogic2'],
             sr_card: [],
         },
         exclude: {
