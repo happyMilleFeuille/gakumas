@@ -59,6 +59,10 @@ export function getParsedItemEffectsText(itemEffects, cardContext = null) {
         get_motivation: t('support_effect_get_motivation'),
         get_goodimpression: t('support_effect_get_goodimpression'),
         get_genki: t('support_effect_get_genki'),
+        get_sense: t('support_effect_get_sense'),
+        get_logic: t('support_effect_get_logic'),
+        get_anomaly: t('support_effect_get_anomaly'),
+        get_free: t('support_effect_get_free'),
         get_preservation: t('support_effect_get_preservation'),
         get_enthusiasm: t('support_effect_get_enthusiasm'),
         get_fullpower: t('support_effect_get_fullpower'),
@@ -440,13 +444,13 @@ export function updateActivityCountsUI(store, counts) {
         </div>
     `;
 
-    let otherGetItems = renderOtherUnit('SSR', 'get_ssr', '#673ab7') + renderOtherUnit(t('calc_label_genki'), 'get_genki', '#ff5722');
+    let otherGetItems = renderOtherUnit('SSR', 'get_ssr', '#673ab7') + renderOtherUnit(t('calc_tune_plan_free'), 'get_free', '#607d8b') + renderOtherUnit(t('calc_label_genki'), 'get_genki', '#ff5722');
     if (store.planType === 'sense') {
-        otherGetItems += renderOtherUnit(t('calc_label_goodcondition'), 'get_goodcondition', '#e91e63') + renderOtherUnit(t('calc_label_concentration'), 'get_concentration', '#e91e63');
+        otherGetItems += renderOtherUnit(t('calc_tune_plan_sense'), 'get_sense', '#e91e63') + renderOtherUnit(t('calc_label_goodcondition'), 'get_goodcondition', '#e91e63') + renderOtherUnit(t('calc_label_concentration'), 'get_concentration', '#e91e63');
     } else if (store.planType === 'logic') {
-        otherGetItems += renderOtherUnit(t('calc_label_motivation'), 'get_motivation', '#2196f3') + renderOtherUnit(t('calc_label_goodimpression'), 'get_goodimpression', '#2196f3');
+        otherGetItems += renderOtherUnit(t('calc_tune_plan_logic'), 'get_logic', '#2196f3') + renderOtherUnit(t('calc_label_motivation'), 'get_motivation', '#2196f3') + renderOtherUnit(t('calc_label_goodimpression'), 'get_goodimpression', '#2196f3');
     } else if (store.planType === 'anomaly') {
-        otherGetItems += renderOtherUnit(t('calc_label_preservation'), 'get_preservation', '#9c27b0') + renderOtherUnit(t('calc_label_enthusiasm'), 'get_enthusiasm', '#9c27b0') + renderOtherUnit(t('calc_label_fullpower'), 'get_fullpower', '#9c27b0');
+        otherGetItems += renderOtherUnit(t('calc_tune_plan_anomaly'), 'get_anomaly', '#9c27b0') + renderOtherUnit(t('calc_label_preservation'), 'get_preservation', '#9c27b0') + renderOtherUnit(t('calc_label_enthusiasm'), 'get_enthusiasm', '#9c27b0') + renderOtherUnit(t('calc_label_fullpower'), 'get_fullpower', '#9c27b0');
     }
 
     const otherGetDisplay = `

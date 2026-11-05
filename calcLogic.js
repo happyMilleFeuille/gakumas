@@ -136,7 +136,7 @@ export const getHifLessonStat = (actionId, isSP, week, selectedSubAttr = null) =
  */
 export function getTriggerCounts(store) {
     const counts = {
-        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_t: 0, get_drink: 0, purchase_drink: 0, purchase_card: 0, get_item: ((store.type === 'nia' || store.type === 'hif') ? 1 : 0), change: 0 },
+        total: { enhance: 0, enhance_m: 0, enhance_a: 0, delete: 0, delete_m: 0, delete_a: 0, delete_t: 0, get: 0, get_m: 0, get_a: 0, get_t: 0, get_sense: 0, get_logic: 0, get_anomaly: 0, get_free: 0, get_drink: 0, purchase_drink: 0, purchase_card: 0, get_item: ((store.type === 'nia' || store.type === 'hif') ? 1 : 0), change: 0 },
         lessons: { vocal: { normal: 0, sp: 0 }, dance: { normal: 0, sp: 0 }, visual: { normal: 0, sp: 0 } }
     };
 
@@ -405,12 +405,15 @@ export function getTriggerCounts(store) {
 
     // 4. 스킬 카드 및 서포트 카드 보너스
     const selectedSkills = store.planSkills?.[activePlan] || {};
+    const skillPlanCategories = ['sense', 'logic', 'anomaly', 'free'];
     Object.keys(selectedSkills).forEach(skillId => {
         const skill = skillCardList[skillId], count = selectedSkills[skillId] || 0;
         if (skill && count > 0) {
             if (skill.type === 'active') counts.total.get_a += count;
             else if (skill.type === 'mental') counts.total.get_m += count;
             if (skill.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + count;
+            const skillPlan = skillId.split('-')[0];
+            if (skillPlanCategories.includes(skillPlan)) counts.total[`get_${skillPlan}`] += count;
             if (skill.attrs) skill.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + count; });
             if (skill.primastella) counts.total.get += count;
         }
@@ -433,6 +436,8 @@ export function getTriggerCounts(store) {
                     if (card.have === 'card_a') counts.total.get_a++; else if (card.have === 'card_m') counts.total.get_m++;
                     if (card.rarity === 'SSR') counts.total.get_ssr = (counts.total.get_ssr || 0) + 1;
                     counts.total.get++;
+                    const cardPlan = card.plan;
+                    if (skillPlanCategories.includes(cardPlan)) counts.total[`get_${cardPlan}`]++;
                     if (card.attrs) card.attrs.forEach(attr => { counts.total[`get_${attr}`] = (counts.total[`get_${attr}`] || 0) + 1; });
                 }
             }

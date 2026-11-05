@@ -6,6 +6,36 @@ export const CURRENT_PICKUPS = {
 // 페스 가챠 상세 설정
 export const FES_CONFIG = [
     {
+        id: 'ssrmisuzu_hiffes',
+        date: '2026-11-06',
+        bannerImg: 'idols/ssrmisuzu_hiffes1.webp',
+        pickupRate: 0.015,
+        pool: {
+            pssr: ['ssrmisuzu_hiffes'],
+            sssr: ['vocal_feslogic1'],
+            sr_card: [],
+        },
+        exclude: {
+            pssr: ['ssrtsubame_hiffes', 'ssrchina_hiffes'],
+            sssr: []
+        }
+    },
+    {
+        id: 'ssrchina_hiffes',
+        date: '2026-11-06',
+        bannerImg: 'idols/ssrchina_hiffes1.webp',
+        pickupRate: 0.015,
+        pool: {
+            pssr: ['ssrchina_hiffes'],
+            sssr: ['vocal_feslogic1'],
+            sr_card: [],
+        },
+        exclude: {
+            pssr: ['ssrtsubame_hiffes', 'ssrmisuzu_hiffes'],
+            sssr: []
+        }
+    },
+    {
         id: 'ssrtsubame_hiffes',
         date: '2026-10-28',
         bannerImg: 'idols/ssrtsubame_hiffes1.webp',

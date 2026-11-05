@@ -820,6 +820,28 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_feslogic2",
+        name: "다들 읽어봐!",
+        name_ja: "みんなも読んでみてっ！",
+        type: "vocal",
+        plan: "logic",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_logic"], triggertext: "vocal900", stats: { vocal: 25 }, target: "enhance", targettext: ["random"], max: 2 }],
+        releasedAt: "2026-11-06",
+        rarity: "SSR",
+        source: "limited_f",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "get_genki",
+                "gift",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_anomaly1",
         name: "내버려 둘 수 없는 신경 쓰이는 아이",
         name_ja: "放っておけない気になる子",
