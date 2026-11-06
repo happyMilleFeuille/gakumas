@@ -159,13 +159,16 @@ export async function loadGachaAssets() {
             }
         });
 
-        const videoTasks = videoAssets.map(async src => {
+        videoAssets.forEach(src => {
             if (!assetBlobs[src]) assetBlobs[src] = getMediaUrl(src);
-            await preloadGachaVideos([src]);
-            setAssetProgress(src, 1);
         });
+        const videoTask = preloadGachaVideos(
+            videoAssets,
+            (_completed, _total, path) => setAssetProgress(path, 1),
+            { retain: false, concurrency: 3 }
+        );
 
-        const results = await Promise.allSettled([...audioTasks, ...videoTasks]);
+        const results = await Promise.allSettled([...audioTasks, videoTask]);
         const failed = results.find(result => result.status === 'rejected');
         if (failed) throw failed.reason;
         isAllLoaded = true;
@@ -321,20 +324,23 @@ export function resumeGachaAudio() {
 
 /**
  * Release 영상은 CORS 때문에 fetch로 Blob 변환할 수 없다. 숨김 video로 전체
- * 재생 구간을 버퍼링하고 요소를 유지해, 실제 연출이 같은 URL을 즉시 재생하게 한다.
+ * 재생 구간을 버퍼링한다. 초기 탭 로딩은 브라우저 캐시만 데운 뒤 요소를 해제하고,
+ * 가챠 버튼 뒤에 받는 PSSR 영상은 연출 재생을 위해 유지한다.
  */
-export async function preloadGachaVideos(paths, onProgress = null) {
+export async function preloadGachaVideos(paths, onProgress = null, options = {}) {
     const uniquePaths = [...new Set(paths.filter(path => path?.endsWith('.mp4')))];
+    const { retain = true, concurrency = uniquePaths.length || 1 } = options;
+    const workerCount = Math.max(1, Math.min(uniquePaths.length || 1, Math.floor(concurrency) || 1));
     let completed = 0;
 
-    const reportProgress = () => {
+    const reportProgress = path => {
         completed++;
-        if (onProgress) onProgress(completed, uniquePaths.length);
+        if (onProgress) onProgress(completed, uniquePaths.length, path);
     };
 
     const preloadOne = path => {
         const existing = preloadedVideos.get(path);
-        if (existing) return existing.then(reportProgress);
+        if (existing) return existing.then(() => reportProgress(path));
 
         const promise = new Promise((resolve, reject) => {
             const video = document.createElement('video');
@@ -375,6 +381,8 @@ export async function preloadGachaVideos(paths, onProgress = null) {
                 clearTimeout(timeoutId);
                 clearInterval(checkTimer);
                 video.removeEventListener('progress', checkProgress);
+                video.removeEventListener('canplaythrough', requestEndSeek);
+                video.removeEventListener('error', handleError);
                 if (error) {
                     video.remove();
                     reject(error);
@@ -407,9 +415,11 @@ export async function preloadGachaVideos(paths, onProgress = null) {
                 video.currentTime = Math.max(0, video.duration - 0.05);
             };
 
+            const handleError = () => finish(new Error(`Video preload failed: ${path}`));
+
             video.addEventListener('progress', checkProgress);
             video.addEventListener('canplaythrough', requestEndSeek, { once: true });
-            video.addEventListener('error', () => finish(new Error(`Video preload failed: ${path}`)), { once: true });
+            video.addEventListener('error', handleError, { once: true });
             const checkTimer = setInterval(checkProgress, 100);
 
             document.body.appendChild(video);
@@ -419,6 +429,14 @@ export async function preloadGachaVideos(paths, onProgress = null) {
 
         const settledPromise = promise.then(video => {
             unavailableVideos.delete(path);
+            if (!retain) {
+                video.pause();
+                video.remove();
+                video.removeAttribute('src');
+                video.load();
+                preloadedVideos.delete(path);
+                return null;
+            }
             return video;
         }).catch(error => {
             unavailableVideos.add(path);
@@ -426,14 +444,21 @@ export async function preloadGachaVideos(paths, onProgress = null) {
             return null;
         });
         preloadedVideos.set(path, settledPromise);
-        return settledPromise.then(reportProgress);
+        return settledPromise.then(() => reportProgress(path));
     };
 
     if (uniquePaths.length === 0) {
         if (onProgress) onProgress(0, 0);
         return;
     }
-    await Promise.all(uniquePaths.map(preloadOne));
+    let nextIndex = 0;
+    const runWorker = async () => {
+        while (nextIndex < uniquePaths.length) {
+            const path = uniquePaths[nextIndex++];
+            await preloadOne(path);
+        }
+    };
+    await Promise.all(Array.from({ length: workerCount }, runWorker));
 }
 
 export function isGachaVideoUnavailable(path) {
