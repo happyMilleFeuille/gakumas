@@ -16,7 +16,7 @@
     <meta name="robots" content="index,follow">
     <script>
         // 버전 변경 시 기존 사용자에게는 최신 리소스 반영을 위해 1회 강제 새로고침을 수행합니다.
-        const APP_VERSION = '1.7.07';
+        const APP_VERSION = '1.7.08';
         try {
             const previousVersion = localStorage.getItem('gakumas_note_version');
             if (previousVersion && previousVersion !== APP_VERSION) {
@@ -32,7 +32,7 @@
         // 캐시 방지(Cache Busting)를 위해 모든 ESM 모듈 경로에 자동으로 버전 쿼리를 추가하는 importmap을 동적 생성합니다.
         try {
             const jsFiles = [
-                'main.js', 'state.js', 'utils.js', 'router.js', 'ui.js', 'gacha.js',
+                'main.js', 'state.js', 'utils.js', 'router.js', 'ui.js', 'gacha.js', 'icon-preload.js',
                 'calc.js', 'videodata.js', 'i18n.js', 'carddata.js', 'abilitydata.js',
                 'calcStore.js', 'roadmap.js', 'cardModal.js', 'pItemData.js',
                 'simulator-engine.js', 'idolUI.js', 'producedata.js', 'gacharates.js',
@@ -118,21 +118,6 @@
     <link rel="stylesheet" href="css/memory.css?v=1.7.07">
     <link rel="stylesheet" href="css/home.css?v=1.7.07">
     <link rel="stylesheet" href="css/pssrInfoModal.css?v=1.7.07">
-
-    <!-- Character Icon Preload for Performance -->
-    <link rel="preload" as="image" href="icons/idolicons/saki_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/temari_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/kotone_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/tsubame_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/mao_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/lilja_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/china_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/sumika_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/hiro_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/sena_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/misuzu_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/ume_c.png">
-    <link rel="preload" as="image" href="icons/idolicons/rinami_c.png">
 
     <!-- Calculator Menu Image Preload -->
     <link rel="preload" as="image" href="images/hajime.webp">

@@ -7,6 +7,7 @@ import { renderSupport, updateGlobalBackgroundColor, preloadCalcImages } from '.
 import { renderGacha, suspendGachaAudio, resumeGachaAudio } from './gacha.js';
 import { produceList } from './producedata.js';
 import { loginWithGoogle, logout, auth, onAuthStateChanged } from './firebase-auth.js';
+import { preloadRootIcons } from './icon-preload.js';
 import './firebase-sync.js';
 
 // Idol Grid Drag-to-Scroll Implementation (글로벌 스코프로 이동하여 에러 방지)
@@ -36,6 +37,9 @@ function preloadPSSRThumbsForDesktop() {
 
 document.addEventListener('DOMContentLoaded', () => {
     let isAuthInitialized = false;
+
+    // 새로고침 직후 icons 루트 이미지를 백그라운드에서 캐시에 준비한다.
+    preloadRootIcons();
 
     // [구글 로그인 예외 처리 핸들러]
     const handleLoginError = (err) => {
@@ -262,6 +266,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 네비게이션 링크
     document.querySelectorAll('.menu-btn').forEach(el => {
         el.addEventListener('click', (e) => {
+            if (['home', 'support', 'idol'].includes(el.dataset.target)) {
+                preloadRootIcons();
+            }
             handleNavigation(el.dataset.target);
         });
     });
