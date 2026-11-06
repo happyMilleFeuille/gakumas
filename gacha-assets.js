@@ -1,6 +1,7 @@
 // gacha-assets.js - 오디오 및 자산 관리 로직
 import { state } from './state.js';
 import { getMediaUrl } from './media-url.js';
+import { GACHA_ROOT_MEDIA } from './gacha-root-media-manifest.js';
 
 export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 export const audioBuffers = {};
@@ -14,21 +15,7 @@ const activeBufferSources = new Set();
 const visibilityPausedAudio = new Set();
 const visibilityMutedVideos = new Map();
 
-export const GACHA_ASSETS = [
-    'bgm/mainbgm.mp3',
-    'gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4', 
-    'gasya/start_bgmnormal.mp3', 'gasya/bgm_ssr.mp3', 'gasya/bgm_ssrcm.mp3',
-    'gasya/gasyaclick.mp3', 'gasya/start_click.mp3', 'gasya/start_srclick.mp3', 'gasya/start_ssrclick.mp3', 'gasya/screen1.mp3',
-    'gasya/screen_sr2.mp3', 'gasya/screen_sr3.mp3', 'gasya/screen_r2.mp3', 'gasya/slide.mp3',
-    'gasya/blackout.mp4', 'gasya/blackout.mp3', 'gasya/blackoutresult.mp3',
-    'gasya/get_r1.mp4', 'gasya/get_r2.mp4',
-    'gasya/get_sr1.mp4', 'gasya/get_sr2.mp4', 'gasya/get_sr3.mp4',
-    'gasya/get_ssr1.mp4', 'gasya/get_ssr2.mp4', 'gasya/get_ssr3.mp4',
-    'gasya/1ren_result.mp3', 'gasya/10ren_result.mp3', 
-    'gasya/spotget_rsupport.mp4', 'gasya/spotget_srsupport.mp4', 'gasya/spotget_ssrsupport.mp4', 
-    'gasya/spotget_psr.mp4', 'gasya/spotget_pr.mp4', 'gasya/spotget_pssr.mp4', 'gasya/spotget_pssralt1.mp4',
-    'gasya/spotget_r.mp3', 'gasya/spotget_sr.mp3', 'gasya/get_pssr.mp3', 'gasya/get_pssralt1.mp3', 'gasya/getssr.mp3'
-];
+export const GACHA_ASSETS = Object.freeze(['bgm/mainbgm.mp3', ...GACHA_ROOT_MEDIA]);
 
 let isAssetsLoading = false;
 let assetsLoadedPromise = null;
@@ -39,7 +26,7 @@ export let isAllLoaded = false;
  */
 export async function fetchTotalAssetSizeMB() {
     // GitHub Release assets do not expose CORS-readable HEAD responses.
-    return "70.0";
+    return "103.7";
 }
 
 function preloadAudioFully(path, onProgress) {
@@ -130,12 +117,14 @@ export async function loadGachaAssets() {
     isAssetsLoading = true;
     const progressText = document.getElementById('gacha-progress-text');
     const audioAssets = GACHA_ASSETS.filter(src => src.endsWith('.mp3'));
-    const progressByAsset = new Map(audioAssets.map(src => [src, 0]));
+    const videoAssets = GACHA_ASSETS.filter(src => src.endsWith('.mp4'));
+    const loadingAssets = [...audioAssets, ...videoAssets];
+    const progressByAsset = new Map(loadingAssets.map(src => [src, 0]));
 
     const updateProgress = () => {
         if (progressText) {
             const totalProgress = [...progressByAsset.values()].reduce((sum, value) => sum + value, 0);
-            const percent = audioAssets.length ? Math.floor((totalProgress / audioAssets.length) * 100) : 100;
+            const percent = loadingAssets.length ? Math.floor((totalProgress / loadingAssets.length) * 100) : 100;
             progressText.textContent = `${percent}%`;
         }
     };
@@ -146,12 +135,7 @@ export async function loadGachaAssets() {
     };
 
     assetsLoadedPromise = (async () => {
-        // 영상은 가챠 버튼을 누른 뒤 실제 다운로드하며, 여기서는 재생 URL만 준비한다.
-        GACHA_ASSETS.filter(src => src.endsWith('.mp4')).forEach(src => {
-            if (!assetBlobs[src]) assetBlobs[src] = getMediaUrl(src);
-        });
-
-        const loadTasks = audioAssets.map(async src => {
+        const audioTasks = audioAssets.map(async src => {
             if (audioBuffers[src]) {
                 setAssetProgress(src, 1);
                 return;
@@ -175,7 +159,13 @@ export async function loadGachaAssets() {
             }
         });
 
-        const results = await Promise.allSettled(loadTasks);
+        const videoTasks = videoAssets.map(async src => {
+            if (!assetBlobs[src]) assetBlobs[src] = getMediaUrl(src);
+            await preloadGachaVideos([src]);
+            setAssetProgress(src, 1);
+        });
+
+        const results = await Promise.allSettled([...audioTasks, ...videoTasks]);
         const failed = results.find(result => result.status === 'rejected');
         if (failed) throw failed.reason;
         isAllLoaded = true;

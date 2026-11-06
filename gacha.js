@@ -8,7 +8,7 @@ import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
-import { audioCtx, assetBlobs, audioBuffers, GACHA_ASSETS, loadGachaAssets, preloadGachaVideos, playSound, stopSound, stopBGM, stopAllSounds, suspendGachaAudio, resumeGachaAudio, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
+import { audioCtx, assetBlobs, audioBuffers, loadGachaAssets, preloadGachaVideos, playSound, stopSound, stopBGM, stopAllSounds, suspendGachaAudio, resumeGachaAudio, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
 import { renderPickupSelector, renderResults } from './gacha-ui-render.js';
@@ -534,8 +534,8 @@ async function handleGachaClick(ui, mode, animation) {
     const results = animation.prepareResults(mode, customPool);
     const pssrCards = results.filter(c => c.rarity === 'PSSR');
 
-    // PSSR 영상 및 연출 리소스(고유 BGM 포함) 동적 프리로딩
-    const essentialAssets = GACHA_ASSETS.filter(path => path.endsWith('.mp4'));
+    // 하위 폴더의 PSSR 영상과 고유 BGM만 가챠 버튼을 누른 뒤 동적으로 받는다.
+    const essentialAssets = [];
     if (pssrCards.length > 0) {
         let activeCfg = CURRENT_PICKUPS[state.gachaType] || {};
         if (state.gachaType === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || {};
@@ -554,7 +554,6 @@ async function handleGachaClick(ui, mode, animation) {
                 const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
                 if (char) {
                     essentialAssets.push(`bgm/bgm${char}.mp3`);
-                    essentialAssets.push(`gasya/blackout${char}.mp4`);
                 }
             }
         });
