@@ -6,6 +6,7 @@ export const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
 export const audioBuffers = {};
 export const audioElements = {};
 export const assetBlobs = {};
+const preloadedVideos = new Map();
 let activeNodes = {};
 
 export const GACHA_ASSETS = [
@@ -167,6 +168,116 @@ export function stopBGM(type) {
         stopNode(activeNodes[type]);
         delete activeNodes[type];
     }
+}
+
+/**
+ * Release 영상은 CORS 때문에 fetch로 Blob 변환할 수 없다. 숨김 video로 전체
+ * 재생 구간을 버퍼링하고 요소를 유지해, 실제 연출이 같은 URL을 즉시 재생하게 한다.
+ */
+export async function preloadGachaVideos(paths, onProgress = null) {
+    const uniquePaths = [...new Set(paths.filter(path => path?.endsWith('.mp4')))];
+    let completed = 0;
+
+    const reportProgress = () => {
+        completed++;
+        if (onProgress) onProgress(completed, uniquePaths.length);
+    };
+
+    const preloadOne = path => {
+        const existing = preloadedVideos.get(path);
+        if (existing) return existing.then(reportProgress);
+
+        const promise = new Promise((resolve, reject) => {
+            const video = document.createElement('video');
+            const timeoutId = setTimeout(() => {
+                const ranges = Array.from({ length: video.buffered.length }, (_, index) =>
+                    `${video.buffered.start(index).toFixed(3)}-${video.buffered.end(index).toFixed(3)}`
+                ).join(',');
+                finish(new Error(`Video preload timed out: ${path} (${ranges || 'empty'}/${video.duration || 'unknown'})`));
+            }, 180000);
+            let finished = false;
+            let endSeekRequested = false;
+            let lastGapSeek = -1;
+
+            video.preload = 'auto';
+            video.muted = true;
+            video.playsInline = true;
+            video.setAttribute('aria-hidden', 'true');
+            video.style.display = 'none';
+
+            const getContiguousBufferedEnd = () => {
+                if (video.buffered.length === 0) return 0;
+                let coveredUntil = 0;
+                for (let index = 0; index < video.buffered.length; index++) {
+                    if (video.buffered.start(index) > coveredUntil + 0.15) break;
+                    coveredUntil = Math.max(coveredUntil, video.buffered.end(index));
+                }
+                return coveredUntil;
+            };
+
+            const isFullyBuffered = () => {
+                if (!Number.isFinite(video.duration) || video.duration <= 0) return false;
+                return getContiguousBufferedEnd() >= video.duration - 0.1;
+            };
+
+            const finish = error => {
+                if (finished) return;
+                finished = true;
+                clearTimeout(timeoutId);
+                clearInterval(checkTimer);
+                video.removeEventListener('progress', checkProgress);
+                if (error) {
+                    video.remove();
+                    reject(error);
+                } else {
+                    video.currentTime = 0;
+                    resolve(video);
+                }
+            };
+
+            const checkProgress = () => {
+                if (isFullyBuffered()) {
+                    finish();
+                    return;
+                }
+
+                // 끝 구간을 받은 뒤 중간에 남은 틈이 있으면 그 지점부터 이어 받는다.
+                const lastBufferedEnd = video.buffered.length
+                    ? video.buffered.end(video.buffered.length - 1)
+                    : 0;
+                const coveredUntil = getContiguousBufferedEnd();
+                if (endSeekRequested && lastBufferedEnd >= video.duration - 0.1 && coveredUntil > lastGapSeek + 0.1) {
+                    lastGapSeek = coveredUntil;
+                    video.currentTime = Math.min(video.duration - 0.05, coveredUntil + 0.05);
+                }
+            };
+
+            const requestEndSeek = () => {
+                if (endSeekRequested || !Number.isFinite(video.duration)) return;
+                endSeekRequested = true;
+                video.currentTime = Math.max(0, video.duration - 0.05);
+            };
+
+            video.addEventListener('progress', checkProgress);
+            video.addEventListener('canplaythrough', requestEndSeek, { once: true });
+            video.addEventListener('error', () => finish(new Error(`Video preload failed: ${path}`)), { once: true });
+            const checkTimer = setInterval(checkProgress, 100);
+
+            document.body.appendChild(video);
+            video.src = assetBlobs[path] || getMediaUrl(path);
+            video.load();
+        });
+
+        preloadedVideos.set(path, promise);
+        promise.catch(() => preloadedVideos.delete(path));
+        return promise.then(reportProgress);
+    };
+
+    if (uniquePaths.length === 0) {
+        if (onProgress) onProgress(0, 0);
+        return;
+    }
+    await Promise.all(uniquePaths.map(preloadOne));
 }
 
 export function playMainBGM() {

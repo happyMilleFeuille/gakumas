@@ -8,7 +8,7 @@ import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
-import { audioCtx, assetBlobs, audioBuffers, loadGachaAssets, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
+import { audioCtx, assetBlobs, audioBuffers, GACHA_ASSETS, loadGachaAssets, preloadGachaVideos, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
 import { renderPickupSelector, renderResults } from './gacha-ui-render.js';
@@ -478,6 +478,9 @@ async function handleGachaClick(ui, mode, animation) {
     if (ui.btn1) ui.btn1.style.pointerEvents = 'none';
     if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
     const spinner = document.getElementById('gacha-spinner');
+    const progressText = document.getElementById('gacha-progress-text');
+    if (spinner) spinner.classList.add('active');
+    if (progressText) progressText.textContent = '0%';
 
     if (ui.jewelCount) ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
 
@@ -506,7 +509,7 @@ async function handleGachaClick(ui, mode, animation) {
     const pssrCards = results.filter(c => c.rarity === 'PSSR');
 
     // PSSR 영상 및 연출 리소스(고유 BGM 포함) 동적 프리로딩
-    const essentialAssets = ['gasya/start_r.mp4', 'gasya/start_sr.mp4', 'gasya/start_ssr.mp4'];
+    const essentialAssets = GACHA_ASSETS.filter(path => path.endsWith('.mp4'));
     if (pssrCards.length > 0) {
         let activeCfg = CURRENT_PICKUPS[state.gachaType] || {};
         if (state.gachaType === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || {};
@@ -523,7 +526,10 @@ async function handleGachaClick(ui, mode, animation) {
             const p = pssrPickups.find(p => (typeof p === 'string' ? p : p.id) === card.id);
             if (p) {
                 const char = typeof p === 'string' ? p.replace('ssr', '').split('_')[0] : p.char;
-                if (char) essentialAssets.push(`bgm/bgm${char}.mp3`);
+                if (char) {
+                    essentialAssets.push(`bgm/bgm${char}.mp3`);
+                    essentialAssets.push(`gasya/blackout${char}.mp4`);
+                }
             }
         });
     }
@@ -547,11 +553,28 @@ async function handleGachaClick(ui, mode, animation) {
         }
     });
 
-    await Promise.allSettled(loadPromises);
+    try {
+        await Promise.all([
+            Promise.all(loadPromises),
+            preloadGachaVideos(essentialAssets, (loaded, total) => {
+                if (progressText) progressText.textContent = total ? `${Math.floor((loaded / total) * 100)}%` : '100%';
+            }),
+            new Promise(resolve => setTimeout(resolve, 350))
+        ]);
 
-    // 프리로딩 완료 후 스피너 제거 및 애니메이션 시작
-    if (spinner) spinner.classList.remove('active');
-    setTimeout(() => animation.startGacha(mode, results), 50);
+        // 모든 연출 영상의 전체 재생 구간이 준비된 뒤에만 연출을 시작한다.
+        if (spinner) spinner.classList.remove('active');
+        if (progressText) progressText.textContent = '0%';
+        animation.startGacha(mode, results);
+    } catch (error) {
+        console.error('Failed to preload gacha videos', error);
+        if (spinner) spinner.classList.remove('active');
+        if (progressText) progressText.textContent = '0%';
+        if (ui.jewelCount) ui.jewelCount.textContent = state.jewels.toLocaleString();
+        if (ui.btn1) ui.btn1.style.pointerEvents = '';
+        if (ui.btn10) ui.btn10.style.pointerEvents = '';
+        window.alert('연출 영상 다운로드에 실패했습니다. 네트워크 연결을 확인한 후 다시 시도해 주세요.');
+    }
 }
 
 function updateGachaButtonsState(ui) {
