@@ -1955,7 +1955,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrchina_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "fullpower", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
+        id: "ssrchina_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "fullpower", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.1, source: "limited_f", releasedAt: "2026-11-06",
         item: {
             name: "夢見る輝き",
             desc: "わずかずつの歩み 사용 후\n✦ 제외에 있는 わずかずつの歩み 1장을 덱의 맨 위로 이동\n✦ hpreduce1\n✦ inlesson3",
@@ -1985,7 +1985,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrmisuzu_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
+        id: "ssrmisuzu_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.1, source: "limited_f", releasedAt: "2026-11-06",
         item: {
             name: "星々を統べる輝き",
             desc: "직접효과로 호인상이 4회 증가 시\n✦ 호인상 추가 발동+1 (2턴)\n✦ 호인상 강화+10% (2턴)\n✦ hpreduce1",
