@@ -1745,7 +1745,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrtemari_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.5, plan: "logic", source: "limited_f", releasedAt: "2026-05-16",
+        id: "ssrtemari_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.5, plan: "logic", source: "limited_f", releasedAt: "2026-05-16",
         item: {
             name: "太陽を超える輝き",
             desc: "마지막 턴 개시 시\n✦ 레슨 중 소비한 원기의 75%만큼 원기 증가\n✦ draw2\n✦ hpreduce3\n✦ inlesson1",
@@ -1775,7 +1775,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrrinami_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodcondition", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.6, plan: "sense", source: "limited_f", releasedAt: "2026-05-16",
+        id: "ssrrinami_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodcondition", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", jumpTime2: 7.6, plan: "sense", source: "limited_f", releasedAt: "2026-05-16",
         item: {
             name: "憧れ続けた輝き",
             desc: "호조가 8턴 이상인 경우 호조 카드를 4회 사용할 때마다\n✦ goodconditionz1\n✦ use1\n✦ draw1\n✦ hpreduce1\n✦ inlesson5",
@@ -1805,7 +1805,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrhiro_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
+        id: "ssrhiro_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
         item: {
             name: "すべてを賭けた輝き",
             desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
@@ -1835,7 +1835,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrlilja_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-06-05",
+        id: "ssrlilja_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "motivation", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-06-05",
         item: {
             name: "強い意志の輝き",
             desc: "직접효과로 의욕이 5회 증가 시\n✦ genki10 (의욕 효과 2배 적용)\n✦ hpreduce1\n✦ inlesson2",
@@ -1865,7 +1865,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsaki_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", jumpTime2: 7.6, youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-07-21",
+        id: "ssrsaki_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", jumpTime2: 7.6, youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 7.6, source: "limited_f", releasedAt: "2026-07-21",
         item: {
             name: "不屈の輝き",
             desc: "手を伸ばした先に를 사용 후 온존으로 지침 변경한 횟수가 2회 이상일 경우\n✦ 手を伸ばした先に의 파라미터 값+100\n✦ 다음 턴 draw1\n✦ hpreduce3\n✦ inlesson2",
@@ -1895,7 +1895,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrsena_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-09-10",
+        id: "ssrsena_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-09-10",
         item: {
             name: "頂点の輝き",
             desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ 호인상 감소 6\n✦ inlesson2",
@@ -1925,7 +1925,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrtsubame_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.9, source: "limited_f", releasedAt: "2026-10-28",
+        id: "ssrtsubame_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "enthusiasm", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.9, source: "limited_f", releasedAt: "2026-10-28",
         item: {
             name: "ヒーローの輝き",
             desc: "턴 개시 후 레슨 중 얻은 누계 전력치가 10이상일 경우\n✦ genki4\n✦ 파라미터 상승량 증가 25%\n✦ 덱 혹은 버림패에 있는 結果としての今 1장을 손패로 이동\n✦ inlesson1",
@@ -1955,11 +1955,11 @@ export const produceList = [
         }
     },
     {
-        id: "ssrchina_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "fullpower", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
+        id: "ssrchina_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "fullpower", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "anomaly", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
         item: {
             name: "夢見る輝き",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "わずかずつの歩み 사용 후\n✦ 제외에 있는 わずかずつの歩み 1장을 덱의 맨 위로 이동\n✦ hpreduce1\n✦ inlesson3",
+            desc_ja: "わずかずつの歩み使用後、\n✦ 除外にあるわずかずつの歩み1枚を山札の一番上に移動\n✦ hpreduce1\n✦ inlesson3",
         },
         itemplus: {
             desc: "わずかずつの歩み 사용 후\n✦ 제외에 있는 わずかずつの歩み 1장을 덱의 맨 위로 이동\n✦ genki2\n✦ inlesson3",
@@ -1967,8 +1967,8 @@ export const produceList = [
         },
         card: {
             name: "なにかを続ける尊さ",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "✦ fullpower1 \n✦ use1\n✦ 재연 : 지침이 전력일 경우 한 턴 내에 카드를 2회 사용할 시 자신을 재사용 (최대 3회・턴 내 1회 제한)\n<span style = 'color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ fullpower1 \n✦ use1\n✦ 再演：全力の場合、ターン内にスキルカードを2回使用するごとに、自身を再使用（3回まで・ターン内1回まで）\n<span style = 'color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "✦ fullpower2 \n✦ use1\n✦ 재연 : 지침이 전력일 경우 한 턴 내에 카드를 2회 사용할 시 자신을 재사용 (최대 3회・턴 내 1회 제한)\n<span style = 'color:#8B8FD8'>nooverlab limit1",
@@ -1976,8 +1976,8 @@ export const produceList = [
         },
         cardsecond: {
             name: "わずかずつの歩み",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "hpreduce8\n✦ 보류에 있는 카드를 손패로 이동\n✦ use3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce8\n✦ 保留にあるスキルカードを手札に移動\n✦ use3\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardsecondplus: {
             desc: "hpreduce5\n✦ genki1\n✦ 보류에 있는 카드를 손패로 이동\n✦ use3\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -1985,11 +1985,11 @@ export const produceList = [
         }
     },
     {
-        id: "ssrmisuzu_hiffes", name: "잡동사니 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
+        id: "ssrmisuzu_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-11-06",
         item: {
             name: "星々を統べる輝き",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "직접효과로 호인상이 4회 증가 시\n✦ 호인상 추가 발동+1 (2턴)\n✦ 호인상 강화+10% (2턴)\n✦ hpreduce1",
+            desc_ja: "直接効果で好印象が4回増加時、\n✦ 好印象追加発動+1（2ターン）\n✦ 好印象強化+10%（2ターン）\n✦ hpreduce1",
         },
         itemplus: {
             desc: "직접효과로 호인상이 4회 증가 시\n✦ 호인상 추가 발동+1 (2턴)\n✦ 호인상 강화+10% (2턴)",
@@ -1997,8 +1997,8 @@ export const produceList = [
         },
         card: {
             name: "ありのままのわたし",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "✦genki3\n✦ 호인상 강화+50%\n✦ 재연 : 직접효과로 호인상이 3회 증가 시 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦genki3\n✦ 好印象強化+50%\n✦ 再演：直接効果で好印象が3回増加時、自身を再使用（2回まで・ターン内1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "✦genki4\n✦ 호인상 강화+50%\n✦ 재연 : 직접효과로 호인상이 3회 증가 시 자신을 재사용 (최대 2회・턴 내 1회 제한)\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -2006,8 +2006,8 @@ export const produceList = [
         },
         cardsecond: {
             name: "認めてくれるひと",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "✦goodimpression3\n✦ 제외에 있는 카드가 7장 이상일 경우 goodimpression5 \n✦ 제외에 있는 카드가 11장 이상일 경우 호인상의 170%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",
+            desc_ja: "✦goodimpression3\n✦ 除外にあるスキルカードが7枚以上の場合、goodimpression5 \n✦ 除外にあるスキルカードが11枚以上の場合、好印象の170%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardsecondplus: {
             desc: "✦goodimpression3\n✦ 제외에 있는 카드가 7장 이상일 경우 goodimpression5 \n✦ 제외에 있는 카드가 11장 이상일 경우 호인상의 280%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab",

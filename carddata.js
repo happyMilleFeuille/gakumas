@@ -833,11 +833,11 @@ export const cardList = [
         extra1: "param", extra2: "ranenhance",
         abilities:
             [
-                "hpmax",
-                "hpmax",
+                "percentparam",
+                "sp_lessonup",
                 "supportrateup",
-                "hpmax",
-                "hpmax",
+                "sp_param",
+                "delete4",
                 "event_paraup"
             ]
     },
