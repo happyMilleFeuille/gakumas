@@ -1,8 +1,8 @@
 # Obsidian Vault Test
 obsidian_test/
 
-# Hosted as GitHub Release assets (media-v1) to stay below the Pages 1 GiB limit.
-gasya/
+# Only PSSR cutscene videos stay in the media-v1 GitHub Release.
+/gasya/pssr/
 
 # Local GitHub Release media sync helpers
 /gasya 싱크.bat

@@ -109,6 +109,53 @@ function preloadAudioFully(path, onProgress) {
     });
 }
 
+async function preloadSameOriginVideoBlobs(paths, onComplete, concurrency = 3) {
+    let nextIndex = 0;
+    const workerCount = Math.max(1, Math.min(paths.length || 1, concurrency));
+
+    const runWorker = async () => {
+        while (nextIndex < paths.length) {
+            const path = paths[nextIndex++];
+            try {
+                if (!assetBlobs[path]?.startsWith('blob:')) {
+                    const response = await fetch(getMediaUrl(path));
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const buffer = await response.arrayBuffer();
+                    assetBlobs[path] = URL.createObjectURL(new Blob([buffer], { type: 'video/mp4' }));
+                }
+                unavailableVideos.delete(path);
+            } catch (error) {
+                unavailableVideos.add(path);
+                console.warn(`Skipping unavailable gacha video: ${path}`, error);
+            } finally {
+                onComplete(path);
+            }
+        }
+    };
+
+    await Promise.all(Array.from({ length: workerCount }, runWorker));
+}
+
+async function preloadSameOriginAudioBuffers(paths, onComplete, concurrency = 4) {
+    let nextIndex = 0;
+    const workerCount = Math.max(1, Math.min(paths.length || 1, concurrency));
+
+    const runWorker = async () => {
+        while (nextIndex < paths.length) {
+            const path = paths[nextIndex++];
+            if (!audioBuffers[path]) {
+                const response = await fetch(getMediaUrl(path));
+                if (!response.ok) throw new Error(`Audio preload failed: ${path} (HTTP ${response.status})`);
+                const buffer = await response.arrayBuffer();
+                audioBuffers[path] = await audioCtx.decodeAudioData(buffer);
+            }
+            onComplete(path);
+        }
+    };
+
+    await Promise.all(Array.from({ length: workerCount }, runWorker));
+}
+
 export async function loadGachaAssets() {
     if (isAllLoaded) return Promise.resolve();
     if (assetsLoadedPromise) return assetsLoadedPromise;
@@ -135,40 +182,19 @@ export async function loadGachaAssets() {
     };
 
     assetsLoadedPromise = (async () => {
-        const audioTasks = audioAssets.map(async src => {
-            if (audioBuffers[src]) {
-                setAssetProgress(src, 1);
-                return;
-            }
-
-            try {
-                if (src.startsWith('gasya/')) {
-                    await preloadAudioFully(src, progress => setAssetProgress(src, progress));
-                    return;
-                }
-
-                const response = await fetch(getMediaUrl(src));
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const buffer = await response.arrayBuffer();
-                const decoded = await audioCtx.decodeAudioData(buffer);
-                audioBuffers[src] = decoded;
-                setAssetProgress(src, 1);
-            } catch (error) {
-                console.error(`Failed to load asset: ${src}`, error);
-                throw error;
-            }
-        });
-
-        videoAssets.forEach(src => {
-            if (!assetBlobs[src]) assetBlobs[src] = getMediaUrl(src);
-        });
-        const videoTask = preloadGachaVideos(
-            videoAssets,
-            (_completed, _total, path) => setAssetProgress(path, 1),
-            { retain: false, concurrency: 3 }
+        const audioTask = preloadSameOriginAudioBuffers(
+            audioAssets,
+            path => setAssetProgress(path, 1),
+            4
         );
 
-        const results = await Promise.allSettled([...audioTasks, videoTask]);
+        const videoTask = preloadSameOriginVideoBlobs(
+            videoAssets,
+            path => setAssetProgress(path, 1),
+            3
+        );
+
+        const results = await Promise.allSettled([audioTask, videoTask]);
         const failed = results.find(result => result.status === 'rejected');
         if (failed) throw failed.reason;
         isAllLoaded = true;
