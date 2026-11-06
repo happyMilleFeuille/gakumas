@@ -24,22 +24,6 @@ const getLocalizedCardName = (card) => {
 };
 
 let activeTab = 'p-idol';
-const videoExistenceCache = new Map();
-
-function checkVideoExists(url) {
-    return new Promise(resolve => {
-        const video = document.createElement('video');
-        const cleanup = (exists) => {
-            video.removeAttribute('src');
-            video.load();
-            resolve(exists);
-        };
-        video.preload = 'metadata';
-        video.addEventListener('loadedmetadata', () => cleanup(true), { once: true });
-        video.addEventListener('error', () => cleanup(false), { once: true });
-        video.src = url;
-    });
-}
 let currentSelectedIdol = 'all';
 let activePlanFilter = 'all';
 let activeSubFilter = 'all';
@@ -833,56 +817,11 @@ export function renderProduceCards(idolName, container) {
             if (!gachaVideoLink || card.rarity !== 'PSSR') return;
             const vidId = videoIdList[idx];
             currentVideoUrl = getMediaUrl(`gasya/pssr/${vidId}.mp4`);
-            
-            if (videoExistenceCache.has(currentVideoUrl)) {
-                if (videoExistenceCache.get(currentVideoUrl)) {
-                    gachaVideoLink.classList.remove('hidden');
-                } else {
-                    gachaVideoLink.classList.add('hidden');
-                }
-            } else {
-                gachaVideoLink.classList.add('hidden');
-                const checkUrl = currentVideoUrl;
-                checkVideoExists(checkUrl)
-                    .then(exists => {
-                        videoExistenceCache.set(checkUrl, exists);
-                        if (currentVideoUrl === checkUrl) {
-                            if (exists) gachaVideoLink.classList.remove('hidden');
-                            else gachaVideoLink.classList.add('hidden');
-                        }
-                    })
-                    .catch(() => {
-                        videoExistenceCache.set(checkUrl, false);
-                        if (currentVideoUrl === checkUrl) {
-                            gachaVideoLink.classList.add('hidden');
-                        }
-                    });
-            }
+            gachaVideoLink.classList.remove('hidden');
         }
 
         if (gachaVideoLink) {
             if (card.rarity === 'PSSR') {
-                // Precheck all video resources for this card to avoid lag on click
-                videoIdList.forEach(vidId => {
-                    const url = getMediaUrl(`gasya/pssr/${vidId}.mp4`);
-                    if (!videoExistenceCache.has(url)) {
-                        checkVideoExists(url)
-                            .then(exists => {
-                                videoExistenceCache.set(url, exists);
-                                if (url === currentVideoUrl) {
-                                    if (exists) gachaVideoLink.classList.remove('hidden');
-                                    else gachaVideoLink.classList.add('hidden');
-                                }
-                            })
-                            .catch(() => {
-                                videoExistenceCache.set(url, false);
-                                if (url === currentVideoUrl) {
-                                    gachaVideoLink.classList.add('hidden');
-                                }
-                            });
-                    }
-                });
-
                 updateGachaVideo(currentIndex);
 
                 gachaVideoLink.onclick = (e) => {
