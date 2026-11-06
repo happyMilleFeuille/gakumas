@@ -17,6 +17,22 @@ import { getMediaUrl } from './media-url.js';
 
 export { audioCtx, playSound, stopBGM, playMainBGM };
 
+let gachaResultBackgroundImage = null;
+let gachaResultBackgroundPromise = null;
+
+function preloadGachaResultBackground() {
+    if (gachaResultBackgroundPromise) return gachaResultBackgroundPromise;
+
+    gachaResultBackgroundImage = new Image();
+    gachaResultBackgroundPromise = new Promise(resolve => {
+        gachaResultBackgroundImage.addEventListener('load', resolve, { once: true });
+        // 배경 하나의 실패 때문에 가챠 자체가 중단되지는 않게 한다.
+        gachaResultBackgroundImage.addEventListener('error', resolve, { once: true });
+    });
+    gachaResultBackgroundImage.src = getMediaUrl('gasya/background.jpg');
+    return gachaResultBackgroundPromise;
+}
+
 function updateMuteButtonIcon(button) {
     if (!button) return;
     const iconPath = state.gachaMuted ? 'icons/volumeoff.svg' : 'icons/volumeon.svg';
@@ -88,6 +104,8 @@ function showDownloadConfirm(contentArea) {
 }
 
 function startGachaUI(contentArea, isRefresh) {
+    preloadGachaResultBackground();
+
     const fixedBtnArea = setupFixedButtons();
     const tpl = document.getElementById('tpl-gacha');
     if (!tpl) return;
@@ -141,7 +159,10 @@ function startGachaUI(contentArea, isRefresh) {
     if (!isRefresh && !state.gachaMuted) playMainBGM();
 
     const spinner = document.getElementById('gacha-spinner');
-    if (spinner) spinner.classList.add('active');
+    if (spinner) {
+        spinner.classList.remove('video-loading');
+        spinner.classList.add('active');
+    }
     loadGachaAssets().then(() => {
         updateGachaButtonsState(ui);
         if (spinner) spinner.classList.remove('active');
@@ -479,7 +500,7 @@ async function handleGachaClick(ui, mode, animation) {
     if (ui.btn10) ui.btn10.style.pointerEvents = 'none';
     const spinner = document.getElementById('gacha-spinner');
     const progressText = document.getElementById('gacha-progress-text');
-    if (spinner) spinner.classList.add('active');
+    if (spinner) spinner.classList.add('active', 'video-loading');
     if (progressText) progressText.textContent = '0%';
 
     if (ui.jewelCount) ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
@@ -559,16 +580,17 @@ async function handleGachaClick(ui, mode, animation) {
             preloadGachaVideos(essentialAssets, (loaded, total) => {
                 if (progressText) progressText.textContent = total ? `${Math.floor((loaded / total) * 100)}%` : '100%';
             }),
+            preloadGachaResultBackground(),
             new Promise(resolve => setTimeout(resolve, 350))
         ]);
 
         // 모든 연출 영상의 전체 재생 구간이 준비된 뒤에만 연출을 시작한다.
-        if (spinner) spinner.classList.remove('active');
+        if (spinner) spinner.classList.remove('active', 'video-loading');
         if (progressText) progressText.textContent = '0%';
         animation.startGacha(mode, results);
     } catch (error) {
         console.error('Failed to preload gacha videos', error);
-        if (spinner) spinner.classList.remove('active');
+        if (spinner) spinner.classList.remove('active', 'video-loading');
         if (progressText) progressText.textContent = '0%';
         if (ui.jewelCount) ui.jewelCount.textContent = state.jewels.toLocaleString();
         if (ui.btn1) ui.btn1.style.pointerEvents = '';
