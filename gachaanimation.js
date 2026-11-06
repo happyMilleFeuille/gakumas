@@ -2,6 +2,7 @@ import { state, setJewels, setTotalPulls, addGachaLog } from './state.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopBGM } from './gacha.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { getMediaUrl } from './media-url.js';
 
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
@@ -170,7 +171,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             videoMain.onplaying = null;
             videoMain.onended = null;
             videoMain.onclick = null;
-            videoMain.src = assetBlobs[src] || src;
+            videoMain.src = assetBlobs[src] || getMediaUrl(src);
             videoMain.load();
 
             playSound('gasya/start_bgmnormal.mp3', { loop: true, isBGM: true, bgmType: 'gacha' });
@@ -269,7 +270,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             playSound(getPromotionSsrBgm(), { loop: true, isBGM: true, bgmType: 'gacha' });
         }
 
-        videoNext.src = assetBlobs[nextSrc] || nextSrc;
+        videoNext.src = assetBlobs[nextSrc] || getMediaUrl(nextSrc);
         videoNext.onplaying = () => {
             if (currentState !== States.PROMOTION || currentStep !== step) return;
 
@@ -318,7 +319,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         if (!videoNext) return;
 
         stopBGM('gacha');
-        videoNext.src = assetBlobs['gasya/blackout.mp4'] || 'gasya/blackout.mp4';
+        videoNext.src = assetBlobs['gasya/blackout.mp4'] || getMediaUrl('gasya/blackout.mp4');
 
         stopStepSfx();
         activeStepSfx = playSound('gasya/blackout.mp3');
@@ -335,7 +336,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             const bgmSrc = char ? `bgm/bgm${char}.mp3` : 'gasya/blackoutbgm.mp3';
             playSound(bgmSrc, { loop: true, isBGM: true, bgmType: 'blackout', volume: 0.7 });
             if (char) {
-                videoNext.src = assetBlobs[`gasya/blackout${char}.mp4`] || `gasya/blackout${char}.mp4`;
+                videoNext.src = assetBlobs[`gasya/blackout${char}.mp4`] || getMediaUrl(`gasya/blackout${char}.mp4`);
                 videoNext.onplaying = () => {
                     if (currentState !== States.BLACKOUT) return;
                     stopStepSfx();
@@ -388,7 +389,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             }
         }
 
-        videoNext.src = assetBlobs[getSrc] || getSrc;
+        videoNext.src = assetBlobs[getSrc] || getMediaUrl(getSrc);
         if (card.rarity === 'PSSR') {
             subState = "pssr_intro";
         } else if (isSupport && card.displayRarity === 'SSR') {

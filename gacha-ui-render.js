@@ -5,6 +5,7 @@ import { produceList } from './producedata.js';
 import { cardList } from './carddata.js'; // 서포트 카드 데이터 추가
 import { openDrawer } from './gacha-drawer.js';
 import { bindSafeClick } from './gacha-utils.js';
+import { getMediaUrl } from './media-url.js';
 
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
@@ -453,5 +454,11 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
         bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
     }
-    return { currentCfg, favColor, displayName, bannerImg, bgImg };
+    return {
+        currentCfg,
+        favColor,
+        displayName,
+        bannerImg: getMediaUrl(bannerImg),
+        bgImg: getMediaUrl(bgImg)
+    };
 }

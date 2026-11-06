@@ -13,6 +13,7 @@ import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
 import { renderPickupSelector, renderResults } from './gacha-ui-render.js';
 import { handleNavigation } from './router.js';
+import { getMediaUrl } from './media-url.js';
 
 export { audioCtx, playSound, stopBGM, playMainBGM };
 
@@ -424,7 +425,7 @@ function setupAnimationLogic(ui, contentArea) {
             if (fixedBg) {
                 fixedBg.style.webkitMaskImage = 'none';
                 fixedBg.style.maskImage = 'none';
-                fixedBg.style.backgroundImage = "url('gasya/background.jpg')";
+                fixedBg.style.backgroundImage = `url('${getMediaUrl('gasya/background.jpg')}')`;
                 fixedBg.style.backgroundSize = "cover";
                 fixedBg.style.opacity = '1';
             }
@@ -530,13 +531,17 @@ async function handleGachaClick(ui, mode, animation) {
     const loadPromises = essentialAssets.map(path => {
         if (path.endsWith('.mp3')) {
             if (audioBuffers[path]) return Promise.resolve();
-            return fetch(path).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+            return fetch(getMediaUrl(path)).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
                 .then(buf => audioCtx.decodeAudioData(buf))
                 .then(decoded => { audioBuffers[path] = decoded; })
                 .catch(() => { });
         } else {
             if (assetBlobs[path]) return Promise.resolve();
-            return fetch(path).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+            if (path.startsWith('gasya/')) {
+                assetBlobs[path] = getMediaUrl(path);
+                return Promise.resolve();
+            }
+            return fetch(getMediaUrl(path)).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
                 .then(buf => { assetBlobs[path] = URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })); })
                 .catch(() => { });
         }

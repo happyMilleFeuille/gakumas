@@ -4,6 +4,7 @@ import { produceList } from './producedata.js';
 import { videoList } from './videodata.js';
 import { idolList } from './roadmap.js'; 
 import { showProduceCardInfoModal, preloadProduceCardInfoModalImages } from './pssrInfoModal.js';
+import { getMediaUrl } from './media-url.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -24,6 +25,21 @@ const getLocalizedCardName = (card) => {
 
 let activeTab = 'p-idol';
 const videoExistenceCache = new Map();
+
+function checkVideoExists(url) {
+    return new Promise(resolve => {
+        const video = document.createElement('video');
+        const cleanup = (exists) => {
+            video.removeAttribute('src');
+            video.load();
+            resolve(exists);
+        };
+        video.preload = 'metadata';
+        video.addEventListener('loadedmetadata', () => cleanup(true), { once: true });
+        video.addEventListener('error', () => cleanup(false), { once: true });
+        video.src = url;
+    });
+}
 let currentSelectedIdol = 'all';
 let activePlanFilter = 'all';
 let activeSubFilter = 'all';
@@ -816,7 +832,7 @@ export function renderProduceCards(idolName, container) {
         function updateGachaVideo(idx) {
             if (!gachaVideoLink || card.rarity !== 'PSSR') return;
             const vidId = videoIdList[idx];
-            currentVideoUrl = `gasya/pssr/${vidId}.mp4`;
+            currentVideoUrl = getMediaUrl(`gasya/pssr/${vidId}.mp4`);
             
             if (videoExistenceCache.has(currentVideoUrl)) {
                 if (videoExistenceCache.get(currentVideoUrl)) {
@@ -827,11 +843,11 @@ export function renderProduceCards(idolName, container) {
             } else {
                 gachaVideoLink.classList.add('hidden');
                 const checkUrl = currentVideoUrl;
-                fetch(checkUrl, { method: 'HEAD' })
-                    .then(res => {
-                        videoExistenceCache.set(checkUrl, res.ok);
+                checkVideoExists(checkUrl)
+                    .then(exists => {
+                        videoExistenceCache.set(checkUrl, exists);
                         if (currentVideoUrl === checkUrl) {
-                            if (res.ok) gachaVideoLink.classList.remove('hidden');
+                            if (exists) gachaVideoLink.classList.remove('hidden');
                             else gachaVideoLink.classList.add('hidden');
                         }
                     })
@@ -848,13 +864,13 @@ export function renderProduceCards(idolName, container) {
             if (card.rarity === 'PSSR') {
                 // Precheck all video resources for this card to avoid lag on click
                 videoIdList.forEach(vidId => {
-                    const url = `gasya/pssr/${vidId}.mp4`;
+                    const url = getMediaUrl(`gasya/pssr/${vidId}.mp4`);
                     if (!videoExistenceCache.has(url)) {
-                        fetch(url, { method: 'HEAD' })
-                            .then(res => {
-                                videoExistenceCache.set(url, res.ok);
+                        checkVideoExists(url)
+                            .then(exists => {
+                                videoExistenceCache.set(url, exists);
                                 if (url === currentVideoUrl) {
-                                    if (res.ok) gachaVideoLink.classList.remove('hidden');
+                                    if (exists) gachaVideoLink.classList.remove('hidden');
                                     else gachaVideoLink.classList.add('hidden');
                                 }
                             })

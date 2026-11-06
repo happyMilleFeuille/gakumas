@@ -1,10 +1,12 @@
 // gacha-assets.js - 오디오 및 자산 관리 로직
 import { state } from './state.js';
+import { getMediaUrl } from './media-url.js';
 
 export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 export const audioBuffers = {};
-export const assetBlobs = {}; 
-let activeNodes = {}; 
+export const audioElements = {};
+export const assetBlobs = {};
+let activeNodes = {};
 
 export const GACHA_ASSETS = [
     'bgm/mainbgm.mp3',
@@ -27,24 +29,11 @@ let assetsLoadedPromise = null;
 export let isAllLoaded = false;
 
 /**
- * 서버에 HEAD 요청을 보내 실제 파일 크기를 합산 (완전 자동)
+ * 다운로드 확인창에 표시할 핵심 연출 리소스의 예상 크기
  */
 export async function fetchTotalAssetSizeMB() {
-    try {
-        const sizePromises = GACHA_ASSETS.map(src => 
-            fetch(src, { method: 'HEAD' })
-                .then(res => parseInt(res.headers.get('content-length') || 0))
-                .catch(() => 0)
-        );
-        const sizes = await Promise.all(sizePromises);
-        const totalBytes = sizes.reduce((acc, s) => acc + s, 0);
-        
-        // 0인 경우(체크 실패 등) 기본값 70MB 반환
-        if (totalBytes === 0) return "70.0";
-        return (totalBytes / (1024 * 1024)).toFixed(1);
-    } catch (e) {
-        return "70.0";
-    }
+    // GitHub Release assets do not expose CORS-readable HEAD responses.
+    return "70.0";
 }
 
 export async function loadGachaAssets() {
@@ -66,14 +55,27 @@ export async function loadGachaAssets() {
 
     assetsLoadedPromise = (async () => {
         const loadTasks = GACHA_ASSETS.map(async (src) => {
-            if ((src.endsWith('.mp3') && audioBuffers[src]) || (src.endsWith('.mp4') && assetBlobs[src])) {
+            if ((src.endsWith('.mp3') && (audioBuffers[src] || audioElements[src])) || (src.endsWith('.mp4') && assetBlobs[src])) {
                 loadedCount++;
                 updateProgress();
                 return;
             }
 
             try {
-                const response = await fetch(src);
+                if (src.startsWith('gasya/')) {
+                    const mediaUrl = getMediaUrl(src);
+                    if (src.endsWith('.mp3')) {
+                        const audio = new Audio(mediaUrl);
+                        audio.preload = 'auto';
+                        audioElements[src] = audio;
+                    } else {
+                        // Direct media URLs avoid CORS restrictions on Release assets.
+                        assetBlobs[src] = mediaUrl;
+                    }
+                    return;
+                }
+
+                const response = await fetch(getMediaUrl(src));
                 const buffer = await response.arrayBuffer();
                 
                 if (src.endsWith('.mp3')) {
@@ -101,13 +103,30 @@ export async function loadGachaAssets() {
 }
 
 export function playSound(name, options = {}) {
-    if (state.gachaMuted || !audioBuffers[name]) return null;
+    if (state.gachaMuted || (!audioBuffers[name] && !audioElements[name])) return null;
 
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
     const { loop = false, isBGM = false, bgmType = null, offset = 0, volume = 1.0 } = options;
 
     if (bgmType) stopBGM(bgmType);
+
+    if (audioElements[name]) {
+        const audio = audioElements[name].cloneNode();
+        audio.loop = loop;
+        audio.volume = volume;
+        if (offset > 0) {
+            try {
+                audio.currentTime = offset;
+            } catch (error) {
+                audio.addEventListener('loadedmetadata', () => { audio.currentTime = offset; }, { once: true });
+            }
+        }
+        // Call play immediately so the browser retains the user's click activation.
+        audio.play().catch(error => console.error(`Failed to play asset: ${name}`, error));
+        if (isBGM && bgmType) activeNodes[bgmType] = audio;
+        return audio;
+    }
 
     const source = audioCtx.createBufferSource();
     source.buffer = audioBuffers[name];
@@ -127,15 +146,25 @@ export function playSound(name, options = {}) {
 }
 
 export function stopBGM(type) {
+    const stopNode = (node) => {
+        try {
+            if (typeof node.stop === 'function') node.stop();
+            else if (typeof node.pause === 'function') {
+                node.pause();
+                node.currentTime = 0;
+            }
+        } catch (e) {}
+    };
+
     if (type === 'all') {
         Object.keys(activeNodes).forEach(key => {
-            try { activeNodes[key].stop(); } catch(e) {}
+            stopNode(activeNodes[key]);
             delete activeNodes[key];
         });
         return;
     }
     if (activeNodes[type]) {
-        try { activeNodes[type].stop(); } catch(e) {}
+        stopNode(activeNodes[type]);
         delete activeNodes[type];
     }
 }
