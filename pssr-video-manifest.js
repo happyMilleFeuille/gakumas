@@ -14,6 +14,7 @@ ssrchina_1st7another
 ssrchina_2nd
 ssrchina_3rd
 ssrchina_campusfes
+ssrchina_hiffes
 ssrchina_howlinglimited
 ssrchina_michinaruunit
 ssrchina_onsen
@@ -109,6 +110,7 @@ ssrmisuzu_1st9another
 ssrmisuzu_2nd
 ssrmisuzu_3rd
 ssrmisuzu_campusfes
+ssrmisuzu_hiffes
 ssrmisuzu_starmineunit
 ssrmisuzu_summer2limited
 ssrrinami_1st
