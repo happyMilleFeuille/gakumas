@@ -8,14 +8,14 @@ import translations from './i18n.js';
 import { setupGachaAnimation } from './gachaanimation.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
-import { audioCtx, assetBlobs, audioBuffers, GACHA_ASSETS, loadGachaAssets, preloadGachaVideos, playSound, stopBGM, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
+import { audioCtx, assetBlobs, audioBuffers, GACHA_ASSETS, loadGachaAssets, preloadGachaVideos, playSound, stopSound, stopBGM, stopAllSounds, suspendGachaAudio, resumeGachaAudio, playMainBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
 import { renderPickupSelector, renderResults } from './gacha-ui-render.js';
 import { handleNavigation } from './router.js';
 import { getMediaUrl } from './media-url.js';
 
-export { audioCtx, playSound, stopBGM, playMainBGM };
+export { audioCtx, playSound, stopSound, stopBGM, stopAllSounds, suspendGachaAudio, resumeGachaAudio, playMainBGM };
 
 let gachaResultBackgroundImage = null;
 let gachaResultBackgroundPromise = null;
@@ -348,7 +348,12 @@ function initHeaderControls(ui) {
         updateMuteButtonIcon(ui.muteBtn);
         ui.muteBtn.onclick = () => {
             state.gachaMuted = !state.gachaMuted;
-            state.gachaMuted ? stopBGM('all') : playMainBGM();
+            if (state.gachaMuted) {
+                stopAllSounds();
+            } else {
+                resumeGachaAudio();
+                playMainBGM();
+            }
             updateMuteButtonIcon(ui.muteBtn);
         };
         const muteControls = document.getElementById('gacha-header-controls');

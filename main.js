@@ -4,7 +4,7 @@ import { state, setLanguage, setSupportLB } from './state.js';
 import { updatePageTranslations, initMobileHeightFix, translate } from './utils.js';
 import { handleNavigation } from './router.js';
 import { renderSupport, updateGlobalBackgroundColor, preloadCalcImages } from './ui.js';
-import { renderGacha } from './gacha.js';
+import { renderGacha, suspendGachaAudio, resumeGachaAudio } from './gacha.js';
 import { produceList } from './producedata.js';
 import { loginWithGoogle, logout, auth, onAuthStateChanged } from './firebase-auth.js';
 import './firebase-sync.js';
@@ -811,20 +811,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // [추가] 페이지 가시성(Visibility) 감지하여 오디오 제어
     document.addEventListener('visibilitychange', () => {
-        import('./gacha.js').then(m => {
-            if (m.audioCtx) {
-                if (document.hidden) {
-                    // 탭을 내리거나 홈 화면으로 나갔을 때 일시 정지
-                    m.audioCtx.suspend();
-                } else {
-                    // 다시 돌아왔을 때 재개 (음소거 상태가 아닐 때만)
-                    const { state } = m;
-                    if (state && !state.gachaMuted) {
-                        m.audioCtx.resume();
-                    }
-                }
-            }
-        });
+        if (document.hidden) {
+            // 탭을 내리거나 홈 화면으로 나갔을 때 모든 가챠 음원을 일시 정지
+            suspendGachaAudio();
+        } else {
+            // 다시 돌아왔을 때 음소거 상태를 반영하고, 필요한 음원만 정지 지점부터 재개
+            resumeGachaAudio();
+        }
     });
 
 });

@@ -1,8 +1,9 @@
 import { state, setJewels, setTotalPulls, addGachaLog } from './state.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
-import { playSound, stopBGM } from './gacha.js';
+import { playSound, stopSound, stopBGM } from './gacha.js';
 import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { getMediaUrl } from './media-url.js';
+import { isGachaVideoUnavailable } from './gacha-assets.js';
 
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
@@ -70,7 +71,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const stopStepSfx = () => {
         if (activeStepSfx) {
-            try { activeStepSfx.stop(); activeStepSfx.disconnect(); } catch (e) { }
+            stopSound(activeStepSfx);
             activeStepSfx = null;
         }
     };
@@ -84,6 +85,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         video.onended = null;
         video.onclick = null;
         video.oncanplay = null;
+        video.onerror = null;
     };
 
     const resetOverlays = () => {
@@ -161,6 +163,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
         currentVideoSrc = src;
 
+        if (isGachaVideoUnavailable(src)) {
+            transitionTo(States.SHOWING_INDIVIDUAL);
+            return;
+        }
+
         if (videoContainer) {
             videoContainer.classList.remove('hidden');
             videoContainer.style.display = 'flex';
@@ -171,6 +178,10 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             videoMain.onplaying = null;
             videoMain.onended = null;
             videoMain.onclick = null;
+            videoMain.onerror = () => {
+                stopBGM('gacha');
+                transitionTo(States.SHOWING_INDIVIDUAL);
+            };
             videoMain.src = assetBlobs[src] || getMediaUrl(src);
             videoMain.load();
 
@@ -266,10 +277,23 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         }
         nextSrc = `gasya/get_${nextType}${step}.mp4`;
 
+        const advancePromotion = () => {
+            if (currentState !== States.PROMOTION || currentStep !== step) return;
+            if (nextType === "r" && step === 2) transitionTo(States.SHOWING_INDIVIDUAL);
+            else if (step < 3) transitionTo(States.PROMOTION, { step: step + 1, prevType: nextType });
+            else transitionTo(States.SHOWING_INDIVIDUAL);
+        };
+
+        if (isGachaVideoUnavailable(nextSrc)) {
+            advancePromotion();
+            return;
+        }
+
         if (nextType === "ssr" && prevType !== "ssr") {
             playSound(getPromotionSsrBgm(), { loop: true, isBGM: true, bgmType: 'gacha' });
         }
 
+        videoNext.onerror = advancePromotion;
         videoNext.src = assetBlobs[nextSrc] || getMediaUrl(nextSrc);
         videoNext.onplaying = () => {
             if (currentState !== States.PROMOTION || currentStep !== step) return;
@@ -304,21 +328,22 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                 requestAnimationFrame(checkBlackout);
             }
         };
-        videoNext.onended = () => {
-            if (currentState !== States.PROMOTION || currentStep !== step) return;
-            if (nextType === "r" && step === 2) transitionTo(States.SHOWING_INDIVIDUAL);
-            else if (step < 3) transitionTo(States.PROMOTION, { step: step + 1, prevType: nextType });
-            else transitionTo(States.SHOWING_INDIVIDUAL);
-        };
+        videoNext.onended = advancePromotion;
         videoNext.onclick = () => { if (canClick) videoNext.onended(); };
-        videoNext.play().catch(() => transitionTo(States.SHOWING_INDIVIDUAL));
+        videoNext.play().catch(advancePromotion);
     };
 
     const playBlackoutVideo = (char) => {
         const { videoNext } = getElements();
         if (!videoNext) return;
 
+        if (isGachaVideoUnavailable('gasya/blackout.mp4')) {
+            transitionTo(States.SHOWING_INDIVIDUAL);
+            return;
+        }
+
         stopBGM('gacha');
+        videoNext.onerror = () => transitionTo(States.SHOWING_INDIVIDUAL);
         videoNext.src = assetBlobs['gasya/blackout.mp4'] || getMediaUrl('gasya/blackout.mp4');
 
         stopStepSfx();
@@ -336,7 +361,13 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             const bgmSrc = char ? `bgm/bgm${char}.mp3` : 'gasya/blackoutbgm.mp3';
             playSound(bgmSrc, { loop: true, isBGM: true, bgmType: 'blackout', volume: 0.7 });
             if (char) {
-                videoNext.src = assetBlobs[`gasya/blackout${char}.mp4`] || getMediaUrl(`gasya/blackout${char}.mp4`);
+                const blackoutResultSrc = `gasya/blackout${char}.mp4`;
+                if (isGachaVideoUnavailable(blackoutResultSrc)) {
+                    transitionTo(States.SHOWING_INDIVIDUAL);
+                    return;
+                }
+                videoNext.onerror = () => transitionTo(States.SHOWING_INDIVIDUAL);
+                videoNext.src = assetBlobs[blackoutResultSrc] || getMediaUrl(blackoutResultSrc);
                 videoNext.onplaying = () => {
                     if (currentState !== States.BLACKOUT) return;
                     stopStepSfx();
@@ -352,7 +383,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             videoNext.style.display = 'block';
             requestAnimationFrame(checkLoop);
             scheduleCanClick(1000, States.BLACKOUT);
-        });
+        }).catch(() => transitionTo(States.SHOWING_INDIVIDUAL));
     };
 
     const playIndividualResults = (index) => {
@@ -389,6 +420,11 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             }
         }
 
+        if (isGachaVideoUnavailable(getSrc)) {
+            playIndividualResults(index + 1);
+            return;
+        }
+        videoNext.onerror = () => playIndividualResults(index + 1);
         videoNext.src = assetBlobs[getSrc] || getMediaUrl(getSrc);
         if (card.rarity === 'PSSR') {
             subState = "pssr_intro";
@@ -464,11 +500,13 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
         videoNext.onended = () => {
             if (currentState !== States.SHOWING_INDIVIDUAL) return;
-            if (subState === "pssr_intro" && assetBlobs[`gasya/pssr/${card.id}.mp4`]) {
+            const pssrVideoSrc = `gasya/pssr/${card.id}.mp4`;
+            if (subState === "pssr_intro" && assetBlobs[pssrVideoSrc] && !isGachaVideoUnavailable(pssrVideoSrc)) {
                 canClick = false;
                 if (clickTimer) clearTimeout(clickTimer);
 
-                videoNext.src = assetBlobs[`gasya/pssr/${card.id}.mp4`];
+                videoNext.onerror = () => playIndividualResults(index + 1);
+                videoNext.src = assetBlobs[pssrVideoSrc];
                 videoNext.muted = state.gachaMuted;
                 videoNext.onplaying = () => {
                     if (currentState !== States.SHOWING_INDIVIDUAL) return;
@@ -476,7 +514,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
                     videoNext.style.display = 'block';
                     scheduleCanClick(1000, States.SHOWING_INDIVIDUAL);
                 };
-                videoNext.play();
+                videoNext.play().catch(() => playIndividualResults(index + 1));
             } else { playIndividualResults(index + 1); }
         };
 
@@ -514,7 +552,8 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
     const finishGacha = () => {
         const { videoContainer, videoMain, videoNext, skipBtn } = getElements();
-        stopBGM('gacha'); stopBGM('main'); stopBGM('blackout'); stopStepSfx();
+        stopBGM('all');
+        stopStepSfx();
         resetOverlays();
         canClick = false;
         skipPressSessionId = -1;
@@ -528,7 +567,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
 
         const muteControls = document.getElementById('gacha-header-controls');
         if (!state.gachaMuted) playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
-        playSound(gachaMode === 1 ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3');
+        activeStepSfx = playSound(gachaMode === 1 ? 'gasya/1ren_result.mp3' : 'gasya/10ren_result.mp3');
         if (videoMain) {
             videoMain.pause(); videoMain.src = "";
             videoMain.classList.add('hidden');
@@ -552,6 +591,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
     const startGacha = (mode, results) => {
         const { videoContainer, videoMain, videoNext, skipBtn } = getElements();
         stopBGM('main');
+        stopStepSfx();
 
         // 새 세션 시작: 이전 세션의 잔여 타이머를 무효화
         gachaSessionId++;

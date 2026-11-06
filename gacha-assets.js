@@ -7,7 +7,12 @@ export const audioBuffers = {};
 export const audioElements = {};
 export const assetBlobs = {};
 const preloadedVideos = new Map();
+const unavailableVideos = new Set();
 let activeNodes = {};
+const activeAudioElements = new Set();
+const activeBufferSources = new Set();
+const visibilityPausedAudio = new Set();
+const visibilityMutedVideos = new Map();
 
 export const GACHA_ASSETS = [
     'bgm/mainbgm.mp3',
@@ -37,6 +42,86 @@ export async function fetchTotalAssetSizeMB() {
     return "70.0";
 }
 
+function preloadAudioFully(path, onProgress) {
+    const audio = audioElements[path] || new Audio();
+    audioElements[path] = audio;
+    audio.preload = 'auto';
+
+    return new Promise((resolve, reject) => {
+        let finished = false;
+        let endSeekRequested = false;
+        let lastGapSeek = -1;
+
+        const getContiguousBufferedEnd = () => {
+            if (audio.buffered.length === 0) return 0;
+            let coveredUntil = 0;
+            for (let index = 0; index < audio.buffered.length; index++) {
+                if (audio.buffered.start(index) > coveredUntil + 0.15) break;
+                coveredUntil = Math.max(coveredUntil, audio.buffered.end(index));
+            }
+            return coveredUntil;
+        };
+
+        const reportProgress = () => {
+            const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+            onProgress(duration ? Math.min(1, getContiguousBufferedEnd() / duration) : 0);
+        };
+
+        const finish = error => {
+            if (finished) return;
+            finished = true;
+            clearTimeout(timeoutId);
+            clearInterval(checkTimer);
+            audio.removeEventListener('progress', checkProgress);
+            if (error) {
+                reject(error);
+            } else {
+                audio.currentTime = 0;
+                onProgress(1);
+                resolve();
+            }
+        };
+
+        const checkProgress = () => {
+            const duration = audio.duration;
+            const coveredUntil = getContiguousBufferedEnd();
+            reportProgress();
+            if (Number.isFinite(duration) && duration > 0 && coveredUntil >= duration - 0.1) {
+                finish();
+                return;
+            }
+
+            const lastBufferedEnd = audio.buffered.length
+                ? audio.buffered.end(audio.buffered.length - 1)
+                : 0;
+            if (endSeekRequested && Number.isFinite(duration) && lastBufferedEnd >= duration - 0.1 && coveredUntil > lastGapSeek + 0.1) {
+                lastGapSeek = coveredUntil;
+                try {
+                    audio.currentTime = Math.min(duration - 0.05, coveredUntil + 0.05);
+                } catch (error) { }
+            }
+        };
+
+        const requestEndSeek = () => {
+            if (endSeekRequested || !Number.isFinite(audio.duration)) return;
+            endSeekRequested = true;
+            try {
+                audio.currentTime = Math.max(0, audio.duration - 0.05);
+            } catch (error) { }
+        };
+
+        const timeoutId = setTimeout(() => finish(new Error(`Audio preload timed out: ${path}`)), 180000);
+        const checkTimer = setInterval(checkProgress, 100);
+        audio.addEventListener('progress', checkProgress);
+        audio.addEventListener('canplaythrough', requestEndSeek, { once: true });
+        audio.addEventListener('error', () => finish(new Error(`Audio preload failed: ${path}`)), { once: true });
+
+        if (!audio.src) audio.src = getMediaUrl(path);
+        audio.load();
+        checkProgress();
+    });
+}
+
 export async function loadGachaAssets() {
     if (isAllLoaded) return Promise.resolve();
     if (assetsLoadedPromise) return assetsLoadedPromise;
@@ -44,61 +129,61 @@ export async function loadGachaAssets() {
 
     isAssetsLoading = true;
     const progressText = document.getElementById('gacha-progress-text');
-    let loadedCount = 0;
-    const totalCount = GACHA_ASSETS.length;
+    const audioAssets = GACHA_ASSETS.filter(src => src.endsWith('.mp3'));
+    const progressByAsset = new Map(audioAssets.map(src => [src, 0]));
 
     const updateProgress = () => {
         if (progressText) {
-            const percent = Math.floor((loadedCount / totalCount) * 100);
+            const totalProgress = [...progressByAsset.values()].reduce((sum, value) => sum + value, 0);
+            const percent = audioAssets.length ? Math.floor((totalProgress / audioAssets.length) * 100) : 100;
             progressText.textContent = `${percent}%`;
         }
     };
 
+    const setAssetProgress = (src, progress) => {
+        progressByAsset.set(src, Math.max(progressByAsset.get(src) || 0, progress));
+        updateProgress();
+    };
+
     assetsLoadedPromise = (async () => {
-        const loadTasks = GACHA_ASSETS.map(async (src) => {
-            if ((src.endsWith('.mp3') && (audioBuffers[src] || audioElements[src])) || (src.endsWith('.mp4') && assetBlobs[src])) {
-                loadedCount++;
-                updateProgress();
+        // 영상은 가챠 버튼을 누른 뒤 실제 다운로드하며, 여기서는 재생 URL만 준비한다.
+        GACHA_ASSETS.filter(src => src.endsWith('.mp4')).forEach(src => {
+            if (!assetBlobs[src]) assetBlobs[src] = getMediaUrl(src);
+        });
+
+        const loadTasks = audioAssets.map(async src => {
+            if (audioBuffers[src]) {
+                setAssetProgress(src, 1);
                 return;
             }
 
             try {
                 if (src.startsWith('gasya/')) {
-                    const mediaUrl = getMediaUrl(src);
-                    if (src.endsWith('.mp3')) {
-                        const audio = new Audio(mediaUrl);
-                        audio.preload = 'auto';
-                        audioElements[src] = audio;
-                    } else {
-                        // Direct media URLs avoid CORS restrictions on Release assets.
-                        assetBlobs[src] = mediaUrl;
-                    }
+                    await preloadAudioFully(src, progress => setAssetProgress(src, progress));
                     return;
                 }
 
                 const response = await fetch(getMediaUrl(src));
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const buffer = await response.arrayBuffer();
-                
-                if (src.endsWith('.mp3')) {
-                    const decoded = await audioCtx.decodeAudioData(buffer);
-                    audioBuffers[src] = decoded;
-                } else {
-                    const blob = new Blob([buffer], { type: 'video/mp4' });
-                    assetBlobs[src] = URL.createObjectURL(blob);
-                }
+                const decoded = await audioCtx.decodeAudioData(buffer);
+                audioBuffers[src] = decoded;
+                setAssetProgress(src, 1);
             } catch (error) {
                 console.error(`Failed to load asset: ${src}`, error);
-            } finally {
-                loadedCount++;
-                updateProgress();
+                throw error;
             }
         });
 
-        await Promise.allSettled(loadTasks);
-        isAssetsLoading = false;
+        const results = await Promise.allSettled(loadTasks);
+        const failed = results.find(result => result.status === 'rejected');
+        if (failed) throw failed.reason;
         isAllLoaded = true;
+    })().finally(() => {
+        isAssetsLoading = false;
+        if (!isAllLoaded) assetsLoadedPromise = null;
         if (progressText) progressText.textContent = '0%';
-    })();
+    });
 
     return assetsLoadedPromise;
 }
@@ -124,7 +209,17 @@ export function playSound(name, options = {}) {
             }
         }
         // Call play immediately so the browser retains the user's click activation.
-        audio.play().catch(error => console.error(`Failed to play asset: ${name}`, error));
+        activeAudioElements.add(audio);
+        const releaseAudio = () => {
+            activeAudioElements.delete(audio);
+            visibilityPausedAudio.delete(audio);
+        };
+        audio.addEventListener('ended', releaseAudio, { once: true });
+        audio.addEventListener('error', releaseAudio, { once: true });
+        audio.play().catch(error => {
+            releaseAudio();
+            console.error(`Failed to play asset: ${name}`, error);
+        });
         if (isBGM && bgmType) activeNodes[bgmType] = audio;
         return audio;
     }
@@ -138,7 +233,9 @@ export function playSound(name, options = {}) {
     
     source.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    
+
+    activeBufferSources.add(source);
+    source.addEventListener('ended', () => activeBufferSources.delete(source), { once: true });
     source.start(0, offset);
 
     if (isBGM && bgmType) activeNodes[bgmType] = source;
@@ -146,28 +243,90 @@ export function playSound(name, options = {}) {
     return source;
 }
 
+export function stopSound(node) {
+    if (!node) return;
+
+    if (typeof node.pause === 'function') {
+        try { node.pause(); } catch (error) { }
+        try { node.currentTime = 0; } catch (error) { }
+        activeAudioElements.delete(node);
+        visibilityPausedAudio.delete(node);
+    } else if (typeof node.stop === 'function') {
+        try { node.stop(); } catch (error) { }
+        try { node.disconnect(); } catch (error) { }
+        activeBufferSources.delete(node);
+    }
+
+    Object.keys(activeNodes).forEach(key => {
+        if (activeNodes[key] === node) delete activeNodes[key];
+    });
+}
+
 export function stopBGM(type) {
-    const stopNode = (node) => {
-        try {
-            if (typeof node.stop === 'function') node.stop();
-            else if (typeof node.pause === 'function') {
-                node.pause();
-                node.currentTime = 0;
-            }
-        } catch (e) {}
-    };
 
     if (type === 'all') {
         Object.keys(activeNodes).forEach(key => {
-            stopNode(activeNodes[key]);
+            stopSound(activeNodes[key]);
             delete activeNodes[key];
         });
         return;
     }
     if (activeNodes[type]) {
-        stopNode(activeNodes[type]);
+        stopSound(activeNodes[type]);
         delete activeNodes[type];
     }
+}
+
+export function stopAllSounds() {
+    stopBGM('all');
+    activeBufferSources.forEach(stopSound);
+    activeBufferSources.clear();
+    activeAudioElements.forEach(stopSound);
+    activeAudioElements.clear();
+    visibilityPausedAudio.clear();
+}
+
+export function suspendGachaAudio() {
+    activeAudioElements.forEach(audio => {
+        if (!audio.paused && !audio.ended) {
+            audio.pause();
+            visibilityPausedAudio.add(audio);
+        }
+    });
+
+    if (visibilityMutedVideos.size === 0) {
+        ['gacha-video-main', 'gacha-video-next'].forEach(id => {
+            const video = document.getElementById(id);
+            if (video) {
+                visibilityMutedVideos.set(video, video.muted);
+                video.muted = true;
+            }
+        });
+    }
+
+    return audioCtx.suspend();
+}
+
+export function resumeGachaAudio() {
+    visibilityMutedVideos.forEach((wasMuted, video) => {
+        video.muted = state.gachaMuted ? true : wasMuted;
+    });
+    visibilityMutedVideos.clear();
+
+    if (state.gachaMuted) {
+        visibilityPausedAudio.clear();
+        return;
+    }
+
+    audioCtx.resume().catch(error => console.error('Failed to resume audio context', error));
+    const pausedAudio = [...visibilityPausedAudio];
+    visibilityPausedAudio.clear();
+    pausedAudio.forEach(audio => {
+        if (activeAudioElements.has(audio) && !audio.ended) {
+            audio.play().catch(error => console.error('Failed to resume gacha audio', error));
+        }
+    });
+
 }
 
 /**
@@ -268,9 +427,16 @@ export async function preloadGachaVideos(paths, onProgress = null) {
             video.load();
         });
 
-        preloadedVideos.set(path, promise);
-        promise.catch(() => preloadedVideos.delete(path));
-        return promise.then(reportProgress);
+        const settledPromise = promise.then(video => {
+            unavailableVideos.delete(path);
+            return video;
+        }).catch(error => {
+            unavailableVideos.add(path);
+            console.warn(`Skipping unavailable gacha video: ${path}`, error);
+            return null;
+        });
+        preloadedVideos.set(path, settledPromise);
+        return settledPromise.then(reportProgress);
     };
 
     if (uniquePaths.length === 0) {
@@ -278,6 +444,10 @@ export async function preloadGachaVideos(paths, onProgress = null) {
         return;
     }
     await Promise.all(uniquePaths.map(preloadOne));
+}
+
+export function isGachaVideoUnavailable(path) {
+    return unavailableVideos.has(path);
 }
 
 export function playMainBGM() {

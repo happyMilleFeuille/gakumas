@@ -2,7 +2,7 @@
 import { state, idolColors } from './state.js';
 import { renderHome, renderCalc, renderSupport, updateGlobalBackgroundColor } from './ui.js';
 import { renderIdolList } from './idolUI.js';
-import { renderGacha, stopBGM } from './gacha.js';
+import { renderGacha, stopAllSounds } from './gacha.js';
 
 export function handleNavigation(targetWithSub, isBack = false) {
     if (!targetWithSub) return;
@@ -60,7 +60,7 @@ export function handleNavigation(targetWithSub, isBack = false) {
         }
     } else {
         // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 문양 복구
-        stopBGM('all');
+        stopAllSounds();
         if (fixedBg) {
             const maskUrl = "url('images/background.webp')";
             fixedBg.style.webkitMaskImage = maskUrl;
