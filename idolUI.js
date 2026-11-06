@@ -5,6 +5,7 @@ import { videoList } from './videodata.js';
 import { idolList } from './roadmap.js'; 
 import { showProduceCardInfoModal, preloadProduceCardInfoModalImages } from './pssrInfoModal.js';
 import { getMediaUrl } from './media-url.js';
+import { hasPssrVideo } from './pssr-video-manifest.js';
 
 const contentArea = document.getElementById('content-area');
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
@@ -816,8 +817,9 @@ export function renderProduceCards(idolName, container) {
         function updateGachaVideo(idx) {
             if (!gachaVideoLink || card.rarity !== 'PSSR') return;
             const vidId = videoIdList[idx];
-            currentVideoUrl = getMediaUrl(`gasya/pssr/${vidId}.mp4`);
-            gachaVideoLink.classList.remove('hidden');
+            const hasVideo = hasPssrVideo(vidId);
+            currentVideoUrl = hasVideo ? getMediaUrl(`gasya/pssr/${vidId}.mp4`) : '';
+            gachaVideoLink.classList.toggle('hidden', !hasVideo);
         }
 
         if (gachaVideoLink) {
