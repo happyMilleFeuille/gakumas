@@ -595,6 +595,30 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_distsense2",
+        name: "이런 사진도 있사와요",
+        name_ja: "こんなお写真もありますね",
+        type: "vocal",
+        plan: "sense",
+        have: "card_m",
+        attrs: ["goodcondition", "concentration"],
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["gift"], triggertext: ["vocal400"], stats: { vocal: 20 }, targettext: ["hp3"], max: 2 }],
+        releasedAt: "2026-11-08",
+        rarity: "SSR",
+        source: "dist",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "gift",
+                "get_ssr",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_logic1",
         name: "여전히 서투르네",
         name_ja: "相変わらず不器用ね",
