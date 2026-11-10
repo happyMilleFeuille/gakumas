@@ -216,6 +216,13 @@ export const videoList = {
     ],
     sumika: [
         {
+            title: "生誕記念配信2026",
+            title_ko: "생일 라이브방송2026",
+            title_en: "Birthday stream 2026",
+            url: "https://youtu.be/joRcVUBmYRQ?si=vlz8dkqcnp3nehkB",
+            date: "2026.11.11."
+        },
+        {
             title: "Kira Kira",
             url: "https://youtu.be/IwWo55RUPCc?si=njh5556sAuoT4tT4",
             date: "2026.06.23."
@@ -341,8 +348,8 @@ export const videoList = {
     ume: [
         {
             title: "どんどこ🥁x4どんタスティック!!!",
-            title_ko: "돈도코🥁x4🥁돈타스틱!!!",
-            title_en: "Dondoko🥁x4🥁Dontastic!!!",
+            title_ko: "돈도코🥁x4 돈타스틱!!!",
+            title_en: "Dondoko🥁x4 Dontastic!!!",
             url: "https://youtu.be/s8OtRQkGYrA?si=cs28d4SuvZaAQa2p",
             date: "2026.10.05."
         },
