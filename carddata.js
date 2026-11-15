@@ -450,7 +450,7 @@ export const cardList = [
     },
     {
         id: "vocal_sense4",
-        name: "아가씨, 잠시 실례하겠습니다",
+        name: "아가씨, 실례하겠습니다",
         name_ja: "お嬢様、失礼いたします",
         type: "vocal",
         plan: "sense",
