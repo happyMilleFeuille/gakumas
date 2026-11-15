@@ -84,14 +84,12 @@ export const replaceDescIcons = (text) => {
         return `<img src="icons/hpper.webp" alt="HP Percentage" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
-    // 2. 호조 / 好調 (절호조 / 絶好調 제외)
-    result = result.replace(/(절호조|호조)/g, (match) => {
-        if (match === '절호조') return match;
-        return `<img src="icons/goodcondition.webp" alt="Good Condition" class="pssr-info-modal-desc-inline-icon">${match}`;
-    });
-    result = result.replace(/(絶好調|好調)/g, (match) => {
-        if (match === '絶好調') return match;
-        return `<img src="icons/goodcondition.webp" alt="Good Condition" class="pssr-info-modal-desc-inline-icon">${match}`;
+    // 2. 절호조 / 호조 / 絶好調 / 好調
+    result = result.replace(/(절호조|絶好調|호조|好調)/g, (match) => {
+        const isPerfectCondition = match === '절호조' || match === '絶好調';
+        const icon = isPerfectCondition ? 'goodconditionz' : 'goodcondition';
+        const alt = isPerfectCondition ? 'Perfect Condition' : 'Good Condition';
+        return `<img src="icons/${icon}.webp" alt="${alt}" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
     // 3. 의욕 / やる気
@@ -375,7 +373,7 @@ export const replaceDescIcons = (text) => {
         } else {
             label = `Perfect Condition for ${spanOpen || ''}${num}${spanClose || ''} turn(s)`;
         }
-        return `<img src="icons/goodcondition.webp" alt="Perfect Condition" class="pssr-info-modal-desc-inline-icon">${label}`;
+        return `<img src="icons/goodconditionz.webp" alt="Perfect Condition" class="pssr-info-modal-desc-inline-icon">${label}`;
     });
 
     // goodcondition[num]

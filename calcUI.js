@@ -17,7 +17,12 @@ const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 const replaceActionStatusIcons = (text) => {
     if (!text) return '';
     return text
-        .replace(/(호조|好調)/g, '<img src="icons/goodcondition.webp" alt="Good Condition" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(절호조|絶好調|호조|好調)/g, (match) => {
+            const isPerfectCondition = match === '절호조' || match === '絶好調';
+            const icon = isPerfectCondition ? 'goodconditionz' : 'goodcondition';
+            const alt = isPerfectCondition ? 'Perfect Condition' : 'Good Condition';
+            return `<img src="icons/${icon}.webp" alt="${alt}" class="pssr-info-modal-desc-inline-icon">${match}`;
+        })
         .replace(/(집중|集中)/g, '<img src="icons/concentration.webp" alt="Concentration" class="pssr-info-modal-desc-inline-icon">$1')
         .replace(/(의욕|やる気)/g, '<img src="icons/motivation.webp" alt="Motivation" class="pssr-info-modal-desc-inline-icon">$1')
         .replace(/(호인상|好印象)/g, '<img src="icons/goodimpression.webp" alt="Good Impression" class="pssr-info-modal-desc-inline-icon">$1')

@@ -29,6 +29,7 @@ export const ROOT_ICON_PATHS = Object.freeze([
     'icons/gasya.png',
     'icons/genki.webp',
     'icons/goodcondition.webp',
+    'icons/goodconditionz.webp',
     'icons/goodimpression.webp',
     'icons/hif.webp',
     'icons/home.svg',
