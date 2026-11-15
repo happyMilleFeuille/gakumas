@@ -458,7 +458,7 @@ export const cardList = [
         item_effects: [{ type: "action", trigger: ["get_concentration"], triggertext: ["vocal900"], stats: { vocal: 20 }, targettext: "ppoint20", max: 3 }],
         releasedAt: "2026-11-16",
         rarity: "SSR",
-        extra1: "param", extra2: "ranenhance",
+        extra1: "param", extra2: "enhance",
         abilities:
             [
                 "hpmax",
