@@ -11,7 +11,7 @@ import { produceList } from './producedata.js';
 import { audioCtx, assetBlobs, audioBuffers, loadGachaAssets, preloadGachaVideos, releasePreloadedGachaVideos, playSound, stopSound, stopBGM, stopAllSounds, suspendGachaAudio, resumeGachaAudio, playMainBGM, playLobbyBGM, isAllLoaded, fetchTotalAssetSizeMB } from './gacha-assets.js';
 import { initGachaDrawer, openDrawer } from './gacha-drawer.js';
 import { bindSafeClick, updateJewelUI, updateTotalPullsUI } from './gacha-utils.js';
-import { renderPickupSelector, renderResults, stopGachaBannerAutoSwitch } from './gacha-ui-render.js';
+import { renderPickupSelector, renderResults, stopGachaBannerAutoSwitch, setGachaBannerAutoSwitchPaused } from './gacha-ui-render.js';
 import { handleNavigation } from './router.js';
 import { getMediaUrl } from './media-url.js';
 
@@ -162,10 +162,15 @@ function startGachaUI(contentArea, isRefresh) {
         spinner.classList.remove('video-loading');
         spinner.classList.add('active');
     }
+    setGachaBannerAutoSwitchPaused(true);
     loadGachaAssets().then(() => {
         updateGachaButtonsState(ui);
         if (spinner) spinner.classList.remove('active');
-    }).catch(() => { if (spinner) spinner.classList.remove('active'); });
+        if (spinner?.isConnected) setGachaBannerAutoSwitchPaused(false);
+    }).catch(() => {
+        if (spinner) spinner.classList.remove('active');
+        if (spinner?.isConnected) setGachaBannerAutoSwitchPaused(false);
+    });
 }
 
 function setupFixedButtons() {
@@ -536,6 +541,7 @@ async function handleGachaClick(ui, mode, animation) {
     const spinner = document.getElementById('gacha-spinner');
     const progressText = document.getElementById('gacha-progress-text');
     if (spinner) spinner.classList.add('active', 'video-loading');
+    setGachaBannerAutoSwitchPaused(true);
     if (progressText) progressText.textContent = '0%';
 
     if (ui.jewelCount) ui.jewelCount.textContent = Math.max(0, state.jewels - cost).toLocaleString();
@@ -628,6 +634,7 @@ async function handleGachaClick(ui, mode, animation) {
         if (ui.jewelCount) ui.jewelCount.textContent = state.jewels.toLocaleString();
         if (ui.btn1) ui.btn1.style.pointerEvents = '';
         if (ui.btn10) ui.btn10.style.pointerEvents = '';
+        if (spinner?.isConnected) setGachaBannerAutoSwitchPaused(false);
         window.alert('연출 영상 다운로드에 실패했습니다. 네트워크 연결을 확인한 후 다시 시도해 주세요.');
     }
 }

@@ -12,11 +12,28 @@ import translations from './i18n.js';
 
 const BANNER_AUTO_SWITCH_DELAY = 10000;
 let bannerAutoSwitchTimer = null;
+let bannerAutoSwitchScheduler = null;
+let isBannerAutoSwitchPaused = false;
 
-export function stopGachaBannerAutoSwitch() {
+function clearGachaBannerAutoSwitchTimer() {
     if (bannerAutoSwitchTimer !== null) {
         clearTimeout(bannerAutoSwitchTimer);
         bannerAutoSwitchTimer = null;
+    }
+}
+
+export function stopGachaBannerAutoSwitch() {
+    clearGachaBannerAutoSwitchTimer();
+    bannerAutoSwitchScheduler = null;
+    isBannerAutoSwitchPaused = false;
+}
+
+export function setGachaBannerAutoSwitchPaused(paused) {
+    isBannerAutoSwitchPaused = paused;
+    clearGachaBannerAutoSwitchTimer();
+
+    if (!paused && bannerAutoSwitchScheduler) {
+        bannerAutoSwitchScheduler();
     }
 }
 
@@ -419,7 +436,9 @@ export function renderPickupSelector(ui) {
                 imageSwitchBtn.setAttribute('aria-label', `Image ${bannerIndex + 1} of ${bannerItems.length}`);
             };
             const scheduleAutoSwitch = () => {
-                stopGachaBannerAutoSwitch();
+                bannerAutoSwitchScheduler = scheduleAutoSwitch;
+                clearGachaBannerAutoSwitchTimer();
+                if (isBannerAutoSwitchPaused) return;
                 if (progressFill) {
                     progressFill.classList.remove('is-running');
                     void progressFill.offsetWidth;
