@@ -11,7 +11,9 @@ import { showCardModal } from './cardModal.js';
 import translations from './i18n.js';
 
 const BANNER_AUTO_SWITCH_DELAY = 10000;
+const BANNER_PRELOAD_DELAY = BANNER_AUTO_SWITCH_DELAY - 1000;
 let bannerAutoSwitchTimer = null;
+let bannerPreloadTimer = null;
 let bannerAutoSwitchScheduler = null;
 let isBannerAutoSwitchPaused = false;
 
@@ -19,6 +21,10 @@ function clearGachaBannerAutoSwitchTimer() {
     if (bannerAutoSwitchTimer !== null) {
         clearTimeout(bannerAutoSwitchTimer);
         bannerAutoSwitchTimer = null;
+    }
+    if (bannerPreloadTimer !== null) {
+        clearTimeout(bannerPreloadTimer);
+        bannerPreloadTimer = null;
     }
 }
 
@@ -350,6 +356,7 @@ export function renderPickupSelector(ui) {
             const countLabel = imageSwitchBtn.querySelector('.gacha-image-switch-count');
             const progressFill = imageSwitchBtn.querySelector('.gacha-image-switch-progress-fill');
             let bannerIndex = 0;
+            let isManualSwitching = false;
             const setBannerImageSource = (image, item) => {
                 if (!image || !item) return;
                 image.onerror = item.fallbackSrc ? () => {
@@ -358,6 +365,25 @@ export function renderPickupSelector(ui) {
                 } : null;
                 image.src = item.src;
             };
+            const preloadBannerItem = item => new Promise(resolve => {
+                if (!item?.src) {
+                    resolve(null);
+                    return;
+                }
+
+                const image = new Image();
+                let loadingSrc = item.src;
+                image.onload = () => resolve(loadingSrc);
+                image.onerror = () => {
+                    if (!item.fallbackSrc || loadingSrc === item.fallbackSrc) {
+                        resolve(null);
+                        return;
+                    }
+                    loadingSrc = item.fallbackSrc;
+                    image.src = loadingSrc;
+                };
+                image.src = loadingSrc;
+            });
             const playSupportBannerEnter = (item) => {
                 if (!bannerImage) return;
                 bannerImage.classList.remove('support-banner-enter');
@@ -413,12 +439,17 @@ export function renderPickupSelector(ui) {
                 void finaleImage.offsetWidth;
                 finaleImage.classList.add('is-animating');
             };
-            const advanceBanner = () => {
+            const advanceBanner = (preloadedSrc = null) => {
                 if (!bannerImage || bannerItems.length < 2) return;
 
                 bannerIndex = (bannerIndex + 1) % bannerItems.length;
                 const nextItem = bannerItems[bannerIndex];
-                setBannerImageSource(bannerImage, nextItem);
+                if (preloadedSrc) {
+                    bannerImage.onerror = null;
+                    bannerImage.src = preloadedSrc;
+                } else {
+                    setBannerImageSource(bannerImage, nextItem);
+                }
                 bannerImage.style.objectFit = nextItem.type === 'support' ? 'contain' : 'cover';
                 bannerImage.style.objectPosition = nextItem.type === 'support' ? 'center 15%' : 'top';
                 if (nextItem.type === 'support') {
@@ -435,6 +466,10 @@ export function renderPickupSelector(ui) {
                 if (countLabel) countLabel.textContent = `${bannerIndex + 1}/${bannerItems.length}`;
                 imageSwitchBtn.setAttribute('aria-label', `Image ${bannerIndex + 1} of ${bannerItems.length}`);
             };
+            const preloadNextBanner = () => {
+                const nextItem = bannerItems[(bannerIndex + 1) % bannerItems.length];
+                void preloadBannerItem(nextItem);
+            };
             const scheduleAutoSwitch = () => {
                 bannerAutoSwitchScheduler = scheduleAutoSwitch;
                 clearGachaBannerAutoSwitchTimer();
@@ -444,6 +479,11 @@ export function renderPickupSelector(ui) {
                     void progressFill.offsetWidth;
                     progressFill.classList.add('is-running');
                 }
+                bannerPreloadTimer = setTimeout(() => {
+                    bannerPreloadTimer = null;
+                    if (!imageSwitchBtn.isConnected || bannerLayer !== document.getElementById('gacha-banner-layer')) return;
+                    preloadNextBanner();
+                }, BANNER_PRELOAD_DELAY);
                 bannerAutoSwitchTimer = setTimeout(() => {
                     bannerAutoSwitchTimer = null;
                     if (!imageSwitchBtn.isConnected || bannerLayer !== document.getElementById('gacha-banner-layer')) return;
@@ -455,11 +495,24 @@ export function renderPickupSelector(ui) {
                     scheduleAutoSwitch();
                 }, BANNER_AUTO_SWITCH_DELAY);
             };
-            imageSwitchBtn.addEventListener('click', event => {
+            imageSwitchBtn.addEventListener('click', async event => {
                 event.preventDefault();
                 event.stopPropagation();
-                advanceBanner();
-                scheduleAutoSwitch();
+                if (isManualSwitching) return;
+
+                isManualSwitching = true;
+                clearGachaBannerAutoSwitchTimer();
+                const nextItem = bannerItems[(bannerIndex + 1) % bannerItems.length];
+                try {
+                    const preloadedSrc = await preloadBannerItem(nextItem);
+                    if (!imageSwitchBtn.isConnected || bannerLayer !== document.getElementById('gacha-banner-layer')) return;
+                    advanceBanner(preloadedSrc);
+                } finally {
+                    isManualSwitching = false;
+                    if (imageSwitchBtn.isConnected && bannerLayer === document.getElementById('gacha-banner-layer')) {
+                        scheduleAutoSwitch();
+                    }
+                }
             });
             scheduleAutoSwitch();
         }
