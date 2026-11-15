@@ -307,7 +307,7 @@ export const produceList = [
 
     // --- 카나에 SSR (PSSR) ---
     {
-        id: "ssrkanae_1st", name: "Metamorphose", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 8.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
+        id: "ssrkanae_1st", name: "메타모르포제", name_en: "Metamorphose", name_ja: "メタモルフォーゼ", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 8.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
         item: {
             name: "なにかが変わる予感",
             desc: "미확인",
