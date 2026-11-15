@@ -972,7 +972,7 @@ select.sort-select {
 #card-modal .modal-content {
     background: #fff;
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 8px;
     width: 90%;
     max-width: 540px;
     /* 1000px 원본 이미지 기준 최적 크기 */
@@ -997,8 +997,8 @@ select.sort-select {
     object-fit: cover;
     background-size: cover;
     background-position: center;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
     display: block;
 }
 
@@ -1057,6 +1057,13 @@ select.sort-select {
     cursor: pointer;
     transition: all 0.2s;
     display: inline-block;
+}
+
+@media (min-width: 769px) {
+    .star {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
 }
 
 .star.active {
@@ -1186,8 +1193,8 @@ select.sort-select {
 }
 
 .modal-gacha-char-icon {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
     object-fit: contain;
 }
@@ -1442,8 +1449,8 @@ select.sort-select {
     }
 
     .modal-gacha-char-icon {
-        width: 14px;
-        height: 14px;
+        width: 15px;
+        height: 15px;
     }
 
     .modal-gacha-name-text.long-gacha-name {
@@ -1631,7 +1638,7 @@ select.sort-select {
     z-index: 100020;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 4px;
 }
 
@@ -1663,6 +1670,7 @@ select.sort-select {
 }
 
 #filter-ability .ability-dropdown .ability-sub-btn {
+    grid-column: span 2;
     border-radius: 6px !important;
     border: 1px solid #eee !important;
     font-size: 0.7rem !important;
@@ -1673,10 +1681,76 @@ select.sort-select {
     margin: 0;
 }
 
-.ability-dropdown .ability-reset-btn {
-    grid-column: 1 / -1;
-    background: #f5f5f5;
+#filter-ability .ability-dropdown .ability-reset-btn {
+    grid-column: 5 / span 2;
+    border-radius: 6px !important;
+    background: #f1f3f5;
+    border-color: #e5e7eb !important;
+    color: #777;
     font-weight: bold;
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+#filter-ability .ability-dropdown .ability-reset-btn:hover {
+    background: rgba(196, 91, 91, 0.14);
+    border-color: #bd6868 !important;
+    color: #c45b5b;
+}
+
+.ability-dropdown .ability-mode-toggle {
+    grid-column: 1 / span 2;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    height: 1.8rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 30px;
+    color: #8b919b;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 3px;
+    background: #f1f3f5;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ability-dropdown .ability-mode-toggle::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    box-sizing: border-box;
+    border: 1px solid #f2c77d;
+    border-radius: 30px;
+    background: #ffedcf;
+    transition: transform 0.2s ease;
+}
+
+.ability-dropdown .ability-mode-toggle[data-mode="or"]::before {
+    transform: translateX(100%);
+}
+
+.ability-dropdown .ability-mode-toggle:focus-visible {
+    border-color: #fdc361;
+    box-shadow: 0 0 0 2px rgba(253, 195, 97, 0.16);
+    outline: none;
+}
+
+.ability-dropdown .ability-mode-toggle span {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.ability-dropdown .ability-mode-toggle span.active {
+    color: #d18e15;
 }
 
 .ability-dropdown .ability-sub-btn.active {
@@ -1685,19 +1759,21 @@ select.sort-select {
     border-color: #fdc361 !important;
 }
 
-#filter-ability .ability-dropdown .ability-sub-btn[data-val="sp_lessonup"],
 #filter-ability .ability-dropdown .ability-sub-btn[data-val="percentparam"],
 #filter-ability .ability-dropdown .ability-sub-btn[data-val="fixedparam"] {
+    grid-column: span 3;
     border-radius: 12px !important;
     border-color: #fdc361 !important;
 }
 
 #filter-ability .ability-dropdown .ability-sub-btn[data-val="percentparam"] {
+    grid-column: 1 / span 3;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }
 
 #filter-ability .ability-dropdown .ability-sub-btn[data-val="fixedparam"] {
+    grid-column: 4 / span 3;
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
 }
@@ -1726,6 +1802,11 @@ select.sort-select {
         height: 1.5rem !important;
         min-height: 1.5rem !important;
         font-size: 0.4rem !important;
+    }
+
+    .ability-dropdown .ability-mode-toggle {
+        height: 1.5rem;
+        font-size: 0.4rem;
     }
 }
 
@@ -1757,14 +1838,16 @@ select.sort-select {
     }
 
     .ability-dropdown .pc-only-date-filter .flatpickr-wrapper {
-        width: 40% !important; /* 툴팁 전체 너비의 약 40% 크기로 유동적 적용 */
+        width: 40% !important;
+        /* 툴팁 전체 너비의 약 40% 크기로 유동적 적용 */
         min-width: 60px !important;
         display: inline-block !important;
         position: relative !important;
     }
 
     .ability-dropdown .pc-only-date-filter .flatpickr-wrapper input {
-        width: 100% !important; /* Wrapper 내부에서는 100% 채움 */
+        width: 100% !important;
+        /* Wrapper 내부에서는 100% 채움 */
     }
 
     .ability-dropdown .pc-only-date-filter input {
@@ -1776,15 +1859,17 @@ select.sort-select {
         text-align: center !important;
         margin: 0 !important;
         box-sizing: border-box !important;
-        background-image: url('../icons/calendar.svg') !important; /* 달력 아이콘 복원 */
+        background-image: url('../icons/calendar.svg') !important;
+        /* 달력 아이콘 복원 */
         background-repeat: no-repeat !important;
         background-position: calc(100% - 4px) center !important;
         background-size: 10px 10px !important;
         padding-left: 2px !important;
-        padding-right: 15px !important; /* 아이콘과 텍스트가 겹치지 않도록 패딩 부여 */
+        padding-right: 15px !important;
+        /* 아이콘과 텍스트가 겹치지 않도록 패딩 부여 */
     }
 
-    .ability-dropdown .pc-only-date-filter > span {
+    .ability-dropdown .pc-only-date-filter>span {
         color: #999 !important;
         font-size: 0.65rem !important;
     }
@@ -1793,7 +1878,8 @@ select.sort-select {
     .flatpickr-calendar {
         width: 230px !important;
         transform: none !important;
-        background: #fff !important; /* 배경을 흰색으로 고정하여 툴팁 버튼 테두리가 겹쳐서 보이는 것 방지 */
+        background: #fff !important;
+        /* 배경을 흰색으로 고정하여 툴팁 버튼 테두리가 겹쳐서 보이는 것 방지 */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
         border: 1px solid #ddd !important;
     }
@@ -1802,7 +1888,8 @@ select.sort-select {
 
     .flatpickr-months {
         width: 230px !important;
-        height: 38px !important; /* 모바일 헤더 높이를 적절히 키워 여유 공간 부여 */
+        height: 38px !important;
+        /* 모바일 헤더 높이를 적절히 키워 여유 공간 부여 */
     }
 
     .flatpickr-weekdays {
@@ -1848,7 +1935,8 @@ select.sort-select {
         line-height: 16px !important;
         padding: 0 !important;
         position: absolute !important;
-        top: 11px !important; /* 38px 헤더 높이 기준으로 세로 중앙 정렬 */
+        top: 11px !important;
+        /* 38px 헤더 높이 기준으로 세로 중앙 정렬 */
         left: 0 !important;
         width: 100% !important;
     }
@@ -1873,7 +1961,8 @@ select.sort-select {
 
     /* 모바일 달력 초기화(새로고침) 버튼 정렬 */
     .flatpickr-calendar .flatpickr-reset-btn {
-        top: 11px !important; /* 38px 헤더 높이 기준으로 세로 중앙 정렬 */
+        top: 11px !important;
+        /* 38px 헤더 높이 기준으로 세로 중앙 정렬 */
         height: 16px !important;
         line-height: 16px !important;
         padding: 0 !important;
@@ -1886,7 +1975,8 @@ select.sort-select {
     /* 모바일 달력 이전/다음 화살표 버튼 정렬 */
     .flatpickr-months .flatpickr-prev-month,
     .flatpickr-months .flatpickr-next-month {
-        top: 11px !important; /* 38px 헤더 높이 기준으로 세로 중앙 정렬 */
+        top: 11px !important;
+        /* 38px 헤더 높이 기준으로 세로 중앙 정렬 */
         height: 16px !important;
         line-height: 16px !important;
         display: inline-flex !important;
@@ -1896,7 +1986,8 @@ select.sort-select {
 
     .flatpickr-months .flatpickr-prev-month svg,
     .flatpickr-months .flatpickr-next-month svg {
-        position: static !important; /* 브라우저 기본 absolute 해제하여 flex 정렬 작동시킴 */
+        position: static !important;
+        /* 브라우저 기본 absolute 해제하여 flex 정렬 작동시킴 */
         width: 10px !important;
         height: 10px !important;
         vertical-align: middle !important;
@@ -2040,7 +2131,8 @@ select.sort-select {
     }
 
     .flatpickr-unified-header {
-        font-size: 1.1rem !important; /* PC 기본 크기 */
+        font-size: 1.1rem !important;
+        /* PC 기본 크기 */
         line-height: inherit !important;
     }
 }
@@ -2064,6 +2156,7 @@ body {
 }
 
 @media (min-width: 769px) {
+
     /* 시작 날짜(왼쪽) 달력: 우측 정렬 후 픽셀 이동 */
     .flatpickr-calendar.picker-align-left {
         right: 0 !important;

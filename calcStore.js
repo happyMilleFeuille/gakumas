@@ -59,7 +59,6 @@ export const calcStore = {
     memories: [null, null, null, null],
     isKyouka: false,
     recommendSettings: { vocal: 0, dance: 0, visual: 0 },
-    lockCards: false,
     hifStats: { vocal: 0, dance: 0, visual: 0 },
     activeWeek: null,
     _persistenceReady: false,
@@ -101,7 +100,6 @@ export const calcStore = {
             memories: this.memories,
             isKyouka: this.isKyouka,
             recommendSettings: this.recommendSettings,
-            lockCards: this.lockCards,
             hifStats: this.hifStats,
             hifParamLimitLevel: this.hifParamLimitLevel || 0,
             updatedAt: this.updatedAt
@@ -195,7 +193,6 @@ export const calcStore = {
         this.recommendSettings = { ...createDefaultRecommendSettings(), ...(saved.recommendSettings || {}) };
         this.hifStats = { vocal: 0, dance: 0, visual: 0, ...(saved.hifStats || {}) };
         this.hifParamLimitLevel = saved.hifParamLimitLevel || 0;
-        this.lockCards = saved.lockCards === true || saved.lockCards === 'true';
         this.updatedAt = saved.updatedAt || Date.now();
     },
 

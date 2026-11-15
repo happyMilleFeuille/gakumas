@@ -48,10 +48,12 @@ export function handleNavigation(targetWithSub, isBack = false) {
     const fixedBg = document.getElementById('fixed-bg');
     if (target === 'gacha') {
         if (fixedBg) {
+            delete fixedBg.dataset.gachaBackground;
             fixedBg.style.webkitMaskImage = 'none';
             fixedBg.style.maskImage = 'none';
-            fixedBg.style.backgroundImage = '';
+            fixedBg.style.background = '';
             fixedBg.style.backgroundColor = 'transparent';
+            fixedBg.style.filter = '';
         }
         if (state.favoriteIdol && idolColors[state.favoriteIdol]) {
             document.body.style.backgroundColor = idolColors[state.favoriteIdol] + "1a"; // 10% 농도
@@ -61,12 +63,15 @@ export function handleNavigation(targetWithSub, isBack = false) {
     } else {
         // 다른 탭으로 이동 시 가챠 BGM 정지 및 배경 문양 복구
         stopAllSounds();
+        document.getElementById('gacha-banner-layer')?.remove();
         if (fixedBg) {
+            delete fixedBg.dataset.gachaBackground;
             const maskUrl = "url('images/background.webp')";
             fixedBg.style.webkitMaskImage = maskUrl;
             fixedBg.style.maskImage = maskUrl;
-            fixedBg.style.backgroundImage = '';
+            fixedBg.style.background = '';
             fixedBg.style.filter = '';
+            fixedBg.style.transition = '';
             // 전역 배경색 업데이트 함수 호출하여 문양 색상 복구
             updateGlobalBackgroundColor();
         }

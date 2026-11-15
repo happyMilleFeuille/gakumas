@@ -306,14 +306,18 @@ export function renderIdolList() {
         const item = itemTpl.content.cloneNode(true);
         const img = item.querySelector('.idol-icon');
         const idolItem = item.querySelector('.idol-item');
+        const iconWrapper = item.querySelector('.idol-icon-wrapper');
         const favBtn = item.querySelector('.fav-star-btn');
 
         img.src = `icons/idolicons/${name}.png`;
         img.alt = name;
-        favBtn.style.setProperty('--fav-color', idolColors[name] || '#fbc02d');
+        iconWrapper.style.setProperty('--idol-color', idolColors[name] || '#fbc02d');
 
         if (state.favoriteIdol === name) {
             favBtn.classList.add('active');
+            favBtn.setAttribute('aria-pressed', 'true');
+        } else {
+            favBtn.setAttribute('aria-pressed', 'false');
         }
 
         idolItem.addEventListener('mouseenter', () => preloadIdolImages(name));
@@ -321,13 +325,22 @@ export function renderIdolList() {
 
         favBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+
+            // 다른 아이돌의 즐겨찾기를 바로 바꾸지 않고, 첫 입력은 아이돌 선택에 사용한다.
+            if (!img.classList.contains('selected')) {
+                img.click();
+                return;
+            }
+
             setFavoriteIdol(name);
 
             document.querySelectorAll('.fav-star-btn').forEach(btn => {
                 btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
             });
             if (state.favoriteIdol === name) {
                 favBtn.classList.add('active');
+                favBtn.setAttribute('aria-pressed', 'true');
             }
 
             getCommonUI().then(m => m.updateGlobalBackgroundColor());
@@ -675,21 +688,17 @@ export function renderProduceCards(idolName, container) {
 
         const infoBtn = item.querySelector('.pssr-info-btn');
         if (infoBtn) {
-            if (card.rarity === 'PR') {
-                infoBtn.remove();
-            } else {
-                infoBtn.style.color = personalColor;
-                infoBtn.addEventListener('mouseenter', () => {
-                    preloadProduceCardInfoModalImages(card);
-                }, { once: true });
-                infoBtn.addEventListener('touchstart', () => {
-                    preloadProduceCardInfoModalImages(card);
-                }, { once: true, passive: true });
-                infoBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showProduceCardInfoModal(card, personalColor);
-                });
-            }
+            infoBtn.style.color = personalColor;
+            infoBtn.addEventListener('mouseenter', () => {
+                preloadProduceCardInfoModalImages(card);
+            }, { once: true });
+            infoBtn.addEventListener('touchstart', () => {
+                preloadProduceCardInfoModalImages(card);
+            }, { once: true, passive: true });
+            infoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showProduceCardInfoModal(card, personalColor);
+            });
         }
 
         cardEl.addEventListener('click', (e) => {

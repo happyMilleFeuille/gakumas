@@ -1303,6 +1303,12 @@ export function showProduceCardInfoModal(card, personalColor) {
 
     document.body.appendChild(modal);
 
+    modal.querySelectorAll('.pssr-info-modal-detail-name').forEach((element) => {
+        if (/[\u3040-\u30ff]/u.test(element.textContent || '')) {
+            element.lang = 'ja';
+        }
+    });
+
     // idols/verygood에 이미지 뒤에 1과 2가 모두 존재하는지 체크하여 버튼 노출
     (() => {
         const id = card.id;

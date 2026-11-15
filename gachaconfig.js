@@ -145,7 +145,66 @@ export const FES_CONFIG = [
             sssr: ['vocal_feslogic1'],
             sr_card: []
         }
-    }
+    },
+    {
+        id: 'campusfes4',
+        date: '2025-01-16',
+        bannerImg: 'idols/ssrsumika_campusfes1.webp',
+        pickupRate: 0.0075,
+        pool: {
+            pssr: [
+                { id: 'ssrsumika_campusfes', char: 'sumika' },
+                { id: 'ssrlilja_campusfes', char: 'lilja' }
+            ],
+            sssr: [],
+            sr_card: []
+        }
+    },
+    {
+        id: 'campusfes3',
+        date: '2025-01-09',
+        bannerImg: 'idols/ssrchina_campusfes1.webp',
+        pickupRate: 0.006,
+        pool: {
+            pssr: [
+                { id: 'ssrchina_campusfes', char: 'china' },
+                { id: 'ssrhiro_campusfes', char: 'hiro' },
+                { id: 'ssrume_campusfes', char: 'ume' }
+            ],
+            sssr: ['vocal_fesanomaly1'],
+            sr_card: []
+        }
+    },
+    {
+        id: 'campusfes2',
+        date: '2025-01-02',
+        bannerImg: 'idols/ssrmao_campusfes1.webp',
+        pickupRate: 0.006,
+        pool: {
+            pssr: [
+                { id: 'ssrmao_campusfes', char: 'mao' },
+                { id: 'ssrrinami_campusfes', char: 'rinami' },
+                { id: 'ssrsena_campusfes', char: 'sena' }
+            ],
+            sssr: ['dance_fesfree1'],
+            sr_card: []
+        }
+    },
+    {
+        id: 'campusfes1',
+        date: '2024-12-26',
+        bannerImg: 'idols/ssrsaki_campusfes1.webp',
+        pickupRate: 0.006,
+        pool: {
+            pssr: [
+                { id: 'ssrsaki_campusfes', char: 'saki' },
+                { id: 'ssrtemari_campusfes', char: 'temari' },
+                { id: 'ssrkotone_campusfes', char: 'kotone' }
+            ],
+            sssr: ['vocal_fessense1'],
+            sr_card: []
+        }
+    },
 ];
 
 // 유닛 가챠 상세 설정
@@ -221,29 +280,18 @@ export const UNIT_CONFIG = [
     },
 ];
 
-// 통상 (다중) 가챠 상세 설정
-export const NORMAL_MULTI_CONFIG = [
-    {
-        id: 'shirube',
-        name: '시루베',
-        name_ja: '標',
-        name_en: 'Shirube',
-        date: '2026-09-04',
-        bannerImg: 'idols/ssrmao_shirube1.webp',
-        pool: {
-            pssr: [
-                { id: 'ssrmao_shirube', char: 'mao' },
-                { id: 'ssrchina_shirube', char: 'china' },
-                { id: 'ssrsumika_shirube', char: 'sumika' }
-            ],
-            sssr: [],
-            sr_card: []
-        }
-    }
-];
-
 // 통상 가챠 상세 설정 (기간별 라인업 등)
 export const NORMAL_CONFIG = [
+    {
+        id: 'ssrkanae_1st',
+        date: '2026-11-16',
+        bannerImg: 'idols/ssrkanae_1st1.webp',
+        pool: {
+            pssr: [{ id: 'ssrkanae_1st', char: 'kanae' }],
+            sssr: ['vocal_sense4'],
+            sr_card: ['visual_srsense4']
+        }
+    },
     {
         id: 'ssrsena_4th',
         date: '2026-10-20',
@@ -262,6 +310,20 @@ export const NORMAL_CONFIG = [
             pssr: [{ id: 'ssrhiro_4th', char: 'hiro' }],
             sssr: ['vocal_anomaly5'],
             sr_card: ['dance_sranomaly3']
+        }
+    },
+    {
+        id: 'shirube',
+        date: '2026-09-04',
+        bannerImg: 'idols/ssrmao_shirube1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrmao_shirube', char: 'mao' },
+                { id: 'ssrchina_shirube', char: 'china' },
+                { id: 'ssrsumika_shirube', char: 'sumika' }
+            ],
+            sssr: [],
+            sr_card: []
         }
     },
     {
@@ -869,6 +931,43 @@ export const LIMITED_CONFIG = [
 
 // 셀렉션 가챠 상세 설정 (드로어 리스트 및 가챠 풀)
 export const SELECTION_CONFIG = [
+    {
+        id: 'shirubefinal_day2',
+        name: '시루베 파이널 DAY2',
+        name_en: 'Shirube Final DAY2',
+        name_ja: '標ファイナルDAY2',
+        display_date: '2026-11-08',
+        date: '2025-05-16',
+        bannerImg: 'gasya/gasya_shirubefinal2.webp',
+        only_pool_pssr: true,
+        pssr_guaranteed: true, // 10회째 PSSR 확정 설정
+        exclude_support_cards: true,
+        is_limited: true, // 한정 가챠 풀 포함        
+        pull_count: 10,
+        max_pulls: 10, // 최대 뽑기 가능 횟수 설정 추가
+        pool: {
+            pssr: ['ssrtsubame_3rd', 'ssrlilja_dokimekiunit', 'ssrsumika_dokimekiunit', 'ssrume_2nd', 'ssrrinami_3rd', 'ssrlilja_howlinglimited', 'ssrchina_howlinglimited', 'ssrmao_miraclelimited', 'ssrhiro_miraclelimited', 'ssrsaki_ameagariunit', 'ssrtemari_ameagariunit', 'ssrkotone_ameagariunit', 'ssrsena_valentinelimited', 'ssrrinami_valentinelimited', 'ssrsaki_animate', 'ssrhiro_halloweenlimited', 'ssrtemari_halloweenlimited', 'ssrlilja_1st', 'ssrsaki_1st']
+        }
+    },
+    {
+        id: 'shirubefinal_day1',
+        name: '시루베 파이널 DAY1',
+        name_en: 'Shirube Final DAY1',
+        name_ja: '標ファイナルDAY1',
+        display_date: '2026-11-07',
+        date: '2025-05-16',
+        bannerImg: 'gasya/gasya_shirubefinal1.webp',
+        only_pool_pssr: true,
+        pssr_guaranteed: true, // 10회째 PSSR 확정 설정
+        exclude_support_cards: true,
+        is_limited: true, // 한정 가챠 풀 포함        
+        pull_count: 10,
+        max_pulls: 10, // 최대 뽑기 가능 횟수 설정 추가
+        pool: {
+            pssr: ['ssrtsubame_3rd', 'ssrmao_sugarunit', 'ssrrinami_sugarunit', 'ssrume_endlesslimited', 'ssrsena_endlesslimited', 'ssrmisuzu_1st', 'ssrmao_2nd', 'ssrtemari_1st', 'ssrchina_michinaruunit', 'ssrhiro_michinaruunit', 'ssrchina_3rd', 'ssrmao_miraclelimited', 'ssrhiro_miraclelimited', 'ssrsena_starmineunit', 'ssrmisuzu_starmineunit', 'ssrume_starmineunit', 'ssrhiro_3rd', 'ssrsena_valentinelimited', 'ssrrinami_valentinelimited', 'ssrhiro_halloweenlimited', 'ssrtemari_halloweenlimited', 'ssrrinami_summerlimited', 'ssrsumika_summerlimited']
+        }
+    },
+
     {
         id: 'HIF_day2',
         name: 'The 2nd period HIF DAY2',

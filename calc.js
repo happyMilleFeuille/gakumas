@@ -2,7 +2,7 @@
 import { state, idolColors } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { PRESET_EXPORT_ENDPOINT } from './ui.js';
-import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios, hifPrimaStellaIdols, hifParameterLimitBonuses } from './calcData.js';
+import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios, hajimeAvailableIdols, hifPrimaStellaIdols, niaAvailableIdols, hifParameterLimitBonuses } from './calcData.js';
 import { activityOptions } from './calcOptions.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
@@ -24,7 +24,7 @@ import { toggleSupportCardPanel, closeSupportCardPanel, showStatDetailModal, syn
 import { initRecommendationFeature } from './calcRecommend.js';
 import { triggerImmediateCloudSave } from './firebase-sync.js';
 
-const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
+const idolList = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami', 'kanae'];
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 const hifClassActionIds = ['class_hif', 'class_hif0', 'class_hif1'];
 const getOptionValue = (source, opt) => {
@@ -34,7 +34,9 @@ const getOptionValue = (source, opt) => {
 };
 
 function getVisibleIdolList(type) {
+    if (type === 'hajime') return idolList.filter(id => hajimeAvailableIdols.includes(id));
     if (type === 'hif') return idolList.filter(id => hifPrimaStellaIdols.includes(id));
+    if (type === 'nia') return idolList.filter(id => niaAvailableIdols.includes(id));
     return idolList;
 }
 
@@ -45,7 +47,7 @@ function migrateOldPresets() {
 
         const modes = ['hajime', 'nia', 'hif'];
         const plans = ['sense', 'logic', 'anomaly'];
-        const idols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
+        const idols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami', 'kanae'];
 
         idols.forEach(idol => {
             modes.forEach(mode => {
@@ -63,7 +65,7 @@ function migrateOldPresets() {
                                         data: parsed
                                     });
                                 }
-                            } catch (e) {}
+                            } catch (e) { }
                         }
                     }
                 });
@@ -533,7 +535,8 @@ function startWeeklyPlan(type) {
                             toggleSupportCardPanel(calcStore.planType, refreshAll);
                         }
                     }
-                }
+                },
+                () => startWeeklyPlan(calcStore.type)
             );
 
             bindIdolSelector(grid, refreshAll);
@@ -737,9 +740,9 @@ function startWeeklyPlan(type) {
                             </div>
                             <div style="display:grid; grid-template-columns:repeat(3, minmax(${isMobile ? '48px' : '58px'}, 1fr)); gap:${isMobile ? '6px' : '10px'}; align-items:start;">
                             ${fields.map(field => {
-                                const inputKey = isInitiallyPerc ? percKeyMap[field.key] : field.key;
-                                const inputVal = savedOpts[inputKey] ?? (isInitiallyPerc ? 0 : minVal);
-                                return `
+                        const inputKey = isInitiallyPerc ? percKeyMap[field.key] : field.key;
+                        const inputVal = savedOpts[inputKey] ?? (isInitiallyPerc ? 0 : minVal);
+                        return `
                                 <label style="display:flex; flex-direction:column; align-items:center; gap:${isMobile ? '4px' : '6px'};">
                                     <img src="icons/${field.icon}.webp" alt="${field.label}" style="width:${isMobile ? '15px' : '18px'}; height:${isMobile ? '15px' : '18px'};">
                                     <div style="position:relative; width:${isMobile ? '48px' : '58px'};">
@@ -760,7 +763,7 @@ function startWeeklyPlan(type) {
                                     <span class="hif-test-percent-preview" data-id="${field.key}" style="display:${isInitiallyPerc ? 'block' : 'none'}; min-height:${isMobile ? '10px' : '12px'}; font-size:${isMobile ? '0.58rem' : '0.66rem'}; font-weight:800; color:${field.color}; line-height:1;"></span>
                                 </label>
                             `;
-                            }).join('')}
+                    }).join('')}
                             </div>
                             <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; width:100%;">
                                 <button class="hif-test-perc-btn" style="width:${isMobile ? '26px' : '30px'}; height:${isMobile ? '26px' : '30px'}; background:${savedOpts.hif_test_use_perc === 'true' ? idolColor : 'white'}; color:${savedOpts.hif_test_use_perc === 'true' ? 'white' : idolColor}; border:1px solid ${idolColor}; border-radius:50%; cursor:pointer; font-weight:bold; font-size:${isMobile ? '0.7rem' : '0.8rem'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">%</button>
@@ -831,7 +834,7 @@ function startWeeklyPlan(type) {
                         refreshAll();
                     };
 
-                     // % 버튼 클릭 토글 로직 추가
+                    // % 버튼 클릭 토글 로직 추가
                     const percBtn = tooltip.querySelector('.hif-test-perc-btn');
                     percBtn.onclick = (e) => {
                         e.stopPropagation();
@@ -871,7 +874,7 @@ function startWeeklyPlan(type) {
                             // % 모드가 꺼질 때(제외 모드로 전환 시) 세 수치 합이 maxTotalVal을 넘지 않도록 조정
                             const allInputs = Array.from(tooltip.querySelectorAll('.hif-test-stat-input'));
                             const order = ['hif_test_vocal', 'hif_test_dance', 'hif_test_visual'];
-                            
+
                             // 1단계: 모든 수치를 일단 최소 minVal로 설정
                             order.forEach(id => {
                                 const inp = allInputs.find(i => i.dataset.id === id);
@@ -888,7 +891,7 @@ function startWeeklyPlan(type) {
                             order.forEach((id, idx) => {
                                 const inp = allInputs.find(i => i.dataset.id === id);
                                 const curVal = parseInt(inp ? inp.value : 0) || 0;
-                                
+
                                 const remainingCount = order.length - 1 - idx;
                                 const reservedBudget = remainingCount * minVal;
                                 const maxAllowed = budget - reservedBudget;
@@ -944,7 +947,7 @@ function startWeeklyPlan(type) {
                                     otherIds.forEach((otherId, idx) => {
                                         const otherInput = allInputs.find(inp => inp.dataset.id === otherId);
                                         const otherVal = parseInt(otherInput ? otherInput.value : 0) || 0;
-                                        
+
                                         const remainingCount = otherIds.length - 1 - idx;
                                         const reservedBudget = remainingCount * minVal;
                                         const maxAllowed = budget - reservedBudget;
@@ -1321,16 +1324,16 @@ function startWeeklyPlan(type) {
                     showConfirmResetModal((options) => {
                         const scrollContainer = document.getElementById('idol');
                         const scrollTop = scrollContainer?.scrollTop ?? window.scrollY ?? document.documentElement.scrollTop ?? 0;
-                        
+
                         calcStore.resetState(options);
                         showToast(t('calc_reset_success'));
-                        
+
                         if (options.supportCards) {
                             if (typeof syncSupportPanelUI === 'function') syncSupportPanelUI();
                         }
-                        
+
                         startWeeklyPlan(type);
-                        
+
                         requestAnimationFrame(() => {
                             if (scrollContainer) scrollContainer.scrollTop = scrollTop;
                             window.scrollTo(0, scrollTop);
@@ -1817,8 +1820,8 @@ function renderPresetPreview(el) {
     // Guide Presets
     {
         const isGuideActive = activeSlot === 'guide';
-        const guideStyle = isGuideActive 
-            ? `border: 2px solid #8FDDBA;` 
+        const guideStyle = isGuideActive
+            ? `border: 2px solid #8FDDBA;`
             : 'border: none;';
         const guidePlan = calcStore.planType || 'sense';
         const logicShift = guidePlan === 'logic' ? 'transform: translateX(-1px);' : '';
@@ -1830,8 +1833,8 @@ function renderPresetPreview(el) {
         // HIF 전용 두 번째 가이드 프리셋 슬롯 추가
         if (mode === 'hif') {
             const isGuide2Active = activeSlot === 'guide2';
-            const guide2Style = isGuide2Active 
-                ? `border: 2px solid #8FDDBA;` 
+            const guide2Style = isGuide2Active
+                ? `border: 2px solid #8FDDBA;`
                 : 'border: none;';
             iconsHtml += `<div class="preset-circle-slot guide" data-slot="guide2" style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; width: ${size}; height: ${size}; border-radius: 50%; box-sizing: border-box; ${guide2Style}" title="가이드 프리셋 (댄스+드링크)">
                 <img src="icons/${guidePlan}.webp" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%; ${logicShift}">
@@ -1979,8 +1982,8 @@ function renderCalcPresetSlots(container) {
             lines.forEach((line, idx) => {
                 const isLast = idx === lines.length - 1;
                 // 마지막 줄(경고문구)의 폰트 크기 축소 및 불투명도 조절
-                const style = isLast 
-                    ? `font-size: calc(${guideTextSize} - 1.5px); color: #94a3b8; margin-top: 3px; font-weight: 400;` 
+                const style = isLast
+                    ? `font-size: calc(${guideTextSize} - 1.5px); color: #94a3b8; margin-top: 3px; font-weight: 400;`
                     : `font-size: ${guideTextSize}; font-weight: 500; color: #64748b;`;
                 descHtml += `<span style="display: block; ${style} text-align: center; line-height: 1.35; letter-spacing: -0.2px; white-space: pre-wrap;">${line}</span>`;
             });
@@ -1997,7 +2000,7 @@ function renderCalcPresetSlots(container) {
             const modeName = data.type || mode;
             const hifLimitBonus = modeName === 'hif' ? (hifParameterLimitBonuses[data.calcState?.hifParamLimitLevel || 0] || 0) : 0;
             const maxStat = modeName === 'hajime' ? 3000 : (modeName === 'hif' ? (3000 + hifLimitBonus) : (modeName === 'nia' ? 2600 : 0));
-            
+
             let displayTotal = vo + da + vi;
             let overflow = 0;
             if (maxStat > 0) {
@@ -2008,7 +2011,7 @@ function renderCalcPresetSlots(container) {
                 overflow = (vo - cVo) + (da - cDa) + (vi - cVi);
             }
             const total = overflow > 0 ? `${displayTotal}<span style="font-size: 0.6em; color: #ff6b6b; margin-left: 2px;">(-${overflow})</span>` : `${displayTotal}`;
-            
+
             const voP = Number(percentBonus?.vocal ?? 0);
             const daP = Number(percentBonus?.dance ?? 0);
             const viP = Number(percentBonus?.visual ?? 0);
@@ -2433,7 +2436,7 @@ async function loadCalcPreset(slotId) {
                     const currentState = JSON.parse(currentRaw);
                     if (currentState) {
                         const targetPlan = data.calcState.planType || 'sense';
-                        
+
                         // Normalize preset planSkills/planCards
                         let presetSkills = data.calcState.planSkills || {};
                         if (!presetSkills.sense && !presetSkills.logic && !presetSkills.anomaly) {
@@ -2443,7 +2446,7 @@ async function loadCalcPreset(slotId) {
                         if (Array.isArray(presetCards)) {
                             presetCards = { sense: [...presetCards], logic: [...presetCards], anomaly: [...presetCards] };
                         }
-                        
+
                         // Normalize current planSkills/planCards
                         let currentSkills = currentState.planSkills || {};
                         if (!currentSkills.sense && !currentSkills.logic && !currentSkills.anomaly) {
@@ -2453,18 +2456,18 @@ async function loadCalcPreset(slotId) {
                         if (Array.isArray(currentCards)) {
                             currentCards = { sense: [...currentCards], logic: [...currentCards], anomaly: [...currentCards] };
                         }
-                        
+
                         // Merge: only keep the preset's target plan selections, and retain current selections for the other plans
                         const mergedSkills = { ...presetSkills };
                         const mergedCards = { ...presetCards };
-                        
+
                         ['sense', 'logic', 'anomaly'].forEach(plan => {
                             if (plan !== targetPlan) {
                                 mergedSkills[plan] = currentSkills[plan] || {};
                                 mergedCards[plan] = currentCards[plan] || [];
                             }
                         });
-                        
+
                         data.calcState.planSkills = mergedSkills;
                         data.calcState.planCards = mergedCards;
 
@@ -2926,7 +2929,7 @@ function openCalcShareModal(slotId, container) {
             // Validate if the imported preset matches the current calculator settings
             const targetPlan = presetState.planType || 'sense';
             const targetIdol = presetState.selectedIdol || 'saki';
-            
+
             let targetMode = presetState.type || result.preset.type;
             if (!targetMode || targetMode === 'calc' || targetMode === 'hajime') {
                 const weekKeys = Object.keys(presetState.weeks || {});
@@ -2975,7 +2978,7 @@ function openCalcShareModal(slotId, container) {
 
             // Write to current active slot key
             const importedPreset = result.preset;
-            
+
 
             importedPreset.slotId = parseInt(slotId);
             importedPreset.timestamp = importedPreset.timestamp || new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -2991,7 +2994,7 @@ function openCalcShareModal(slotId, container) {
                     const currentState = JSON.parse(currentRaw);
                     if (currentState) {
                         const targetPlan = importedPreset.calcState.planType || 'sense';
-                        
+
                         // Normalize preset planSkills/planCards
                         let presetSkills = importedPreset.calcState.planSkills || {};
                         if (!presetSkills.sense && !presetSkills.logic && !presetSkills.anomaly) {
@@ -3001,7 +3004,7 @@ function openCalcShareModal(slotId, container) {
                         if (Array.isArray(presetCards)) {
                             presetCards = { sense: [...presetCards], logic: [...presetCards], anomaly: [...presetCards] };
                         }
-                        
+
                         // Normalize current planSkills/planCards
                         let currentSkills = currentState.planSkills || {};
                         if (!currentSkills.sense && !currentSkills.logic && !currentSkills.anomaly) {
@@ -3011,18 +3014,18 @@ function openCalcShareModal(slotId, container) {
                         if (Array.isArray(currentCards)) {
                             currentCards = { sense: [...currentCards], logic: [...currentCards], anomaly: [...currentCards] };
                         }
-                        
+
                         // Merge: only keep the preset's target plan selections, and retain current selections for the other plans
                         const mergedSkills = { ...presetSkills };
                         const mergedCards = { ...presetCards };
-                        
+
                         ['sense', 'logic', 'anomaly'].forEach(plan => {
                             if (plan !== targetPlan) {
                                 mergedSkills[plan] = currentSkills[plan] || {};
                                 mergedCards[plan] = currentCards[plan] || [];
                             }
                         });
-                        
+
                         importedPreset.calcState.planSkills = mergedSkills;
                         importedPreset.calcState.planCards = mergedCards;
                     }

@@ -7,7 +7,7 @@
     max-height: 85vh;
     height: auto;
     background: #fff;
-    border-radius: 15px;
+    border-radius: 8px;
     padding: 1.2rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     position: relative;
@@ -177,7 +177,7 @@
     width: 60px !important;
     height: 36px !important;
     object-fit: cover !important;
-    border-radius: 4px !important;
+    border-radius: 0 !important;
     border: 1px solid #ddd !important;
     background-color: #f0f0f0 !important;
     flex-shrink: 0 !important;
@@ -231,8 +231,8 @@
     z-index: 100000;
     pointer-events: none;
     background: #fff;
-    border: 3px solid #ff4081;
-    border-radius: 12px;
+    border: 1px solid #ff4081;
+    border-radius: 0;
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     padding: 5px;
     display: none;

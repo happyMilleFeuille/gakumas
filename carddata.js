@@ -337,7 +337,7 @@ export const cardList = [
         rarity: "SSR",
         have: "card_m",
         card_effects: [{
-            kr: "startingcard \n✦ 소비체력 절감1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "startingcard \n✦ 소비체력 절감 1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "startingcard \n✦ 消費体力削減1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         source: "dist",
@@ -449,6 +449,27 @@ export const cardList = [
             ]
     },
     {
+        id: "vocal_sense4",
+        name: "아가씨, 잠시 실례하겠습니다",
+        name_ja: "お嬢様、失礼いたします",
+        type: "vocal",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_concentration"], triggertext: ["vocal900"], stats: { vocal: 20 }, targettext: "ppoint20", max: 3 }],
+        releasedAt: "2026-11-16",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
+    {
         id: "vocal_limitedsense1",
         name: "일시 휴전이에요",
         name_ja: "一時休戦です",
@@ -552,8 +573,6 @@ export const cardList = [
             jp: "✦ goodcondition3\n✦ 手札をすべて入れ替える\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2024-12-26",
-        name_modal: "Campus mode!!",
-        char: ["saki", "temari", "kotone"],
         rarity: "SSR",
         source: "limited_f",
         extra1: "param", extra2: "ranenhance",
@@ -648,7 +667,7 @@ export const cardList = [
         have: "card_m",
         attrs: ["goodimpression"],
         card_effects: [{
-            kr: "의욕 소비2\n✦ goodimpression4\n✦ use1\n✦ 다음 턴 draw1\n✦ 의욕이 6이상일 경우 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "의욕 소비 2\n✦ goodimpression4\n✦ use1\n✦ 다음 턴 draw1\n✦ 의욕이 6이상일 경우 draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "やる気消費2\n✦ goodimpression4\n✦ use1\n✦ 次のターン、draw1\n✦ やる気が6以上の場合、draw2\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2026-01-05",
@@ -799,7 +818,7 @@ export const cardList = [
         have: "card_a",
         attrs: ["goodimpression"],
         card_effects: [{
-            kr: "의욕 소비2\n✦ 4턴 후 호인상의 120%만큼 파라미터 상승\n✦ 의욕이 3이상일 경우 이후 3턴 간, 턴 종료 시 goodimpression3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "의욕 소비 2\n✦ 4턴 후 호인상의 120%만큼 파라미터 상승\n✦ 의욕이 3이상일 경우 이후 3턴 간, 턴 종료 시 goodimpression3\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "やる気消費2\n✦ 4ターン後、好印象の120%分パラメータ上昇\n✦ やる気が３以上の場合、以降の3ターンの間、ターン終了時、goodimpression3\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2026-01-27",
@@ -1042,8 +1061,6 @@ export const cardList = [
         type: "vocal",
         plan: "anomaly",
         have: "item",
-        name_modal: "Campus mode!!",
-        char: ["hiro", "china", "ume"],
         item_effects: [{ type: "action", trigger: ["get_preservation"], triggertext: ["vocal400"], target: "enhance", max: 2 }],
         releasedAt: "2025-01-09",
         rarity: "SSR",
@@ -1173,7 +1190,7 @@ export const cardList = [
         plan: "free",
         have: "card_m",
         card_effects: [{
-            kr: "✦ 소비체력 절감1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "✦ 소비체력 절감 1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "✦ 消費体力削減1\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         rarity: "SSR",
@@ -1293,8 +1310,6 @@ export const cardList = [
         type: "dance",
         have: "item",
         item_effects: [{ type: "action", trigger: ["class"], targettext: ["hp2", "ppoint20"] }],
-        name_modal: "Campus mode!!",
-        char: ["sena", "mao", "rinami"],
         source: "limited_f",
         releasedAt: "2025-01-02",
         plan: "free",
@@ -1580,7 +1595,7 @@ export const cardList = [
         have: "card_m",
         attrs: ["motivation"],
         card_effects: [{
-            kr: "3턴째 이후일 경우 사용 가능 \n✦ motivation3\n✦ 의욕 증가량 증가+50% (3턴)\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "3턴째 이후일 경우 사용 가능 \n✦ motivation3\n✦ 의욕 증가량 증가+50% (3턴)\n✦ 소비체력 절감 1\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "3ターン目以降の場合、使用可\n✦ motivation3\n✦ やる気増加量増加+50%（３ターン）\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2026-04-10",
@@ -2124,6 +2139,11 @@ export const cardList = [
         name_ja: "わたしと美鈴、超仲良し",
         type: "visual",
         have: "item",
+        item_effects: [{
+            type: "inexam",
+            kr: "[visual]턴 개시 시 체력이 50% 이하일 경우\n✦ 고정 genki10\n✦ inlesson1",
+            jp: "[visual]ターン開始時、体力が50%以下の場合、\n✦ 固定genki10\n✦ inlesson1",
+        }],
         releasedAt: "2025-05-16",
         plan: "free",
         source: "dist",
@@ -2298,7 +2318,7 @@ export const cardList = [
         have: "card_m",
         attrs: ["goodcondition"],
         card_effects: [{
-            kr: "집중 소비2\n 3턴째 이후일 경우 사용 가능\n✦ 호조 증가량 추가+2 (3턴)\n✦ 다음 턴 goodcondition4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "집중 소비 2\n 3턴째 이후일 경우 사용 가능\n✦ 호조 증가량 추가+2 (3턴)\n✦ 다음 턴 goodcondition4\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "集中消費2\n 3ターン目以降の場合、使用可\n✦ 好調増加量追加+2（3ターン）\n✦ 次のターン、goodcondition4\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         source: "limited",
@@ -2993,7 +3013,7 @@ export const cardList = [
         have: "card_m",
         attrs: ["genki"],
         card_effects: [{
-            kr: "원기가 0인 경우 사용 가능\n✦ genki6\n✦ 소비체력 감소 3턴\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            kr: "원기가 0일 경우 사용 가능\n✦ genki6\n✦ 소비체력 감소 3턴\n✦ 다음 턴 draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
             jp: "元気が0の場合、使用可\n✦ genki6\n✦ 消費体力減少3ターン\n✦ 次のターン、draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }],
         releasedAt: "2024-05-16",
@@ -3647,6 +3667,11 @@ export const cardList = [
         type: "dance",
         plan: "free",
         have: "item",
+        item_effects: [{
+            type: "inexam",
+            jp: "[dance]ターン開始時、\n✦ 固定genki4\n✦ 次のターン、低下状態無効1回\n✦ inlesson1",
+            kr: "[dance]턴 개시 시 \n✦ 고정genki4\n✦ 다음 턴 저하 상태 무효 1회\n✦ inlesson1",
+        }],
         releasedAt: "2025-07-31",
         source: "limited_u",
         rarity: "SR",
@@ -4341,6 +4366,27 @@ export const cardList = [
                 "supportrateup",
                 "sp_param",
                 "gift2",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "visual_srsense4",
+        name: "우당탕, 청소",
+        name_ja: "どたばた、おそうじ",
+        type: "visual",
+        plan: "sense",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["class"], triggertext: "visual700", target: "enhance", stats: { visual: 15 }, targettext: "select", max: 1 }],
+        releasedAt: "2026-11-16",
+        rarity: "SR",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },

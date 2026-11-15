@@ -29,12 +29,12 @@ window.getGrayscaleDataUrl = function (imgEl) {
 
 const CHARACTER_ORDER = [
     'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja',
-    'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
+    'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami', 'kanae'
 ];
 
 const HEATMAP_CHARACTER_ORDER = [
     'saki', 'temari', 'kotone', 'mao', 'lilja', 'china',
-    'sumika', 'hiro', 'rinami', 'ume', 'sena', 'misuzu', 'tsubame'
+    'sumika', 'hiro', 'rinami', 'ume', 'sena', 'misuzu', 'tsubame', 'kanae'
 ];
 
 const SUB_TYPE_LABELS = {
@@ -93,7 +93,6 @@ const TRANSLATIONS = {
         overall_rate: '전체 소지율',
         include_another: '어나더 포함',
         include_dist: '배포 포함',
-        show_100percent_only: '100% 소지',
         plan_stats: '플랜별',
         source_stats: '분류별',
         char_stats: '아이돌별',
@@ -113,7 +112,6 @@ const TRANSLATIONS = {
         overall_rate: '全体所持率',
         include_another: 'アナザー含む',
         include_dist: '配布含む',
-        show_100percent_only: '100%所持',
         plan_stats: 'プラン別所持率',
         source_stats: '分類別所持率',
         char_stats: 'アイドル別所持率',
@@ -133,7 +131,6 @@ const TRANSLATIONS = {
         overall_rate: 'Overall Rate',
         include_another: 'Include Another',
         include_dist: 'Include Event',
-        show_100percent_only: '100% Owned',
         plan_stats: 'By Plan',
         source_stats: 'By Source',
         char_stats: 'By Character',
@@ -237,19 +234,6 @@ function loadIncludeDist() {
 
 function saveIncludeDist(val) {
     localStorage.setItem('gakumas_possession_include_dist', String(val));
-}
-
-function loadShow100PercentOnly() {
-    try {
-        const val = localStorage.getItem('gakumas_possession_show_100percent_only');
-        return val === null ? false : val === 'true';
-    } catch {
-        return false;
-    }
-}
-
-function saveShow100PercentOnly(val) {
-    localStorage.setItem('gakumas_possession_show_100percent_only', String(val));
 }
 
 const hexToRgba = (hex, alpha) => {
@@ -418,9 +402,13 @@ const getFesSubCategoryOrder = (card) => {
     return 999;
 };
 
-const getFesSubCategoryTitle = (order) => {
-    if (order === 1) return 'NIA';
-    if (order === 2) return 'HIF';
+const getFesSubCategoryTitle = (order, lang) => {
+    if (order === 1) return 'Campus mode!!';
+    if (order === 2) {
+        if (lang === 'ja') return 'ガラクタロード';
+        if (lang === 'en') return 'GARAKUTA ROAD';
+        return '가라쿠타 로드';
+    }
     return null;
 };
 
@@ -607,7 +595,7 @@ export function openIdolPossessionModal() {
                 flex-direction: column;
                 gap: 16px;
                 box-sizing: border-box;
-                border-radius: 18px;
+                border-radius: 8px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
                 overflow: hidden;
                 background-color: #ffffff;
@@ -980,7 +968,7 @@ export function openIdolPossessionModal() {
                     min-width: 0 !important;
                     padding: 14px 2px 12px 2px !important;
                     gap: 12px !important;
-                    border-radius: 14px !important;
+                    border-radius: 8px !important;
                     --pssr-group-gap: 2px;
                     --pssr-title-gap: 2px;
                     --pssr-box-padding: 4px;
@@ -1931,7 +1919,7 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                     const totalFes = fesCards.length;
                     const ownedFes = fesCards.filter(card => (isOwnedList === true || isOwnedList === false) ? isOwnedList : isCardOwned(card.id)).length;
                     const rateFes = totalFes > 0 ? Math.round((ownedFes / totalFes) * 100) : 0;
-                    const fesTitle = getFesSubCategoryTitle(fesOrder) || (fesOrder === 1 ? 'NIA' : 'HIF');
+                    const fesTitle = getFesSubCategoryTitle(fesOrder, lang);
 
                     let waffleCellsHtml = '';
                     fesCards.forEach(card => {
@@ -2231,13 +2219,12 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
 
     let includeAnother = loadIncludeAnother();
     let includeDist = loadIncludeDist();
-    let show100PercentOnly = loadShow100PercentOnly();
     let showHeatmapNumbers = false;
     let showOverallDetail = false;
     let heatmapViewMode = 'source'; // 'source' or 'subtype'
     let charStatsViewMode = 'plan'; // 'plan' (osusume/subtype) or 'source' (standard category)
     let expandedCharIds = new Set();
-    const isCardOwned = (cardId) => show100PercentOnly || !!ownedMap[cardId];
+    const isCardOwned = (cardId) => !!ownedMap[cardId];
 
     function updateStatsUI() {
         let activeCards = pssrCards;
@@ -3831,10 +3818,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
                                 </label>
                             </div>
                         </span>
-                        <label class="idol-stats-overall-chk" style="font-size: 0.8rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; user-select: none; color: #777; background: #fff; border: 1px solid #e2e8f0; padding: 2px 8px; border-radius: 6px; margin: 0; height: 26px; box-sizing: border-box; flex-shrink: 0;">
-                            <span>${text.show_100percent_only}</span>
-                            <input type="checkbox" id="chk-show-100percent-only" ${show100PercentOnly ? 'checked' : ''} style="cursor: pointer; accent-color: ${firstPlaceCharColor}; width: 13px; height: 13px; margin: 0;">
-                        </label>
                     </div>
                     <div class="idol-stats-overall-val" style="color: ${firstPlaceCharColor}; font-size: 1.15rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-weight: 800; margin-top: 26px; margin-bottom: 4px;">
                         ${rankImgHtml}
@@ -3926,14 +3909,6 @@ function showIdolPossessionStats(modal, pssrCards, ownedMap, lang, text, closeMo
             distCheckbox.addEventListener('change', (e) => {
                 includeDist = e.target.checked;
                 saveIncludeDist(includeDist);
-                updateStatsUI();
-            });
-        }
-        const show100PercentCheckbox = scrollArea.querySelector('#chk-show-100percent-only');
-        if (show100PercentCheckbox) {
-            show100PercentCheckbox.addEventListener('change', (e) => {
-                show100PercentOnly = e.target.checked;
-                saveShow100PercentOnly(show100PercentOnly);
                 updateStatsUI();
             });
         }

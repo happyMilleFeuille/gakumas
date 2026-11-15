@@ -10,6 +10,7 @@ import { calcStore } from './calcStore.js';
 import { translate } from './utils.js';
 import { abilityData } from './abilitydata.js';
 import { hifParameterLimitBonuses } from './calcData.js';
+import { getGuidePreset } from './guidePresets.js';
 
 const t = (key, params = {}, fallback = '') => translate(key, params, fallback);
 
@@ -1328,7 +1329,38 @@ export function showRecommendModal(onConfirm) {
     }
     history.pushState({ modalOpen: 'recommend' }, "");
 
-    const idolColor = getIdolDisplayColor(calcStore.selectedIdol || 'saki');
+    const selectedIdol = calcStore.selectedIdol || 'saki';
+    const idolColor = getIdolDisplayColor(selectedIdol);
+    const presetMode = calcStore.type || 'hajime';
+    const presetModeIcon = presetMode === 'hif' || presetMode === 'nia' ? `icons/${presetMode}.webp` : '';
+    const getRecommendPresetEntries = (selectedPlan) => {
+        if (!selectedPlan) return [];
+        const entries = [];
+        const guideSlots = presetMode === 'hif' ? ['guide', 'guide2'] : ['guide'];
+
+        guideSlots.forEach(slotId => {
+            const data = getGuidePreset(presetMode, selectedIdol, selectedPlan, slotId);
+            if (data?.calcState) entries.push({ id: slotId, data, isGuide: true });
+        });
+
+        for (let slotId = 1; slotId <= 15; slotId++) {
+            const raw = localStorage.getItem(`calc_preset_slot_${presetMode}_${selectedIdol}_${slotId}`);
+            if (!raw) continue;
+            try {
+                const data = JSON.parse(raw);
+                if (!data?.calcState) continue;
+
+                // 1차: 육성 모드, 2차: 캐릭터가 현재 설정과 일치하는 프리셋만 표시한다.
+                const dataMode = data.type || data.calcState.type;
+                const dataIdol = data.calcState.selectedIdol;
+                if (dataMode !== presetMode || dataIdol !== selectedIdol) continue;
+                if ((data.calcState.planType || 'sense') !== selectedPlan) continue;
+
+                entries.push({ id: String(slotId), data, isGuide: false });
+            } catch (e) { }
+        }
+        return entries;
+    };
     const isJa = state.currentLang === 'ja';
 
     // 기본 선택값 (저장된 설정 반영)
@@ -1356,9 +1388,9 @@ export function showRecommendModal(onConfirm) {
 
     modal.innerHTML = `
         <div class="confirm-modal-content" style="border: 1px solid #ddd; border-radius: 12px; padding: 24px; background: #fff; max-width: 380px; width: 95%; margin: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: modal-fade-in 0.2s ease-out;">
-            <div style="font-size: 17px; font-weight: bold; margin-bottom: 20px; color: #333; text-align: center;">${titleText}</div>
+            <div style="font-size: 15px; line-height: 1.15; font-weight: bold; margin-bottom: 12px; color: #333; text-align: center;">${titleText}</div>
             
-            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
+            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 5px; background: #fff;">
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fcfcfc; border-bottom: 2px solid #eee;">
                     <span style="font-size: 14px; font-weight: bold; color: #333;">${t('calc_title_sp_support_count')}</span>
                     <span id="sp-total-count" style="font-size: 16px; font-weight: 900; color: ${idolColor}; background: ${idolColor}15; padding: 2px 10px; border-radius: 12px;">${getSum()}</span>
@@ -1368,14 +1400,14 @@ export function showRecommendModal(onConfirm) {
                 ${renderSubRow('visual')}
             </div>
 
-            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
+            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 5px; background: #fff;">
                 <label id="lock-cards-toggle" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; cursor: pointer; user-select: none;">
                     <div style="display: flex; flex-direction: column; gap: 2px;">
                         <span style="font-size: 14px; font-weight: bold; color: #333;">${t('calc_lock_current_cards')}</span>
                         <span id="lock-cards-desc" style="font-size: 11px; color: #999;">${t('calc_lock_current_cards_desc')}</span>
                     </div>
                     <div style="position: relative; width: 44px; height: 24px; flex-shrink: 0; margin-left: 12px;">
-                        <input type="checkbox" id="lock-cards-checkbox" ${calcStore.lockCards ? 'checked' : ''} style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <input type="checkbox" id="lock-cards-checkbox" style="opacity: 0; width: 0; height: 0; position: absolute;">
                         <div class="lock-toggle-track" style="position: absolute; inset: 0; background: #ddd; border-radius: 12px; transition: background 0.2s;"></div>
                         <div class="lock-toggle-thumb" style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.2s;"></div>
                     </div>
@@ -1383,12 +1415,28 @@ export function showRecommendModal(onConfirm) {
                 <div id="lock-cards-preview" style="display: none; padding: 8px 12px; border-top: 1px solid #f0f0f0; background: #fafafa;"></div>
             </div>
 
+            <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 24px; background: #fff;">
+                <label id="use-preset-toggle" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; cursor: pointer; user-select: none;">
+                    <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; color: #333;">
+                        ${presetModeIcon ? `<span role="img" aria-label="${presetMode.toUpperCase()}" style="display: inline-block; width: 38px; height: 20px; flex-shrink: 0; background-color: ${idolColor}; -webkit-mask: url('${presetModeIcon}') center / contain no-repeat; mask: url('${presetModeIcon}') center / contain no-repeat;"></span>` : ''}
+                        <img src="icons/idolicons/${selectedIdol}_c.png" alt="" style="width: 28px; height: 28px; object-fit: contain; flex-shrink: 0;" onerror="this.style.display='none';">
+                        ${t('calc_use_preset')}
+                        <span id="selected-preset-summary" style="display: none; position: relative; width: 24px; height: 24px; flex-shrink: 0; align-items: center; justify-content: center;"></span>
+                    </span>
+                    <div style="position: relative; width: 44px; height: 24px; flex-shrink: 0; margin-left: 12px;">
+                        <input type="checkbox" id="use-preset-checkbox" style="opacity: 0; width: 0; height: 0; position: absolute;">
+                        <div class="preset-toggle-track" style="position: absolute; inset: 0; background: #ddd; border-radius: 12px; transition: background 0.2s;"></div>
+                        <div class="preset-toggle-thumb" style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.2s;"></div>
+                    </div>
+                </label>
+                <div id="preset-list-preview" style="display: none; max-height: 172px; overflow-y: auto; padding: 8px 12px; border-top: 1px solid #f0f0f0; background: #fafafa;"></div>
+            </div>
+
             <div style="margin-bottom: 20px; padding: 0 4px;">
                 <div style="font-size: 11px; color: #999; line-height: 1.5; letter-spacing: -0.02em;">
                     <div style="font-weight: bold; margin-bottom: 4px; color: #777;">⚠️ ${t('calc_notice')}</div>
                     <div id="recommend-notice-content">
-                        • ${t('calc_notice_recommend_1')}<br>
-                        • ${t('calc_notice_recommend_2')}
+                        • ${t('calc_notice_recommend_1')}
                     </div>
                 </div>
             </div>
@@ -1407,7 +1455,7 @@ export function showRecommendModal(onConfirm) {
             }
             @media (max-width: 768px) {
                 .confirm-modal-content { padding: 18px !important; }
-                .confirm-modal-content > div:first-child { font-size: 15px !important; margin-bottom: 14px !important; }
+                .confirm-modal-content > div:first-child { font-size: 14px !important; margin-bottom: 9px !important; }
                 .confirm-modal-content span[style*="font-size: 14px"] { font-size: 12px !important; }
                 .confirm-modal-content span[style*="font-size: 13px"] { font-size: 11px !important; }
                 .confirm-modal-content .sp-opt-btn { width: 24px !important; height: 24px !important; font-size: 10px !important; }
@@ -1509,9 +1557,17 @@ export function showRecommendModal(onConfirm) {
         }
     };
 
-    // 이전 토글 상태 복원
-    if (calcStore.lockCards && lockCheckbox) {
-        lockCheckbox.checked = true;
+    const lockToggleSessionKey = 'calc_recommend_lock_cards';
+    const readSessionToggle = (key) => {
+        try { return sessionStorage.getItem(key) === 'true'; } catch (e) { return false; }
+    };
+    const writeSessionToggle = (key, checked) => {
+        try { sessionStorage.setItem(key, checked ? 'true' : 'false'); } catch (e) { }
+    };
+
+    // 현재 탭이 열려 있는 동안의 토글 상태를 복원한다.
+    if (lockCheckbox) {
+        lockCheckbox.checked = readSessionToggle(lockToggleSessionKey);
         updateLockUI();
     }
 
@@ -1520,8 +1576,7 @@ export function showRecommendModal(onConfirm) {
             e.preventDefault();
             if (isRecommending) return;
             lockCheckbox.checked = !lockCheckbox.checked;
-            calcStore.lockCards = lockCheckbox.checked;
-            calcStore.save();
+            writeSessionToggle(lockToggleSessionKey, lockCheckbox.checked);
 
             // 토글을 껐을 때는 고정 선택을 모두 해제(비움)
             if (!lockCheckbox.checked) {
@@ -1529,6 +1584,130 @@ export function showRecommendModal(onConfirm) {
             }
 
             updateLockUI();
+        };
+    }
+
+    // 추천에 사용할 프리셋 선택
+    const presetToggle = modal.querySelector('#use-preset-toggle');
+    const presetCheckbox = modal.querySelector('#use-preset-checkbox');
+    const presetTrack = modal.querySelector('.preset-toggle-track');
+    const presetThumb = modal.querySelector('.preset-toggle-thumb');
+    const presetPreview = modal.querySelector('#preset-list-preview');
+    const selectedPresetSummary = modal.querySelector('#selected-preset-summary');
+    let selectedPresetPlan = null;
+    let selectedPresetId = null;
+    let selectedPresetData = null;
+
+    const escapePresetText = (value) => String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    const updateSelectedPresetSummary = () => {
+        if (!selectedPresetSummary) return;
+        if (!selectedPresetData || !selectedPresetId) {
+            selectedPresetSummary.style.display = 'none';
+            selectedPresetSummary.innerHTML = '';
+            return;
+        }
+        const plan = selectedPresetData.calcState?.planType || 'sense';
+        const isGuide = selectedPresetId === 'guide' || selectedPresetId === 'guide2';
+        const badge = selectedPresetId === 'guide' ? 'G' : (selectedPresetId === 'guide2' ? 'G2' : selectedPresetId);
+        selectedPresetSummary.style.display = 'inline-flex';
+        selectedPresetSummary.innerHTML = `
+            <img src="icons/${plan}.webp" alt="${plan.toUpperCase()}" style="width: 22px; height: 22px; object-fit: contain;">
+            <span style="position: absolute; right: -4px; bottom: -2px; min-width: 11px; padding: 1px 2px; border-radius: 3px; background: ${isGuide ? '#8FDDBA' : idolColor}; color: #fff; font-size: 7px; font-weight: 900; line-height: 1; text-align: center;">${badge}</span>`;
+    };
+
+    const renderRecommendPresetList = () => {
+        if (!presetPreview) return;
+        const plans = ['sense', 'logic', 'anomaly'];
+        const entries = getRecommendPresetEntries(selectedPresetPlan);
+        const planSelectorHtml = `
+            <div class="recommend-preset-plan-selector" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;${selectedPresetPlan ? ' margin-bottom: 8px;' : ''}">
+                ${plans.map(plan => {
+                    const selected = selectedPresetPlan === plan;
+                    return `<button type="button" class="recommend-preset-plan-btn" data-plan="${plan}" title="${plan.toUpperCase()}" style="height: 34px; display: flex; align-items: center; justify-content: center; border: 1px solid ${selected ? idolColor : '#e5e5e5'}; border-radius: 17px; background: ${selected ? `${idolColor}12` : '#fff'}; cursor: pointer; box-sizing: border-box;">
+                        <img src="icons/${plan}.webp" alt="${plan.toUpperCase()}" style="width: 26px; height: 26px; object-fit: contain;${selected ? ` filter: drop-shadow(0 0 2px ${idolColor}66);` : ''}">
+                    </button>`;
+                }).join('')}
+            </div>`;
+        const presetItemsHtml = !selectedPresetPlan ? '' : entries.map(({ id, data, isGuide }) => {
+            const selected = selectedPresetId === id;
+            const plan = data.calcState?.planType || 'sense';
+            const name = data.customName || `Slot ${id}`;
+            const slotLabel = isGuide ? (id === 'guide2' ? 'G2' : 'G') : id;
+            return `
+                <button type="button" class="recommend-preset-item" data-preset-id="${id}" style="width: 100%; height: 34px; display: flex; align-items: center; gap: 8px; padding: 2px 8px; margin: 0 0 5px; border: 1px solid ${selected ? idolColor : '#e5e5e5'}; border-radius: 7px; background: ${selected ? `${idolColor}12` : '#fff'}; cursor: pointer; text-align: left; box-sizing: border-box;">
+                    <span style="position: relative; width: 24px; height: 24px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <img src="icons/${plan}.webp" alt="" style="width: 22px; height: 22px; object-fit: contain;">
+                        <span style="position: absolute; right: -3px; bottom: -2px; min-width: 12px; padding: 1px 2px; border-radius: 3px; background: ${isGuide ? '#8FDDBA' : idolColor}; color: #fff; font-size: 8px; font-weight: 900; line-height: 1; text-align: center;">${slotLabel}</span>
+                    </span>
+                    <span style="min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-size: 12px; font-weight: 700; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapePresetText(name)}</span>
+                    </span>
+                    <span style="width: 16px; color: ${idolColor}; font-size: 14px; font-weight: 900; text-align: center;">${selected ? '✓' : ''}</span>
+                </button>`;
+        }).join('');
+        presetPreview.innerHTML = `${planSelectorHtml}${presetItemsHtml ? `<div class="recommend-preset-items">${presetItemsHtml}</div>` : ''}`;
+
+        presetPreview.querySelectorAll('.recommend-preset-plan-btn').forEach(button => {
+            button.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (isRecommending) return;
+                const nextPlan = button.dataset.plan;
+                selectedPresetPlan = selectedPresetPlan === nextPlan ? null : nextPlan;
+                selectedPresetId = null;
+                selectedPresetData = null;
+                updateSelectedPresetSummary();
+                renderRecommendPresetList();
+            };
+        });
+
+        const lastItem = presetPreview.querySelector('.recommend-preset-item:last-child');
+        if (lastItem) lastItem.style.marginBottom = '0';
+
+        presetPreview.querySelectorAll('.recommend-preset-item').forEach(item => {
+            item.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (isRecommending) return;
+                const id = item.dataset.presetId;
+                const entry = entries.find(candidate => candidate.id === id);
+                selectedPresetId = id;
+                selectedPresetData = entry?.data || null;
+                updateSelectedPresetSummary();
+                presetPreview.style.display = 'none';
+            };
+        });
+    };
+
+    const updatePresetToggleUI = () => {
+        const checked = presetCheckbox?.checked || false;
+        if (presetTrack) presetTrack.style.background = checked ? idolColor : '#ddd';
+        if (presetThumb) presetThumb.style.transform = checked ? 'translateX(20px)' : 'translateX(0)';
+        if (presetPreview) {
+            presetPreview.style.display = checked ? 'block' : 'none';
+            if (checked) renderRecommendPresetList();
+        }
+    };
+    if (presetCheckbox) presetCheckbox.checked = false;
+    updatePresetToggleUI();
+    if (presetToggle && presetCheckbox) {
+        presetToggle.onclick = (e) => {
+            e.preventDefault();
+            if (isRecommending) return;
+            presetCheckbox.checked = !presetCheckbox.checked;
+            if (!presetCheckbox.checked) {
+                selectedPresetPlan = null;
+                selectedPresetId = null;
+                selectedPresetData = null;
+                updateSelectedPresetSummary();
+            }
+            updatePresetToggleUI();
         };
     }
 
@@ -1546,6 +1725,10 @@ export function showRecommendModal(onConfirm) {
     const okBtn = modal.querySelector('.confirm-btn.ok');
     okBtn.onclick = () => {
         if (isRecommending) return;
+        if (presetCheckbox?.checked && !selectedPresetData) {
+            showTemporaryToast(t('calc_toast_select_preset'));
+            return;
+        }
         isRecommending = true;
         const content = modal.querySelector('.confirm-modal-content');
         if (content) {
@@ -1568,7 +1751,8 @@ export function showRecommendModal(onConfirm) {
                 if (progressText) progressText.textContent = t(key);
             };
             try {
-                await Promise.resolve(onConfirm(settings, lockEnabled, selectedLockedCards, updateProgress));
+                const usePreset = modal.querySelector('#use-preset-checkbox')?.checked || false;
+                await Promise.resolve(onConfirm(settings, lockEnabled, selectedLockedCards, updateProgress, usePreset ? selectedPresetData : null));
                 isRecommending = false;
                 close();
             } catch (err) {

@@ -8,6 +8,7 @@ export const audioBuffers = {};
 export const audioElements = {};
 export const assetBlobs = {};
 const preloadedVideos = new Map();
+const MAX_RETAINED_PSSR_VIDEOS = 2;
 const unavailableVideos = new Set();
 let activeNodes = {};
 const activeAudioElements = new Set();
@@ -15,7 +16,7 @@ const activeBufferSources = new Set();
 const visibilityPausedAudio = new Set();
 const visibilityMutedVideos = new Map();
 
-export const GACHA_ASSETS = Object.freeze(['bgm/mainbgm.mp3', ...GACHA_ROOT_MEDIA]);
+export const GACHA_ASSETS = Object.freeze(['bgm/mainbgm.mp3', 'bgm/robbybgm.mp3', ...GACHA_ROOT_MEDIA]);
 
 let isAssetsLoading = false;
 let assetsLoadedPromise = null;
@@ -26,7 +27,7 @@ export let isAllLoaded = false;
  */
 export async function fetchTotalAssetSizeMB() {
     // GitHub Release assets do not expose CORS-readable HEAD responses.
-    return "103.7";
+    return "107.5";
 }
 
 function preloadAudioFully(path, onProgress) {
@@ -366,7 +367,12 @@ export async function preloadGachaVideos(paths, onProgress = null, options = {})
 
     const preloadOne = path => {
         const existing = preloadedVideos.get(path);
-        if (existing) return existing.then(() => reportProgress(path));
+        if (existing) {
+            // Map의 삽입 순서를 최근 사용 순서로 활용한다.
+            preloadedVideos.delete(path);
+            preloadedVideos.set(path, existing);
+            return existing.then(() => reportProgress(path));
+        }
 
         const promise = new Promise((resolve, reject) => {
             const video = document.createElement('video');
@@ -487,10 +493,42 @@ export async function preloadGachaVideos(paths, onProgress = null, options = {})
     await Promise.all(Array.from({ length: workerCount }, runWorker));
 }
 
+const disposePreloadedVideo = video => {
+    if (!video) return;
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    video.remove();
+};
+
+/**
+ * 현재 세션에 필요한 영상은 보호하고, 나머지 프리로드 영상은 최근 항목만 유지한다.
+ */
+export async function releasePreloadedGachaVideos({ keepPaths = [], maxRetained = MAX_RETAINED_PSSR_VIDEOS } = {}) {
+    const keepSet = new Set(keepPaths);
+    const releasablePaths = [...preloadedVideos.keys()].filter(path => !keepSet.has(path));
+    const releaseCount = Math.max(0, releasablePaths.length - Math.max(0, maxRetained));
+    const pathsToRelease = releasablePaths.slice(0, releaseCount);
+
+    await Promise.all(pathsToRelease.map(async path => {
+        const videoPromise = preloadedVideos.get(path);
+        preloadedVideos.delete(path);
+        try {
+            disposePreloadedVideo(await videoPromise);
+        } catch (error) {
+            // 실패한 프리로드도 Map에서는 제거되어야 한다.
+        }
+    }));
+}
+
 export function isGachaVideoUnavailable(path) {
     return unavailableVideos.has(path);
 }
 
 export function playMainBGM() {
     playSound('bgm/mainbgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
+}
+
+export function playLobbyBGM() {
+    playSound('bgm/robbybgm.mp3', { loop: true, isBGM: true, bgmType: 'main' });
 }

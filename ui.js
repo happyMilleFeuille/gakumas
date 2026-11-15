@@ -1000,9 +1000,9 @@ function adjustDateFilterPosition(container) {
     if (isMobile) {
         const abilityDropdown = container.querySelector('#ability-dropdown');
         if (abilityDropdown) {
-            const resetBtn = abilityDropdown.querySelector('.ability-reset-btn');
-            if (resetBtn) {
-                abilityDropdown.insertBefore(wrapper, resetBtn);
+            const firstControl = abilityDropdown.querySelector('.ability-mode-toggle, .ability-reset-btn');
+            if (firstControl) {
+                abilityDropdown.insertBefore(wrapper, firstControl);
             } else {
                 abilityDropdown.appendChild(wrapper);
             }
@@ -1036,17 +1036,25 @@ function setupStaticListeners(container) {
         // Dynamically populate dropdown from abilityData (entries with name:)
         abilityDropdown.innerHTML = '';
 
-        // Add Reset button first
+        // Create the mode display and reset controls for the first row.
         const resetBtn = document.createElement('button');
         resetBtn.className = 'filter-btn ability-sub-btn ability-reset-btn';
         resetBtn.dataset.i18n = 'filter_ability_reset';
         resetBtn.textContent = translate('filter_ability_reset') || 'Reset';
+
+        const modeToggle = document.createElement('button');
+        modeToggle.className = 'ability-mode-toggle';
+        modeToggle.type = 'button';
+        modeToggle.setAttribute('aria-label', 'AND / OR');
+        modeToggle.innerHTML = '<span class="active">AND</span><span>OR</span>';
+        abilityDropdown.appendChild(modeToggle);
         abilityDropdown.appendChild(resetBtn);
 
-        // Add sp_lessonup and percentparam first (these don't have name: in abilityData)
+        // Add the top-row filters first, followed by SP rate.
         const specialEntries = [
-            { key: 'sp_lessonup', name: { ko: 'SP% ↑', ja: 'SP% ↑', en: 'SP% ↑' } },
             { key: 'percentparam', name: { ko: '보너스(%)', ja: 'ボーナス(%)', en: 'Bonus(%)' } },
+            { key: 'fixedparam', name: abilityData.fixedparam.name },
+            { key: 'sp_lessonup', name: { ko: 'SP% ↑', ja: 'SP% ↑', en: 'SP% ↑' } },
         ];
         for (const entry of specialEntries) {
             const hasAbility = cardList.some(card => {
@@ -1072,6 +1080,7 @@ function setupStaticListeners(container) {
         }
         // Add all abilityData entries that have name:
         for (const [key, data] of Object.entries(abilityData)) {
+            if (key === 'fixedparam') continue;
             if (!data.name) continue;
             const hasAbility = cardList.some(card => card.abilities && card.abilities.includes(key));
             if (!hasAbility) continue;
@@ -1185,9 +1194,19 @@ function setupStaticListeners(container) {
         window.addEventListener('resize', window.supportResizeListener);
         abilityDropdown.addEventListener('click', (e) => {
             e.stopPropagation();
+            const modeToggleBtn = e.target.closest('.ability-mode-toggle');
+            if (modeToggleBtn) {
+                state.filters.abilityMode = state.filters.abilityMode === 'and' ? 'or' : 'and';
+                sessionStorage.setItem('filters', JSON.stringify(state.filters));
+                syncFilterUI(container);
+                updateSupportGrid(container);
+                return;
+            }
+
             const resetBtn = e.target.closest('.ability-reset-btn');
             if (resetBtn) {
                 state.filters.ability = [];
+                state.filters.abilityMode = 'and';
                 sessionStorage.setItem('filters', JSON.stringify(state.filters));
                 syncFilterUI(container);
                 updateSupportGrid(container);
@@ -1445,6 +1464,15 @@ function syncFilterUI(container) {
         btn.classList.toggle('active', state.filters.ability.includes(val));
     });
 
+    const modeToggle = container.querySelector('.ability-mode-toggle');
+    if (modeToggle) {
+        const mode = state.filters.abilityMode === 'and' ? 'and' : 'or';
+        modeToggle.dataset.mode = mode;
+        modeToggle.querySelectorAll('span').forEach(option => {
+            option.classList.toggle('active', option.textContent.toLowerCase() === mode);
+        });
+    }
+
     // Dropdown trigger button: highlight if any ability filter is active (and also date filters on mobile)
     const dropdownBtn = container.querySelector('#btn-ability-dropdown');
     if (dropdownBtn) {
@@ -1483,7 +1511,7 @@ export function normalizeDateStr(str) {
     return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
 }
 
-export function checkCardMatchFilters(card, includeDate = false) {
+export function checkCardMatchFilters(card, includeDate = false, options = {}) {
     if (card.encyclopedia === false) return false;
     const cPlan = (card.plan || 'free').toLowerCase();
     const cType = card.type.toLowerCase();
@@ -1491,13 +1519,13 @@ export function checkCardMatchFilters(card, includeDate = false) {
     const cRarity = card.rarity;
 
     const planMatch = (state.filters.plan.length === 0) || (state.filters.plan.includes(cPlan));
-    const attrMatch = (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
-    const sourceMatch = (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
-    const rarityMatch = (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
+    const attrMatch = options.ignoreAttr || (state.filters.attr.length === 0) || (state.filters.attr.includes(cType));
+    const sourceMatch = options.ignoreSource || (state.filters.source.length === 0) || (state.filters.source.includes(cSource));
+    const rarityMatch = options.ignoreRarity || (state.filters.rarity.length === 0) || (state.filters.rarity.includes(cRarity));
 
     if (!planMatch || !attrMatch || !sourceMatch || !rarityMatch) return false;
 
-    if (includeDate) {
+    if (includeDate && !options.ignoreDate) {
         if (state.filters.dateRange && card.releasedAt) {
             const cardDate = normalizeDateStr(card.releasedAt);
             const startDate = normalizeDateStr(state.filters.dateRange.start);
@@ -1508,13 +1536,13 @@ export function checkCardMatchFilters(card, includeDate = false) {
         }
     }
 
-    const abilityMatch = (state.filters.ability.length === 0) || (() => {
-        const andKeys = ['sp_lessonup', 'percentparam', 'fixedparam'];
+    const abilityMatch = options.ignoreAbility || (state.filters.ability.length === 0) || (() => {
+        const specialKeys = ['percentparam', 'fixedparam'];
         const supportCardKeys = ['card_m', 'card_a'];
         const pItemKeys = ['pitem_get', 'pitem_get_drink', 'pitem_enhance', 'pitem_delete', 'pitem_delete_t', 'pitem_change', 'pitem_copy', 'pitem_stats', 'pitem_ppoint', 'pitem_hp', 'pitem_discount', 'pitem_inexam'];
 
         const groupA = [];
-        const groupAnd = [];
+        const groupSpecial = [];
         const groupSupportCard = [];
         const groupPItem = [];
 
@@ -1523,8 +1551,8 @@ export function checkCardMatchFilters(card, includeDate = false) {
                 groupSupportCard.push(ab);
             } else if (pItemKeys.includes(ab)) {
                 groupPItem.push(ab);
-            } else if (andKeys.includes(ab)) {
-                groupAnd.push(ab);
+            } else if (specialKeys.includes(ab)) {
+                groupSpecial.push(ab);
             } else {
                 groupA.push(ab);
             }
@@ -1553,12 +1581,15 @@ export function checkCardMatchFilters(card, includeDate = false) {
             return card.abilities.includes(ab);
         };
 
-        const matchA = groupA.length === 0 || groupA.some(ab => checkAbility(ab));
-        const matchAnd = groupAnd.length === 0 || groupAnd.every(ab => checkAbility(ab));
-        const matchSupportCard = groupSupportCard.length === 0 || groupSupportCard.some(ab => checkAbility(ab));
-        const matchPItem = groupPItem.length === 0 || groupPItem.some(ab => checkAbility(ab));
+        const matchGroup = (group) => group.length === 0 || (state.filters.abilityMode === 'and'
+            ? group.every(ab => checkAbility(ab))
+            : group.some(ab => checkAbility(ab)));
+        const matchA = matchGroup(groupA);
+        const matchSpecial = groupSpecial.length === 0 || groupSpecial.every(ab => checkAbility(ab));
+        const matchSupportCard = matchGroup(groupSupportCard);
+        const matchPItem = matchGroup(groupPItem);
 
-        return matchA && matchAnd && matchSupportCard && matchPItem;
+        return matchA && matchSpecial && matchSupportCard && matchPItem;
     })();
 
     return abilityMatch;
@@ -1655,6 +1686,7 @@ function updateSupportGrid(container) {
 export function updateGlobalBackgroundColor() {
     const fixedBg = document.getElementById('fixed-bg');
     const isHif = window.location.hash === '#calc/hif';
+    const isGacha = window.location.hash.split('/')[0] === '#gacha' || !!document.querySelector('.gacha-container');
     const idolColor = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColors[state.favoriteIdol] : '#ff4d8d';
 
     document.documentElement.style.setProperty('--idol-theme-color', idolColor);
@@ -1666,6 +1698,9 @@ export function updateGlobalBackgroundColor() {
         document.head.appendChild(metaThemeColor);
     }
     metaThemeColor.content = (state.favoriteIdol && idolColors[state.favoriteIdol]) ? idolColor : '#ff4d8d';
+
+    // 새로고침 중 비동기 전역 초기화가 가챠 전용 배경을 덮어쓰지 않도록 보호
+    if (isGacha) return;
 
     if (isHif && fixedBg) {
         // HIF 전용 5색 그라데이션 전역 배경 복구

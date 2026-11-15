@@ -261,11 +261,11 @@ export const produceList = [
         item: {
             name: "ときめきのいっぱい",
             desc: "마지막 턴 개시 시 \n✦ param3 (레슨 중 사용한 카드 1장 당 파라미터 상승량+3)\n✦ hpreduce2\n✦ inlesson1",
-            desc_ja: "最終ターンのターン開始時、\n✦ param3（レッスン中使用したスキルカード1枚につき、パラメータ上昇量+3）\n✦ hpreduce2\n✦ inlesson1",
+            desc_ja: "最終ターンのターン開始時、\n✦ param3（レッスン中に使用したスキルカード1枚につき、パラメータ上昇量+3）\n✦ hpreduce2\n✦ inlesson1",
         },
         itemplus: {
             desc: "마지막 턴 개시 시 \n✦ param5 (레슨 중 사용한 카드 1장 당 파라미터 상승량+3)\n✦ hpreduce2\n✦ inlesson1",
-            desc_ja: "最終ターンのターン開始時、\n✦ param5（レッスン中使用したスキルカード1枚につき、パラメータ上昇量+3）\n✦ hpreduce1\n✦ inlesson1",
+            desc_ja: "最終ターンのターン開始時、\n✦ param5（レッスン中に使用したスキルカード1枚につき、パラメータ上昇量+3）\n✦ hpreduce1\n✦ inlesson1",
         },
         card: {
             name: "お茶会へようこそ",
@@ -302,6 +302,30 @@ export const produceList = [
             desc: "startingcard\n✦ goodcondition4\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "startingcard\n✦ goodcondition4\n✦ use1\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
+    },
+
+
+    // --- 카나에 SSR (PSSR) ---
+    {
+        id: "ssrkanae_1st", name: "Metamorphose", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 8.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
+        item: {
+            name: "なにかが変わる予感",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        itemplus: {
+            desc: "레슨 개시 시\n✦ 메타모르포제 (준비)\n✦ concentration1 \n✦ goodcondition1\n✦ inlesson1\n※ 메타모르포제 (준비) : 전반 턴 동안 집중・호조・절호조의 증가량+1, 파라미터 상승량 25% 감소, 전반 턴 종료 후 「메타모르포제 (피로)」로 변경 \n※ 메타모르포제 (피로) : 파라미터 상승량이 25% 증가하며 집중・호조・절호조의 증가량-1",
+            desc_ja: "レッスン開始時、\n✦ メタモルフォーゼ（支度）\n✦ concentration1 \n✦ goodcondition1\n✦ inlesson1\n※ メタモルフォーゼ（支度）：前半ターンの間、集中と好調と絶好調の増加量を+1、パラメータ上昇量を25%減少。前半ターン終了後、「メタモルフォーゼ（披露）」になる。\n※ メタモルフォーゼ（披露）：パラメータ上昇量を25%増加、集中と好調と絶好調の増加量を-1する",
+        },
+        card: {
+            name: "柔らかな光の中で",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardplus: {
+            desc: "집중이 6이상일 경우 사용 가능\n✦ use1\n✦ param2\n✦ 다음 턴의 턴 종료 시 param2 (2회)\n✦ 2턴 후의 턴 종료 시 param2 (3회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "集中が6以上の場合、使用可\n✦ use1\n✦ param2\n✦ 次のターンのターン終了時、param2（2回）\n✦ 2ターン後のターン終了時、param2（3回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
     },
 
     // --- 스미카 SSR (PSSR) ---
@@ -860,11 +884,11 @@ export const produceList = [
         id: "ssrhiro_2nd", name: "콘트라스트", name_en: "Contrast", name_ja: "コントラスト", osusume: "concentration", rarity: "PSSR", plan: "sense", releasedAt: "2024-07-22", source: "normal", jumpTime2: 10.3,
         item: {
             name: "まだ見ぬ世界へ",
-            desc: "턴 개시 후 lesshp50\n✦ concentration5\n✦ 소비체력 절감2\n✦ inlesson1",
+            desc: "턴 개시 후 lesshp50\n✦ concentration5\n✦ 소비체력 절감 2\n✦ inlesson1",
             desc_ja: "ターン開始後、lesshp50\n✦ concentration5\n✦ 消費体力削減2\n✦ inlesson1",
         },
         itemplus: {
-            desc: "턴 개시 후 lesshp50\n✦ concentration7\n✦ 소비체력 절감3\n✦ inlesson1",
+            desc: "턴 개시 후 lesshp50\n✦ concentration7\n✦ 소비체력 절감 3\n✦ inlesson1",
             desc_ja: "ターン開始後、lesshp50\n✦ concentration7\n✦ 消費体力削減3\n✦ inlesson1",
         },
         card: {
@@ -939,12 +963,12 @@ export const produceList = [
         },
         card: {
             name: "私は、決して",
-            desc: "의욕이 9이상인 경우 사용 가능\n✦ 프라이드 (5턴)\n✦ use1\n✦ goodimpression8\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "やる気が9以上の場合、使用可\n✦ プライド（5ターン）\n✦ use1\n✦ goodimpression8\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "의욕이 9이상인 경우 사용 가능\n✦ 프라이드 (5턴)\n✦ use1\n✦ goodimpression8\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1\n※ 프라이드 : 의욕 혹은 호인상 중 작은 쪽을 기준으로 수치 1마다 파라미터 상승량 2% 증가 (최대 50%)",
+            desc_ja: "やる気が9以上の場合、使用可\n✦ プライド（5ターン）\n✦ use1\n✦ goodimpression8\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1\n※ プライド：やる気か好印象の最小値に応じて、１ごとに、パラメータ上昇量を2%増加（最大50%）",
         },
         cardplus: {
-            desc: "의욕이 9이상인 경우 사용 가능\n✦ 프라이드 (5턴)\n✦ use1\n✦ goodimpression9\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "やる気が9以上の場合、使用可\n✦ プライド（5ターン）\n✦ use1\n✦ goodimpression9\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "의욕이 9이상인 경우 사용 가능\n✦ 프라이드 (5턴)\n✦ use1\n✦ goodimpression9\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1\n※ 프라이드 : 의욕 혹은 호인상 중 작은 쪽을 기준으로 수치 1마다 파라미터 상승량 2% 증가 (최대 50%)",
+            desc_ja: "やる気が9以上の場合、使用可\n✦ プライド（5ターン）\n✦ use1\n✦ goodimpression9\n✦ draw1\n <span style='color:#8B8FD8'>nooverlab limit1\n※ プライド：やる気か好印象の最小値に応じて、１ごとに、パラメータ上昇量を2%増加（最大50%）",
         },
     },
     { id: "ssrtsubame_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "logic", osusume: "motivation", source: "limited", category: "live", releasedAt: "2026-02-27", jumpTime2: 7.2, another: true },
@@ -1181,11 +1205,11 @@ export const produceList = [
         },
         card: {
             name: "グーチョキパーデポン",
-            desc: "✦ 강기로 지침 변경\n✦ param8\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경\n✦ param8\n✦ 성장 : 직접효과로 강기로 지침 변경 시 자신의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更\n✦ param8\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경\n✦ param10\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경\n✦ param10\n✦ 성장 : 직접효과로 강기로 지침 변경 시 자신의 파라미터 값 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更\n✦ param10\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -1317,11 +1341,11 @@ export const produceList = [
         },
         card: {
             name: "さっぱりひといき",
-            desc: "hpreduce5 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 50%만큼 파라미터 상승\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce5 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 50%만큼 파라미터 상승\n✦ 소비체력 절감 1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce5 \n✦ genki2（やる気効果を2.3倍適用）\n✦ 元気の50%分パラメータ上昇\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "hpreduce4 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 80%만큼 파라미터 상승\n✦ 소비체력 절감1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "hpreduce4 \n✦ genki2 (의욕 효과 2.3배 적용)\n✦ 원기의 80%만큼 파라미터 상승\n✦ 소비체력 절감 1\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "hpreduce4 \n✦ genki2（やる気効果を2.3倍適用）\n✦ 元気の80%分パラメータ上昇\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -1373,7 +1397,7 @@ export const produceList = [
 
     // 시루베
     {
-        id: "ssrmao_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
+        id: "ssrmao_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "goodcondition", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2, youtube_url: "https://youtu.be/TZ7LwdN--FI?si=XeofsQAu7xHTWhvo",
         item: {
             name: "憧れの標",
             desc: "액티브 카드 사용 후, 호조가 8턴 이상일 경우\n✦ goodcondition4\n✦ use1\n✦ inlesson1",
@@ -1394,7 +1418,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrchina_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
+        id: "ssrchina_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2, youtube_url: "https://youtu.be/TZ7LwdN--FI?si=XeofsQAu7xHTWhvo",
         item: {
             name: "可能性の標",
             desc: "남은 턴이 3턴 이내일 때 턴 개시 시\n✦ 원기의 65%만큼 파라미터 상승\n✦ hpreduce2",
@@ -1415,7 +1439,7 @@ export const produceList = [
         },
     },
     {
-        id: "ssrsumika_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2,
+        id: "ssrsumika_shirube", name: "시루베", name_en: "Shirube", name_ja: "標", category: "shirube", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", releasedAt: "2026-09-04", jumpTime2: 6.2, youtube_url: "https://youtu.be/TZ7LwdN--FI?si=XeofsQAu7xHTWhvo",
         item: {
             name: "勇気の標",
             desc: "카드 사용 시, 집중이 13이상일 경우\n✦ use1\n✦ concentration4\n✦ inlesson1",
@@ -1808,11 +1832,11 @@ export const produceList = [
         id: "ssrhiro_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "concentration", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "sense", jumpTime2: 8.3, source: "limited_f", releasedAt: "2026-05-26",
         item: {
             name: "すべてを賭けた輝き",
-            desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
+            desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감 1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
             desc_ja: "アイドル固有スキルカード使用後、morehp80\n✦ 消費体力削減1\n✦ use1\n✦ hpreduce2\n✦ inlesson3",
         },
         itemplus: {
-            desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
+            desc: "아이돌 고유 카드 사용 후 morehp80\n✦ 소비체력 절감 1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "アイドル固有スキルカード使用後、morehp80\n✦ 消費体力削減1\n✦ genki1\n✦ use1\n✦ hpreduce1\n✦ inlesson3",
         },
         card: {
@@ -2695,11 +2719,11 @@ export const produceList = [
         },
         card: {
             name: "泥臭くあれ！",
-            desc: "✦ 강기로 지침 변경 \n✦ param10\n✦ genki5\n✦ 다음 턴 온존으로 지침 변경\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+4 (최대 4회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경 \n✦ param10\n✦ genki5\n✦ 다음 턴 온존으로 지침 변경\n✦ 성장 : 직접효과로 강기로 지침 변경 시 자신의 파라미터 값 증가+4 (최대 4회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更 \n✦ param10\n✦ genki5\n✦ 次のターン、温存に変更\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+4（4回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경 \n✦ param10\n✦ genki10\n✦ 다음 턴 온존으로 지침 변경\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+4 (최대 4회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 강기로 지침 변경 \n✦ param10\n✦ genki10\n✦ 다음 턴 온존으로 지침 변경\n✦ 성장 : 직접효과로 강기로 지침 변경 시 자신의 파라미터 값 증가+4 (최대 4회)\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ 強気に変更 \n✦ param10\n✦ genki10\n✦ 次のターン、温存に変更\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+4（4回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -2791,20 +2815,20 @@ export const produceList = [
         id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, category: "live", releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "ユートピアへの誘い",
-            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우\n✦ genki4\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴 draw1",
+            desc: "직접효과로 강기로 지침 변경 시 전력치가 5이상일 경우\n✦ genki4\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴 draw1",
             desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
         },
         itemplus: {
-            desc: "직접효과로 강기가 되었을 때 전력치가 5이상일 경우\n✦ genki6\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴 draw1",
+            desc: "직접효과로 강기로 지침 변경 시 전력치가 5이상일 경우\n✦ genki6\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴 draw1",
             desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki6\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
         },
         card: {
             name: "踊り狂え！",
-            desc: "✦ 강기로 지침 변경\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 강기로 지침 변경\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기로 지침 변경 시 자신의 파라미터 값 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ 強気に変更\n✦ param2\n✦ genki2\n✦ fullpower2\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+2・元気値増加+1\n <span style='color:#8B8FD8'>nooverlab",
         },
         cardplus: {
-            desc: "✦ 강기로 지침 변경\n✦ param2 (2회)\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기가 되었을 때 자신의 파라미터 값 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
+            desc: "✦ 강기로 지침 변경\n✦ param2 (2회)\n✦ genki2\n✦ fullpower2\n✦ 성장 : 직접효과로 강기로 지침 변경 시 자신의 파라미터 값 증가+2・원기 수치 증가+1\n <span style='color:#8B8FD8'>nooverlab",
             desc_ja: "✦ 強気に変更\n✦ param2（2回）\n✦ genki2\n✦ fullpower2\n✦ 成長：直接効果で強気になった時、自身のパラメータ値増加+2・元気値増加+1\n <span style='color:#8B8FD8'>nooverlab",
         }
     },
@@ -2980,11 +3004,11 @@ export const produceList = [
         id: "ssrsaki_halloween2limited", name: "Agitato", osusume: "motivation", rarity: "PSSR", plan: "logic", source: "limited", category: "gravia", jumpTime2: 9.4, releasedAt: "2026-10-09", youtube_url: "https://youtu.be/hSg9Yb28vZA?si=KyAR4ctKezAZiB8o",
         item: {
             name: "規格外の魅力",
-            desc: "의욕이 5이상일 경우 멘탈 카드를 2회 사용할 때마다 \n✦ motivation4\n✦ 소비체력 절감1\n✦ inlesson2",
+            desc: "의욕이 5이상일 경우 멘탈 카드를 2회 사용할 때마다 \n✦ motivation4\n✦ 소비체력 절감 1\n✦ inlesson2",
             desc_ja: "やる気が5以上の場合、メンタルスキルカードを2回使用するごとに、\n✦ motivation4\n✦ 消費体力削減1\n✦ inlesson2",
         },
         itemplus: {
-            desc: "의욕이 5이상일 경우 멘탈 카드를 2회 사용할 때마다 \n✦ motivation5\n✦ goodimpression1\n✦ 소비체력 절감1\n✦ inlesson2",
+            desc: "의욕이 5이상일 경우 멘탈 카드를 2회 사용할 때마다 \n✦ motivation5\n✦ goodimpression1\n✦ 소비체력 절감 1\n✦ inlesson2",
             desc_ja: "やる気が5以上の場合、メンタルスキルカードを2回使用するごとに、\n✦ motivation5\n✦ goodimpression1\n✦ 消費体力削減1\n✦ inlesson2",
         },
         card: {
@@ -3102,11 +3126,11 @@ export const produceList = [
         },
         card: {
             name: "わたしらしい色",
-            desc: "✦ 의욕 1.5배 \n✦ 저하상태 회복1 \n✦ 다음 턴 genki4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 의욕 1.5배 \n✦ 저하상태 회복 1 \n✦ 다음 턴 genki4\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ やる気1.5倍\n✦ 低下状態回復1\n✦ 次のターン、genki4\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "✦ 의욕 1.5배 \n✦ 저하상태 회복2 \n✦ 다음 턴 genki8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "✦ 의욕 1.5배 \n✦ 저하상태 회복 2 \n✦ 다음 턴 genki8\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ やる気1.5倍\n✦ 低下状態回復2\n✦ 次のターン、genki8\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
@@ -3393,7 +3417,7 @@ export const produceList = [
         }
     },
     {
-        id: "srume_1sr", name: "아이돌 시작!", name_en: "Starting Out as an Idol!", name_ja: "アイドル、はじめっ!", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
+        id: "srume_1sr", name: "아이돌 시작!", name_en: "Starting Out as an Idol!", name_ja: "アイドル、はじめっ!", osusume: "motivation", rarity: "PSR", plan: "logic", source: "normal", releasedAt: "2024-06-01",
         item: {
             name: "柴犬ポシェット",
             desc: "2턴마다 \n✦ genki5\n✦ inlesson2",
@@ -3581,34 +3605,556 @@ export const produceList = [
             desc_ja: "✦ param26\n✦ goodcondition4\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
+    {
+        id: "srkanae_1sr", name: "동경을 품에 안고 한발씩", name_en: "With dreams in my heart, one step at a time", name_ja: "憧れを抱いて一歩ずつ", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2026-11-16",
+        item: {
+            name: "お返しの髪飾り",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        itemplus: {
+            desc: "남은 턴이 2턴 이내일 때 턴 종료 시 \n✦ param5\n✦ inlesson2",
+            desc_ja: "残り2ターン以内のターン終了時、\n✦ param5\n✦ inlesson2",
+        },
+        card: {
+            name: "忠義を胸に",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardplus: {
+            desc: "✦ goodcondition4\n✦ concentration1\n✦ goodconditionz1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodcondition4\n✦ concentration1\n✦ goodconditionz1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
 
 
     // --- PR (Produce R) ---
-    { id: "rrinami_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rrinami_2r", name: "초심", name_en: "First Mind", name_ja: "初心", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-09-07" },
-    { id: "rchina_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rchina_2r", name: "초심", name_en: "First Mind", name_ja: "初心", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-09-07" },
-    { id: "rtsubame_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "enthusiasm", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2025-11-16" },
-    { id: "rsena_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "enthusiasm", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2024-11-16" },
-    { id: "rsena_2r", name: "초전", name_en: "First Battle", name_ja: "初陣", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2025-07-04" },
-    { id: "rume_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rume_2r", name: "초전", name_en: "First Battle", name_ja: "初陣", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2025-07-04" },
-    { id: "rmisuzu_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "preservation", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16" },
-    { id: "rmisuzu_2r", name: "초전", name_en: "First Battle", name_ja: "初陣", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2025-07-04" },
-    { id: "rsaki_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rsaki_2r", name: "초성", name_en: "First Voice", name_ja: "初声", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-08-10" },
-    { id: "rtemari_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rtemari_2r", name: "초성", name_en: "First Voice", name_ja: "初声", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-08-10" },
-    { id: "rkotone_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rkotone_2r", name: "초성", name_en: "First Voice", name_ja: "初声", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-08-10" },
-    { id: "rmao_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rmao_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-10-14" },
-    { id: "rlilja_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rlilja_2r", name: "초심", name_en: "First Mind", name_ja: "初心", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-09-07" },
-    { id: "rsumika_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rsumika_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-10-14" },
-    { id: "rhiro_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16" },
-    { id: "rhiro_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-10-14" },
+    {
+        id: "rrinami_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "いつものメイクポーチ",
+            desc: "액티브 카드 사용 시 체력이 50% 이상일 경우\n✦ concentration2\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用時、体力が50%以上の場合、\n✦ concentration2\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "액티브 카드 사용 시 체력이 50% 이상일 경우\n✦ concentration3\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用時、体力が50%以上の場合、\n✦ concentration3\n✦ inlesson1",
+        },
+        card: {
+            name: "包容力",
+            desc: "✦ param3\n✦ genki4\n✦ hprecovery2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param3\n✦ genki4\n✦ hprecovery2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param2\n✦ genki1\n✦ hprecovery2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param2\n✦ genki1\n✦ hprecovery2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rrinami_2r", name: "초심", name_en: "First Mind", name_ja: "初心", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-09-07",
+        item: {
+            name: "初心の証・莉波",
+            desc: "카드를 3회 사용할 때마다 \n✦ motivation2\n✦ inlesson2",
+            desc_ja: "スキルカードを3回使用するごとに、\n✦ motivation2\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "카드를 3회 사용할 때마다 \n✦ motivation3\n✦ inlesson2",
+            desc_ja: "スキルカードを3回使用するごとに、\n✦ motivation3\n✦ inlesson2",
+        },
+        card: {
+            name: "初めてのお相手",
+            desc: "hpreduce4\n✦ genki2 (의욕 효과 1.5배 적용)\n✦ 원기의 40%만큼 파라미터 상승\n✦ 소비체력 절감 1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce4\n✦ genki2（やる気効果を1.5倍適用）\n✦ 元気の40%分パラメータ上昇\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce3\n✦ genki2 (의욕 효과 1.5배 적용)\n✦ 원기의 50%만큼 파라미터 상승\n✦ 소비체력 절감 1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce3\n✦ genki2（やる気効果を1.5倍適用）\n✦ 元気の50%分パラメータ上昇\n✦ 消費体力削減1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rchina_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "願いを叶えるお守り",
+            desc: "직접효과로 의욕이 증가한 후\n✦ motivation2\n✦ inlesson1",
+            desc_ja: "直接効果でやる気が増加後、\n✦ motivation2\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "직접효과로 의욕이 증가한 후\n✦ motivation3\n✦ inlesson1",
+            desc_ja: "直接効果でやる気が増加後、\n✦ motivation3\n✦ inlesson1",
+        },
+        card: {
+            name: "元気いっぱい",
+            desc: "hpreduce4\n✦ genki2\n✦ 의욕의 50%만큼 파라미터 상승\n✦ motivation2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce4\n✦ genki2\n✦ やる気の50%分パラメータ上昇\n✦ motivation2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce4\n✦ genki2\n✦ 의욕의 70%만큼 파라미터 상승\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce4\n✦ genki2\n✦ やる気の70%分パラメータ上昇\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rchina_2r", name: "초심", name_en: "First Mind", name_ja: "初心", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-09-07",
+        item: {
+            name: "初心の証・千奈",
+            desc: "마지막 턴 개시 시 \n✦ param2 (레슨 중 사용한 카드 1장 당 파라미터 상승량+1)\n✦ hpreduce1\n✦ inlesson1",
+            desc_ja: "最終ターンのターン開始時、\n✦ param2（レッスン中に使用したスキルカード1枚につき、パラメータ上昇量+1）\n✦ hpreduce1\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "마지막 턴 개시 시 \n✦ param6 (레슨 중 사용한 카드 1장 당 파라미터 상승량+1)\n✦ hpreduce1\n✦ inlesson1",
+            desc_ja: "最終ターンのターン開始時、\n✦ param6（レッスン中に使用したスキルカード1枚につき、パラメータ上昇量+1）\n✦ hpreduce1\n✦ inlesson1",
+        },
+        card: {
+            name: "初めての色",
+            desc: "✦ genki5\n✦ goodconditionz2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki5\n✦ goodconditionz2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ genki5\n✦ goodconditionz3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki5\n✦ goodconditionz3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rtsubame_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "enthusiasm", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2025-11-16",
+        item: {
+            name: "はばたくブローチ",
+            desc: "직접효과로 강기로 지침 변경 시\n✦ netsui3\n✦ inlesson1",
+            desc_ja: "直接効果で強気になった時、\n✦ netsui3\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "직접효과로 강기로 지침 변경 시\n✦ netsui5\n✦ inlesson1",
+            desc_ja: "直接効果で強気になった時、\n✦ netsui5\n✦ inlesson1",
+        },
+        card: {
+            name: "プライドの魂",
+            desc: "지침이 온존일 경우 사용 가능\n✦ 강기로 지침 변경\n✦ param5 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存の場合、使用可\n✦ 強気に変更\n✦ param5（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "지침이 온존일 경우 사용 가능\n✦ 강기로 지침 변경\n✦ param8 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "温存の場合、使用可\n✦ 強気に変更\n✦ param8（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rsena_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "enthusiasm", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2024-11-16",
+        item: {
+            name: "ティーキャディー",
+            desc: "액티브 카드 사용 후 지침이 강기일 경우\n✦ param5\n✦ hprecovery1\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用後、強気の場合、\n✦ param5\n✦ hprecovery1\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "액티브 카드 사용 후 지침이 강기일 경우\n✦ param7\n✦ hprecovery3\n✦ inlesson1",
+            desc_ja: "アクティブスキルカード使用後、強気の場合、\n✦ param7\n✦ hprecovery3\n✦ inlesson1",
+        },
+        card: {
+            name: "学園一のアイドル",
+            desc: "✦ 강기로 지침 변경\n✦ param2 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param2（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 강기로 지침 변경\n✦ param4 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param4（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rsena_2r", name: "초전", name_en: "First Battle", name_ja: "初陣", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2025-07-04",
+        item: {
+            name: "初陣の証・星南",
+            desc: "액티브 카드 사용 시 의욕이 5 이상일 경우\n✦ genki1 (의욕효과 1.4배 적용)\n✦ hpreduce1\n✦ inlesson2",
+            desc_ja: "アクティブスキルカードを使用時、やる気が5以上の場合、\n✦ genki1（やる気効果を1.4倍適用）\n✦ hpreduce1\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "액티브 카드 사용 시 의욕이 5 이상일 경우\n✦ genki1 (의욕효과 1.4배 적용)\n✦ inlesson2",
+            desc_ja: "アクティブスキルカードを使用時、やる気が5以上の場合、\n✦ genki1（やる気効果を1.4倍適用）\n✦ inlesson2",
+        },
+        card: {
+            name: "初めての野望",
+            desc: "✦ 이후 2턴 간 턴 종료 시 원기의 50%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 以降の2ターンの間、ターン終了時、元気の50%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 이후 3턴 간 턴 종료 시 원기의 50%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 以降の3ターンの間、ターン終了時、元気の50%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rume_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-06-01",
+        item: {
+            name: "テクノドッグ",
+            desc: "카드 사용 후 의욕이 3이상일 경우\n✦ motivation2\n✦ inlesson1",
+            desc_ja: "スキルカード使用後、やる気が3以上の場合、\n✦ motivation2\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "카드 사용 후 의욕이 3이상일 경우\n✦ motivation3\n✦ inlesson1",
+            desc_ja: "スキルカード使用後、やる気が3以上の場合、\n✦ motivation3\n✦ inlesson1",
+        },
+        card: {
+            name: "未完の大器",
+            desc: "hpreduce3\n✦ genki2 (레슨 중 사용한 카드 1장 당 원기 증가량+3)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce3\n✦ genki2（レッスン中使用したスキルカード1枚につき、元気増加量+3）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce3\n✦ genki4 (레슨 중 사용한 카드 1장 당 원기 증가량+4)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce3\n✦ genki4（レッスン中使用したスキルカード1枚につき、元気増加量+4）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rume_2r", name: "초전", name_en: "First Battle", name_ja: "初陣", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2025-07-04",
+        item: {
+            name: "初陣の証・佑芽",
+            desc: "남은 턴이 3턴 이내일 때 턴 개시 시\n✦ 호조의 30%만큼 파라미터 상승\n✦ hpreduce1\n✦ inlesson2",
+            desc_ja: "残り2ターン以内のターン開始時、\n✦ 好調の30%分パラメータ上昇\n✦ hpreduce1\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "남은 턴이 3턴 이내일 때 턴 개시 시\n✦ 호조의 30%만큼 파라미터 상승\n✦ inlesson2",
+            desc_ja: "残り2ターン以内のターン開始時、\n✦ 好調の30%分パラメータ上昇\n✦ inlesson2",
+        },
+        card: {
+            name: "初めてのご褒美",
+            desc: "✦ concentration2\n✦ goodcondition2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ concentration2\n✦ goodcondition2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ concentration2\n✦ goodcondition3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ concentration2\n✦ goodcondition3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rmisuzu_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "preservation", rarity: "PR", plan: "anomaly", source: "normal", releasedAt: "2025-05-16",
+        item: {
+            name: "休憩中のおやつ",
+            desc: "온존 효과의 카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 60%만큼 파라미터 상승\n✦ inlesson3",
+            desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の60%分パラメータ上昇\n✦ inlesson3",
+        },
+        itemplus: {
+            desc: "온존 효과의 카드 사용 후 지침이 전력일 경우\n✦ 누계 전력치의 60%만큼 파라미터 상승",
+            desc_ja: "温存効果のスキルカード使用後、全力の場合、\n✦ 累計全力値の60%分パラメータ上昇",
+        },
+        card: {
+            name: "のんびり屋さん",
+            desc: "✦ fullpower1\n✦ 이후 턴 개시 후 지침이 온존일 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ fullpower1\n✦ 以降、ターン開始後、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ fullpower3\n✦ 이후 턴 개시 후 지침이 온존일 경우 여유로 지침 변경\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ fullpower3\n✦ 以降、ターン開始後、温存の場合、のんびりに変更\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rmisuzu_2r", name: "초전", name_en: "First Battle", name_ja: "初陣", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2025-07-04",
+        item: {
+            name: "初陣の証・美鈴",
+            desc: "턴 개시 시\n✦ 원기 증가 무효 2턴\n✦ 3턴 후 motivation8\n✦ inlesson1",
+            desc_ja: "ターン開始時、\n✦ 元気増加無効2ターン\n✦ 3ターン後、motivation8\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 시\n✦ 원기 증가 무효 2턴\n✦ 3턴 후 motivation10\n✦ inlesson1",
+            desc_ja: "ターン開始時、\n✦ 元気増加無効2ターン\n✦ 3ターン後、motivation10\n✦ inlesson1",
+        },
+        card: {
+            name: "初めての息",
+            desc: "✦ genki5\n✦ motivation2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki5\n✦ motivation2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ genki7\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki7\n✦ motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rsaki_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "ばくおんライオン",
+            desc: "턴 개시 시 호조 상태일 경우\n✦ param6\n✦ inlesson1",
+            desc_ja: "ターン開始時、好調状態の場合、\n✦ param6\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 시 호조 상태일 경우\n✦ param11\n✦ inlesson1",
+            desc_ja: "ターン開始時、好調状態の場合、\n✦ param11\n✦ inlesson1",
+        },
+        card: {
+            name: "新進気鋭",
+            desc: "✦ param17\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param17\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param25\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param25\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rsaki_2r", name: "초성", name_en: "First Voice", name_ja: "初声", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-08-10",
+        item: {
+            name: "初陣の証・咲季",
+            desc: "직접효과로 체력이 감소했을 시\n✦ goodimpression2\n✦ inlesson2",
+            desc_ja: "直接効果で体力が減少した時、\n✦ goodimpression2\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "직접효과로 체력이 감소했을 시\n✦ goodimpression2\n✦ inlesson3",
+            desc_ja: "直接効果で体力が減少した時、\n✦ goodimpression2\n✦ inlesson3",
+        },
+        card: {
+            name: "初めての未来",
+            desc: "hpreduce5\n✦ 호인상의 190%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce5\n✦ 好印象の190%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce3\n✦ 호인상의 200%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce3\n✦ 好印象の200%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rtemari_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "必携ステンレスボトル",
+            desc: "턴 개시 시 집중이 3이상일 경우\n✦ concentration4\n✦ inlesson1",
+            desc_ja: "ターン開始時、集中が3以上の場合、\n✦ concentration4\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 시 집중이 3이상일 경우\n✦ concentration6\n✦ inlesson1",
+            desc_ja: "ターン開始時、集中が3以上の場合、\n✦ concentration6\n✦ inlesson1",
+        },
+        card: {
+            name: "意地っ張り",
+            desc: "✦ param7\n✦ concentration3 \n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param7\n✦ concentration3 \n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param7\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param7\n✦ concentration5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rtemari_2r", name: "초성", name_en: "First Voice", name_ja: "初声", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-08-10",
+        item: {
+            name: "初陣の証・手毬",
+            desc: "턴 종료 시 호인상이 6 이상일 경우\n✦ 호인상의 100%만큼 파라미터 상승\n✦ inlesson2",
+            desc_ja: "ターン終了時、好印象が6以上の場合、\n✦ 好印象の100%分パラメータ上昇\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "턴 종료 시 호인상이 6 이상일 경우\n✦ 호인상의 100%만큼 파라미터 상승\n✦ inlesson3",
+            desc_ja: "ターン終了時、好印象が6以上の場合、\n✦ 好印象の100%分パラメータ上昇\n✦ inlesson3",
+        },
+        card: {
+            name: "初めての場所",
+            desc: "✦ goodimpression6\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression6\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ goodimpression8\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression8\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rkotone_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "ちびども手作りメダル",
+            desc: "턴 종료 시 호인상이 6이상일 경우\n✦ goodimpression2\n✦ inlesson2",
+            desc_ja: "ターン終了時、好印象が6以上の場合、\n✦ goodimpression2\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "턴 종료 시 호인상이 6이상일 경우\n✦ goodimpression2\n✦ inlesson3",
+            desc_ja: "ターン終了時、好印象が6以上の場合、\n✦ goodimpression2\n✦ inlesson3",
+        },
+        card: {
+            name: "アルバイター",
+            desc: "✦ param2\n✦ goodimpression5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param2\n✦ goodimpression5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param6\n✦ goodimpression6\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param6\n✦ goodimpression6\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rkotone_2r", name: "초성", name_en: "First Voice", name_ja: "初声", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-08-10",
+        item: {
+            name: "初声の証・ことね",
+            desc: "初めてのご褒美 사용 시\n✦ goodcondition2\n✦ inlesson1",
+            desc_ja: "初めてのご褒美使用時、\n✦ goodcondition2\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "初めてのご褒美 사용 시\n✦ goodcondition2\n✦ 고정 genki5\n✦ inlesson1",
+            desc_ja: "初めてのご褒美使用時、\n✦ goodcondition2\n✦ 固定genki5\n✦ inlesson1",
+        },
+        card: {
+            name: "初めてのご褒美",
+            desc: "✦ goodcondition3\n✦ goodconditionz2\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodcondition3\n✦ goodconditionz2\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ goodcondition4\n✦ goodconditionz3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodcondition4\n✦ goodconditionz3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rmao_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "紳士風ハンカチーフ",
+            desc: "턴 개시 시 호조 상태일 경우\n✦ concentration1\n✦ inlesson2",
+            desc_ja: "ターン開始時、好調状態の場合、\n✦ concentration1\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "턴 개시 시 호조 상태일 경우\n✦ concentration2\n✦ inlesson2",
+            desc_ja: "ターン開始時、好調状態の場合、\n✦ concentration2\n✦ inlesson2",
+        },
+        card: {
+            name: "リトル・プリンス",
+            desc: "✦ param8\n✦ 호조 상태일 경우 param3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param8\n✦ 好調状態の場合、param3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param13\n✦ 호조 상태일 경우 param5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param13\n✦ 好調状態の場合、param5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rmao_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-10-14",
+        item: {
+            name: "初陣の証・麻央",
+            desc: "턴 개시 시 의욕이 3이상일 경우\n✦ motivation3\n✦ 의욕 감소 1\n✦ inlesson1",
+            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ motivation3\n✦ やる気減少1\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 시 의욕이 3이상일 경우\n✦ motivation3\n✦ 의욕 감소 1\n✦ inlesson2",
+            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ motivation3\n✦ やる気減少1\n✦ inlesson2",
+        },
+        card: {
+            name: "初めての結晶",
+            desc: "✦ motivation3\n✦ 호인상의 80%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ motivation3\n✦ 好印象の80%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ motivation3\n✦ 호인상의 120%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ motivation3\n✦ 好印象の120%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rlilja_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "緑のお揃いブレス",
+            desc: "직접효과로 호인상이 증가 후\n✦ goodimpression3\n✦ inlesson1",
+            desc_ja: "直接効果で好印象が増加後、\n✦ goodimpression3\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "직접효과로 호인상이 증가 후\n✦ goodimpression5\n✦ inlesson1",
+            desc_ja: "直接効果で好印象が増加後、\n✦ goodimpression5\n✦ inlesson1",
+        },
+        card: {
+            name: "内気系少女",
+            desc: "✦ goodimpression1\n✦ 이후 턴 종료 시 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression1\n✦ 以降、ターン終了時、goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ goodimpression2\n✦ 이후 턴 종료 시 goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodimpression2\n✦ 以降、ターン終了時、goodimpression1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rlilja_2r", name: "초심", name_en: "First Mind", name_ja: "初心", osusume: "goodcondition", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-09-07",
+        item: {
+            name: "初心の証・リーリヤ",
+            desc: "턴 종료 시 호조가 6턴 이상일 경우 \n✦ goodcondition2\n✦ hpreduce1\n✦ inlesson2",
+            desc_ja: "ターン終了時、好調が6ターン以上の場合、\n✦ goodcondition2\n✦ hpreduce1\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "턴 종료 시 호조가 6턴 이상일 경우 \n✦ goodcondition2\n✦ inlesson2",
+            desc_ja: "ターン終了時、好調が6ターン以上の場合、\n✦ goodcondition2\n✦ inlesson2",
+        },
+        card: {
+            name: "初めてのご地平",
+            desc: "✦ 호조의 200%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 好調の200%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ 호조의 250%만큼 파라미터 상승\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 好調の250%分パラメータ上昇\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rsumika_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "ピンクのお揃いブレス",
+            desc: "턴 개시 시\n✦ concentration1\n✦ inlesson2",
+            desc_ja: "ターン開始時、\n✦ concentration1\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "턴 개시 시\n✦ concentration1\n✦ inlesson3",
+            desc_ja: "ターン開始時、\n✦ concentration1\n✦ inlesson3",
+        },
+        card: {
+            name: "フレンドリー",
+            desc: "✦ param10\n✦ 집중이 6이상일 경우 param10\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param10\n✦ 集中が6以上の場合、param10\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param12 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param12（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rsumika_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-10-14",
+        item: {
+            name: "初陣の証・麻央",
+            desc: "카드 사용 후 의욕이 8이상일 경우\n✦ 의욕의 150%만큼 파라미터 상승\n✦ hpreduce1\n✦ inlesson2",
+            desc_ja: "スキルカード使用後、やる気が8以上の場合、\n✦ やる気の150%分パラメータ上昇\n✦ hpreduce1\n✦ inlesson2",
+        },
+        itemplus: {
+            desc: "카드 사용 후 의욕이 8이상일 경우\n✦ 의욕의 210%만큼 파라미터 상승\n✦ hpreduce1\n✦ inlesson2",
+            desc_ja: "スキルカード使用後、やる気が8以上の場合、\n✦ やる気の210%分パラメータ上昇\n✦ hpreduce1\n✦ inlesson2",
+        },
+        card: {
+            name: "初めての結晶",
+            desc: "hpreduce2\n✦ motivation4\n✦ 의욕이 6이상일 경우 motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce2\n✦ motivation4\n✦ やる気が6以上の場合、motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "hpreduce2\n✦ motivation6\n✦ 의욕이 6이상일 경우 motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce2\n✦ motivation6\n✦ やる気が6以上の場合、motivation3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rhiro_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-05-16",
+        item: {
+            name: "超絶あんみんマスク",
+            desc: "마지막 턴 개시 시\n✦ 원기의 50%만큼 파라미터 상승\n✦ hpreduce1",
+            desc_ja: "最終タンのターン開始時、\n✦ 元気の50%分パラメータ上昇\n✦ hpreduce1",
+        },
+        itemplus: {
+            desc: "마지막 턴 개시 시\n✦ 원기의 70%만큼 파라미터 상승\n✦ hpreduce1",
+            desc_ja: "最終タンのターン開始時、\n✦ 元気の70%分パラメータ上昇\n✦ hpreduce1",
+        },
+        card: {
+            name: "超高学歴アイドル",
+            desc: "✦ genki2\n✦ 의욕이 6이상일 경우 genki3\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki2\n✦ やる気が6以上の場合、genki3\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ genki4\n✦ 의욕이 6이상일 경우 genki5\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ genki4\n✦ やる気が6以上の場合、genki5\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "rhiro_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2024-10-14",
+        item: {
+            name: "初恋の証・広",
+            desc: "턴 개시 후 체력이 50% 이하일 경우\n✦ concentration2\n✦ 소비체력 절감 1\n✦ 손패의 랜덤한 카드 1장 강화\n✦ inlesson1",
+            desc_ja: "ターン開始後、体力が50%以下の場合、\n✦ concentration2\n✦ 体力消費削減1\n✦ ランダム手札1枚をレッスン中強化\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "턴 개시 후 체력이 50% 이하일 경우\n✦ concentration4\n✦ 소비체력 절감 2\n✦ 손패의 랜덤한 카드 1장 강화\n✦ inlesson1",
+            desc_ja: "ターン開始後、体力が50%以下の場合、\n✦ concentration4\n✦ 体力消費削減2\n✦ ランダム手札1枚をレッスン中強化\n✦ inlesson1",
+        },
+        card: {
+            name: "初めてのたのしみ",
+            desc: "✦ param6 (집중효과 1.5배 적용)\n✦ 체력이 50% 이하일 경우 genki4\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param6 (集中効果を1.5倍適用)\n✦ 体力が50%以下の場合、genki4\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param8 (집중효과 2배 적용)\n✦ 체력이 50% 이하일 경우 genki7\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param8 (集中効果を2倍適用)\n✦ 体力が50%以下の場合、genki7\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    //{ id: "rkanae_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2026-11-16" },
 
 ];
 

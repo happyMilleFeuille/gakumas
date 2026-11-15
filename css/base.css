@@ -202,7 +202,7 @@ main {
     padding: 1.5rem 1rem 0;
     border-radius: 15px;
     position: relative;
-    height: 87dvh;
+    height: 89dvh;
     /* 85dvh -> 87dvh�?미세 조정 */
     display: flex;
     flex-direction: column;
@@ -395,7 +395,7 @@ footer {
     }
 
     #idol {
-        height: 87dvh;
+        height: 89dvh;
         /* 모바?�에?�도 87dvh�?미세 조정 */
         padding: 0;
         /* 모든 ?�백 ?�거 (좌우 ?�딩 ?�함) */

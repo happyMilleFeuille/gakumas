@@ -310,14 +310,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (roadmapBtn) preloadPSSRThumbsForDesktop();
     });
 
-    // [반응형 대응] 768px 경계를 넘나들 때 서포트 패널 닫기 및 로드맵 재렌더링
+    // [반응형 대응] 창 크기에 맞춰 로드맵을 갱신하고, 768px 경계에서는 관련 UI도 정리
     const getLayoutStage = (w) => {
         if (w <= 768) return 'mobile';
         return 'pc';
     };
 
     let currentStage = getLayoutStage(window.innerWidth);
+    let roadmapResizeTimer = null;
     window.addEventListener('resize', () => {
+        clearTimeout(roadmapResizeTimer);
+        roadmapResizeTimer = setTimeout(() => {
+            if (document.getElementById('pssr-roadmap-list')) {
+                import('./roadmap.js').then(m => m.renderPSSRRoadmap(false));
+            }
+        }, 150);
+
         const nextStage = getLayoutStage(window.innerWidth);
         if (currentStage !== nextStage) {
             currentStage = nextStage;
@@ -325,13 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // 서포트 패널 닫기 (768px 경계를 넘나들 때 UI 깨짐 방지)
             if (typeof window.closeSupportCardPanel === 'function') {
                 window.closeSupportCardPanel();
-            }
-
-            // 로드맵 컨테이너가 존재하는 경우에만 재렌더링
-            if (document.getElementById('pssr-roadmap-list')) {
-                import('./roadmap.js').then(m => {
-                    m.renderPSSRRoadmap(false);
-                });
             }
 
             // [추가] 계산기 화면 프리셋 반응형 대응 갱신

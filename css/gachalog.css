@@ -4,7 +4,7 @@
     width: 95%; /* 90% -> 95%로 너비 소폭 확장 */
     max-width: 1100px;
     height: 90vh; /* 85vh -> 90vh로 높이 확장 */
-    border-radius: 16px;
+    border-radius: 8px;
     background: #fdfdfd;
     overflow-y: auto; /* 전체 컨텐츠 스크롤 적용 */
     display: block; /* flex 대신 block으로 자연스러운 흐름 유도 */
@@ -13,7 +13,7 @@
 
 /* 통계 영역 */
 .gacha-log-stats {
-    background: #f5f5f5;
+    background: transparent;
     padding: 20px; /* 패딩 소폭 증가 */
     border-bottom: 1px solid #ddd;
     font-size: 0.75rem; /* 0.85rem -> 0.75rem 축소 */
@@ -23,55 +23,128 @@
 .stat-row-top {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
     margin-bottom: 10px;
 }
 
-.stat-category-header {
+.stat-gacha-name {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    padding: 5px 8px;
+    color: #333;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stat-gacha-name-text {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-gacha-character-names,
+.stat-gacha-title-separator {
+    flex: none;
+}
+
+.stat-gacha-title-separator {
+    margin: 0 0.35em;
+}
+
+.stat-gacha-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-gacha-pickup-label {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    color: var(--primary-color);
+    font-size: 0.64rem;
+    font-weight: 800;
+}
+
+.stat-gacha-character-icons {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    gap: 2px;
+}
+
+.stat-gacha-character-icon {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.stat-total-heading {
+    display: grid !important;
+    grid-template-columns: max-content max-content minmax(0, 1fr) max-content;
+    column-gap: 12px;
+    width: 100%;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    background: #e9e9e9;
+    border-radius: 6px 6px 0 0;
+    align-items: center;
+}
+
+#gacha-log-modal .stat-total-count {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
+.stat-total-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.stat-jewel-cost { display: inline-flex; align-items: center; gap: 0.35em; padding: 4px 10px; border-radius: 14px; background: #4a4a4a; color: #f2f2f2 !important; font-size: 0.85rem; font-weight: normal !important; line-height: 1; white-space: nowrap; }
+.stat-jewel-icon { position: relative; z-index: 1; flex: none; width: 16px; height: 16px; object-fit: contain; }
+#gacha-log-modal .stat-jewel-amount { position: relative; z-index: 1; display: inline-flex; align-items: baseline; margin-top: 0; color: #f2f2f2; font-size: 1em; font-weight: normal; line-height: 1; }
+#gacha-log-modal .stat-yen-price { margin-top: 0; margin-left: 0.35em; color: #f2f2f2; font-size: 0.72em; font-weight: normal; line-height: 1; }
+
+.stat-category-header {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
+    gap: 10px;
     align-items: center;
     background: #e9e9e9;
     padding: 8px 12px;
-    border-radius: 6px;
+    border-radius: 6px 6px 0 0;
     cursor: pointer;
     font-weight: bold;
     user-select: none;
     transition: background 0.2s;
 }
+.stat-category-title { min-width: 0; }
+.stat-category-rarities { display: grid; grid-template-columns: repeat(3, max-content); justify-content: end; align-items: center; gap: 12px; min-width: 0; }
 .stat-category-header:hover { background: #dedede; }
 .stat-category-header.active .toggle-icon { transform: rotate(180deg); }
 .stat-category-header .toggle-icon { transition: transform 0.2s; font-size: 0.7rem; }
 
-.stat-header-thumb {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.stat-header-thumb-container {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-}
-
-.stat-header-plan {
-    position: absolute;
-    bottom: -2px;
-    right: -2px;
-    width: 14px;
-    height: 14px;
-    z-index: 2;
-    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
+.stat-category-header[data-target="support"] {
+    margin-top: 10px;
 }
 
 .stat-row-bottom {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: 10px;
     padding: 10px 5px;
     background: #fff;
@@ -81,10 +154,104 @@
 }
 .stat-row-bottom.hidden { display: none; }
 
-.stat-item { display: flex; flex-direction: column; align-items: center; }
-.stat-item.full-width { flex-direction: row; justify-content: space-between; align-items: center; }
-.stat-label { color: #888; font-size: 0.7rem; font-weight: 600; } /* 0.8rem -> 0.7rem 축소, 색상도 연하게 보정 */
-.stat-value { color: var(--primary-color); font-weight: bold; font-size: 0.85rem; } /* 1rem -> 0.85rem 축소 */
+.stat-total-body {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+}
+
+.stat-rarity-stack {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: center;
+    gap: 10px;
+}
+
+.stat-total-heading .stat-rarity-stack {
+    width: 100%;
+    max-width: 360px;
+    margin: 0;
+    align-items: center;
+    justify-self: end;
+}
+
+.stat-header-pickup { display: inline-flex; align-items: center; gap: 4px; color: #666; font-size: 0.65rem; white-space: nowrap; cursor: pointer; }
+#gacha-log-modal .stat-header-pickup span { margin-top: 0; color: #666; font-size: 0.65rem; font-weight: 600; }
+.stat-header-pickup input { width: 14px; height: 14px; margin: 0; accent-color: #7e57c2; cursor: pointer; }
+
+.stat-distribution-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.stat-normal-chart {
+    min-width: 0;
+}
+
+.stat-normal-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 240 / 92;
+    overflow: visible;
+}
+
+.stat-chart-area { fill: rgba(126, 87, 194, 0.16); }
+.stat-chart-curve { fill: none; stroke: #7e57c2; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.stat-chart-axis { stroke: #bdbdbd; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.stat-chart-mean { stroke: #5c6bc0; stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; }
+.stat-chart-observed { stroke: #ef5350; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.stat-chart-meta, .stat-chart-caption { fill: #777; font-size: 9px; font-weight: 600; }
+.stat-chart-caption { font-size: 7px; }
+.stat-probability-panel { min-width: 0; }
+.stat-probability-header { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #ddd; }
+.stat-probability-header-item { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 5px; min-width: 0; color: #777; font-size: 0.55rem; line-height: 1.1; text-align: center; white-space: nowrap; }
+.stat-probability-header-item strong { color: #555; font-size: 0.65rem; }
+.stat-probability-chart { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 5px; min-width: 0; }
+.stat-probability-bar-item { display: grid; grid-template-columns: 52px minmax(0, 1fr) 58px; align-items: center; gap: 6px; min-width: 0; }
+.stat-probability-value, .stat-probability-label { color: #888; font-size: 0.55rem; font-weight: 600; line-height: 1; white-space: nowrap; }
+.stat-probability-value, .stat-probability-label { text-align: center; }
+.stat-probability-track { position: relative; display: block; width: 100%; height: 8px; border-radius: 0 4px 4px 0; background: #eee; }
+.stat-probability-cumulative { position: absolute; top: 0; bottom: 0; left: 0; width: var(--cumulative-width); min-width: 1px; border-radius: 0 4px 4px 0; background: rgba(126, 87, 194, 0.18); }
+.stat-probability-fill { position: absolute; top: 0; bottom: 0; left: 0; width: var(--bar-width); min-width: 1px; border-radius: 0 4px 4px 0; background: rgba(126, 87, 194, 0.7); }
+.stat-probability-value { position: absolute; top: 50%; left: min(calc(var(--bar-width) + 5px), calc(100% - 34px)); transform: translateY(-50%); }
+.stat-probability-cumulative-value { color: #999; font-size: 0.55rem; font-weight: 600; line-height: 1; text-align: left; white-space: nowrap; }
+.stat-probability-bar-item.is-current .stat-probability-label,
+.stat-probability-bar-item.is-current .stat-probability-value,
+.stat-probability-bar-item.is-current .stat-probability-cumulative-value { color: #000; font-weight: 800; }
+.stat-probability-bar-item.is-current .stat-probability-fill { background: #ef5350; }
+
+.gacha-log-category-content {
+    margin-bottom: 0;
+}
+
+.stat-category-distribution {
+    padding: 10px 5px;
+    background: #fff;
+    border: 1px solid #e9e9e9;
+    border-top: none;
+}
+
+.gacha-log-category-content .gacha-log-list {
+    padding: 12px 0 20px;
+}
+
+#gacha-log-modal .stat-item { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+#gacha-log-modal .stat-item.full-width { flex-direction: row; justify-content: space-between; align-items: center; }
+#gacha-log-modal .stat-rarity-item { flex-direction: row; justify-content: flex-start; gap: 6px; white-space: nowrap; }
+.stat-label { display: inline-flex; align-items: center; justify-content: center; gap: 4px; color: #888; font-size: 0.7rem; font-weight: 600; } /* 0.8rem -> 0.7rem 축소, 색상도 연하게 보정 */
+#gacha-log-modal .stat-value { margin-top: 0; color: var(--primary-color); font-weight: bold; font-size: 0.85rem; } /* 1rem -> 0.85rem 축소 */
+.stat-percent { color: #888; font-size: 0.7rem; }
+
+#gacha-log-modal .stat-rarity-icon {
+    width: auto;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 0;
+    transition: none;
+}
 
 /* 리스트 그리드 영역 */
 .gacha-log-list {
@@ -98,11 +265,21 @@
     padding-bottom: 50px; /* 마지막 아이템 가독성 확보 */
 }
 
+#gacha-log-produce-list {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: auto;
+}
+
+#gacha-log-support-list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: auto;
+}
+
 /* 공통 아이템 스타일 */
 .log-item {
     position: relative;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 0 16px 0 0;
     border: 1px solid #eee;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     overflow: hidden;
@@ -116,13 +293,18 @@
 }
 
 /* 등급별 테두리 포인트 */
-.log-item.rarity-ssr { border: 1px solid #d4a5ff; box-shadow: 0 0 0 1px #d4a5ff inset; }
-.log-item.rarity-sr { border: 1px solid #ffe082; box-shadow: 0 0 0 1px #ffe082 inset; }
+.log-item.rarity-ssr { border: 1px solid #d4a5ff; }
+.log-item.rarity-sr { border: 1px solid #ffe082; }
+.log-item.is-pickup.rarity-ssr { box-shadow: 0 2px 9px rgba(190, 120, 250, 0.95); }
+.log-item.is-pickup.rarity-sr { box-shadow: 0 2px 9px rgba(245, 190, 55, 0.95); }
+.log-item.is-pickup.rarity-ssr:hover { box-shadow: 0 4px 13px rgba(190, 120, 250, 1); }
+.log-item.is-pickup.rarity-sr:hover { box-shadow: 0 4px 13px rgba(245, 190, 55, 1); }
 
 /* 타입: 프로듀스 아이돌 (세로형 2칸 차지) */
 .log-item.type-produce {
     grid-column: span 1;
-    grid-row: span 2;
+    grid-row: span 1;
+    aspect-ratio: 9 / 16;
 }
 .log-item.type-produce .log-card-img {
     width: 100%;
@@ -134,6 +316,7 @@
 .log-item.type-support {
     grid-column: span 1;
     grid-row: span 1;
+    aspect-ratio: 16 / 9;
     display: block; /* 중앙 정렬용 flex 제거 */
     padding: 0; /* 패딩 제거하여 꽉 채움 */
     background-color: rgba(255, 255, 255, 0.2); /* 배경 이미지와 섞일 기본 색상 */
@@ -151,9 +334,10 @@
 }
 
 .log-item.type-support .log-card-img {
-    width: 100%;
+    width: auto;
     height: 100%;
-    object-fit: contain; /* 비율 유지하며 꽉 채움 */
+    object-fit: contain;
+    margin: 0 auto;
     background: transparent; /* 배경이 보이도록 투명화 */
     display: block;
     /* 흰색 테두리 효과 강화 (2px) */
@@ -168,20 +352,21 @@
 /* 배지 (왼쪽 위 등급 이미지) */
 .log-badge-rarity {
     position: absolute !important;
-    top: 3px; 
+    top: 3px;
     left: 3px;
     width: auto; /* 너비 자동 */
     height: 16px; /* 세로 높이 고정 */
     object-fit: contain;
     z-index: 10;
-    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
+    filter: none;
     pointer-events: none;
 }
 
 /* 카운트 (오른쪽 위) */
 .log-badge-count {
     position: absolute;
-    top: 3px; right: 3px;
+    top: 3px;
+    right: 6px;
     background: rgba(0, 0, 0, 0.65);
     color: #fff;
     font-size: 0.6rem;
@@ -222,21 +407,111 @@
 .close-log-modal:hover { color: var(--primary-color); }
 
 @media (max-width: 768px) {
+    .stat-gacha-name {
+        gap: 4px;
+        padding: 4px;
+        font-size: 0.66rem;
+    }
+
+    .stat-gacha-pickup-label {
+        font-size: 0.54rem;
+    }
+
+    .stat-gacha-character-icons {
+        gap: 1px;
+    }
+
+    .stat-gacha-character-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .stat-gacha-name:not(.is-selection) .stat-gacha-character-names {
+        display: none;
+    }
+
+    .stat-gacha-title-separator {
+        display: none;
+    }
+
+    .stat-distribution-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .stat-normal-chart,
+    .stat-probability-panel {
+        width: 100%;
+    }
+
+    .stat-category-distribution {
+        padding: 8px 4px;
+    }
+
+    .stat-probability-header {
+        margin-bottom: 7px;
+        padding-bottom: 5px;
+    }
+
+    .stat-probability-bar-item {
+        grid-template-columns: 48px minmax(0, 1fr) 52px;
+        gap: 4px;
+    }
+
+    .stat-category-header {
+        grid-template-columns: minmax(0, 1fr) max-content;
+        gap: 6px;
+        padding: 7px 9px;
+    }
+
+    .stat-category-rarities {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        gap: 6px;
+    }
+
+    .stat-category-header .toggle-icon {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+
     .gacha-log-list {
         grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
         grid-auto-rows: 75px;
         padding: 10px;
         gap: 8px;
     }
+
+    #gacha-log-produce-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #gacha-log-support-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
     .log-badge-rarity { font-size: 0.55rem; padding: 1px 4px; }
-    .log-item-name-overlay { font-size: 0.55rem; padding: 8px 2px 2px; }
-    .stat-row-bottom { grid-template-columns: repeat(3, 1fr); font-size: 0.65rem; } /*0.7 -> 0.65 축소*/
+    .log-item-name-overlay { font-size: 0.5rem; padding: 8px 2px 2px; }
+    .stat-row-bottom { grid-template-columns: 1fr; font-size: 0.65rem; } /*0.7 -> 0.65 축소*/
     .close-log-modal { top: 5px; right: 10px; font-size: 20px; }
     
     /* 모바일 통계 폰트 정밀 축소 */
     .gacha-log-stats { font-size: 0.65rem; padding: 12px; }
     .stat-label { font-size: 0.6rem; }
-    .stat-value { font-size: 0.75rem; }
-    .stat-category-header { font-size: 0.7rem; padding: 6px 10px; }
-    .stat-header-thumb { width: 22px; height: 22px; }
+    #gacha-log-modal .stat-value { font-size: 0.75rem; }
+    .stat-percent { font-size: 0.6rem; }
+    #gacha-log-modal .stat-rarity-icon { width: auto; height: 16px; }
+    .stat-total-icon { width: 16px; height: 16px; }
+    #gacha-log-modal .stat-total-heading { grid-template-columns: minmax(0, 1fr) max-content; gap: 8px; padding: 7px 9px; }
+    .stat-total-heading .stat-rarity-stack { grid-column: 1; grid-row: 2; grid-template-columns: repeat(3, max-content); justify-content: start; max-width: none; margin: 0; gap: 16px; }
+    #gacha-log-modal .stat-total-heading .stat-rarity-item { gap: 3px; }
+    #gacha-log-modal .stat-total-heading .stat-rarity-icon { height: 13px; }
+    #gacha-log-modal .stat-total-heading .stat-rarity-item .stat-value { font-size: 0.68rem; }
+    #gacha-log-modal .stat-total-heading .stat-rarity-item .stat-percent { font-size: 0.52rem; }
+    #gacha-log-modal .stat-total-heading .stat-rarity-item[data-rarity="SR"] .stat-percent,
+    #gacha-log-modal .stat-total-heading .stat-rarity-item[data-rarity="R"] .stat-percent { display: none; }
+    .stat-header-pickup { grid-column: 2; grid-row: 2; justify-self: end; }
+    .stat-category-header { font-size: 0.7rem; }
 }

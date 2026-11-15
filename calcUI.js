@@ -723,13 +723,13 @@ export function renderCalcMenu(updatePageTranslations, onHajime, onNia, onHif) {
                     <div class="calc-menu-label" style="border-left-color: ${color};">HIF</div>
                     <img src="images/hif.webp" class="calc-menu-img hif-menu-img" alt="HIF">
                 </div>
-                <div class="calc-menu-item" id="btn-hajime" style="--idol-theme-color: ${color};">
-                    <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_legend">HAJIME LEGEND</div>
-                    <img src="images/hajime.webp" class="calc-menu-img" alt="Hajime" style="border-color: ${color};">
-                </div>
                 <div class="calc-menu-item" id="btn-nia" style="--idol-theme-color: ${color};">
                     <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_master">NIA MASTER</div>
                     <img src="images/nia.webp" class="calc-menu-img" alt="N.i.a" style="border-color: ${color};">
+                </div>
+                <div class="calc-menu-item" id="btn-hajime" style="--idol-theme-color: ${color};">
+                    <div class="calc-menu-label" style="border-left-color: ${color};" data-i18n="gacha_menu_legend">HAJIME LEGEND</div>
+                    <img src="images/hajime.webp" class="calc-menu-img" alt="Hajime" style="border-color: ${color};">
                 </div>
             </div>
         </div>`;
@@ -1920,7 +1920,10 @@ export function showPItemInfoTooltip(infoBtn, pItemDescriptions) {
  * 서포트 카드의 아이템 효과 설명을 보여주는 툴팁
  */
 export function showSupportItemTooltip(slot, cardId) {
-    document.querySelectorAll('.support-item-tooltip').forEach(t => t.remove());
+    document.querySelectorAll('.support-item-tooltip').forEach(t => {
+        if (typeof t._cleanup === 'function') t._cleanup();
+        else t.remove();
+    });
 
     const isMobile = window.innerWidth <= 768;
     const attrColors = {
@@ -1944,7 +1947,7 @@ export function showSupportItemTooltip(slot, cardId) {
     const borderColor = attrColors[card.type] || getIdolDisplayColor(calcStore.selectedIdol || 'saki');
     const maxWidth = isMobile ? '240px' : '380px';
     const gap = isMobile ? '6px' : '10px';
-    tooltip.style.cssText = `position: absolute; display: inline-flex; flex-direction: row; align-items: center; gap: ${gap}; width: auto; max-width: ${maxWidth}; padding: ${padding}; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: ${borderWidth} solid ${borderColor}; border-radius: 8px; font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 40000;`;
+    tooltip.style.cssText = `position: absolute; display: inline-flex; flex-direction: row; align-items: center; gap: ${gap}; width: auto; max-width: ${maxWidth}; padding: ${padding}; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: ${borderWidth} solid ${borderColor}; border-radius: 8px; font-size: ${fontSize}; color: #333; line-height: 1.4; z-index: 40000; transform: none; pointer-events: none;`;
 
     // 아이템 효과 텍스트 생성
     const effectParts = [
@@ -1979,19 +1982,30 @@ export function showSupportItemTooltip(slot, cardId) {
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
 
+    let closeTooltip = null;
+    let idolContainer = null;
+    const cleanupTooltip = () => {
+        tooltip.remove();
+        if (!closeTooltip) return;
+        document.removeEventListener('click', closeTooltip);
+        if (idolContainer) idolContainer.removeEventListener('scroll', closeTooltip);
+        closeTooltip = null;
+    };
+    tooltip._cleanup = cleanupTooltip;
+
     setTimeout(() => {
-        const idolContainer = document.getElementById('idol');
-        const closeTooltip = (e) => {
-            if (!tooltip.parentElement) return;
+        if (!tooltip.isConnected) return;
+        idolContainer = document.getElementById('idol');
+        closeTooltip = (e) => {
             if (e.type === 'scroll' || (!tooltip.contains(e.target) && !slot.contains(e.target))) {
-                tooltip.remove();
-                document.removeEventListener('click', closeTooltip);
-                if (idolContainer) idolContainer.removeEventListener('scroll', closeTooltip);
+                cleanupTooltip();
             }
         };
         document.addEventListener('click', closeTooltip);
         if (idolContainer) idolContainer.addEventListener('scroll', closeTooltip, { passive: true });
     }, 10);
+
+    return tooltip;
 }
 
 /**

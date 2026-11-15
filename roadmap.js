@@ -13,8 +13,8 @@ function getJSTDate(dateStr = null) {
 }
 
 export const idolList = [
-    'saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja',
-    'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'
+    'saki', 'temari', 'kotone', 'mao', 'lilja',
+    'china', 'sumika', 'hiro', 'rinami', 'ume', 'sena', 'misuzu', 'tsubame', 'kanae'
 ];
 
 const idolNameMap = {
@@ -30,7 +30,8 @@ const idolNameMap = {
     sena: { ko: "세나", ja: "星南" },
     misuzu: { ko: "미스즈", ja: "美鈴" },
     ume: { ko: "우메", ja: "佑芽" },
-    rinami: { ko: "리나미", ja: "莉波" }
+    rinami: { ko: "리나미", ja: "莉波" },
+    kanae: { ko: "카나에", ja: "香名江" }
 };
 
 export function renderPSSRRoadmap(shouldScroll = false) {
@@ -101,20 +102,20 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     // 2. 날짜 및 높이 계산
     const start = new Date(2024, 4, 1, 0, 0, 0, 0);
     const now = getJSTDate();
-    
+
     const width = window.innerWidth;
     const isMobile = width <= 768;
     const imageFolder = 'idols/thumb';
     // PC는 +10일, 모바일(768px 이하)은 +30일 여유 공간 배분
     const paddingDays = isMobile ? 30 : 10;
     const end = new Date(now.getTime() + paddingDays * 24 * 60 * 60 * 1000);
-    
+
     const rangeMs = end.getTime() - start.getTime();
-    
+
     // 일(Day)을 기준으로 소수점까지 부드럽게 늘어나도록 높이 계산
     const totalDays = rangeMs / (1000 * 60 * 60 * 24);
-    
-    let HEIGHT_PER_MONTH = width <= 768 ? 50 : (width <= 1024 ? 120 : 200);
+
+    let HEIGHT_PER_MONTH = width <= 768 ? 45 : (width <= 1024 ? 110 : 140);
     const GRAPH_HEIGHT = (totalDays / 30.43) * HEIGHT_PER_MONTH;
 
     // 3. 헤더 렌더링 (항상 노출되는 영역)
@@ -134,7 +135,7 @@ export function renderPSSRRoadmap(shouldScroll = false) {
 
         const idolPSSRs = produceList.filter(p => {
             if (p.rarity !== 'PSSR' || !p.releasedAt || !p.id.startsWith(`ssr${idolName}_`)) return false;
-            
+
             // 1차: 오스스메별 필터
             if (p.osusume) {
                 if (p.osusume === 'concentration' && !showConcentration) return false;
@@ -214,19 +215,39 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     // 날짜 컬럼 요소 제거 (선 안쪽으로 텍스트 이동)
 
 
-    for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+    let monthRowIndex = 0;
+    for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1), monthRowIndex++) {
         d.setDate(1); d.setHours(0, 0, 0, 0);
         const ratio = (d.getTime() - start.getTime()) / rangeMs;
         const bottomOffset = ratio * GRAPH_HEIGHT;
+
+        // 두 번째 월부터 한 칸씩 건너 옅은 배경을 표시
+        if (monthRowIndex % 2 === 1) {
+            const nextMonth = new Date(d);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            const bandEnd = Math.min(nextMonth.getTime(), end.getTime());
+            const bandHeight = ((bandEnd - d.getTime()) / rangeMs) * GRAPH_HEIGHT;
+            const band = document.createElement('div');
+            band.className = 'time-row-band';
+            band.style.bottom = `${bottomOffset}px`;
+            band.style.height = `${Math.max(0, bandHeight)}px`;
+            graphWrapper.appendChild(band);
+        }
+
         const marker = document.createElement('div');
         marker.className = 'time-marker';
+        if (d.getMonth() === 0) marker.classList.add('time-marker-year');
         marker.style.bottom = `${bottomOffset}px`;
-        
+
         // 현재 시점보다 미래의 달이면 글씨(라벨)를 표시하지 않음
         if (d <= now) {
-            marker.innerHTML = `<span class="time-label">${d.getFullYear()}.${d.getMonth() + 1}</span>`;
+            const yearLabel = isMobile ? String(d.getFullYear()).slice(-2) : d.getFullYear();
+            const monthLabel = isMobile
+                ? String(d.getMonth() + 1).padStart(2, '0')
+                : d.getMonth() + 1;
+            marker.innerHTML = `<span class="time-label">${yearLabel}.${monthLabel}</span>`;
         }
-        
+
         graphWrapper.appendChild(marker);
     }
 
@@ -253,7 +274,7 @@ export function renderPSSRRoadmap(shouldScroll = false) {
     idolList.forEach((idolName, index) => {
         const column = document.createElement('div');
         column.className = 'roadmap-column';
-        
+
         // 양쪽 끝 2열씩 특수 클래스 부여 (모바일 툴팁 정렬용)
         if (index === 0) column.classList.add('is-first-col');
         if (index === 1) column.classList.add('is-second-col');

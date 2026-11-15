@@ -27,7 +27,7 @@ const getProduceChar = (entry) => {
     if (typeof entry !== 'string' && entry.char) return entry.char;
 
     const id = typeof entry === 'string' ? entry : entry.id;
-    const charIds = ['rinami', 'saki', 'china', 'sumika', 'mao', 'kotone', 'temari', 'lilja', 'hiro', 'tsubame', 'sena', 'ume', 'misuzu'];
+    const charIds = ['rinami', 'saki', 'china', 'sumika', 'mao', 'kotone', 'temari', 'lilja', 'hiro', 'tsubame', 'sena', 'ume', 'misuzu', 'kanae'];
     return charIds.find(charId => id?.startsWith(`ssr${charId}`)) || '';
 };
 
@@ -76,9 +76,9 @@ const getSupportGachaInfo = (cardId) => {
 };
 
 const getLbRestoreNoticeText = () => {
-    if (state.currentLang === 'ja') return '開花効率の確認中は変更が保存されません。';
-    if (state.currentLang === 'en') return 'LB changes are not saved while checking efficiency.';
-    return '돌파 효율 확인 중에는 변경이 저장되지 않습니다.';
+    if (state.currentLang === 'ja') return '現在の状態では、限界突破値の変更は保存されません。';
+    if (state.currentLang === 'en') return 'Limit break changes are not saved in the current state.';
+    return '현 상태에서는 돌파 값 변경이 저장되지 않습니다.';
 };
 
 const showLbRestoreNotice = () => {
@@ -101,11 +101,11 @@ const showLbRestoreNotice = () => {
 };
 
 // 모달 표시 함수
-export function showCardModal(card, displayName, imgSrc) {
+export function showCardModal(card, displayName, imgSrc, { restoreLBOnClose = false } = {}) {
     const modal = document.getElementById('card-modal');
     if (!modal) return;
     const supportLbEfficiencyModal = document.getElementById('support-lb-efficiency-modal');
-    const shouldRestoreLBOnClose = !!(supportLbEfficiencyModal &&
+    const shouldRestoreLBOnClose = restoreLBOnClose || !!(supportLbEfficiencyModal &&
         supportLbEfficiencyModal.style.display !== 'none' &&
         !supportLbEfficiencyModal.classList.contains('hidden'));
 
@@ -131,7 +131,7 @@ export function showCardModal(card, displayName, imgSrc) {
     starRating?.classList.remove('locked');
 
     const thumbSrc = card.image || `images/support/thumb/${card.id}.webp`;
-    
+
     // Set thumbnail as a background placeholder to mask any decode delay
     mImg.style.backgroundImage = `url(${thumbSrc})`;
 
@@ -176,7 +176,7 @@ export function showCardModal(card, displayName, imgSrc) {
         try {
             const mImg = document.getElementById('modal-img');
             const displayWidth = mImg.clientWidth || 460;
-            const targetWidth = displayWidth * 2; 
+            const targetWidth = displayWidth * 2;
 
             const response = await fetch(originalSrc);
             const blob = await response.blob();
@@ -195,7 +195,7 @@ export function showCardModal(card, displayName, imgSrc) {
             // 속도와 화질의 합리적인 타협점인 WebP 0.95로 설정
             const hqBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.95));
             const blobUrl = URL.createObjectURL(hqBlob);
-            
+
             setCachedImage(originalSrc, blobUrl);
             return blobUrl;
         } catch (e) {
@@ -273,10 +273,10 @@ export function showCardModal(card, displayName, imgSrc) {
                 const pct = Math.round((idx / (charColors.length - 1 || 1)) * 100);
                 return `${color}4d ${pct}%`;
             }).join(', ');
-            
+
             // 수평 덮개 레이어(왼쪽 투명 -> 오른쪽 40% 지점에서 회색배경 #fafafa로 완전히 덮음)를 수직 그라데이션 위에 겹쳐 쌓음
             mGachaName.style.background = `linear-gradient(90deg, rgba(250, 250, 250, 0) 0%, #fafafa 40%, #fafafa 100%), linear-gradient(to bottom, ${verticalStops})`;
-            
+
             // 기존 마스크 속성 초기화
             mGachaName.style.webkitMaskImage = '';
             mGachaName.style.maskImage = '';

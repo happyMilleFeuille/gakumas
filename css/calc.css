@@ -89,8 +89,8 @@
     transition: background-position 0.3s linear, background-color 0.3s linear 0.45s;
 }
 
-/* 하지메(가운데): 중간에서 위아래로 색이 번짐 (중앙 확장 방식 + 상하 그라데이션) */
-#btn-hajime::after {
+/* 니아(가운데): 중간에서 위아래로 색이 번짐 (중앙 확장 방식 + 상하 그라데이션) */
+#btn-nia::after {
     top: -15%;
     bottom: -35%;
     background-color: #ccc;
@@ -102,13 +102,13 @@
     transition: background-size 0.3s linear;
 }
 
-#btn-hajime:hover::after {
+#btn-nia:hover::after {
     background-size: 100% 100%;
     /* 호버 시 100%로 확장 */
 }
 
-/* 니아(맨 아래): 버튼 상단 위로 뻗어 올라가며 65% 지점(bottom: 35%)에서 멈춤 */
-#btn-nia::after {
+/* 하지메(맨 아래): 버튼 상단 위로 뻗어 올라가며 65% 지점(bottom: 35%)에서 멈춤 */
+#btn-hajime::after {
     top: -50%;
     /* 버튼 위로 길게 돌출 */
     bottom: 35%;
@@ -118,7 +118,7 @@
     background-position: 0 0;
 }
 
-#btn-nia:hover::after {
+#btn-hajime:hover::after {
     background-position: 0 100%;
     /* 호버 시 하단의 고유색 부분으로 이동 */
 }
@@ -165,8 +165,8 @@
     transform: scale(1.3);
 }
 
-/* 하지메 수직 라인 중앙 별 장식 */
-#btn-hajime::before {
+/* NIA 수직 라인 중앙 별 장식 */
+#btn-nia::before {
     content: '✦';
     position: absolute;
     right: -45.5px;
@@ -181,8 +181,8 @@
     z-index: 2;
 }
 
-/* NIA 수직 라인 끝 별 장식 */
-#btn-nia::before {
+/* 하지메 수직 라인 끝 별 장식 */
+#btn-hajime::before {
     content: '✦';
     position: absolute;
     right: -45.5px;
@@ -332,12 +332,12 @@
         font-size: 13px;
     }
 
-    #btn-hajime::before {
+    #btn-nia::before {
         top: calc(60% - 10px);
         font-size: 13px;
     }
 
-    #btn-nia::before {
+    #btn-hajime::before {
         bottom: calc(35% - 10px);
         font-size: 13px;
     }

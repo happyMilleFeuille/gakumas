@@ -7,7 +7,7 @@
     height: 35vh; 
     background: rgba(10, 10, 10, 0.15);
     backdrop-filter: blur(25px);
-    z-index: 20001;
+    z-index: var(--gacha-z-drawer, 20001);
     transform: translateY(-100%);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -104,7 +104,8 @@
 }
 
 /* 중앙 강조 효과 */
-.drawer-item { transform: scale(0.85); opacity: 0.5; }
+.drawer-item { transform: scale(0.85); opacity: 0.6; }
+.drawer-item.has-owned:not(.active-item) { opacity: 0.7; }
 .drawer-item.active-item { transform: scale(1.05); opacity: 1; }
 
 .drawer-card-img {
@@ -123,9 +124,70 @@
     transform: scale(1.2);
 }
 
+.drawer-item:not(.active-item) .drawer-owned-image {
+    filter: grayscale(95%) brightness(55%);
+}
+
+.drawer-item.active-item .drawer-owned-image {
+    filter: grayscale(90%) brightness(85%);
+}
+
+.drawer-owned-image {
+    transition: filter 0.25s ease;
+}
+
+.drawer-vertical-pickups {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.drawer-vertical-pickup {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.drawer-vertical-pickup + .drawer-vertical-pickup {
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.drawer-split-plan-icon {
+    width: 16px;
+    top: 3px;
+    left: 3px;
+}
+
+.drawer-owned-badge {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    z-index: 20;
+    padding: 3px 7px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(20, 20, 20, 0.78);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 0.58rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+}
+
 @media (max-width: 768px) {
     .drawer-card-img img {
         transform: scale(1);
+    }
+
+    .drawer-owned-badge {
+        right: 4px;
+        bottom: 4px;
+        padding: 2px 5px;
+        font-size: 0.48rem;
     }
 }
 
@@ -166,7 +228,7 @@
 /* 오버레이 */
 .drawer-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.3); z-index: 20000;
+    background: rgba(0, 0, 0, 0.3); z-index: var(--gacha-z-fullscreen, 20000);
     visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s;
 }
 .drawer-overlay.active { visibility: visible; opacity: 1; }

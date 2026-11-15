@@ -1,7 +1,7 @@
 // gachalist.js
 import { cardList } from './carddata.js';
 import { produceList } from './producedata.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { state } from './state.js';
 
 // --- 확률 테이블 정의 ---
@@ -33,6 +33,24 @@ function rollRarity(rates, rand = Math.random()) {
     if (rand < (acc += rates.SSR_CARD)) return 'SR_CARD';
     if (rand < (acc += rates.PR)) return 'PR';
     return 'R_CARD';
+}
+
+export function getProduceOnlyRates(rates) {
+    const produceRates = {
+        PSSR: rates.PSSR || 0,
+        SSSR: 0,
+        PSR: rates.PSR || 0,
+        SSR_CARD: 0,
+        PR: rates.PR || 0,
+        R_CARD: 0
+    };
+    const total = produceRates.PSSR + produceRates.PSR + produceRates.PR;
+    if (total === 0) return produceRates;
+
+    produceRates.PSSR /= total;
+    produceRates.PSR /= total;
+    produceRates.PR /= total;
+    return produceRates;
 }
 
 function getRandomFrom(pool) {
@@ -177,30 +195,41 @@ function getPickupBuckets(key, pool, poolType, pickups, rates) {
 export function getActiveGachaConfig(poolType = state.gachaType) {
     if (poolType === 'selection') return SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
     if (poolType === 'normal') return NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
-    if (poolType === 'normal_multi') return NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
     if (poolType === 'limited') return LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
     if (poolType === 'unit') return UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
     if (poolType === 'fes') return FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
     return CURRENT_PICKUPS[poolType] || {};
 }
 
-export function getDisplayStrategy(poolType = state.gachaType) {
-    const strategy = { ...(GACHA_STRATEGIES[poolType] || GACHA_STRATEGIES.normal) };
+export function getEffectiveGachaStrategy(poolType = state.gachaType, activeConfig = getActiveGachaConfig(poolType)) {
+    const baseStrategy = GACHA_STRATEGIES[poolType] || GACHA_STRATEGIES.normal;
+    const strategy = {
+        ...baseStrategy,
+        rates: { ...baseStrategy.rates },
+        guaranteed: { ...baseStrategy.guaranteed }
+    };
     if (poolType === 'selection') {
-        const activeConfig = getActiveGachaConfig(poolType);
         if (activeConfig?.pssr_guaranteed) {
             strategy.guaranteed = { PSSR: 1.0, SSSR: 0, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
         } else if (activeConfig?.ssr_guaranteed) {
             strategy.guaranteed = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
         }
     }
+
+    if (activeConfig?.exclude_support_cards) {
+        strategy.rates = getProduceOnlyRates(strategy.rates);
+        strategy.guaranteed = getProduceOnlyRates(strategy.guaranteed);
+    }
     return strategy;
 }
+
+// 이전 호출부 호환용 별칭. 표시용과 실제 추첨은 같은 최종 확률표를 사용한다.
+export const getDisplayStrategy = getEffectiveGachaStrategy;
 
 export function getRarityRateEntries(rarityKey, options = {}) {
     const poolType = options.poolType || state.gachaType;
     const activeConfig = options.activeConfig || getActiveGachaConfig(poolType);
-    const strategy = options.strategy || getDisplayStrategy(poolType);
+    const strategy = options.strategy || getEffectiveGachaStrategy(poolType, activeConfig);
     const pool = options.pool || getGachaPool(poolType);
     const rarityPool = pool[rarityKey] || [];
     const lookupKey = rarityKey === 'SR_CARD' ? 'SSR_CARD' : rarityKey;
@@ -292,7 +321,6 @@ function handleStandardPickup(key, pool, poolType, isGuaranteedSlot, rates, guar
 
 export const GACHA_STRATEGIES = {
     normal: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'normal') },
-    normal_multi: { rates: UNIT_RATES, guaranteed: UNIT_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'normal_multi') },
     limited: { rates: RATES, guaranteed: GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'limited') },
     unit: { rates: UNIT_RATES, guaranteed: UNIT_GUARANTEED_RATES, pick: (key, pool) => handleStandardPickup(key, pool, 'unit') },
     fes: { rates: FES_RATES, guaranteed: FES_GUARANTEED_RATES, pick: (key, pool) => getRandomFrom(pool[key] || pool.R_CARD) },
@@ -308,9 +336,6 @@ export function getGachaPool(poolType) {
     let activeConfig = config;
     if (poolType === 'normal') {
         activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
-        config = activeConfig?.pool || config;
-    } else if (poolType === 'normal_multi') {
-        activeConfig = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
         config = activeConfig?.pool || config;
     } else if (poolType === 'limited') {
         activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
@@ -355,9 +380,6 @@ export function getGachaPool(poolType) {
         } else if (poolType === 'normal') {
             const norm = NORMAL_CONFIG.find(c => c.id === state.activeNormalId);
             if (norm?.date) referenceDate = new Date(norm.date);
-        } else if (poolType === 'normal_multi') {
-            const nm = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId);
-            if (nm?.date) referenceDate = new Date(nm.date);
         } else if (poolType === 'limited') {
             const lim = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId);
             if (lim?.date) referenceDate = new Date(lim.date);
@@ -425,7 +447,6 @@ export function getGachaPool(poolType) {
 
 export function pickGacha(count = 1, poolType = 'normal', customPool = null) {
     const pool = getGachaPool(poolType);
-    const strategy = GACHA_STRATEGIES[poolType] || GACHA_STRATEGIES.normal;
     const results = [];
     
     // 현재 선택된 배너의 상세 설정을 찾아서 픽업 정보로 사용 (동기화 핵심)
@@ -434,8 +455,6 @@ export function pickGacha(count = 1, poolType = 'normal', customPool = null) {
         activeConfig = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
     } else if (poolType === 'normal') {
         activeConfig = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
-    } else if (poolType === 'normal_multi') {
-        activeConfig = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
     } else if (poolType === 'limited') {
         activeConfig = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
     } else if (poolType === 'unit') {
@@ -443,20 +462,11 @@ export function pickGacha(count = 1, poolType = 'normal', customPool = null) {
     } else if (poolType === 'fes') {
         activeConfig = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
     }
+    const strategy = getEffectiveGachaStrategy(poolType, activeConfig);
 
     for (let i = 0; i < count; i++) {
         const isGuaranteedSlot = (count === 10 && i === 9);
-        const isLastSlot = (i === count - 1);
         let rates = isGuaranteedSlot ? strategy.guaranteed : strategy.rates;
-        
-        if (poolType === 'selection' && isLastSlot) {
-            const sel = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId);
-            if (sel?.pssr_guaranteed) {
-                rates = { PSSR: 1.0, SSSR: 0, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
-            } else if (sel?.ssr_guaranteed) {
-                rates = { PSSR: 0.4, SSSR: 0.6, PSR: 0, SSR_CARD: 0, PR: 0, R_CARD: 0 };
-            }
-        }
 
         const key = rollRarity(rates);
         

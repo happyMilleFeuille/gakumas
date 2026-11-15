@@ -131,7 +131,7 @@
 .pssr-roadmap-container {
     margin: 0 auto 2rem;
     /* 하단 여백 4rem -> 2rem 축소 */
-    max-width: 980px;
+    max-width: 1030px;
     width: 95%;
     background: var(--roadmap-bg);
     border-top-left-radius: 10px;
@@ -171,7 +171,7 @@
 
 
 .roadmap-filter-wrap {
-    max-width: 980px;
+    max-width: 1030px;
     width: 100%;
     margin: 1.5rem auto 0;
     display: flex;
@@ -424,6 +424,19 @@
     pointer-events: none;
     z-index: 1;
     /* 배경으로 보내기 */
+}
+
+.time-marker.time-marker-year {
+    border-top-color: #adb5bd;
+}
+
+.time-row-band {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.025);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .time-label {
@@ -707,7 +720,12 @@
     }
 
     .roadmap-header-area {
-        padding: 25px 10px 10px !important;
+        padding: 25px 5px 10px !important;
+    }
+
+    .roadmap-graph-wrapper {
+        padding-left: 5px;
+        padding-right: 5px;
     }
 
     .roadmap-filter-wrap {

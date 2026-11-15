@@ -1,6 +1,6 @@
 // gacha-drawer.js - 가챠 선택 서랍 로직 (스크롤 정밀 보정)
-import { state, setSelectedPickup, setActiveSelectionId, setActiveNormalId, setActiveNormalMultiId, setActiveLimitedId, setActiveUnitId, setActiveFesId, idolColors } from './state.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { state, setSelectedPickup, setActiveSelectionId, setActiveNormalId, setActiveLimitedId, setActiveUnitId, setActiveFesId, idolColors } from './state.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import { renderGacha } from './gacha.js';
 
@@ -10,6 +10,7 @@ let isScrollingToItem = false; // 최상위로 이동하여 어디서든 접근 
 let isRestoringScroll = false; // 복원 중인지 체크하는 플래그 추가
 let isInitialized = false; // 초기화 여부 플래그 추가
 const lastScrollPositions = {}; // 가챠 종류별 마지막 스크롤 위치 저장
+let ownedPssrIds = new Set();
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
     if (!card) return '';
@@ -23,6 +24,16 @@ const getConfigDisplayName = (cfg) => {
     if (useJaNames() && cfg.name_ja) return cfg.name_ja;
     return cfg.name || '';
 };
+const loadOwnedPssrIds = () => {
+    try {
+        const ownedMap = JSON.parse(localStorage.getItem('gakumas_owned_pssr')) || {};
+        return new Set(Object.keys(ownedMap).filter(id => !!ownedMap[id]));
+    } catch {
+        return new Set();
+    }
+};
+const hasOwnedPssr = id => !!id && ownedPssrIds.has(id);
+const getOwnedBadgeHtml = isOwned => isOwned ? '<span class="drawer-owned-badge">OWNED</span>' : '';
 
 /**
  * 드로어 초기화
@@ -97,7 +108,6 @@ export function initGachaDrawer() {
         isInitialized = true;
     }
 }
-
             /**
             * 드로어 열기
             */
@@ -115,7 +125,7 @@ export function initGachaDrawer() {
 
             const type = state.gachaType;
             // 가로형 타입인 경우 전용 클래스 추가
-            if (type === 'selection' || type === 'unit' || type === 'normal_multi') {
+            if (type === 'selection' || type === 'unit') {
                 drawerEl.classList.add('drawer-horizontal-mode');
             } else {
                 drawerEl.classList.remove('drawer-horizontal-mode');
@@ -159,6 +169,7 @@ function renderDrawerContent() {
     
     // 내용 초기화 전 현재 타입 기록 (스크롤 이벤트 혼선 방지)
     const type = state.gachaType;
+    ownedPssrIds = loadOwnedPssrIds();
     contentEl.dataset.currentType = type;
     contentEl.innerHTML = '';
 
@@ -180,7 +191,6 @@ function renderDrawerContent() {
 
     if (type === 'selection') renderSelectionList(itemsLayer, indicatorLayer);
     else if (type === 'normal') renderNormalList(itemsLayer, indicatorLayer);
-    else if (type === 'normal_multi') renderNormalMultiList(itemsLayer, indicatorLayer);
     else if (type === 'limited') renderLimitedList(itemsLayer, indicatorLayer);
     else if (type === 'unit') renderUnitList(itemsLayer, indicatorLayer);
     else if (type === 'fes') renderFesList(itemsLayer, indicatorLayer);
@@ -295,8 +305,6 @@ function updateSelection(id) {
         if (state.activeSelectionId !== id) { setActiveSelectionId(id); changed = true; }
     } else if (type === 'normal') {
         if (state.activeNormalId !== id) { setActiveNormalId(id); changed = true; }
-    } else if (type === 'normal_multi') {
-        if (state.activeNormalMultiId !== id) { setActiveNormalMultiId(id); changed = true; }
     } else if (type === 'limited') {
         if (state.activeLimitedId !== id) { setActiveLimitedId(id); changed = true; }
     } else if (type === 'unit') {
@@ -316,7 +324,6 @@ function scrollToActiveItem(instant = false) {
     const type = state.gachaType;
     const activeId = (type === 'selection') ? state.activeSelectionId : 
                      (type === 'normal') ? state.activeNormalId : 
-                     (type === 'normal_multi') ? state.activeNormalMultiId :
                      (type === 'limited') ? state.activeLimitedId :
                      (type === 'unit') ? state.activeUnitId :
                      (type === 'fes') ? state.activeFesId : state.selectedPickup[type];
@@ -337,7 +344,7 @@ function scrollToActiveItem(instant = false) {
 function renderPickupList(itemsLayer, indicatorLayer) {
     const pickups = CURRENT_PICKUPS[state.gachaType];
     if (!pickups?.pssr) return;
-    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
+    const checkHasCard = id => hasOwnedPssr(id);
 
     pickups.pssr.forEach(p => {
         const pid = typeof p === 'string' ? p : p.id;
@@ -346,12 +353,15 @@ function renderPickupList(itemsLayer, indicatorLayer) {
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = pid;
-        const imgVer = checkHasCard(pid) ? '2' : '1';
+        const isOwned = checkHasCard(pid);
+        if (isOwned) item.classList.add('has-owned');
+        const imgVer = isOwned ? '2' : '1';
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
         item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
-                <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
+                ${getOwnedBadgeHtml(isOwned)}
             </div>
             <div class="drawer-item-name">${getLocalizedCardName(cardData) || pid}</div>`;
         item.onclick = () => handleItemClick(pid, item);
@@ -367,24 +377,52 @@ function renderPickupList(itemsLayer, indicatorLayer) {
         indicatorLayer.appendChild(dw);
     });
 }
-
 function renderNormalList(itemsLayer, indicatorLayer) {
-    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
     NORMAL_CONFIG.forEach(cfg => {
-        const firstPSSR = cfg.pool?.pssr?.[0];
+        const pssrPickups = cfg.pool?.pssr || [];
+        const firstPSSR = pssrPickups[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
-        const imgVer = checkHasCard(pid) ? '2' : '1';
+        const isMultiPickup = pssrPickups.length > 1;
+        const hasOwnedPickup = pssrPickups.some(pickup => {
+            const pickupId = typeof pickup === 'string' ? pickup : pickup?.id;
+            return hasOwnedPssr(pickupId);
+        });
+        if (hasOwnedPickup) item.classList.add('has-owned');
         const displayName = getConfigDisplayName(cfg);
-        
-        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
-                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+
+        let imageHtml = '';
+        if (isMultiPickup) {
+            imageHtml = `<div class="drawer-vertical-pickups">
+                ${pssrPickups.map(pickup => {
+                    const pickupId = typeof pickup === 'string' ? pickup : pickup?.id;
+                    const pickupCard = produceList.find(card => card.id === pickupId);
+                    const isOwned = hasOwnedPssr(pickupId);
+                    const imgVer = isOwned ? '2' : '1';
+                    const planIconHtml = pickupCard?.plan ? `<img src="icons/${pickupCard.plan}.webp" class="drawer-plan-icon drawer-split-plan-icon">` : '';
+                    return `<div class="drawer-vertical-pickup">
+                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pickupId}${imgVer}.webp" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block;">
+                        ${planIconHtml}
+                        ${getOwnedBadgeHtml(isOwned)}
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else {
+            const isOwned = hasOwnedPssr(pid);
+            const imgVer = isOwned ? '2' : '1';
+            const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+            imageHtml = `
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
+                ${getOwnedBadgeHtml(isOwned)}`;
+        }
+
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
+                ${imageHtml}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
@@ -401,9 +439,7 @@ function renderNormalList(itemsLayer, indicatorLayer) {
         indicatorLayer.appendChild(dw);
     });
 }
-
 function renderLimitedList(itemsLayer, indicatorLayer) {
-    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
     LIMITED_CONFIG.forEach(cfg => {
         const firstPSSR = cfg.pool?.pssr?.[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -412,13 +448,16 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
-        const imgVer = checkHasCard(pid) ? '2' : '1';
+        const isOwned = hasOwnedPssr(pid);
+        if (isOwned) item.classList.add('has-owned');
+        const imgVer = isOwned ? '2' : '1';
         const displayName = getConfigDisplayName(cfg);
         
         const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
         item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
-                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
+                ${getOwnedBadgeHtml(isOwned)}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
@@ -438,7 +477,6 @@ function renderLimitedList(itemsLayer, indicatorLayer) {
 
 function renderUnitList(itemsLayer, indicatorLayer) {
     const isMobile = window.innerWidth <= 768;
-    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
     UNIT_CONFIG.forEach(cfg => {
         const pssrCount = cfg.pool?.pssr?.length || 0;
         const isDouble = pssrCount >= 2;
@@ -451,6 +489,11 @@ function renderUnitList(itemsLayer, indicatorLayer) {
         const item = document.createElement('div');
         item.className = `drawer-item ${isDouble ? 'selection-type' : ''}`;
         item.dataset.id = cfg.id;
+        const hasOwnedMember = (cfg.pool?.pssr || []).some(p => {
+            const memberId = typeof p === 'string' ? p : p.id;
+            return hasOwnedPssr(memberId);
+        });
+        if (hasOwnedMember) item.classList.add('has-owned');
         
         // 이미지 생성 로직: 더블 픽업 이상이면 나열, 아니면 단일
         let imgInnerHtml = '';
@@ -458,21 +501,25 @@ function renderUnitList(itemsLayer, indicatorLayer) {
             imgInnerHtml = `<div style="display: flex; width: 100%; height: 100%;">
                 ${cfg.pool.pssr.map(p => {
                     const pid = typeof p === 'string' ? p : p.id;
-                    const imgVer = checkHasCard(pid) ? '2' : '1';
+                    const isOwned = hasOwnedPssr(pid);
+                    const imgVer = isOwned ? '2' : '1';
                     const memberData = produceList.find(c => c.id === pid);
                     const memberPlan = memberData?.plan ? `<img src="icons/${memberData.plan}.webp" class="drawer-plan-icon" style="top: 4px; left: 4px; width: ${isMobile ? '16px' : '20px'};">` : '';
                     return `<div style="flex: 1; position: relative; overflow: hidden;">
-                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                         ${memberPlan}
+                        ${getOwnedBadgeHtml(isOwned)}
                     </div>`;
                 }).join('')}
             </div>`;
         } else {
-            const imgVer = checkHasCard(pid) ? '2' : '1';
+            const isOwned = hasOwnedPssr(pid);
+            const imgVer = isOwned ? '2' : '1';
             const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
             imgInnerHtml = `<div style="width: 100%; height: 100%; position: relative; overflow: hidden;">
-                <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
+                ${getOwnedBadgeHtml(isOwned)}
             </div>`;
         }
         
@@ -530,22 +577,51 @@ function renderSelectionList(itemsLayer, indicatorLayer) {
 }
 
 function renderFesList(itemsLayer, indicatorLayer) {
-    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
     FES_CONFIG.forEach(cfg => {
-        const firstPSSR = cfg.pool?.pssr?.[0];
+        const pssrPickups = cfg.pool?.pssr || [];
+        const firstPSSR = pssrPickups[0];
         const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
         const cardData = produceList.find(c => c.id === pid);
         const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
         const item = document.createElement('div');
         item.className = 'drawer-item';
         item.dataset.id = cfg.id;
-        const imgVer = checkHasCard(pid) ? '2' : '1';
+        const isMultiPickup = pssrPickups.length > 1;
+        const hasOwnedPickup = pssrPickups.some(pickup => {
+            const pickupId = typeof pickup === 'string' ? pickup : pickup?.id;
+            return hasOwnedPssr(pickupId);
+        });
+        if (hasOwnedPickup) item.classList.add('has-owned');
         const displayName = getConfigDisplayName(cfg);
-        
-        const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
-                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+
+        let imageHtml = '';
+        if (isMultiPickup) {
+            imageHtml = `<div class="drawer-vertical-pickups">
+                ${pssrPickups.map(pickup => {
+                    const pickupId = typeof pickup === 'string' ? pickup : pickup?.id;
+                    const pickupCard = produceList.find(card => card.id === pickupId);
+                    const isOwned = hasOwnedPssr(pickupId);
+                    const imgVer = isOwned ? '2' : '1';
+                    const planIconHtml = pickupCard?.plan ? `<img src="icons/${pickupCard.plan}.webp" class="drawer-plan-icon drawer-split-plan-icon">` : '';
+                    return `<div class="drawer-vertical-pickup">
+                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pickupId}${imgVer}.webp" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block;">
+                        ${planIconHtml}
+                        ${getOwnedBadgeHtml(isOwned)}
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else {
+            const isOwned = hasOwnedPssr(pid);
+            const imgVer = isOwned ? '2' : '1';
+            const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
+            imageHtml = `
+                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" class="${isOwned ? 'drawer-owned-image' : ''}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                 ${planIconHtml}
+                ${getOwnedBadgeHtml(isOwned)}`;
+        }
+
+        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; position: relative; overflow: hidden;">
+                ${imageHtml}
             </div>
             <div class="drawer-item-name">${displayName}</div>`;
         item.onclick = () => handleItemClick(cfg.id, item);
@@ -553,65 +629,6 @@ function renderFesList(itemsLayer, indicatorLayer) {
 
         const dw = document.createElement('div');
         dw.className = 'drawer-diamond-wrapper';
-        dw.dataset.color = color;
-        const displayDate = (cfg?.display_date || cfg?.date || '');
-        dw.innerHTML = `
-            <div class="drawer-item-date">${displayDate}</div>
-            <div class="drawer-diamond">✦</div>
-        `;
-        indicatorLayer.appendChild(dw);
-    });
-}
-
-function renderNormalMultiList(itemsLayer, indicatorLayer) {
-    const isMobile = window.innerWidth <= 768;
-    const checkHasCard = (id) => (state.gachaLog[state.gachaType] || []).some(item => item.id === id);
-    NORMAL_MULTI_CONFIG.forEach(cfg => {
-        const pssrCount = cfg.pool?.pssr?.length || 0;
-        const isMulti = pssrCount >= 2;
-        
-        const firstPSSR = cfg.pool?.pssr?.[0];
-        const pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-        const cardData = produceList.find(c => c.id === pid);
-        const color = idolColors[pid ? pid.replace('ssr', '').split('_')[0] : ''] || "#ff4081";
-        
-        const item = document.createElement('div');
-        item.className = `drawer-item ${isMulti ? 'selection-type' : ''}`;
-        item.dataset.id = cfg.id;
-        
-        let imgInnerHtml = '';
-        if (isMulti) {
-            imgInnerHtml = `<div style="display: flex; width: 100%; height: 100%;">
-                ${cfg.pool.pssr.map(p => {
-                    const pid = typeof p === 'string' ? p : p.id;
-                    const imgVer = checkHasCard(pid) ? '2' : '1';
-                    const memberData = produceList.find(c => c.id === pid);
-                    const memberPlan = memberData?.plan ? `<img src="icons/${memberData.plan}.webp" class="drawer-plan-icon" style="top: 4px; left: 4px; width: ${isMobile ? '16px' : '20px'};">` : '';
-                    return `<div style="flex: 1; position: relative; overflow: hidden;">
-                        <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
-                        ${memberPlan}
-                    </div>`;
-                }).join('')}
-            </div>`;
-        } else {
-            const imgVer = checkHasCard(pid) ? '2' : '1';
-            const planIconHtml = cardData?.plan ? `<img src="icons/${cardData.plan}.webp" class="drawer-plan-icon">` : '';
-            imgInnerHtml = `<div style="width: 100%; height: 100%; position: relative; overflow: hidden;">
-                <img src="${pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : cfg.bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
-                ${planIconHtml}
-            </div>`;
-        }
-        
-        const displayName = getConfigDisplayName(cfg);
-        item.innerHTML = `<div class="drawer-card-img" style="border: 1px solid ${color}; overflow: hidden; position: relative;">
-                ${imgInnerHtml}
-            </div>
-            <div class="drawer-item-name">${displayName}</div>`;
-        item.onclick = () => handleItemClick(cfg.id, item);
-        itemsLayer.appendChild(item);
-
-        const dw = document.createElement('div');
-        dw.className = `drawer-diamond-wrapper ${isMulti ? 'selection-diamond' : ''}`;
         dw.dataset.color = color;
         const displayDate = (cfg?.display_date || cfg?.date || '');
         dw.innerHTML = `

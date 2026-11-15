@@ -615,6 +615,32 @@ export const idolData = {
             }
         }
     },
+    'kanae': {
+        priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
+        // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
+        baseStats: {
+            ssr: { vocal: 85, dance: 95, visual: 80 },
+            sr: { vocal: 80, dance: 90, visual: 75 }
+        },
+        // 친밀도 보너스 (항상 합산 적용)
+        affinity: {
+            10: {
+                base: { vocal: 0, dance: 0, visual: 5 },
+                bonus: { vocal: 0, dance: 2.5, visual: 2.5 }
+            },
+        },
+        // 보너스 % (단계별)
+        bonus: {
+            ssr: {
+                base: { vocal: 11.0, dance: 19.0, visual: 21.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 5.0 } // +3.0%, +5.0% 추가
+            },
+            sr: {
+                base: { vocal: 10.0, dance: 18.0, visual: 21.0 },
+                bloom3: { vocal: 0, dance: 2.0, visual: 3.0 }  // +2.0%, +3.0% 추가
+            }
+        }
+    },
 };
 
 export const judgingRatios = {
@@ -669,6 +695,12 @@ if (typeof window !== 'undefined') {
     window.calcData.memoryOptions = memoryOptions;
 }
 
+// 하지메 모드 해금 캐릭터 리스트
+export const hajimeAvailableIdols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
+
 // HIF 모드 프리마 스텔라 해금 캐릭터 리스트
 export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari', 'china', 'hiro', 'lilja', 'sumika', 'saki', 'ume', 'sena', 'kotone', 'tsubame'];
+
+// N.I.A 모드 해금 캐릭터 리스트
+export const niaAvailableIdols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
 

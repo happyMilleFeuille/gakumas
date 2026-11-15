@@ -14,7 +14,7 @@
 
 .pssr-info-modal-content {
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 8px;
     border: 3px solid #ff4d8d;
     width: 90%;
     max-width: 600px;
@@ -23,7 +23,7 @@
     overflow: hidden;
     padding: 0;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .pssr-info-modal-scroll-wrapper {
@@ -68,11 +68,19 @@
 }
 
 .pssr-info-modal-img-box {
-    border-radius: 12px;
+    border-radius: 0;
     overflow: hidden;
     aspect-ratio: 1 / 1.8;
     background: #eeeeee;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.pssr-info-modal-img-box:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.pssr-info-modal-img-box:last-child {
+    border-radius: 0 8px 8px 0;
 }
 
 .pssr-info-modal-img {
@@ -127,6 +135,7 @@
     width: 70px;
     height: 70px;
     object-fit: contain;
+    border-radius: 6px;
     flex-shrink: 0;
 }
 
@@ -156,7 +165,7 @@
     gap: 12px;
 }
 
-.pssr-info-modal-body > .pssr-info-modal-item-details:first-of-type {
+.pssr-info-modal-body>.pssr-info-modal-item-details:first-of-type {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
@@ -167,7 +176,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border-radius: 12px;
+    border-radius: 8px;
     border: 1px solid #eeeeee;
     background-color: #fdfdfd;
 }
@@ -205,6 +214,12 @@
     border-bottom: 1px solid var(--personal-color-light, #e5e7eb);
     text-align: right;
     padding-right: 12px;
+}
+
+html[lang="ja"] .pssr-info-modal-detail-name,
+.pssr-info-modal-detail-name[lang="ja"] {
+    font-family: "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    font-weight: 700;
 }
 
 .pssr-info-modal-detail-desc {
@@ -281,8 +296,8 @@
 }
 
 .pssr-info-modal-meta-idol-icon {
-    height: 20px;
-    width: 20px;
+    height: 28px;
+    width: 28px;
     object-fit: contain;
     flex-shrink: 0;
     display: block;
@@ -349,7 +364,7 @@
     border-radius: inherit;
 }
 
-.pssr-info-modal-date-row > * {
+.pssr-info-modal-date-row>* {
     position: relative;
     z-index: 1;
 }
@@ -374,7 +389,7 @@
     border-radius: 12px;
     line-height: 1;
     z-index: 2;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     white-space: nowrap;
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: inline-flex;
@@ -469,33 +484,33 @@
     .pssr-info-modal-content {
         padding: 0;
         max-width: 95%;
-        border-radius: 16px;
+        border-radius: 8px;
     }
-    
+
     .pssr-info-modal-scroll-wrapper {
         max-height: calc(85vh - 32px);
         max-height: calc(85dvh - 32px);
         margin: 16px 0;
         padding: 0 16px;
     }
-    
+
     .pssr-info-modal-images {
         gap: 10px;
         margin: 0 auto 10px auto;
         max-width: 100%;
     }
-    
+
     .pssr-info-modal-img-box {
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     }
-    
+
     .pssr-info-modal-title-overlay {
         font-size: 0.85rem;
         top: 4px;
         right: 16px;
         max-width: 90%;
     }
-    
+
     .pssr-info-modal-meta-container {
         margin: 4px auto 10px auto;
         gap: 6px;
@@ -516,107 +531,107 @@
         height: 12px;
         width: 12px;
     }
-    
+
     .pssr-info-modal-meta-divider-line {
         margin: 6px -16px 10px -16px;
     }
-    
+
     .pssr-info-modal-meta-icon {
         height: 15px;
     }
-    
+
     .pssr-info-modal-meta-divider {
         height: 10px;
     }
-    
+
     .pssr-info-modal-meta-text {
         font-size: 0.42rem;
     }
-    
+
     .pssr-info-modal-date-row .pssr-info-modal-meta-text {
         font-size: 0.42rem;
     }
-    
+
     .pssr-info-modal-meta-idol-icon {
         height: 15px;
         width: 15px;
     }
-    
+
     .pssr-info-modal-meta-source {
         font-size: 0.42rem;
     }
-    
+
     .pssr-info-modal-date-row {
         margin: 6px auto 10px auto;
         padding: 8px 8px;
         border-radius: 8px;
         min-height: 55px;
     }
-    
+
     .pssr-info-modal-date-row.pssr-info-modal-date-row-current {
         border-width: 1.2px;
     }
-    
+
     .pssr-info-modal-date-row.pssr-info-modal-date-row-current::before {
         border-radius: 6.8px;
     }
-    
+
     .pssr-info-modal-date-wrapper {
         margin: 6px auto 10px auto;
         gap: 4px;
     }
-    
+
     .pssr-info-modal-date-arrow {
         font-size: 0.7rem;
     }
-    
+
     .pssr-info-modal-date-osusume {
         width: 18px;
         height: 18px;
         top: -5px;
         left: -5px;
     }
-    
+
     .pssr-info-modal-date-dday-badge {
         font-size: 0.45rem;
         padding: 1.5px 5px;
         top: -6px;
         right: -6px;
     }
-    
+
     .pssr-info-modal-custom-cost-badge {
         font-size: 0.45rem;
         padding: 1.5px 5px;
         border-radius: 6px;
         margin-left: 6px;
     }
-    
+
     .pssr-info-modal-dday-text {
         font-size: 0.52rem;
     }
-    
+
     .pssr-info-modal-card-name {
         font-size: 0.46rem;
     }
-    
+
     .pssr-info-modal-card-name-long {
         font-size: 0.4rem;
     }
-    
+
     .pssr-info-modal-detail-name {
         font-size: 0.64rem;
         padding-right: 8px;
     }
-    
+
     .pssr-info-modal-detail-desc {
         font-size: 0.55rem;
     }
-    
+
     .pssr-info-modal-item-icon {
         width: 48px;
         height: 48px;
     }
-    
+
     .pssr-info-modal-item-plus-wrapper {
         width: 48px;
         height: 48px;
@@ -628,31 +643,31 @@
         top: -2px;
         right: -2px;
     }
-    
+
     .pssr-info-modal-sainou-box {
         width: 48px;
     }
-    
+
     .pssr-info-modal-detail-row {
         padding: 10px 12px;
         gap: 10px;
     }
-    
+
     .pssr-info-modal-sainou-icon {
         width: 18px;
         height: 18px;
     }
-    
+
     .pssr-info-modal-sainou-text {
         font-size: 16px;
         line-height: 18px;
         height: 18px;
     }
-    
+
     .pssr-info-modal-sainou-wrapper {
         padding: 2px 10px;
     }
-    
+
     .pssr-info-modal-date-container-osusume {
         margin: 6px -16px 10px -16px;
         padding: 8px 16px;
@@ -762,17 +777,17 @@
         width: 48px;
         height: 48px;
     }
-    
+
     .pssr-info-modal-refer-images {
         bottom: -8px;
         left: -4px;
     }
-    
+
     .pssr-info-modal-refer-img {
         width: 24px;
         height: 24px;
     }
-    
+
     .pssr-info-modal-detail-row.pssr-info-modal-custom-row-container {
         gap: 10px;
     }
@@ -807,7 +822,7 @@
     margin: auto 0;
     padding: 24px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -877,7 +892,7 @@
     border-radius: 10px;
     cursor: pointer;
     font-size: 0.85rem;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.1s ease, filter 0.2s ease;
     text-align: center;
 }
@@ -902,15 +917,15 @@
         max-height: calc(100dvh - 24px);
         gap: 14px;
     }
-    
+
     .verygood-download-title {
         font-size: 1.05rem;
     }
-    
+
     .verygood-download-grid {
         gap: 12px;
     }
-    
+
     .verygood-download-action-btn {
         padding: 8px 10px;
         font-size: 0.75rem;

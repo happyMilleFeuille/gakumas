@@ -28,53 +28,116 @@
 .idol-icon-wrapper {
     position: relative;
     display: inline-block;
+    line-height: 0;
+    transition: transform 0.2s;
 }
 
 .idol-icon {
+    display: block;
     width: 80px;
     height: 110px;
-    border-radius: 12px;
+    border-radius: 12px 0 12px 0;
     background: #fff;
-    padding: 3px;
+    padding: 3px 7px 3px 3px;
     box-shadow: var(--shadow);
     cursor: pointer;
-    transition: transform 0.2s;
     object-fit: cover;
+}
+
+.idol-icon-wrapper:has(.fav-star-btn.active) .idol-icon {
+    border: 1px solid var(--idol-color, #fbc02d);
+}
+
+.idol-icon-wrapper:has(.fav-star-btn.active) .idol-icon.selected {
+    border-width: 2px;
+}
+
+.idol-color-bar {
+    --idol-color-bar-width: 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--idol-color-bar-width);
+    height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0 0 12px 0;
+    background: var(--idol-color, #fbc02d);
+    z-index: 10;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+    opacity: 1;
+    filter: grayscale(0.6);
+    pointer-events: none;
+}
+
+.idol-icon-wrapper:has(.idol-icon.selected) .idol-color-bar {
+    opacity: 1;
+    filter: grayscale(0);
+}
+
+.idol-icon-wrapper:has(.fav-star-btn.active) .idol-color-bar {
+    filter: grayscale(0);
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    width: calc(var(--idol-color-bar-width) - 1px);
+    border-radius: 0 0 11px 0;
+    box-shadow:
+        0 -1px 0 var(--idol-color, #fbc02d),
+        1px 0 0 var(--idol-color, #fbc02d),
+        1px -1px 0 var(--idol-color, #fbc02d);
+}
+
+.idol-icon-wrapper:has(.idol-icon.selected) .idol-color-bar {
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    width: calc(var(--idol-color-bar-width) - 2px);
+    border-radius: 0 0 10px 0;
+    box-shadow:
+        0 -2px 0 var(--idol-color, #fbc02d),
+        2px 0 0 var(--idol-color, #fbc02d),
+        2px -2px 0 var(--idol-color, #fbc02d);
 }
 
 .fav-star-btn {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 28px;
-    height: 28px;
+    top: 5px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #dedede;
+    cursor: pointer;
+    z-index: 11;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    opacity: 0.4;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-    transform: scale(0.8);
+    opacity: 0.75;
+    filter: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.fav-star-svg {
+    width: 22px;
+    height: 22px;
+    stroke: rgba(0, 0, 0, 0.25);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+}
+
+.fav-star-svg path {
+    vector-effect: non-scaling-stroke;
 }
 
 .fav-star-btn.active {
     opacity: 1;
-    transform: scale(1.1);
-}
-
-.fav-star-svg {
-    width: 24px;
-    height: 24px;
-    color: #ccc;
-    /* 비활성화 시 회색 */
-    transition: color 0.3s;
-}
-
-.fav-star-btn.active .fav-star-svg {
-    color: var(--fav-color, #fbc02d);
-    /* 활성화 시 아이돌 고유색 (기전 노란색 유지 가능) */
+    color: var(--idol-color, #fbc02d);
+    filter: none;
 }
 
 .fav-star-btn:hover {
@@ -82,16 +145,23 @@
     transform: scale(1.1);
 }
 
-.idol-icon:hover {
+.fav-star-btn:active {
+    transform: scale(0.92);
+}
+
+.idol-icon-wrapper:hover {
     transform: scale(1.05);
+}
+
+.idol-icon-wrapper:has(.idol-icon.selected) {
+    transform: translateY(-5px) scale(1.05);
+    z-index: 5;
 }
 
 .idol-icon.selected {
     border-width: 2px;
     border-style: solid;
     /* [수정] JS에서 동적으로 색상 설정 */
-    transform: translateY(-5px) scale(1.05);
-    z-index: 5;
 }
 
 
@@ -139,7 +209,7 @@
     transition: transform 0.2s, box-shadow 0.2s;
     background: #fff;
     /* 카드 배경 복구 */
-    border-radius: 12px;
+    border-radius: 0 16px 0 0;
     overflow: hidden;
     padding-bottom: 0;
     /* 하단 여백 제거 */
@@ -155,7 +225,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
-    border-radius: 8px 8px 0 0;
+    border-radius: 0 16px 0 0;
     overflow: hidden;
     background: #000;
 }
@@ -212,7 +282,7 @@
 
 .pssr-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 12px 12px 0 0;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
@@ -516,7 +586,7 @@
     position: relative;
     /* 날짜 위치 기준점 */
     overflow: hidden;
-    border-radius: 8px 8px 0 0;
+    border-radius: 0 16px 0 0;
 }
 
 .video-date {
@@ -617,15 +687,33 @@
     .idol-icon {
         width: 65px;
         height: 90px;
-        border-radius: 8px;
-        /* 둥글기 축소 */
+        border-radius: 8px 0 8px 0;
+        padding-right: 6px;
+    }
+
+    .idol-color-bar {
+        --idol-color-bar-width: 7px;
+        width: var(--idol-color-bar-width);
+        height: auto;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 0 0 8px 0;
+    }
+
+    .idol-icon-wrapper:has(.fav-star-btn.active) .idol-color-bar {
+        border-radius: 0 0 7px 0;
+    }
+
+    .idol-icon-wrapper:has(.idol-icon.selected) .idol-color-bar {
+        border-radius: 0 0 6px 0;
     }
 
     .fav-star-btn {
+        top: 4px;
+        right: 9px;
         width: 22px;
         height: 22px;
-        top: 1px;
-        right: 1px;
     }
 
     .fav-star-svg {
@@ -636,8 +724,13 @@
     /* 영상 리스트 모바일 축소 */
     .idol-video-item {
         width: 100px;
-        border-radius: 8px;
+        border-radius: 0 12px 0 0;
         /* 둥글기 축소 */
+    }
+
+    .video-thumb-container,
+    .video-thumb-wrapper {
+        border-radius: 0 12px 0 0;
     }
 
     .video-info {

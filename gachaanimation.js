@@ -1,9 +1,9 @@
-import { state, setJewels, setTotalPulls, addGachaLog } from './state.js';
+import { state, setJewels, setTotalPulls, addGachaLog, getGachaLogIdSet, getTotalPulls } from './state.js';
 import { pickGacha, getHighestRarity } from './gachalist.js';
 import { playSound, stopSound, stopBGM } from './gacha.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { getMediaUrl } from './media-url.js';
-import { isGachaVideoUnavailable } from './gacha-assets.js';
+import { isGachaVideoUnavailable, releasePreloadedGachaVideos } from './gacha-assets.js';
 
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
@@ -412,8 +412,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             else if (card.displayRarity === 'SSR') getSrc = 'gasya/spotget_ssrsupport.mp4';
         } else {
             if (card.rarity === 'PSSR') {
-                // Test tuning: keep the alt intro uncommon, but visible enough to verify.
-                getSrc = Math.random() < 0.10 ? 'gasya/spotget_pssralt1.mp4' : 'gasya/spotget_pssr.mp4';
+                getSrc = Math.random() < 0.05 ? 'gasya/spotget_pssralt1.mp4' : 'gasya/spotget_pssr.mp4';
                 revealSfx = getSrc.includes('alt1') ? 'gasya/get_pssralt1.mp3' : 'gasya/get_pssr.mp3';
             } else {
                 getSrc = (card.rarity === 'PSR') ? 'gasya/spotget_psr.mp4' : 'gasya/spotget_pr.mp4';
@@ -583,6 +582,7 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
             videoContainer.style.display = 'none';
         }
         document.body.classList.remove('immersive-mode');
+        releasePreloadedGachaVideos({ maxRetained: 2 });
         if (muteControls) { muteControls.classList.remove('hidden'); muteControls.style.display = 'flex'; }
         if (callbacks.onFinish) callbacks.onFinish(currentResults, gachaMode, baselineIdsSet);
         currentState = States.FINISHED;
@@ -650,21 +650,19 @@ export function setupGachaAnimation(contentArea, assetBlobs, callbacks) {
         let activeCfg = CURRENT_PICKUPS[type] || { pssr: [] };
         if (type === 'selection') activeCfg = SELECTION_CONFIG.find(c => c.id === state.activeSelectionId) || SELECTION_CONFIG[0];
         else if (type === 'normal') activeCfg = NORMAL_CONFIG.find(c => c.id === state.activeNormalId) || NORMAL_CONFIG[0];
-        else if (type === 'normal_multi') activeCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
         else if (type === 'limited') activeCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         else if (type === 'unit') activeCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         else if (type === 'fes') activeCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
 
         const isFree = activeCfg?.is_free === true;
         const cost = isFree ? 0 : (mode === 1 ? 250 : 2500);
-        const prevPulls = state.totalPulls[state.gachaType] || 0;
+        const prevPulls = getTotalPulls();
 
         if (!isFree) setJewels(state.jewels - cost);
         setTotalPulls(prevPulls + mode, state.gachaType);
         gachaMode = mode;
         currentResults = results;
-        const currentLog = state.gachaLog[state.gachaType] || [];
-        baselineIdsSet = new Set(currentLog.map(item => item.id)); // 원본 보존
+        baselineIdsSet = getGachaLogIdSet(state.gachaType); // 원본 보존
         existingIdsSet = new Set(baselineIdsSet); // 연출용 복사본
 
         const pssrPickups = activeCfg.pssr || activeCfg.pool?.pssr || [];

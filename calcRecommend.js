@@ -436,21 +436,12 @@ export async function getRecommendedCards(store, targetAttr = 'all', spSettings 
 /**
  * 추천 기능 초기화 (이벤트 바인딩 및 유효성 검사 포함)
  */
-export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupportPanelUI, showToast, state, showRecommendModal, ensureSupportPanelOpen = null) {
+export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupportPanelUI, showToast, state, showRecommendModal, ensureSupportPanelOpen = null, rerenderFromStore = null) {
     const recommendBtn = document.getElementById('btn-recommend-cards');
     if (!recommendBtn) return;
 
     recommendBtn.onclick = () => {
-        const planData = calcPlans[store.type];
-        const weekNums = Object.keys(planData.weeks);
-        const isAllSelected = weekNums.every(w => store.weeks[w] && store.weeks[w].value);
-
-        if (!isAllSelected) {
-            showToast(t('calc_toast_recommend_require_schedule'));
-            return;
-        }
-
-        showRecommendModal(async (settings, lockEnabled, selectedLockedCards, onProgress) => {
+        showRecommendModal(async (settings, lockEnabled, selectedLockedCards, onProgress, selectedPreset) => {
             const lockedCards = [];
             let lockedRentalId = null;
             if (lockEnabled && selectedLockedCards && selectedLockedCards.length > 0) {
@@ -462,11 +453,67 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
                     else if (idx >= 0) lockedCards.push(id);
                 });
             }
+
+            const presetState = selectedPreset?.calcState
+                ? JSON.parse(JSON.stringify(selectedPreset.calcState))
+                : null;
+            let replacedTargetPlanCards = null;
+            const planData = calcPlans[store.type];
+            const weekNums = Object.keys(planData.weeks);
+            const effectiveWeeks = presetState?.weeks || store.weeks;
+            const isAllSelected = weekNums.every(w => effectiveWeeks[w] && effectiveWeeks[w].value);
+            if (!isAllSelected) {
+                showToast(t('calc_toast_recommend_require_schedule'));
+                return;
+            }
+
+            // 다른 플랜에는 손대지 않고, 선택한 플랜과 플랜 공통 계산 조건만 적용한다.
+            if (presetState) {
+                const targetPlan = presetState.planType || store.planType || 'sense';
+                const normalizePlanCards = (value) => Array.isArray(value)
+                    ? { sense: [...value], logic: [...value], anomaly: [...value] }
+                    : { sense: [], logic: [], anomaly: [], ...(value || {}) };
+                const normalizePlanSkills = (value) => {
+                    if (value && !value.sense && !value.logic && !value.anomaly) {
+                        return { sense: { ...value }, logic: { ...value }, anomaly: { ...value } };
+                    }
+                    return { sense: {}, logic: {}, anomaly: {}, ...(value || {}) };
+                };
+                const presetPlanCards = normalizePlanCards(presetState.planCards);
+                const presetPlanSkills = normalizePlanSkills(presetState.planSkills);
+                replacedTargetPlanCards = [...new Set([
+                    ...(store.planCards[targetPlan] || []),
+                    ...(presetPlanCards[targetPlan] || [])
+                ].filter(Boolean))];
+
+                store.selectedIdol = presetState.selectedIdol || store.selectedIdol;
+                store.planType = targetPlan;
+                store.weeks = presetState.weeks ? { ...presetState.weeks } : {};
+                store.planCards[targetPlan] = [...(presetPlanCards[targetPlan] || [])];
+                store.planSkills[targetPlan] = { ...(presetPlanSkills[targetPlan] || {}) };
+                store.manualEnhance = { m: 0, a: 0, ...(presetState.manualEnhance || {}) };
+                store.manualDelete = { m: 0, a: 0, t: 0, ...(presetState.manualDelete || {}) };
+                store.manualGet = { m: 0, a: 0, t: 0, ...(presetState.manualGet || {}) };
+                store.pItems = Array.isArray(presetState.pItems) ? [...presetState.pItems] : [null, null, null, null, null];
+                store.pItemSubOpts = Array.isArray(presetState.pItemSubOpts) ? [...presetState.pItemSubOpts] : [null, null, null, null, null];
+                store.pItemSubSubOpts = Array.isArray(presetState.pItemSubSubOpts) ? [...presetState.pItemSubSubOpts] : [null, null, null, null, null];
+                store.pItemChecked = presetState.pItemChecked === true || presetState.pItemChecked === 'true';
+                store.isSR = presetState.isSR === true || presetState.isSR === 'true';
+                store.memories = Array.isArray(presetState.memories)
+                    ? presetState.memories.map(memory => memory == null ? [] : (Array.isArray(memory) ? [...memory] : [memory]))
+                    : [[], [], [], []];
+                store.isKyouka = !!presetState.isKyouka;
+                store.hifStats = { vocal: 0, dance: 0, visual: 0, ...(presetState.hifStats || {}) };
+                store.hifParamLimitLevel = presetState.hifParamLimitLevel || 0;
+                store.recommendSettings = { ...settings };
+            }
+
             const result = await getRecommendedCards(store, 'all', settings, lockedCards, lockedRentalId, onProgress);
             if (typeof onProgress === 'function') onProgress('calc_recommend_progress_apply');
-            if (applyRecommendedCards(store, result.cards, result.bestEnhance)) {
+            if (applyRecommendedCards(store, result.cards, result.bestEnhance, replacedTargetPlanCards)) {
                 store.save();
-                refreshAll();
+                if (selectedPreset && typeof rerenderFromStore === 'function') rerenderFromStore();
+                else refreshAll();
                 if (typeof ensureSupportPanelOpen === 'function') ensureSupportPanelOpen();
                 syncSupportPanelUI();
                 showToast(t('calc_toast_recommend_applied'));
@@ -478,11 +525,22 @@ export function initRecommendationFeature(store, calcPlans, refreshAll, syncSupp
 /**
  * 추천된 결과를 실제 스토어 상태에 적용 (초기화 포함)
  */
-export function applyRecommendedCards(store, recommended, bestEnhance = null) {
+export function applyRecommendedCards(store, recommended, bestEnhance = null, replacedTargetPlanCards = null) {
     if (!recommended || recommended.length !== 6) return false;
     if (new Set(recommended.filter(Boolean)).size !== recommended.filter(Boolean).length) return false;
 
     const planType = store.planType || 'sense';
+    const keepOtherPlans = Array.isArray(replacedTargetPlanCards);
+    const previousPlanCards = keepOtherPlans
+        ? replacedTargetPlanCards
+        : [...(store.planCards[planType] || [])].filter(Boolean);
+    const otherPlanCardIds = new Set();
+    if (keepOtherPlans) {
+        ['sense', 'logic', 'anomaly'].forEach(plan => {
+            if (plan === planType) return;
+            (store.planCards[plan] || []).filter(Boolean).forEach(id => otherPlanCardIds.add(id));
+        });
+    }
     store.planCards[planType] = [...recommended];
 
     // 강화 설정 최적화 반영
@@ -490,11 +548,21 @@ export function applyRecommendedCards(store, recommended, bestEnhance = null) {
         store.manualEnhance = { ...bestEnhance };
     }
 
-    // 상태 초기화
-    store.cardChecked = {};
-    store.cardExtraChecked = {};
-    store.cardEventChecked = {};
-    store.itemCounters = {};
+    if (keepOtherPlans) {
+        // 대상 플랜에서만 빠진 카드 상태를 제거하고, 다른 플랜에서 쓰는 카드는 건드리지 않는다.
+        previousPlanCards.forEach(id => {
+            if (otherPlanCardIds.has(id)) return;
+            delete store.cardChecked[id];
+            delete store.cardExtraChecked[id];
+            delete store.cardEventChecked[id];
+            delete store.itemCounters[id];
+        });
+    } else {
+        store.cardChecked = {};
+        store.cardExtraChecked = {};
+        store.cardEventChecked = {};
+        store.itemCounters = {};
+    }
 
     // 추천된 카드 적용
     recommended.forEach(id => {

@@ -368,7 +368,7 @@ export const guidePresets = {
                     '23': { value: 'gift_hif', opts: {} },
                     '24': { value: 'class_hif1', opts: { selectedAttr: '{firstAttr}', class_hif1: 'true' } },
                     '25': { value: 'lessondan', opts: { sp: 'true', selectedSubAttr: '{firstAttr}' } },
-                    '26': { value: 'advice', opts: { purchase_drink: '7', } },
+                    '26': { value: 'advice', opts: { purchase_drink: '5', } },
                     '27': { value: 'round_hif', opts: {} },
                     '28': { value: 'advice_hif', opts: { purchase_drink: '2', purchase_card: '2' } },
                     '29': { value: 'round_hif', opts: {} }

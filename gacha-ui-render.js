@@ -1,11 +1,24 @@
 // gacha-ui-render.js - 가챠 UI 렌더링 로직
-import { state, setSelectedPickup, idolColors } from './state.js';
-import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, NORMAL_MULTI_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
+import { state, setSelectedPickup, idolColors, hasGachaLogCard, getGachaLog } from './state.js';
+import { CURRENT_PICKUPS, SELECTION_CONFIG, NORMAL_CONFIG, LIMITED_CONFIG, UNIT_CONFIG, FES_CONFIG } from './gachaconfig.js';
 import { produceList } from './producedata.js';
 import { cardList } from './carddata.js'; // 서포트 카드 데이터 추가
 import { openDrawer } from './gacha-drawer.js';
 import { bindSafeClick } from './gacha-utils.js';
 import { getMediaUrl } from './media-url.js';
+import { showProduceCardInfoModal } from './pssrInfoModal.js';
+import { showCardModal } from './cardModal.js';
+import translations from './i18n.js';
+
+const BANNER_AUTO_SWITCH_DELAY = 10000;
+let bannerAutoSwitchTimer = null;
+
+export function stopGachaBannerAutoSwitch() {
+    if (bannerAutoSwitchTimer !== null) {
+        clearTimeout(bannerAutoSwitchTimer);
+        bannerAutoSwitchTimer = null;
+    }
+}
 
 const useJaNames = () => state.currentLang !== 'ko';
 const getLocalizedCardName = (card) => {
@@ -15,132 +28,429 @@ const getLocalizedCardName = (card) => {
     return card.name || '';
 };
 
+const getLocalizedIdolName = (produceId) => {
+    const idolKey = produceId?.match(/^ssr([^_]+)/)?.[1];
+    if (!idolKey) return '';
+    const language = translations[state.currentLang] || translations.ko;
+    return language?.[`idol_fullname_${idolKey}`] || language?.[`idol_name_${idolKey}`] || idolKey;
+};
+
+function applyGachaBackground(imageUrl) {
+    const fixedBg = document.getElementById('fixed-bg');
+    if (!fixedBg || !imageUrl) return;
+
+    const applyImage = (url) => {
+        fixedBg.dataset.gachaBackground = url;
+        fixedBg.style.webkitMaskImage = 'none';
+        fixedBg.style.maskImage = 'none';
+        fixedBg.style.backgroundImage = `url('${url}')`;
+        fixedBg.style.backgroundColor = 'transparent';
+        fixedBg.style.backgroundSize = 'cover';
+        fixedBg.style.backgroundRepeat = 'no-repeat';
+        fixedBg.style.backgroundPosition = 'center bottom';
+        fixedBg.style.filter = 'brightness(1.2)';
+        fixedBg.style.opacity = '0.4';
+    };
+
+    applyImage(imageUrl);
+
+    if (imageUrl.includes('idols/verygood/')) {
+        const requestedUrl = imageUrl;
+        const img = new Image();
+        img.onerror = () => {
+            if (fixedBg.dataset.gachaBackground !== requestedUrl) return;
+            applyImage(requestedUrl.replace('idols/verygood/', 'idols/'));
+        };
+        img.src = requestedUrl;
+    }
+}
+
 /**
  * 픽업 선택기 영역 렌더링
  */
 export function renderPickupSelector(ui) {
+    stopGachaBannerAutoSwitch();
     if (!ui.pickupSelector) return;
     const type = state.gachaType;
-    const checkHasCard = (id) => (state.gachaLog[type] || []).some(item => item.id === id);
+    const checkHasCard = (id) => hasGachaLogCard(id, type);
 
-    // 1. 드로어 방식 (셀렉션, 통상, 통상 (다중), 한정, 유닛, 페스)
-    if (type === 'selection' || type === 'normal' || type === 'normal_multi' || type === 'limited' || type === 'unit' || type === 'fes') {
+    // 1. 드로어 방식 (셀렉션, 통상, 한정, 유닛, 페스)
+    if (type === 'selection' || type === 'normal' || type === 'limited' || type === 'unit' || type === 'fes') {
         ui.pickupSelector.classList.remove('hidden');
-        const { currentCfg, favColor, displayName, bannerImg, bgImg } = getDrawerTypeDisplayData(type, checkHasCard);
+        const { currentCfg, favColor, gachaName, bannerImg, bgImg } = getDrawerTypeDisplayData(type, checkHasCard);
         
-        const gachaDate = currentCfg.display_date || currentCfg.date || ''; // display_date가 있으면 우선 사용
-        
-        // 셀렉션이거나 유닛/페스/통상다중 더블 픽업일 때만 가로 스타일 적용
+        // 더블 픽업도 첫 번째 PSSR 기준의 단일 배너로 표시
         const isSelection = type === 'selection';
-        const isMulti = ( (type === 'unit' || type === 'fes' || type === 'normal_multi') && currentCfg.pool?.pssr?.length >= 2);
+        const isMulti = false;
         const itemClass = (isSelection || isMulti) ? 'selection-item' : 'normal-selection-item';
 
         // 픽업 서포트 카드 데이터 추출
         const sssrPickups = currentCfg.pool?.sssr || [];
         const srPickups = currentCfg.pool?.sr_card || [];
-
-        // 배경 레이어 업데이트
-        if (ui.gachaBgLayer) {
-            ui.gachaBgLayer.innerHTML = `
-                <div class="selector-bg-item ${isMulti ? 'unit-bg' : 'single-bg'}" style="background-image: url('${bgImg}');"></div>
-            `;
-            if (bgImg.includes('idols/verygood/')) {
-                const img = new Image();
-                img.onerror = () => {
-                    const bgItem = ui.gachaBgLayer.querySelector('.selector-bg-item');
-                    if (bgItem) {
-                        const fallbackImg = bgImg.replace('idols/verygood/', 'idols/');
-                        bgItem.style.backgroundImage = `url('${fallbackImg}')`;
-                    }
+        const pickupPssrIds = (currentCfg.pool?.pssr || [])
+            .map(item => typeof item === 'string' ? item : item?.id)
+            .filter(Boolean);
+        const useMobileHighQualityPssr = window.matchMedia('(max-width: 768px)').matches;
+        const createSupportBannerItem = (id) => {
+            const cardData = cardList.find(card => card.id === id);
+            const isCardType = cardData?.have?.startsWith('card');
+            return {
+                type: 'support',
+                id,
+                name: getLocalizedCardName(cardData),
+                rarity: cardData?.rarity || 'SSR',
+                plan: cardData?.plan,
+                attribute: cardData?.type,
+                extraSrc: `images/support/${id}_${isCardType ? 'card' : 'item'}.webp`,
+                extraFallbackSrc: `images/support/${id}_${isCardType ? 'item' : 'card'}.webp`,
+                src: `images/support/${id}.webp`,
+                backgroundSrc: `images/support/${id}.webp`
+            };
+        };
+        const bannerItems = [
+            ...pickupPssrIds.map(id => {
+                const cardData = produceList.find(card => card.id === id);
+                const imageVersion = checkHasCard(id) ? '2' : '1';
+                const defaultSrc = `idols/${id}${imageVersion}.webp`;
+                return {
+                    type: 'produce',
+                    id,
+                    plan: cardData?.plan,
+                    rarity: cardData?.rarity || 'PSSR',
+                    characterName: getLocalizedIdolName(id),
+                    src: useMobileHighQualityPssr
+                        ? `idols/verygood/${id}${imageVersion}.webp`
+                        : defaultSrc,
+                    fallbackSrc: useMobileHighQualityPssr ? defaultSrc : null,
+                    backgroundSrc: `idols/verygood/${id}2.webp`
                 };
-                img.src = bgImg;
-            }
+            }),
+            ...sssrPickups.filter(Boolean).map(createSupportBannerItem),
+            ...srPickups.filter(Boolean).map(createSupportBannerItem)
+        ];
+
+        applyGachaBackground(bgImg);
+
+        const idolContainer = document.getElementById('idol');
+        let bannerLayer = document.getElementById('gacha-banner-layer');
+        if (!bannerLayer && idolContainer) {
+            bannerLayer = document.createElement('div');
+            bannerLayer.id = 'gacha-banner-layer';
+            bannerLayer.className = 'gacha-banner-layer';
+            idolContainer.prepend(bannerLayer);
         }
+        bannerLayer?.replaceChildren();
 
         ui.pickupSelector.innerHTML = `
             <div class="pickup-wrapper ${ (isSelection || isMulti) ? 'selection-wrapper' : ''}">
                 <div class="pickup-item ${itemClass}">
-                    <div class="pickup-name">${displayName}</div>
+                    <button type="button" class="pickup-drawer-bar" aria-label="Open gacha details">
+                        <span class="pickup-drawer-bar-handle" aria-hidden="true"></span>
+                    </button>
                     <div class="pickup-img-wrapper idol-main-img" style="border: 1px solid ${favColor}; ${isMulti ? 'display: flex; position: absolute;' : 'position: absolute;'} box-shadow: 0 0 20px 5px ${favColor}99;">
                         ${ isMulti ? 
                             currentCfg.pool.pssr.map((p, idx) => {
                                 const pid = typeof p === 'string' ? p : p.id;
                                 const imgVer = checkHasCard(pid) ? '2' : '1';
-                                const cardData = produceList.find(c => c.id === pid);
-                                const isMobile = window.innerWidth <= 768;
-                                const planIconSize = isMobile ? '24px' : '32px';
-                                const osusumeIconSize = isMobile ? '20px' : '28px';
-                                const rarityIconSize = isMobile ? '28px' : '52px'; // 등급 크기 약간 키움
-                                
-                                const shadowStyle = 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));';
-                                const planIcon = (cardData?.plan && !isSelection) ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 8px; left: 8px; width: ${planIconSize}; z-index: 2; ${shadowStyle}">` : '';
-                                // 딱 4px만 더 위로 (정밀 조정)
-                                const osusumeIcon = (cardData?.osusume && !isSelection) ? `<img src="icons/${cardData.osusume}.webp" class="pickup-osusume-icon" style="position: absolute; bottom: ${isMobile ? 32 : 44}px; right: 6px; width: ${osusumeIconSize}; z-index: 2; ${shadowStyle}">` : '';
-                                
-                                // 등급 아이콘 매핑 (PSSR -> ssr, SR -> sr 등)
-                                const rarityKey = (cardData?.rarity || 'ssr').toLowerCase().replace('p', '');
-                                const rarityIcon = cardData?.rarity ? `<img src="icons/${rarityKey}.png" class="pickup-rarity-icon" style="position: absolute; bottom: 6px; right: 6px; width: ${rarityIconSize}; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : '';
                                 
                                 return `
                                 <div style="flex: 1; position: relative; overflow: hidden; ${idx < currentCfg.pool.pssr.length - 1 ? `border-right: 1px solid ${favColor}88;` : ''}">
-                                    <img src="${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
-                                    ${planIcon}
-                                    ${osusumeIcon}
-                                    ${rarityIcon}
+                                    <img src="idols/${pid}${imgVer}.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                                 </div>`;
                             }).join('')
                             : `
                             <div class="selection-banner-img" style="width: 100%; height: 100%; overflow: hidden; position: relative;">
-                                <img src="${bannerImg}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
+                                <img src="${isSelection ? bannerImg : (bannerItems[0]?.src || bannerImg)}" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
                             </div>
-                            ${ (currentCfg.pool?.pssr?.[0] && !isSelection) ? (() => {
-                                const pid = typeof currentCfg.pool.pssr[0] === 'string' ? currentCfg.pool.pssr[0] : currentCfg.pool.pssr[0].id;
-                                const cardData = produceList.find(c => c.id === pid);
-                                const isMobile = window.innerWidth <= 768;
-                                const planIconSize = isMobile ? '28px' : '40px';
-                                const osusumeIconSize = isMobile ? '22px' : '32px';
-                                const rarityIconSize = isMobile ? '35px' : '70px';
-                                
-                                const shadowStyle = 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));';
-                                const planIcon = (cardData?.plan && !isSelection) ? `<img src="icons/${cardData.plan}.webp" class="pickup-plan-icon" style="position: absolute; top: 10px; left: 10px; width: ${planIconSize}; z-index: 2; ${shadowStyle}">` : '';
-                                // 딱 4px만 더 위로 (정밀 조정)
-                                const osusumeIcon = (cardData?.osusume && !isSelection) ? `<img src="icons/${cardData.osusume}.webp" class="pickup-osusume-icon" style="position: absolute; bottom: ${isMobile ? 38 : 56}px; right: 10px; width: ${osusumeIconSize}; z-index: 2; ${shadowStyle}">` : '';
-                                
-                                // 등급 아이콘 매핑
-                                const rarityKey = (cardData?.rarity || 'ssr').toLowerCase().replace('p', '');
-                                const rarityIcon = cardData?.rarity ? `<img src="icons/${rarityKey}.png" class="pickup-rarity-icon" style="position: absolute; bottom: 8px; right: 8px; width: ${rarityIconSize}; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">` : '';
-                                
-                                return `${planIcon}${osusumeIcon}${rarityIcon}`;
-                            })() : '' }
                             `
                         }
                     </div>
-                    ${gachaDate ? `<div class="pickup-date ${type === 'unit' ? 'is-unit' : ''}">${gachaDate}</div>` : ''}
-                    <div class="pickup-support-column">
-                        ${sssrPickups.map(id => `<div class="support-pickup-mini" data-rarity="SSR" style="background-image: url('images/support/thumb/${id}.webp');"></div>`).join('')}
-                        ${srPickups.map(id => `<div class="support-pickup-mini" data-rarity="SR" style="background-image: url('images/support/thumb/${id}.webp');"></div>`).join('')}
+                    <div class="pickup-info-row">
+                        <div class="pickup-identity">
+                            <div class="pickup-rarity-row">
+                                <img class="pickup-rarity-icon hidden" src="" alt="">
+                                ${!isSelection ? `
+                                    <button type="button" class="pickup-info-btn" aria-label="Gacha information">
+                                        <img src="icons/info.svg" alt="">
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="pickup-name">
+                                <div class="pickup-gacha-name">${gachaName}</div>
+                                <div class="pickup-character-name"></div>
+                            </div>
+                            ${!isSelection && bannerItems.length > 1 ? `
+                                <button type="button" class="gacha-image-switch-btn" aria-label="Image 1 of ${bannerItems.length}">
+                                    <span class="gacha-image-switch-icon" aria-hidden="true">⇌</span>
+                                    <span class="gacha-image-switch-count">1/${bannerItems.length}</span>
+                                    <span class="gacha-image-switch-progress" aria-hidden="true">
+                                        <span class="gacha-image-switch-progress-fill"></span>
+                                    </span>
+                                </button>
+                            ` : ''}
+                        </div>
+                        <div class="pickup-skill-item-icons hidden" aria-hidden="true"></div>
                     </div>
                 </div>
+                <div class="pickup-banner-spacer" aria-hidden="true"></div>
             </div>
         `;
-        const banner = ui.pickupSelector.querySelector('.pickup-item');
-        if (banner) bindSafeClick(banner, openDrawer);
+        const bannerContainer = ui.pickupSelector.querySelector('.pickup-item');
+        if (bannerContainer && bannerLayer) bannerLayer.appendChild(bannerContainer);
 
-        // 서포트 카드 클릭/터치 시 상세 서랍 열림 방지
-        const supportColumn = ui.pickupSelector.querySelector('.pickup-support-column');
-        if (supportColumn) {
-            ['mousedown', 'mouseup', 'touchstart', 'touchend', 'click'].forEach(evt => {
-                supportColumn.addEventListener(evt, (e) => e.stopPropagation());
+        if (!isSelection && bannerItems[0]?.fallbackSrc) {
+            const initialBannerImage = bannerLayer?.querySelector('.selection-banner-img img');
+            const fallbackSrc = bannerItems[0].fallbackSrc;
+            initialBannerImage?.addEventListener('error', () => {
+                initialBannerImage.src = fallbackSrc;
+            }, { once: true });
+            if (initialBannerImage?.complete && initialBannerImage.naturalWidth === 0) {
+                initialBannerImage.src = fallbackSrc;
+            }
+        }
+
+        const drawerBar = bannerLayer?.querySelector('.pickup-drawer-bar');
+        if (drawerBar) bindSafeClick(drawerBar, openDrawer);
+
+        const skillItemIcons = bannerLayer?.querySelector('.pickup-skill-item-icons');
+        const rarityIcon = bannerLayer?.querySelector('.pickup-rarity-icon');
+        const gachaNameLabel = bannerLayer?.querySelector('.pickup-gacha-name');
+        const characterName = bannerLayer?.querySelector('.pickup-character-name');
+        const infoBtn = bannerLayer?.querySelector('.pickup-info-btn');
+        let iconRenderVersion = 0;
+        let activeBannerItem = isSelection ? null : bannerItems[0];
+        const updateSkillItemIcons = async (item) => {
+            activeBannerItem = item || null;
+            if (!skillItemIcons) return;
+            const renderVersion = ++iconRenderVersion;
+            skillItemIcons.classList.add('hidden');
+            skillItemIcons.classList.toggle('support-icons', item?.type === 'support');
+            skillItemIcons.replaceChildren();
+
+            if (gachaNameLabel) {
+                gachaNameLabel.textContent = item?.type === 'support' ? (item.name || '') : gachaName;
+                gachaNameLabel.classList.toggle('support-card-name', item?.type === 'support');
+            }
+            if (rarityIcon) {
+                const rarityKey = item?.rarity?.toLowerCase().replace(/^p/, '');
+                rarityIcon.classList.toggle('hidden', !rarityKey);
+                if (rarityKey) {
+                    rarityIcon.src = `icons/${rarityKey}.png`;
+                    rarityIcon.alt = item.rarity;
+                }
+            }
+            if (characterName) {
+                characterName.textContent = item?.type === 'produce' ? item.characterName : '';
+                characterName.classList.toggle('hidden', !characterName.textContent);
+            }
+
+            if (!item || !item.id) {
+                skillItemIcons.classList.add('hidden');
+                return;
+            }
+
+            const iconSources = [];
+            if (item.type === 'support') {
+                if (item.attribute) iconSources.push({ src: `icons/${item.attribute}.webp`, alt: 'Attribute' });
+                iconSources.push({ src: item.extraSrc, fallbackSrc: item.extraFallbackSrc, alt: 'Support effect' });
+            } else if (item.type === 'produce') {
+                if (item.plan) {
+                    iconSources.push(
+                        { src: `icons/${item.plan}.webp`, alt: 'Plan' },
+                        { src: `idols/${item.plan}/${item.id}.webp`, alt: 'Skill' },
+                        { src: `idols/${item.plan}/${item.id}second.webp`, alt: 'Skill 2' }
+                    );
+                }
+                iconSources.push({ src: `idols/item/${item.id}.webp`, alt: 'Item' });
+            } else {
+                skillItemIcons.classList.add('hidden');
+                return;
+            }
+
+            const loadedIcons = await Promise.all(iconSources.map(({ src, fallbackSrc, alt }) => new Promise(resolve => {
+                const icon = document.createElement('img');
+                let usingFallback = false;
+                icon.alt = alt;
+                icon.className = 'pickup-skill-item-icon';
+                icon.addEventListener('load', () => resolve(icon), { once: true });
+                icon.addEventListener('error', () => {
+                    if (fallbackSrc && !usingFallback) {
+                        usingFallback = true;
+                        icon.src = fallbackSrc;
+                        return;
+                    }
+                    resolve(null);
+                });
+                icon.src = src;
+            })));
+
+            if (renderVersion !== iconRenderVersion) return;
+            skillItemIcons.replaceChildren(...loadedIcons.filter(Boolean));
+            skillItemIcons.classList.toggle('hidden', loadedIcons.every(icon => !icon));
+        };
+
+        updateSkillItemIcons(isSelection ? null : bannerItems[0]);
+
+        if (infoBtn) {
+            ['pointerdown', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(eventName => {
+                infoBtn.addEventListener(eventName, event => event.stopPropagation());
+            });
+            bindSafeClick(infoBtn, () => {
+                if (!activeBannerItem?.id) return;
+
+                if (activeBannerItem.type === 'support') {
+                    const card = cardList.find(entry => entry.id === activeBannerItem.id);
+                    if (!card) return;
+                    showCardModal(
+                        card,
+                        getLocalizedCardName(card),
+                        card.image || `images/support/${card.id}.webp`,
+                        { restoreLBOnClose: true }
+                    );
+                    return;
+                }
+
+                if (activeBannerItem.type !== 'produce') return;
+
+                const card = produceList.find(entry => entry.id === activeBannerItem.id);
+                if (!card) return;
+
+                const idolKey = activeBannerItem.id.match(/^ssr([^_]+)/)?.[1];
+                showProduceCardInfoModal(card, idolColors[idolKey] || '#ffffff');
             });
         }
 
-        // 픽업 서포트 카드 툴팁 이벤트 바인딩 (PC 전용)
-        setupSupportTooltips(ui.pickupSelector);
+        const imageSwitchBtn = bannerLayer?.querySelector('.gacha-image-switch-btn');
+        if (imageSwitchBtn) {
+            ['pointerdown', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(eventName => {
+                imageSwitchBtn.addEventListener(eventName, event => {
+                    event.stopPropagation();
+                });
+            });
+
+            const bannerImage = bannerLayer?.querySelector('.selection-banner-img img');
+            const bannerImageWrapper = bannerLayer?.querySelector('.selection-banner-img');
+            const countLabel = imageSwitchBtn.querySelector('.gacha-image-switch-count');
+            const progressFill = imageSwitchBtn.querySelector('.gacha-image-switch-progress-fill');
+            let bannerIndex = 0;
+            const setBannerImageSource = (image, item) => {
+                if (!image || !item) return;
+                image.onerror = item.fallbackSrc ? () => {
+                    image.onerror = null;
+                    image.src = item.fallbackSrc;
+                } : null;
+                image.src = item.src;
+            };
+            const playSupportBannerEnter = (item) => {
+                if (!bannerImage) return;
+                bannerImage.classList.remove('support-banner-enter');
+                void bannerImage.offsetWidth;
+                bannerImage.classList.add('support-banner-enter');
+
+                if (!bannerImageWrapper) return;
+                let secondaryImage = bannerImageWrapper.querySelector('.support-banner-enter-secondary');
+                if (!secondaryImage) {
+                    secondaryImage = document.createElement('img');
+                    secondaryImage.className = 'support-banner-enter-secondary';
+                    secondaryImage.alt = '';
+                    secondaryImage.setAttribute('aria-hidden', 'true');
+                    bannerImageWrapper.appendChild(secondaryImage);
+                }
+                setBannerImageSource(secondaryImage, item);
+                secondaryImage.classList.remove('is-animating');
+                void secondaryImage.offsetWidth;
+                secondaryImage.classList.add('is-animating');
+
+                let finaleGlow = bannerImageWrapper.querySelector('.support-banner-finale-glow');
+                if (!finaleGlow) {
+                    finaleGlow = document.createElement('span');
+                    finaleGlow.className = 'support-banner-finale-glow';
+                    finaleGlow.setAttribute('aria-hidden', 'true');
+                    bannerImageWrapper.appendChild(finaleGlow);
+                }
+                finaleGlow.classList.remove('is-animating');
+                void finaleGlow.offsetWidth;
+                finaleGlow.classList.add('is-animating');
+
+                let finaleRays = bannerImageWrapper.querySelector('.support-banner-finale-rays');
+                if (!finaleRays) {
+                    finaleRays = document.createElement('span');
+                    finaleRays.className = 'support-banner-finale-rays';
+                    finaleRays.setAttribute('aria-hidden', 'true');
+                    bannerImageWrapper.appendChild(finaleRays);
+                }
+                finaleRays.classList.remove('is-animating');
+                void finaleRays.offsetWidth;
+                finaleRays.classList.add('is-animating');
+
+                let finaleImage = bannerImageWrapper.querySelector('.support-banner-finale');
+                if (!finaleImage) {
+                    finaleImage = document.createElement('img');
+                    finaleImage.className = 'support-banner-finale';
+                    finaleImage.alt = '';
+                    finaleImage.setAttribute('aria-hidden', 'true');
+                    bannerImageWrapper.appendChild(finaleImage);
+                }
+                setBannerImageSource(finaleImage, item);
+                finaleImage.classList.remove('is-animating');
+                void finaleImage.offsetWidth;
+                finaleImage.classList.add('is-animating');
+            };
+            const advanceBanner = () => {
+                if (!bannerImage || bannerItems.length < 2) return;
+
+                bannerIndex = (bannerIndex + 1) % bannerItems.length;
+                const nextItem = bannerItems[bannerIndex];
+                setBannerImageSource(bannerImage, nextItem);
+                bannerImage.style.objectFit = nextItem.type === 'support' ? 'contain' : 'cover';
+                bannerImage.style.objectPosition = nextItem.type === 'support' ? 'center 15%' : 'top';
+                if (nextItem.type === 'support') {
+                    playSupportBannerEnter(nextItem);
+                } else {
+                    bannerImage.classList.remove('support-banner-enter');
+                    bannerImageWrapper?.querySelector('.support-banner-enter-secondary')?.remove();
+                    bannerImageWrapper?.querySelector('.support-banner-finale-glow')?.remove();
+                    bannerImageWrapper?.querySelector('.support-banner-finale-rays')?.remove();
+                    bannerImageWrapper?.querySelector('.support-banner-finale')?.remove();
+                }
+                applyGachaBackground(nextItem.backgroundSrc);
+                updateSkillItemIcons(nextItem);
+                if (countLabel) countLabel.textContent = `${bannerIndex + 1}/${bannerItems.length}`;
+                imageSwitchBtn.setAttribute('aria-label', `Image ${bannerIndex + 1} of ${bannerItems.length}`);
+            };
+            const scheduleAutoSwitch = () => {
+                stopGachaBannerAutoSwitch();
+                if (progressFill) {
+                    progressFill.classList.remove('is-running');
+                    void progressFill.offsetWidth;
+                    progressFill.classList.add('is-running');
+                }
+                bannerAutoSwitchTimer = setTimeout(() => {
+                    bannerAutoSwitchTimer = null;
+                    if (!imageSwitchBtn.isConnected || bannerLayer !== document.getElementById('gacha-banner-layer')) return;
+                    if (document.hidden || document.body.classList.contains('immersive-mode') || document.body.classList.contains('gacha-result-active')) {
+                        scheduleAutoSwitch();
+                        return;
+                    }
+                    advanceBanner();
+                    scheduleAutoSwitch();
+                }, BANNER_AUTO_SWITCH_DELAY);
+            };
+            imageSwitchBtn.addEventListener('click', event => {
+                event.preventDefault();
+                event.stopPropagation();
+                advanceBanner();
+                scheduleAutoSwitch();
+            });
+            scheduleAutoSwitch();
+        }
+
         return;
     }
 
     // 2. 기타 방식 (필요 시)
     ui.pickupSelector.classList.add('hidden');
+    document.getElementById('gacha-banner-layer')?.remove();
 }
 
 /**
@@ -356,9 +666,8 @@ export function renderResults(ui, currentResults, existingIdsBeforePull = null) 
     if (existingIdsBeforePull) {
         prePullExistingIds = existingIdsBeforePull;
     } else {
-        const currentLog = state.gachaLog[state.gachaType] || [];
-        const priorEntries = currentLog.filter((item, idx) => idx < currentLog.length - currentResults.length);
-        prePullExistingIds = new Set(priorEntries.map(item => item.id));
+        const currentLog = getGachaLog();
+        prePullExistingIds = new Set(currentLog.slice(currentResults.length));
     }
 
     currentResults.forEach((card, index) => {
@@ -411,18 +720,8 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
-    } else if (type === 'normal_multi') {
-        currentCfg = NORMAL_MULTI_CONFIG.find(c => c.id === state.activeNormalMultiId) || NORMAL_MULTI_CONFIG[0];
-        const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
-        const cardData = produceList.find(c => c.id === pid);
-        displayName = getConfigDisplayName(currentCfg) || getLocalizedCardName(cardData) || currentCfg.name;
-        const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
-        favColor = idolColors[charKey] || "#ff4081";
-        const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
+        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bgImg = pid ? `idols/verygood/${pid}2.webp` : bannerImg;
     } else if (type === 'limited') {
         currentCfg = LIMITED_CONFIG.find(c => c.id === state.activeLimitedId) || LIMITED_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -431,8 +730,8 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
+        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bgImg = pid ? `idols/verygood/${pid}2.webp` : bannerImg;
     } else if (type === 'unit') {
         currentCfg = UNIT_CONFIG.find(c => c.id === state.activeUnitId) || UNIT_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -441,8 +740,8 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
+        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bgImg = pid ? `idols/verygood/${pid}2.webp` : bannerImg;
     } else if (type === 'fes') {
         currentCfg = FES_CONFIG.find(c => c.id === state.activeFesId) || FES_CONFIG[0];
         const firstPSSR = currentCfg.pool?.pssr?.[0], pid = typeof firstPSSR === 'string' ? firstPSSR : firstPSSR?.id;
@@ -451,13 +750,14 @@ function getDrawerTypeDisplayData(type, checkHasCard) {
         const charKey = pid ? pid.replace('ssr', '').split('_')[0] : '';
         favColor = idolColors[charKey] || "#ff4081";
         const imgVer = checkHasCard(pid) ? '2' : '1';
-        bannerImg = pid ? `${window.innerWidth <= 768 ? 'idols' : 'idols/thumb'}/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
-        bgImg = pid ? `idols/verygood/${pid}1.webp` : bannerImg;
+        bannerImg = pid ? `idols/${pid}${imgVer}.webp` : (currentCfg.bannerImg || 'gasya/gasya_ongakusai1.webp');
+        bgImg = pid ? `idols/verygood/${pid}2.webp` : bannerImg;
     }
     return {
         currentCfg,
         favColor,
         displayName,
+        gachaName: getConfigDisplayName(currentCfg) || displayName,
         bannerImg: getMediaUrl(bannerImg),
         bgImg: getMediaUrl(bgImg)
     };

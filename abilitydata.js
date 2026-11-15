@@ -65,7 +65,7 @@ export const abilityData = {
     },
     "sp_param": {
         name: { ko: "SP레슨", ja: "SPレッスン", en: "SP Lesson" },
-        format: { ko: "{type} SP레슨 종료시 {type} 상승+{val}", ja: "{type}SPレッスン終了時、{type}上昇+{val}", en: "After {type} SP Lesson, {type} Up +{val}" },
+        format: { ko: "{type} SP레슨 종료 시 {type} 상승+{val}", ja: "{type}SPレッスン終了時、{type}上昇+{val}", en: "After {type} SP Lesson, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 13, 2: 17 },
             "SSR_DIST": { 1: 9, 2: 13 },
@@ -74,7 +74,7 @@ export const abilityData = {
     },
     "sp_param20": {
         name: { ko: "SP레슨(20장)", ja: "SPレッスン(20枚)", en: "SP Lesson(20Cards)" },
-        format: { ko: "SP레슨 종료시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロデュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
+        format: { ko: "SP레슨 종료 시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロデュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 15, 2: 21 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -84,7 +84,7 @@ export const abilityData = {
     },
     "lesson_param": {
         name: { ko: "레슨", ja: "レッスン", en: "Lesson" },
-        format: { ko: "{type} 레슨 종료시 {type} 상승+{val}", ja: "{type}レッスン終了時、{type}上昇+{val}", en: "After {type} Lesson, {type} Up +{val}" },
+        format: { ko: "{type} 레슨 종료 시 {type} 상승+{val}", ja: "{type}レッスン終了時、{type}上昇+{val}", en: "After {type} Lesson, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 4, 2: 6 },
             "SSR_DIST": { 1: 3, 2: 4 },
@@ -92,8 +92,8 @@ export const abilityData = {
         },
     },
     "normallesson_param": {
-        name: { ko: "통상레슨", ja: "通常レッスン", en: "Normal Lesson" },
-        format: { ko: "{type} 통상레슨 종료시 {type} 상승+{val}", ja: "{type}通常レッスン終了時、{type}上昇+{val}", en: "After Normal {type} Lesson, {type} Up +{val}" },
+        name: { ko: "일반레슨", ja: "通常レッスン", en: "Normal Lesson" },
+        format: { ko: "{type} 일반레슨 종료 시 {type} 상승+{val}", ja: "{type}通常レッスン終了時、{type}上昇+{val}", en: "After Normal {type} Lesson, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -156,7 +156,7 @@ export const abilityData = {
         }
     },
     "sp_ppoint": {
-        format: { ko: "{type} SP레슨 종료 시, P포인트 획득량 증가+{val}%", ja: "{type}SPレッスン終了時、Pポイント獲得量増加+{val}%", en: "P Point gain after {type} SP Lesson +{val}%" },
+        format: { ko: "{type} SP레슨 종료 시 P포인트 획득량 증가+{val}%", ja: "{type}SPレッスン終了時、Pポイント獲得量増加+{val}%", en: "P Point gain after {type} SP Lesson +{val}%" },
         levels: {
             "SSR": { 1: 33, 2: 45 },
             "SSR_DIST": { 1: 22, 2: 33 },
@@ -164,7 +164,7 @@ export const abilityData = {
         }
     },
     "allsp_recovery": {
-        format: { ko: "SP레슨 종료 시, 체력회복+{val}", ja: "SPレッスン終了時、体力回復+{val}", en: "Recover HP +{val} after SP Lesson" },
+        format: { ko: "SP레슨 종료 시 체력회복+{val}", ja: "SPレッスン終了時、体力回復+{val}", en: "Recover HP +{val} after SP Lesson" },
         levels: {
             "SSR": { 1: 3, 2: 4 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -172,7 +172,7 @@ export const abilityData = {
         }
     },
     "sp_recovery": {
-        format: { ko: "{type} SP레슨 종료 시, 체력회복+{val}", ja: "{type}SPレッスン終了時、体力回復+{val}", en: "Recover HP +{val} after {type} SP Lesson" },
+        format: { ko: "{type} SP레슨 종료 시 체력회복+{val}", ja: "{type}SPレッスン終了時、体力回復+{val}", en: "Recover HP +{val} after {type} SP Lesson" },
         levels: {
             "SSR": { 1: 5, 2: 7 },
             "SSR_DIST": { 1: 4, 2: 5 },
@@ -180,7 +180,7 @@ export const abilityData = {
         }
     },
     "test_recovery": {
-        format: { ko: "시험・오디션 종료 시, 체력회복+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、体力回復+{val} (プロデュース中1回)", en: "Recover HP +{val} after Exam or Audition (once during Produce)" },
+        format: { ko: "시험・오디션 종료 시 체력회복+{val} (프로듀스 중 1회)", ja: "試験・オーディション終了時、体力回復+{val} (プロデュース中1回)", en: "Recover HP +{val} after Exam or Audition (once during Produce)" },
         levels: {
             "SSR": { 1: 6, 2: 8 },
             "SSR_DIST": { 1: 4, 2: 6 },

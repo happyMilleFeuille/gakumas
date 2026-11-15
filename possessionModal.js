@@ -2084,7 +2084,7 @@ export function openPossessionModal() {
                     min-width: 0 !important;
                     padding: 14px 8px 3px 8px !important;
                     gap: 8px !important;
-                    border-radius: 14px !important;
+                    border-radius: 8px !important;
                 }
 
                 body:not(.is-capturing) .possession-title-wrap {
@@ -2260,7 +2260,7 @@ export function openPossessionModal() {
                 }
             }
         </style>
-        <div class="modal-content possession-modal-content" style="width: 1000px; max-width: 90%; min-width: min(740px, 90%); max-height: 85dvh; padding: 20px 20px 9px 20px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); overflow: hidden; background-color: #ffffff;">
+        <div class="modal-content possession-modal-content" style="width: 1000px; max-width: 90%; min-width: min(740px, 90%); max-height: 85dvh; padding: 20px 20px 9px 20px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); overflow: hidden; background-color: #ffffff;">
             <!-- Header section containing the Title and Save Image button on the top-right -->
             <div id="possession-header-area" style="display: flex; align-items: flex-end; user-select: none; width: 100%; padding-bottom: 8px; box-sizing: border-box;">
                 <div style="display: flex; flex-direction: column; align-items: flex-start; flex: 1; gap: 0; margin-right: 5px;">

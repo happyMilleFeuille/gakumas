@@ -39,7 +39,7 @@
     max-width: 94vw !important;
     max-height: 90dvh;
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 8px;
     border: 2px solid #fcc75e;
     display: flex;
     flex-direction: column;
@@ -761,7 +761,7 @@
     border-color: rgba(70, 164, 243, 0.22);
 }
 
-.support-lb-enhance-control > span {
+.support-lb-enhance-control>span {
     display: block;
     margin-bottom: 2px;
     color: #64748b;

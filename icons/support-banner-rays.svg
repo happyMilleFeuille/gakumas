@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true">
+  <defs>
+    <path id="ray" d="M49 43 L51 43 L58 0 L42 0 Z" />
+    <linearGradient id="ray-fade" x1="0" y1="43" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="1" />
+      <stop offset="0.58" stop-color="#fff" stop-opacity="0.72" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <g fill="url(#ray-fade)">
+    <use href="#ray" opacity="0.68" />
+    <use href="#ray" opacity="0.48" transform="rotate(60 50 50)" />
+    <use href="#ray" opacity="0.68" transform="rotate(120 50 50)" />
+    <use href="#ray" opacity="0.48" transform="rotate(180 50 50)" />
+    <use href="#ray" opacity="0.68" transform="rotate(240 50 50)" />
+    <use href="#ray" opacity="0.48" transform="rotate(300 50 50)" />
+  </g>
+</svg>

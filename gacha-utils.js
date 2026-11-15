@@ -1,5 +1,5 @@
 // gacha-utils.js - 가챠 UI 보조 유틸리티
-import { state } from './state.js';
+import { state, getTotalPulls } from './state.js';
 import translations from './i18n.js';
 import { openDrawer } from './gacha-drawer.js';
 
@@ -33,7 +33,7 @@ export function updateJewelUI(ui) {
 export function updateTotalPullsUI(ui, prevCount = null) {
     if (ui.totalPullCount) {
         const exchangeText = translations[state.currentLang]?.gacha_exchange_pt || "교환pt";
-        const currentPulls = state.totalPulls[state.gachaType] || 0;
+        const currentPulls = getTotalPulls();
         ui.totalPullCount.textContent = (prevCount !== null) ? 
             `${exchangeText}    ${prevCount}  →  ${currentPulls}` : `${exchangeText}    ${currentPulls}`;
     }
