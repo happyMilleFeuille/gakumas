@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 구글 파이어베이스 설정값 (전달해주신 비밀 열쇠 키)
+// Firebase 웹 앱 공개 설정값입니다. 접근 권한은 API 키가 아니라 Firestore 보안 규칙에서 제어합니다.
 const firebaseConfig = {
     apiKey: "AIzaSyBFcY7VDtHvYLxXxMG_9q_sbZHD6sFoT8g",
     authDomain: "gakumasnote.firebaseapp.com",
