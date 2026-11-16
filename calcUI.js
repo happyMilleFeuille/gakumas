@@ -29,7 +29,9 @@ const replaceActionStatusIcons = (text) => {
         .replace(/(강기|強気)/g, '<img src="icons/enthusiasm.webp" alt="Enthusiasm" class="pssr-info-modal-desc-inline-icon">$1')
         .replace(/(전력치|全力値)/g, '<img src="icons/fullpowerparam.webp" alt="Full Power Value" class="pssr-info-modal-desc-inline-icon">$1')
         .replace(/(전력(?!치)|全力(?!値))/g, '<img src="icons/fullpower.webp" alt="Full Power" class="pssr-info-modal-desc-inline-icon">$1')
-        .replace(/(온존|温存)/g, '<img src="icons/preservation.webp" alt="Preservation" class="pssr-info-modal-desc-inline-icon">$1');
+        .replace(/(온존|温存)/g, '<img src="icons/preservation.webp" alt="Preservation" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(메타모르포제\s*[（(]준비[）)]|メタモルフォーゼ\s*[（(]支度[）)])/g, '<img src="icons/metamor1.webp" alt="Metamorphose Preparation" class="pssr-info-modal-desc-inline-icon">$1')
+        .replace(/(메타모르포제\s*[（(]선보임[）)]|メタモルフォーゼ\s*[（(]披露[）)])/g, '<img src="icons/metamor2.webp" alt="Metamorphose Performance" class="pssr-info-modal-desc-inline-icon">$1');
 };
 const normalizeEffectText = (text) => replaceActionStatusIcons(text)
     .replace(/경우,\s*,/g, '경우,')

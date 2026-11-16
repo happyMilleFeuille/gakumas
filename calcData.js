@@ -616,28 +616,28 @@ export const idolData = {
         }
     },
     'kanae': {
-        priority: ['visual', 'dance', 'vocal'], growthType: 'balanced',
+        priority: ['visual', 'vocal', 'dance'], growthType: 'balanced',
         // 기본 스텟 (친밀도 보너스 제외, 레벨 50 기준)
         baseStats: {
-            ssr: { vocal: 85, dance: 95, visual: 80 },
-            sr: { vocal: 80, dance: 90, visual: 75 }
+            ssr: { vocal: 85, dance: 85, visual: 90 },
+            sr: { vocal: 80, dance: 80, visual: 85 }
         },
         // 친밀도 보너스 (항상 합산 적용)
         affinity: {
             10: {
-                base: { vocal: 0, dance: 0, visual: 5 },
-                bonus: { vocal: 0, dance: 2.5, visual: 2.5 }
+                base: { vocal: 10, dance: 10, visual: 15 },
+                bonus: { vocal: 1.0, dance: 0, visual: 2.0 }
             },
         },
         // 보너스 % (단계별)
         bonus: {
             ssr: {
-                base: { vocal: 11.0, dance: 19.0, visual: 21.0 },
+                base: { vocal: 18.0, dance: 12.0, visual: 18.0 },
                 bloom3: { vocal: 0, dance: 3.0, visual: 5.0 } // +3.0%, +5.0% 추가
             },
             sr: {
-                base: { vocal: 10.0, dance: 18.0, visual: 21.0 },
-                bloom3: { vocal: 0, dance: 2.0, visual: 3.0 }  // +2.0%, +3.0% 추가
+                base: { vocal: 18.0, dance: 9.0, visual: 18.0 },
+                bloom3: { vocal: 0, dance: 3.0, visual: 5.0 }  // +2.0%, +3.0% 추가
             }
         }
     },

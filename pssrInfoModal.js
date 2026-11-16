@@ -117,6 +117,16 @@ export const replaceDescIcons = (text) => {
         return `<img src="icons/preservation.webp" alt="Preservation" class="pssr-info-modal-desc-inline-icon">${match}`;
     });
 
+    // 6-2. 메타모르포제 (준비) / メタモルフォーゼ（支度）
+    result = result.replace(/(메타모르포제\s*[（(]준비[）)]|メタモルフォーゼ\s*[（(]支度[）)])/g, (match) => {
+        return `<img src="icons/metamor1.webp" alt="Metamorphose Preparation" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
+    // 6-3. 메타모르포제 (선보임) / メタモルフォーゼ（披露）
+    result = result.replace(/(메타모르포제\s*[（(]선보임[）)]|メタモルフォーゼ\s*[（(]披露[）)])/g, (match) => {
+        return `<img src="icons/metamor2.webp" alt="Metamorphose Performance" class="pssr-info-modal-desc-inline-icon">${match}`;
+    });
+
     // 7. 호인상 / 好印象
     result = result.replace(/(호인상|好印象)/g, (match) => {
         return `<img src="icons/goodimpression.webp" alt="Good Impression" class="pssr-info-modal-desc-inline-icon">${match}`;

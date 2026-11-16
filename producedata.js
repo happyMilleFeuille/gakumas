@@ -307,11 +307,11 @@ export const produceList = [
 
     // --- 카나에 SSR (PSSR) ---
     {
-        id: "ssrkanae_1st", name: "메타모르포제", name_en: "Metamorphose", name_ja: "メタモルフォーゼ", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 8.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
+        id: "ssrkanae_1st", name: "메타모르포제", name_en: "Metamorphose", name_ja: "メタモルフォーゼ", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 9.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
         item: {
             name: "なにかが変わる予感",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "레슨 개시 시\n✦ 메타모르포제 (준비)\n✦ concentration1\n✦ inlesson1\n※ 메타모르포제 (준비) : 전반 턴 동안 집중・호조・절호조의 증가량+1, 파라미터 상승량 25% 감소, 전반 턴 종료 후 「메타모르포제 (선보임)」로 변경 \n※ 메타모르포제 (선보임) : 파라미터 상승량이 25% 증가하며 집중・호조・절호조의 증가량-1",
+            desc_ja: "レッスン開始時、\n✦ メタモルフォーゼ（支度）\n✦ concentration1\n✦ inlesson1\n※ メタモルフォーゼ（支度）：前半ターンの間、集中と好調と絶好調の増加量を+1、パラメータ上昇量を25%減少。前半ターン終了後、「メタモルフォーゼ（披露）」になる。\n※ メタモルフォーゼ（披露）：パラメータ上昇量を25%増加、集中と好調と絶好調の増加量を-1する",
         },
         itemplus: {
             desc: "레슨 개시 시\n✦ 메타모르포제 (준비)\n✦ concentration1 \n✦ goodcondition1\n✦ inlesson1\n※ 메타모르포제 (준비) : 전반 턴 동안 집중・호조・절호조의 증가량+1, 파라미터 상승량 25% 감소, 전반 턴 종료 후 「메타모르포제 (선보임)」로 변경 \n※ 메타모르포제 (선보임) : 파라미터 상승량이 25% 증가하며 집중・호조・절호조의 증가량-1",
@@ -319,12 +319,12 @@ export const produceList = [
         },
         card: {
             name: "柔らかな光の中で",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "집중이 3이상일 경우 사용 가능\n✦ use1\n✦ 다음 턴의 턴 종료 시 param2 (2회)\n✦ 2턴 후의 턴 종료 시 param2 (3회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "集中が3以上の場合、使用可\n✦ use1\n✦ 次のターンのターン終了時、param2（2回）\n✦ 2ターン後のターン終了時、param2（3回）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
-            desc: "집중이 6이상일 경우 사용 가능\n✦ use1\n✦ param2\n✦ 다음 턴의 턴 종료 시 param2 (2회)\n✦ 2턴 후의 턴 종료 시 param2 (3회)\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "集中が6以上の場合、使用可\n✦ use1\n✦ param2\n✦ 次のターンのターン終了時、param2（2回）\n✦ 2ターン後のターン終了時、param2（3回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "집중이 3이상일 경우 사용 가능\n✦ use1\n✦ param2\n✦ 다음 턴의 턴 종료 시 param2 (2회)\n✦ 2턴 후의 턴 종료 시 param2 (3회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "集中が3以上の場合、使用可\n✦ use1\n✦ param2\n✦ 次のターンのターン終了時、param2（2回）\n✦ 2ターン後のターン終了時、param2（3回）\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
     },
 
@@ -475,7 +475,7 @@ export const produceList = [
     { id: "ssrmao_1st4another", name: "White Night! White Wish!", rarity: "PSSR", releasedAt: "2024-11-28", category: "season", jumpTime2: 7.8, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
     { id: "ssrmao_1st5another", name: "해피 밀푀유", name_en: "happymillefeuille", name_ja: "ハッピーミルフィーユ", category: "season", rarity: "PSSR", releasedAt: "2025-02-01", jumpTime2: 7.2, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
     { id: "ssrmao_1st7another", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", name_ja: "桜フォトグラフ", category: "season", rarity: "PSSR", releasedAt: "2025-04-11", jumpTime2: 7.1, plan: "sense", osusume: "goodcondition", source: "limited", another: true },
-    { id: "ssrmao_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", osusume: "goodcondition", source: "normal", releasedAt: "2025-05-09", another: true },
+    { id: "ssrmao_1st8another", name: "고금동서 식은 죽 먹기", name_en: "All times, All places, ChoChoiNoChoi", name_ja: "古今東西ちょちょいのちょい", rarity: "PSSR", plan: "sense", osusume: "goodcondition", jumpTime2: 6.4, source: "normal", releasedAt: "2025-05-09", another: true },
     { id: "ssrmao_1st9another", name: "Howling over the World", rarity: "PSSR", releasedAt: "2025-05-29", plan: "sense", category: "live", osusume: "goodcondition", source: "limited", another: true, jumpTime2: 7.3 },
     { id: "ssrmao_1st11another", name: "닥치는 대로 가자!", name_en: "GAMUSHARA NI IKOU!", name_ja: "がむしゃらに行こう！", category: "live", releasedAt: "2025-09-29", rarity: "PSSR", plan: "sense", jumpTime2: 8.0, osusume: "goodcondition", source: "limited", another: true },
     { id: "ssrmao_1st12another", name: "ENDLESS DANCE", rarity: "PSSR", plan: "sense", osusume: "goodcondition", category: "live", source: "limited", jumpTime2: 7.2, releasedAt: "2026-02-27", another: true },
@@ -3606,11 +3606,11 @@ export const produceList = [
         }
     },
     {
-        id: "srkanae_1sr", name: "동경을 품에 안고 한발씩", name_en: "With dreams in my heart, one step at a time", name_ja: "憧れを抱いて一歩ずつ", osusume: "concentration", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2026-11-16",
+        id: "srkanae_1sr", name: "동경을 품에 안고 한발씩", name_en: "With dreams in my heart, one step at a time", name_ja: "憧れを抱いて一歩ずつ", osusume: "goodcondition", rarity: "PSR", plan: "sense", source: "normal", releasedAt: "2026-11-16",
         item: {
             name: "お返しの髪飾り",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "남은 턴이 2턴 이내일 때 턴 종료 시 \n✦ param3\n✦ inlesson2",
+            desc_ja: "残り2ターン以内のターン終了時、\n✦ param3\n✦ inlesson2",
         },
         itemplus: {
             desc: "남은 턴이 2턴 이내일 때 턴 종료 시 \n✦ param5\n✦ inlesson2",
@@ -3618,8 +3618,8 @@ export const produceList = [
         },
         card: {
             name: "忠義を胸に",
-            desc: "미확인",
-            desc_ja: "未確認",
+            desc: "✦ goodcondition4\n✦ concentration1\n✦ goodconditionz1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ goodcondition4\n✦ concentration1\n✦ goodconditionz1\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         cardplus: {
             desc: "✦ goodcondition4\n✦ concentration1\n✦ goodconditionz1\n <span style='color:#8B8FD8'>nooverlab limit1",
@@ -4154,7 +4154,27 @@ export const produceList = [
             desc_ja: "✦ param8 (集中効果を2倍適用)\n✦ 体力が50%以下の場合、genki7\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
-    //{ id: "rkanae_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "motivation", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2026-11-16" },
+    {
+        id: "rkanae_1r", name: "학원생활", name_en: "School Life", name_ja: "学園生活", osusume: "concentration", rarity: "PR", plan: "sense", source: "normal", releasedAt: "2026-11-16",
+        item: {
+            name: "従者の必需品",
+            desc: "레슨 개시 후 \n✦ concentration2\n✦ 파라미터 상승량 감소 10% (2턴)\n✦ inlesson1",
+            desc_ja: "レッスン開始後、\n✦ concentration2\n✦ パラメータ上昇量減少10%（2ターン）\n✦ inlesson1",
+        },
+        itemplus: {
+            desc: "레슨 개시 후 \n✦ concentration3\n✦ 파라미터 상승량 감소 10% (2턴)\n✦ inlesson1",
+            desc_ja: "レッスン開始後、\n✦ concentration3\n✦ パラメータ上昇量減少10%（2ターン）\n✦ inlesson1",
+        },
+        card: {
+            name: "一途な従者",
+            desc: "✦ param3\n✦ 다음 턴의 턴 종료 시 param3 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param3\n✦ 次のターンのターン終了時、param3（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        },
+        cardplus: {
+            desc: "✦ param3\n✦ 다음 턴의 턴 종료 시 param3 (2회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ param3\n✦ 次のターンのターン終了時、param3（2回）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
 
 ];
 

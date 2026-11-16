@@ -40,6 +40,7 @@ ssrhiro_halloweenlimited
 ssrhiro_hiffes
 ssrhiro_michinaruunit
 ssrhiro_miraclelimited
+ssrkanae_1st
 ssrkotone_1st
 ssrkotone_1st10another
 ssrkotone_1st12another
@@ -86,6 +87,7 @@ ssrmao_1st2another
 ssrmao_1st4another
 ssrmao_1st5another
 ssrmao_1st7another
+ssrmao_1st8another
 ssrmao_1st9another
 ssrmao_2nd
 ssrmao_3rd

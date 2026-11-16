@@ -50,6 +50,8 @@ export const ROOT_ICON_PATHS = Object.freeze([
     'icons/list.svg',
     'icons/logic.webp',
     'icons/minus.svg',
+    'icons/metamor1.webp',
+    'icons/metamor2.webp',
     'icons/motivation.webp',
     'icons/netui.webp',
     'icons/nia.webp',
