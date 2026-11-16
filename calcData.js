@@ -12,7 +12,7 @@ export const calcPlans = {
             7: [{ value: "lessonvo", results: ["get", "get_drink"] }, { value: "lessondan", results: ["get", "get_drink"] }, { value: "lessonvi", results: ["get", "get_drink"] }],
             8: [{ value: "advice" }],
             9: [{ value: "spclass" }],
-            10: [{ value: "test", results: ["get", "get", "get", "get", "get_item"] }],
+            10: [{ value: "test", results: ["get", "get", "get", "get", "get", "get_item"] }],
             11: [{ value: "goout_hajime" }, { value: "gift_hajime", results: ["get", "get_drink"] }],
             12: [{ value: "lessonvo", results: ["get", "get_drink"] }, { value: "lessondan", results: ["get", "get_drink"] }, { value: "lessonvi", results: ["get", "get_drink"] }],
             13: [{ value: "goout_hajime" }, { value: "advice" }, { value: "gift_hajime", results: ["get", "get_drink"] }],
