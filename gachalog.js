@@ -81,7 +81,7 @@ const getPickupCardIds = (config) => {
     const getIds = key => (config?.[key] || config?.pool?.[key] || [])
         .map(item => typeof item === 'string' ? item : item?.id)
         .filter(Boolean);
-    return new Set([...getIds('pssr'), ...getIds('sssr'), ...getIds('sr_card')]);
+    return new Set([...getIds('pssr'), ...getIds('sssr'), ...getIds('psr'), ...getIds('sr_card')]);
 };
 
 const escapeHtml = (value) => String(value)

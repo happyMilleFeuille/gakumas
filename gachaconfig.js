@@ -289,6 +289,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrkanae_1st', char: 'kanae' }],
             sssr: ['vocal_sense4'],
+            psr: [{ id: 'srkanae_1sr', char: 'kanae' }],
             sr_card: ['visual_srsense4']
         }
     },
@@ -423,6 +424,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrtsubame_1st', char: 'tsubame' }],
             sssr: ['dance_logic2'],
+            psr: [{ id: 'srtsubame_1sr', char: 'tsubame' }],
             sr_card: ['vocal_srlogic4']
         }
     },
@@ -493,6 +495,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrmisuzu_1st', char: 'misuzu' }],
             sssr: ['visual_anomaly1'],
+            psr: [{ id: 'srmisuzu_1sr', char: 'misuzu' }],
             sr_card: ['visual_sranomaly1']
         }
     },
@@ -532,6 +535,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrsena_1st', char: 'sena' }],
             sssr: ['visual_free7'],
+            psr: [{ id: 'srsena_1sr', char: 'sena' }],
             sr_card: ['visual_srfree6']
         }
     },
@@ -631,6 +635,7 @@ export const NORMAL_CONFIG = [
         pool: {
             pssr: [{ id: 'ssrume_1st', char: 'ume' }],
             sssr: ['vocal_free6'],
+            psr: [{ id: 'srume_1sr', char: 'ume' }],
             sr_card: ['dance_srsense1']
         }
     },
