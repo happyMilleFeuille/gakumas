@@ -188,6 +188,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 0, visual: 0 },
                 bonus: { vocal: 1.5, dance: 1.5, visual: 2.5 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 20, dance: 25, visual: 30 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
@@ -222,6 +223,7 @@ export const idolData = {
                 base: { vocal: 10, dance: 10, visual: 0 },
                 bonus: { vocal: 0, dance: 0.5, visual: 2.5 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 0, dance: 0, visual: 0 },
                 bonus: { vocal: 3, dance: 1, visual: 3 }
@@ -256,6 +258,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 10, visual: 10 },
                 bonus: { vocal: 2.0, dance: 0.5, visual: 0.5 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 5, dance: 15, visual: 15 },
                 bonus: { vocal: 3.0, dance: 0, visual: 0 }
@@ -290,6 +293,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 5, visual: 15 },
                 bonus: { vocal: 2.0, dance: 0, visual: 1.0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 10, dance: 10, visual: 10 },
                 bonus: { vocal: 1.0, dance: 3.0, visual: 3.0 }
@@ -324,6 +328,7 @@ export const idolData = {
                 base: { vocal: 15, dance: 0, visual: 10 },
                 bonus: { vocal: 0, dance: 2.0, visual: 0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 0, dance: 0, visual: 15 },
                 bonus: { vocal: 1, dance: 3, visual: 1 }
@@ -359,6 +364,7 @@ export const idolData = {
                 base: { vocal: 5, dance: 25, visual: 10 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 15, dance: 0, visual: 5 },
                 bonus: { vocal: 0, dance: 3, visual: 3 }
@@ -393,6 +399,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 5, visual: 10 },
                 bonus: { vocal: 0, dance: 1.0, visual: 1.5 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 20, dance: 10, visual: 10 },
                 bonus: { vocal: 3.0, dance: 0, visual: 1.0 }
@@ -427,6 +434,7 @@ export const idolData = {
                 base: { vocal: 10, dance: 30, visual: 0 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 5, dance: 0, visual: 5 },
                 bonus: { vocal: 3, dance: 2, visual: 1 }
@@ -461,6 +469,7 @@ export const idolData = {
                 base: { vocal: 10, dance: 5, visual: 0 },
                 bonus: { vocal: 1.0, dance: 1.5, visual: 0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 5, dance: 5, visual: 15 },
                 bonus: { vocal: 2.0, dance: 0, visual: 3.0 }
@@ -495,6 +504,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 0, visual: 0 },
                 bonus: { vocal: 1.0, dance: 2.0, visual: 2.5 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 0, dance: 0, visual: 0 },
                 bonus: { vocal: 1, dance: 5, visual: 2 }
@@ -529,6 +539,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 10, visual: 10 },
                 bonus: { vocal: 1.0, dance: 0, visual: 2.0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 10, dance: 0, visual: 5 },
                 bonus: { vocal: 0, dance: 3, visual: 2.0 }
@@ -564,6 +575,7 @@ export const idolData = {
                 base: { vocal: 15, dance: 10, visual: 15 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 25, dance: 25, visual: 25 },
                 bonus: { vocal: 0, dance: 0, visual: 3.0 }
@@ -598,6 +610,7 @@ export const idolData = {
                 base: { vocal: 0, dance: 15, visual: 25 },
                 bonus: { vocal: 0, dance: 0, visual: 0 }
             },
+            27: { advicerefresh: true },
             37: {
                 base: { vocal: 0, dance: 10, visual: 15 },
                 bonus: { vocal: 2, dance: 0, visual: 2 }

@@ -1,6 +1,7 @@
 // guidePresets.js
 import { state } from './state.js';
 import { idolData } from './calcData.js';
+import { activityOptions, getActivityOptionMax } from './calcOptions.js';
 
 const DEFAULT_DESCRIPTIONS = {
     ko: '각 아이돌과 플랜에 맞는 스케줄을 제공합니다.\n서포트 카드 자동 추천과 함께 사용하는 것을 권장합니다.\n※ 최고의 효율성을 보장하지 않습니다.',
@@ -641,6 +642,17 @@ export function getGuidePreset(mode, idol, planType, slotId = 'guide') {
         planType: planType,
         updatedAt: Date.now()
     };
+
+    Object.values(mergedState.weeks).forEach(week => {
+        if (week.value !== 'advice' || !week.opts) return;
+        activityOptions.advice.forEach(option => {
+            const currentValue = Number(week.opts[option.id]);
+            const maxValue = getActivityOptionMax('advice', option, idolInfo);
+            if (Number.isFinite(currentValue) && currentValue > maxValue) {
+                week.opts[option.id] = String(maxValue);
+            }
+        });
+    });
 
     // HIF 가이드 프리셋 2(guide2)의 경우, 댄스가 1속성인 캐릭터라도 P아이템은 hif3-1-1로 강제 고정
     if (mode === 'hif' && slotId === 'guide2') {

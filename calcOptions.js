@@ -66,3 +66,18 @@ export const activityOptions = {
         { id: "spclass_customize", results: ["customize"], mainLabelKey: "calc_option_main_customize", labelKey: "calc_option_spclass_customize", type: "counter", max: 6 },
     ],
 };
+
+const restrictedAdviceOptionMax = {
+    enhance: 1,
+    delete: 1,
+    purchase_card: 4,
+    purchase_drink: 4,
+};
+
+export function getActivityOptionMax(activityId, option, idol) {
+    const hasAdviceRefresh = idol?.affinity?.[27]?.advicerefresh === true;
+    if (activityId === 'advice' && !hasAdviceRefresh && restrictedAdviceOptionMax[option.id] !== undefined) {
+        return restrictedAdviceOptionMax[option.id];
+    }
+    return option.max || 9;
+}

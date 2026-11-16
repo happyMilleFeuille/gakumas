@@ -3,7 +3,7 @@ import { state, idolColors } from './state.js';
 import { updatePageTranslations, translate } from './utils.js';
 import { PRESET_EXPORT_ENDPOINT } from './ui.js';
 import { calcPlans, baseStats, idolData, niaAuditionStats, judgingRatios, hajimeAvailableIdols, hifPrimaStellaIdols, niaAvailableIdols, hifParameterLimitBonuses } from './calcData.js';
-import { activityOptions } from './calcOptions.js';
+import { activityOptions, getActivityOptionMax } from './calcOptions.js';
 import { cardList } from './carddata.js';
 import { abilityData } from './abilitydata.js';
 import { calcStore } from './calcStore.js';
@@ -1283,7 +1283,7 @@ function startWeeklyPlan(type) {
                                     const optId = ctrl.dataset.id;
                                     const optDef = opts.find(o => o.id === optId);
                                     let cur = parseInt(getOptionValue(calcStore.weeks[weekNum].opts, optDef)) || 0;
-                                    if (btn.classList.contains('plus') && cur < (optDef.max || 9)) cur++;
+                                    if (btn.classList.contains('plus') && cur < getActivityOptionMax(val, optDef, idolData[calcStore.selectedIdol])) cur++;
                                     else if (btn.classList.contains('minus') && cur > 0) cur--;
                                     calcStore.updateWeekOpt(weekNum, optId, cur);
                                     (optDef.legacyIds || []).forEach(legacyId => calcStore.updateWeekOpt(weekNum, legacyId, null));
