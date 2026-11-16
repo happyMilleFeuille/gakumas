@@ -4555,7 +4555,7 @@ export const cardList = [
         releasedAt: "2026-04-10",
         plan: "logic",
         have: "item",
-        item_effects: [{ type: "action", triggertext: ["visual400"], trigger: ["get_motivation"], target: "change", targettext: "select", max: 3 }],
+        item_effects: [{ type: "action", triggertext: ["visual400"], trigger: ["get_motivation"], target: "change", targettext: "select", max: 2 }],
         rarity: "SR",
         extra1: "param",
         abilities:
