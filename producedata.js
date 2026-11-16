@@ -307,7 +307,7 @@ export const produceList = [
 
     // --- 카나에 SSR (PSSR) ---
     {
-        id: "ssrkanae_1st", name: "메타모르포제", name_en: "Metamorphose", name_ja: "メタモルフォーゼ", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 9.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/NkC8ahzYm3k?si=PvNkLoCN_-yhNxPE",
+        id: "ssrkanae_1st", name: "메타모르포제", name_en: "Metamorphose", name_ja: "メタモルフォーゼ", osusume: "concentration", rarity: "PSSR", plan: "sense", source: "normal", jumpTime2: 9.3, releasedAt: "2026-11-16", youtube_url: "https://youtu.be/Y_I_NOHVwzI?si=Y0IYpN7NUQE54l5Q",
         item: {
             name: "なにかが変わる予感",
             desc: "레슨 개시 시\n✦ 메타모르포제 (준비)\n✦ concentration1\n✦ inlesson1\n※ 메타모르포제 (준비) : 전반 턴 동안 집중・호조・절호조의 증가량+1, 파라미터 상승량 25% 감소, 전반 턴 종료 후 「메타모르포제 (선보임)」로 변경 \n※ 메타모르포제 (선보임) : 파라미터 상승량이 25% 증가하며 집중・호조・절호조의 증가량-1",
