@@ -696,7 +696,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 하지메 모드 해금 캐릭터 리스트
-export const hajimeAvailableIdols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami'];
+export const hajimeAvailableIdols = ['saki', 'temari', 'kotone', 'tsubame', 'mao', 'lilja', 'china', 'sumika', 'hiro', 'sena', 'misuzu', 'ume', 'rinami', 'kanae'];
 
 // HIF 모드 프리마 스텔라 해금 캐릭터 리스트
 export const hifPrimaStellaIdols = ['mao', 'misuzu', 'rinami', 'temari', 'china', 'hiro', 'lilja', 'sumika', 'saki', 'ume', 'sena', 'kotone', 'tsubame'];
