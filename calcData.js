@@ -633,11 +633,11 @@ export const idolData = {
         bonus: {
             ssr: {
                 base: { vocal: 18.0, dance: 12.0, visual: 18.0 },
-                bloom3: { vocal: 0, dance: 3.0, visual: 5.0 } // +3.0%, +5.0% 추가
+                bloom3: { vocal: 3.0, dance: 0, visual: 5.0 } // +3.0%, +5.0% 추가
             },
             sr: {
                 base: { vocal: 18.0, dance: 9.0, visual: 18.0 },
-                bloom3: { vocal: 0, dance: 3.0, visual: 5.0 }  // +2.0%, +3.0% 추가
+                bloom3: { vocal: 3.0, dance: 0, visual: 5.0 }  // +2.0%, +3.0% 추가
             }
         }
     },
