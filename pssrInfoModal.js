@@ -195,9 +195,9 @@ export const replaceDescIcons = (text) => {
     result = result.replace(/hpreduce\s*(<span class="pssr-info-modal-diff-added">)?(\d+)(<\/span>)?/gi, (match, spanOpen, num, spanClose) => {
         let label = '';
         if (state.currentLang === 'ko') {
-            label = `체력 소비 ${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `고정 체력 소비 ${spanOpen || ''}${num}${spanClose || ''}`;
         } else if (state.currentLang === 'ja') {
-            label = `体力消費 ${spanOpen || ''}${num}${spanClose || ''}`;
+            label = `固定体力消費 ${spanOpen || ''}${num}${spanClose || ''}`;
         } else {
             label = `HP Reduce ${spanOpen || ''}${num}${spanClose || ''}`;
         }

@@ -3808,8 +3808,8 @@ export const cardList = [
         have: "item",
         item_effects: [{
             type: "inexam",
-            kr: "[dance]턴 개시 시 moreconcentration1\n✦ goodcondition3\n✦ 집중 감소 1\n✦ inlesson1",
-            jp: "[dance]ターン開始時、 moreconcentration1\n✦ goodcondition3\n✦ 集中減少1\n✦ inlesson1",
+            kr: "[dance]턴 개시 시 moreconcentration1\n✦ goodcondition3\n✦ 집중 소비 1\n✦ inlesson1",
+            jp: "[dance]ターン開始時、 moreconcentration1\n✦ goodcondition3\n✦ 集中消費1\n✦ inlesson1",
         }],
         releasedAt: "2024-11-28",
         source: "limited",
@@ -4532,7 +4532,7 @@ export const cardList = [
         item_effects: [{
             type: "inexam",
             jp: "[visual]スキルカードコストで体力減少時、\n✦ goodimpression2\n✦ 消費体力減少2ターン\n✦ inlesson1",
-            kr: "[visual]카드 코스트로 체력감소 시\n✦ goodimpression2\n✦ 소비체력 감소 2턴\n✦ inlesson1",
+            kr: "[visual]카드 코스트로 체력 감소 시\n✦ goodimpression2\n✦ 소비체력 감소 2턴\n✦ inlesson1",
         }],
         releasedAt: "2026-03-19",
         rarity: "SR",

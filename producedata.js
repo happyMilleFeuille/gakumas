@@ -486,12 +486,12 @@ export const produceList = [
         id: "ssrmao_2nd", name: "Feel Jewel Dream", osusume: "goodimpression", rarity: "PSSR", plan: "logic", releasedAt: "2024-09-20", source: "normal", jumpTime2: 11.2,
         item: {
             name: "スタイリッシュモード",
-            desc: "턴 개시 시 의욕이 3이상인 경우 \n✦ goodimpression3\n✦ 의욕 감소 1\n✦ inlesson3",
-            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ goodimpression3\n✦ やる気減少1\n✦ inlesson3",
+            desc: "턴 개시 시 의욕이 3이상인 경우 \n✦ goodimpression3\n✦ 의욕 소비 1\n✦ inlesson3",
+            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ goodimpression3\n✦ やる気消費1\n✦ inlesson3",
         },
         itemplus: {
-            desc: "턴 개시 시 의욕이 3이상인 경우 \n✦ goodimpression3\n✦ 의욕 감소 1\n✦ inlesson4",
-            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ goodimpression3\n✦ やる気減少1\n✦ inlesson4",
+            desc: "턴 개시 시 의욕이 3이상인 경우 \n✦ goodimpression3\n✦ 의욕 소비 1\n✦ inlesson4",
+            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ goodimpression3\n✦ やる気消費1\n✦ inlesson4",
         },
         card: {
             name: "月夜のランウェイ",
@@ -1657,12 +1657,12 @@ export const produceList = [
         id: "ssrmao_campusfes", name: "Campus mode!!", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", category: "nia", source: "limited_f", youtube_url: "https://youtu.be/l1T_2zCHTk0?si=m_wD7y2f5s_Jj1vl", jumpTime2: 8.3, releasedAt: "2025-01-02",
         item: {
             name: "ボクの一部",
-            desc: "スターライト 사용 시 온존일 경우\n✦ draw1\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터 값 증가+10\n✦ hpreduce1\n✦ inlesson3",
+            desc: "スターライト 사용 시 온존일 경우\n✦ draw1\n✦ 소비체력 감소 1턴\n✦ スターライト의 파라미터 값 증가+10\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "スターライト使用時、温存の場合、\n✦ draw1\n✦ 消費体力減少1ターン\n✦ スターライトのパラメータ値増加+10\n✦ hpreduce1\n✦ inlesson3",
             referimage: ["anomaly-r2"]
         },
         itemplus: {
-            desc: "スターライト 사용 시 온존일 경우\n✦ draw2\n✦ 소비체력감소 1턴\n✦ スターライト의 파라미터 값 증가+10\n✦ hpreduce1\n✦ inlesson3",
+            desc: "スターライト 사용 시 온존일 경우\n✦ draw2\n✦ 소비체력 감소 1턴\n✦ スターライト의 파라미터 값 증가+10\n✦ hpreduce1\n✦ inlesson3",
             desc_ja: "スターライト使用時、温存の場合、\n✦ draw2\n✦ 消費体力減少1ターン\n✦ スターライトのパラメータ値増加+10\n✦ hpreduce1\n✦ inlesson3",
             referimage: ["anomaly-r2"]
         },
@@ -1922,12 +1922,12 @@ export const produceList = [
         id: "ssrsena_hiffes", name: "가라쿠타 로드", name_ja: "ガラクタロード", name_en: "GARAKUTA ROAD", category: "hif", osusume: "goodimpression", rarity: "PSSR", youtube_url: "https://youtu.be/O9oCfxSJXTY?si=52fg2ny6E-8hIYe8", plan: "logic", jumpTime2: 8.2, source: "limited_f", releasedAt: "2026-09-10",
         item: {
             name: "頂点の輝き",
-            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ 호인상 감소 6\n✦ inlesson2",
-            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ 好印象減少6\n✦ inlesson2",
+            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ 호인상 소비 6\n✦ inlesson2",
+            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ 好印象消費6\n✦ inlesson2",
         },
         itemplus: {
-            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ hprecovery1\n✦ 호인상 감소 6\n✦ inlesson2",
-            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ hprecovery1\n✦ 好印象減少6\n✦ inlesson2",
+            desc: "마지막 턴 개시 후 \n✦ goodimpression5\n✦ 턴 추가+1\n✦ hprecovery1\n✦ 호인상 소비 6\n✦ inlesson2",
+            desc_ja: "最終ターンのターン開始後、\n✦ goodimpression5\n✦ ターン追加+1\n✦ hprecovery1\n✦ 好印象消費6\n✦ inlesson2",
         },
         card: {
             name: "光り輝く道しるべ",
@@ -2285,12 +2285,12 @@ export const produceList = [
         id: "ssrtemari_halloweenlimited", name: "가장광소곡", name_en: "Fancy dress party", jumpTime2: 10.3, name_ja: "仮装狂騒曲", osusume: "motivation", category: "season", releasedAt: "2024-09-30", rarity: "PSSR", plan: "logic", source: "limited", youtube_url: "https://youtu.be/8YNzp2vRS9I?si=iI19xe6asn2wlShB",
         item: {
             name: "ぶきっちょコウモリ",
-            desc: "3턴마다 호인상이 3이상인 경우\n✦ 원기의 90%만큼 파라미터 상승\n✦ 의욕의 160%만큼 파라미터 상승\n✦ 호인상 감소2\n✦ inlesson3",
-            desc_ja: "3ターンごとに、好印象が3以上の場合、\n✦ 元気の90%分パラメータ上昇\n✦ やる気の160%分パラメータ上昇\n✦ 好印象減少2\n✦ inlesson3",
+            desc: "3턴마다 호인상이 3이상인 경우\n✦ 원기의 90%만큼 파라미터 상승\n✦ 의욕의 160%만큼 파라미터 상승\n✦ 호인상 소비2\n✦ inlesson3",
+            desc_ja: "3ターンごとに、好印象が3以上の場合、\n✦ 元気の90%分パラメータ上昇\n✦ やる気の160%分パラメータ上昇\n✦ 好印象消費2\n✦ inlesson3",
         },
         itemplus: {
-            desc: "3턴마다 호인상이 3이상인 경우\n✦ 원기의 100%만큼 파라미터 상승\n✦ 의욕의 230%만큼 파라미터 상승\n✦ 호인상 감소2\n✦ inlesson3",
-            desc_ja: "3ターンごとに、好印象が3以上の場合、\n✦ 元気の100%分パラメータ上昇\n✦ やる気の230%分パラメータ上昇\n✦ 好印象減少2\n✦ inlesson3",
+            desc: "3턴마다 호인상이 3이상인 경우\n✦ 원기의 100%만큼 파라미터 상승\n✦ 의욕의 230%만큼 파라미터 상승\n✦ 호인상 소비2\n✦ inlesson3",
+            desc_ja: "3ターンごとに、好印象が3以上の場合、\n✦ 元気の100%分パラメータ上昇\n✦ やる気の230%分パラメータ上昇\n✦ 好印象消費2\n✦ inlesson3",
         },
         card: {
             name: "悪戦苦闘ハンドメイド",
@@ -2538,12 +2538,12 @@ export const produceList = [
         id: "ssrsumika_sakuralimited", name: "벚꽃 포토그래프", name_en: "Sakura Photograph", osusume: "goodcondition", name_ja: "桜フォトグラフ", category: "season", releasedAt: "2025-04-01", rarity: "PSSR", jumpTime2: 10.3, plan: "sense", source: "limited", youtube_url: "https://youtu.be/CcA49B2t7j4?si=gG3MWuAlBx7zQEBR",
         item: {
             name: "Pっち",
-            desc: "집중이 8이상인 경우 카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
-            desc_ja: "集中が8以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
+            desc: "집중이 8이상인 경우 카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 소비 1",
+            desc_ja: "集中が8以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中消費1",
         },
         itemplus: {
-            desc: "집중이 3이상인 경우 카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 감소 1",
-            desc_ja: "集中が3以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中減少1",
+            desc: "집중이 3이상인 경우 카드를 2회 사용할 때마다 \n✦ goodcondition3 \n✦ 집중 소비 1",
+            desc_ja: "集中が3以上の場合、スキルカードを2回使用するごとに、\n✦ goodcondition3 \n✦ 集中消費1",
         },
         card: {
             name: "ヒーローと出会い",
@@ -2815,12 +2815,12 @@ export const produceList = [
         id: "ssrsena_endlesslimited", name: "ENDLESS DANCE", osusume: "enthusiasm", rarity: "PSSR", plan: "anomaly", source: "limited", jumpTime2: 7.3, category: "live", releasedAt: "2026-03-09", youtube_url: "https://youtu.be/j38KXTf08Rs?si=Axb5vfeKIrhRR9K7",
         item: {
             name: "ユートピアへの誘い",
-            desc: "직접효과로 강기로 지침 변경 시 전력치가 5이상일 경우\n✦ genki4\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴 draw1",
-            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
+            desc: "직접효과로 강기로 지침 변경 시 전력치가 5이상일 경우\n✦ genki4\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 저하 2\n✦ 다음 턴 draw1",
+            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki4\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値低下2\n✦ 次のターン、draw1",
         },
         itemplus: {
-            desc: "직접효과로 강기로 지침 변경 시 전력치가 5이상일 경우\n✦ genki6\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 감소2\n✦ 다음 턴 draw1",
-            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki6\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値減少2\n✦ 次のターン、draw1",
+            desc: "직접효과로 강기로 지침 변경 시 전력치가 5이상일 경우\n✦ genki6\n✦ 액티브 카드의 파라미터 값 증가+3\n✦ 전력치 저하 2\n✦ 다음 턴 draw1",
+            desc_ja: "直接効果で強気にになった時、全力値が5以上に場合、\n✦ genki6\n✦ アクティブスキルカードのパラメータ値増加+3\n✦ 全力値低下2\n✦ 次のターン、draw1",
         },
         card: {
             name: "踊り狂え！",
@@ -4011,12 +4011,12 @@ export const produceList = [
         id: "rmao_2r", name: "초연", name_en: "First Love", name_ja: "初恋", osusume: "goodimpression", rarity: "PR", plan: "logic", source: "normal", releasedAt: "2024-10-14",
         item: {
             name: "初陣の証・麻央",
-            desc: "턴 개시 시 의욕이 3이상일 경우\n✦ motivation3\n✦ 의욕 감소 1\n✦ inlesson1",
-            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ motivation3\n✦ やる気減少1\n✦ inlesson1",
+            desc: "턴 개시 시 의욕이 3이상일 경우\n✦ motivation3\n✦ 의욕 소비 1\n✦ inlesson1",
+            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ motivation3\n✦ やる気消費1\n✦ inlesson1",
         },
         itemplus: {
-            desc: "턴 개시 시 의욕이 3이상일 경우\n✦ motivation3\n✦ 의욕 감소 1\n✦ inlesson2",
-            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ motivation3\n✦ やる気減少1\n✦ inlesson2",
+            desc: "턴 개시 시 의욕이 3이상일 경우\n✦ motivation3\n✦ 의욕 소비 1\n✦ inlesson2",
+            desc_ja: "ターン開始時、やる気が3以上の場合、\n✦ motivation3\n✦ やる気消費1\n✦ inlesson2",
         },
         card: {
             name: "初めての結晶",
