@@ -530,7 +530,7 @@ const getLocalizedItem = (item) => {
         name = item.name_ja || item.name || '';
         desc = (item.desc_ja || item.desc || '').replace(/\n/g, '<br>');
     } else {
-        name = item.name || '';
+        name = item.name_kr || item.name || '';
         desc = (item.desc || '').replace(/\n/g, '<br>');
     }
     return { name, desc, referimage: item.referimage };
