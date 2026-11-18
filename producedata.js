@@ -102,8 +102,8 @@ export const produceList = [
         primacard: {
             name: "笑顔を生み出す一番星",
             name_kr: "미소를 만들어내는 첫 번째 별",
-            desc: "startingcard\n✦ goodimpression10\n✦ use1\n✦ 「미열 노스탤지어♡」를 덱의 랜덤한 위치에 5장 생성\n✦ 다음 턴 제외패 이외에 있는 微熱ノスタルジー를 손패로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
-            desc_ja: "startingcard\n✦ goodimpression10\n✦ use1\n✦ 「微熱ノスタルジー♡」を山札のランダムな位置に5枚生成\n✦ 次のターン、除外以外にある微熱ノスタルジーを手札に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc: "startingcard\n✦ goodimpression10\n✦ use1\n✦ 「미열 노스탤지어♡」를 덱의 랜덤한 위치에 5장 생성\n✦ 다음 턴 제외패 이외에 있는 「미열 노스탤지어」를 손패로 이동\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "startingcard\n✦ goodimpression10\n✦ use1\n✦ 「微熱ノスタルジー♡」を山札のランダムな位置に5枚生成\n✦ 次のターン、除外以外にある「微熱ノスタルジー」を手札に移動\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         tokencard: {
             name: "微熱ノスタルジー♡",
