@@ -1,6 +1,7 @@
 // abilitydata.js
 export const abilityData = {
     "hpmax": {
+        name: { ko: "체력", ja: "体力", en: "HP" },
         format: { ko: "최대체력상승+{val}", ja: "最大体力上昇+{val}", en: "Max HP Up +{val}" },
         levels: {
             "SSR": { 1: 6, 2: 7, 3: 8, 4: 9, 5: 9 },

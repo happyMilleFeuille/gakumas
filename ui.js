@@ -1082,7 +1082,12 @@ function setupStaticListeners(container) {
         for (const [key, data] of Object.entries(abilityData)) {
             if (key === 'fixedparam') continue;
             if (!data.name) continue;
-            const hasAbility = cardList.some(card => card.abilities && card.abilities.includes(key));
+            const hasAbility = cardList.some(card => {
+                if (!card.abilities) return false;
+                // `subhpmax` is the SR variant of the HP ability and shares this filter.
+                if (key === 'hpmax') return card.abilities.includes('hpmax') || card.abilities.includes('subhpmax');
+                return card.abilities.includes(key);
+            });
             if (!hasAbility) continue;
 
             const btn = document.createElement('button');
@@ -1577,6 +1582,9 @@ export function checkCardMatchFilters(card, includeDate = false, options = {}) {
             if (!card.abilities) return false;
             if (ab === 'sp_lessonup') {
                 return card.abilities.includes('sp_lessonup') || card.abilities.includes('allsp_lessonup') || card.abilities.includes('suballsp_lessonup');
+            }
+            if (ab === 'hpmax') {
+                return card.abilities.includes('hpmax') || card.abilities.includes('subhpmax');
             }
             return card.abilities.includes(ab);
         };
