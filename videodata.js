@@ -2,6 +2,11 @@
 export const videoList = {
     saki: [
         {
+            title: "Try it now",
+            url: "https://youtu.be/mm_Pq1uvzjc?si=q4psCpQVyQ654T6O",
+            date: "2025.04.02."
+        },
+        {
             title: "生誕ミニライブ2026",
             title_ko: "생일 미니라이브2026",
             title_en: "Birthday MiniLive 2026",
@@ -36,6 +41,13 @@ export const videoList = {
     ],
     temari: [
         {
+            title: "叶えたい、ことばかり",
+            title_ko: "이루고 싶은 것들투성이",
+            title_en: "Dream of that Day",
+            url: "https://youtu.be/rIp3rYd4BzE?si=CD5lVXKwLBSOJE60",
+            date: "2024.06.03."
+        },
+        {
             title: "Unhappy Light",
             url: "https://youtu.be/QYgxhkq7Xos?si=ZDDc52aRs_LKI_1w",
             date: "2026.06.03."
@@ -69,6 +81,11 @@ export const videoList = {
     ],
     kotone: [
         {
+            title: "The Cute!!!",
+            url: "https://youtu.be/nSo5Eqarg6M?si=dkbyj-6tXx6LdFE_",
+            date: "2025.04.29."
+        },
+        {
             title: "ふわふわ",
             title_ko: "후와후와",
             title_en: "Fuwafuwa",
@@ -96,6 +113,7 @@ export const videoList = {
         },
     ],
     tsubame: [
+
         {
             title: "ナイワ",
             title_ko: "나이와",
@@ -117,8 +135,18 @@ export const videoList = {
             url: "https://youtu.be/cmb_bFgzxNo?si=S_qx7xDCsc9Zn7-l",
             date: "2026.05.20."
         },
+        {
+            title: "MY STAGE",
+            url: "https://youtu.be/mR0qtqvRYWM?si=oaiYtsg8YLhBz410",
+            date: "2026.05.20."
+        },
     ],
     mao: [
+        {
+            title: "Sweet Magic",
+            url: "https://youtu.be/KObbQEtDg_M?si=-2uD8G4zYfwmYLbJ",
+            date: "2025.01.18."
+        },
         {
             title: "Top Secret",
             url: "https://youtu.be/J8fGYM03jsU?si=zmjJRID9ZC9E_DQt",
@@ -147,6 +175,11 @@ export const videoList = {
         },
     ],
     lilja: [
+        {
+            title: "Wake up!!",
+            url: "https://youtu.be/X56QfFhKXEU?si=Wcpq9TSOamy2SAc7",
+            date: "2024.07.23."
+        },
         {
             title: "生誕記念配信2026",
             title_ko: "생일 라이브방송2026",
@@ -180,6 +213,13 @@ export const videoList = {
         },
     ],
     china: [
+        {
+            title: "憧れをいっぱい",
+            title_ko: "동경을 가득",
+            title_en: "Full of Dreams",
+            url: "https://youtu.be/y4fR_UBbZVw?si=s3vMQ8CabV2CDnID",
+            date: "2024.08.01."
+        },
         {
             title: "生誕記念配信2026",
             title_ko: "생일 라이브방송2026",
@@ -215,6 +255,11 @@ export const videoList = {
         },
     ],
     sumika: [
+        {
+            title: "Ride on Beat",
+            url: "https://youtu.be/MYyPW9CvvBU?si=J3lw2A_oV8cIfBMu",
+            date: "2024.11.11."
+        },
         {
             title: "生誕記念配信2026",
             title_ko: "생일 라이브방송2026",
@@ -268,6 +313,13 @@ export const videoList = {
             date: "2025.09.04."
         },
         {
+            title: "メクルメ",
+            title_ko: "메쿠루메",
+            title_en: "mekurume",
+            url: "https://youtu.be/DLkNQgh4Ons?si=98wFvIM0cSG-PbBp",
+            date: "2024.12.21."
+        },
+        {
             title: "H.I.F ゲーム内OPアニメ",
             title_ko: "H.I.F 인게임 OP 애니메이션",
             title_en: "H.I.F Game Intro Animation",
@@ -276,6 +328,11 @@ export const videoList = {
         },
     ],
     sena: [
+        {
+            title: "Cosmetic",
+            url: "https://youtu.be/gS63yuCmW50?si=lmRbC71CWaLeB0MM",
+            date: "2024.12.07."
+        },
         {
             title: "Choo Choo Choo",
             url: "https://youtu.be/ZhIlyzx9pK8?si=NQD-LRL97vy_XTPQ",
@@ -311,6 +368,13 @@ export const videoList = {
         },
     ],
     misuzu: [
+        {
+            title: "たいせつなもの",
+            title_ko: "소중한 것",
+            title_en: "My Precious",
+            url: "https://youtu.be/i5w7kpe9aCw?si=NZot0wNgYuQceKQI",
+            date: "2025.02.06."
+        },
         {
             title: "ヨルニテ",
             title_ko: "요루니테",
@@ -380,6 +444,13 @@ export const videoList = {
             date: "2025.09.04."
         },
         {
+            title: "つよつよ最強エクササイズ",
+            title_ko: "츠요츠요 최강 엑서사이즈",
+            title_en: "TSUYO TSUYO STRONGEST EXERCISE",
+            url: "https://youtu.be/-BhIzqm4H4o?si=2CbQFcul0o_XCqEZ",
+            date: "2025.04.01."
+        },
+        {
             title: "H.I.F ゲーム内OPアニメ",
             title_ko: "H.I.F 인게임 OP 애니메이션",
             title_en: "H.I.F Game Intro Animation",
@@ -388,6 +459,11 @@ export const videoList = {
         },
     ],
     rinami: [
+        {
+            title: "marble heart",
+            url: "https://youtu.be/OWHUM1z8_-U?si=pDXAFrbrggAGnNH5",
+            date: "2025.03.05."
+        },
         {
             title: "歌声は君いろ",
             title_ko: "노랫소리는 너의 색",
