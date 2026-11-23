@@ -90,14 +90,14 @@ export const videoList = {
             title_ko: "후와후와",
             title_en: "Fuwafuwa",
             url: "https://youtu.be/yS-fsWrARw8?si=2vru0gQ7Kzep5K_7",
-            date: "2026.04.29"
+            date: "2026.04.29."
         },
         {
             title: "生誕ミニライブ2026",
             title_ko: "생일 미니라이브2026",
             title_en: "Birthday MiniLive 2026",
             url: "https://youtu.be/2Nj9mKhi1UA?si=8nf0jtyAtXqviF1h",
-            date: "2026.04.29"
+            date: "2026.04.29."
         },
         {
             title: "SUPREMACY",
