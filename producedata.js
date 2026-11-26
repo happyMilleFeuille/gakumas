@@ -3571,52 +3571,52 @@ export const produceList = [
             desc_ja: "✦ 強気に変更\n✦ draw1\n✦ 以降3回まで、アクティブスキルカード使用時、強気2段階目の場合、温存2段階目に変更\n <span style='color:#8B8FD8'>nooverlab limit1",
         }
     },
-    /*   {
-           id: "ssrtsubame_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "concentration", releasedAt: "2026-11-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 9.1, youtube_url: "",
-           item: {
-               name: "乖離する美学",
-               name_kr: "괴리하는 미학",
-               desc: "미확인",
-               desc_ja: "未確認",
-           },
-           itemplus: {
-               desc: "집중이 13이상일 경우 멘탈 카드를 3회 사용할 때마다\n✦ concentration6\n✦ genki5\n✦ inlesson3",
-               desc_ja: "集中が13以上の場合、メンタルスキルカードを3回使用するごとに、\n✦ concentration6\n✦ genki5\n✦ inlesson3",
-           },
-           card: {
-               name: "噛み合わない理屈",
-               name_kr: "맞물리지 않는 이치",
-               desc: "미확인",
-               desc_ja: "未確認",
-           },
-           cardplus: {
-               desc: "hpreduce1\n✦ use1\n✦ 이후 2회까지 직접효과로 호조가 7이상 증가할 시 호조 6턴・집중 소비 1\n <span style='color:#8B8FD8'>nooverlab limit1",
-               desc_ja: "hpreduce1\n✦ use1\n✦ 以降2回まで、直接効果で好調が7以上増加後、好調6ターン・集中消費1\n <span style='color:#8B8FD8'>nooverlab limit1",
-           }
-       },
-       {
-           id: "ssrmao_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "enthusiasm", releasedAt: "2026-11-27", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 9.1, youtube_url: "",
-           item: {
-               name: "轟く名前",
-               name_kr: "울려 퍼지는 이름",
-               desc: "미확인",
-               desc_ja: "未確認",
-           },
-           itemplus: {
-               desc: "전력으로 지침을 변경한 횟수가 1회 이상일 경우, 강기 효과 카드를 3회 사용할 때마다\n✦ 온존 2단계로 지침 변경\n✦ 강기 강화+30%\n✦ genki14\n✦ inlesson2",
-               desc_ja: "全力になった回数が1回以上の場合、強気効果のスキルカード使用後3回ごとに、\n✦ 温存2段階目に変更\n✦ 強気強化+30%\n✦ genki14\n✦ inlesson2",
-           },
-           card: {
-               name: "噛み合わないプライド",
-               name_kr: "맞물리지 않는 프라이드",
-               desc: "미확인",
-               desc_ja: "未確認",
-           },
-           cardplus: {
-               desc: "✦ 강기로 지침 변경\n✦ param13\n✦ 지침이 온존일 경우 draw1\n✦ 성장 : 전력으로 지침 변경 시 자신의 plusattack1・파라미터치 증가+15 (최대 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
-               desc_ja: "✦ 強気に変更\n✦ param13\n✦ 温存の場合、draw1\n✦ 成長：全力になった時、自身のplusattack1・パラメータ値増加+15（1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
-           }
-       },*/
+    {
+        id: "ssrtsubame_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "concentration", releasedAt: "2026-11-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 9.1, youtube_url: "",
+        item: {
+            name: "乖離する美学",
+            name_kr: "괴리하는 미학",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        itemplus: {
+            desc: "집중이 13이상일 경우 멘탈 카드를 3회 사용할 때마다\n✦ concentration6\n✦ genki5\n✦ inlesson3",
+            desc_ja: "集中が13以上の場合、メンタルスキルカードを3回使用するごとに、\n✦ concentration6\n✦ genki5\n✦ inlesson3",
+        },
+        card: {
+            name: "噛み合わない理屈",
+            name_kr: "맞물리지 않는 이치",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardplus: {
+            desc: "hpreduce1\n✦ use1\n✦ 이후 2회까지 직접효과로 호조가 7이상 증가할 시 호조 6턴・집중 소비 1\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "hpreduce1\n✦ use1\n✦ 以降2回まで、直接効果で好調が7以上増加後、好調6ターン・集中消費1\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
+    {
+        id: "ssrmao_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "enthusiasm", releasedAt: "2026-11-27", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 9.1, youtube_url: "",
+        item: {
+            name: "轟く名前",
+            name_kr: "울려 퍼지는 이름",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        itemplus: {
+            desc: "전력으로 지침을 변경한 횟수가 1회 이상일 경우 강기 효과 카드를 3회 사용할 때마다\n✦ 온존 2단계로 지침 변경\n✦ 강기 강화+30%\n✦ genki14\n✦ inlesson2",
+            desc_ja: "全力になった回数が1回以上の場合、強気効果のスキルカード使用後3回ごとに、\n✦ 温存2段階目に変更\n✦ 強気強化+30%\n✦ genki14\n✦ inlesson2",
+        },
+        card: {
+            name: "噛み合わないプライド",
+            name_kr: "맞물리지 않는 프라이드",
+            desc: "미확인",
+            desc_ja: "未確認",
+        },
+        cardplus: {
+            desc: "✦ 강기로 지침 변경\n✦ param13\n✦ 지침이 온존일 경우 draw1\n✦ 성장 : 전력으로 지침 변경 시 자신의 plusattack1・파라미터치 증가+15 (최대 1회)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            desc_ja: "✦ 強気に変更\n✦ param13\n✦ 温存の場合、draw1\n✦ 成長：全力になった時、自身のplusattack1・パラメータ値増加+15（1回まで）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }
+    },
 
 
 

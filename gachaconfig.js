@@ -210,6 +210,19 @@ export const FES_CONFIG = [
 // 유닛 가챠 상세 설정
 export const UNIT_CONFIG = [
     {
+        id: 'unbalanceunit',
+        date: '2026-11-27',
+        bannerImg: 'idols/ssrtsubame_unbalanceunit1.webp',
+        pool: {
+            pssr: [
+                { id: 'ssrtsubame_unbalanceunit', char: 'tsubame' },
+                { id: 'ssrmao_unbalanceunit', char: 'mao' }
+            ],
+            sssr: ['vocal_unitsense1'],
+            sr_card: ['vocal_srunitanomaly2']
+        }
+    },
+    {
         id: 'sugarunit',
         date: '2026-06-15',
         bannerImg: 'idols/ssrmao_sugarunit1.webp',

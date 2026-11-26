@@ -586,6 +586,32 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "vocal_unitsense1",
+        name: "다음은 내 차례야!",
+        name_ja: "次はボクの番や！",
+        type: "vocal",
+        plan: "sense",
+        have: "card_m",
+        attrs: ["goodcondition"],
+        card_effects: [{
+            kr: "✦ concentration5\n✦ 이후 3회까지 멘탈 카드를 2회 사용할 때마다 집중 강화 10% (2턴)\n <span style='color:#8B8FD8'>nooverlab limit1",
+            jp: "✦ concentration5\n✦ 以降3回まで、メンタルスキルカードを2回使用するごとに、集中強化10%（2ターン）\n <span style='color:#8B8FD8'>nooverlab limit1",
+        }],
+        releasedAt: "2026-11-27",
+        rarity: "SSR",
+        source: "limited_u",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
+                "event_paraup"
+            ]
+    },
 
     {
         id: "vocal_distsense1",
@@ -3500,6 +3526,28 @@ export const cardList = [
                 "supportrateup",
                 "get_preservation",
                 "get_item6",
+                "event_paraup"
+            ]
+    },
+    {
+        id: "vocal_srunitanomaly2",
+        name: "히어로 참전",
+        name_ja: "ヒーロー参上",
+        type: "vocal",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["get_preservation"], targettext: ["ppoint20"], stats: { vocal: 5 }, max: 2 }],
+        releasedAt: "2026-11-27",
+        rarity: "SR",
+        source: "limited_u",
+        extra1: "param",
+        abilities:
+            [
+                "hpmax",
+                "hpmax",
+                "supportrateup",
+                "hpmax",
+                "hpmax",
                 "event_paraup"
             ]
     },
