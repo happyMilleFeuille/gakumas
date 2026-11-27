@@ -218,6 +218,16 @@ export const abilityData = {
         },
         trigger: ["enhance_a"],
     },
+    "enhance_trouble3": {
+        name: { ko: "강화(트러블)", ja: "強化(トラブル)", en: "Enhance(Trouble)" },
+        format: { ko: "스킬카드 강화 시 소지하고 있는 트러블 카드가 1장 이상일 경우, {type} 상승+{val}", ja: "スキルカード強化時、所持しているトラブルカードが1枚以上の場合、{type}上昇+{val}", en: "When enhancing an Active Card, if you have 1 or more Trouble Cards, {type} Up +{val}" },
+        levels: {
+            "SSR": { 1: 21, 2: 28 },
+            "SSR_DIST": { 1: 0, 2: 0 },
+            "SR": { 1: 0, 2: 0 }
+        },
+        trigger: ["enhance"], max: 3,
+    },
     "get": {
         name: { ko: "카드 획득", ja: "カード獲得", en: "Get card" },
         format: { ko: "카드 획득 시 {type} 상승+{val}", ja: "スキルカード獲得時、{type}上昇+{val}", en: "When getting a card, {type} Up +{val}" },
