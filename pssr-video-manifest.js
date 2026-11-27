@@ -95,6 +95,7 @@ ssrmao_campusfes
 ssrmao_miraclelimited
 ssrmao_shirube
 ssrmao_sugarunit
+ssrmao_unbalanceunit
 ssrmao_yukidokenilimited
 ssrmisuzu_1st
 ssrmisuzu_1st10another
@@ -228,6 +229,7 @@ ssrtsubame_1st9another
 ssrtsubame_3rd
 ssrtsubame_campusfes
 ssrtsubame_hiffes
+ssrtsubame_unbalanceunit
 ssrume_1st
 ssrume_1st10another
 ssrume_1st11another

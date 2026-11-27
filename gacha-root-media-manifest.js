@@ -9,6 +9,7 @@ export const GACHA_ROOT_MEDIA = Object.freeze([
     'gasya/blackout.mp4',
     'gasya/blackoutchina.mp4',
     'gasya/blackouthiro.mp4',
+    'gasya/blackoutkanae.mp4',
     'gasya/blackoutkotone.mp4',
     'gasya/blackoutlilja.mp4',
     'gasya/blackoutmao.mp4',

@@ -3572,7 +3572,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrtsubame_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "concentration", releasedAt: "2026-11-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 9.1, youtube_url: "",
+        id: "ssrtsubame_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "concentration", releasedAt: "2026-11-27", rarity: "PSSR", plan: "sense", source: "limited_u", jumpTime2: 10.5, youtube_url: "https://youtu.be/kMGWOyHvOi0?si=oEqHsbehuurLPfkM",
         item: {
             name: "乖離する美学",
             name_kr: "괴리하는 미학",
@@ -3595,7 +3595,7 @@ export const produceList = [
         }
     },
     {
-        id: "ssrmao_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "enthusiasm", releasedAt: "2026-11-27", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 9.1, youtube_url: "",
+        id: "ssrmao_unbalanceunit", name: "언밸런스", name_en: "Unbalance", name_ja: "アンバランス", osusume: "enthusiasm", releasedAt: "2026-11-27", rarity: "PSSR", plan: "anomaly", source: "limited_u", jumpTime2: 11.2, youtube_url: "https://youtu.be/kMGWOyHvOi0?si=oEqHsbehuurLPfkM",
         item: {
             name: "轟く名前",
             name_kr: "울려 퍼지는 이름",
