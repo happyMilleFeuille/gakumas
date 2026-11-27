@@ -2646,7 +2646,7 @@ export const cardList = [
                 "sp_lessonup",
                 "supportrateup",
                 "sp_param",
-                "customize3", // 40렙 미확인
+                "customize3",
                 "event_paraup"
             ]
     },
