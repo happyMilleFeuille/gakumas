@@ -75,7 +75,7 @@ export const abilityData = {
     },
     "sp_param20": {
         name: { ko: "SP레슨(20장)", ja: "SPレッスン(20枚)", en: "SP Lesson(20Cards)" },
-        format: { ko: "SP레슨 종료 시 소지한 카드가 20장 이상인 경우, {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロデュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
+        format: { ko: "SP레슨 종료 시 소지 중인 카드가 20장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "SPレッスン終了時、所持スキルカードが20枚以上の場合、{type}上昇+{val} (プロデュース中4回)", en: "After SP Lesson, if you have 20 or more cards, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 15, 2: 21 },
             "SSR_DIST": { 1: 0, 2: 0 },
@@ -220,20 +220,21 @@ export const abilityData = {
     },
     "enhance_trouble3": {
         name: { ko: "강화(트러블)", ja: "強化(トラブル)", en: "Enhance(Trouble)" },
-        format: { ko: "스킬카드 강화 시 소지하고 있는 트러블 카드가 1장 이상일 경우, {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカード強化時、所持しているトラブルカードが1枚以上の場合、{type}上昇+{val}（プロデュース中3回）", en: "When enhancing an Active Card, if you have 1 or more Trouble Cards, {type} Up +{val} (3 times during Produce)" },
+        format: { ko: "스킬카드 강화 시 소지하고 있는 트러블 카드가 1장 이상일 경우 {type} 상승+{val} (프로듀스 중 3회)", ja: "スキルカード強化時、所持しているトラブルカードが1枚以上の場合、{type}上昇+{val}（プロデュース中3回）", en: "When enhancing an Active Card, if you have 1 or more Trouble Cards, {type} Up +{val} (3 times during Produce)" },
         levels: {
             "SSR": { 1: 21, 2: 28 },
-            "SSR_DIST": { 1: 11, 2: 16 },
+            "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 0, 2: 0 }
         },
         trigger: ["enhance"], max: 3,
+        condition: { trigger: "get_t", min: 1 },
     },
     "get": {
         name: { ko: "카드 획득", ja: "カード獲得", en: "Get card" },
         format: { ko: "카드 획득 시 {type} 상승+{val}", ja: "スキルカード獲得時、{type}上昇+{val}", en: "When getting a card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
-            "SSR_DIST": { 1: 11, 2: 16 },
+            "SSR_DIST": { 1: 0, 2: 0 },
             "SR": { 1: 1, 2: 2 }
         },
         trigger: ["get"],
@@ -569,7 +570,7 @@ export const abilityData = {
     },
     "test15": {
         name: { ko: "시험/오디션(15장)", ja: "試験/オーディション(15枚)", en: "Exam/Audition(15 cards)" },
-        format: { ko: "시험・오디션 종료 시 소지한 카드가 15장 이상인 경우, {type} 상승+{val} (프로듀스 중 5회)", ja: "試験・オーディション終了時、所持しているスキルカードが15枚以上の場合、{type}上昇+{val} (プロデュース中5回)", en: "After Exam or Audition, if you have 15 or more cards, {type} Up +{val} (5 times during Produce)" },
+        format: { ko: "시험・오디션 종료 시 소지 중인 카드가 15장 이상일 경우 {type} 상승+{val} (프로듀스 중 5회)", ja: "試験・オーディション終了時、所持しているスキルカードが15枚以上の場合、{type}上昇+{val} (プロデュース中5回)", en: "After Exam or Audition, if you have 15 or more cards, {type} Up +{val} (5 times during Produce)" },
         levels: {
             "SSR": { 1: 26, 2: 37 },
             "SSR_DIST": { 1: 0, 2: 0 },

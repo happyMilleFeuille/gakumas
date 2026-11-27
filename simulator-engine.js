@@ -153,6 +153,11 @@ export function calculateCardBonus(card, triggerData, lb = 4, itemCounter = 0, i
 
         if (bonusVal === 0) return;
 
+        if (ability.condition) {
+            const condCount = totalCounts[ability.condition.trigger] || 0;
+            if (condCount < (ability.condition.min ?? 1)) return;
+        }
+
         if (abilityId === 'percentparam') {
             results.percent = bonusVal;
             return;
