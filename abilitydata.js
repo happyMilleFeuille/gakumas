@@ -223,7 +223,7 @@ export const abilityData = {
         format: { ko: "스킬카드 강화 시 소지하고 있는 트러블 카드가 1장 이상일 경우, {type} 상승+{val}", ja: "スキルカード強化時、所持しているトラブルカードが1枚以上の場合、{type}上昇+{val}", en: "When enhancing an Active Card, if you have 1 or more Trouble Cards, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 21, 2: 28 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 0, 2: 0 }
         },
         trigger: ["enhance"], max: 3,
@@ -233,7 +233,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 {type} 상승+{val}", ja: "スキルカード獲得時、{type}上昇+{val}", en: "When getting a card, {type} Up +{val}" },
         levels: {
             "SSR": { 1: 0, 2: 0 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 1, 2: 2 }
         },
         trigger: ["get"],
@@ -243,7 +243,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 호조 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している好調効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Good Condition effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
@@ -253,7 +253,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 집중 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している集中効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Concentration effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
@@ -263,7 +263,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 의욕 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持しているやる気効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Motivation effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
@@ -273,7 +273,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 호인상 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している好印象効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Good Impression effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
@@ -283,7 +283,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 강기 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している強気効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Enthusiasm effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
@@ -293,7 +293,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 전력 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している全力効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Fullpower effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,
@@ -303,7 +303,7 @@ export const abilityData = {
         format: { ko: "카드 획득 시 소지하고 있는 온존 효과의 카드가 8장 이상일 경우 {type} 상승+{val} (프로듀스 중 4회)", ja: "スキルカード獲得時、所持している温存効果のスキルカードが8枚以上の場合、{type}上昇+{val}（プロデュース中4回）", en: "When getting a card, if you have 8 or more cards with Preservation effect, {type} Up +{val} (4 times during Produce)" },
         levels: {
             "SSR": { 1: 16, 2: 22 },
-            "SSR_DIST": { 1: 0, 2: 0 },
+            "SSR_DIST": { 1: 11, 2: 16 },
             "SR": { 1: 8, 2: 16 }
         },
         trigger: ["get"], max: 4,

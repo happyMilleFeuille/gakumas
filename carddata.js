@@ -1938,6 +1938,28 @@ export const cardList = [
                 "event_paraup"
             ]
     },
+    {
+        id: "dance_distanomaly3",
+        name: "발목 잡지말라구",
+        name_ja: "足を引っ張るなよ",
+        type: "dance",
+        plan: "anomaly",
+        have: "item",
+        item_effects: [{ type: "action", trigger: ["advice"], triggertext: ["dance400"], stats: { dance: 20 }, targettext: ["hp3"], max: 2 }],
+        releasedAt: "2026-11-27",
+        source: "dist",
+        rarity: "SSR",
+        extra1: "param", extra2: "ranenhance",
+        abilities:
+            [
+                "fixedparam",
+                "sp_lessonup",
+                "supportrateup",
+                "get_8preservation4",
+                "gift",
+                "event_paraup"
+            ]
+    },
 
     {
         id: "visual_free1",
