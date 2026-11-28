@@ -1632,12 +1632,12 @@ export const produceList = [
         item: {
             name: "あの頃憧れたヒーロー",
             name_kr: "그 시절 동경했던 히어로",
-            desc: "「출연 계획」 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
-            desc_ja: "「出演計画」使用時、\n✦ use1\n✦ 除外にあるダークヒーローの誕生を手札に移動\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
+            desc: "「출연 계획」 사용 시 \n✦ use1\n✦ 제외패에 있는 「다크 히어로의 탄생」를 손패로 이동\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
+            desc_ja: "「出演計画」使用時、\n✦ use1\n✦ 除外にある「ダークヒーローの誕生」を手札に移動\n✦ goodcondition7\n✦ hpreduce3\n✦ inlesson1",
             referimage: ["sense-sr11"]
         },
         itemplus: {
-            desc: "「출연 계획」 사용 시 \n✦ use1\n✦ 제외패에 있는 ダークヒーローの誕生를 손패로 이동\n✦ goodcondition9\n✦ inlesson1",
+            desc: "「출연 계획」 사용 시 \n✦ use1\n✦ 제외패에 있는 「다크 히어로의 탄생」를 손패로 이동\n✦ goodcondition9\n✦ inlesson1",
             desc_ja: "「出演計画」使用時、\n✦ use1\n✦ 除外にあるダークヒーローの誕生を手札に移動\n✦ goodcondition9\n✦ inlesson1",
             referimage: ["sense-sr11"]
         },
