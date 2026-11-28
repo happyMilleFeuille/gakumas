@@ -1079,7 +1079,7 @@ export const produceList = [
             desc_ja: "✦ 山札か捨札にあるスキルカードを選択し、保留に移動 \n✦ 以降3回まで、スキルカード使用時、全力の場合、fullpower5\n <span style='color:#8B8FD8'>nooverlab limit1",
         },
         primacard: {
-            name: "恩に報える一番星",
+            name: "恩に報いる一番星",
             name_kr: "은혜에 보답하는 첫 번째 별",
             desc: "✦ use1\n✦ 이후 1회까지 전력으로 지침 변경 시 전력치가 10이상일 경우 제외 이외에 있는 카드 최대 2개를 선택 후 plusattack1・파라미터 값 증가+10・체력 소비 코스트 증가+5\n <span style='color:#8B8FD8'>nooverlab limit1",
             desc_ja: "✦ use1\n✦ 以降1回まで、全力になった時、全力値が10以上の場合、除外以外のスキルカードを２枚まで選択し、plusattack1・パラメータ値増加+10・体力消費コスト値増加+5\n <span style='color:#8B8FD8'>nooverlab limit1",
